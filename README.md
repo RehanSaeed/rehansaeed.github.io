@@ -1,2 +1,1 @@
-# RehanSaeed.com
-Muhammad Rehan Saeed's Blog
+![Muhammad Rehan Saeed](./static/Muhammad-Rehan-Saeed-Hero.png)
