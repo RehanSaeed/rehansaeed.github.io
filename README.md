@@ -1,1 +1,1 @@
-![Muhammad Rehan Saeed](./static/Muhammad-Rehan-Saeed-Hero.png)
+![Muhammad Rehan Saeed](./static/images/Muhammad-Rehan-Saeed-Hero.png)

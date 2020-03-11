@@ -3,11 +3,17 @@
 
 // Changes here requires a server restart.
 // To restart press CTRL + C in terminal and run `gridsome develop`
+const siteName = 'Muhammad Rehan Saeed';
+const siteDescription = 'Software Developer at Microsoft, Open Source Contributor and Blogger';
+const siteUrl = 'https://rehansaeed.com';
+const siteAuthor = 'Muhammad Rehan Saeed';
+const siteCopyright = `Copyright © ${new Date().getFullYear()} Muhammad Rehan Saeed`;
+const siteLanguage = "en-GB";
 
 module.exports = {
-  siteName: 'Muhammad Rehan Saeed',
-  siteDescription: 'Software Developer at Microsoft, Open Source Contributor and Blogger',
-  siteUrl: 'https://preview.rehansaeed.com',
+  siteName,
+  siteDescription,
+  siteUrl,
 
   templates: {
     Post: '/:title',
@@ -23,6 +29,46 @@ module.exports = {
       use: '@gridsome/plugin-google-analytics',
       options: {
         id: 'UA-159632920-1'
+      }
+    },
+    // https://gridsome.org/plugins/gridsome-plugin-rss
+    {
+      use: 'gridsome-plugin-rss',
+      options: {
+        contentTypeName: 'Post',
+        latest: true,
+        dateField: 'date',
+        maxItems: 300,
+        feedOptions: {
+          title: siteName,
+          description: siteDescription,
+          feed_url: siteUrl + '/rss.xml',
+          site_url: siteUrl,
+          image_url: siteUrl + '/images/Muhammad-Rehan-Saeed-Hero.png',
+          managingEditor: siteAuthor,
+          webMaster: siteAuthor,
+          copyright: siteCopyright,
+          language: siteLanguage
+        },
+        feedItemOptions: node =>
+        {
+          console.log(node);
+          return ({
+            title: node.title,
+            description: node.description,
+            url: siteUrl + node.permalink,
+            author: node.author,
+            date: node.date,
+            categories: node.tags,
+            // enclosure: {
+            //   file: node.cover_image
+            // }
+          });
+        },
+        output: {
+          dir: './static',
+          name: 'rss.xml'
+        }
       }
     },
     // https://gridsome.org/plugins/@gridsome/plugin-sitemap
