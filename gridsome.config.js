@@ -15,6 +15,16 @@ module.exports = {
   },
 
   plugins: [
+    // Mailchimp
+    // https://rehansaeed.us19.list-manage.com/subscribe/post?u=0d1d7c30db26dd0a4aa1b5b40&amp;id=07ce865066
+
+    // https://gridsome.org/plugins/@gridsome/plugin-google-analytics
+    {
+      use: '@gridsome/plugin-google-analytics',
+      options: {
+        id: 'UA-159632920-1'
+      }
+    },
     // https://gridsome.org/plugins/@gridsome/plugin-sitemap
     {
       use: '@gridsome/plugin-sitemap',
