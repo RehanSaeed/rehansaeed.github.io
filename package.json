@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Muhammad Rehan Saeed's Blog",
   "author": "Muhammad Rehan Saeed",
-  "homepage": "https://github.com/RehanSaeed/RehanSaeed.com",
+  "homepage": "https://github.com/RehanSaeed/rehansaeed.github.io",
   "license": "UNLICENSED",
   "private": true,
   "keywords": [
@@ -14,11 +14,11 @@
     "Website"
   ],
   "bugs": {
-    "url": "https://github.com/RehanSaeed/RehanSaeed.com/issues"
+    "url": "https://github.com/RehanSaeed/rehansaeed.github.io/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RehanSaeed/RehanSaeed.com.git"
+    "url": "git+https://github.com/RehanSaeedrehansaeed.github.io.git"
   },
   "dependencies": {
     "@gridsome/plugin-google-analytics": "^0.1.0",
