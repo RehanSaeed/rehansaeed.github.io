@@ -1,0 +1,27 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - '*'
+    tags:
+      - '*'
+
+jobs:
+  build:
+    name: Build
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        lfs: true
+    - name: 'NPM Install'
+      run: npm install
+      shell: pwsh
+    - name: 'NPM Build'
+      run: npm run build
+      shell: pwsh
+    - name: 'Deploy'
+      run: npm run deploy
+      shell: pwsh
