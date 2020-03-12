@@ -1,7 +1,7 @@
 <template>
   <Layout :show-logo="true">
 
-    <h1 class="post-title">About</h1>
+    <h1 class="about__title">About</h1>
 
     <div class="content-box">
       <g-image class="about__image" alt="Muhammad Rehan Saeed" height="480" width="320" src="~/assets/images/Muhammad-Rehan-Saeed-Profile.jpg" />
@@ -12,8 +12,16 @@
   </Layout>
 </template>
 
+<script>
+export default {
+  metaInfo: {
+    title: 'About'
+  }
+}
+</script>
+
 <style lang="scss">
-.post-title {
+.about__title {
   padding: calc(var(--space) / 2) 0 calc(var(--space) / 2);
   text-align: center;
 }
