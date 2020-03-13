@@ -3,7 +3,7 @@ title: "WPF Metro Part 2 - MahApps Metro"
 description: "MahApps Metro is an excellent Windows Presentation Foundation (WPF) SDK providing Metro styles for built in WPF controls and several custom controls."
 author: "Muhammad Rehan Saeed"
 permalink: "/wpf-metro-part2-mahapps-metro/"
-cover_image: ""
+cover_image: "https://www.youtube.com/watch?v=FLmCkKfIp84"
 date: "2014-03-02"
 published: true
 categories:
