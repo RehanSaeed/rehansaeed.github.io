@@ -31,46 +31,6 @@ module.exports = {
         id: 'UA-159632920-1'
       }
     },
-    // https://gridsome.org/plugins/gridsome-plugin-rss
-    {
-      use: 'gridsome-plugin-rss',
-      options: {
-        contentTypeName: 'Post',
-        latest: true,
-        dateField: 'date',
-        maxItems: 300,
-        feedOptions: {
-          title: siteName,
-          description: siteDescription,
-          feed_url: siteUrl + '/rss.xml',
-          site_url: siteUrl,
-          image_url: siteUrl + '/images/Muhammad-Rehan-Saeed-Hero.png',
-          managingEditor: siteAuthor,
-          webMaster: siteAuthor,
-          copyright: siteCopyright,
-          language: siteLanguage
-        },
-        feedItemOptions: node =>
-        {
-          console.log(node);
-          return ({
-            title: node.title,
-            description: node.description,
-            url: siteUrl + node.permalink,
-            author: node.author,
-            date: node.date,
-            categories: node.tags,
-            // enclosure: {
-            //   file: node.cover_image
-            // }
-          });
-        },
-        output: {
-          dir: './static',
-          name: 'rss.xml'
-        }
-      }
-    },
     // https://gridsome.org/plugins/@gridsome/plugin-sitemap
     {
       use: '@gridsome/plugin-sitemap',
@@ -116,6 +76,53 @@ module.exports = {
             typeName: 'Tag',
             create: true
           }
+        }
+      }
+    },
+    // https://gridsome.org/plugins/gridsome-plugin-brotli
+    {
+      use: 'gridsome-plugin-brotli',
+      options: {
+        extensions: ['css', 'html', 'js', 'svg', 'json']
+      }
+    },
+    // https://gridsome.org/plugins/gridsome-plugin-rss
+    {
+      use: 'gridsome-plugin-rss',
+      options: {
+        contentTypeName: 'Post',
+        latest: true,
+        dateField: 'date',
+        maxItems: 300,
+        feedOptions: {
+          title: siteName,
+          description: siteDescription,
+          feed_url: siteUrl + '/rss.xml',
+          site_url: siteUrl,
+          image_url: siteUrl + '/images/Muhammad-Rehan-Saeed-Hero.png',
+          managingEditor: siteAuthor,
+          webMaster: siteAuthor,
+          copyright: siteCopyright,
+          language: siteLanguage
+        },
+        feedItemOptions: node =>
+        {
+          console.log(node);
+          return ({
+            title: node.title,
+            description: node.description,
+            url: siteUrl + node.permalink,
+            author: node.author,
+            date: node.date,
+            categories: node.tags,
+            // enclosure: {
+            //   file: node.cover_image
+            // }
+          });
+        },
+        output: {
+          dir: './static',
+          name: 'rss.xml'
         }
       }
     }
