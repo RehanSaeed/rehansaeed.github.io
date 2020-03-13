@@ -3,9 +3,9 @@ title: "Cheat Sheet"
 description: "Shows how to use markdown"
 author: "Muhammad Rehan Saeed"
 permalink: "/cheat-sheet/"
-cover_image: ""
+cover_image: "./images/NET.png"
 date: "2020-03-04"
-published: true
+published: false
 categories:
   - ""
 tags:
