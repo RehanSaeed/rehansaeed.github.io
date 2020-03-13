@@ -1,0 +1,15 @@
+---
+title: "Elysium Extra"
+description: "Elysium Extra is a library that implements Metro styles and controls for Windows Presentation Foundation (WPF) applications. This Project is a very large add-on project built on top of the Elysium SDK."
+author: "Muhammad Rehan Saeed"
+permalink: "https://github.com/RehanSaeed/Elysium-Extra"
+cover_image: "https://www.youtube.com/watch?v=PGM_uBy99GA"
+date: "2014-02-06"
+published: true
+categories:
+  - "Open Source"
+tags:
+  - "C#"
+  - ".NET"
+  - "Windows Presentation Foundation (WPF)"
+---
