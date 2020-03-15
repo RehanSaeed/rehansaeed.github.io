@@ -7,6 +7,7 @@
       </div>
 
       <div class="header__right">
+        <Search />
         <ToggleTheme />
       </div>
     </header>
@@ -28,6 +29,7 @@
 
 <script>
 import Logo from '~/components/Logo.vue'
+import Search from '~/components/Search.vue'
 import ToggleTheme from '~/components/ToggleTheme.vue'
 
 export default {
@@ -36,6 +38,7 @@ export default {
   },
   components: {
     Logo,
+    Search,
     ToggleTheme
   }
 }
@@ -53,8 +56,10 @@ export default {
 
   &__left,
   &__right {
-    display: flex;
     align-items: center;
+    display: grid;
+    grid-gap: 0.5em;
+    grid-template-columns: auto auto;
   }
 
   @media screen and (min-width: 1300px) {

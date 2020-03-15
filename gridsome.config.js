@@ -86,6 +86,25 @@ module.exports = {
         extensions: ['css', 'html', 'js', 'svg', 'json']
       }
     },
+    // https://gridsome.org/plugins/gridsome-plugin-flexsearch
+    {
+      use: 'gridsome-plugin-flexsearch',
+      options: {
+        collections: [
+          {
+            typeName: 'Post',
+            indexName: 'Post',
+            fields: ['title', 'description']
+          },
+          {
+            typeName: 'Portfolio',
+            indexName: 'Portfolio',
+            fields: ['title', 'description']
+          }
+        ],
+        searchFields: ['title', 'description']
+      }
+    },
     // https://gridsome.org/plugins/gridsome-plugin-rss
     {
       use: 'gridsome-plugin-rss',
