@@ -1,0 +1,33 @@
+table {
+  color: var(--title-color);
+  background-color: var(--bg-content-color);
+  margin-bottom: 1.5em;
+  vertical-align: top;
+  width: 100%;
+
+  th,
+  td {
+    padding: .5rem;
+    border-bottom: 2px solid var(--border-color);
+  }
+
+  tbody {
+    vertical-align: inherit;
+  }
+
+  thead th {
+    vertical-align: bottom;
+    border-bottom-color: var(--border-color);
+  }
+
+  tbody + tbody {
+    border-top: 4px solid var(--border-color);
+  }
+
+  tbody tr {
+    &:hover {
+      color: var(--title-color);
+      background-color: var(--bg-color);
+    }
+  }
+}
