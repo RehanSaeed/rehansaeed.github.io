@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Poppins:400, 600');
+@import url('https://fonts.googleapis.com/css?family=Audiowide:400');
 
 html {
   font-size: var(--base-font-size);
@@ -14,12 +14,12 @@ p {
 	margin-bottom: 1.25em;
 }
 
-h1, h2, h3, h4, h5 {
+h1, h2, h3, h4, h5, h6 {
   transition: color .6s;
   color: var(--title-color);
   margin: 2.75rem 0 1rem;
-  font-family: var(--base-font-family);
-  font-weight: 600;
+  font-family: var(--heading-font-family);
+  font-weight: 400;
   line-height: 1.15;
 }
 

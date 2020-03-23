@@ -1,12 +1,18 @@
-// Default variables
-html {
-  --base-font-family: 'Poppins', sans-serif;
+// Default
+* {
+  --base-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --code-font-family: "Cascadia Code", "Cascadia Code PL", "Consolas", "Bitstream Vera Sans Mono", "Courier New", "Courier", monospace;
+  --heading-font-family: 'Audiowide', sans-serif;
+
   --base-font-size: 20px;
 
-  --code-font-family: "Cascadia Code", "Cascadia Code PL", "Consolas", "Bitstream Vera Sans Mono", "Courier New", "Courier", monospace;
+  --space: 3.5rem;
+  --content-width: 900px;
+  --header-height: 80px;
+  --radius: 5px;
 }
 
-// Light default theme
+// Light theme
 body {
  	--bg-color: #F3F7F9;
  	--bg-content-color: #fff;
@@ -14,26 +20,10 @@ body {
  	--body-color: #444;
  	--title-color: #111;
  	--link-color: #6b17e6;
- 	--border-color:  rgba(0,0,0,.1);;
-  --space: 3.5rem;
-  --content-width: 900px;
-  --header-height: 80px;
-  --radius: 5px;
+ 	--border-color:  rgba(0,0,0,.1);
 }
 
-// Make  things smaller for mobile
-@media screen and (max-width: 650px) {
-	html {
-		--base-font-size: 17px;
-	}
-	body {
-		--space: 1.5rem;
-		--header-height: 60px;
-	}
-}
-
-
-// Override variables for Dark theme
+// Dark theme
 body[data-theme="dark"] {
  	--bg-color: #0D2538;
  	--bg-content-color: #0f2d44;
@@ -41,5 +31,16 @@ body[data-theme="dark"] {
  	--border-color:  rgba(255,255,255,.1);;
  	--body-color: #ced8de;
  	--title-color: #fff;
- 	--link-color: #af9cef;
+  --link-color: #af9cef;
+  --border-color: rgba(0,0,0,.1);
+}
+
+// Mobile View
+@media screen and (max-width: 650px) {
+	* {
+    --base-font-size: 17px;
+
+		--space: 1.5rem;
+		--header-height: 60px;
+	}
 }
