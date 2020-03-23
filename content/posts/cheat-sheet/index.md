@@ -5,15 +5,12 @@ author: "Muhammad Rehan Saeed"
 permalink: "/cheat-sheet/"
 cover_image: "./images/NET.png"
 date: "2020-03-04"
-published: false
+published: true
 categories:
   - ""
 tags:
   - ""
 ---
-
-# Table of Contents
-[[toc]]
 
 # Tables
 
@@ -50,18 +47,34 @@ Danger zone, do not proceed
 :::
 
 ::: details Click me to view the code
-```js
-console.log('Hello, VuePress!')
-```
+Some Code
 :::
 
 # Syntax Highlighting
 
-```js{4}
+```js{codeTitle: "Code Title Code Title"}
+// Code Title
+```
+
+```js{numberLines: true}
+// Line Numbers
+```
+
+```js{2,4-5}
 export default {
   data () {
     return {
-      msg: 'Highlighted!'
+      msg: 'Line Highlight'
+    }
+  }
+}
+```
+
+```js{codeTitle: "Code Title Code Title"}{numberLines: true}{2,4-5}
+export default {
+  data () {
+    return {
+      msg: 'All'
     }
   }
 }

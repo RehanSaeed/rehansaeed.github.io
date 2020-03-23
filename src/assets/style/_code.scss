@@ -1,7 +1,7 @@
 code[class*="language-"],
 pre[class*="language-"] {
   color: #393A34;
-  font-family: "Cascadia Code", "Cascadia Code PL", "Consolas", "Bitstream Vera Sans Mono", "Courier New", "Courier", monospace;
+  font-family: var(--code-font-family);
   direction: ltr;
   text-align: left;
   white-space: pre;
@@ -25,7 +25,8 @@ code[class*="language-"] ::selection {
 pre[class*="language-"] {
   padding: 1em;
   margin: 1.5em 0;
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
   border: 1px solid #dddddd;
   background-color: white;
   border-radius: var(--radius);
@@ -125,23 +126,65 @@ code[class*="language-css"] {
   color: #393A34;
 }
 
-/* overrides color-values for the Line Numbers plugin
-  * http://prismjs.com/plugins/line-numbers/
-  */
+// Code Title
+.code-title {
+  font-family: var(--code-font-family);
+  font-size: 0.8em;
+  margin-bottom: -1em;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  position: relative;
+}
+
+// Line Numbers
+pre[class*="language-"].line-numbers {
+  position: relative;
+  padding-left: 3.7em;
+  counter-reset: linenumber;
+}
+
+pre[class*="language-"].line-numbers > code {
+  position: relative;
+  white-space: inherit;
+}
+
 .line-numbers .line-numbers-rows {
-  border-right-color: #a5a5a5;
+  border-right: 1px solid #a5a5a5;
+  font-size: 100%;
+  left: -3.8em;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 3em; /* works for line-numbers below 1000 lines */
+  user-select: none;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+.line-numbers-rows > span {
+  display: block;
+  counter-increment: linenumber;
+  pointer-events: none;
 }
 
 .line-numbers-rows > span:before {
   color: #2B91AF;
+  content: counter(linenumber);
+  display: block;
+  padding-left: 1em;
+  padding-right: 0.5em;
+  text-align: right;
 }
 
-/* overrides color-values for the Line Highlight plugin
-* http://prismjs.com/plugins/line-highlight/
-*/
-.line-highlight {
-  background: rgba(193, 222, 241, 0.2);
-  background: linear-gradient(to right, rgba(193, 222, 241, 0.2) 70%, rgba(221, 222, 241, 0));
+// Line Highlight
+.gridsome-highlight-code-line {
+  background: rgba(193, 222, 241, 0.3);
+  background: linear-gradient(to right, rgba(193, 222, 241, 0.3) 80%, rgba(221, 222, 241, 0));
+  display: block;
+  margin-left: -0.25em;
+  padding-top: 0.16em;
+  border-left: 0.25em solid rgba(193, 222, 241, 1);
 }
 
 body[data-theme="dark"] {
@@ -155,14 +198,13 @@ body[data-theme="dark"] {
   pre[class*="language-"] ::selection,
   code[class*="language-"]::selection,
   code[class*="language-"] ::selection {
-    background: #C1DEF1;
+    background: rgb(106, 108, 109);
   }
 
   /* Code blocks */
   pre[class*="language-"] {
     padding: 1em;
-    margin: .5em 0;
-    overflow: auto;
+    margin: 1.5em 0;
     border: 1px solid #4C4C4C;
     background-color: #272822;
     scrollbar-color: #272822 #4C4C4C;
@@ -220,5 +262,12 @@ body[data-theme="dark"] {
   .token.important,
   .token.regex {
    color:#fd971f
+  }
+
+  // Line Numbers
+  pre[class*="language-"].line-numbers {
+    position: relative;
+    padding-left: 3.7em;
+    counter-reset: linenumber;
   }
 }

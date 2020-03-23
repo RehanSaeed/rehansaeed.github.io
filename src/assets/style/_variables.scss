@@ -1,6 +1,9 @@
 // Default variables
 html {
-	--base-font-size: 20px;
+  --base-font-family: 'Poppins', sans-serif;
+  --base-font-size: 20px;
+
+  --code-font-family: "Cascadia Code", "Cascadia Code PL", "Consolas", "Bitstream Vera Sans Mono", "Courier New", "Courier", monospace;
 }
 
 // Light default theme
