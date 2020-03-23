@@ -28,17 +28,17 @@ public class Startup
     private readonly IConfiguration configuration;
     private readonly IWebHostingEnvironment webHostingEnvironment;
 
-    public Startup(IConfiguration configuration, IWebHostingEnvironment webHostingEnvironment)
+    public Startup(
+        IConfiguration configuration,
+        IWebHostingEnvironment webHostingEnvironment)
     {
         this.configuration = configuration;
         this.webHostingEnvironment = webHostingEnvironment;
     }
 
-    public virtual void ConfigureServices(IServiceCollection services) =>
-        ...
+    public virtual void ConfigureServices(IServiceCollection services) => ...
 
-    public virtual void Configure(IApplicationBuilder application) =>
-        ...
+    public virtual void Configure(IApplicationBuilder application) => ...
 }
 ```
 
@@ -53,7 +53,9 @@ public class TestStartup : Startup
 {
     private readonly Mock clockServiceMock;
 
-    public TestStartup(IConfiguration configuration, IHostingEnvironment hostingEnvironment)
+    public TestStartup(
+        IConfiguration configuration,
+        IHostingEnvironment hostingEnvironment)
         : base(configuration, hostingEnvironment)
     {
         this.clockServiceMock = new Mock(MockBehavior.Strict);
@@ -79,7 +81,8 @@ In your test project, write a custom `WebApplicationFactory` that configures the
 Note also that I've implemented `IDisposable`'s `Dispose` method to verify all of my strict mocks. This means I don't need to verify any mocks manually myself. Verification of all mock setups happens automatically when xUnit is disposing the test class.
 
 ```cs
-public class CustomWebApplicationFactory : WebApplicationFactory where TEntryPoint : class
+public class CustomWebApplicationFactory : WebApplicationFactory
+    where TEntryPoint : class
 {
     public CustomWebApplicationFactory()
     {
@@ -98,8 +101,10 @@ public class CustomWebApplicationFactory : WebApplicationFactory where TEntryPoi
         using (var serviceScope = this.Services.CreateScope())
         {
             var serviceProvider = serviceScope.ServiceProvider;
-            this.ApplicationOptions = serviceProvider.GetRequiredService<IOptions<ApplicationOptions>>().Value;
-            this.ClockServiceMock = serviceProvider.GetRequiredService<Mock<IClockService>>();
+            this.ApplicationOptions = serviceProvider
+                .GetRequiredService<IOptions<ApplicationOptions>>().Value;
+            this.ClockServiceMock = serviceProvider
+                .GetRequiredService<Mock<IClockService>>();
         }
 
         base.ConfigureClient(client);
@@ -145,7 +150,9 @@ public class FooControllerTest : CustomWebApplicationFactory
     [Fact]
     public async Task GetFoo_Default_Returns200OK()
     {
-        this.clockServiceMock.Setup(x => x.UtcNow).ReturnsAsync(new DateTimeOffset(2000, 1, 1));
+        this.clockServiceMock
+            .Setup(x => x.UtcNow)
+            .ReturnsAsync(new DateTimeOffset(2000, 1, 1));
 
         var response = await this.client.GetAsync("/foo");
 
