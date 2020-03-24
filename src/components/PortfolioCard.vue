@@ -1,5 +1,5 @@
 <template>
-  <ContentBox class="portfolio-card">
+  <ContentBox hoverable class="portfolio-card">
     <div class="portfolio-card__header">
       <g-image alt="Cover image" v-if="portfolio.cover_image" class="portfolio-card__image" :src="portfolio.cover_image" />
     </div>
@@ -54,11 +54,6 @@ export default {
 
   &__title {
     margin-top: 0;
-  }
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 1px 10px 30px 0 rgba(0,0,0,.1);
   }
 
   &__tags {

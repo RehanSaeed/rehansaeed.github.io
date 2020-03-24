@@ -1,5 +1,5 @@
 <template>
-  <ContentBox class="post-card" :class="{'post-card--has-poster' : post.poster}">
+  <ContentBox hoverable class="post-card" :class="{'post-card--has-poster' : post.poster}">
     <div class="post-card__header">
       <g-image alt="Cover image" v-if="post.cover_image" class="post-card__image" :src="post.cover_image" />
     </div>
@@ -54,11 +54,6 @@ export default {
 
   &__title {
     margin-top: 0;
-  }
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 1px 10px 30px 0 rgba(0,0,0,.1);
   }
 
   &__tags {
