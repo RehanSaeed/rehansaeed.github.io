@@ -19,7 +19,7 @@ tags:
 
 The '[dotnet new](https://docs.microsoft.com/en-us/dotnet/core/tools/custom-templates)' CLI command is a great way to create projects from templates in dotnet. However, I think it could provide a much better experience than it currently does. I also suspect it isn't used much, mostly because templates authored for the `dotnet new` experience are not included in the Visual Studio File -> New Project experience. For template authors, the experience of developing templates could do with some improvements. I tweeted about it this morning and got asked to write a short gist about what could be improved, so this is that list.
 
-https://twitter.com/RehanSaeedUK/status/1211663043840684036?s=20
+[![Any plans to improve the dotnet new templating engine? Lots of unfixed bugs. Lots of rough edges needing smoothing. A 'dotnet new ui' command to create projects using a visual editor would be cool](./images/Twitter.png)](https://twitter.com/RehanSaeedUK/status/1211663043840684036?s=20)
 
 ## Why do I Care?
 
