@@ -1,5 +1,5 @@
 <template>
-  <div class="post-card content-box" :class="{'post-card--has-poster' : post.poster}">
+  <ContentBox class="post-card" :class="{'post-card--has-poster' : post.poster}">
     <div class="post-card__header">
       <g-image alt="Cover image" v-if="post.cover_image" class="post-card__image" :src="post.cover_image" />
     </div>
@@ -12,15 +12,17 @@
 
       <g-link class="post-card__link" :to="post.path">Link</g-link>
     </div>
-  </div>
+  </ContentBox>
 </template>
 
 <script>
+import ContentBox from '~/components/ContentBox'
 import PostMeta from '~/components/PostMeta'
 import PostTags from '~/components/PostTags'
 
 export default {
   components: {
+    ContentBox,
     PostMeta,
     PostTags
   },

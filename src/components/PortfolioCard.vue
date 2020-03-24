@@ -1,5 +1,5 @@
 <template>
-  <div class="portfolio-card content-box">
+  <ContentBox class="portfolio-card">
     <div class="portfolio-card__header">
       <g-image alt="Cover image" v-if="portfolio.cover_image" class="portfolio-card__image" :src="portfolio.cover_image" />
     </div>
@@ -12,15 +12,17 @@
 
       <g-link class="portfolio-card__link" :to="portfolio.permalink">Link</g-link>
     </div>
-  </div>
+  </ContentBox>
 </template>
 
 <script>
+import ContentBox from '~/components/ContentBox'
 import PortfolioMeta from '~/components/PortfolioMeta'
 import PortfolioTags from '~/components/PortfolioTags'
 
 export default {
   components: {
+    ContentBox,
     PortfolioMeta,
     PortfolioTags
   },

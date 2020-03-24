@@ -9,7 +9,7 @@
 
     </div>
 
-    <div class="post content-box">
+    <ContentBox class="post">
       <div class="post__header">
         <g-image alt="Cover image" v-if="$page.post.cover_image" :src="$page.post.cover_image" />
       </div>
@@ -19,7 +19,7 @@
       <div class="post__footer">
         <PostTags :post="$page.post" />
       </div>
-    </div>
+    </ContentBox>
 
     <div class="post-comments">
       <!-- Add comment widgets here -->
@@ -30,13 +30,15 @@
 </template>
 
 <script>
+import Author from '~/components/Author.vue'
+import ContentBox from '~/components/ContentBox.vue'
 import PostMeta from '~/components/PostMeta'
 import PostTags from '~/components/PostTags'
-import Author from '~/components/Author.vue'
 
 export default {
   components: {
     Author,
+    ContentBox,
     PostMeta,
     PostTags
   },
