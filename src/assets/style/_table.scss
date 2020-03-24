@@ -17,11 +17,11 @@ table {
 
   thead th {
     vertical-align: bottom;
-    border-bottom-color: var(--border-color);
+    border-bottom-width: 4px;
   }
 
   tbody + tbody {
-    border-top: 4px solid var(--border-color);
+    border-top: 2px solid var(--border-color);
   }
 
   tbody tr {
