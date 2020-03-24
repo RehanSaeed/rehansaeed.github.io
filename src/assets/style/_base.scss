@@ -18,7 +18,38 @@ a:not(.button):not(.post-tags__link):not(.portfolio-tags__link):not(.author__lin
  	transition: opacity .2s;
 	&:hover {
 		opacity: .8;
-	}
+  }
+
+  &:link,
+  &:visited {
+    color: var(--link-visited-color);
+    text-decoration-color: var(--link-color);
+    transition:
+      text-decoration-thickness 200ms ease-out,
+      text-underline-offset 200ms ease-out,
+      text-decoration-color 200ms ease-out,
+      color 200ms ease-out;
+  }
+
+  &:hover,
+  &:focus,
+  &:active {
+    text-decoration-color: var(--link-color);
+  }
+
+  @supports (text-decoration-thickness: 1em) {
+    &:link {
+      text-decoration-thickness: 0.09em;
+      text-underline-offset: 0.125em;
+      text-decoration-skip-ink: none;
+    }
+
+    &:hover {
+      color: var(--bg-color);
+      text-decoration-thickness: 1.125em;
+      text-underline-offset: -0.875em;
+    }
+  }
 }
 
 img {

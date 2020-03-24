@@ -20,6 +20,7 @@ body {
  	--body-color: #444;
  	--title-color: #111;
  	--link-color: #6b17e6;
+ 	--link-visited-color: #4f2391;
  	--border-color:  rgba(0,0,0,.1);
 }
 
@@ -31,7 +32,8 @@ body[data-theme="dark"] {
  	--border-color:  rgba(255,255,255,.1);;
  	--body-color: #ced8de;
  	--title-color: #fff;
-  --link-color: #af9cef;
+  --link-color: #cbbbff;
+  --link-visited-color: #9d8cd4;
   --border-color: rgba(255, 255, 255, 0.2);
 }
 
