@@ -19,9 +19,9 @@ tags:
 
 For some reason there are not a lot of Search Engine Optimization (SEO) blog posts or projects out there. Taking a few simple steps can make your site rank higher in Google or Bing search results so it's well worth doing. Here are a few other of my SEO related blog posts:
 
-- [Canonical URL's for ASP.NET MVC](http://rehansaeed.com/canonical-urls-for-asp-net-mvc/)
-- [Dynamically Generating Sitemap.xml for ASP.NET MVC](http://rehansaeed.com/dynamically-generating-sitemap-xml-for-asp-net-mvc/)
-- [Dynamically Generating Robots.txt Using ASP.NET MVC](http://rehansaeed.com/dynamically-generating-robots-txt-using-asp-net-mvc/)
+- [Canonical URL's for ASP.NET MVC](/canonical-urls-for-asp-net-mvc/)
+- [Dynamically Generating Sitemap.xml for ASP.NET MVC](/dynamically-generating-sitemap-xml-for-asp-net-mvc/)
+- [Dynamically Generating Robots.txt Using ASP.NET MVC](/dynamically-generating-robots-txt-using-asp-net-mvc/)
 
 # What is an SEO Friendly URL?
 

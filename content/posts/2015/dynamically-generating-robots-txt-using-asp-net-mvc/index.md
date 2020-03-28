@@ -19,16 +19,16 @@ tags:
   - "Web Crawlers"
 ---
 
-- [ASP.NET Core Boilerplate](http://rehansaeed.com/asp-net-mvc-boilerplate/)
+- [ASP.NET Core Boilerplate](/asp-net-mvc-boilerplate/)
 - Security
-    - [Securing the ASP.NET MVC Web.config (Updated)](http://rehansaeed.com/securing-the-aspnet-mvc-web-config/)
-    - [NWebSec ASP.NET MVC Security Through HTTP Headers](http://rehansaeed.com/nwebsec-asp-net-mvc-security-through-http-headers/)
-    - [Content Security Policy (CSP) for ASP.NET MVC](http://rehansaeed.com/content-security-policy-for-asp-net-mvc/)
+    - [Securing the ASP.NET MVC Web.config (Updated)](/securing-the-aspnet-mvc-web-config/)
+    - [NWebSec ASP.NET MVC Security Through HTTP Headers](/nwebsec-asp-net-mvc-security-through-http-headers/)
+    - [Content Security Policy (CSP) for ASP.NET MVC](/content-security-policy-for-asp-net-mvc/)
 - Search Engine Optimization (SEO)
-    - [Canonical URL's for ASP.NET MVC](http://rehansaeed.com/canonical-urls-for-asp-net-mvc/)
-    - [Dynamically Generating Robots.txt Using ASP.NET MVC](http://rehansaeed.com/dynamically-generating-robots-txt-using-asp-net-mvc)
-- [Internet Favicon Madness (Updated)](http://rehansaeed.com/internet-favicon-madness/)
-- [Building RSS/Atom Feeds for ASP.NET MVC](http://rehansaeed.com/building-rssatom-feeds-for-asp-net-mvc/)
+    - [Canonical URL's for ASP.NET MVC](/canonical-urls-for-asp-net-mvc/)
+    - [Dynamically Generating Robots.txt Using ASP.NET MVC](/dynamically-generating-robots-txt-using-asp-net-mvc)
+- [Internet Favicon Madness (Updated)](/internet-favicon-madness/)
+- [Building RSS/Atom Feeds for ASP.NET MVC](/building-rssatom-feeds-for-asp-net-mvc/)
 
 A `robots.txt` file is a simple text file you can place at the root of your site at `http://example.com/robots.txt` to tell search engine robots (also known as web crawlers) how to index your site. The robots know to look for this file at the root of every site before they start indexing the site. If you do not have this file in your site, you will be getting a lot of 404 Not Found errors in your logs.
 

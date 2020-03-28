@@ -21,16 +21,16 @@ tags:
   - "Web.config"
 ---
 
-- [ASP.NET Core Boilerplate](http://rehansaeed.com/asp-net-mvc-boilerplate/)
+- [ASP.NET Core Boilerplate](/asp-net-mvc-boilerplate/)
 - Security
-    - [Securing the ASP.NET MVC Web.config (Updated)](http://rehansaeed.com/securing-the-aspnet-mvc-web-config/)
-    - [NWebSec ASP.NET MVC Security Through HTTP Headers](http://rehansaeed.com/nwebsec-asp-net-mvc-security-through-http-headers/)
-    - [Content Security Policy (CSP) for ASP.NET MVC](http://rehansaeed.com/content-security-policy-for-asp-net-mvc/)
+    - [Securing the ASP.NET MVC Web.config (Updated)](/securing-the-aspnet-mvc-web-config/)
+    - [NWebSec ASP.NET MVC Security Through HTTP Headers](/nwebsec-asp-net-mvc-security-through-http-headers/)
+    - [Content Security Policy (CSP) for ASP.NET MVC](/content-security-policy-for-asp-net-mvc/)
 - Search Engine Optimization (SEO)
-    - [Canonical URL's for ASP.NET MVC](http://rehansaeed.com/canonical-urls-for-asp-net-mvc/)
-    - [Dynamically Generating Robots.txt Using ASP.NET MVC](http://rehansaeed.com/dynamically-generating-robots-txt-using-asp-net-mvc)
-- [Internet Favicon Madness (Updated)](http://rehansaeed.com/internet-favicon-madness/)
-- [Building RSS/Atom Feeds for ASP.NET MVC](http://rehansaeed.com/building-rssatom-feeds-for-asp-net-mvc/)
+    - [Canonical URL's for ASP.NET MVC](/canonical-urls-for-asp-net-mvc/)
+    - [Dynamically Generating Robots.txt Using ASP.NET MVC](/dynamically-generating-robots-txt-using-asp-net-mvc)
+- [Internet Favicon Madness (Updated)](/internet-favicon-madness/)
+- [Building RSS/Atom Feeds for ASP.NET MVC](/building-rssatom-feeds-for-asp-net-mvc/)
 
 Security is a big subject in the web world. Largely because it's super easy to leave your site insecure and open to attack. The default ASP.NET MVC project template is pretty weak when it comes to security. It trades security for simplicity. The [ASP.NET Core Boilerplate](https://github.com/Dotnet-Boxed/Templates) project template, shifts that balance more in favour of security while still trying to be as simple as possible. Several insecure settings in the Web.config file have been changed and made secure by default.
 

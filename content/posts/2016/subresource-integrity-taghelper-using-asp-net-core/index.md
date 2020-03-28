@@ -21,8 +21,8 @@ tags:
   - "Subresource Integrity (SRI)"
 ---
 
-- [Subresource Integrity TagHelper Using ASP.NET Core - Part 1](http://rehansaeed.com/subresource-integrity-taghelper-using-asp-net-core/)
-- [Subresource Integrity TagHelper Using ASP.NET Core - Part 2](http://rehansaeed.com/subresource-integrity-taghelper-using-asp-net-core-part-2/)
+- [Subresource Integrity TagHelper Using ASP.NET Core - Part 1](/subresource-integrity-taghelper-using-asp-net-core/)
+- [Subresource Integrity TagHelper Using ASP.NET Core - Part 2](/subresource-integrity-taghelper-using-asp-net-core-part-2/)
 
 # What is Subresource Integrity (SRI)
 

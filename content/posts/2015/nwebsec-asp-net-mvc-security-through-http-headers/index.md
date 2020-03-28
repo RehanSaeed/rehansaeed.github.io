@@ -21,16 +21,16 @@ tags:
   - "HTTP Headers"
 ---
 
-- [ASP.NET Core Boilerplate](http://rehansaeed.com/asp-net-mvc-boilerplate/)
+- [ASP.NET Core Boilerplate](/asp-net-mvc-boilerplate/)
 - Security
-    - [Securing the ASP.NET MVC Web.config (Updated)](http://rehansaeed.com/securing-the-aspnet-mvc-web-config/)
-    - [NWebSec ASP.NET MVC Security Through HTTP Headers](http://rehansaeed.com/nwebsec-asp-net-mvc-security-through-http-headers/)
-    - [Content Security Policy (CSP) for ASP.NET MVC](http://rehansaeed.com/content-security-policy-for-asp-net-mvc/)
+    - [Securing the ASP.NET MVC Web.config (Updated)](/securing-the-aspnet-mvc-web-config/)
+    - [NWebSec ASP.NET MVC Security Through HTTP Headers](/nwebsec-asp-net-mvc-security-through-http-headers/)
+    - [Content Security Policy (CSP) for ASP.NET MVC](/content-security-policy-for-asp-net-mvc/)
 - Search Engine Optimization (SEO)
-    - [Canonical URL's for ASP.NET MVC](http://rehansaeed.com/canonical-urls-for-asp-net-mvc/)
-    - [Dynamically Generating Robots.txt Using ASP.NET MVC](http://rehansaeed.com/dynamically-generating-robots-txt-using-asp-net-mvc)
-- [Internet Favicon Madness (Updated)](http://rehansaeed.com/internet-favicon-madness/)
-- [Building RSS/Atom Feeds for ASP.NET MVC](http://rehansaeed.com/building-rssatom-feeds-for-asp-net-mvc/)
+    - [Canonical URL's for ASP.NET MVC](/canonical-urls-for-asp-net-mvc/)
+    - [Dynamically Generating Robots.txt Using ASP.NET MVC](/dynamically-generating-robots-txt-using-asp-net-mvc)
+- [Internet Favicon Madness (Updated)](/internet-favicon-madness/)
+- [Building RSS/Atom Feeds for ASP.NET MVC](/building-rssatom-feeds-for-asp-net-mvc/)
 
 This series of blog posts goes through the additions made to the default ASP.NET MVC project template to build the [ASP.NET Core Boilerplate](https://github.com/Dotnet-Boxed/Templates) project template. You can create a new project using this template by installing the [Visual Studio extension](https://visualstudiogallery.msdn.microsoft.com/6cf50a48-fc1e-4eaf-9e82-0b2a6705ca7d) or visit the [GitHub](https://github.com/Dotnet-Boxed/Templates) site to view the source code.
 

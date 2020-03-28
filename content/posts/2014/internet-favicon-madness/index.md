@@ -21,16 +21,16 @@ tags:
   - "Windows 8.1"
 ---
 
-- [ASP.NET Core Boilerplate](http://rehansaeed.com/asp-net-mvc-boilerplate/)
+- [ASP.NET Core Boilerplate](/asp-net-mvc-boilerplate/)
 - Security
-    - [Securing the ASP.NET MVC Web.config (Updated)](http://rehansaeed.com/securing-the-aspnet-mvc-web-config/)
-    - [NWebSec ASP.NET MVC Security Through HTTP Headers](http://rehansaeed.com/nwebsec-asp-net-mvc-security-through-http-headers/)
-    - [Content Security Policy (CSP) for ASP.NET MVC](http://rehansaeed.com/content-security-policy-for-asp-net-mvc/)
+    - [Securing the ASP.NET MVC Web.config (Updated)](/securing-the-aspnet-mvc-web-config/)
+    - [NWebSec ASP.NET MVC Security Through HTTP Headers](/nwebsec-asp-net-mvc-security-through-http-headers/)
+    - [Content Security Policy (CSP) for ASP.NET MVC](/content-security-policy-for-asp-net-mvc/)
 - Search Engine Optimization (SEO)
-    - [Canonical URL's for ASP.NET MVC](http://rehansaeed.com/canonical-urls-for-asp-net-mvc/)
-    - [Dynamically Generating Robots.txt Using ASP.NET MVC](http://rehansaeed.com/dynamically-generating-robots-txt-using-asp-net-mvc)
-- [Internet Favicon Madness (Updated)](http://rehansaeed.com/internet-favicon-madness/)
-- [Building RSS/Atom Feeds for ASP.NET MVC](http://rehansaeed.com/building-rssatom-feeds-for-asp-net-mvc/)
+    - [Canonical URL's for ASP.NET MVC](/canonical-urls-for-asp-net-mvc/)
+    - [Dynamically Generating Robots.txt Using ASP.NET MVC](/dynamically-generating-robots-txt-using-asp-net-mvc)
+- [Internet Favicon Madness (Updated)](/internet-favicon-madness/)
+- [Building RSS/Atom Feeds for ASP.NET MVC](/building-rssatom-feeds-for-asp-net-mvc/)
 
 These days there is a ridiculous range of devices that can access your website from phone and desktop browsers to phone apps, operating systems and search engine bots. Most of them will require some kind of icon or image to display for your website. Some of them go even further and even allow you to specify splash screens for when your page is loading or an RSS feed URL for the latest updates from your site.
 
@@ -203,11 +203,11 @@ Now if Microsoft had taken Apple's approach it would be cluttering up the head s
       <TileColor>#fff200</TileColor>
     </tile>
     <notification>
-      <polling-uri src="http://notifications.buildmypinnedsite.com/?feed=http://rehansaeed.com/feed/&amp;id=1"/>
-      <polling-uri2 src="http://notifications.buildmypinnedsite.com/?feed=http://rehansaeed.com/feed/&amp;id=2"/>
-      <polling-uri3 src="http://notifications.buildmypinnedsite.com/?feed=http://rehansaeed.com/feed/&amp;id=3"/>
-      <polling-uri4 src="http://notifications.buildmypinnedsite.com/?feed=http://rehansaeed.com/feed/&amp;id=4"/>
-      <polling-uri5 src="http://notifications.buildmypinnedsite.com/?feed=http://rehansaeed.com/feed/&amp;id=5"/>
+      <polling-uri src="http://notifications.buildmypinnedsite.com/?feed=https://rehansaeed.com/feed/&amp;id=1"/>
+      <polling-uri2 src="http://notifications.buildmypinnedsite.com/?feed=https://rehansaeed.com/feed/&amp;id=2"/>
+      <polling-uri3 src="http://notifications.buildmypinnedsite.com/?feed=https://rehansaeed.com/feed/&amp;id=3"/>
+      <polling-uri4 src="http://notifications.buildmypinnedsite.com/?feed=https://rehansaeed.com/feed/&amp;id=4"/>
+      <polling-uri5 src="http://notifications.buildmypinnedsite.com/?feed=https://rehansaeed.com/feed/&amp;id=5"/>
       <frequency>30</frequency>
       <cycle>1</cycle>
     </notification>

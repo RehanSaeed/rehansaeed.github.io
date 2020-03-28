@@ -21,16 +21,16 @@ tags:
   - "NWebSec"
 ---
 
-- [ASP.NET Core Boilerplate](http://rehansaeed.com/asp-net-mvc-boilerplate/)
+- [ASP.NET Core Boilerplate](/asp-net-mvc-boilerplate/)
 - Security
-    - [Securing the ASP.NET MVC Web.config (Updated)](http://rehansaeed.com/securing-the-aspnet-mvc-web-config/)
-    - [NWebSec ASP.NET MVC Security Through HTTP Headers](http://rehansaeed.com/nwebsec-asp-net-mvc-security-through-http-headers/)
-    - [Content Security Policy (CSP) for ASP.NET MVC](http://rehansaeed.com/content-security-policy-for-asp-net-mvc/)
+    - [Securing the ASP.NET MVC Web.config (Updated)](/securing-the-aspnet-mvc-web-config/)
+    - [NWebSec ASP.NET MVC Security Through HTTP Headers](/nwebsec-asp-net-mvc-security-through-http-headers/)
+    - [Content Security Policy (CSP) for ASP.NET MVC](/content-security-policy-for-asp-net-mvc/)
 - Search Engine Optimization (SEO)
-    - [Canonical URL's for ASP.NET MVC](http://rehansaeed.com/canonical-urls-for-asp-net-mvc/)
-    - [Dynamically Generating Robots.txt Using ASP.NET MVC](http://rehansaeed.com/dynamically-generating-robots-txt-using-asp-net-mvc)
-- [Internet Favicon Madness (Updated)](http://rehansaeed.com/internet-favicon-madness/)
-- [Building RSS/Atom Feeds for ASP.NET MVC](http://rehansaeed.com/building-rssatom-feeds-for-asp-net-mvc/)
+    - [Canonical URL's for ASP.NET MVC](/canonical-urls-for-asp-net-mvc/)
+    - [Dynamically Generating Robots.txt Using ASP.NET MVC](/dynamically-generating-robots-txt-using-asp-net-mvc)
+- [Internet Favicon Madness (Updated)](/internet-favicon-madness/)
+- [Building RSS/Atom Feeds for ASP.NET MVC](/building-rssatom-feeds-for-asp-net-mvc/)
 
 This series of blog posts goes through the additions made to the default ASP.NET MVC template to build the ASP.NET Core Boilerplate project template. You can create a new project using this template by installing the Visual Studio template extension or visit the GitHub site to view the source code.
 
@@ -169,7 +169,7 @@ To combat this problem the W3C created the `Content-Security-Policy-Report-Only`
 
 So you're sold on CSP and want to know how you can implement this great new HTTP header on your ASP.NET MVC website. Well, to get started all you need to do is install the [NWebsec.Mvc](https://www.nuget.org/packages/NWebsec.Mvc/) NuGet package.
 
-[NWebsec](https://github.com/NWebsec/NWebsec) is a great collection of MVC filters which can be applied globally to all requests or to individual controllers or actions. NWebSec contains a series of MVC filters to support CSP but includes several other filters which I've already blogged about [here](http://rehansaeed.com/nwebsec-asp-net-mvc-security-through-http-headers/).
+[NWebsec](https://github.com/NWebsec/NWebsec) is a great collection of MVC filters which can be applied globally to all requests or to individual controllers or actions. NWebSec contains a series of MVC filters to support CSP but includes several other filters which I've already blogged about [here](/nwebsec-asp-net-mvc-security-through-http-headers/).
 
 Here is the CSP policy I have applied to the [ASP.NET Core Boilerplate](https://visualstudiogallery.msdn.microsoft.com/6cf50a48-fc1e-4eaf-9e82-0b2a6705ca7d) site and the code which is used to create it. This policy is applied to all responses from the site.
 

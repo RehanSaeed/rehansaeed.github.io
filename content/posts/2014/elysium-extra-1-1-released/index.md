@@ -23,7 +23,7 @@ tags:
 
 Version 1.1.4 of Elysium Extra has just been released! If you've never heard of it, Elysium Extra is a Windows Presentation Foundation (WPF) SDK which provides a wide variety of controls and styles. Here are the relevant links to get started with the project:
 
-- [Review](http://rehansaeed.com/wpf-metro-part4-elysium-extra/) - A comprehensive review of the controls and styles available.
+- [Review](/wpf-metro-part4-elysium-extra/) - A comprehensive review of the controls and styles available.
 - [GitHub](https://github.com/RehanSaeed/Elysium-Extra) - The home of the Elysium Extra project. Hosted on GitHub. Submit issues, ask questions and view source code.
 - [Getting Started](https://github.com/RehanSaeed/Elysium-Extra) - A quick start guide to using Elysium Extra in your WPF project.
 - [NuGet](https://www.nuget.org/packages/Elysium.Extra) - The Elysium Extra NuGet package link.

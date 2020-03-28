@@ -18,14 +18,14 @@ tags:
   - "Rx"
 ---
 
-- [Reactive Extensions (Rx) - Part 1 - Replacing C# Events](http://rehansaeed.com/reactive-extensions-part1-replacing-events/)
-- [Reactive Extensions (Rx) - Part 2 - Wrapping C# Events](http://rehansaeed.com/reactive-extensions-part2-wrapping-events/)
-- [Reactive Extensions (Rx) - Part 3 - Naming Conventions](http://rehansaeed.com/reactive-extensions-part3-naming-conventions/)
-- [Reactive Extensions (Rx) - Part 4 - Replacing Timers](http://rehansaeed.com/reactive-extensions-part4-replacing-timers/)
-- [Reactive Extensions (Rx) - Part 5 - Awaiting Observables](http://rehansaeed.com/reactive-extensions-part4-awaiting-observables/)
-- [Reactive Extensions (Rx) - Part 6 - Task ToObservable](http://rehansaeed.com/reactive-extensions-part6-task-toobservable/)
-- [Reactive Extensions (Rx) - Part 7 - Sample Events](http://rehansaeed.com/reactive-extensions-part7-sample-events/)
-- [Reactive Extensions (Rx) - Part 8 - Timeouts](http://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/)
+- [Reactive Extensions (Rx) - Part 1 - Replacing C# Events](/reactive-extensions-part1-replacing-events/)
+- [Reactive Extensions (Rx) - Part 2 - Wrapping C# Events](/reactive-extensions-part2-wrapping-events/)
+- [Reactive Extensions (Rx) - Part 3 - Naming Conventions](/reactive-extensions-part3-naming-conventions/)
+- [Reactive Extensions (Rx) - Part 4 - Replacing Timers](/reactive-extensions-part4-replacing-timers/)
+- [Reactive Extensions (Rx) - Part 5 - Awaiting Observables](/reactive-extensions-part4-awaiting-observables/)
+- [Reactive Extensions (Rx) - Part 6 - Task ToObservable](/reactive-extensions-part6-task-toobservable/)
+- [Reactive Extensions (Rx) - Part 7 - Sample Events](/reactive-extensions-part7-sample-events/)
+- [Reactive Extensions (Rx) - Part 8 - Timeouts](/reactive-extensions-rx-part-8-timeouts/)
 
 Sometimes it is not possible to replace a C# event with a Reactive Extensions (Rx) event entirely. This is usually because we are implementing an interface which has a C# event and we don't own the interface.
 

@@ -18,7 +18,7 @@ module.exports = {
 
   templates: {
     Post: "/:permalink",
-    Tag: "/tag/:permalink",
+    Tag: "/tag/:title",
     Portfolio: "/:permalink"
   },
 

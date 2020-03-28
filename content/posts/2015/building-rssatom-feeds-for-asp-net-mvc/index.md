@@ -18,16 +18,16 @@ tags:
   - "SyndicationFeed"
 ---
 
-- [ASP.NET Core Boilerplate](http://rehansaeed.com/asp-net-mvc-boilerplate/)
+- [ASP.NET Core Boilerplate](/asp-net-mvc-boilerplate/)
 - Security
-    - [Securing the ASP.NET MVC Web.config (Updated)](http://rehansaeed.com/securing-the-aspnet-mvc-web-config/)
-    - [NWebSec ASP.NET MVC Security Through HTTP Headers](http://rehansaeed.com/nwebsec-asp-net-mvc-security-through-http-headers/)
-    - [Content Security Policy (CSP) for ASP.NET MVC](http://rehansaeed.com/content-security-policy-for-asp-net-mvc/)
+    - [Securing the ASP.NET MVC Web.config (Updated)](/securing-the-aspnet-mvc-web-config/)
+    - [NWebSec ASP.NET MVC Security Through HTTP Headers](/nwebsec-asp-net-mvc-security-through-http-headers/)
+    - [Content Security Policy (CSP) for ASP.NET MVC](/content-security-policy-for-asp-net-mvc/)
 - Search Engine Optimization (SEO)
-    - [Canonical URL's for ASP.NET MVC](http://rehansaeed.com/canonical-urls-for-asp-net-mvc/)
-    - [Dynamically Generating Robots.txt Using ASP.NET MVC](http://rehansaeed.com/dynamically-generating-robots-txt-using-asp-net-mvc)
-- [Internet Favicon Madness (Updated)](http://rehansaeed.com/internet-favicon-madness/)
-- [Building RSS/Atom Feeds for ASP.NET MVC](http://rehansaeed.com/building-rssatom-feeds-for-asp-net-mvc/)
+    - [Canonical URL's for ASP.NET MVC](/canonical-urls-for-asp-net-mvc/)
+    - [Dynamically Generating Robots.txt Using ASP.NET MVC](/dynamically-generating-robots-txt-using-asp-net-mvc)
+- [Internet Favicon Madness (Updated)](/internet-favicon-madness/)
+- [Building RSS/Atom Feeds for ASP.NET MVC](/building-rssatom-feeds-for-asp-net-mvc/)
 
 # What is an RSS/Atom Feed
 
@@ -63,12 +63,12 @@ So what does an Atom feed look like, well you can look at the official specifica
   <logo>http://example.com/icons/atom-logo-96x48.png</logo>
   <author>
     <name>Rehan Saeed</name>
-    <uri>http://rehansaeed.com</uri>
+    <uri>https://rehansaeed.com</uri>
     <email>example@email.com</email>
   </author>
   <contributor>
     <name>Rehan Saeed</name>
-    <uri>http://rehansaeed.com</uri>
+    <uri>https://rehansaeed.com</uri>
     <email>example@email.com</email>
   </contributor>
   <link rel="self" type="application/atom+xml" href="http://example.com/feed/" />
@@ -83,12 +83,12 @@ So what does an Atom feed look like, well you can look at the official specifica
     <updated>2015-06-24T15:54:21+01:00</updated>
     <author>
       <name>Rehan Saeed</name>
-      <uri>http://rehansaeed.com</uri>
+      <uri>https://rehansaeed.com</uri>
       <email>example@email.com</email>
     </author>
     <contributor>
       <name>Rehan Saeed</name>
-      <uri>http://rehansaeed.com</uri>
+      <uri>https://rehansaeed.com</uri>
       <email>example@email.com</email>
     </contributor>
     <link rel="alternate" type="text/html" href="http://example.com/item1/" />
@@ -105,12 +105,12 @@ So what does an Atom feed look like, well you can look at the official specifica
     <updated>2015-06-24T15:54:21+01:00</updated>
     <author>
       <name>Rehan Saeed</name>
-      <uri>http://rehansaeed.com</uri>
+      <uri>https://rehansaeed.com</uri>
       <email>example@email.com</email>
     </author>
     <contributor>
       <name>Rehan Saeed</name>
-      <uri>http://rehansaeed.com</uri>
+      <uri>https://rehansaeed.com</uri>
       <email>example@email.com</email>
     </contributor>
     <link rel="alternate" type="text/html" href="http://example.com/item2/" />
@@ -214,7 +214,7 @@ feed.Authors.Add(
         // name (Required) - conveys a human-readable name for the person.
         Name = "Rehan Saeed",
         // uri (Optional) - contains a home page for the person.
-        Uri = "http://rehansaeed.com",
+        Uri = "https://rehansaeed.com",
         // email (Optional) - contains an email address for the person.
         Email = "example@email.com"
     });
@@ -229,7 +229,7 @@ feed.Contributors.Add(
     new SyndicationPerson()
     {
         Name = "Rehan Saeed",
-        Uri = "http://rehansaeed.com",
+        Uri = "https://rehansaeed.com",
         Email = "example@email.com"
     });
 

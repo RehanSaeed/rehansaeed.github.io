@@ -21,10 +21,10 @@ tags:
   - "XAML"
 ---
 
-- [WPF Metro Part 1 - Modern UI for WPF](http://rehansaeed.com/wpf-metro-part1-modern-ui-for-wpf/)
-- [WPF Metro Part 2 - MahApps Metro](http://rehansaeed.com/wpf-metro-part2-mahapps-metro/)
-- [WPF Metro Part 3 - Elysium](http://rehansaeed.com/wpf-metro-part3-elysium/)
-- [WPF Metro Part 4 - Elysium Extra](http://rehansaeed.com/wpf-metro-part4-elysium-extra/)
+- [WPF Metro Part 1 - Modern UI for WPF](/wpf-metro-part1-modern-ui-for-wpf/)
+- [WPF Metro Part 2 - MahApps Metro](/wpf-metro-part2-mahapps-metro/)
+- [WPF Metro Part 3 - Elysium](/wpf-metro-part3-elysium/)
+- [WPF Metro Part 4 - Elysium Extra](/wpf-metro-part4-elysium-extra/)
 
 In these series of posts I'm going to do a quick review of a few different open source WPF Metro (Or Modern if you prefer) style SDK's. Each of them provides styles and new controls to build your WPF application from scratch. Here are the home pages for the open source projects in question where you can download the source code and the binaries to play with them yourself:
 

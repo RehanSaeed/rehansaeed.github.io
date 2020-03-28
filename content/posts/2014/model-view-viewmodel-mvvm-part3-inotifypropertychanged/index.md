@@ -22,12 +22,12 @@ tags:
   - "Model-View-ViewModel (MVVM)"
 ---
 
-- [Model-View-ViewModel (MVVM) - Part 1 - Overview](http://rehansaeed.com/model-view-viewmodel-mvvm-part1-overview/)
-- [Model-View-ViewModel (MVVM) - Part 2 - IDisposable](http://rehansaeed.com/model-view-viewmodel-mvvm-part2-idisposable/)
-- [Model-View-ViewModel (MVVM) - Part 3 - INotifyPropertyChanged](http://rehansaeed.com/model-view-viewmodel-mvvm-part3-inotifypropertychanged/)
-- [Model-View-ViewModel (MVVM) - Part 4 - INotifyDataErrorInfo](http://rehansaeed.com/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/)
+- [Model-View-ViewModel (MVVM) - Part 1 - Overview](/model-view-viewmodel-mvvm-part1-overview/)
+- [Model-View-ViewModel (MVVM) - Part 2 - IDisposable](/model-view-viewmodel-mvvm-part2-idisposable/)
+- [Model-View-ViewModel (MVVM) - Part 3 - INotifyPropertyChanged](/model-view-viewmodel-mvvm-part3-inotifypropertychanged/)
+- [Model-View-ViewModel (MVVM) - Part 4 - INotifyDataErrorInfo](/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/)
 
-I know there have been lots of Model-View-ViewModel (MVVM) articles talking about [INotifyPropertyChanged](http://msdn.microsoft.com/en-GB/library/system.componentmodel.inotifypropertychanged.aspx). I've read **lots** of them and this is the aggregation of all the knowledge I've learned plus some cool new stuff (I've not seen it done anywhere else but I could be wrong) which I've also covered in my [Reactive Extensions (Rx) posts](http://rehansaeed.com/reactive-extensions-part1-replacing-events/).
+I know there have been lots of Model-View-ViewModel (MVVM) articles talking about [INotifyPropertyChanged](http://msdn.microsoft.com/en-GB/library/system.componentmodel.inotifypropertychanged.aspx). I've read **lots** of them and this is the aggregation of all the knowledge I've learned plus some cool new stuff (I've not seen it done anywhere else but I could be wrong) which I've also covered in my [Reactive Extensions (Rx) posts](/reactive-extensions-part1-replacing-events/).
 
 So what are the main aims of a base class implementing [INotifyPropertyChanged](http://msdn.microsoft.com/en-GB/library/system.componentmodel.inotifypropertychanged.aspx)? Well, I think there are a few:
 
@@ -389,7 +389,7 @@ The first delegate determines if the cat count has actually changed. Only if it 
 
 # Using Reactive Extensions (Rx) to Replace the PropertyChanged Event
 
-C# events are old school. Reactive Extensions (Rx) provides a cleaner and far more powerful drop-in replacement for C# events. I'm not going to go over the advantages of Reactive Extensions here but you can take a look at a series of blog posts I've done in the [past](http://rehansaeed.com/reactive-extensions-part1-replacing-events/).
+C# events are old school. Reactive Extensions (Rx) provides a cleaner and far more powerful drop-in replacement for C# events. I'm not going to go over the advantages of Reactive Extensions here but you can take a look at a series of blog posts I've done in the [past](/reactive-extensions-part1-replacing-events/).
 
 We can hide the `PropertyChanged` C# event by explicitly implementing the interface (Click [here](http://stackoverflow.com/questions/143405/c-sharp-interfaces-implicit-implementation-versus-explicit-implementation) for details on implicit versus explicit implementations of interfaces).
 

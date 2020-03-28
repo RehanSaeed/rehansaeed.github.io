@@ -21,8 +21,8 @@ tags:
   - "Jon Galloway"
 ---
 
-- [Subresource Integrity TagHelper Using ASP.NET Core - Part 1](http://rehansaeed.com/subresource-integrity-taghelper-using-asp-net-core/)
-- [Subresource Integrity TagHelper Using ASP.NET Core - Part 2](http://rehansaeed.com/subresource-integrity-taghelper-using-asp-net-core-part-2/)
+- [Subresource Integrity TagHelper Using ASP.NET Core - Part 1](/subresource-integrity-taghelper-using-asp-net-core/)
+- [Subresource Integrity TagHelper Using ASP.NET Core - Part 2](/subresource-integrity-taghelper-using-asp-net-core-part-2/)
 
 Last week I wrote part one of a blog post discussing a Subresource Integrity (SRI) tag helper I wrote for ASP.NET Core. It turns out the post was featured on the ASP.NET Community Standup and discussed at length by [Scott Hanselman](http://twitter.com/shanselman), [Damian Edwards](http://twitter.com/damianedwards) and [Jon Galloway](http://twitter.com/jongalloway). Here is the discussion:
 
@@ -77,7 +77,7 @@ So what happens when a CDN script is maliciously edited or (much more likely) yo
 </script>
 ```
 
-I should also mention that although the fallback tag helper is cool and very simple to use, it adds inline script which is not compatible with the [Content Security Policy (CSP)](http://rehansaeed.com/content-security-policy-for-asp-net-mvc/) HTTP header. If you care about security and you probably do if you are reading this, that means using the fallback tag helper is not possible. I myself prefer to move all my fallback checks to a separate JavaScript file.
+I should also mention that although the fallback tag helper is cool and very simple to use, it adds inline script which is not compatible with the [Content Security Policy (CSP)](/content-security-policy-for-asp-net-mvc/) HTTP header. If you care about security and you probably do if you are reading this, that means using the fallback tag helper is not possible. I myself prefer to move all my fallback checks to a separate JavaScript file.
 
 # sritest.io
 

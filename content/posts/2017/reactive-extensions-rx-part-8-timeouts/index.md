@@ -19,16 +19,16 @@ tags:
   - "TPL"
 ---
 
-- [Reactive Extensions (Rx) - Part 1 - Replacing C# Events](http://rehansaeed.com/reactive-extensions-part1-replacing-events/)
-- [Reactive Extensions (Rx) - Part 2 - Wrapping C# Events](http://rehansaeed.com/reactive-extensions-part2-wrapping-events/)
-- [Reactive Extensions (Rx) - Part 3 - Naming Conventions](http://rehansaeed.com/reactive-extensions-part3-naming-conventions/)
-- [Reactive Extensions (Rx) - Part 4 - Replacing Timers](http://rehansaeed.com/reactive-extensions-part4-replacing-timers/)
-- [Reactive Extensions (Rx) - Part 5 - Awaiting Observables](http://rehansaeed.com/reactive-extensions-part4-awaiting-observables/)
-- [Reactive Extensions (Rx) - Part 6 - Task ToObservable](http://rehansaeed.com/reactive-extensions-part6-task-toobservable/)
-- [Reactive Extensions (Rx) - Part 7 - Sample Events](http://rehansaeed.com/reactive-extensions-part7-sample-events/)
-- [Reactive Extensions (Rx) - Part 8 - Timeouts](http://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/)
+- [Reactive Extensions (Rx) - Part 1 - Replacing C# Events](/reactive-extensions-part1-replacing-events/)
+- [Reactive Extensions (Rx) - Part 2 - Wrapping C# Events](/reactive-extensions-part2-wrapping-events/)
+- [Reactive Extensions (Rx) - Part 3 - Naming Conventions](/reactive-extensions-part3-naming-conventions/)
+- [Reactive Extensions (Rx) - Part 4 - Replacing Timers](/reactive-extensions-part4-replacing-timers/)
+- [Reactive Extensions (Rx) - Part 5 - Awaiting Observables](/reactive-extensions-part4-awaiting-observables/)
+- [Reactive Extensions (Rx) - Part 6 - Task ToObservable](/reactive-extensions-part6-task-toobservable/)
+- [Reactive Extensions (Rx) - Part 7 - Sample Events](/reactive-extensions-part7-sample-events/)
+- [Reactive Extensions (Rx) - Part 8 - Timeouts](/reactive-extensions-rx-part-8-timeouts/)
 
-In [part six](http://rehansaeed.com/reactive-extensions-part6-task-toobservable/) of this series of blog posts I talked about using Reactive Extensions for adding timeout logic to asynchronous tasks. Something like this:
+In [part six](/reactive-extensions-part6-task-toobservable/) of this series of blog posts I talked about using Reactive Extensions for adding timeout logic to asynchronous tasks. Something like this:
 
 ```cs
 public async Task<string> WaitForFirstResultWithTimeOut()

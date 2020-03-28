@@ -15,7 +15,7 @@ tags:
   - "Kubernetes"
 ---
 
-Some time ago, I blogged about how you can get some [extra security when running Docker containers](https://rehansaeed.com/docker-read-file-systems/) by making their file systems read-only. This ensures that should an attacker get into the container somehow, they won't be able to change any files. This only works with certain containers that support it however and unfortunately, at that time ASP.NET Core did not support running in a Docker container with a read-only file system. Happily, this is now fixed!
+Some time ago, I blogged about how you can get some [extra security when running Docker containers](/docker-read-file-systems/) by making their file systems read-only. This ensures that should an attacker get into the container somehow, they won't be able to change any files. This only works with certain containers that support it however and unfortunately, at that time ASP.NET Core did not support running in a Docker container with a read-only file system. Happily, this is now fixed!
 
 Lets see an example. I created a brand new hello world ASP.NET Core project and added this `Dockerfile`:
 

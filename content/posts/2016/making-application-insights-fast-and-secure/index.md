@@ -60,7 +60,7 @@ This script is responsible for:
 For most websites, this is fine and you can stop here. Here is what can be improved for the rest:
 
 1. The above adds 1KB to every HTML page. Moving this script into a separate file would mean that this script could be cached in the browser the first time it was downloaded. A separate file could also be distributed to a CDN and globally distributed very quickly.
-2. If you are using a [Content Security Policy (CSP)](http://rehansaeed.com/content-security-policy-for-asp-net-mvc/) to secure your site using inline scripts in your site is a big no no. You could use a nonce (A nonce means you can't cache the page as each page becomes unique) or even better a hash of the script contents but browser support for CSP 2.0 is not great. Using an external script would be the simplest option.
+2. If you are using a [Content Security Policy (CSP)](/content-security-policy-for-asp-net-mvc/) to secure your site using inline scripts in your site is a big no no. You could use a nonce (A nonce means you can't cache the page as each page becomes unique) or even better a hash of the script contents but browser support for CSP 2.0 is not great. Using an external script would be the simplest option.
 
 # Making It Slightly Faster and More Secure
 

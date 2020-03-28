@@ -57,7 +57,7 @@ Find out how various online services are changing.
 - [The GitHub Blog](https://github.com/blog) ([RSS](https://github.com/blog.atom)) - I use GitHub daily, contributing to open source myself or for looking at source code. Find out what they are doing to improve the site.
 - [Cloudflare Blog](https://blog.cloudflare.com/) ([RSS](http://blog.cloudflare.com/rss.xml)) - You should probably be using Cloudflare as your CDN for speed and cost savings, I use it for this site. They post product updates but also about major security vulnerabilities and hacking attempts.
 - [The NuGet Team Blog](http://blog.nuget.org/) ([RSS](http://blog.nuget.org/feeds/atom.xml)) - Find out how NuGet is changing, they don't post too often but useful when they do.
-- [Schema.org Blog](http://blog.schema.org/) ([RSS](http://blog.schema.org/feeds/posts/default)) - [Schema.org]("https://schema.org) defines a set of standard classes and their properties for objects and services in the real world. There are nearly 700 classes at the time of writing defined by schema.org. This machine readable format is a common standard used across the web for describing things. They produce blog posts when they add or change any schemas. I recently wrote about [Schema.NET](https://rehansaeed.com/structured-data-using-schema-net/) which turns the 700 schemas into .NET POCO classes.
+- [Schema.org Blog](http://blog.schema.org/) ([RSS](http://blog.schema.org/feeds/posts/default)) - [Schema.org]("https://schema.org) defines a set of standard classes and their properties for objects and services in the real world. There are nearly 700 classes at the time of writing defined by schema.org. This machine readable format is a common standard used across the web for describing things. They produce blog posts when they add or change any schemas. I recently wrote about [Schema.NET](/structured-data-using-schema-net/) which turns the 700 schemas into .NET POCO classes.
 
 # Software Development Individuals
 
@@ -99,7 +99,7 @@ These people don't really fit into any one category but are well worth reading:
 - [James Newton-King](http://james.newtonking.com:80/) ([RSS](http://feeds.newtonking.com/jamesnewtonking)) - The author of JSON.NET. Find out about any updates to this important library.
 - [Coding Horror](https://blog.codinghorror.com/) ([RSS](http://feeds.feedburner.com/codinghorror/)) - Founder of [StackOverflow.com](https://stackoverflow.com) and [Discourse.org](https://discourse.org).
 - [Nick Craver](https://nickcraver.com/blog) ([RSS](http://nickcraver.com/blog/feed.xml)) - Developer at StackOverflow. Blog posts are rare but very long and detailed when they come.
-- [Muhammad Rehan Saeed](https://rehansaeed.com) ([RSS](http://rehansaeed.com/feed/)) - I do a lot of ASP.NET blog posts but some more general .NET posts too.
+- [Muhammad Rehan Saeed](https://rehansaeed.com) ([RSS](https://rehansaeed.com/feed/)) - I do a lot of ASP.NET blog posts but some more general .NET posts too.
 - [Nate McMaster](http://www.natemcmaster.com/) ([RSS](http://www.natemcmaster.com/feed.xml)) - Microsoft developer posting about MSBuild.
 
 # Videos

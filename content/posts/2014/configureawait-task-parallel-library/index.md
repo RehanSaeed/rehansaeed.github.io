@@ -30,7 +30,7 @@ private async Task<IEnumerable<string>> GetBlogTitles()
     HttpClient httpClient = new HttpClient();
 
     // GetStringAsync = ThreadPool Thread
-    string rss = await httpClient.GetStringAsync("http://rehansaeed.com/feed/");
+    string rss = await httpClient.GetStringAsync("https://rehansaeed.com/feed/");
 
     // Current Thread = UI Thread
     List<string> blogTitles = XDocument.Parse(rss)
@@ -64,7 +64,7 @@ private async Task<IEnumerable<string>> GetBlogTitles()
     HttpClient httpClient = new HttpClient();
 
     // GetStringAsync = ThreadPool Thread
-    string rss = await httpClient.GetStringAsync("http://rehansaeed.com/feed/").ConfigureAwait(false);
+    string rss = await httpClient.GetStringAsync("https://rehansaeed.com/feed/").ConfigureAwait(false);
 
     // Current Thread = ThreadPool Thread
     List<string> blogTitles = XDocument.Parse(rss)

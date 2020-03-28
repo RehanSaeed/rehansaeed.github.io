@@ -18,7 +18,7 @@ tags:
   - "Visual Studio"
 ---
 
-I talked about using the [dotnet watch tool](https://rehansaeed.com/the-dotnet-watch-tool/) with Visual Studio some time ago. Since then, a lot changed with the Visual Studio tooling and .NET Core 2.0 which broke the use of dotnet watch in Visual Studio, hence the reason for writing this post.
+I talked about using the [dotnet watch tool](/the-dotnet-watch-tool/) with Visual Studio some time ago. Since then, a lot changed with the Visual Studio tooling and .NET Core 2.0 which broke the use of dotnet watch in Visual Studio, hence the reason for writing this post.
 
 The `dotnet watch` tool is a file watcher for dotnet that restarts the application when changes in the source code are detected. This is super useful when you just want to hack away at code and see the changes instantly when you refresh your browser. It increases productivity and reduces the magical inner-loop which reduces the time taken to write some code and then see it's effects. I also like using this tool because it opens a console window which lets you see all of your logs flashing by.
 

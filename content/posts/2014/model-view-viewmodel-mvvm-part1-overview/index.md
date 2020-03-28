@@ -22,10 +22,10 @@ tags:
   - "MVVM"
 ---
 
-- [Model-View-ViewModel (MVVM) - Part 1 - Overview](http://rehansaeed.com/model-view-viewmodel-mvvm-part1-overview/)
-- [Model-View-ViewModel (MVVM) - Part 2 - IDisposable](http://rehansaeed.com/model-view-viewmodel-mvvm-part2-idisposable/)
-- [Model-View-ViewModel (MVVM) - Part 3 - INotifyPropertyChanged](http://rehansaeed.com/model-view-viewmodel-mvvm-part3-inotifypropertychanged/)
-- [Model-View-ViewModel (MVVM) - Part 4 - INotifyDataErrorInfo](http://rehansaeed.com/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/)
+- [Model-View-ViewModel (MVVM) - Part 1 - Overview](/model-view-viewmodel-mvvm-part1-overview/)
+- [Model-View-ViewModel (MVVM) - Part 2 - IDisposable](/model-view-viewmodel-mvvm-part2-idisposable/)
+- [Model-View-ViewModel (MVVM) - Part 3 - INotifyPropertyChanged](/model-view-viewmodel-mvvm-part3-inotifypropertychanged/)
+- [Model-View-ViewModel (MVVM) - Part 4 - INotifyDataErrorInfo](/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/)
 
 I've been meaning for some time to do a series of posts about Model-View-ViewModel (MVVM) and its potential base classes. Then I read [Mike Taulty's post](http://mtaulty.com/CommunityServer/blogs/mike_taultys_blog/archive/2014/05/09/windows-phone-8-1-and-xaml-apps-making-it-easier-for-mvvm-developers.aspx) about why MVVM 'bits' not built in to .NET.
 

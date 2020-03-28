@@ -22,10 +22,10 @@ tags:
   - "Model-View-ViewModel (MVVM)"
 ---
 
-- [Model-View-ViewModel (MVVM) - Part 1 - Overview](http://rehansaeed.com/model-view-viewmodel-mvvm-part1-overview/)
-- [Model-View-ViewModel (MVVM) - Part 2 - IDisposable](http://rehansaeed.com/model-view-viewmodel-mvvm-part2-idisposable/)
-- [Model-View-ViewModel (MVVM) - Part 3 - INotifyPropertyChanged](http://rehansaeed.com/model-view-viewmodel-mvvm-part3-inotifypropertychanged/)
-- [Model-View-ViewModel (MVVM) - Part 4 - INotifyDataErrorInfo](http://rehansaeed.com/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/)
+- [Model-View-ViewModel (MVVM) - Part 1 - Overview](/model-view-viewmodel-mvvm-part1-overview/)
+- [Model-View-ViewModel (MVVM) - Part 2 - IDisposable](/model-view-viewmodel-mvvm-part2-idisposable/)
+- [Model-View-ViewModel (MVVM) - Part 3 - INotifyPropertyChanged](/model-view-viewmodel-mvvm-part3-inotifypropertychanged/)
+- [Model-View-ViewModel (MVVM) - Part 4 - INotifyDataErrorInfo](/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/)
 
 In this next part, I'm going to discuss validation of your view models using the [INotifyDataErrorInfo](http://msdn.microsoft.com/en-us/library/system.componentmodel.inotifydataerrorinfo%28v=vs.110%29.aspx) interface. Validation is an often ignored part of the Model-View-ViewModel (MVVM) story. If you need to create a form for your users to fill in (which is probably most applications, I would have thought), then you probably need to validate user input in some way and the [INotifyDataErrorInfo](http://msdn.microsoft.com/en-us/library/system.componentmodel.inotifydataerrorinfo%28v=vs.110%29.aspx) interface can get you there.
 
@@ -495,7 +495,7 @@ The `DelegateRule<T>` class shown above is a really easy way to provide nice, si
 
 # Using Reactive Extensions (Rx) to Replace the ErrorsChanged Event
 
-C# events are old school. Reactive Extensions (Rx) provides a cleaner and far more powerful drop-in replacement for C# events. I'm not going to go over the advantages of Reactive Extensions here but you can take a look at a series of blog posts I've done in the [past](http://rehansaeed.com/reactive-extensions-part1-replacing-events/).
+C# events are old school. Reactive Extensions (Rx) provides a cleaner and far more powerful drop-in replacement for C# events. I'm not going to go over the advantages of Reactive Extensions here but you can take a look at a series of blog posts I've done in the [past](/reactive-extensions-part1-replacing-events/).
 
 We can hide the `ErrorsChanged` C# event by explicitly implementing the interface (Click [here](http://stackoverflow.com/questions/143405/c-sharp-interfaces-implicit-implementation-versus-explicit-implementation) for details on implicit versus explicit implementations of interfaces).
 

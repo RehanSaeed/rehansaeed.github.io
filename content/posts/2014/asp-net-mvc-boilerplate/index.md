@@ -21,16 +21,16 @@ tags:
   - "GitHub"
 ---
 
-- [ASP.NET Core Boilerplate](http://rehansaeed.com/asp-net-mvc-boilerplate/)
+- [ASP.NET Core Boilerplate](/asp-net-mvc-boilerplate/)
 - Security
-    - [Securing the ASP.NET MVC Web.config (Updated)](http://rehansaeed.com/securing-the-aspnet-mvc-web-config/)
-    - [NWebSec ASP.NET MVC Security Through HTTP Headers](http://rehansaeed.com/nwebsec-asp-net-mvc-security-through-http-headers/)
-    - [Content Security Policy (CSP) for ASP.NET MVC](http://rehansaeed.com/content-security-policy-for-asp-net-mvc/)
+    - [Securing the ASP.NET MVC Web.config (Updated)](/securing-the-aspnet-mvc-web-config/)
+    - [NWebSec ASP.NET MVC Security Through HTTP Headers](/nwebsec-asp-net-mvc-security-through-http-headers/)
+    - [Content Security Policy (CSP) for ASP.NET MVC](/content-security-policy-for-asp-net-mvc/)
 - Search Engine Optimization (SEO)
-    - [Canonical URL's for ASP.NET MVC](http://rehansaeed.com/canonical-urls-for-asp-net-mvc/)
-    - [Dynamically Generating Robots.txt Using ASP.NET MVC](http://rehansaeed.com/dynamically-generating-robots-txt-using-asp-net-mvc)
-- [Internet Favicon Madness (Updated)](http://rehansaeed.com/internet-favicon-madness/)
-- [Building RSS/Atom Feeds for ASP.NET MVC](http://rehansaeed.com/building-rssatom-feeds-for-asp-net-mvc/)
+    - [Canonical URL's for ASP.NET MVC](/canonical-urls-for-asp-net-mvc/)
+    - [Dynamically Generating Robots.txt Using ASP.NET MVC](/dynamically-generating-robots-txt-using-asp-net-mvc)
+- [Internet Favicon Madness (Updated)](/internet-favicon-madness/)
+- [Building RSS/Atom Feeds for ASP.NET MVC](/building-rssatom-feeds-for-asp-net-mvc/)
 
 [ASP.NET Core Boilerplate](https://github.com/Dotnet-Boxed/Templates) is a professional ASP.NET MVC template for building secure, fast, robust and adaptable web applications or sites. It provides the minimum amount of code required on top of the default MVC template provided by Microsoft.
 
@@ -52,7 +52,7 @@ The main benefits of using this template are:
 
 # ASP.NET 4.6 MVC 5 and ASP.NET Core Support
 
-Two templates are provided. One for ASP.NET 4.6 MVC 5 and another ASP.NET Core template which is currently under development and is missing some features due to ASP.NET Core still being in Beta. For more information about what's new in the ASP.NET Core template, see [here](http://rehansaeed.com/whats-new-in-asp-net-5-mvc-6-boilerplate/).
+Two templates are provided. One for ASP.NET 4.6 MVC 5 and another ASP.NET Core template which is currently under development and is missing some features due to ASP.NET Core still being in Beta. For more information about what's new in the ASP.NET Core template, see [here](/whats-new-in-asp-net-5-mvc-6-boilerplate/).
 
 ### MVC 5 Technology Map
 

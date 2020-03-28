@@ -16,9 +16,9 @@ tags:
   - "Project Template"
 ---
 
-- [Part 1 - Custom Project Templates Using dotnet new](http://rehansaeed.com/custom-project-templates-using-dotnet-new/)
-- [Part 2 - dotnet new Feature Selection](http://rehansaeed.com/dotnet-new-feature-selection/)
-- [Part 3 - Unit Testing dotnet new Templates](https://rehansaeed.com/unit-testing-dotnet-new-templates/)
+- [Part 1 - Custom Project Templates Using dotnet new](/custom-project-templates-using-dotnet-new/)
+- [Part 2 - dotnet new Feature Selection](/dotnet-new-feature-selection/)
+- [Part 3 - Unit Testing dotnet new Templates](/unit-testing-dotnet-new-templates/)
 
 # Current dotnet new
 
