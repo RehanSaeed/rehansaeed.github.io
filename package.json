@@ -28,7 +28,7 @@
     "gh-pages": "^2.2.0",
     "gridsome": "^0.7.13",
     "gridsome-plugin-brotli": "^0.1.3",
-    "gridsome-plugin-flexsearch": "^0.1.15",
+    "gridsome-plugin-flexsearch": "^0.1.17",
     "gridsome-plugin-remark-prismjs-all": "^0.3.5",
     "gridsome-plugin-rss": "^1.2.0"
   },
