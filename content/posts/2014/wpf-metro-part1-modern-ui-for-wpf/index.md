@@ -3,7 +3,7 @@ title: "WPF Metro Part 1 - Modern UI for WPF"
 description: "Modern UI for WPF is an excellent Windows Presentation Foundation (WPF) SDK providing Metro styles for built in WPF controls and several custom controls."
 author: "Muhammad Rehan Saeed"
 permalink: "/wpf-metro-part1-modern-ui-for-wpf/"
-cover_image: "https://www.youtube.com/watch?v=Bk7mlEQI2rk"
+# cover_image: "https://www.youtube.com/watch?v=Bk7mlEQI2rk"
 date: "2014-02-19"
 published: true
 categories:
