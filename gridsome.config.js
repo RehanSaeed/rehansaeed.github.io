@@ -196,7 +196,8 @@ module.exports = {
             //   global: false
             // }
           }
-        ]
+        ],
+        'remark-toc'
       ]
     }
   }
