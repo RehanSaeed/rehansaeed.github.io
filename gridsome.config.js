@@ -197,7 +197,8 @@ module.exports = {
             // }
           }
         ],
-        'remark-toc'
+        'remark-toc',
+        'remark-validate-links'
       ]
     }
   }
