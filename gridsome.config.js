@@ -197,9 +197,56 @@ module.exports = {
             // }
           }
         ],
+        [
+          'remark-containers',
+          {
+            default: false,
+            custom: [
+              {
+                type: 'tip',
+                element: 'div',
+                transform: function(node, config, tokenize) {
+                  return transformContainer(node, config, 'tip', "TIP");
+                }
+              },
+              {
+                type: 'warning',
+                element: 'div',
+                transform: function(node, config, tokenize) {
+                  return transformContainer(node, config, 'warning', "WARNING");
+                }
+              },
+              {
+                type: 'danger',
+                element: 'div',
+                transform: function(node, config, tokenize) {
+                  return transformContainer(node, config, 'danger', "WARNING");
+                }
+              }
+            ]
+          }
+        ],
         'remark-toc',
         'remark-validate-links'
       ]
     }
   }
 };
+
+function transformContainer(node, config, type, defaultTitle) {
+  node.data.hProperties = {
+    className: `custom-block ${type}`
+  };
+  node.children.splice(0, 0, {
+    type: 'paragraph',
+    data: {
+      hName: 'p',
+      hProperties: {
+        className: 'custom-block-title',
+      },
+    },
+    children: [
+      { type: 'text', value: config || defaultTitle }
+    ]
+  });
+}

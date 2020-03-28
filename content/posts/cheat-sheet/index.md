@@ -28,23 +28,23 @@ tags:
 
 # Custom Containers
 
-::: tip
+::: tip Title
 This is a tip
 :::
 
-::: warning
+::: warning Title
 This is a warning
 :::
 
-::: danger
+::: danger Title
 This is a dangerous warning
 :::
 
-::: details
+::: details Title
 This is a details block, which does not work in IE / Edge
 :::
 
-::: danger STOP
+::: danger Title
 Danger zone, do not proceed
 :::
 
