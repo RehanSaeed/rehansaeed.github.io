@@ -17,8 +17,9 @@ module.exports = {
   siteUrl,
 
   templates: {
-    Post: "/:title",
-    Tag: "/tag/:title"
+    Post: "/:permalink",
+    Tag: "/tag/:permalink",
+    Portfolio: "/:permalink"
   },
 
   plugins: [
