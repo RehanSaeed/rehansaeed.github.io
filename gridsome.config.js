@@ -206,21 +206,28 @@ module.exports = {
                 type: 'tip',
                 element: 'div',
                 transform: function(node, config, tokenize) {
-                  return transformContainer(node, config, 'tip', "TIP");
+                  return transformContainer(node, config, 'tip', 'p', "Tip");
                 }
               },
               {
                 type: 'warning',
                 element: 'div',
                 transform: function(node, config, tokenize) {
-                  return transformContainer(node, config, 'warning', "WARNING");
+                  return transformContainer(node, config, 'warning', 'p', "Warning");
                 }
               },
               {
                 type: 'danger',
                 element: 'div',
                 transform: function(node, config, tokenize) {
-                  return transformContainer(node, config, 'danger', "WARNING");
+                  return transformContainer(node, config, 'danger', 'p', "Warning");
+                }
+              },
+              {
+                type: 'details',
+                element: 'details',
+                transform: function(node, config, tokenize) {
+                  return transformContainer(node, config, 'details', 'summary', "Details");
                 }
               }
             ]
@@ -233,14 +240,14 @@ module.exports = {
   }
 };
 
-function transformContainer(node, config, type, defaultTitle) {
+function transformContainer(node, config, type, element, defaultTitle) {
   node.data.hProperties = {
     className: `custom-block ${type}`
   };
   node.children.splice(0, 0, {
     type: 'paragraph',
     data: {
-      hName: 'p',
+      hName: element,
       hProperties: {
         className: 'custom-block-title',
       },

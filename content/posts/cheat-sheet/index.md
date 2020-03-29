@@ -41,14 +41,6 @@ This is a dangerous warning
 :::
 
 ::: details Title
-This is a details block, which does not work in IE / Edge
-:::
-
-::: danger Title
-Danger zone, do not proceed
-:::
-
-::: details Click me to view the code
 Some Code
 :::
 
