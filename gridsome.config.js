@@ -178,6 +178,15 @@ module.exports = {
         ],
         searchFields: ["title", "description"]
       }
+    },
+    // https://gridsome.org/plugins/gridsome-plugin-robots
+    {
+      use: 'gridsome-plugin-robots',
+      options: {
+        host: siteUrl,
+        sitemap: `${siteUrl}/sitemap.xml`,
+        policy: [{ userAgent: '*', allow: '/' }]
+      }
     }
   ],
 
