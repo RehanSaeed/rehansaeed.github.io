@@ -26,7 +26,7 @@ export default {
 
 <style lang="scss">
 .search__input {
-  background: var(--bg-color) url('/icons/Search.svg') .5rem .5rem no-repeat;
+  background: var(--bg-color) url('/images/icons/Search.svg') .5rem .5rem no-repeat;
   border-color: var(--body-color);
   border-radius: var(--radius);
   border-width: 1px;
