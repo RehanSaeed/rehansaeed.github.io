@@ -3,7 +3,7 @@ title: "Securing ASP.NET Core in Docker"
 description: "How to secure your ASP.NET Core Docker image by setting the file system to be read-only. First in a series of blog posts covering Docker image security."
 author: "Muhammad Rehan Saeed"
 permalink: "/securing-asp-net-core-in-docker/"
-cover_image: "./images/hero/Docker-1366x768.png"
+cover_image: "/images/hero/Docker-1366x768.png"
 date: "2019-03-25"
 published: true
 categories:

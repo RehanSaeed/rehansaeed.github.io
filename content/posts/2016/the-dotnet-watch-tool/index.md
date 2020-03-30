@@ -3,7 +3,7 @@ title: "The Dotnet Watch Tool"
 description: "The dotnet watch tool is a file watcher for dotnet that restarts the application when changes in the source code are detected."
 author: "Muhammad Rehan Saeed"
 permalink: "/the-dotnet-watch-tool/"
-cover_image: "./images/hero/NET-1366x768.png"
+cover_image: "/images/hero/NET-1366x768.png"
 date: "2016-09-10"
 published: true
 categories:

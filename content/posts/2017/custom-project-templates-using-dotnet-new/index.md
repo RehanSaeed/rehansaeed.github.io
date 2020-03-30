@@ -3,7 +3,7 @@ title: "Custom Project Templates Using dotnet new"
 description: "How to create project templates using dotnet new and the template.json file. How to share project templates by creating NuGet packages."
 author: "Muhammad Rehan Saeed"
 permalink: "/custom-project-templates-using-dotnet-new/"
-cover_image: "./images/hero/NET-1366x768.png"
+cover_image: "/images/hero/NET-1366x768.png"
 date: "2017-01-18"
 published: true
 categories:

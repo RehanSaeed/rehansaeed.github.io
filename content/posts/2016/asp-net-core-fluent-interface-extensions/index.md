@@ -3,7 +3,7 @@ title: "ASP.NET Core Fluent Interface Extensions"
 description: "Using the fluent interface style in with ASP.NET Core Fluent Interface Extension methods. Building on top of the work done by Khalid Abuhakmeh."
 author: "Muhammad Rehan Saeed"
 permalink: "/asp-net-core-fluent-interface-extensions/"
-cover_image: "./images/hero/Fluent-Interface-All-The-Things-1366x768.png"
+cover_image: "/images/hero/Fluent-Interface-All-The-Things-1366x768.png"
 date: "2016-06-26"
 published: true
 categories:

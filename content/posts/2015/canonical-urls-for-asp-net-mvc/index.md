@@ -3,7 +3,7 @@ title: "Canonical URL's for ASP.NET MVC"
 description: "Use canonical URL's in ASP.NET MVC for better Search Engine Optimization (SEO) using ASP.NET Core Boilerplate and the RedirectToCanonicalUrlAttribute."
 author: "Muhammad Rehan Saeed"
 permalink: "/canonical-urls-for-asp-net-mvc/"
-cover_image: "./images/hero/Link-Juice-1366x768.png"
+cover_image: "/images/hero/Link-Juice-1366x768.png"
 date: "2015-07-14"
 published: true
 categories:

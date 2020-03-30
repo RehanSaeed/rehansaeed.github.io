@@ -3,7 +3,7 @@ title: "SEO Friendly URL's for ASP.NET Core"
 description: "An SEO friendly URL is human readable and gives your site a higher page rank. Learn how to implement SEO friendly URL's using ASP.NET Core."
 author: "Muhammad Rehan Saeed"
 permalink: "/seo-friendly-urls-asp-net-core/"
-cover_image: "./images/hero/Search-Engine-Optimization-SEO-1366x768.png"
+cover_image: "/images/hero/Search-Engine-Optimization-SEO-1366x768.png"
 date: "2016-12-17"
 published: true
 categories:

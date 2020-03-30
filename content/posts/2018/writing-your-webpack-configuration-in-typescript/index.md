@@ -3,7 +3,7 @@ title: "Writing your Webpack configuration in TypeScript"
 description: "Learn how to write your Webpack configuration file using TypeScript to get intellisense and how to exclude Webpack 1 syntax from your TypeScript typings."
 author: "Muhammad Rehan Saeed"
 permalink: "/writing-your-webpack-configuration-in-typescript/"
-cover_image: "./images/hero/TypeScript-1366x768.png"
+cover_image: "/images/hero/TypeScript-1366x768.png"
 date: "2018-01-03"
 published: true
 categories:

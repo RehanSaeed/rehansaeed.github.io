@@ -3,7 +3,7 @@ title: "GetHashCode Made Easy"
 description: "Implementing GetHashCode is hard work and little understood. Learn how to implement GetHashCode as quickly and as simply as possible."
 author: "Muhammad Rehan Saeed"
 permalink: "/gethashcode-made-easy/"
-cover_image: "./images/hero/NET-1366x768.png"
+cover_image: "/images/hero/NET-1366x768.png"
 date: "2014-04-14"
 published: true
 categories:

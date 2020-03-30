@@ -3,7 +3,7 @@ title: "Optimally Configuring Entity Framework Core"
 description: "How to optimally configure your Entity Framework Core DbContext for best performance, resiliency and easy debugging for the developer."
 author: "Muhammad Rehan Saeed"
 permalink: "/optimally-configuring-entity-framework-core/"
-cover_image: "./images/hero/NET-1366x768.png"
+cover_image: "/images/hero/NET-1366x768.png"
 date: "2018-07-08"
 published: true
 categories:

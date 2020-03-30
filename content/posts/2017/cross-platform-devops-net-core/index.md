@@ -3,7 +3,7 @@ title: "Cross-Platform DevOps for .NET Core"
 description: "Learn how to use Cake, AppVeyor and Travis CI continuous integration build systems to perform cross-platform DevOps for .NET Core based projects."
 author: "Muhammad Rehan Saeed"
 permalink: "/cross-platform-devops-net-core/"
-cover_image: "./images/hero/Dotnet-Cake-AppVeyor-Travis-1366x768.png"
+cover_image: "/images/hero/Dotnet-Cake-AppVeyor-Travis-1366x768.png"
 date: "2017-01-28"
 published: true
 categories:

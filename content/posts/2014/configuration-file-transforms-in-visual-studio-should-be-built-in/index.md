@@ -3,7 +3,7 @@ title: "Configuration File Transforms In Visual Studio Should Be Built In"
 description: "Configuration File Transforms can be done with the Slow Cheetah Visual Studio extension by Sayed Hashimi. This feature should be built into Visual Studio."
 author: "Muhammad Rehan Saeed"
 permalink: "/configuration-file-transforms-in-visual-studio-should-be-built-in/"
-cover_image: "./images/hero/Visual-Studio-1366x768.png"
+cover_image: "/images/hero/Visual-Studio-1366x768.png"
 date: "2014-12-15"
 published: true
 categories:

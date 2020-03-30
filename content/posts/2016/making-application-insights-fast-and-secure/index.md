@@ -3,7 +3,7 @@ title: "Making Application Insights Fast & Secure"
 description: "Implementing Application Insights into your ASP.NET Core application with performance and security as a top priority in this advanced scenario."
 author: "Muhammad Rehan Saeed"
 permalink: "/making-application-insights-fast-and-secure/"
-cover_image: "./images/hero/Application-Insights-1366x768.png"
+cover_image: "/images/hero/Application-Insights-1366x768.png"
 date: "2016-12-11"
 published: true
 categories:

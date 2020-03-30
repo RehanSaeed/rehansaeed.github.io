@@ -3,7 +3,7 @@ title: "Keeping Up With Software Development"
 description: "Keeping up with the changes in the software development industry always feels like a losing battle."
 author: "Muhammad Rehan Saeed"
 permalink: "/keeping-software-development/"
-cover_image: "./images/hero/Keeping-up-with-Software-Development-1366x768.png"
+cover_image: "/images/hero/Keeping-up-with-Software-Development-1366x768.png"
 date: "2017-08-13"
 published: true
 categories:

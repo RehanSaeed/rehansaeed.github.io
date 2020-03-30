@@ -3,7 +3,7 @@ title: "A Simple and Fast Object Mapper"
 description: ".NET Boxed mapper is an object to object mapper that is simpler and faster than Automapper and makes zero allocations of memory, thus making the garbage collector do less work."
 author: "Muhammad Rehan Saeed"
 permalink: "/a-simple-and-fast-object-mapper/"
-cover_image: "./images/hero/Dotnet-Boxed-1366x768.png"
+cover_image: "/images/hero/Dotnet-Boxed-1366x768.png"
 date: "2019-03-05"
 published: true
 categories:

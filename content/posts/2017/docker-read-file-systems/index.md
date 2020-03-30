@@ -3,7 +3,7 @@ title: "Docker Read-Only File Systems"
 description: "How to use a read-only file system in Docker to secure your Docker containers using the docker run CLI command and Docker compose or docker swarm."
 author: "Muhammad Rehan Saeed"
 permalink: "/docker-read-file-systems/"
-cover_image: "./images/hero/Docker-1366x768.png"
+cover_image: "/images/hero/Docker-1366x768.png"
 date: "2017-11-13"
 published: true
 categories:

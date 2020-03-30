@@ -3,7 +3,7 @@ title: "Reactive Extensions (Rx) – Part 3 – Naming Conventions"
 description: "Reactive Extensions (Rx) Advantages of using IObservable property naming conventions and comparison between C# events."
 author: "Muhammad Rehan Saeed"
 permalink: "/reactive-extensions-part3-naming-conventions/"
-cover_image: "./images/hero/Reactive-Extensions-1366x768.png"
+cover_image: "/images/hero/Reactive-Extensions-1366x768.png"
 date: "2014-02-14"
 published: true
 categories:

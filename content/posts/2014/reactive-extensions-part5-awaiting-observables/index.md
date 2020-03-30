@@ -3,7 +3,7 @@ title: "Reactive Extensions (Rx) – Part 5 – Awaiting Observables"
 description: "How and where to use Task Parallel Library (TPL) async and await with Reactive Extensions (Rx). Also, how to use TPL for awaiting observables."
 author: "Muhammad Rehan Saeed"
 permalink: "/reactive-extensions-part5-awaiting-observables/"
-cover_image: "./images/hero/Reactive-Extensions-1366x768.png"
+cover_image: "/images/hero/Reactive-Extensions-1366x768.png"
 date: "2014-03-27"
 published: true
 categories:

@@ -3,7 +3,7 @@ title: "NWebSec ASP.NET MVC Security Through HTTP Headers"
 description: "The NWebSec NuGet packages help secure your ASP.NET MVC site using HTTP headers. The ASP.NET Core Boilerplate project template configures them our of the box."
 author: "Muhammad Rehan Saeed"
 permalink: "/nwebsec-asp-net-mvc-security-through-http-headers/"
-cover_image: "./images/hero/NWebSec-1366x768.png"
+cover_image: "/images/hero/NWebSec-1366x768.png"
 date: "2015-02-05"
 published: true
 categories:

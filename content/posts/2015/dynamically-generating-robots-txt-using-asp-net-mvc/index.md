@@ -3,7 +3,7 @@ title: "Dynamically Generating Robots.txt Using ASP.NET MVC"
 description: "How to dynamically generate a robots.txt file using a simple ASP.NET MVC action method and only a few lines of code."
 author: "Muhammad Rehan Saeed"
 permalink: "/dynamically-generating-robots-txt-using-asp-net-mvc/"
-cover_image: "./images/hero/Robots.txt-1366x768.jpg"
+cover_image: "/images/hero/Robots.txt-1366x768.jpg"
 date: "2015-07-31"
 published: true
 categories:

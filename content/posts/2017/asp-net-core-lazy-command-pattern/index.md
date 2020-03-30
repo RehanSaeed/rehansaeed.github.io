@@ -3,7 +3,7 @@ title: "ASP.NET Core Lazy Command Pattern"
 description: "Move your ASP.NET Core MVC action method logic into lazily loaded commands using the command pattern, to reduce Controller complexity."
 author: "Muhammad Rehan Saeed"
 permalink: "/asp-net-core-lazy-command-pattern/"
-cover_image: "./images/hero/ASP.NET-Core-Lazy-Command-Pattern-1366x768.png"
+cover_image: "/images/hero/ASP.NET-Core-Lazy-Command-Pattern-1366x768.png"
 date: "2017-04-08"
 published: true
 categories:

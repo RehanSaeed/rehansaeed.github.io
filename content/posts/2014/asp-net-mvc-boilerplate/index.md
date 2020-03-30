@@ -3,7 +3,7 @@ title: "ASP.NET Core Boilerplate"
 description: "ASP.NET Core Boilerplate is a professional ASP.NET MVC template for building secure, fast, robust and adaptable web applications or sites."
 author: "Muhammad Rehan Saeed"
 permalink: "/asp-net-mvc-boilerplate/"
-cover_image: "./images/hero/ASP.NET-Core-Boilerplate-1366x768.png"
+cover_image: "/images/hero/ASP.NET-Core-Boilerplate-1366x768.png"
 date: "2014-11-12"
 published: true
 categories:

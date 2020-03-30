@@ -3,7 +3,7 @@ title: "Minifying HTML for ASP.NET MVC"
 description: "How much bandwidth does minifying HTML save. Minifying HTML in ASP.NET MVC 5 is hard work. Minifying HTML should be a built in feature of ASP.NET Core."
 author: "Muhammad Rehan Saeed"
 permalink: "/minifying-html-for-asp-net-mvc/"
-cover_image: "./images/hero/The-Internet-Is-A-Series-Of-Tubes-1366x768.jpg"
+cover_image: "/images/hero/The-Internet-Is-A-Series-Of-Tubes-1366x768.jpg"
 date: "2015-08-06"
 published: true
 categories:
