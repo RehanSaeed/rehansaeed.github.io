@@ -1,5 +1,4 @@
-// This is where project configuration and plugin options are located.
-// Learn more: https://gridsome.org/docs/config
+const marked = require('marked');
 
 // Changes here requires a server restart.
 // To restart press CTRL + C in terminal and run `gridsome develop`
@@ -88,6 +87,79 @@ module.exports = {
         extensions: ["css", "html", "js", "svg", "json"]
       }
     },
+    {
+      use: 'gridsome-plugin-feed',
+      options: {
+        // Required: array of `GraphQL` type names you wish to include
+        contentTypes: ['Post'],
+        // Optional: any properties you wish to set for `Feed()` constructor
+        // See https://www.npmjs.com/package/feed#example for available properties
+        feedOptions: {
+          title: siteName,
+          description: siteDescription,
+          id: siteUrl,
+          link: siteUrl,
+          language: siteLanguage,
+          image: siteUrl + "/images/Site-Hero-1280x640.png",
+          favicon: siteUrl + "/favicon.ico",
+          copyright: siteCopyright,
+          feedLinks: {
+            atom: siteUrl + "/atom.xml",
+            json: siteUrl + "/feed.json",
+            rss: siteUrl + "/rss.xml",
+          },
+          author: {
+            name: siteAuthor,
+            link: siteUrl,
+          }
+        },
+        atom: {
+          enabled: false,
+          output: '/atom.xml'
+        },
+        json: {
+          enabled: false,
+          output: '/feed.json'
+        },
+        rss: {
+          enabled: true,
+          output: '/rss.xml'
+        },
+        // Optional: the maximum number of items to include in your feed
+        maxItems: 300,
+        // Optional: an array of properties passed to `Feed.addItem()` that will be parsed for
+        // URLs in HTML (ensures that URLs are full `http` URLs rather than site-relative).
+        // To disable this functionality, set to `null`.
+        htmlFields: ['description', 'content'],
+        // Optional: if you wish to enforce trailing slashes for site URLs
+        enforceTrailingSlashes: false,
+        // Optional: a method that accepts a node and returns true (include) or false (exclude)
+        // Example: only past-dated nodes: `filterNodes: (node) => node.date <= new Date()`
+        filterNodes: (node) => true,
+        // Optional: a method that accepts a node and returns an object for `Feed.addItem()`
+        // See https://www.npmjs.com/package/feed#example for available properties
+        // NOTE: `date` field MUST be a Javascript `Date` object
+        nodeToFeedItem: (node) => {
+          console.log(new Date(node.date));
+          return {
+            title: node.title,
+            id: siteUrl + node.permalink,
+            link: siteUrl + node.permalink,
+            description: node.description,
+            content: marked(node.content),
+            author: [
+              {
+                name: node.author,
+                link: siteUrl,
+              }
+            ],
+            date: new Date(node.date),
+            categories: node.tags,
+            image: node.cover_image,
+          };
+        }
+      }
+    },
     // https://gridsome.org/plugins/gridsome-plugin-flexsearch
     {
       use: "gridsome-plugin-flexsearch",
@@ -105,45 +177,6 @@ module.exports = {
           }
         ],
         searchFields: ["title", "description"]
-      }
-    },
-    // https://gridsome.org/plugins/gridsome-plugin-rss
-    {
-      use: "gridsome-plugin-rss",
-      options: {
-        contentTypeName: "Post",
-        latest: true,
-        dateField: "date",
-        maxItems: 300,
-        feedOptions: {
-          title: siteName,
-          description: siteDescription,
-          feed_url: siteUrl + "/rss.xml",
-          site_url: siteUrl,
-          image_url: siteUrl + "/images/Muhammad-Rehan-Saeed-Hero.png",
-          managingEditor: siteAuthor,
-          webMaster: siteAuthor,
-          copyright: siteCopyright,
-          language: siteLanguage
-        },
-        feedItemOptions: node => {
-          console.log(node);
-          return {
-            title: node.title,
-            description: node.description,
-            url: siteUrl + node.permalink,
-            author: node.author,
-            date: node.date,
-            categories: node.tags
-            // enclosure: {
-            //   file: node.cover_image
-            // }
-          };
-        },
-        output: {
-          dir: "./static",
-          name: "rss.xml"
-        }
       }
     }
   ],

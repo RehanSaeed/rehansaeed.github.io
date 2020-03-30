@@ -28,9 +28,10 @@
     "gh-pages": "^2.2.0",
     "gridsome": "^0.7.13",
     "gridsome-plugin-brotli": "^0.1.3",
+    "gridsome-plugin-feed": "^1.0.2",
     "gridsome-plugin-flexsearch": "^0.1.17",
     "gridsome-plugin-remark-prismjs-all": "^0.3.5",
-    "gridsome-plugin-rss": "^1.2.0",
+    "marked": "^0.8.2",
     "remark-containers": "^1.1.2",
     "remark-toc": "^7.0.0",
     "remark-validate-links": "^10.0.0"
