@@ -3,7 +3,7 @@ title: "The Dotnet Watch Tool Revisited"
 description: "The dotnet watch tool is a file watcher for dotnet that restarts the application when changes in the source code are detected. You can use dotnet watch in Visual Studio by using the launchSettings.json configuration file."
 author: "Muhammad Rehan Saeed"
 permalink: "/the-dotnet-watch-tool-revisited/"
-cover_image: "./images/NET.png"
+cover_image: "./images/hero/NET-1366x768.png"
 date: "2018-04-30"
 published: true
 categories:

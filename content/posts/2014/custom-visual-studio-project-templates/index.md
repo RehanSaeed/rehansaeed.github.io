@@ -3,7 +3,7 @@ title: "Custom Visual Studio Project Templates"
 description: "A guide to creating custom Visual Studio project templates in .zip and VSIX form and submitting them to the Visual Studio Gallery, so it can be downloaded."
 author: "Muhammad Rehan Saeed"
 permalink: "/custom-visual-studio-project-templates/"
-cover_image: "./images/Visual-Studio.png"
+cover_image: "./images/hero/Visual-Studio-1366x768.png"
 date: "2014-12-10"
 published: true
 categories:

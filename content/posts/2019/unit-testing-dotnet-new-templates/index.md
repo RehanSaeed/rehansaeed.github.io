@@ -3,7 +3,7 @@ title: "Unit Testing dotnet new Templates"
 description: "It's difficult to know if your 'dotnet new' based project will work if they have lots of options, in this post I show how to unit test them."
 author: "Muhammad Rehan Saeed"
 permalink: "/unit-testing-dotnet-new-templates/"
-cover_image: "./images/NET.png"
+cover_image: "./images/hero/NET-1366x768.png"
 date: "2019-08-21"
 published: true
 categories:

@@ -3,7 +3,7 @@ title: "NGINX for ASP.NET Core In-Depth"
 description: "NGINX is a popular open source web server. It can act as a reverse proxy server for ASP.NET Core web apps. How to configure NGINX for ASP.NET Core."
 author: "Muhammad Rehan Saeed"
 permalink: "/nginx-asp-net-core-depth/"
-cover_image: "./images/NGINX.png"
+cover_image: "./images/hero/NGINX-1366x768.png"
 date: "2016-08-21"
 published: true
 categories:

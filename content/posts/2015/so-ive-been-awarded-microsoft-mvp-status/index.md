@@ -3,7 +3,7 @@ title: "So I've Been Awarded Microsoft MVP Status!"
 description: "Muhammad Rehan Saeed has been awarded Microsoft MVP (Most Valuable Professional) status."
 author: "Muhammad Rehan Saeed"
 permalink: "/so-ive-been-awarded-microsoft-mvp-status/"
-cover_image: "./images/Microsoft-MVP.png"
+cover_image: "./images/hero/Microsoft-MVP-1366x768.png"
 date: "2015-10-02"
 published: true
 categories:

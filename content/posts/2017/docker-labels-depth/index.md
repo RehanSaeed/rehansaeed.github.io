@@ -3,7 +3,7 @@ title: "Docker Labels in Depth"
 description: "How to use Docker Labels with Docker run, Docker compose and Docker Swarm. Also talk about naming conventions and the Open Containers Initiative (OCI) spec."
 author: "Muhammad Rehan Saeed"
 permalink: "/docker-labels-depth/"
-cover_image: "./images/Docker.png"
+cover_image: "./images/hero/Docker-1366x768.png"
 date: "2017-11-20"
 published: true
 categories:

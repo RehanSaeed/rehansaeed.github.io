@@ -3,7 +3,7 @@ title: "Is ASP.NET Core now a Mature Platform?"
 description: "ASP.NET Core a large developer base, a large number of GitHub projects, StackOverflow questions, bloggers and companies who use it. It's a mature platform."
 author: "Muhammad Rehan Saeed"
 permalink: "/is-asp-net-core-now-a-mature-platform/"
-cover_image: "./images/Rocket.jpg"
+cover_image: "./images/hero/Rocket-1366x768.jpg"
 date: "2018-12-18"
 published: true
 categories:

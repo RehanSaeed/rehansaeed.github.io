@@ -3,7 +3,7 @@ title: "What dotnet new Could Be"
 description: "What the 'dotnet new' CLI command could be if some effort was spent on developing it. I compare it to other templating engines and suggest ideas."
 author: "Muhammad Rehan Saeed"
 permalink: "/what-dotnet-new-could-be/"
-cover_image: "./images/Hero-1366x768.png"
+cover_image: "./images/hero/Dotnet-Boxed-1366x768.png"
 date: "2019-12-31"
 published: true
 categories:

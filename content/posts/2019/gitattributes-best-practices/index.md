@@ -3,7 +3,7 @@ title: ".gitattributes Best Practices"
 description: "Best practices for configuring Git in the .gitattributes file. Configuring CRLF and LF line endings. Configuring Git Large File System (LFS) for binary files."
 author: "Muhammad Rehan Saeed"
 permalink: "/gitattributes-best-practices/"
-cover_image: "./images/Git.png"
+cover_image: "./images/hero/Git-1366x768.png"
 date: "2019-07-22"
 published: true
 categories:

@@ -3,7 +3,7 @@ title: "ASP.NET Core Caching in Practice"
 description: "How to use and implement Cache-Control, Cache-Control Immutable, E-Tag, Last-Modified and If-Modified-Since Caching HTTP headers in ASP.NET Core."
 author: "Muhammad Rehan Saeed"
 permalink: "/asp-net-core-caching-in-practice/"
-cover_image: "./images/ASP.NET-Core-Caching-in-Practice.png"
+cover_image: "./images/hero/ASP.NET-Core-Caching-in-Practice-1366x768.png"
 date: "2017-10-20"
 published: true
 categories:

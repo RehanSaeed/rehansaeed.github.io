@@ -3,7 +3,7 @@ title: "Useful Docker Images - Part 1"
 description: "A guide to using the Docker Visualizer, Portainer and Sonatype Nexus Docker images to help manage a Docker Swarm."
 author: "Muhammad Rehan Saeed"
 permalink: "/useful-docker-images-part1/"
-cover_image: "./images/Docker.png"
+cover_image: "./images/hero/Docker-1366x768.png"
 date: "2017-11-30"
 published: true
 categories:

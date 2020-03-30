@@ -3,7 +3,7 @@ title: "Content Security Policy (CSP) for ASP.NET MVC"
 description: "Content Security Policy (CSP) is a HTTP header which white-lists content the browser is allowed to load. This post discusses its application in ASP.NET MVC."
 author: "Muhammad Rehan Saeed"
 permalink: "/content-security-policy-for-asp-net-mvc/"
-cover_image: "./images/Content-Security-Policy-CSP-for-ASP.NET-MVC.png"
+cover_image: "./images/hero/Content-Security-Policy-CSP-for-ASP.NET-MVC-1366x768.png"
 date: "2015-03-17"
 published: true
 categories:

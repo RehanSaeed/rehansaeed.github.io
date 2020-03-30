@@ -3,7 +3,7 @@ title: "Stop The Brace Wars, Use StyleCop"
 description: "StyleCop analyzes C# source code to enforce a set of style and consistency rules. Rehan advocates its use in this thought provoking article."
 author: "Muhammad Rehan Saeed"
 permalink: "/stop-brace-wars-use-stylecop/"
-cover_image: "./images/StyleCop.png"
+cover_image: "./images/hero/StyleCop-1366x768.png"
 date: "2014-02-08"
 published: true
 categories:

@@ -3,7 +3,7 @@ title: "Reactive Extensions (Rx) - Part 1 - Replacing C# Events"
 description: "You should definitely consider using Reactive Extensions (Rx) is as a direct replacement for C# events. This post will explain how."
 author: "Muhammad Rehan Saeed"
 permalink: "/reactive-extensions-part1-replacing-events/"
-cover_image: "./images/Reactive-Extensions.png"
+cover_image: "./images/hero/Reactive-Extensions-1366x768.png"
 date: "2014-02-11"
 published: true
 categories:

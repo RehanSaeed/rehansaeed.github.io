@@ -3,7 +3,7 @@ title: "Just Start - The First Blog Post"
 description: "I thought I should begin this first blog post with a few words on what I hope to achieve."
 author: "Muhammad Rehan Saeed"
 permalink: "/just-start-the-first-blog-post/"
-cover_image: "./images/Just-Start.png"
+cover_image: "./images/hero/Just-Start-1366x768.png"
 date: "2014-02-01"
 published: true
 categories:

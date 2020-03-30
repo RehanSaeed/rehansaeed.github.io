@@ -3,7 +3,7 @@ title: "Model-View-ViewModel (MVVM) - Part 3 - INotifyPropertyChanged"
 description: "An base class implementation for the INotifyPropertyChanged interface. Used in the Model-View-ViewModel (MVVM) pattern. Targeted for best performance."
 author: "Muhammad Rehan Saeed"
 permalink: "/model-view-viewmodel-mvvm-part3-inotifypropertychanged/"
-cover_image: "./images/MVVM.png"
+cover_image: "./images/hero/MVVM-1366x768.png"
 date: "2014-06-18"
 published: true
 categories:
