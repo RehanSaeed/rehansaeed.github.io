@@ -24,4 +24,4 @@ jobs:
       shell: pwsh
     - name: 'Deploy'
       run: npm run deploy -- --repo https://${{ secrets.GITHUB_TOKEN }}@github.com/RehanSaeed/rehansaeed.github.io.git
-      shell: pwsh
+      shell: bash
