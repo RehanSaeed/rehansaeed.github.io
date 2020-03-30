@@ -154,6 +154,51 @@ module.exports = {
       externalLinksRel: ["nofollow", "noopener", "noreferrer"],
       anchorClassName: "icon icon-link",
       plugins: [
+        // TODO: Add GitHub style heading anchors.
+        // https://github.com/remarkjs/remark-autolink-headings
+        // [
+        //   'remark-autolink-headings',
+        //   {
+        //     // behavior: 'before'
+        //   }
+        // ],
+        [
+          'remark-containers',
+          {
+            default: false,
+            custom: [
+              {
+                type: 'tip',
+                element: 'div',
+                transform: function(node, config, tokenize) {
+                  return transformContainer(node, config, 'tip', 'p', "Tip");
+                }
+              },
+              {
+                type: 'warning',
+                element: 'div',
+                transform: function(node, config, tokenize) {
+                  return transformContainer(node, config, 'warning', 'p', "Warning");
+                }
+              },
+              {
+                type: 'danger',
+                element: 'div',
+                transform: function(node, config, tokenize) {
+                  return transformContainer(node, config, 'danger', 'p', "Warning");
+                }
+              },
+              {
+                type: 'details',
+                element: 'details',
+                transform: function(node, config, tokenize) {
+                  return transformContainer(node, config, 'details', 'summary', "Details");
+                }
+              }
+            ]
+          }
+        ],
+        'remark-toc',
         [
           "gridsome-plugin-remark-prismjs-all",
           {
@@ -197,43 +242,6 @@ module.exports = {
             // }
           }
         ],
-        [
-          'remark-containers',
-          {
-            default: false,
-            custom: [
-              {
-                type: 'tip',
-                element: 'div',
-                transform: function(node, config, tokenize) {
-                  return transformContainer(node, config, 'tip', 'p', "Tip");
-                }
-              },
-              {
-                type: 'warning',
-                element: 'div',
-                transform: function(node, config, tokenize) {
-                  return transformContainer(node, config, 'warning', 'p', "Warning");
-                }
-              },
-              {
-                type: 'danger',
-                element: 'div',
-                transform: function(node, config, tokenize) {
-                  return transformContainer(node, config, 'danger', 'p', "Warning");
-                }
-              },
-              {
-                type: 'details',
-                element: 'details',
-                transform: function(node, config, tokenize) {
-                  return transformContainer(node, config, 'details', 'summary', "Details");
-                }
-              }
-            ]
-          }
-        ],
-        'remark-toc',
         'remark-validate-links'
       ]
     }
