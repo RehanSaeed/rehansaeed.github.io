@@ -11,5 +11,5 @@ categories:
 tags:
   - "C#"
   - ".NET"
-  - "schema.org"
+  - "Schema.org"
 ---
