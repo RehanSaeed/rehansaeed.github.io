@@ -14,7 +14,9 @@ tags:
 
 # Table of Contents
 
-# Quote
+# Formatting
+
+**Bold** *Italic* [Link](https://example.com)
 
 > Quote
 
