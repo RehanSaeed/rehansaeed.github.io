@@ -44,6 +44,6 @@
     "build": "gridsome build",
     "develop": "gridsome develop",
     "explore": "gridsome explore",
-    "deploy": "gh-pages --branch master --dist dist --repo https://$GITHUB_TOKEN@github.com/RehanSaeed/rehansaeed.github.io.git"
+    "deploy": "gh-pages --branch master --dist dist"
   }
 }
