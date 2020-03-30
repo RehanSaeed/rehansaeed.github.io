@@ -1,14 +1,29 @@
 table {
   color: var(--title-color);
   background-color: var(--bg-content-color);
+  border-collapse: collapse;
+  border-spacing: 0;
+  display: block;
   margin-bottom: 1.5em;
-  vertical-align: top;
+  overflow: auto;
   width: 100%;
+
+  thead {
+    font-weight: 600;
+  }
+
+  tr {
+    border-top: 1px solid var(--border-color);
+  }
+
+  tr:nth-child(2n) {
+    background-color: var(--bg-color);
+  }
 
   th,
   td {
+    border: 1px solid var(--border-color);
     padding: .5rem;
-    border-bottom: 2px solid var(--border-color);
   }
 
   tbody {
@@ -17,17 +32,12 @@ table {
 
   thead th {
     vertical-align: bottom;
-    border-bottom-width: 4px;
-  }
-
-  tbody + tbody {
-    border-top: 2px solid var(--border-color);
   }
 
   tbody tr {
     &:hover {
-      color: var(--title-color);
       background-color: var(--bg-color);
+      color: var(--title-color);
     }
   }
 }

@@ -21,7 +21,9 @@ body {
  	--title-color: #111;
  	--link-color: #6b17e6;
  	--link-visited-color: #4f2391;
- 	--border-color:  rgba(0,0,0,.1);
+  --border-color: rgba(0,0,0,.1);
+  --scroll-thumb-color: white;
+  --scroll-track-color: #dddddd;
 }
 
 // Dark theme
@@ -29,12 +31,13 @@ body[data-theme="dark"] {
  	--bg-color: #0D2538;
  	--bg-content-color: #0f2d44;
  	--bg-code: rgba(0,0,0,.3);
- 	--border-color:  rgba(255,255,255,.1);;
  	--body-color: #ced8de;
- 	--title-color: #fff;
+  --title-color: #fff;
   --link-color: #cbbbff;
   --link-visited-color: #9d8cd4;
-  --border-color: rgba(255, 255, 255, 0.2);
+  --border-color: rgba(255,255,255,.1);
+  --scroll-thumb-color: #272822;
+  --scroll-track-color: #4C4C4C;
 }
 
 // Mobile View
