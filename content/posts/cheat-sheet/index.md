@@ -76,6 +76,18 @@ export default {
 }
 ```
 
- # Embed Code Snippets
+# Embed Code Snippets
 
- `embed:foo.cs`
+`embed:foo.cs`
+
+# Embed Youtube
+
+https://www.youtube.com/watch?v=PGM_uBy99GA
+
+# Embed Twitter
+
+https://twitter.com/RehanSaeedUK/status/1224729077296267264
+
+# Embed CodePen
+
+https://codepen.io/dyarfi/pen/VwLEjBd

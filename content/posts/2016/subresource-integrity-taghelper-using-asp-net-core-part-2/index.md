@@ -26,7 +26,7 @@ tags:
 
 Last week I wrote part one of a blog post discussing a Subresource Integrity (SRI) tag helper I wrote for ASP.NET Core. It turns out the post was featured on the ASP.NET Community Standup and discussed at length by [Scott Hanselman](http://twitter.com/shanselman), [Damian Edwards](http://twitter.com/damianedwards) and [Jon Galloway](http://twitter.com/jongalloway). Here is the discussion:
 
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/Mu2jol8EmVo" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+https://www.youtube.com/watch?v=Mu2jol8EmVo
 
 The overall impression from the standup was that the SRI tag helper I wrote was a good first step but there was more work to be done. It was however, still more secure than "the rest of the internet" according to Jon Galloway. The main issue raised during the standup was that the first call made to get the resource could retrieve a version of it that was compromised.
 

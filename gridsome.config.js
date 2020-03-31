@@ -289,7 +289,27 @@ module.exports = {
             // }
           }
         ],
-        'remark-validate-links'
+        // https://github.com/noxify/gridsome-plugin-remark-embed
+        [
+          '@noxify/gridsome-plugin-remark-embed',
+          {
+            enabledProviders: ['Youtube', 'Twitter', 'Codepen'],
+            Youtube: {
+              margin: "25px 0 25px 0"
+            },
+            Twitter: {
+              hideMedia: false
+            },
+            Codepen: {
+              // iframe: true
+            }
+          }
+        ],
+        [
+          'remark-validate-links',
+          {
+          }
+        ]
       ]
     }
   }
