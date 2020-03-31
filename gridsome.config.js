@@ -196,6 +196,11 @@ module.exports = {
       externalLinksRel: ["nofollow", "noopener", "noreferrer"],
       anchorClassName: "icon icon-link",
       plugins: [
+        [
+          'gridsome-remark-embed-snippet',
+          {
+          }
+        ],
         // TODO: Add GitHub style heading anchors.
         // https://github.com/remarkjs/remark-autolink-headings
         // [

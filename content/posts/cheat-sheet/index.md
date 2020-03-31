@@ -76,8 +76,6 @@ export default {
 }
 ```
 
- # Import Code Snippets
+ # Embed Code Snippets
 
- <<< @/source/_posts/cheat-sheet/foo.cs
-
- <<< @/source/_posts/cheat-sheet/foo.cs{2}
+ `embed:foo.cs`
