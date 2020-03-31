@@ -18,7 +18,7 @@
   }
 
   &.tip {
-    background-color: #f3f5f7;
+    background-color: var(--bg-color);
     border-color: #42b983;
   }
 
@@ -43,7 +43,7 @@
   }
 
   &.details {
-    background-color: #eee;
+    background-color: var(--bg-color);
     display: block;
     padding: 1rem 1.4rem;
     position: relative;
@@ -55,4 +55,26 @@
     }
   }
 
+}
+
+body[data-theme="dark"] {
+  .custom-block {
+    &.warning {
+      background-color: rgba(233, 194, 0, 0.3);
+      color: var(--title-color);
+
+      .custom-block-title {
+        color: var(--title-color);
+      }
+    }
+
+    &.danger {
+      background-color: #300000;
+      color: var(--title-color);
+
+      .custom-block-title {
+        color: var(--title-color);
+      }
+    }
+  }
 }
