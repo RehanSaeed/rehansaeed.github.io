@@ -173,7 +173,7 @@ module.exports = {
           {
             typeName: "Portfolio",
             indexName: "Portfolio",
-            fields: ["title", "description"]
+            fields: ["title", "description", "permalink"]
           }
         ],
         searchFields: ["title", "description"]

@@ -8,8 +8,9 @@
     <div v-if="this.searchResults.length != 0" class="search__popup">
       <g-link v-for="result in searchResults"
         :key="result.id"
-        :to="result.path"
+        :to="result.permalink || result.path"
         class="search__result">
+        {{result}}
         <p class="search__result__title">{{result.title}}</p>
         <p class="search__result__description">{{result.description}}</p>
       </g-link>
