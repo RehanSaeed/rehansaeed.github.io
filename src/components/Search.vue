@@ -10,7 +10,6 @@
         :key="result.id"
         :to="result.permalink || result.path"
         class="search__result">
-        {{result}}
         <p class="search__result__title">{{result.title}}</p>
         <p class="search__result__description">{{result.description}}</p>
       </g-link>
