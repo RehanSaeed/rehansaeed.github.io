@@ -45,6 +45,6 @@
     "build": "gridsome build",
     "develop": "gridsome develop",
     "explore": "gridsome explore",
-    "deploy": "gh-pages --branch master --dist dist"
+    "deploy": "gh-pages --branch master --dist dist --repo"
   }
 }
