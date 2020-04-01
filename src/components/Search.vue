@@ -26,14 +26,18 @@ export default {
 
 <style lang="scss">
 .search__input {
-  background: var(--bg-color) url('/images/icons/Search.svg') .5rem .5rem no-repeat;
-  border-color: var(--body-color);
+  background: var(--bg-color) url('/images/icons/Search.svg') .45em .45em no-repeat;
+  border-color: var(--title-color);
   border-radius: var(--radius);
-  border-width: 1px;
+  border-width: 2px;
   color: var(--title-color);
-  font-size: 1em;
-  max-width: 10em;
+  font-size: 0.9em;
+  max-width: 10rem;
   padding: 0.3em 0.3em 0.3em 1.8em;
+
+  @media screen and (max-width: 650px) {
+    max-width: 8rem;
+  }
 }
 
 .search__popup {

@@ -2,14 +2,10 @@
   <div id="app">
 
     <header class="header">
-      <div class="header__left">
-        <Logo v-if="showLogo" />
-      </div>
+      <Navigation class="header__navigation" />
 
-      <div class="header__right">
-        <Search />
-        <ToggleTheme />
-      </div>
+      <Search class="header__search" />
+      <ToggleTheme class="header__theme" />
     </header>
 
     <main class="main">
@@ -28,16 +24,13 @@
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
+import Navigation from '~/components/Navigation.vue'
 import Search from '~/components/Search.vue'
 import ToggleTheme from '~/components/ToggleTheme.vue'
 
 export default {
-  props: {
-    showLogo: { default: true }
-  },
   components: {
-    Logo,
+    Navigation,
     Search,
     ToggleTheme
   }
@@ -46,26 +39,21 @@ export default {
 
 <style lang="scss">
 .header {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  min-height: var(--header-height);
-  padding: 0 calc(var(--space) / 2);
+  display: grid;
+  grid-gap: 0.6em;
+  grid-template-columns: 1fr auto auto;
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 0.5rem 1rem;
   top:0;
   z-index: 10;
 
-  &__left,
-  &__right {
-    align-items: center;
-    display: grid;
-    grid-gap: 0.5em;
-    grid-template-columns: auto auto;
+  &__navigation {
+    justify-self: start;
   }
-
-  @media screen and (min-width: 1300px) {
-    //Make header sticky for large screens
-    position: sticky;
-    width: 100%;
+  &__theme {
+    margin-top: 0.1rem;
   }
 }
 

@@ -32,11 +32,12 @@ export default {
 .toggle-theme {
   background-color: transparent;
   border: 0;
-  color: var(--body-color);
+  color: var(--title-color);
+  padding: 0;
   cursor: pointer;
 
   &:hover {
-    opacity: .8
+    opacity: .7;
   }
   &:focus {
     outline: none;
