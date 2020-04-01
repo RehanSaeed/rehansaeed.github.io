@@ -3,9 +3,10 @@ name: Build
 on:
   push:
     branches:
-      - '*'
-    tags:
-      - '*'
+      - develop
+  pull_request:
+    branches:
+      - develop
 
 jobs:
   build:
@@ -23,6 +24,6 @@ jobs:
       run: npm run build
       shell: pwsh
     - name: 'Deploy'
-      if: github.ref == 'develop'
+      if: github.event_name != 'pull_request'
       run: npm run deploy
       shell: bash
