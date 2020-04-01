@@ -43,7 +43,6 @@ export default {
   display: grid;
   grid-gap: 0.6em;
   grid-template-columns: 1fr auto auto;
-  max-width: var(--content-width);
   margin: 0 auto;
   padding: 0.5rem 1rem;
   top:0;
