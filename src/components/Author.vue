@@ -70,7 +70,6 @@ export default {
 <style lang="scss">
 .author {
 	margin: 0 auto;
-	max-width: 500px;
 	text-align: center;
 	padding: calc(var(--space) / 2) 0;
 
@@ -86,7 +85,7 @@ export default {
 	}
 
 	&__site-title {
-		font-size: 1.5em;
+		font-size: 2.5em;
 	}
 
   &__link {
