@@ -1,7 +1,7 @@
 <template>
   <nav class="navigation">
 
-		<g-image alt="Author image" class="navigation__image" src="~/assets/images/Muhammad-Rehan-Saeed.png" width="30" height="30" blur="5" />
+		<g-image alt="Author image" class="navigation__image" src="~/assets/images/Muhammad-Rehan-Saeed.png" width="30" height="30" blur="0" />
 
     <g-link class="navigation__item" to="/">Blog</g-link>
     <g-link class="navigation__item" to="/portfolio/">Portfolio</g-link>
