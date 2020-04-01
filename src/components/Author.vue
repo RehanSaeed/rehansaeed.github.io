@@ -3,7 +3,7 @@
 
 		<g-image alt="Author image" class="author__image" src="~/assets/images/Muhammad-Rehan-Saeed.png" width="180" height="180" blur="5" />
 
-		<h1 v-if="showTitle" class="author__site-title">
+		<h1 class="author__site-title">
 			{{ $static.metadata.siteName }}
 		</h1>
 
@@ -60,12 +60,6 @@ query {
   }
 }
 </static-query>
-
-<script>
-export default {
-	props: ['showTitle']
-}
-</script>
 
 <style lang="scss">
 .author {

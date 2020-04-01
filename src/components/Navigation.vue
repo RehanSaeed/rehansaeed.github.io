@@ -19,10 +19,11 @@
 }
 
 .navigation__image {
-  //border: solid 2px var(--title-color);
+  border: solid 2px var(--title-color);
+  box-shadow: 1px 10px 30px 0 rgba(0,0,0,.2);
   border-radius: 100%;
-  // width: 30px;
-  // height: 30px;
+  width: 45px;
+  height: 45px;
 }
 
 .navigation__item {
