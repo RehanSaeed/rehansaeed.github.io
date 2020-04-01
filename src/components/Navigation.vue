@@ -1,5 +1,8 @@
 <template>
   <nav class="navigation">
+
+		<g-image alt="Author image" class="navigation__image" src="~/assets/images/Muhammad-Rehan-Saeed.png" width="30" height="30" blur="5" />
+
     <g-link class="navigation__item" to="/">Blog</g-link>
     <g-link class="navigation__item" to="/portfolio/">Portfolio</g-link>
     <g-link class="navigation__item" to="/about/">About</g-link>
@@ -8,10 +11,18 @@
 
 <style lang="scss">
 .navigation {
+  align-items: center;
   display: grid;
   font-size: 1.1em;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: auto auto auto auto;
   grid-gap: 1rem;
+}
+
+.navigation__image {
+  //border: solid 2px var(--title-color);
+  border-radius: 100%;
+  // width: 30px;
+  // height: 30px;
 }
 
 .navigation__item {
