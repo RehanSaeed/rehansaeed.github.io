@@ -32,7 +32,6 @@ export default {
 
 <style lang="scss">
 .portfolio-card {
-  margin-bottom: var(--space);
   position: relative;
 
   &__header {

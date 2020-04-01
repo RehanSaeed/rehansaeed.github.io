@@ -46,6 +46,13 @@ export default {
 </script>
 
 <style lang="scss">
+.portfolio {
+  display: grid;
+  grid-gap: var(--space);
+  grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
+  padding: 0 var(--space);
+}
+
 .portfolio__title {
   padding: calc(var(--space) / 2) 0 calc(var(--space) / 2);
   text-align: center;
