@@ -77,7 +77,7 @@ export default {
 		border-radius: 100%;
 		width: 100px;
 		height: 100px;
-		margin-bottom: 1em;
+		margin-bottom: 1rem;
 	}
 
 	&__intro {
@@ -90,7 +90,7 @@ export default {
 
   &__link {
     color: var(--title-color);
-    margin: 0 .5em;
+    margin: 0 .5rem;
   }
 }
 </style>
