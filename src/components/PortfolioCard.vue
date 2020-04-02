@@ -24,52 +24,54 @@ export default {
   components: {
     ContentBox,
     PortfolioMeta,
-    PortfolioTags
+    PortfolioTags,
   },
-  props: ['portfolio'],
+  props: {
+    portfolio: Object,
+  }
 }
 </script>
 
 <style lang="scss">
 .portfolio-card {
   position: relative;
+}
 
-  &__header {
-    margin-left: calc(var(--space) * -1);
-    margin-right: calc(var(--space) * -1);
-    margin-bottom: calc(var(--space) / 2);
-    margin-top: calc(var(--space) * -1);
-    overflow: hidden;
-    border-radius: var(--radius) var(--radius) 0 0;
+.portfolio-card__header {
+  margin-left: calc(var(--space) * -1);
+  margin-right: calc(var(--space) * -1);
+  margin-bottom: calc(var(--space) / 2);
+  margin-top: calc(var(--space) * -1);
+  overflow: hidden;
+  border-radius: var(--radius) var(--radius) 0 0;
 
-    &:empty {
-      display: none;
-    }
+  &:empty {
+    display: none;
   }
+}
 
-  &__image {
-    min-width: 100%;
-  }
+.portfolio-card__image {
+  min-width: 100%;
+}
 
-  &__title {
-    margin-top: 0;
-  }
+.portfolio-card__title {
+  margin-top: 0;
+}
 
-  &__tags {
-    z-index: 1;
-    position: relative;
-  }
+.portfolio-card__tags {
+  z-index: 1;
+  position: relative;
+}
 
-  &__link {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.0;
-    overflow: hidden;
-    text-indent: -9999px;
-    z-index: 0;
-  }
+.portfolio-card__link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.0;
+  overflow: hidden;
+  text-indent: -9999px;
+  z-index: 0;
 }
 </style>

@@ -26,7 +26,9 @@ export default {
     PostMeta,
     PostTags
   },
-  props: ['post'],
+  props: {
+    post: Object,
+  },
 }
 </script>
 
@@ -34,43 +36,43 @@ export default {
 .post-card {
   margin-bottom: var(--space);
   position: relative;
+}
 
-  &__header {
-    margin-left: calc(var(--space) * -1);
-    margin-right: calc(var(--space) * -1);
-    margin-bottom: calc(var(--space) / 2);
-    margin-top: calc(var(--space) * -1);
-    overflow: hidden;
-    border-radius: var(--radius) var(--radius) 0 0;
+.post-card__header {
+  margin-left: calc(var(--space) * -1);
+  margin-right: calc(var(--space) * -1);
+  margin-bottom: calc(var(--space) / 2);
+  margin-top: calc(var(--space) * -1);
+  overflow: hidden;
+  border-radius: var(--radius) var(--radius) 0 0;
 
-    &:empty {
-      display: none;
-    }
+  &:empty {
+    display: none;
   }
+}
 
-  &__image {
-    min-width: 100%;
-  }
+.post-card__image {
+  min-width: 100%;
+}
 
-  &__title {
-    margin-top: 0;
-  }
+.post-card__title {
+  margin-top: 0;
+}
 
-  &__tags {
-    z-index: 1;
-    position: relative;
-  }
+.post-card__tags {
+  z-index: 1;
+  position: relative;
+}
 
-  &__link {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.0;
-    overflow: hidden;
-    text-indent: -9999px;
-    z-index: 0;
-  }
+.post-card__link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.0;
+  overflow: hidden;
+  text-indent: -9999px;
+  z-index: 0;
 }
 </style>

@@ -39,6 +39,7 @@ export default {
   &:hover {
     opacity: .7;
   }
+
   &:focus {
     outline: none;
   }

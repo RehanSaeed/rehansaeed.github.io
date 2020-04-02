@@ -33,6 +33,7 @@ export default {
 }
 
 .about__image {
+  border-radius: var(--radius);
   display: block;
   margin: 0 auto;
 }

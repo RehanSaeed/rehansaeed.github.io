@@ -7,7 +7,7 @@
 <script>
 export default {
   props: {
-    hoverable: Boolean
+    hoverable: Boolean,
   }
 }
 </script>

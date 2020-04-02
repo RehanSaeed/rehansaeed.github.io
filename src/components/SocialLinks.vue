@@ -53,7 +53,7 @@ export default {
   align-items: center;
   display: grid;
   grid-template-columns: repeat(5, auto);
-  grid-gap: 2rem;
+  grid-gap: 1.8rem;
   justify-content: center;
 }
 </style>

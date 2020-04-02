@@ -1,12 +1,14 @@
 <template>
    <div class="portfolio-meta">
-      Started {{ portfolio.date }}
+      Started {{portfolio.date}}
     </div>
 </template>
 
 <script>
 export default {
-  props: ['portfolio']
+  props: {
+    portfolio: Object,
+  }
 }
 </script>
 
