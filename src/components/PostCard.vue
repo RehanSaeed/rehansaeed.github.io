@@ -8,7 +8,7 @@
       <p class="post-card__description" v-html="post.description" />
 
       <PostMeta class="post-card__meta" :post="post" />
-      <PostTags class="post-card__tags" :post="post" />
+      <Tags v-if="post.tags" class="post-card__tags" :tags="post.tags" />
 
       <g-link class="post-card__link" :to="post.path">Link</g-link>
     </div>
@@ -18,13 +18,13 @@
 <script>
 import ContentBox from '~/components/ContentBox'
 import PostMeta from '~/components/PostMeta'
-import PostTags from '~/components/PostTags'
+import Tags from '~/components/Tags'
 
 export default {
   components: {
     ContentBox,
     PostMeta,
-    PostTags
+    Tags,
   },
   props: {
     post: Object,
@@ -60,6 +60,7 @@ export default {
 }
 
 .post-card__tags {
+  margin-top: 1.5rem;
   z-index: 1;
   position: relative;
 }

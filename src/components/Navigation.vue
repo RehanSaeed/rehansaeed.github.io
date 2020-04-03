@@ -67,13 +67,5 @@ export default {
     grid-row-start: 2;
     grid-template-columns: auto;
   }
-
-//   .navigation__search {
-//   align-self: start;
-// }
-
-// .navigation__toggle-theme {
-//   align-self: start;
-// }
 }
 </style>

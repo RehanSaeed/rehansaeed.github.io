@@ -17,7 +17,7 @@
       <div class="post__content" v-html="$page.post.content" />
 
       <div class="post__footer">
-        <PostTags :post="$page.post" />
+        <Tags :tags="$page.post.tags" />
       </div>
     </ContentBox>
 
@@ -31,16 +31,16 @@
 
 <script>
 import Author from '~/components/Author.vue'
-import ContentBox from '~/components/ContentBox.vue'
-import PostMeta from '~/components/PostMeta'
-import PostTags from '~/components/PostTags'
+import ContentBox from '~/components/ContentBox.vue';
+import PostMeta from '~/components/PostMeta';
+import Tags from '~/components/Tags';
 
 export default {
   components: {
     Author,
     ContentBox,
     PostMeta,
-    PostTags
+    Tags,
   },
   metaInfo () {
     return {

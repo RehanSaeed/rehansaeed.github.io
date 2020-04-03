@@ -8,7 +8,7 @@
       <p class="portfolio-card__description" v-html="portfolio.description" />
 
       <PortfolioMeta class="portfolio-card__meta" :portfolio="portfolio" />
-      <PortfolioTags class="portfolio-card__tags" :portfolio="portfolio" />
+      <Tags v-if="portfolio.tags" class="portfolio-card__tags" :tags="portfolio.tags" />
 
       <g-link class="portfolio-card__link" :to="portfolio.permalink">Link</g-link>
     </div>
@@ -16,15 +16,15 @@
 </template>
 
 <script>
-import ContentBox from '~/components/ContentBox'
-import PortfolioMeta from '~/components/PortfolioMeta'
-import PortfolioTags from '~/components/PortfolioTags'
+import ContentBox from '~/components/ContentBox';
+import PortfolioMeta from '~/components/PortfolioMeta';
+import Tags from '~/components/Tags';
 
 export default {
   components: {
     ContentBox,
     PortfolioMeta,
-    PortfolioTags,
+    Tags,
   },
   props: {
     portfolio: Object,
@@ -59,6 +59,7 @@ export default {
 }
 
 .portfolio-card__tags {
+  margin-top: 1.5rem;
   z-index: 1;
   position: relative;
 }
