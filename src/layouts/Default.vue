@@ -3,9 +3,6 @@
 
     <header class="header">
       <Navigation class="header__navigation" />
-
-      <Search class="header__search" />
-      <ToggleTheme class="header__theme" />
     </header>
 
     <main class="main">
@@ -26,36 +23,16 @@
 <script>
 import Navigation from '~/components/Navigation.vue'
 import Search from '~/components/Search.vue'
-import ToggleTheme from '~/components/ToggleTheme.vue'
 
 export default {
   components: {
     Navigation,
     Search,
-    ToggleTheme
   }
 }
 </script>
 
 <style lang="scss">
-.header {
-  align-items: center;
-  display: grid;
-  grid-gap: 0.6em;
-  grid-template-columns: 1fr auto auto;
-  margin: 0 auto;
-  padding: 0.5rem 1rem;
-  top:0;
-  z-index: 10;
-
-  &__navigation {
-    justify-self: start;
-  }
-  &__theme {
-    margin-top: 0.1rem;
-  }
-}
-
 .main {
   margin: 0 auto;
   padding: 1.5vw 15px 0;

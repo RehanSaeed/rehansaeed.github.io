@@ -6,15 +6,21 @@
     <EffectLink class="navigation__item" to="/">Blog</EffectLink>
     <EffectLink class="navigation__item" to="/portfolio/">Portfolio</EffectLink>
     <EffectLink class="navigation__item" to="/about/">About</EffectLink>
+    <ToggleSearch class="navigation__search" />
+    <ToggleTheme class="navigation__toggle-theme" />
   </nav>
 </template>
 
 <script>
 import EffectLink from '~/components/EffectLink.vue'
+import ToggleSearch from '~/components/ToggleSearch.vue'
+import ToggleTheme from '~/components/ToggleTheme.vue'
 
 export default {
   components: {
     EffectLink,
+    ToggleSearch,
+    ToggleTheme,
   }
 }
 </script>
@@ -24,8 +30,9 @@ export default {
   align-items: center;
   display: grid;
   font-size: 1.1em;
-  grid-template-columns: repeat(4, auto);
+  grid-template-columns: repeat(4, auto) 1fr repeat(2, auto);
   grid-gap: 1rem;
+  padding: 0.5rem 1rem;
 }
 
 .navigation__image {
@@ -33,5 +40,13 @@ export default {
   border-radius: 100%;
   width: 45px;
   height: 45px;
+}
+
+.navigation__search {
+  grid-column-start: 6;
+}
+
+.navigation__toggle-theme {
+  grid-column-start: 7;
 }
 </style>
