@@ -5,7 +5,7 @@
         {{ $page.post.title }}
       </h1>
 
-      <PostMeta :post="$page.post" />
+      <Meta :meta="$page.post" />
 
     </div>
 
@@ -32,14 +32,14 @@
 <script>
 import Author from '~/components/Author.vue'
 import ContentBox from '~/components/ContentBox.vue';
-import PostMeta from '~/components/PostMeta';
+import Meta from '~/components/Meta';
 import Tags from '~/components/Tags';
 
 export default {
   components: {
     Author,
     ContentBox,
-    PostMeta,
+    Meta,
     Tags,
   },
   metaInfo () {

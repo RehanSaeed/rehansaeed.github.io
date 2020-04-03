@@ -7,7 +7,7 @@
       <h2 class="portfolio-card__title" v-html="portfolio.title" />
       <p class="portfolio-card__description" v-html="portfolio.description" />
 
-      <PortfolioMeta class="portfolio-card__meta" :portfolio="portfolio" />
+      <Meta class="portfolio-card__meta" :meta="portfolio" />
       <Tags v-if="portfolio.tags" class="portfolio-card__tags" :tags="portfolio.tags" />
 
       <g-link class="portfolio-card__link" :to="portfolio.permalink">Link</g-link>
@@ -17,13 +17,13 @@
 
 <script>
 import ContentBox from '~/components/ContentBox';
-import PortfolioMeta from '~/components/PortfolioMeta';
+import Meta from '~/components/Meta';
 import Tags from '~/components/Tags';
 
 export default {
   components: {
     ContentBox,
-    PortfolioMeta,
+    Meta,
     Tags,
   },
   props: {

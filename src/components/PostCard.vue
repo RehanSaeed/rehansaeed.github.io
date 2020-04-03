@@ -7,7 +7,7 @@
       <h2 class="post-card__title" v-html="post.title" />
       <p class="post-card__description" v-html="post.description" />
 
-      <PostMeta class="post-card__meta" :post="post" />
+      <Meta class="post-card__meta" :meta="post" />
       <Tags v-if="post.tags" class="post-card__tags" :tags="post.tags" />
 
       <g-link class="post-card__link" :to="post.path">Link</g-link>
@@ -16,14 +16,14 @@
 </template>
 
 <script>
-import ContentBox from '~/components/ContentBox'
-import PostMeta from '~/components/PostMeta'
-import Tags from '~/components/Tags'
+import ContentBox from '~/components/ContentBox';
+import Meta from '~/components/Meta';
+import Tags from '~/components/Tags';
 
 export default {
   components: {
     ContentBox,
-    PostMeta,
+    Meta,
     Tags,
   },
   props: {
