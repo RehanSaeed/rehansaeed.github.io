@@ -33,6 +33,14 @@ export default {
 </script>
 
 <style lang="scss">
+@media screen and (min-width: 1300px) {
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+}
+
 .main {
   margin: 0 auto;
   padding: 1.5vw 15px 0;

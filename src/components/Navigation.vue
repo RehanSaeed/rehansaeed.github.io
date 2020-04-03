@@ -3,9 +3,11 @@
     <EffectLink to="/">
 		  <g-image alt="Author image" class="navigation__image" src="~/assets/images/Muhammad-Rehan-Saeed.png" width="30" height="30" blur="0" />
     </EffectLink>
-    <EffectLink class="navigation__item" to="/">Blog</EffectLink>
-    <EffectLink class="navigation__item" to="/portfolio/">Portfolio</EffectLink>
-    <EffectLink class="navigation__item" to="/about/">About</EffectLink>
+    <div class="navigation__items">
+      <EffectLink class="navigation__item" to="/">Blog</EffectLink>
+      <EffectLink class="navigation__item" to="/portfolio/">Portfolio</EffectLink>
+      <EffectLink class="navigation__item" to="/about/">About</EffectLink>
+    </div>
     <ToggleSearch class="navigation__search" />
     <ToggleTheme class="navigation__toggle-theme" />
   </nav>
@@ -32,7 +34,13 @@ export default {
   font-size: 1.1em;
   grid-template-columns: repeat(4, auto) 1fr repeat(2, auto);
   grid-gap: 1rem;
-  padding: 0.5rem 1rem;
+  padding: 1rem;
+}
+
+.navigation__items {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  grid-gap: 1rem;
 }
 
 .navigation__image {
@@ -48,5 +56,24 @@ export default {
 
 .navigation__toggle-theme {
   grid-column-start: 7;
+}
+
+@media screen and (min-width: 1300px) {
+  .navigation {
+    grid-template-columns: auto 1fr repeat(2, auto);
+  }
+  .navigation__items {
+    grid-column-start: 1;
+    grid-row-start: 2;
+    grid-template-columns: auto;
+  }
+
+//   .navigation__search {
+//   align-self: start;
+// }
+
+// .navigation__toggle-theme {
+//   align-self: start;
+// }
 }
 </style>

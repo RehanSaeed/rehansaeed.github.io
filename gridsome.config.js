@@ -140,7 +140,6 @@ module.exports = {
         // See https://www.npmjs.com/package/feed#example for available properties
         // NOTE: `date` field MUST be a Javascript `Date` object
         nodeToFeedItem: (node) => {
-          console.log(new Date(node.date));
           return {
             title: node.title,
             id: siteUrl + node.permalink,

@@ -10,7 +10,7 @@
     </EffectButton>
 
     <Dialogue :is-open="isOpen" @close="close" class="search-dialogue">
-      <Search />
+      <Search @selected="close"/>
     </Dialogue>
 
   </div>

@@ -51,6 +51,8 @@ export default {
   grid-gap: var(--space);
   grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
   padding: 0 var(--space);
+  margin-left: var(--space);
+  margin-right: var(--space);
 }
 
 .portfolio__title {

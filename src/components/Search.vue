@@ -8,6 +8,7 @@
       type="text">
     <div class="search__results">
       <g-link v-for="result in searchResults"
+        @click.native="onSelected"
         :key="result.id"
         :to="result.permalink || result.path"
         class="search__result">
@@ -22,7 +23,12 @@
 import Search from 'gridsome-plugin-flexsearch/SearchMixin';
 
 export default {
-  mixins: [Search]
+  mixins: [Search],
+  methods: {
+    onSelected: function() {
+      this.$emit('selected');
+    }
+  }
 }
 </script>
 
@@ -33,6 +39,7 @@ export default {
 }
 
 .search__input {
+  background: var(--bg-content-color);
   border-color: var(--title-color);
   border-radius: var(--radius);
   border-width: 2px;
