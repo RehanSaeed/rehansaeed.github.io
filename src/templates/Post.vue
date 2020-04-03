@@ -17,12 +17,14 @@
       <div class="post__content" v-html="$page.post.content" />
 
       <div class="post__footer">
+        <EditOnGitHubButton :post="$page.post" class="post__edit" />
         <Tags :tags="$page.post.tags" />
       </div>
     </ContentBox>
 
     <div class="post-comments">
       <!-- Add comment widgets here -->
+
     </div>
 
     <Author class="post-author" />
@@ -30,8 +32,9 @@
 </template>
 
 <script>
-import Author from '~/components/Author.vue'
+import Author from '~/components/Author.vue';
 import ContentBox from '~/components/ContentBox.vue';
+import EditOnGitHubButton from '~/components/EditOnGitHubButton.vue';
 import Meta from '~/components/Meta';
 import Tags from '~/components/Tags';
 
@@ -39,6 +42,7 @@ export default {
   components: {
     Author,
     ContentBox,
+    EditOnGitHubButton,
     Meta,
     Tags,
   },
@@ -117,6 +121,15 @@ query Post ($id: ID!) {
       max-width: none;
     }
   }
+}
+
+.post__footer {
+  display: grid;
+  justify-items: start;
+}
+
+.post__edit {
+  margin-bottom: 1.5rem;
 }
 
 .post-comments {

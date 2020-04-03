@@ -1,5 +1,5 @@
 <template>
-  <g-link class="link" :to="to">
+  <g-link class="link" :class="{ 'link--button': button }" :to="to">
     <slot/>
   </g-link>
 </template>
@@ -7,6 +7,7 @@
 <script>
 export default {
   props: {
+    button: Boolean,
     to: String,
   }
 }
@@ -30,5 +31,12 @@ export default {
     opacity: .5;
     transform: scale(1.07);
   }
+}
+
+.link--button {
+  background-color: var(--bg-color);
+  border-radius: var(--radius);
+  font-size: .8em;
+  padding: .5em 1em;
 }
 </style>

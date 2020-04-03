@@ -1,6 +1,6 @@
 <template>
    <div class="tags">
-   		<EffectLink class="tags__link" v-for="tag in tags" :key="tag.id" :to="tag.path">
+   		<EffectLink class="tags__link" button v-for="tag in tags" :key="tag.id" :to="tag.path">
    			{{tag.title}}
    		</EffectLink>
     </div>
@@ -30,11 +30,7 @@ export default {
 }
 
 .tags__link {
-  background-color: var(--bg-color);
-  border-radius: var(--radius);
-  font-size: .8em;
   margin-right: var(--tag-gap);
   margin-bottom: var(--tag-gap);
-  padding: .5em 1em;
 }
 </style>
