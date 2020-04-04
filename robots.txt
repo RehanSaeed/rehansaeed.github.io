@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://rehansaeed.com/sitemap.xml
-Host: https://rehansaeed.com
+Sitemap: https://preview.rehansaeed.com/sitemap.xml
+Host: https://preview.rehansaeed.com
