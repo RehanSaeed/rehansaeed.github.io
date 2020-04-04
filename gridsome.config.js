@@ -178,6 +178,26 @@ module.exports = {
         searchFields: ["title", "description"]
       }
     },
+    // https://gridsome.org/plugins/gridsome-plugin-pwa
+    // {
+    //   use: 'gridsome-plugin-pwa',
+    //   options: {
+    //     title: siteName,
+    //     startUrl: '/',
+    //     display: 'standalone',
+    //     statusBarStyle: 'default',
+    //     manifestPath: 'manifest.json',
+    //     disableServiceWorker: false,
+    //     serviceWorkerPath: 'service-worker.js',
+    //     cachedFileTypes: 'js,json,css,html,png,jpg,jpeg,svg,gif',
+    //     shortName: siteName,
+    //     themeColor: '#cbbbff',
+    //     backgroundColor: '#0d2538',
+    //     icon: 'src/favicon.png',
+    //     msTileImage: 'src/favicon.png',
+    //     msTileColor: '#cbbbff',
+    //   }
+    // },
     // https://gridsome.org/plugins/gridsome-plugin-robots
     {
       use: 'gridsome-plugin-robots',
