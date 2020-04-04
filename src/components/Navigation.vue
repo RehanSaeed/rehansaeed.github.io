@@ -69,6 +69,7 @@ export default {
 @media screen and (min-width: 1300px) {
   .navigation {
     grid-template-columns: auto 1fr repeat(2, auto);
+    margin-bottom: -8rem;
   }
   .navigation__items {
     grid-column-start: 1;
