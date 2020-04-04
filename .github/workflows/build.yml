@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -19,15 +19,12 @@ jobs:
         lfs: true
     - name: 'NPM Install'
       run: npm install
-      shell: pwsh
     - name: 'NPM Build'
       run: npm run build
-      shell: pwsh
     - name: 'Deploy'
       if: github.event_name != 'pull_request'
       run: |
-        git remote set-url origin "https://git:${env:GITHUB_TOKEN}@github.com/RehanSaeed/rehansaeed.github.io.git"
+        git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/RehanSaeed/rehansaeed.github.io.git
         npx gh-pages --branch master --dist dist --user "github-actions-bot <support+actions@github.com>"
-      shell: pwsh
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
