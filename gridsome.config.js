@@ -5,7 +5,7 @@ const marked = require('marked');
 const siteName = "Muhammad Rehan Saeed";
 const siteDescription =
   "Software Developer at Microsoft, Open Source Contributor and Blogger";
-const siteUrl = "https://rehansaeed.com";
+const siteUrl = "https://preview.rehansaeed.com";
 const siteAuthor = "Muhammad Rehan Saeed";
 const siteCopyright = `Copyright © ${new Date().getFullYear()} Muhammad Rehan Saeed`;
 const siteLanguage = "en-GB";
