@@ -1,0 +1,3 @@
+Contact: https://twitter.com/RehanSaeedUK
+Preferred-Languages: en-GB
+Canonical: https://rehansaeed.com/security.txt
