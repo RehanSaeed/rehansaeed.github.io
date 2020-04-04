@@ -1,9 +1,7 @@
 <template>
   <div id="app">
 
-    <header class="header">
-      <Navigation class="header__navigation" />
-    </header>
+    <Navigation class="navigation" />
 
     <main class="main">
       <slot/>
@@ -34,7 +32,7 @@ export default {
 
 <style lang="scss">
 @media screen and (min-width: 1300px) {
-  .header {
+  .navigation {
     position: sticky;
     top: 0;
     z-index: 10;

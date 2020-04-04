@@ -35,6 +35,15 @@ export default {
   grid-template-columns: repeat(4, auto) 1fr repeat(2, auto);
   grid-gap: 1rem;
   padding: 1rem;
+  visibility: hidden;
+}
+
+.navigation__image {
+  border: solid 2px var(--title-color);
+  border-radius: 100%;
+  width: 45px;
+  height: 45px;
+  visibility: visible;
 }
 
 .navigation__items {
@@ -43,19 +52,18 @@ export default {
   grid-gap: 1rem;
 }
 
-.navigation__image {
-  border: solid 2px var(--title-color);
-  border-radius: 100%;
-  width: 45px;
-  height: 45px;
+.navigation__item {
+  visibility: visible;
 }
 
 .navigation__search {
   grid-column-start: 6;
+  visibility: visible;
 }
 
 .navigation__toggle-theme {
   grid-column-start: 7;
+  visibility: visible;
 }
 
 @media screen and (min-width: 1300px) {
