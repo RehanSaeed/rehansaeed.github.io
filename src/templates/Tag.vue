@@ -10,6 +10,16 @@
   </Layout>
 </template>
 
+<static-query>
+query {
+  metadata {
+    url
+    author
+    twitter
+  }
+}
+</static-query>
+
 <page-query>
 query Tag ($id: ID!) {
   tag (id: $id) {
@@ -41,9 +51,48 @@ export default {
     Author,
     PostCard
   },
+  computed: {
+    description: function() { return `Blog posts about ${this.$page.tag.title}`; }
+  },
   metaInfo() {
     return {
-      title: this.$page.tag.title
+      title: this.$page.tag.title,
+      meta: [
+        {
+          name: 'description',
+          content: this.description,
+        },
+        {
+          name: 'author',
+          content: this.$static.metadata.author
+        },
+
+        // Twitter card
+        {
+          name: 'twitter:card',
+          content: 'summary_large_image'
+        },
+        {
+          name: 'twitter:site',
+          content: this.$static.metadata.twitter
+        },
+        {
+          name: 'twitter:creator',
+          content: this.$static.metadata.twitter
+        },
+        {
+          name: 'twitter:title',
+          content: this.$page.tag.title
+        },
+        {
+          name: 'twitter:description',
+          content: this.description
+        },
+        {
+          name: 'twitter:image',
+          content: this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'
+        }
+      ]
     }
   }
 }
