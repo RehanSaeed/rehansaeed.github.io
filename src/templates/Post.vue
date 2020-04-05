@@ -85,9 +85,6 @@ query Post ($id: ID!) {
   text-align: center;
 }
 
-.post {
-}
-
 .post__header {
   width: calc(100% + var(--space) * 2);
   margin-left: calc(var(--space) * -1);
