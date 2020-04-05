@@ -17,7 +17,7 @@ export default {
   },
   data() {
     return {
-      isSupported: navigator.share
+      isSupported: navigator && navigator.share
     }
   },
   props: {
