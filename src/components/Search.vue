@@ -6,7 +6,7 @@
       v-model="searchTerm"
       class="search__input"
       placeholder="Search"
-      type="text">
+      type="search">
     <div class="search__results">
       <g-link v-for="result in searchResults"
         @click.native="onSelected"
