@@ -45,13 +45,12 @@ export default {
       this.$emit('close');
     }
   },
-  async mounted() {
+  mounted() {
     if (!process.isClient) {
       return;
     }
 
-    const dialogPolyfillImport = () => import('dialog-polyfill');
-    const dialogPolyfill = await dialogPolyfillImport();
+    const dialogPolyfill = require('dialog-polyfill');
     dialogPolyfill.registerDialog(this.dialog);
   },
 }
