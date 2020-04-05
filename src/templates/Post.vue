@@ -17,9 +17,13 @@
       <div class="post__content" v-html="$page.post.content" />
 
       <div class="post__footer">
-        <EditOnGitHubButton :post="$page.post" class="post__edit" />
-        <Tags :tags="$page.post.tags" />
+        <div class="post__footer-first-row">
+          <EditOnGitHubButton :post="$page.post" class="post__edit" />
+          <ShareButton :title="$page.post.title" class="post__share" />
+        </div>
+        <Tags :tags="$page.post.tags"  class="post__tags" />
       </div>
+
     </ContentBox>
 
     <div class="post-comments">
@@ -36,6 +40,7 @@ import Author from '~/components/Author.vue';
 import ContentBox from '~/components/ContentBox.vue';
 import EditOnGitHubButton from '~/components/EditOnGitHubButton.vue';
 import Meta from '~/components/Meta';
+import ShareButton from '~/components/ShareButton.vue';
 import Tags from '~/components/Tags';
 
 export default {
@@ -44,6 +49,7 @@ export default {
     ContentBox,
     EditOnGitHubButton,
     Meta,
+    ShareButton,
     Tags,
   },
   metaInfo () {
@@ -170,7 +176,14 @@ query Post ($id: ID!) {
   justify-items: start;
 }
 
-.post__edit {
+.post__footer-first-row {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  grid-gap: .6rem;
+}
+
+.post__edit,
+.post__share {
   margin-bottom: 1.5rem;
 }
 
