@@ -33,7 +33,7 @@ export default {
   },
   computed: {
     title: function() { return 'About'; },
-    description: function() { return `About ${this.$static.metadata.author}. ${description}.`; }
+    description: function() { return `About ${this.$static.metadata.author}. ${this.$static.metadata.description}.`; }
   },
   metaInfo() {
     return {
