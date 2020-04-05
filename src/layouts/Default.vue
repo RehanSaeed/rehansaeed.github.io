@@ -10,6 +10,8 @@
     <footer class="footer">
       <span class="footer__copyright">Copyright © {{ new Date().getFullYear() }} Muhammad Rehan Saeed</span>
       <span>|</span>
+      <span class="footer__copyright"><a href="/sitemap.xml">Sitemap</a></span>
+      <span>|</span>
       <span class="footer__links">Built with <a href="https://gridsome.org">Gridsome</a></span>
       <span>|</span>
       <span class="footer__links">Code on <a href="https://github.com/RehanSaeed/rehansaeed.github.io">GitHub</a></span>
