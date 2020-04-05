@@ -20,8 +20,10 @@ export default {
   components: {
     ContentBox,
   },
-  metaInfo: {
-    title: 'About'
+  metaInfo() {
+    return {
+      title: 'About'
+    }
   }
 }
 </script>

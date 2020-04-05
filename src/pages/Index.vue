@@ -41,8 +41,10 @@ export default {
     Author,
     PostCard
   },
-  metaInfo: {
-    title: 'Blog'
+  metaInfo() {
+    return {
+      title: 'Blog'
+    }
   }
 }
 </script>

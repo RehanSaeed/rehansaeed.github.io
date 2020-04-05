@@ -39,8 +39,10 @@ export default {
   components: {
     PortfolioCard
   },
-  metaInfo: {
-    title: 'Portfolio'
+  metaInfo() {
+    return {
+      title: 'Portfolio'
+    }
   }
 }
 </script>
