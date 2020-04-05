@@ -51,7 +51,7 @@ export default {
   },
   computed: {
     title: function() { return 'Portfolio'; },
-    description: function() { return `Portfolio of work by ${this.$static.metadata.author}`; }
+    description: function() { return `Portfolio of work by ${this.$static.metadata.author}.`; }
   },
   metaInfo() {
     return {

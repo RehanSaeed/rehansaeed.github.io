@@ -52,7 +52,7 @@ export default {
     PostCard
   },
   computed: {
-    description: function() { return `Blog posts about ${this.$page.tag.title}`; }
+    description: function() { return `Blog posts authored by ${this.$static.metadata.author} about ${this.$page.tag.title}.`; }
   },
   metaInfo() {
     return {

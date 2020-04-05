@@ -53,7 +53,7 @@ export default {
   },
   computed: {
     title: function() { return 'Blog'; },
-    description: function() { return `Blog posts written by ${this.$static.metadata.author}`; }
+    description: function() { return `Blog posts and more authored by ${this.$static.metadata.author}.`; }
   },
   metaInfo() {
     return {
