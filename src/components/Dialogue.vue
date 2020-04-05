@@ -16,6 +16,15 @@
 <script>
 import EffectButton from '~/components/EffectButton.vue';
 
+function registerDialogPolyfill() {
+  if (!process.isClient) {
+      return;
+    }
+
+    const dialogPolyfill = require('dialog-polyfill');
+    dialogPolyfill.registerDialog(this.dialog);
+}
+
 export default {
   components: {
     EffectButton,
@@ -46,12 +55,7 @@ export default {
     }
   },
   mounted() {
-    if (!process.isClient) {
-      return;
-    }
-
-    const dialogPolyfill = require('dialog-polyfill');
-    dialogPolyfill.registerDialog(this.dialog);
+    registerDialogPolyfill();
   },
 }
 </script>
