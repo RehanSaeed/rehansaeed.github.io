@@ -73,6 +73,10 @@ export default {
           content: '@RehanSaeedUK'
         },
         {
+          name: 'twitter:creator',
+          content: '@RehanSaeedUK'
+        },
+        {
           name: 'twitter:title',
           content: this.$page.post.title
         },
