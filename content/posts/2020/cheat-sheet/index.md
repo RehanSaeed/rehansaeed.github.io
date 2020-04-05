@@ -16,9 +16,32 @@ tags:
 
 # Formatting
 
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dolor in tellus dictum, vel pharetra lacus ultricies. Phasellus porttitor scelerisque elit et ultrices. Donec auctor sapien finibus metus commodo, nec tempus tortor interdum. Vestibulum porttitor venenatis eros quis lacinia.
+
+Duis aliquet ex eu scelerisque ultricies. Nam ac sagittis ligula. Vestibulum velit erat, tristique nec elit nec, venenatis ullamcorper mi. Aliquam sollicitudin finibus enim in volutpat. Duis cursus hendrerit turpis, vitae porta mi euismod rutrum. Suspendisse blandit aliquet rutrum. Nunc nec pharetra magna. Maecenas posuere in leo vitae tempus. Suspendisse potenti. Duis sed faucibus massa.
+
 **Bold** *Italic* [Link](https://example.com)
 
 > Quote
+
+# Lists
+
+- One
+- two
+- Three
+
+1. One
+2. Two
+3. Three
+
+- One
+  - One One
+  - One Two
+  - One Three
+- Two
+  1. Two One
+  2. Two Two
+  3. Two Three
 
 # Tables
 

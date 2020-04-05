@@ -86,40 +86,40 @@ query Post ($id: ID!) {
 }
 
 .post {
+}
 
-  &__header {
-    width: calc(100% + var(--space) * 2);
-    margin-left: calc(var(--space) * -1);
-    margin-top: calc(var(--space) * -1);
-    margin-bottom: calc(var(--space) / 2);
-    overflow: hidden;
-    border-radius: var(--radius) var(--radius) 0 0;
+.post__header {
+  width: calc(100% + var(--space) * 2);
+  margin-left: calc(var(--space) * -1);
+  margin-top: calc(var(--space) * -1);
+  margin-bottom: calc(var(--space) / 2);
+  overflow: hidden;
+  border-radius: var(--radius) var(--radius) 0 0;
 
-    img {
-      width: 100%;
-    }
-
-    &:empty {
-      display: none;
-    }
+  img {
+    width: 100%;
   }
 
-  &__content {
-    h2:first-child {
-      margin-top: 0;
-    }
+  &:empty {
+    display: none;
+  }
+}
 
-    p:first-of-type {
-      font-size: 1.2em;
-      color: var(--title-color);
-    }
+.post__content {
+  > h2:first-child {
+    margin-top: 0;
+  }
 
-    img {
-      width: calc(100% + var(--space) * 2);
-      margin-left: calc(var(--space) * -1);
-      display: block;
-      max-width: none;
-    }
+  > p:first-of-type {
+    font-size: 1.2em;
+    color: var(--title-color);
+  }
+
+  img {
+    width: calc(100% + var(--space) * 2);
+    margin-left: calc(var(--space) * -1);
+    display: block;
+    max-width: none;
   }
 }
 
