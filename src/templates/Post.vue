@@ -61,6 +61,28 @@ export default {
         {
           name: 'keywords',
           content: this.$page.post.tags.map(x => x.title).join(",")
+        },
+
+        // Twitter card
+        {
+          name: 'twitter:card',
+          content: 'summary_large_image'
+        },
+        {
+          name: 'twitter:site',
+          content: '@RehanSaeedUK'
+        },
+        {
+          name: 'twitter:title',
+          content: this.$page.post.title
+        },
+        {
+          name: 'twitter:description',
+          content: this.$page.post.description
+        },
+        {
+          name: 'twitter:image',
+          content: this.$page.post.cover_image
         }
       ]
     }
