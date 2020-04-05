@@ -42,7 +42,7 @@ export default {
     PostCard
   },
   metaInfo: {
-    title: $page.tag.title
+    title: this.$page.tag.title
   }
 }
 </script>
