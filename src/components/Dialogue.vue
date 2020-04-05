@@ -50,7 +50,7 @@ export default {
       return;
     }
 
-    const dialogPolyfill = require('dialog-polyfill');
+    const dialogPolyfill = require('dialog-polyfill').default;
     dialogPolyfill.registerDialog(this.dialog);
   },
 }
