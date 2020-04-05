@@ -53,6 +53,14 @@ export default {
         {
           name: 'description',
           content: this.$page.post.description
+        },
+        {
+          name: 'author',
+          content: this.$page.post.author
+        },
+        {
+          name: 'keywords',
+          content: this.$page.post.tags.map(x => x.title).join(",")
         }
       ]
     }
@@ -67,6 +75,7 @@ query Post ($id: ID!) {
     path
     date (format: "DD MMMM YYYY")
     timeToRead
+    author
     tags {
       id
       title
