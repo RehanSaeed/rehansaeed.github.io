@@ -39,9 +39,10 @@ export default {
 }
 
 .author__image {
+  border: solid 2px var(--title-color);
   border-radius: 100%;
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   margin-bottom: 1rem;
 }
 
