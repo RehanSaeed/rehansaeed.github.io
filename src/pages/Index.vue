@@ -46,21 +46,22 @@ query {
 import Author from '~/components/Author.vue'
 import PostCard from '~/components/PostCard.vue'
 
-const title = 'Blog';
-const description = `Blog posts written by ${this.$static.metadata.author}`;
-
 export default {
   components: {
     Author,
     PostCard
   },
+  computed: {
+    title: function() { return 'Blog'; },
+    description: function() { return `Blog posts written by ${this.$static.metadata.author}`; }
+  },
   metaInfo() {
     return {
-      title,
+      title: this.title,
       meta: [
         {
           name: 'description',
-          content: description
+          content: this.description
         },
         {
           name: 'author',
@@ -82,11 +83,11 @@ export default {
         },
         {
           name: 'twitter:title',
-          content: title
+          content: this.title
         },
         {
           name: 'twitter:description',
-          content: description
+          content: this.description
         },
         {
           name: 'twitter:image',
