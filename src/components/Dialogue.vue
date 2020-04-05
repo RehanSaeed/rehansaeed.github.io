@@ -51,7 +51,6 @@ export default {
     }
 
     const dialogPolyfill = require('dialog-polyfill').default;
-    console.log(dialogPolyfill);
     dialogPolyfill.registerDialog(this.dialog);
   },
 }
