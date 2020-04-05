@@ -70,11 +70,11 @@ export default {
         },
         {
           name: 'twitter:site',
-          content: '@RehanSaeedUK'
+          content: this.$static.metadata.twitter
         },
         {
           name: 'twitter:creator',
-          content: '@RehanSaeedUK'
+          content: this.$static.metadata.twitter
         },
         {
           name: 'twitter:title',
@@ -86,7 +86,7 @@ export default {
         },
         {
           name: 'twitter:image',
-          content: this.$static.metadata.siteUrl + this.$page.post.cover_image
+          content: this.$static.metadata.url + this.$page.post.cover_image
         }
       ]
     }
@@ -97,7 +97,9 @@ export default {
 <static-query>
 query {
   metadata {
-    siteUrl
+    url
+    author
+    twitter
   }
 }
 </static-query>

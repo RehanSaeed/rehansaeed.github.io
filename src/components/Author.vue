@@ -3,9 +3,9 @@
 
 		<g-image alt="Author image" class="author__image" src="~/assets/images/Muhammad-Rehan-Saeed.png" width="180" height="180" blur="5" />
 
-		<h1 class="author__site-title">{{$static.metadata.siteName}}</h1>
+		<h1 class="author__site-title">{{$static.metadata.name}}</h1>
 
-		<p class="author__description">{{$static.metadata.siteDescription}}</p>
+		<p class="author__description">{{$static.metadata.description}}</p>
 
 		<SocialLinks />
 
@@ -15,8 +15,8 @@
 <static-query>
 query {
   metadata {
-    siteName
-    siteDescription
+    name
+    description
   }
 }
 </static-query>

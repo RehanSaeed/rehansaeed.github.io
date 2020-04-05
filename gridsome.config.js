@@ -1,19 +1,13 @@
-const marked = require('marked');
-
 // Changes here requires a server restart.
 // To restart press CTRL + C in terminal and run `gridsome develop`
-const siteName = "Muhammad Rehan Saeed";
-const siteDescription =
-  "Software Developer at Microsoft, Open Source Contributor and Blogger";
-const siteUrl = "https://preview.rehansaeed.com";
-const siteAuthor = "Muhammad Rehan Saeed";
-const siteCopyright = `Copyright © ${new Date().getFullYear()} Muhammad Rehan Saeed`;
-const siteLanguage = "en-GB";
+
+const site = require('./site.json');
+const marked = require('marked');
 
 module.exports = {
-  siteName,
-  siteDescription,
-  siteUrl,
+  siteName: site.name,
+  siteDescription: site.description,
+  siteUrl: site.url,
 
   templates: {
     Post: "/:permalink",
@@ -22,9 +16,6 @@ module.exports = {
   },
 
   plugins: [
-    // Mailchimp
-    // https://rehansaeed.us19.list-manage.com/subscribe/post?u=0d1d7c30db26dd0a4aa1b5b40&amp;id=07ce865066
-
     // https://gridsome.org/plugins/@gridsome/plugin-google-analytics
     {
       use: "@gridsome/plugin-google-analytics",
@@ -95,22 +86,22 @@ module.exports = {
         // Optional: any properties you wish to set for `Feed()` constructor
         // See https://www.npmjs.com/package/feed#example for available properties
         feedOptions: {
-          title: siteName,
-          description: siteDescription,
-          id: siteUrl,
-          link: siteUrl,
-          language: siteLanguage,
-          image: siteUrl + "/images/Site-Hero-1280x640.png",
-          favicon: siteUrl + "/favicon.ico",
-          copyright: siteCopyright,
+          title: site.name,
+          description: site.description,
+          id: site.url,
+          link: site.url,
+          language: site.language,
+          image: site.url + "/images/Site-Hero-1280x640.png",
+          favicon: site.url + "/favicon.ico",
+          copyright: `Copyright © ${new Date().getFullYear()} ${site.author}`,
           feedLinks: {
-            atom: siteUrl + "/atom.xml",
-            json: siteUrl + "/feed.json",
-            rss: siteUrl + "/rss.xml",
+            atom: site.url + "/atom.xml",
+            json: site.url + "/feed.json",
+            rss: site.url + "/rss.xml",
           },
           author: {
-            name: siteAuthor,
-            link: siteUrl,
+            name: site.author,
+            link: site.url,
           }
         },
         atom: {
@@ -142,14 +133,14 @@ module.exports = {
         nodeToFeedItem: (node) => {
           return {
             title: node.title,
-            id: siteUrl + node.permalink,
-            link: siteUrl + node.permalink,
+            id: site.url + node.permalink,
+            link: site.url + node.permalink,
             description: node.description,
             content: marked(node.content),
             author: [
               {
                 name: node.author,
-                link: siteUrl,
+                link: site.url,
               }
             ],
             date: new Date(node.date),
@@ -182,7 +173,7 @@ module.exports = {
     // {
     //   use: 'gridsome-plugin-pwa',
     //   options: {
-    //     title: siteName,
+    //     title: site.name,
     //     startUrl: '/',
     //     display: 'standalone',
     //     statusBarStyle: 'default',
@@ -190,7 +181,7 @@ module.exports = {
     //     disableServiceWorker: false,
     //     serviceWorkerPath: 'service-worker.js',
     //     cachedFileTypes: 'js,json,css,html,png,jpg,jpeg,svg,gif',
-    //     shortName: siteName,
+    //     shortName: site.name,
     //     themeColor: '#cbbbff',
     //     backgroundColor: '#0d2538',
     //     icon: 'src/favicon.png',
@@ -202,9 +193,15 @@ module.exports = {
     {
       use: 'gridsome-plugin-robots',
       options: {
-        host: siteUrl,
-        sitemap: `${siteUrl}/sitemap.xml`,
+        host: site.url,
+        sitemap: `${site.url}/sitemap.xml`,
         policy: [{ userAgent: '*', allow: '/' }]
+      }
+    },
+    {
+      use: 'gridsome-source-static-meta',
+      options: {
+        path: 'site.json'
       }
     }
   ],
