@@ -91,7 +91,7 @@ module.exports = {
           id: site.url,
           link: site.url,
           language: site.language,
-          image: site.url + "/images/Site-Hero-1280x640.png",
+          image: site.url + "/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg",
           favicon: site.url + "/favicon.ico",
           copyright: `Copyright © ${new Date().getFullYear()} ${site.author}`,
           feedLinks: {

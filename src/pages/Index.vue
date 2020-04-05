@@ -91,7 +91,7 @@ export default {
         },
         {
           name: 'twitter:image',
-          content: this.$static.metadata.url + '/images/Site-Hero-1280x640.png'
+          content: this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'
         }
       ]
     }

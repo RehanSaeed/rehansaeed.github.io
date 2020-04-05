@@ -1,1 +1,1 @@
-![Muhammad Rehan Saeed](./static/images/Site-Hero-1280x640.png)
+![Muhammad Rehan Saeed](./static/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg)

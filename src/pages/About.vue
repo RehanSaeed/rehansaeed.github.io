@@ -13,16 +13,67 @@
   </Layout>
 </template>
 
+<static-query>
+query {
+  metadata {
+    description
+    url
+    author
+    twitter
+  }
+}
+</static-query>
+
 <script>
-import ContentBox from '~/components/ContentBox.vue'
+import ContentBox from '~/components/ContentBox.vue';
 
 export default {
   components: {
     ContentBox,
   },
+  computed: {
+    title: function() { return 'About'; },
+    description: function() { return `About ${this.$static.metadata.author}. ${description}.`; }
+  },
   metaInfo() {
     return {
-      title: 'About'
+      title: this.title,
+      meta: [
+        {
+          name: 'description',
+          content: this.description
+        },
+        {
+          name: 'author',
+          content: this.$static.metadata.author
+        },
+
+        // Twitter card
+        {
+          name: 'twitter:card',
+          content: 'summary_large_image'
+        },
+        {
+          name: 'twitter:site',
+          content: this.$static.metadata.twitter
+        },
+        {
+          name: 'twitter:creator',
+          content: this.$static.metadata.twitter
+        },
+        {
+          name: 'twitter:title',
+          content: this.title
+        },
+        {
+          name: 'twitter:description',
+          content: this.description
+        },
+        {
+          name: 'twitter:image',
+          content: this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'
+        }
+      ]
     }
   }
 }
