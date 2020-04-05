@@ -86,13 +86,21 @@ export default {
         },
         {
           name: 'twitter:image',
-          content: this.$page.post.cover_image
+          content: this.$static.metadata.siteUrl + this.$page.post.cover_image
         }
       ]
     }
   }
 }
 </script>
+
+<static-query>
+query {
+  metadata {
+    siteUrl
+  }
+}
+</static-query>
 
 <page-query>
 query Post ($id: ID!) {
