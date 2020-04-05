@@ -10,6 +10,16 @@
   </Layout>
 </template>
 
+<static-query>
+query {
+  metadata {
+    url
+    author
+    twitter
+  }
+}
+</static-query>
+
 <page-query>
 query {
   portfolio: allPortfolio(filter: { published: { eq: true }}, sortBy: "date") {
@@ -39,9 +49,49 @@ export default {
   components: {
     PortfolioCard
   },
+  computed: {
+    title: function() { return 'Portfolio'; },
+    description: function() { return `Portfolio of work by ${this.$static.metadata.author}`; }
+  },
   metaInfo() {
     return {
-      title: 'Portfolio'
+      title: this.title,
+      meta: [
+        {
+          name: 'description',
+          content: this.description
+        },
+        {
+          name: 'author',
+          content: this.$static.metadata.author
+        },
+
+        // Twitter card
+        {
+          name: 'twitter:card',
+          content: 'summary_large_image'
+        },
+        {
+          name: 'twitter:site',
+          content: this.$static.metadata.twitter
+        },
+        {
+          name: 'twitter:creator',
+          content: this.$static.metadata.twitter
+        },
+        {
+          name: 'twitter:title',
+          content: this.title
+        },
+        {
+          name: 'twitter:description',
+          content: this.description
+        },
+        {
+          name: 'twitter:image',
+          content: this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'
+        }
+      ]
     }
   }
 }
