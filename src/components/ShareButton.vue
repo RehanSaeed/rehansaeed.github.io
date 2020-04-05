@@ -30,9 +30,20 @@ export default {
   },
   methods: {
     onClick: function() {
+
+      let url = this.url;
+      if (!url) {
+        const canonicalElement = document.querySelector('link[rel=canonical]');
+        if (canonicalElement !== null) {
+          url = canonicalElement.href;
+        } else {
+          url = document.location.href;
+        }
+      }
+
       navigator.share({
         title: this.title || document.title,
-        url: this.url || document.location.href
+        url: url
       });
     }
   }
