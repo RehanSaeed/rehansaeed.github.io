@@ -42,7 +42,9 @@ export default {
   },
   methods: {
     close() {
-      this.$emit('close');
+      if (this.isOpen) {
+        this.$emit('close');
+      }
     }
   },
   mounted() {
