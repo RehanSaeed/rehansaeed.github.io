@@ -51,6 +51,7 @@ export default {
     }
 
     const dialogPolyfill = require('dialog-polyfill').default;
+    console.log(dialogPolyfill);
     dialogPolyfill.registerDialog(this.dialog);
   },
 }
@@ -74,6 +75,11 @@ dialog {
   padding: var(--space);
   overflow-y: auto;
   scrollbar-color: var(--scroll-thumb-color) var(--scroll-track-color);
+
+  // Workaround to force the polyfill to always show the dialog in the center of the screen.
+  position: fixed;
+  top: 50%;
+  transform: translate(0, -50%);
 }
 
 dialog:not([open]) {
