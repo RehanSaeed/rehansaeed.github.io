@@ -9,6 +9,8 @@
     "branch": "develop"
   },
 
-  "author": "Muhammad Rehan Saeed",
-  "twitter": "@RehanSaeedUK"
+  "author": {
+    "name": "Muhammad Rehan Saeed",
+    "twitter": "@RehanSaeedUK"
+  }
 }

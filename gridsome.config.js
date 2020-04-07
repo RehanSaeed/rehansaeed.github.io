@@ -93,14 +93,14 @@ module.exports = {
           language: site.language,
           image: site.url + "/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg",
           favicon: site.url + "/favicon.ico",
-          copyright: `Copyright © ${new Date().getFullYear()} ${site.author}`,
+          copyright: `Copyright © ${new Date().getFullYear()} ${site.author.name}`,
           feedLinks: {
             atom: site.url + "/atom.xml",
             json: site.url + "/feed.json",
             rss: site.url + "/rss.xml",
           },
           author: {
-            name: site.author,
+            name: site.author.name,
             link: site.url,
           }
         },
@@ -139,7 +139,7 @@ module.exports = {
             content: marked(node.content),
             author: [
               {
-                name: node.author,
+                name: node.author.name,
                 link: site.url,
               }
             ],

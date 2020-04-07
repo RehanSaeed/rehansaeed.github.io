@@ -18,8 +18,10 @@ query {
   metadata {
     description
     url
-    author
-    twitter
+    author {
+      name
+      twitter
+    }
   }
 }
 </static-query>
@@ -33,7 +35,7 @@ export default {
   },
   computed: {
     title: function() { return 'About'; },
-    description: function() { return `About ${this.$static.metadata.author}. ${this.$static.metadata.description}.`; }
+    description: function() { return `About ${this.$static.metadata.author.name}. ${this.$static.metadata.description}.`; }
   },
   metaInfo() {
     return {
@@ -45,7 +47,7 @@ export default {
         },
         {
           name: 'author',
-          content: this.$static.metadata.author
+          content: this.$static.metadata.author.name
         },
 
         // Twitter card
@@ -55,11 +57,11 @@ export default {
         },
         {
           name: 'twitter:site',
-          content: this.$static.metadata.twitter
+          content: this.$static.metadata.author.twitter
         },
         {
           name: 'twitter:creator',
-          content: this.$static.metadata.twitter
+          content: this.$static.metadata.author.twitter
         },
         {
           name: 'twitter:title',

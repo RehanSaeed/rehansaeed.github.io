@@ -14,8 +14,10 @@
 query {
   metadata {
     url
-    author
-    twitter
+    author {
+      name
+      twitter
+    }
   }
 }
 </static-query>
@@ -52,7 +54,7 @@ export default {
     PostCard
   },
   computed: {
-    description: function() { return `Blog posts authored by ${this.$static.metadata.author} about ${this.$page.tag.title}.`; }
+    description: function() { return `Blog posts authored by ${this.$static.metadata.author.name} about ${this.$page.tag.title}.`; }
   },
   metaInfo() {
     return {
@@ -64,7 +66,7 @@ export default {
         },
         {
           name: 'author',
-          content: this.$static.metadata.author
+          content: this.$static.metadata.author.name
         },
 
         // Twitter card
@@ -74,11 +76,11 @@ export default {
         },
         {
           name: 'twitter:site',
-          content: this.$static.metadata.twitter
+          content: this.$static.metadata.author.twitter
         },
         {
           name: 'twitter:creator',
-          content: this.$static.metadata.twitter
+          content: this.$static.metadata.author.twitter
         },
         {
           name: 'twitter:title',

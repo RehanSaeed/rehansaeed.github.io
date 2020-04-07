@@ -62,7 +62,7 @@ export default {
         },
         {
           name: 'author',
-          content: this.$page.post.author
+          content: this.$page.post.author.name
         },
         {
           name: 'keywords',
@@ -76,11 +76,11 @@ export default {
         },
         {
           name: 'twitter:site',
-          content: this.$static.metadata.twitter
+          content: this.$static.metadata.author.twitter
         },
         {
           name: 'twitter:creator',
-          content: this.$static.metadata.twitter
+          content: this.$static.metadata.author.twitter
         },
         {
           name: 'twitter:title',
@@ -104,8 +104,10 @@ export default {
 query {
   metadata {
     url
-    author
-    twitter
+    author {
+      name
+      twitter
+    }
   }
 }
 </static-query>
