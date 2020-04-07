@@ -4,7 +4,10 @@
   "url": "https://preview.rehansaeed.com",
   "language": "en-GB",
 
-  "sitemapRelativeUrl": "/sitemap.xml",
+  "repository": {
+    "url": "https://github.com/RehanSaeed/rehansaeed.github.io",
+    "branch": "develop"
+  },
 
   "author": "Muhammad Rehan Saeed",
   "twitter": "@RehanSaeedUK"

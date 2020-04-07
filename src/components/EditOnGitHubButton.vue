@@ -21,7 +21,7 @@ export default {
   },
   computed: {
     url: function() {
-      return 'https://github.com/RehanSaeed/rehansaeed.github.io/tree/develop/content/posts/' +
+      return `${this.$static.metadata.repository.url}/tree/${this.$static.metadata.repository.branch}/content/posts/` +
         new Date(this.post.date).getFullYear() +
         this.post.path +
         'index.md';
@@ -29,3 +29,14 @@ export default {
   }
 }
 </script>
+
+<static-query>
+query {
+  metadata {
+    repository {
+      url
+      branch
+    }
+  }
+}
+</static-query>
