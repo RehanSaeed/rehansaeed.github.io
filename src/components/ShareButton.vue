@@ -17,7 +17,7 @@ export default {
   },
   data() {
     return {
-      isSupported: navigator && navigator.share
+      isSupported: process.isClient && navigator.share
     }
   },
   props: {
