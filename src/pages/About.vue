@@ -7,7 +7,7 @@
       <g-image class="about__image" alt="Muhammad Rehan Saeed" height="480" width="320" src="~/assets/images/Muhammad-Rehan-Saeed-Profile.jpg" />
       <h2 class="about__title">Muhammad Rehan Saeed</h2>
       <p class="about__description">Rehan is a professional Software Developer at Microsoft. Although he works for Microsoft his opinions are his own. If it’s written in C# or .NET, Rehan has probably written something using it in anger!</p>
-      <p class="about__description">You can see a timeline of my open source work and blog posts in my <g-link src="https://stackoverflow.com/story/muhammad-rehan-saeed">Stack Overflow Developer Story</g-link>.</p>
+      <p class="about__description">You can see a timeline of my open source work and blog posts in my <g-link to="https://stackoverflow.com/story/muhammad-rehan-saeed">Stack Overflow Developer Story</g-link>.</p>
     </ContentBox>
 
   </Layout>
