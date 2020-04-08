@@ -18,8 +18,8 @@
 
       <div class="post__footer">
         <div class="post__footer-first-row">
-          <EditOnGitHubButton :post="$page.post" class="post__edit" />
           <ShareButton :title="$page.post.title" :tags="$page.post.tags.map(x => x.title)" class="post__share" />
+          <EditOnGitHubButton :post="$page.post" class="post__edit" />
         </div>
         <Tags :tags="$page.post.tags"  class="post__tags" />
       </div>
@@ -28,7 +28,6 @@
 
     <div class="post-comments">
       <!-- Add comment widgets here -->
-
     </div>
 
     <Author class="post-author" />
