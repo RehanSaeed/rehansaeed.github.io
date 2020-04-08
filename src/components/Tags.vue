@@ -21,16 +21,16 @@ export default {
 
 <style lang="scss">
 .tags {
-  --tag-gap: .6rem;
+  --gap: .6rem;
 
   display: flex;
   flex-wrap: wrap;
-  margin-right: calc(-1 * var(--tag-gap));
-  margin-bottom: calc(-1 * var(--tag-gap));
+  margin-right: calc(-1 * var(--gap));
+  margin-bottom: calc(-1 * var(--gap));
 }
 
 .tags__link {
-  margin-right: var(--tag-gap);
-  margin-bottom: var(--tag-gap);
+  margin-right: var(--gap);
+  margin-bottom: var(--gap);
 }
 </style>

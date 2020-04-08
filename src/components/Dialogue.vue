@@ -1,5 +1,5 @@
 <template>
-  <dialog ref="dialog" @close="close">
+  <dialog ref="dialog" @close="close" :class="{ 'dialog--fullscreen': fullscreen }">
     <form method="dialog">
       <EffectButton aria-label="Close search" class="dialog__close">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="close">
@@ -21,6 +21,10 @@ export default {
     EffectButton,
   },
   props: {
+    fullscreen: {
+      default: false,
+      type: Boolean,
+    },
     isOpen: {
       default: false,
       type: Boolean,
@@ -63,11 +67,9 @@ dialog {
   position: absolute;
   left: 0;
   right: 0;
-  // width: fit-content;
-  // height: fit-content;
-  height: calc(100vh - var(--space));
-  width: calc(100vw - var(--space));
-  background: var(--bg-color);
+  height: fit-content;
+  width: fit-content;
+  background: var(--bg-content-color);
   border: solid 2px var(--border-color);
   border-radius: var(--radius);
   color: var(--title-color);
@@ -81,6 +83,11 @@ dialog {
   position: fixed;
   top: 50%;
   transform: translate(0, -50%);
+}
+
+.dialog--fullscreen {
+  height: calc(100vh - var(--space));
+  width: calc(100vw - var(--space));
 }
 
 dialog:not([open]) {
