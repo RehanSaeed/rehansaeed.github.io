@@ -101,7 +101,7 @@ export default {
     encodedUrl: function() { return encodeURIComponent(this.internalUrl); },
     encodedTags: function() {
       if (this.tags) {
-        return encodeURIComponent(this.tags.join(','));
+        return encodeURIComponent(this.tags.map(x => x.replace(/[\W_]+/g, '')).join(','));
       }
         return '';
     },

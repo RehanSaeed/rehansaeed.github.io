@@ -19,7 +19,7 @@
       <div class="post__footer">
         <div class="post__footer-first-row">
           <EditOnGitHubButton :post="$page.post" class="post__edit" />
-          <ShareButton :title="$page.post.title" class="post__share" />
+          <ShareButton :title="$page.post.title" :tags="$page.post.tags.map(x => x.title)" class="post__share" />
         </div>
         <Tags :tags="$page.post.tags"  class="post__tags" />
       </div>
