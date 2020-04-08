@@ -87,7 +87,7 @@ export default {
     },
     internalUrl: function() {
       let url = this.url;
-      if (!url) {
+      if (!url && process.isClient) {
         const canonicalElement = document.querySelector('link[rel=canonical]');
         if (canonicalElement !== null) {
           url = canonicalElement.href;
