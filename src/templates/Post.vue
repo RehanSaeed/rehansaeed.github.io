@@ -93,7 +93,37 @@ export default {
         {
           name: 'twitter:image',
           content: this.$static.metadata.url + this.$page.post.cover_image
-        }
+        },
+
+        // Open Graph
+        {
+          property: 'og:title',
+          content: this.$page.post.title,
+        },
+        {
+          property: 'og:type',
+          content: 'article',
+        },
+        {
+          property: 'og:url',
+          content: '',
+        },
+        {
+          property: 'og:image',
+          content: this.$static.metadata.url + this.$page.post.cover_image,
+        },
+        {
+          property: 'og:description',
+          content: this.$page.post.description,
+        },
+        {
+          property: 'og:site_name',
+          content: this.$static.metadata.name,
+        },
+        {
+          property: 'fb:admins',
+          content: '',
+        },
       ]
     }
   }
@@ -103,6 +133,7 @@ export default {
 <static-query>
 query {
   metadata {
+    name
     url
     author {
       name
