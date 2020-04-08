@@ -19,6 +19,7 @@ export default {
   color: var(--title-color);
   cursor: pointer;
   font-family: var(--heading-font-family);
+  line-height: 1;
   padding: 0;
   transition: all 300ms ease-out;
 
@@ -36,6 +37,6 @@ export default {
   background-color: var(--bg-color);
   border-radius: var(--radius);
   font-size: .8em;
-  padding: .5em 1em;
+  padding: .5rem 1rem;
 }
 </style>
