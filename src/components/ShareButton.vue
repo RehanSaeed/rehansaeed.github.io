@@ -103,7 +103,7 @@ export default {
       if (this.tags) {
         return encodeURIComponent(this.tags.map(x => x.replace(/[\W_]+/g, '')).join(','));
       }
-        return '';
+      return '';
     },
     facebookUrl: function() {
       // https://developers.facebook.com/docs/sharing/reference/share-dialog
