@@ -41,8 +41,8 @@ export default {
 .navigation__image {
   border: solid 2px var(--title-color);
   border-radius: 100%;
-  width: 45px;
-  height: 45px;
+  width: 50px;
+  height: 50px;
   visibility: visible;
 }
 

@@ -2,11 +2,11 @@
   <ContentBox class="newsletter">
     <form class="newsletter__form" @submit.prevent="onSubmit">
       <h2 class="newsletter__title">Newsletter</h2>
-      <p class="newsletter__content">Subscribe to get my latest content. No spam.</p>
+      <p class="newsletter__content">Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox!</p>
       <input
         class="newsletter__input"
         name="email"
-        placeholder="name@example.com"
+        placeholder="youremail@example.com"
         required
         type="email"
         autocapitalize="off"
