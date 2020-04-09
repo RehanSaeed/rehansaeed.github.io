@@ -61,3 +61,18 @@ a:not(.button):not(.post-tags__link):not(.portfolio-tags__link):not(.link):not(.
 img {
 	max-width: 100%;
 }
+
+input {
+  background: var(--bg-content-color);
+  border-color: var(--title-color);
+  border-radius: var(--radius);
+  border-width: 2px;
+  color: var(--title-color);
+  //font-size: 1.5em;
+  padding: .3rem .9rem;
+  transition: border-color .6s;
+
+  &:hover {
+    border-color: var(--body-color);
+  }
+}

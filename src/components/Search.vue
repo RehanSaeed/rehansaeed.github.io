@@ -40,16 +40,10 @@ export default {
 }
 
 .search__input {
-  background: var(--bg-content-color);
-  border-color: var(--title-color);
-  border-radius: var(--radius);
-  border-width: 2px;
-  color: var(--title-color);
   font-size: 1.5em;
-  padding: .3rem .9rem;
 
   @media screen and (max-width: 650px) {
-    font-size: 1.5em;
+    font-size: 1.2em;
   }
 }
 

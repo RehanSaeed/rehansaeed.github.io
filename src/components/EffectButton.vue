@@ -1,5 +1,5 @@
 <template>
-  <button class="button" :class="{ 'button--button': button }">
+  <button class="button" :class="{ 'button--button': button }" :type="type">
     <slot/>
   </button>
 </template>
@@ -8,6 +8,14 @@
 export default {
   props: {
     button: Boolean,
+    submit: Boolean,
+  },
+  computed: {
+    type: function() {
+      if (this.submit) {
+        return 'submit';
+      }
+    }
   }
 }
 </script>

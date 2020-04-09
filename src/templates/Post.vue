@@ -10,6 +10,7 @@
     </div>
 
     <ContentBox class="post">
+
       <div class="post__header">
         <g-image alt="Cover image" v-if="$page.post.cover_image" :src="$page.post.cover_image" />
       </div>
@@ -26,6 +27,8 @@
 
     </ContentBox>
 
+    <Newsletter/>
+
     <div class="post-comments">
       <!-- Add comment widgets here -->
     </div>
@@ -39,6 +42,7 @@ import Author from '~/components/Author.vue';
 import ContentBox from '~/components/ContentBox.vue';
 import EditOnGitHubButton from '~/components/EditOnGitHubButton.vue';
 import Meta from '~/components/Meta';
+import Newsletter from '~/components/Newsletter';
 import ShareButton from '~/components/ShareButton.vue';
 import Tags from '~/components/Tags';
 
@@ -48,6 +52,7 @@ export default {
     ContentBox,
     EditOnGitHubButton,
     Meta,
+    Newsletter,
     ShareButton,
     Tags,
   },
@@ -163,6 +168,10 @@ query Post ($id: ID!) {
 </page-query>
 
 <style lang="scss">
+.post {
+  margin-bottom: calc(var(--space) / 3);
+}
+
 .post-title {
   padding: calc(var(--space) / 2) 0 calc(var(--space) / 2);
   text-align: center;

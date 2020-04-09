@@ -83,6 +83,10 @@ dialog {
   position: fixed;
   top: 50%;
   transform: translate(0, -50%);
+
+  @media screen and (max-width: 650px) {
+    --space: 3rem;
+  }
 }
 
 .dialog--fullscreen {
