@@ -1,16 +1,24 @@
 <template>
   <ContentBox class="newsletter">
-    <form class="newsletter__form" @submit.prevent="onSubmit">
+    <form class="newsletter__form" method="post" action="https://rehansaeed.us19.list-manage.com/subscribe/post?u=0d1d7c30db26dd0a4aa1b5b40&amp;id=07ce865066">
       <h2 class="newsletter__title">Newsletter</h2>
       <p class="newsletter__content">Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox!</p>
       <input
         class="newsletter__input"
-        name="email"
+        name="EMAIL"
         placeholder="youremail@example.com"
         required
         type="email"
         autocapitalize="off"
         autocorrect="off"/>
+      <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+      <input
+        aria-hidden="true"
+        type="text"
+        name="b_0d1d7c30db26dd0a4aa1b5b40_07ce865066"
+        style="position: absolute; left: -5000px;"
+        tabindex="-1"
+        value="">
       <EffectButton button submit class="newsletter__button">
         Subscribe
       </EffectButton>
@@ -28,50 +36,6 @@ export default {
     EffectButton,
   },
 }
-// import addToMailchimp from '../mailchimpSubscribe';
-// import event from '../event';
-// import _debug from 'debug';
-// const debug = _debug('plugin-mailchimp');
-/**
- * If developers make UI customiztion and offer users an option whether to enable.
- * It won't be able to import client dynamic modules if it's disabled.
- * Use commonJs because dynamic import cannot be caught https://github.com/webpack/webpack/issues/5360
- */
-// let submitText, content, title, popupEnabled;
-// try {
-//   const options = require('@dynamic/mailchimpOptions');
-//   submitText = options.submitText;
-//   content = options.content;
-//   title = options.title;
-//   popupEnabled = options.popupEnabled;
-// } catch (error) {
-//   debug('Fail to get options', error.message);
-// }
-// export default {
-//   data() {
-//     return {
-//       slotProps: {
-//         mail: '',
-//         title: title || 'Newsletter',
-//         content: content || 'Subscribe to get my latest content. No spam.',
-//         submitText: submitText || 'Subscribe',
-//       },
-//     };
-//   },
-//   methods: {
-//     onSubmit() {
-//       addToMailchimp(this.slotProps.mail)
-//         .catch(err => {
-//           this.slotProps.mail = '';
-//           if (popupEnabled) event.$emit('submited', { result: 'error' });
-//         })
-//         .then(res => {
-//           this.slotProps.mail = '';
-//           if (popupEnabled) event.$emit('submited', res);
-//         });
-//     },
-//   },
-// };
 </script>
 
 <style lang="scss">
