@@ -66,6 +66,9 @@ export default {
   metaInfo() {
     return {
       title: this.title,
+      link: [
+        { rel: 'canonical', href: this.$static.metadata.url },
+      ],
       meta: [
         { name: 'description', content: this.description },
         { name: 'author', content: this.$static.metadata.author.name },

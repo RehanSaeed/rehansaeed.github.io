@@ -45,11 +45,15 @@ export default {
   computed: {
     title: function() { return 'About'; },
     description: function() { return `About ${this.$static.metadata.author.name}. ${this.$static.metadata.description}.`; },
-    image: function() { return this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'; }
+    image: function() { return this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'; },
+    url: function() { return this.$static.metadata.url + '/about/'; }
   },
   metaInfo() {
     return {
       title: this.title,
+      link: [
+        { rel: 'canonical', href: this.url },
+      ],
       meta: [
         { name: 'description', content: this.description },
         { name: 'author', content: this.$static.metadata.author.name },
@@ -62,7 +66,7 @@ export default {
         { name: 'twitter:image', content: this.image },
         // Open Graph
         { property: 'og:title', content: this.title },
-        { property: 'og:url', content: this.$static.metadata.url + '/about/' },
+        { property: 'og:url', content: this.url },
         { property: 'og:image', content: this.image },
         { property: 'og:description', content: this.description },
         { property: 'og:locale', content: this.$static.metadata.language.replace('-', '_') },
