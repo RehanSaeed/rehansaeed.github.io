@@ -91,6 +91,47 @@ export default {
         { property: 'profile:last_name', content: this.$static.metadata.author.lastName },
         { property: 'profile:username', content: this.$static.metadata.author.name },
         { property: 'profile:gender', content: this.$static.metadata.author.gender },
+      ],
+      script: [
+        {
+          type: 'application/ld+json',
+          json: {
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            description: this.description,
+            url: this.$static.metadata.url,
+            image: [
+              this.image
+            ],
+            potentialAction: {
+              '@type': 'SearchAction',
+              target: `${this.$static.metadata.url}?search={search_term_string}`,
+              'query-input': "required name=search_term_string"
+            },
+            author: {
+              '@type': 'Person',
+              name: this.$static.metadata.author.name,
+              logo: {
+                '@type': 'ImageObject',
+                url: `${this.$static.metadata.url}/images/author/${this.$static.metadata.author.name.split(' ').join('-')}/Logo-260x260.png`, //
+                width: 260,
+                height: 260,
+              },
+              url: this.$static.metadata.url + '/about/',
+            },
+            publisher: {
+              '@type': 'Organization',
+              name: this.$static.metadata.name,
+              logo: {
+                '@type': 'ImageObject',
+                url: this.$static.metadata.url + '/images/schema/Publisher-600x60.png',
+                width: 600,
+                height: 60,
+              },
+              url: this.$static.metadata.url,
+            },
+          }
+        }
       ]
     }
   }

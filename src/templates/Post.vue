@@ -114,8 +114,8 @@ export default {
               logo: {
                 '@type': 'ImageObject',
                 url: `${this.$static.metadata.url}/images/author/${this.$page.post.author.split(' ').join('-')}/Logo-260x260.png`, //
-                width: 600,
-                height: 60,
+                width: 260,
+                height: 260,
               },
               url: this.$static.metadata.url + '/about/',
             },
