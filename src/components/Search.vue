@@ -13,7 +13,7 @@
         :key="result.id"
         :to="result.permalink || result.path"
         class="search__result">
-        <img class="search__result__image" :src="result.cover_image"/>
+        <img v-if="result.cover_image" class="search__result__image" :src="result.cover_image"/>
         <p class="search__result__title">{{result.title}}</p>
         <p class="search__result__description">{{result.description}}</p>
       </g-link>
@@ -68,6 +68,7 @@ export default {
   border: solid 2px var(--border-color);
   border-radius: var(--radius);
   grid-area: image;
+  margin-right: 1rem;
   min-width: 8rem;
   width: 8rem;
 }
@@ -77,7 +78,6 @@ export default {
   font-size: 1.1em;
   grid-area: title;
   margin: 0;
-  margin-left: 1rem;
 }
 
 .search__result__description {
@@ -85,6 +85,5 @@ export default {
   font-size: 0.9em;
   grid-area: description;
   margin: 0;
-  margin-left: 1rem;
 }
 </style>
