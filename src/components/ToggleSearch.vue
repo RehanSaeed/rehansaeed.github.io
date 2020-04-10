@@ -9,7 +9,7 @@
       </svg>
     </EffectButton>
 
-    <Dialogue fullscreen :is-open="isOpen" @close="close" class="search-dialogue">
+    <Dialogue fullscreen title="Search" :is-open="isOpen" @close="close" class="search-dialogue">
       <Search @selected="close"/>
     </Dialogue>
 

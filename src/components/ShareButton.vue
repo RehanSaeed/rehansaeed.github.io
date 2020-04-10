@@ -9,8 +9,7 @@
       Share
     </EffectButton>
 
-    <Dialogue :is-open="isDialogueOpen" @close="close" class="share-dialogue">
-      <h1>Share</h1>
+    <Dialogue title="Share" :is-open="isDialogueOpen" @close="close" class="share-dialogue">
       <div class="share-dialogue__links">
         <EffectLink button :to="facebookUrl" @click.native="close" class="share-dialogue__link">
           <svg aria-hidden="true" focusable="false" height="14" width="16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">

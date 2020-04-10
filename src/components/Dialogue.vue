@@ -1,15 +1,20 @@
 <template>
-  <dialog ref="dialog" @close="close" :class="{ 'dialog--fullscreen': fullscreen }">
-    <form method="dialog">
-      <EffectButton aria-label="Close search" class="dialog__close">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="close">
-          <title>Close search</title>
-          <line x1="4" y1="4" x2="20" y2="20"></line>
-          <line x1="4" y1="20" x2="20" y2="4"></line>
-        </svg>
-      </EffectButton>
-    </form>
-    <slot/>
+  <dialog class="dialog" ref="dialog" @close="close" :class="{ 'dialog--fullscreen': fullscreen }">
+    <div class="dialog__container">
+      <h2 class="dialog__title">{{title}}</h2>
+      <form class="dialog__form" method="dialog">
+        <EffectButton aria-label="Close search" class="dialog__close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="close">
+            <title>Close search</title>
+            <line x1="4" y1="4" x2="20" y2="20"></line>
+            <line x1="4" y1="20" x2="20" y2="4"></line>
+          </svg>
+        </EffectButton>
+      </form>
+      <div class="dialog__content">
+        <slot/>
+      </div>
+    </div>
   </dialog>
 </template>
 
@@ -28,6 +33,9 @@ export default {
     isOpen: {
       default: false,
       type: Boolean,
+    },
+    title: {
+      type: String,
     }
   },
   computed: {
@@ -69,29 +77,14 @@ dialog {
   right: 0;
   height: fit-content;
   width: fit-content;
-  background: var(--bg-content-color);
-  border: solid 2px var(--border-color);
-  border-radius: var(--radius);
-  color: var(--title-color);
   display: block;
   margin: auto;
-  padding: var(--space);
   overflow-y: auto;
-  scrollbar-color: var(--scroll-thumb-color) var(--scroll-track-color);
 
   // Workaround to force the polyfill to always show the dialog in the center of the screen.
   position: fixed;
   top: 50%;
   transform: translate(0, -50%);
-
-  @media screen and (max-width: 650px) {
-    --space: 3rem;
-  }
-}
-
-.dialog--fullscreen {
-  height: calc(100vh - var(--space));
-  width: calc(100vw - var(--space));
 }
 
 dialog:not([open]) {
@@ -116,10 +109,43 @@ dialog.fixed {
   transform: translate(0, -50%);
 }
 
+.dialog {
+  background: var(--bg-content-color);
+  border: solid 2px var(--border-color);
+  border-radius: var(--radius);
+  color: var(--title-color);
+  scrollbar-color: var(--scroll-thumb-color) var(--scroll-track-color);
+}
+
+.dialog--fullscreen {
+  border: none;
+  border-radius: 0;
+  // 100vw or 100vh includes the width of the scrollbar. This removes it.
+  height: calc(100vh - (100vh - 100%));
+  width: calc(100vw - (100vw - 100%));
+}
+
+.dialog__container {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "title close"
+    "content content";
+  padding: calc(var(--space) / 2);
+}
+
+.dialog__title {
+  grid-area: title;
+  margin: 0;
+}
+
 .dialog__close {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: 1rem;
+  grid-area: close;
+}
+
+.dialog__content {
+  grid-area: content;
+  padding-top: calc(var(--space) / 2);
 }
 </style>
