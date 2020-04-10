@@ -25,6 +25,10 @@ export default function (Vue, { router, head, isClient }) {
     href: '/rss.xml',
     title: 'Muhammad Rehan Saeed'
   });
+  head.meta.push({
+    name: 'referrer',
+    content: 'no-referrer-when-downgrade',
+  });
 
   // Set default layout as a global component
   Vue.component('Layout', DefaultLayout);
