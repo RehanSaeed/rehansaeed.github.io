@@ -1,7 +1,7 @@
 <template>
   <nav class="navigation">
     <EffectLink to="/">
-		  <g-image alt="Author image" class="navigation__image" src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png" width="30" height="30" blur="0" />
+		  <g-image :alt="$static.metadata.name" class="navigation__image" src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png" width="50" height="50" blur="0" />
     </EffectLink>
     <div class="navigation__items">
       <EffectLink class="navigation__item" to="/">Blog</EffectLink>
@@ -12,6 +12,16 @@
     <ToggleTheme class="navigation__toggle-theme" />
   </nav>
 </template>
+
+<static-query>
+query {
+  metadata {
+    author {
+      name
+    }
+  }
+}
+</static-query>
 
 <script>
 import EffectLink from '~/components/EffectLink.vue'
@@ -41,8 +51,8 @@ export default {
 .navigation__image {
   border: solid 2px var(--title-color);
   border-radius: 100%;
-  width: 50px;
-  height: 50px;
+  width: 2.5rem;
+  height: 2.5rem;
   visibility: visible;
 }
 

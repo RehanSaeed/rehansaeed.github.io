@@ -1,7 +1,7 @@
 <template>
   <ContentBox hoverable class="post-card" :class="{'post-card--has-poster' : post.poster}">
     <div class="post-card__header">
-      <g-image alt="Cover image" v-if="post.cover_image" class="post-card__image" :src="post.cover_image" />
+      <g-image alt="Cover image" v-if="post.cover_image" class="post-card__image" :src="post.cover_image" blur="5"/>
     </div>
     <div class="post-card__content">
       <h2 class="post-card__title" v-html="post.title" />

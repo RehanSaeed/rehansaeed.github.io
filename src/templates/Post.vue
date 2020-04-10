@@ -12,7 +12,7 @@
     <ContentBox class="post">
 
       <div class="post__header">
-        <g-image alt="Cover image" v-if="$page.post.cover_image" :src="$page.post.cover_image" />
+        <g-image alt="Cover image" v-if="$page.post.cover_image" :src="$page.post.cover_image" blur="5" />
       </div>
 
       <div class="post__content" v-html="$page.post.content" />

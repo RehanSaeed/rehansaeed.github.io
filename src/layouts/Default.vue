@@ -8,7 +8,7 @@
     </main>
 
     <footer class="footer">
-      <span class="footer__copyright">Copyright © {{ new Date().getFullYear() }} Muhammad Rehan Saeed</span>
+      <span class="footer__copyright">Copyright © {{new Date().getFullYear()}} {{this.$static.metadata.author.name}}</span>
       <span>|</span>
       <span class="footer__copyright"><g-link to="/sitemap.xml">Sitemap</g-link></span>
       <span>|</span>
@@ -35,6 +35,9 @@ export default {
 <static-query>
 query {
   metadata {
+    author {
+      name
+    }
     repository {
       url
     }
