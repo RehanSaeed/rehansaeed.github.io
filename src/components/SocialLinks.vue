@@ -30,6 +30,12 @@
         <path fill="currentColor" d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"></path>
       </svg>
     </EffectLink>
+    <EffectLink class="social__link" @click.native="OnEmailClick" :to="email">
+      <svg aria-hidden="true" focusable="false" height="30" width="30" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+        <title>Email</title>
+        <path fill="currentColor" d="M464 64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm0 48v40.805c-22.422 18.259-58.168 46.651-134.587 106.49-16.841 13.247-50.201 45.072-73.413 44.701-23.208.375-56.579-31.459-73.413-44.701C106.18 199.465 70.425 171.067 48 152.805V112h416zM48 400V214.398c22.914 18.251 55.409 43.862 104.938 82.646 21.857 17.205 60.134 55.186 103.062 54.955 42.717.231 80.509-37.199 103.053-54.947 49.528-38.783 82.032-64.401 104.947-82.653V400H48z"></path>
+      </svg>
+    </EffectLink>
     <EffectLink class="social__link" to="/rss.xml">
       <svg aria-hidden="true" focusable="false" height="30" width="30" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
         <title>RSS</title>
@@ -45,6 +51,18 @@ import EffectLink from '~/components/EffectLink.vue'
 export default {
   components: {
     EffectLink,
+  },
+  data() {
+    return {
+      email: '',
+    }
+  },
+  methods: {
+    OnEmailClick: function() {
+      const body = encodeURIComponent('If you have an issue with one of my GitHub projects, please raise a GitHub issue. If you need help answering a coding problem, post your question on StackOverflow where you will get quicker and better answers. Otherwise, please do feel free to contact me!')
+      this.email = ['m', 'a', 'i', 'l', 't', 'o', ':', 'r', 'e', 'h', 'a', 'n', 's', 'a', 'e', 'e', 'd', '@', 'g', 'm', 'a', 'i', 'l', '.', 'c', 'o', 'm'].join('') +
+        `?body=${body}`;
+    }
   }
 }
 </script>
@@ -53,7 +71,7 @@ export default {
 .social {
   align-items: center;
   display: grid;
-  grid-template-columns: repeat(6, auto);
+  grid-template-columns: repeat(7, auto);
   grid-gap: 1.8rem;
   justify-content: center;
 }

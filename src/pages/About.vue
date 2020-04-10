@@ -11,7 +11,6 @@
       <p class="about__description">You can see a timeline of my open source work and blog posts in my <g-link to="https://stackoverflow.com/story/muhammad-rehan-saeed">Stack Overflow Developer Story</g-link>.</p>
     </ContentBox>
 
-
   </Layout>
 </template>
 
