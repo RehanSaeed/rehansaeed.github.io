@@ -38,7 +38,6 @@
 </template>
 
 <script>
-import * as moment from 'moment'
 import Author from '~/components/Author.vue';
 import ContentBox from '~/components/ContentBox.vue';
 import EditOnGitHubButton from '~/components/EditOnGitHubButton.vue';
@@ -80,7 +79,7 @@ export default {
         { property: 'og:locale', content: this.$static.metadata.language.replace('-', '_') },
         { property: 'og:site_name', content: this.$static.metadata.name },
         { property: 'og:type', content: 'article' },
-        { property: 'article:published_time', content: moment(new Date(this.$page.post.date)).format('YYYY-MM-DD') },
+        { property: 'article:published_time', content: this.$page.post.date },
         { property: 'article:author', content: this.$page.post.author },
         ...this.$page.post.headings.map(x => ({ property: 'article:section', content: x.value })),
         ...this.$page.post.tags.map(x => ({ property: 'article:tag', content: x.title })),
@@ -114,7 +113,7 @@ query Post ($id: ID!) {
   post: post (id: $id) {
     title
     path
-    date (format: "DD MMMM YYYY")
+    date (format: "YYYY-MM-DD")
     timeToRead
     author
     headings {
