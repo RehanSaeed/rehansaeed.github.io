@@ -89,6 +89,7 @@ export default {
         { property: 'article:author', content: this.$page.post.author },
         ...this.$page.post.headings.map(x => ({ property: 'article:section', content: x.value })),
         ...this.$page.post.tags.map(x => ({ property: 'article:tag', content: x.title })),
+        { property: 'fb:app_id', content: this.$static.metadata.facebookAppId },
       ],
       script: [
         {
@@ -144,6 +145,7 @@ query {
     name
     url
     language
+    facebookAppId
     author {
       name
       twitter

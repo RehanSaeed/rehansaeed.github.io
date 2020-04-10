@@ -22,6 +22,7 @@ query {
     description
     url
     language
+    facebookAppId
     author {
       name
       firstName
@@ -76,6 +77,7 @@ export default {
         { property: 'profile:last_name', content: this.$static.metadata.author.lastName },
         { property: 'profile:username', content: this.$static.metadata.author.name },
         { property: 'profile:gender', content: this.$static.metadata.author.gender },
+        { property: 'fb:app_id', content: this.$static.metadata.facebookAppId },
       ]
     }
   }

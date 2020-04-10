@@ -16,6 +16,7 @@ query {
     name
     url
     language
+    facebookAppId
     author {
       name
       twitter
@@ -83,6 +84,7 @@ export default {
         { property: 'og:locale', content: this.$static.metadata.language.replace('-', '_') },
         { property: 'og:site_name', content: this.$static.metadata.name },
         { property: 'og:type', content: 'website' },
+        { property: 'fb:app_id', content: this.$static.metadata.facebookAppId },
       ]
     }
   }
