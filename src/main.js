@@ -8,6 +8,12 @@ import DefaultLayout from '~/layouts/Default.vue';
 export default function (Vue, { router, head, isClient }) {
 
   head.link.push({
+    rel: 'search',
+    type: 'application/opensearchdescription+xml',
+    href: '/opensearch.xml',
+    title: 'Muhammad Rehan Saeed'
+  });
+  head.link.push({
     rel: 'alternate',
     type: 'application/atom+xml',
     href: '/atom.xml',

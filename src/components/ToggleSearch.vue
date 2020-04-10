@@ -10,7 +10,7 @@
     </EffectButton>
 
     <Dialogue fullscreen title="Search" :is-open="isOpen" @close="close" class="search-dialogue">
-      <Search @selected="close"/>
+      <Search :search="this.$route.query.search" @selected="close"/>
     </Dialogue>
 
   </div>
@@ -40,5 +40,10 @@ export default {
       this.isOpen = false;
     }
   },
+  mounted() {
+    if (this.$route.query.search) {
+      this.open();
+    }
+  }
 }
 </script>

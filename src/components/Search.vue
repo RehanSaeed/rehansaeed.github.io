@@ -26,10 +26,18 @@ import Search from 'gridsome-plugin-flexsearch/SearchMixin';
 
 export default {
   mixins: [Search],
+  props: {
+    search: {
+      type: String,
+    }
+  },
   methods: {
     onSelected: function() {
       this.$emit('selected');
     }
+  },
+  mounted() {
+    this.searchTerm = this.search;
   }
 }
 </script>
