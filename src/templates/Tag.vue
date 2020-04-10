@@ -35,7 +35,7 @@ query Tag ($id: ID!) {
           ...on Post {
             title
             path
-            date (format: "DD MMMM YYYY")
+            date (format: "D MMMM YYYY")
             timeToRead
             description
             content

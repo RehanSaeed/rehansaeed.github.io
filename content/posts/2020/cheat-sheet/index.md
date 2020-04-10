@@ -4,7 +4,7 @@ description: "Shows how to use markdown"
 author: "Muhammad Rehan Saeed"
 permalink: "/cheat-sheet/"
 cover_image: "/images/hero/NET-1366x768.png"
-date: "2020-03-04"
+date: "2020-03-04T11:22:33Z"
 published: true
 categories:
   - "Foo"

@@ -37,7 +37,9 @@ export default {
     }
   },
   mounted() {
-    this.searchTerm = this.search;
+    if (this.search) {
+      this.searchTerm = this.search;
+    }
   }
 }
 </script>

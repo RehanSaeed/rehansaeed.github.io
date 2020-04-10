@@ -1,6 +1,6 @@
 <template>
    <div class="meta">
-      Posted {{ meta.date }}
+      Posted {{ meta.displayDate }}
       <template v-if="meta.timeToRead">
         - <strong>{{ meta.timeToRead }} min read</strong>
       </template>

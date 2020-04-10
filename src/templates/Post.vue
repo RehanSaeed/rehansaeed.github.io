@@ -57,6 +57,7 @@ export default {
     Tags,
   },
   computed: {
+    image: function() { return this.$static.metadata.url + this.$page.post.cover_image; },
     url: function() { return this.$static.metadata.url + this.$page.post.path; }
   },
   metaInfo () {
@@ -75,11 +76,11 @@ export default {
         { name: 'twitter:creator', content: this.$static.metadata.author.twitter },
         { name: 'twitter:title', content: this.$page.post.title },
         { name: 'twitter:description', content: this.$page.post.description },
-        { name: 'twitter:image', content: this.$static.metadata.url + this.$page.post.cover_image },
+        { name: 'twitter:image', content: this.image },
         // Open Graph
         { property: 'og:title', content: this.$page.post.title },
         { property: 'og:url', content: this.url },
-        { property: 'og:image', content: this.$static.metadata.url + this.$page.post.cover_image },
+        { property: 'og:image', content: this.image },
         { property: 'og:description', content: this.$page.post.description },
         { property: 'og:locale', content: this.$static.metadata.language.replace('-', '_') },
         { property: 'og:site_name', content: this.$static.metadata.name },
@@ -88,6 +89,49 @@ export default {
         { property: 'article:author', content: this.$page.post.author },
         ...this.$page.post.headings.map(x => ({ property: 'article:section', content: x.value })),
         ...this.$page.post.tags.map(x => ({ property: 'article:tag', content: x.title })),
+      ],
+      script: [
+        {
+          type: 'application/ld+json',
+          json: {
+            '@context': 'https://schema.org',
+            '@type': 'Article',
+            mainEntityOfPage: {
+              '@type': 'WebPage',
+              '@id': this.$static.metadata.url,
+            },
+            headline: this.$page.post.title,
+            description: this.$page.post.description,
+            keywords: this.$page.post.tags.map(x => x.title).join(),
+            url: this.url,
+            image: [
+              this.image
+            ],
+            datePublished: this.$page.post.date,
+            author: {
+              '@type': 'Person',
+              name: this.$page.post.author.name,
+              logo: {
+                '@type': 'ImageObject',
+                url: `${this.$static.metadata.url}/images/author/${this.$page.post.author.split(' ').join('-')}/Logo-260x260.png`, //
+                width: 600,
+                height: 60,
+              },
+              url: this.$static.metadata.url + '/about/',
+            },
+            publisher: {
+              '@type': 'Organization',
+              name: this.$static.metadata.name,
+              logo: {
+                '@type': 'ImageObject',
+                url: this.$static.metadata.url + '/images/schema/Publisher-600x60.png',
+                width: 600,
+                height: 60,
+              },
+              url: this.$static.metadata.url,
+            },
+          }
+        }
       ]
     }
   }
@@ -113,7 +157,8 @@ query Post ($id: ID!) {
   post: post (id: $id) {
     title
     path
-    date (format: "YYYY-MM-DD")
+    displayDate: date (format: "D MMMM YYYY")
+    date (format: "YYYY-MM-DDTHH:mm:ssZ")
     timeToRead
     author
     headings {
