@@ -13,6 +13,7 @@
         :key="result.id"
         :to="result.permalink || result.path"
         class="search__result">
+        <img class="search__result__image" :src="result.cover_image"/>
         <p class="search__result__title">{{result.title}}</p>
         <p class="search__result__description">{{result.description}}</p>
       </g-link>
@@ -55,19 +56,35 @@ export default {
 }
 
 .search__result {
-  display: block;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "image title"
+    "image description";
   text-decoration: none;
+}
+
+.search__result__image {
+  border: solid 2px var(--border-color);
+  border-radius: var(--radius);
+  grid-area: image;
+  min-width: 8rem;
+  width: 8rem;
 }
 
 .search__result__title {
   color: var(--title-color);
   font-size: 1.1em;
+  grid-area: title;
   margin: 0;
+  margin-left: 1rem;
 }
 
 .search__result__description {
   color: var(--body-color);
   font-size: 0.9em;
+  grid-area: description;
   margin: 0;
+  margin-left: 1rem;
 }
 </style>
