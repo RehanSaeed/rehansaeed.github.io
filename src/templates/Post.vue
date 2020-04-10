@@ -56,10 +56,15 @@ export default {
     ShareButton,
     Tags,
   },
+  computed: {
+    url: function() { return this.$static.metadata.url + this.$page.post.path; }
+  },
   metaInfo () {
-
     return {
       title: this.$page.post.title,
+      link: [
+        { rel: 'canonical', href: this.url },
+      ],
       meta: [
         { name: 'description', content: this.$page.post.description },
         { name: 'author', content: this.$page.post.author.name },
@@ -73,7 +78,7 @@ export default {
         { name: 'twitter:image', content: this.$static.metadata.url + this.$page.post.cover_image },
         // Open Graph
         { property: 'og:title', content: this.$page.post.title },
-        { property: 'og:url', content: this.$static.metadata.url + this.$page.post.path },
+        { property: 'og:url', content: this.url },
         { property: 'og:image', content: this.$static.metadata.url + this.$page.post.cover_image },
         { property: 'og:description', content: this.$page.post.description },
         { property: 'og:locale', content: this.$static.metadata.language.replace('-', '_') },
@@ -83,11 +88,6 @@ export default {
         { property: 'article:author', content: this.$page.post.author },
         ...this.$page.post.headings.map(x => ({ property: 'article:section', content: x.value })),
         ...this.$page.post.tags.map(x => ({ property: 'article:tag', content: x.title })),
-
-        {
-          property: 'fb:admins',
-          content: '',
-        },
       ]
     }
   }
