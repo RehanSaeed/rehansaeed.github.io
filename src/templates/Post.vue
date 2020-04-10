@@ -38,6 +38,7 @@
 </template>
 
 <script>
+import * as moment from 'moment'
 import Author from '~/components/Author.vue';
 import ContentBox from '~/components/ContentBox.vue';
 import EditOnGitHubButton from '~/components/EditOnGitHubButton.vue';
@@ -57,73 +58,33 @@ export default {
     Tags,
   },
   metaInfo () {
+
     return {
       title: this.$page.post.title,
       meta: [
-        {
-          name: 'description',
-          content: this.$page.post.description
-        },
-        {
-          name: 'author',
-          content: this.$page.post.author.name
-        },
-        {
-          name: 'keywords',
-          content: this.$page.post.tags.map(x => x.title).join(",")
-        },
-
+        { name: 'description', content: this.$page.post.description },
+        { name: 'author', content: this.$page.post.author.name },
+        { name: 'keywords', content: this.$page.post.tags.map(x => x.title).join(",") },
         // Twitter card
-        {
-          name: 'twitter:card',
-          content: 'summary_large_image'
-        },
-        {
-          name: 'twitter:site',
-          content: this.$static.metadata.author.twitter
-        },
-        {
-          name: 'twitter:creator',
-          content: this.$static.metadata.author.twitter
-        },
-        {
-          name: 'twitter:title',
-          content: this.$page.post.title
-        },
-        {
-          name: 'twitter:description',
-          content: this.$page.post.description
-        },
-        {
-          name: 'twitter:image',
-          content: this.$static.metadata.url + this.$page.post.cover_image
-        },
-
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:site', content: this.$static.metadata.author.twitter },
+        { name: 'twitter:creator', content: this.$static.metadata.author.twitter },
+        { name: 'twitter:title', content: this.$page.post.title },
+        { name: 'twitter:description', content: this.$page.post.description },
+        { name: 'twitter:image', content: this.$static.metadata.url + this.$page.post.cover_image },
         // Open Graph
-        {
-          property: 'og:title',
-          content: this.$page.post.title,
-        },
-        {
-          property: 'og:type',
-          content: 'article',
-        },
-        {
-          property: 'og:url',
-          content: '',
-        },
-        {
-          property: 'og:image',
-          content: this.$static.metadata.url + this.$page.post.cover_image,
-        },
-        {
-          property: 'og:description',
-          content: this.$page.post.description,
-        },
-        {
-          property: 'og:site_name',
-          content: this.$static.metadata.name,
-        },
+        { property: 'og:title', content: this.$page.post.title },
+        { property: 'og:url', content: this.$static.metadata.url + this.$page.post.path },
+        { property: 'og:image', content: this.$static.metadata.url + this.$page.post.cover_image },
+        { property: 'og:description', content: this.$page.post.description },
+        { property: 'og:locale', content: this.$static.metadata.language.replace('-', '_') },
+        { property: 'og:site_name', content: this.$static.metadata.name },
+        { property: 'og:type', content: 'article' },
+        { property: 'article:published_time', content: moment(new Date(this.$page.post.date)).format('YYYY-MM-DD') },
+        { property: 'article:author', content: this.$page.post.author },
+        ...this.$page.post.headings.map(x => ({ property: 'article:section', content: x.value })),
+        ...this.$page.post.tags.map(x => ({ property: 'article:tag', content: x.title })),
+
         {
           property: 'fb:admins',
           content: '',
@@ -139,6 +100,7 @@ query {
   metadata {
     name
     url
+    language
     author {
       name
       twitter
@@ -155,6 +117,9 @@ query Post ($id: ID!) {
     date (format: "DD MMMM YYYY")
     timeToRead
     author
+    headings {
+      value
+    }
     tags {
       id
       title
