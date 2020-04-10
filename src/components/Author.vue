@@ -1,7 +1,7 @@
 <template>
 	<div class="author">
 
-		<g-image alt="Author image" class="author__image" src="~/assets/images/Muhammad-Rehan-Saeed.png" width="180" height="180" blur="5" />
+		<g-image alt="Author image" class="author__image" src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png" width="180" height="180" blur="5" />
 
 		<h1 class="author__site-title">{{$static.metadata.name}}</h1>
 
@@ -27,7 +27,7 @@ import SocialLinks from '~/components/SocialLinks.vue'
 export default {
   components: {
     SocialLinks,
-  }
+  },
 }
 </script>
 

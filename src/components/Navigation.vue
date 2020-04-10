@@ -1,7 +1,7 @@
 <template>
   <nav class="navigation">
     <EffectLink to="/">
-		  <g-image alt="Author image" class="navigation__image" src="~/assets/images/Muhammad-Rehan-Saeed.png" width="30" height="30" blur="0" />
+		  <g-image alt="Author image" class="navigation__image" src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png" width="30" height="30" blur="0" />
     </EffectLink>
     <div class="navigation__items">
       <EffectLink class="navigation__item" to="/">Blog</EffectLink>
