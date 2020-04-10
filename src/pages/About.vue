@@ -6,9 +6,11 @@
     <ContentBox>
       <g-image class="about__image" alt="Muhammad Rehan Saeed" height="480" width="320" src="~/assets/images/Muhammad-Rehan-Saeed-Profile.jpg" />
       <h2 class="about__title">Muhammad Rehan Saeed</h2>
+      <SocialLinks class="about__social-links"/>
       <p class="about__description">Rehan is a professional Software Developer at Microsoft. Although he works for Microsoft his opinions are his own. If it’s written in C# or .NET, Rehan has probably written something using it in anger!</p>
       <p class="about__description">You can see a timeline of my open source work and blog posts in my <g-link to="https://stackoverflow.com/story/muhammad-rehan-saeed">Stack Overflow Developer Story</g-link>.</p>
     </ContentBox>
+
 
   </Layout>
 </template>
@@ -16,10 +18,15 @@
 <static-query>
 query {
   metadata {
+    name
     description
     url
+    language
     author {
       name
+      firstName
+      lastName
+      gender
       twitter
     }
   }
@@ -28,53 +35,43 @@ query {
 
 <script>
 import ContentBox from '~/components/ContentBox.vue';
+import SocialLinks from '~/components/SocialLinks.vue';
 
 export default {
   components: {
     ContentBox,
+    SocialLinks,
   },
   computed: {
     title: function() { return 'About'; },
-    description: function() { return `About ${this.$static.metadata.author.name}. ${this.$static.metadata.description}.`; }
+    description: function() { return `About ${this.$static.metadata.author.name}. ${this.$static.metadata.description}.`; },
+    image: function() { return this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'; }
   },
   metaInfo() {
     return {
       title: this.title,
       meta: [
-        {
-          name: 'description',
-          content: this.description
-        },
-        {
-          name: 'author',
-          content: this.$static.metadata.author.name
-        },
-
+        { name: 'description', content: this.description },
+        { name: 'author', content: this.$static.metadata.author.name },
         // Twitter card
-        {
-          name: 'twitter:card',
-          content: 'summary_large_image'
-        },
-        {
-          name: 'twitter:site',
-          content: this.$static.metadata.author.twitter
-        },
-        {
-          name: 'twitter:creator',
-          content: this.$static.metadata.author.twitter
-        },
-        {
-          name: 'twitter:title',
-          content: this.title
-        },
-        {
-          name: 'twitter:description',
-          content: this.description
-        },
-        {
-          name: 'twitter:image',
-          content: this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'
-        }
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:site', content: this.$static.metadata.author.twitter },
+        { name: 'twitter:creator', content: this.$static.metadata.author.twitter },
+        { name: 'twitter:title', content: this.title },
+        { name: 'twitter:description', content: this.description },
+        { name: 'twitter:image', content: this.image },
+        // Open Graph
+        { property: 'og:title', content: this.title },
+        { property: 'og:url', content: this.$static.metadata.url + '/about/' },
+        { property: 'og:image', content: this.image },
+        { property: 'og:description', content: this.description },
+        { property: 'og:locale', content: this.$static.metadata.language.replace('-', '_') },
+        { property: 'og:site_name', content: this.$static.metadata.name },
+        { property: 'og:type', content: 'profile' },
+        { property: 'profile:first_name', content: this.$static.metadata.author.firstName },
+        { property: 'profile:last_name', content: this.$static.metadata.author.lastName },
+        { property: 'profile:username', content: this.$static.metadata.author.name },
+        { property: 'profile:gender', content: this.$static.metadata.author.gender },
       ]
     }
   }
@@ -83,8 +80,12 @@ export default {
 
 <style lang="scss">
 .about__title {
-  padding: calc(var(--space) / 2) 0 calc(var(--space) / 2);
+  margin-bottom: 1.5rem;
   text-align: center;
+}
+
+.about__social-links {
+  margin-bottom: 1.5rem;
 }
 
 .about__image {
