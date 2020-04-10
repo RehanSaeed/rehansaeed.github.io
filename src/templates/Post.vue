@@ -110,7 +110,7 @@ export default {
             datePublished: this.$page.post.date,
             author: {
               '@type': 'Person',
-              name: this.$page.post.author.name,
+              name: this.$page.post.author,
               logo: {
                 '@type': 'ImageObject',
                 url: `${this.$static.metadata.url}/images/author/${this.$page.post.author.split(' ').join('-')}/Logo-260x260.png`, //
