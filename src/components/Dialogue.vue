@@ -91,11 +91,12 @@ dialog:not([open]) {
   display: none;
 }
 
+dialog::backdrop,
 dialog + .backdrop {
   position: fixed;
   top: 0; right: 0; bottom: 0; left: 0;
   background: var(--border-color);
-  backdrop-filter: blur(3px);
+  backdrop-filter: blur(2px);
 }
 
 ._dialog_overlay {
