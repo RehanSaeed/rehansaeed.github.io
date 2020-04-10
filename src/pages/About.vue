@@ -9,6 +9,7 @@
       <SocialLinks class="about__social-links"/>
       <p class="about__description">Rehan is a professional Software Developer at Microsoft. Although he works for Microsoft his opinions are his own. If it’s written in C# or .NET, Rehan has probably written something using it in anger!</p>
       <p class="about__description">You can see a timeline of my open source work and blog posts in my <g-link to="https://stackoverflow.com/story/muhammad-rehan-saeed">Stack Overflow Developer Story</g-link>.</p>
+      <p class="about__description">Do you have questions or comments about my work? Please feel free to contact me using any of the links above.</p>
     </ContentBox>
 
   </Layout>
