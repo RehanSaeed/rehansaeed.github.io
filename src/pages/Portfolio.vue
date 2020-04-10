@@ -13,7 +13,9 @@
 <static-query>
 query {
   metadata {
+    name
     url
+    language
     author {
       name
       twitter
@@ -53,46 +55,30 @@ export default {
   },
   computed: {
     title: function() { return 'Portfolio'; },
-    description: function() { return `Portfolio of work by ${this.$static.metadata.author.name}.`; }
+    description: function() { return `Portfolio of work by ${this.$static.metadata.author.name}.`; },
+    image: function() { return this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'; }
   },
   metaInfo() {
     return {
       title: this.title,
       meta: [
-        {
-          name: 'description',
-          content: this.description
-        },
-        {
-          name: 'author',
-          content: this.$static.metadata.author.name
-        },
-
+        { name: 'description', content: this.description },
+        { name: 'author', content: this.$static.metadata.author.name },
         // Twitter card
-        {
-          name: 'twitter:card',
-          content: 'summary_large_image'
-        },
-        {
-          name: 'twitter:site',
-          content: this.$static.metadata.author.twitter
-        },
-        {
-          name: 'twitter:creator',
-          content: this.$static.metadata.author.twitter
-        },
-        {
-          name: 'twitter:title',
-          content: this.title
-        },
-        {
-          name: 'twitter:description',
-          content: this.description
-        },
-        {
-          name: 'twitter:image',
-          content: this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'
-        }
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:site', content: this.$static.metadata.author.twitter },
+        { name: 'twitter:creator', content: this.$static.metadata.author.twitter },
+        { name: 'twitter:title', content: this.title },
+        { name: 'twitter:description', content: this.description },
+        { name: 'twitter:image', content: this.image },
+        // Open Graph
+        { property: 'og:title', content: this.title },
+        { property: 'og:url', content: this.$static.metadata.url + '/portfolio/' },
+        { property: 'og:image', content: this.image },
+        { property: 'og:description', content: this.description },
+        { property: 'og:locale', content: this.$static.metadata.language.replace('-', '_') },
+        { property: 'og:site_name', content: this.$static.metadata.name },
+        { property: 'og:type', content: 'website' },
       ]
     }
   }
