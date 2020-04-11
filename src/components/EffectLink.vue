@@ -1,5 +1,5 @@
 <template>
-  <g-link class="link" :class="{ 'link--button': button }" :to="to">
+  <g-link class="link" :class="{ 'link--button': button }" :to="to" :aria-label="label">
     <slot/>
   </g-link>
 </template>
@@ -8,6 +8,7 @@
 export default {
   props: {
     button: Boolean,
+    label: String,
     to: String,
   }
 }

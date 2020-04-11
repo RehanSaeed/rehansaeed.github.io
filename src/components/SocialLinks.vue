@@ -1,24 +1,24 @@
 <template>
   <div class="social">
-    <EffectLink v-if="this.$static.metadata.author.twitterUrl" :to="this.$static.metadata.author.twitterUrl" class="social__link">
+    <EffectLink v-if="this.$static.metadata.author.twitterUrl" label="Twitter" :to="this.$static.metadata.author.twitterUrl" class="social__link">
       <TwitterIcon :size="30"/>
     </EffectLink>
-    <EffectLink v-if="this.$static.metadata.author.gitHubUrl" :to="this.$static.metadata.author.gitHubUrl" class="social__link">
+    <EffectLink v-if="this.$static.metadata.author.gitHubUrl" label="GitHub" :to="this.$static.metadata.author.gitHubUrl" class="social__link">
       <GitHubIcon :size="30"/>
     </EffectLink>
-    <EffectLink v-if="this.$static.metadata.author.stackOverflowUrl" :to="this.$static.metadata.author.stackOverflowUrl" class="social__link">
+    <EffectLink v-if="this.$static.metadata.author.stackOverflowUrl" label="StackOverflow" :to="this.$static.metadata.author.stackOverflowUrl" class="social__link">
       <StackOverflowIcon :size="30"/>
     </EffectLink>
-    <EffectLink v-if="this.$static.metadata.author.linkedInUrl" :to="this.$static.metadata.author.linkedInUrl" class="social__link">
+    <EffectLink v-if="this.$static.metadata.author.linkedInUrl" label="LinkedIn" :to="this.$static.metadata.author.linkedInUrl" class="social__link">
       <LinkedInIcon :size="30"/>
     </EffectLink>
-    <EffectLink v-if="this.$static.metadata.author.youtubeUrl" :to="this.$static.metadata.author.youtubeUrl" class="social__link">
+    <EffectLink v-if="this.$static.metadata.author.youtubeUrl" label="Youtube" :to="this.$static.metadata.author.youtubeUrl" class="social__link">
       <YoutubeIcon :size="30"/>
     </EffectLink>
-    <EffectLink @click.native="OnEmailClick" class="social__link">
+    <EffectLink @click.native="OnEmailClick" label="Email" class="social__link">
       <EmailIcon :size="30"/>
     </EffectLink>
-    <EffectLink to="/rss.xml" class="social__link">
+    <EffectLink to="/rss.xml" label="RSS" class="social__link">
       <RssIcon :size="30"/>
     </EffectLink>
   </div>
