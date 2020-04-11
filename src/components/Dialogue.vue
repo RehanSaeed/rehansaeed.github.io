@@ -4,11 +4,7 @@
       <h2 class="dialog__title">{{title}}</h2>
       <form class="dialog__form" method="dialog">
         <EffectButton aria-label="Close search" class="dialog__close">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="close">
-            <title>Close search</title>
-            <line x1="4" y1="4" x2="20" y2="20"></line>
-            <line x1="4" y1="20" x2="20" y2="4"></line>
-          </svg>
+          <CloseIcon :size="24"/>
         </EffectButton>
       </form>
       <div class="dialog__content">
@@ -19,10 +15,12 @@
 </template>
 
 <script>
+import CloseIcon from '~/components/icons/CloseIcon.vue';
 import EffectButton from '~/components/EffectButton.vue';
 
 export default {
   components: {
+    CloseIcon,
     EffectButton,
   },
   props: {

@@ -43,7 +43,7 @@ export default {
 
 .button--button {
   background-color: var(--bg-color);
-  border: solid 2px var(--border-color);
+  border: solid 1px var(--border-color);
   border-radius: var(--radius);
   font-size: .8em;
   padding: .5rem 1rem;

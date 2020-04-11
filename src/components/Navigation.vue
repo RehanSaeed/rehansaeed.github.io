@@ -73,6 +73,7 @@ export default {
 
 .navigation__toggle-theme {
   grid-column-start: 7;
+  margin-bottom: .2rem;
   visibility: visible;
 }
 
