@@ -20,7 +20,7 @@ module.exports = {
     {
       use: "@gridsome/plugin-google-analytics",
       options: {
-        id: "UA-159632920-1"
+        id: site.googleAnalyticsId,
       }
     },
     // https://gridsome.org/plugins/@gridsome/plugin-sitemap

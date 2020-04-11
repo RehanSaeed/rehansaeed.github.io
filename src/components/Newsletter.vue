@@ -1,6 +1,6 @@
 <template>
   <ContentBox class="newsletter">
-    <form class="newsletter__form" method="post" action="https://rehansaeed.us19.list-manage.com/subscribe/post?u=0d1d7c30db26dd0a4aa1b5b40&amp;id=07ce865066">
+    <form class="newsletter__form" method="post" :action="this.$static.metadata.mailchimpUrl">
       <h2 class="newsletter__title">Newsletter</h2>
       <p class="newsletter__content">Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox!</p>
       <input
@@ -26,6 +26,8 @@
   </ContentBox>
 </template>
 
+mailchimpUrl
+
 <script>
 import ContentBox from '~/components/ContentBox.vue';
 import EffectButton from '~/components/EffectButton.vue';
@@ -37,6 +39,14 @@ export default {
   },
 }
 </script>
+
+<static-query>
+query {
+  metadata {
+    mailchimpUrl
+  }
+}
+</static-query>
 
 <style lang="scss">
 .newsletter__form {
