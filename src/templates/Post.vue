@@ -58,6 +58,8 @@ export default {
   },
   computed: {
     image: function() { return this.$static.metadata.url + this.$page.post.cover_image; },
+    imageHeight: function() { return this.image.match(/(\d*)x(\d*)/)[2]; },
+    imageWidth: function() { return this.image.match(/(\d*)x(\d*)/)[1]; },
     url: function() { return this.$static.metadata.url + this.$page.post.path; }
   },
   metaInfo () {
@@ -81,6 +83,8 @@ export default {
         { property: 'og:title', content: this.$page.post.title },
         { property: 'og:url', content: this.url },
         { property: 'og:image', content: this.image },
+        { property: 'og:image:height', content: this.imageHeight },
+        { property: 'og:image:width', content: this.imageWidth },
         { property: 'og:description', content: this.$page.post.description },
         { property: 'og:locale', content: this.$static.metadata.language.replace('-', '_') },
         { property: 'og:site_name', content: this.$static.metadata.name },
@@ -106,7 +110,12 @@ export default {
             keywords: this.$page.post.tags.map(x => x.title).join(),
             url: this.url,
             image: [
-              this.image
+              {
+                '@type': 'ImageObject',
+                url: this.image,
+                width: this.imageWidth,
+                height: this.imageHeight,
+              }
             ],
             datePublished: this.$page.post.date,
             author: {

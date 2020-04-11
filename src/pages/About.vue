@@ -69,6 +69,8 @@ export default {
         { property: 'og:title', content: this.title },
         { property: 'og:url', content: this.url },
         { property: 'og:image', content: this.image },
+        { property: 'og:image:height', content: this.image.match(/(\d*)x(\d*)/)[2] },
+        { property: 'og:image:width', content: this.image.match(/(\d*)x(\d*)/)[1] },
         { property: 'og:description', content: this.description },
         { property: 'og:locale', content: this.$static.metadata.language.replace('-', '_') },
         { property: 'og:site_name', content: this.$static.metadata.name },

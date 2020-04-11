@@ -62,7 +62,9 @@ export default {
   computed: {
     title: function() { return 'Blog'; },
     description: function() { return `Blog posts and more authored by ${this.$static.metadata.author.name}.`; },
-    image: function() { return this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'; }
+    image: function() { return this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'; },
+    imageHeight: function() { return this.image.match(/(\d*)x(\d*)/)[2]; },
+    imageWidth: function() { return this.image.match(/(\d*)x(\d*)/)[1]; },
   },
   metaInfo() {
     return {
@@ -84,6 +86,8 @@ export default {
         { property: 'og:title', content: this.title },
         { property: 'og:url', content: this.$static.metadata.url },
         { property: 'og:image', content: this.image },
+        { property: 'og:image:height', content: this.imageHeight },
+        { property: 'og:image:width', content: this.imageWidth },
         { property: 'og:description', content: this.description },
         { property: 'og:locale', content: this.$static.metadata.language.replace('-', '_') },
         { property: 'og:site_name', content: this.$static.metadata.name },
@@ -103,7 +107,12 @@ export default {
             description: this.description,
             url: this.$static.metadata.url,
             image: [
-              this.image
+              {
+                '@type': 'ImageObject',
+                url: this.image,
+                width: this.imageWidth,
+                height: this.imageHeight,
+              }
             ],
             potentialAction: {
               '@type': 'SearchAction',
@@ -115,7 +124,7 @@ export default {
               name: this.$static.metadata.author.name,
               logo: {
                 '@type': 'ImageObject',
-                url: `${this.$static.metadata.url}/images/author/${this.$static.metadata.author.name.split(' ').join('-')}/Logo-260x260.png`, //
+                url: `${this.$static.metadata.url}/images/author/${this.$static.metadata.author.name.split(' ').join('-')}/Logo-260x260.png`,
                 width: 260,
                 height: 260,
               },
