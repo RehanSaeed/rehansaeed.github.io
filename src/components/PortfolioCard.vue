@@ -1,7 +1,7 @@
 <template>
   <ContentBox class="portfolio-card" tag="article" hoverable>
     <div class="portfolio-card__header">
-      <g-image :alt="portfolio.title" v-if="portfolio.cover_image" class="portfolio-card__image" :src="portfolio.cover_image" blur="5"/>
+      <g-image :alt="portfolio.title" v-if="portfolio.cover_image" class="portfolio-card__image" :src="portfolio.cover_image"/>
     </div>
     <div class="portfolio-card__content">
       <h2 class="portfolio-card__title" v-html="portfolio.title" />

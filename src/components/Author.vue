@@ -1,7 +1,7 @@
 <template>
 	<section class="author">
 
-		<g-image :alt="$static.metadata.name" class="author__image" src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png" width="120" height="120" blur="5" />
+		<g-image :alt="$static.metadata.name" immediate class="author__image" src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png" width="120" height="120" />
 
 		<h1 class="author__site-title">{{$static.metadata.name}}</h1>
 

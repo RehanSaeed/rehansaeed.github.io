@@ -4,7 +4,7 @@
     <h1 class="about__title">About</h1>
 
     <ContentBox tag="article">
-      <g-image class="about__image" alt="Muhammad Rehan Saeed" height="480" width="320" src="~/assets/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg" blur="5"/>
+      <g-image class="about__image" alt="Muhammad Rehan Saeed" height="480" width="320" src="~/assets/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg"/>
       <h2 class="about__title">Muhammad Rehan Saeed</h2>
       <SocialLinks class="about__social-links"/>
       <p class="about__description">Rehan is a professional Software Developer at Microsoft. Although he works for Microsoft his opinions are his own. If it’s written in C# or .NET, Rehan has probably written something using it in anger!</p>
