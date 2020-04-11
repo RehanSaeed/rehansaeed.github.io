@@ -1,5 +1,5 @@
 <template>
-  <div class="content-box" :class="{ 'content-box--hoverable': hoverable }">
+  <div class="content-box" :is="tag" :class="{ 'content-box--hoverable': hoverable }">
     <slot/>
   </div>
 </template>
@@ -8,6 +8,10 @@
 export default {
   props: {
     hoverable: Boolean,
+    tag: {
+      default: 'div',
+      type: String
+    }
   }
 }
 </script>

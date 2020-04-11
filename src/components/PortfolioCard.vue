@@ -1,5 +1,5 @@
 <template>
-  <ContentBox hoverable class="portfolio-card">
+  <ContentBox class="portfolio-card" tag="article" hoverable>
     <div class="portfolio-card__header">
       <g-image :alt="portfolio.title" v-if="portfolio.cover_image" class="portfolio-card__image" :src="portfolio.cover_image" blur="5"/>
     </div>

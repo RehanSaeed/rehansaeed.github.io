@@ -1,5 +1,5 @@
 <template>
-  <ContentBox hoverable class="post-card" :class="{'post-card--has-poster' : post.poster}">
+  <ContentBox class="post-card" tag="article" hoverable :class="{'post-card--has-poster' : post.poster}">
     <div class="post-card__header">
       <g-image alt="Cover image" v-if="post.cover_image" class="post-card__image" :src="post.cover_image" blur="5"/>
     </div>

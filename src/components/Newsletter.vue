@@ -1,5 +1,5 @@
 <template>
-  <ContentBox class="newsletter">
+  <ContentBox class="newsletter" tag="section">
     <form class="newsletter__form" method="post" :action="this.$static.metadata.mailchimpUrl">
       <h2 class="newsletter__title">Newsletter</h2>
       <p class="newsletter__content">Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox!</p>

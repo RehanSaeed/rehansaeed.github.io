@@ -3,7 +3,7 @@
 
     <h1 class="about__title">About</h1>
 
-    <ContentBox>
+    <ContentBox tag="article">
       <g-image class="about__image" alt="Muhammad Rehan Saeed" height="480" width="320" src="~/assets/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg" blur="5"/>
       <h2 class="about__title">Muhammad Rehan Saeed</h2>
       <SocialLinks class="about__social-links"/>
