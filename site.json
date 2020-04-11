@@ -18,6 +18,12 @@
     "firstName": "Muhammad Rehan",
     "lastName": "Saeed",
     "gender": "male",
-    "twitter": "@RehanSaeedUK"
+
+    "gitHubUrl": "https://github.com/RehanSaeed",
+    "stackOverflowUrl": "https://stackoverflow.com/users/1212017/muhammad-rehan-saeed",
+    "linkedInUrl": "https://www.linkedin.com/in/muhammad-rehan-saeed/",
+    "twitter": "@RehanSaeedUK",
+    "twitterUrl": "https://twitter.com/RehanSaeedUK",
+    "youtubeUrl": "https://www.youtube.com/channel/UC6geox4JkY11093RqecELGA"
   }
 }

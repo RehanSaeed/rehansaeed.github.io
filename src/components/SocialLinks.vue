@@ -1,24 +1,24 @@
 <template>
   <div class="social">
-    <EffectLink class="social__link" to="https://twitter.com/RehanSaeedUK">
+    <EffectLink v-if="this.$static.metadata.author.twitterUrl" :to="this.$static.metadata.author.twitterUrl" class="social__link">
       <TwitterIcon :size="30"/>
     </EffectLink>
-    <EffectLink class="social__link" to="https://github.com/RehanSaeed">
+    <EffectLink v-if="this.$static.metadata.author.gitHubUrl" :to="this.$static.metadata.author.gitHubUrl" class="social__link">
       <GitHubIcon :size="30"/>
     </EffectLink>
-    <EffectLink class="social__link" to="https://stackoverflow.com/users/1212017/muhammad-rehan-saeed">
+    <EffectLink v-if="this.$static.metadata.author.stackOverflowUrl" :to="this.$static.metadata.author.stackOverflowUrl" class="social__link">
       <StackOverflowIcon :size="30"/>
     </EffectLink>
-    <EffectLink class="social__link" to="https://www.linkedin.com/in/muhammad-rehan-saeed/">
+    <EffectLink v-if="this.$static.metadata.author.linkedInUrl" :to="this.$static.metadata.author.linkedInUrl" class="social__link">
       <LinkedInIcon :size="30"/>
     </EffectLink>
-    <EffectLink class="social__link" to="https://www.youtube.com/channel/UC6geox4JkY11093RqecELGA">
+    <EffectLink v-if="this.$static.metadata.author.youtubeUrl" :to="this.$static.metadata.author.youtubeUrl" class="social__link">
       <YoutubeIcon :size="30"/>
     </EffectLink>
-    <EffectLink class="social__link" @click.native="OnEmailClick">
+    <EffectLink @click.native="OnEmailClick" class="social__link">
       <EmailIcon :size="30"/>
     </EffectLink>
-    <EffectLink class="social__link" to="/rss.xml">
+    <EffectLink to="/rss.xml" class="social__link">
       <RssIcon :size="30"/>
     </EffectLink>
   </div>
@@ -54,6 +54,20 @@ export default {
   }
 }
 </script>
+
+<static-query>
+query {
+  metadata {
+    author {
+      gitHubUrl
+      linkedInUrl
+      stackOverflowUrl
+      twitterUrl
+      youtubeUrl
+    }
+  }
+}
+</static-query>
 
 <style lang="scss">
 .social {
