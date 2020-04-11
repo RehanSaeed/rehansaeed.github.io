@@ -1,7 +1,7 @@
 <template>
   <nav class="navigation">
     <EffectLink to="/">
-		  <g-image :alt="$static.metadata.name" class="navigation__image" src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png" width="50" height="50" blur="0" />
+		  <g-image :alt="this.$static.metadata.author.name" class="navigation__image" src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png" width="50" height="50" blur="0" />
     </EffectLink>
     <div class="navigation__items">
       <EffectLink class="navigation__item" to="/">Blog</EffectLink>
@@ -16,6 +16,7 @@
 <static-query>
 query {
   metadata {
+    name
     author {
       name
     }
