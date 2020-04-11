@@ -18,7 +18,9 @@
     "firstName": "Muhammad Rehan",
     "lastName": "Saeed",
     "gender": "male",
-
+    "email": [
+      "r", "e", "h", "a", "n", "s", "a", "e", "e", "d", "@", "g", "m", "a", "i", "l", ".", "c", "o", "m"
+    ],
     "gitHubUrl": "https://github.com/RehanSaeed",
     "stackOverflowUrl": "https://stackoverflow.com/users/1212017/muhammad-rehan-saeed",
     "linkedInUrl": "https://www.linkedin.com/in/muhammad-rehan-saeed/",

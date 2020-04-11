@@ -48,8 +48,7 @@ export default {
   methods: {
     OnEmailClick: function() {
       const body = encodeURIComponent('If you have an issue with one of my GitHub projects, please raise a GitHub issue. If you need help answering a coding problem, post your question on StackOverflow where you will get quicker and better answers. Otherwise, please do feel free to contact me!')
-      window.location.href = ['m', 'a', 'i', 'l', 't', 'o', ':', 'r', 'e', 'h', 'a', 'n', 's', 'a', 'e', 'e', 'd', '@', 'g', 'm', 'a', 'i', 'l', '.', 'c', 'o', 'm'].join('') +
-        `?body=${body}`;
+      window.location.href = `mailto:${this.$static.metadata.author.email.join('')}?body=${body}`;
     }
   }
 }
@@ -59,6 +58,7 @@ export default {
 query {
   metadata {
     author {
+      email
       gitHubUrl
       linkedInUrl
       stackOverflowUrl
