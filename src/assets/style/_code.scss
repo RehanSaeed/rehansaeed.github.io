@@ -97,7 +97,7 @@ code[class*="language-css"] {
 
 .token.important,
 .token.bold {
-  font-weight: bold;
+  font-weight: var(--global-font-weight-bold);
 }
 
 .token.italic {

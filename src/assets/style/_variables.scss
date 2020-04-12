@@ -15,7 +15,14 @@
   --global-font-family-monospace: 'Cascadia Code', 'Cascadia Code PL', 'Fira Code', Consolas, SFMono-Regular, Menlo, Monaco, 'Liberation Mono', 'Courier New', monospace;
   --global-font-family-heading: 'Audiowide', sans-serif;
 
+  // Font Size
   --base-font-size: 1.25em;
+
+  // Font Weight
+  --global-font-weight-light: 300;
+  --global-font-weight-normal: 400;
+  --global-font-weight-semi-bold: 600;
+  --global-font-weight-bold: 700;
 
   --space: 3.5rem;
   --content-width: 45rem;

@@ -9,7 +9,7 @@ table {
   width: 100%;
 
   thead {
-    font-weight: 600;
+    font-weight: var(--global-font-weight-semi-bold);
   }
 
   tr {
