@@ -1,8 +1,7 @@
 input {
   background: var(--bg-content-color);
-  border-color: var(--title-color);
+  border: var(--global-border-width-2) solid var(--title-color);
   border-radius: var(--global-border-radius);
-  border-width: 2px;
   color: var(--title-color);
   font-family: var(--global-font-family-default);
   padding: .3rem .5rem;

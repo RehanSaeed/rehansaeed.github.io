@@ -50,7 +50,7 @@ export default {
 }
 
 .navigation__image {
-  border: solid 2px var(--title-color);
+  border: var(--global-border-width-2) solid var(--title-color);
   border-radius: 100%;
   width: 2.5rem;
   height: 2.5rem;

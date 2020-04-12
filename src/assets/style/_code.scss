@@ -27,8 +27,8 @@ pre[class*="language-"] {
   margin: 1.5em 0;
   overflow-x: auto;
   overflow-y: hidden;
-  border: 1px solid #dddddd;
   background-color: white;
+  border: var(--global-border-width-1) solid #dddddd;
   border-radius: var(--global-border-radius);
   scrollbar-color: var(--scroll-thumb-color) var(--scroll-track-color);
 }
@@ -150,7 +150,7 @@ pre[class*="language-"].line-numbers > code {
 }
 
 .line-numbers .line-numbers-rows {
-  border-right: 1px solid #a5a5a5;
+  border-right: var(--global-border-width-1) solid #a5a5a5;
   font-size: 100%;
   left: -3.8em;
   pointer-events: none;
@@ -184,7 +184,7 @@ pre[class*="language-"].line-numbers > code {
   display: block;
   margin-left: -0.25em;
   padding-top: 0.16em;
-  border-left: 0.25em solid rgba(193, 222, 241, 1);
+  border-left: var(--global-border-width-3) solid rgba(193, 222, 241, 1);
 }
 
 body[data-theme="dark"] {
@@ -205,7 +205,7 @@ body[data-theme="dark"] {
   pre[class*="language-"] {
     padding: 1em;
     margin: 1.5em 0;
-    border: 1px solid #4C4C4C;
+    border: var(--global-border-width-1) solid #4C4C4C;
     background-color: #272822;
     scrollbar-color: var(--scroll-thumb-color) var(--scroll-track-color);
   }

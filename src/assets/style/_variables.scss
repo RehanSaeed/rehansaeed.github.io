@@ -3,6 +3,13 @@
   // Border Radius
   --global-border-radius: .25rem;
 
+  // Border Width
+  --global-border-width-0: 0;
+  --global-border-width-1: .05rem;
+  --global-border-width-2: .1rem;
+  --global-border-width-3: .2rem;
+  --global-border-width-4: .4rem;
+
   // Font Family
   --global-font-family-default: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --global-font-family-monospace: 'Cascadia Code', 'Cascadia Code PL', 'Fira Code', Consolas, SFMono-Regular, Menlo, Monaco, 'Liberation Mono', 'Courier New', monospace;

@@ -110,7 +110,7 @@ dialog.fixed {
 
 .dialog {
   background: var(--bg-content-color);
-  border: solid 2px var(--border-color);
+  border: var(--global-border-width-2) solid var(--border-color);
   border-radius: var(--global-border-radius);
   color: var(--title-color);
   scrollbar-color: var(--scroll-thumb-color) var(--scroll-track-color);

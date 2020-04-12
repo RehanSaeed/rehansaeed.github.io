@@ -198,12 +198,12 @@ query Post ($id: ID!) {
 }
 
 .post__header {
-  width: calc(100% + var(--space) * 2);
+  border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
   margin-left: calc(var(--space) * -1);
   margin-top: calc(var(--space) * -1);
   margin-bottom: calc(var(--space) / 2);
   overflow: hidden;
-  border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
+  width: calc(100% + var(--space) * 2);
 
   img {
     width: 100%;

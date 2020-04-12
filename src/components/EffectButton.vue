@@ -23,7 +23,7 @@ export default {
 <style lang="scss">
 .button {
   background-color: transparent;
-  border: 0;
+  border: none;
   color: var(--title-color);
   cursor: pointer;
   font-family: var(--global-font-family-heading);
@@ -43,7 +43,7 @@ export default {
 
 .button--button {
   background-color: var(--bg-color);
-  border: solid 1px var(--border-color);
+  border: var(--global-border-width-1) solid var(--border-color);
   border-radius: var(--global-border-radius);
   font-size: .8em;
   padding: .5rem 1rem;

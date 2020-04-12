@@ -12,7 +12,7 @@
 
   &.tip, &.warning, &.danger {
     padding: 1rem 1.4rem;
-    border-left-width: .4rem;
+    border-left-width: var(--global-border-width-4);
     border-left-style: solid;
   }
 
