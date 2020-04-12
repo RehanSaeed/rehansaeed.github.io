@@ -4,6 +4,7 @@ input {
   border-radius: var(--radius);
   border-width: 2px;
   color: var(--title-color);
+  font-family: var(--base-font-family);
   padding: .3rem .5rem;
   transition: border-color .6s;
 
