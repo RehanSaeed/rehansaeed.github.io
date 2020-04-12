@@ -48,9 +48,11 @@ export default {
 
 .author__site-title {
   font-size: 2.5em;
+  text-align: center;
 }
 
 .author__description {
   opacity: .8;
+  text-align: center;
 }
 </style>
