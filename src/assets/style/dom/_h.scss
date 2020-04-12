@@ -2,7 +2,7 @@ h1, h2, h3, h4, h5, h6 {
   transition: color .6s;
   color: var(--title-color);
   margin: 2.75rem 0 1rem;
-  font-family: var(--heading-font-family);
+  font-family: var(--global-font-family-heading);
   font-weight: 400;
   line-height: 1.15;
 }

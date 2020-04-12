@@ -1,7 +1,7 @@
 code[class*="language-"],
 pre[class*="language-"] {
   color: #393A34;
-  font-family: var(--code-font-family);
+  font-family: var(--global-font-family-monospace);
   direction: ltr;
   text-align: left;
   white-space: pre;
@@ -128,7 +128,7 @@ code[class*="language-css"] {
 
 // Code Title
 .code-title {
-  font-family: var(--code-font-family);
+  font-family: var(--global-font-family-monospace);
   font-size: 0.8em;
   margin-bottom: -1em;
   padding-left: 1rem;

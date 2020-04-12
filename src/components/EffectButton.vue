@@ -26,7 +26,7 @@ export default {
   border: 0;
   color: var(--title-color);
   cursor: pointer;
-  font-family: var(--heading-font-family);
+  font-family: var(--global-font-family-heading);
   line-height: 1;
   padding: 0;
   transition: all 300ms ease-out;

@@ -17,7 +17,7 @@ export default {
 <style lang="scss">
 .link {
   color: var(--title-color);
-  font-family: var(--heading-font-family);
+  font-family: var(--global-font-family-heading);
   line-height: 1;
   text-decoration: none;
   transition: all 300ms ease-out;
