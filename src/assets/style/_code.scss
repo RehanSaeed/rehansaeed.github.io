@@ -1,5 +1,7 @@
 code[class*="language-"],
 pre[class*="language-"] {
+  --code-line-height: 1.2;
+
   color: #393A34;
   font-family: var(--global-font-family-monospace);
   direction: ltr;
@@ -9,7 +11,7 @@ pre[class*="language-"] {
   word-break: normal;
   word-wrap: normal;
   font-size: .85em;
-  line-height: 1.2;
+  line-height: var(--code-line-height);
   tab-size:4;
   hyphens: none;
 }

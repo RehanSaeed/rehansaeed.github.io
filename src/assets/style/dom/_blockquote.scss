@@ -2,4 +2,5 @@ blockquote {
   border-left: var(--global-border-width-3) solid var(--border-color);
   padding-left: calc(var(--space) / 2);
   color: var(--title-color);
+  line-height: var(--global-line-height-2);
 }

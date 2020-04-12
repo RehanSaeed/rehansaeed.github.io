@@ -7,7 +7,7 @@ body {
    color .6s;
  margin:0;
  padding:0;
- line-height: 1.5;
+ line-height: var(--global-line-height-1);
  font-family: var(--global-font-family-default);
  font-weight: var(--global-font-weight-normal);
 }

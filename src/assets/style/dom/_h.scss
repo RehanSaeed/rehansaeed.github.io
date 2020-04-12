@@ -4,7 +4,7 @@ h1, h2, h3, h4, h5, h6 {
   margin: 2.75rem 0 1rem;
   font-family: var(--global-font-family-heading);
   font-weight: var(--global-font-weight-normal);
-  line-height: 1.15;
+  line-height: var(--global-line-height-1);
 }
 
 h1 {
