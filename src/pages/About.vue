@@ -97,7 +97,7 @@ export default {
 }
 
 .about__image {
-  border-radius: var(--radius);
+  border-radius: var(--global-border-radius);
   display: block;
   margin: 0 auto;
 }

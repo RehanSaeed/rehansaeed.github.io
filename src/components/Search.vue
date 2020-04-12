@@ -76,7 +76,7 @@ export default {
 
 .search__result__image {
   border: solid 2px var(--border-color);
-  border-radius: var(--radius);
+  border-radius: var(--global-border-radius);
   grid-area: image;
   margin-right: 1rem;
   min-width: 8rem;

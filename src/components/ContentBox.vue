@@ -22,7 +22,7 @@ export default {
 	max-width: var(--content-width);
 	margin: 0 auto;
 	padding: var(--space);
-  border-radius: var(--radius);
+  border-radius: var(--global-border-radius);
   box-shadow: 1px 1px 5px 0 rgba(0,0,0,.02), 1px 1px 15px 0 rgba(0,0,0,.03);
   transition: transform .3s, background-color .3s, box-shadow .6s;
 }

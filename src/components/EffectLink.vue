@@ -38,7 +38,7 @@ export default {
 .link--button {
   background-color: var(--bg-color);
   border: solid 1px var(--border-color);
-  border-radius: var(--radius);
+  border-radius: var(--global-border-radius);
   font-size: .8em;
   padding: .5rem 1rem;
 }
