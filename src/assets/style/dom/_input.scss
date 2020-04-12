@@ -1,0 +1,13 @@
+input {
+  background: var(--bg-content-color);
+  border-color: var(--title-color);
+  border-radius: var(--radius);
+  border-width: 2px;
+  color: var(--title-color);
+  padding: .3rem .5rem;
+  transition: border-color .6s;
+
+  &:hover {
+    border-color: var(--body-color);
+  }
+}

@@ -1,0 +1,11 @@
+body {
+  background-color: var(--bg-color);
+  color: var(--body-color);
+ transition:
+   background-color .6s,
+   border-color .6s,
+   color .6s;
+ margin:0;
+ padding:0;
+ line-height: 1.5;
+}
