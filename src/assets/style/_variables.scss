@@ -4,8 +4,8 @@
   --global-border-radius: .25rem;
 
   // Font Family
-  --global-font-family-default: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --global-font-family-monospace: "Cascadia Code", "Cascadia Code PL", "Fira Code", Consolas, SFMono-Regular, Menlo, Monaco, "Liberation Mono", "Courier New", monospace;
+  --global-font-family-default: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --global-font-family-monospace: 'Cascadia Code', 'Cascadia Code PL', 'Fira Code', Consolas, SFMono-Regular, Menlo, Monaco, 'Liberation Mono', 'Courier New', monospace;
   --global-font-family-heading: 'Audiowide', sans-serif;
 
   --base-font-size: 1.25em;
@@ -29,7 +29,7 @@ body {
 }
 
 // Dark theme
-body[data-theme="dark"] {
+body[data-theme='dark'] {
  	--bg-color: #0D2538;
  	--bg-content-color: #0f2d44;
  	--bg-code: rgba(0,0,0,.3);
