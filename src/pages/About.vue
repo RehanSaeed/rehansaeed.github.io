@@ -4,7 +4,7 @@
     <h1 class="about__title">About</h1>
 
     <ContentBox tag="article">
-      <g-image class="about__image" alt="Muhammad Rehan Saeed" height="480" width="320" src="~/assets/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg"/>
+      <g-image class="about__image" alt="Muhammad Rehan Saeed" height="480" width="320" src="~/assets/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg" quality="100"/>
       <h2 class="about__title">Muhammad Rehan Saeed</h2>
       <SocialLinks class="about__social-links"/>
       <p class="about__description">Rehan is a professional Software Developer at Microsoft. Although he works for Microsoft his opinions are his own. If it’s written in C# or .NET, Rehan has probably written something using it in anger!</p>
@@ -87,6 +87,13 @@ export default {
 </script>
 
 <style lang="scss">
+.about__image {
+  border-radius: var(--global-border-radius);
+  display: block;
+  margin: 0 auto;
+  width: 320px;
+}
+
 .about__title {
   margin-bottom: 1.5rem;
   text-align: center;
@@ -94,16 +101,6 @@ export default {
 
 .about__social-links {
   margin-bottom: 1.5rem;
-}
-
-.about__image {
-  border-radius: var(--global-border-radius);
-  display: block;
-  margin: 0 auto;
-}
-
-.about__title {
-  text-align: center;
 }
 
 .about__description {
