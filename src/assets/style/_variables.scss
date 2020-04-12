@@ -7,9 +7,8 @@
   --base-font-size: 20px;
 
   --space: 3.5rem;
-  --content-width: 900px;
-  --header-height: 80px;
-  --radius: 5px;
+  --content-width: 45rem;
+  --radius: .25rem;
 }
 
 // Light theme
@@ -46,6 +45,5 @@ body[data-theme="dark"] {
     --base-font-size: 17px;
 
 		--space: 1.5rem;
-		--header-height: 60px;
 	}
 }
