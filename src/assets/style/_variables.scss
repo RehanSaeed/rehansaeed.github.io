@@ -4,7 +4,7 @@
   --code-font-family: "Cascadia Code", "Cascadia Code PL", "Fira Code", Consolas, SFMono-Regular, Menlo, Monaco, "Liberation Mono", "Courier New", monospace;
   --heading-font-family: 'Audiowide', sans-serif;
 
-  --base-font-size: 20px;
+  --base-font-size: 1.25em;
 
   --space: 3.5rem;
   --content-width: 45rem;
@@ -42,7 +42,7 @@ body[data-theme="dark"] {
 // Mobile View
 @media screen and (max-width: 650px) {
 	* {
-    --base-font-size: 17px;
+    --base-font-size: 1.1em;
 
 		--space: 1.5rem;
 	}
