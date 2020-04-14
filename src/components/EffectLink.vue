@@ -39,7 +39,7 @@ export default {
   background-color: var(--bg-color);
   border: var(--global-border-width-1) solid var(--border-color);
   border-radius: var(--global-border-radius);
-  font-size: .8em;
+  font-size: var(--global-font-size-small);
   padding: .5rem 1rem;
 }
 </style>
