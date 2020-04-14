@@ -18,7 +18,7 @@ export default {
 .link {
   color: var(--title-color);
   font-family: var(--global-font-family-heading);
-  line-height: 1;
+  line-height: var(--global-line-height-1);
   text-decoration: none;
   transition: all 300ms ease-out;
 
