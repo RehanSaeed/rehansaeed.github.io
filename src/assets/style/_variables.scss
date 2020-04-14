@@ -64,6 +64,14 @@
   --content-width: 45rem;
 }
 
+// Mobile View
+@media screen and (max-width: 650px) {
+	* {
+		--space: 1.5rem;
+	}
+}
+
+
 // Light theme
 body {
  	--bg-color: #F2F4F7;
@@ -90,11 +98,4 @@ body[data-theme='dark'] {
   --border-color: rgba(255,255,255,.1);
   --scroll-thumb-color: #272822;
   --scroll-track-color: #4C4C4C;
-}
-
-// Mobile View
-@media screen and (max-width: 650px) {
-	* {
-		--space: 1.5rem;
-	}
 }
