@@ -51,11 +51,7 @@ export default {
 }
 
 .search__input {
-  font-size: 1.5em;
-
-  @media screen and (max-width: 650px) {
-    font-size: 1.2em;
-  }
+  font-size: var(--global-font-size-4);
 }
 
 .search__results {
@@ -85,14 +81,14 @@ export default {
 
 .search__result__title {
   color: var(--title-color);
-  font-size: 1.1em;
+  font-size: var(--global-font-size-2);
   grid-area: title;
   margin: 0;
 }
 
 .search__result__description {
   color: var(--body-color);
-  font-size: 0.9em;
+  font-size: var(--global-font-size-0);
   grid-area: description;
   margin: 0;
 }

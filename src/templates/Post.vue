@@ -223,7 +223,7 @@ query Post ($id: ID!) {
   }
 
   > p:first-of-type {
-    font-size: 1.2em;
+    font-size: var(--global-font-size-3);
     color: var(--title-color);
   }
 

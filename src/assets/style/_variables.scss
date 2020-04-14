@@ -13,31 +13,37 @@
 
   // Border Width
   --global-border-width-0: 0;
-  --global-border-width-1: .05rem;
-  --global-border-width-2: .1rem;
-  --global-border-width-3: .2rem;
-  --global-border-width-4: .4rem;
+  --global-border-width-1: .05rem; // 1px
+  --global-border-width-2: .1rem; // 2px
+  --global-border-width-3: .2rem; // 4px
+  --global-border-width-4: .4rem; // 8px
 
   // Font Family
   --global-font-family-default: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --global-font-family-monospace: 'Cascadia Code', 'Cascadia Code PL', 'Fira Code', Consolas, SFMono-Regular, Menlo, Monaco, 'Liberation Mono', 'Courier New', monospace;
   --global-font-family-heading: 'Audiowide', sans-serif;
 
-  // Font Size
+  // Fluid Font Size
   $global-font-size-minimum: 1em; // 16px
   $global-font-size-maximum: 1.25em; // 20px
+  --global-font-size-minimum: $global-font-size-minimum;
+  --global-font-size-maximum: $global-font-size-maximum;
   @include fluid-type(
     --global-font-size-default,
     $global-breakpoint-sm,
     $global-breakpoint-xxl,
     $global-font-size-minimum,
     $global-font-size-maximum);
-  --global-font-size-h1: 1.802em;
-  --global-font-size-h2: 1.602em;
-  --global-font-size-h3: 1.424em;
-  --global-font-size-h4: 1.266em;
-  --global-font-size-h5: 1.125em;
-  --global-font-size-small: 0.889em;
+
+  // Font Size
+  --global-font-size-0: 0.85em;
+  --global-font-size-1: 1em;
+  --global-font-size-2: 1.125em;
+  --global-font-size-3: 1.266em;
+  --global-font-size-4: 1.424em;
+  --global-font-size-5: 1.602em;
+  --global-font-size-6: 1.802em;
+  --global-font-size-7: 2.5em;
 
   // Font Weight
   --global-font-weight-light: 300;

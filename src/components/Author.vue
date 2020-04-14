@@ -47,7 +47,7 @@ export default {
 }
 
 .author__site-title {
-  font-size: 2.5em;
+  font-size: var(--global-font-size-7);
   text-align: center;
 }
 

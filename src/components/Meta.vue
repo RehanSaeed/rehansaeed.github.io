@@ -17,7 +17,7 @@ export default {
 
 <style lang="scss">
 .meta {
-  font-size: .8em;
+  font-size: var(--global-font-size-0);
   opacity: .8;
 }
 </style>

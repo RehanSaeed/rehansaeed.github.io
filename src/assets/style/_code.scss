@@ -10,7 +10,7 @@ pre[class*="language-"] {
   word-spacing: normal;
   word-break: normal;
   word-wrap: normal;
-  font-size: .85em;
+  font-size: var(--global-font-size-0);
   line-height: var(--code-line-height);
   tab-size:4;
   hyphens: none;
@@ -131,7 +131,7 @@ code[class*="language-css"] {
 // Code Title
 .code-title {
   font-family: var(--global-font-family-monospace);
-  font-size: 0.8em;
+  font-size: var(--global-font-size-0);
   margin-bottom: -1em;
   padding-left: 1rem;
   padding-right: 1rem;
