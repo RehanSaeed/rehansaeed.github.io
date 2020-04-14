@@ -82,6 +82,7 @@ export default {
   .navigation {
     grid-template-columns: auto 1fr repeat(2, auto);
     margin-bottom: -8rem;
+    justify-items: left;
   }
   .navigation__items {
     grid-column-start: 1;
