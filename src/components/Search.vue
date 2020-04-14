@@ -5,6 +5,7 @@
       autofocus
       v-model="searchTerm"
       class="search__input"
+      enterKeyHint="search"
       placeholder="Search"
       type="search">
     <div class="search__results">
