@@ -1,12 +1,11 @@
 <template>
   <Layout>
+
     <div class="post-title">
       <h1 class="post-title__text">
         {{ $page.post.title }}
       </h1>
-
       <Meta :meta="$page.post" />
-
     </div>
 
     <ContentBox class="post" tag="article">
@@ -193,7 +192,11 @@ query Post ($id: ID!) {
 }
 
 .post-title {
+  display: grid;
+  justify-items: center;
+  margin: 0 auto;
   padding: calc(var(--space) / 2) 0 calc(var(--space) / 2);
+  max-width: var(--content-width);
   text-align: center;
 }
 

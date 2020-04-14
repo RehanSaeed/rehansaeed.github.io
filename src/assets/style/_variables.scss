@@ -1,5 +1,13 @@
 // Default
 :root {
+  // Breakpoints
+  $global-breakpoint-xs: 0;
+  $global-breakpoint-sm: 36em; // 576px
+  $global-breakpoint-md: 48em; // 768px
+  $global-breakpoint-lg: 62em; // 992px
+  $global-breakpoint-xl: 75em; // 1200px
+  $global-breakpoint-xxl: 100em; // 1600px
+
   // Border Radius
   --global-border-radius: .25rem;
 
@@ -16,7 +24,9 @@
   --global-font-family-heading: 'Audiowide', sans-serif;
 
   // Font Size
-  --base-font-size: 1.25em;
+  $global-minimum-font-size: 1em; // 16px
+  $global-maximum-font-size: 1.25em; // 20px
+  @include fluid-type(--base-font-size, $global-breakpoint-sm, $global-breakpoint-xxl, $global-minimum-font-size, $global-maximum-font-size);
 
   // Font Weight
   --global-font-weight-light: 300;
@@ -29,8 +39,9 @@
   --global-line-height-2: 1.7;
 
   // Line Length
-  --global-line-length-min: 45;
-  --global-line-length-max: 75;
+  --global-line-length-min: 45ch;
+  --global-line-length-ideal: 66ch;
+  --global-line-length-max: 75ch;
 
   --space: 3.5rem;
   --content-width: 45rem;
@@ -67,8 +78,6 @@ body[data-theme='dark'] {
 // Mobile View
 @media screen and (max-width: 650px) {
 	* {
-    --base-font-size: 1.1em;
-
 		--space: 1.5rem;
 	}
 }

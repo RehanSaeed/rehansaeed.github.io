@@ -5,6 +5,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--global-font-family-heading);
   font-weight: var(--global-font-weight-normal);
   line-height: var(--global-line-height-1);
+  max-width: var(--global-line-length-max);
 }
 
 h1 {
