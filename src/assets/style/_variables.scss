@@ -24,9 +24,19 @@
   --global-font-family-heading: 'Audiowide', sans-serif;
 
   // Font Size
-  $global-minimum-font-size: 1em; // 16px
-  $global-maximum-font-size: 1.25em; // 20px
-  @include fluid-type(--base-font-size, $global-breakpoint-sm, $global-breakpoint-xxl, $global-minimum-font-size, $global-maximum-font-size);
+  $global-font-size-minimum: 1em; // 16px
+  $global-font-size-maximum: 1.25em; // 20px
+  @include fluid-type(
+    --base-font-size,
+    $global-breakpoint-sm,
+    $global-breakpoint-xxl,
+    $global-font-size-minimum,
+    $global-font-size-maximum);
+  --global-font-size-h1: 1.802em;
+  --global-font-size-h2: 1.602em;
+  --global-font-size-h3: 1.424em;
+  --global-font-size-h4: 1.266em;
+  --global-font-size-h5: 1.125em;
 
   // Font Weight
   --global-font-weight-light: 300;

@@ -10,21 +10,21 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
   margin-top: 0;
-  font-size: 1.802em;
+  font-size: var(--global-font-size-h1);
 }
 
 h2 {
-  font-size: 1.602em;
+  font-size: var(--global-font-size-h2);
 }
 
 h3 {
-  font-size: 1.424em;
+  font-size: var(--global-font-size-h3);
 }
 
 h4 {
-  font-size: 1.266em;
+  font-size: var(--global-font-size-h4);
 }
 
 h5 {
-  font-size: 1.125em;
+  font-size: var(--global-font-size-h5);
 }
