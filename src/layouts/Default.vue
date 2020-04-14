@@ -63,7 +63,7 @@ query {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: calc(var(--space) / 2);
+  padding: calc(var(--global-space) / 2);
   text-align: center;
   font-size: var(--global-font-size-0);
 

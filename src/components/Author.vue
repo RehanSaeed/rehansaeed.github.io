@@ -35,7 +35,7 @@ export default {
 .author {
   display: grid;
   justify-items: center;
-	padding: calc(var(--space) / 2) 0;
+	padding: calc(var(--global-space) / 2) 0;
 }
 
 .author__image {

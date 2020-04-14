@@ -96,15 +96,15 @@ export default {
 <style lang="scss">
 .portfolio {
   display: grid;
-  grid-gap: var(--space);
+  grid-gap: var(--global-space);
   grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
-  padding: 0 var(--space);
-  margin-left: var(--space);
-  margin-right: var(--space);
+  padding: 0 var(--global-space);
+  margin-left: var(--global-space);
+  margin-right: var(--global-space);
 }
 
 .portfolio__title {
-  padding: calc(var(--space) / 2) 0 calc(var(--space) / 2);
+  padding: calc(var(--global-space) / 2) 0 calc(var(--global-space) / 2);
   text-align: center;
 }
 </style>

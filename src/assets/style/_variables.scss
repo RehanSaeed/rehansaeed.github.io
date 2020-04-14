@@ -63,16 +63,18 @@
   // Content Width
   --global-content-width-maximum: 45rem;
 
-  --space: 3.5rem;
+  // Space
+  @include fluid-type(
+    --global-space,
+    $global-breakpoint-sm,
+    $global-breakpoint-xxl,
+    1.5em,
+    4.5em);
+  --global-space-0: 0;
+  --global-space-1: calc(var(--global-space) / 8);
+  --global-space-2: calc(var(--global-space) / 4);
+  --global-space-3: calc(var(--global-space) / 2);
 }
-
-// Mobile View
-@media screen and (max-width: 650px) {
-	* {
-		--space: 1.5rem;
-	}
-}
-
 
 // Light theme
 body {
