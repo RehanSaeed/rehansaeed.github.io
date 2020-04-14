@@ -27,7 +27,7 @@
   $global-font-size-minimum: 1em; // 16px
   $global-font-size-maximum: 1.25em; // 20px
   @include fluid-type(
-    --base-font-size,
+    --global-font-size-default,
     $global-breakpoint-sm,
     $global-breakpoint-xxl,
     $global-font-size-minimum,
