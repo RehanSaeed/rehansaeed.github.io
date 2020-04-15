@@ -74,6 +74,7 @@
   --global-space-1: calc(var(--global-space) / 8);
   --global-space-2: calc(var(--global-space) / 4);
   --global-space-3: calc(var(--global-space) / 2);
+  --global-space-4: var(--global-space);
 }
 
 // Light theme

@@ -97,28 +97,22 @@ query {
 }
 
 .about__container {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+
   :last-child {
     margin-bottom: 0;
   }
 }
 
-.about__title {
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
-
 .about__image {
   border-radius: var(--global-border-radius);
   display: block;
-  margin: 0 auto;
   width: 320px;
 }
 
 .about__social-links {
-  margin-bottom: 1.5rem;
-}
-
-.about__description {
-  text-align: center;
+  margin-bottom: var(--global-space-2);
 }
 </style>
