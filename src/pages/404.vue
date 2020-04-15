@@ -1,42 +1,46 @@
 <template>
   <Layout :show-logo="true">
+    <div class="not-found">
 
-    <div class="not-found__container">
-      <h1 class="not-found__title">404 Not Found</h1>
-      <EffectLink button class="not-found__home-button" to="/">Go Home</EffectLink>
+      <PageTitle>404 Not Found</PageTitle>
+
+      <ContentBox class="not-found__content">
+        <p>Didn't find what you were looking for?</p>
+        <EffectLink button to="/">Go Home</EffectLink>
+      </ContentBox>
+
+      <Newsletter />
+
     </div>
-
-    <Newsletter />
-
   </Layout>
 </template>
 
 <script>
-import Author from '~/components/Author.vue'
-import EffectLink from '~/components/EffectLink.vue'
-import Newsletter from '~/components/Newsletter.vue'
+import ContentBox from '~/components/ContentBox.vue';
+import EffectLink from '~/components/EffectLink.vue';
+import Newsletter from '~/components/Newsletter.vue';
+import PageTitle from '~/components/PageTitle.vue';
 
 export default {
   components: {
-    Author,
+    ContentBox,
     EffectLink,
     Newsletter,
+    PageTitle,
   },
 }
 </script>
 
 <style lang="scss">
-.not-found__container {
+.not-found {
   display: grid;
-  margin-bottom: 10rem;
+  justify-content: center;
 }
 
-.not-found__title {
-  margin-bottom: 1.5rem;
+.not-found__content {
+  display: grid;
+  justify-items: center;
+  margin-bottom: var(--global-space-3);
   text-align: center;
-}
-
-.not-found__home-button {
-  justify-self: center;
 }
 </style>
