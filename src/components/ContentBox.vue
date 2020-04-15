@@ -19,7 +19,6 @@ export default {
 <style lang="scss">
 .content-box {
 	background-color: var(--bg-content-color);
-	max-width: var(--global-content-width-maximum);
 	margin: 0 auto;
 	padding: var(--global-space);
   border-radius: var(--global-border-radius);
