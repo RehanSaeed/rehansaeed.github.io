@@ -1,6 +1,6 @@
 <template>
   <nav class="navigation">
-    <EffectLink label="Home" to="/">
+    <EffectLink class="navigation__image-container" label="Home" to="/">
 		  <g-image :alt="this.$static.metadata.author.name" class="navigation__image" src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png" width="50" height="50" blur="0" />
     </EffectLink>
     <div class="navigation__items">
@@ -43,24 +43,28 @@ export default {
   align-items: center;
   display: grid;
   font-size: var(--global-font-size-2);
-  grid-template-columns: repeat(4, auto) 1fr repeat(2, auto);
-  grid-gap: var(--global-space-1);
-  padding: 1rem;
+  grid-template-columns: auto auto 1fr auto auto;
+  grid-gap: var(--global-space-2);
+  padding: var(--global-space-2);
   visibility: hidden;
+}
+
+.navigation__image-container {
+  line-height: 0;
+  visibility: visible;
 }
 
 .navigation__image {
   border: var(--global-border-width-2) solid var(--title-color);
   border-radius: 100%;
-  width: 2.5rem;
   height: 2.5rem;
-  visibility: visible;
+  width: 2.5rem;
 }
 
 .navigation__items {
   display: grid;
   grid-template-columns: repeat(3, auto);
-  grid-gap: 1rem;
+  grid-gap: var(--global-space-2);
 }
 
 .navigation__item {
@@ -80,10 +84,11 @@ export default {
 
 @media screen and (min-width: 1200px) {
   .navigation {
-    grid-template-columns: auto 1fr repeat(2, auto);
+    grid-template-columns: auto 1fr auto auto;
     margin-bottom: -8rem;
     justify-items: left;
   }
+
   .navigation__items {
     grid-column-start: 1;
     grid-row-start: 2;
