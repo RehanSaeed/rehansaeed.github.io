@@ -51,7 +51,6 @@ query {
 <style lang="scss">
 .newsletter__form {
   display: grid;
-  grid-gap: .7rem;
   grid-template-columns: 1fr auto auto 1fr;
   grid-template-areas:
     "title title title title"
@@ -61,13 +60,13 @@ query {
 
 .newsletter__title {
   grid-area: title;
-  margin: 0;
+  margin-top: 0;
   text-align: center;
 }
 
 .newsletter__content {
   grid-area: content;
-  margin: 0;
+  justify-self: center;
   text-align: center;
 }
 
