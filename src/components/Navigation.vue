@@ -3,13 +3,15 @@
     <EffectLink class="navigation__image-container" label="Home" to="/">
 		  <g-image :alt="this.$static.metadata.author.name" class="navigation__image" src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png" width="50" height="50" blur="0" />
     </EffectLink>
-    <div class="navigation__items">
+    <div class="navigation__items-left">
       <EffectLink class="navigation__item" to="/">Blog</EffectLink>
       <EffectLink class="navigation__item" to="/portfolio/">Portfolio</EffectLink>
       <EffectLink class="navigation__item" to="/about/">About</EffectLink>
     </div>
-    <ToggleSearch class="navigation__search" />
-    <ToggleTheme class="navigation__toggle-theme" />
+    <div class="navigation__items-right">
+      <ToggleSearch class="navigation__search" />
+      <ToggleTheme class="navigation__toggle-theme" />
+    </div>
   </nav>
 </template>
 
@@ -43,9 +45,9 @@ export default {
   align-items: center;
   display: grid;
   font-size: var(--global-font-size-2);
-  grid-template-columns: auto auto 1fr auto auto;
-  grid-gap: var(--global-space-2);
-  padding: var(--global-space-2);
+  grid-template-columns: auto auto 1fr auto;
+  grid-gap: var(--global-space-3);
+  padding: var(--global-space-3);
   visibility: hidden;
 }
 
@@ -61,10 +63,17 @@ export default {
   width: 2.5rem;
 }
 
-.navigation__items {
+.navigation__items-left {
   display: grid;
   grid-template-columns: repeat(3, auto);
-  grid-gap: var(--global-space-2);
+  grid-gap: var(--global-space-3);
+}
+
+.navigation__items-right {
+  grid-column-start: 6;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-gap: var(--global-space-3);
 }
 
 .navigation__item {
@@ -72,24 +81,24 @@ export default {
 }
 
 .navigation__search {
-  grid-column-start: 6;
   visibility: visible;
 }
 
 .navigation__toggle-theme {
-  grid-column-start: 7;
   margin-bottom: .2rem;
   visibility: visible;
 }
 
 @media screen and (min-width: 1200px) { // $global-breakpoint-xl
   .navigation {
+    grid-gap: var(--global-space-2);
     grid-template-columns: auto 1fr auto auto;
     margin-bottom: -8rem;
     justify-items: left;
   }
 
-  .navigation__items {
+  .navigation__items-left {
+    grid-gap: var(--global-space-2);
     grid-column-start: 1;
     grid-row-start: 2;
     grid-template-columns: auto;
