@@ -82,7 +82,7 @@ export default {
   visibility: visible;
 }
 
-@media screen and (min-width: 1200px) {
+@media screen and (min-width: 1200px) { // $global-breakpoint-xl
   .navigation {
     grid-template-columns: auto 1fr auto auto;
     margin-bottom: -8rem;
