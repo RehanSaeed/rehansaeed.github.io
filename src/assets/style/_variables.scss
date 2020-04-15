@@ -2,11 +2,11 @@
 :root {
   // Breakpoints
   $global-breakpoint-xs: 0;
-  $global-breakpoint-sm: 36em; // 576px
-  $global-breakpoint-md: 48em; // 768px
-  $global-breakpoint-lg: 62em; // 992px
-  $global-breakpoint-xl: 75em; // 1200px
-  $global-breakpoint-xxl: 100em; // 1600px
+  $global-breakpoint-sm: 36rem; // 576px
+  $global-breakpoint-md: 48rem; // 768px
+  $global-breakpoint-lg: 62rem; // 992px
+  $global-breakpoint-xl: 75rem; // 1200px
+  $global-breakpoint-xxl: 100rem; // 1600px
 
   // Border Radius
   --global-border-radius: .25rem;
@@ -30,8 +30,8 @@
   --global-font-size-maximum: $global-font-size-maximum;
   @include fluid-type(
     --global-font-size-default,
-    $global-breakpoint-sm,
-    $global-breakpoint-xxl,
+    36em, // $global-breakpoint-sm,
+    100em, // $global-breakpoint-xxl,
     $global-font-size-minimum,
     $global-font-size-maximum);
 
@@ -68,8 +68,8 @@
     --global-space,
     $global-breakpoint-sm,
     $global-breakpoint-xxl,
-    1.5em,
-    4.5em);
+    1.5rem,
+    4.5rem);
   --global-space-0: 0;
   --global-space-1: calc(var(--global-space) / 8);
   --global-space-2: calc(var(--global-space) / 4);

@@ -42,9 +42,9 @@ export default {
 .navigation {
   align-items: center;
   display: grid;
-  font-size: var(--global-font-size-3);
+  font-size: var(--global-font-size-2);
   grid-template-columns: repeat(4, auto) 1fr repeat(2, auto);
-  grid-gap: 1rem;
+  grid-gap: var(--global-space-1);
   padding: 1rem;
   visibility: hidden;
 }
