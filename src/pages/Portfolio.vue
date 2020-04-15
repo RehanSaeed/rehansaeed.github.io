@@ -1,58 +1,32 @@
 <template>
   <Layout :show-logo="true">
-
-    <h1 class="portfolio__title">Portfolio</h1>
-
     <div class="portfolio">
-      <PortfolioCard v-for="edge in $page.portfolio.edges" :key="edge.node.id" :portfolio="edge.node"/>
-    </div>
 
+      <PageTitle>Portfolio</PageTitle>
+
+      <div class="portfolio__items">
+        <PortfolioCard
+          v-for="edge in $page.portfolio.edges"
+          :key="edge.node.id"
+          :portfolio="edge.node"/>
+      </div>
+
+      <Newsletter/>
+
+    </div>
   </Layout>
 </template>
 
-<static-query>
-query {
-  metadata {
-    name
-    url
-    language
-    facebookAppId
-    author {
-      name
-      twitter
-    }
-  }
-}
-</static-query>
-
-<page-query>
-query {
-  portfolio: allPortfolio(filter: { published: { eq: true }}, sortBy: "date") {
-    edges {
-      node {
-        id
-        title
-        date (format: "D MMMM YYYY")
-        description
-        cover_image (width: 770, height: 380, blur: 10)
-        permalink
-        tags {
-          id
-          title
-          path
-        }
-      }
-    }
-  }
-}
-</page-query>
-
 <script>
+import Newsletter from '~/components/Newsletter.vue'
+import PageTitle from '~/components/PageTitle.vue'
 import PortfolioCard from '~/components/PortfolioCard.vue'
 
 export default {
   components: {
-    PortfolioCard
+    Newsletter,
+    PageTitle,
+    PortfolioCard,
   },
   computed: {
     title: function() { return 'Portfolio'; },
@@ -93,18 +67,54 @@ export default {
 }
 </script>
 
+<static-query>
+query {
+  metadata {
+    name
+    url
+    language
+    facebookAppId
+    author {
+      name
+      twitter
+    }
+  }
+}
+</static-query>
+
+<page-query>
+query {
+  portfolio: allPortfolio(filter: { published: { eq: true }}, sortBy: "date") {
+    edges {
+      node {
+        id
+        title
+        date (format: "D MMMM YYYY")
+        description
+        cover_image (width: 770, height: 380, blur: 10)
+        permalink
+        tags {
+          id
+          title
+          path
+        }
+      }
+    }
+  }
+}
+</page-query>
+
 <style lang="scss">
 .portfolio {
   display: grid;
-  grid-gap: var(--global-space);
-  grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
-  padding: 0 var(--global-space);
-  margin-left: var(--global-space);
-  margin-right: var(--global-space);
+  grid-template-columns: 1fr;
 }
 
-.portfolio__title {
-  padding: calc(var(--global-space) / 2) 0 calc(var(--global-space) / 2);
-  text-align: center;
+.portfolio__items {
+  display: grid;
+  grid-gap: calc(var(--global-space) / 2);
+  grid-template-columns: repeat(auto-fit, minmax(35rem, 46rem));
+  justify-content: center;
+  margin-bottom: calc(var(--global-space) / 2);
 }
 </style>

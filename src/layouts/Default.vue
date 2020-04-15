@@ -46,7 +46,7 @@ query {
 </static-query>
 
 <style lang="scss">
-@media screen and (min-width: 1300px) {
+@media screen and (min-width: 1200px) { // $global-breakpoint-xl
   .navigation {
     position: sticky;
     top: 0;
@@ -56,7 +56,8 @@ query {
 
 .main {
   margin: 0 auto;
-  padding: 1.5vw 15px 0;
+  padding-left: calc(var(--global-space) * 2.7);
+  padding-right: calc(var(--global-space) * 2.7);
 }
 
 .footer {

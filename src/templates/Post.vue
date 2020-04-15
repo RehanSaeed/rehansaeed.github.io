@@ -196,7 +196,6 @@ query Post ($id: ID!) {
   justify-items: center;
   margin: 0 auto;
   padding: calc(var(--global-space) / 2) 0 calc(var(--global-space) / 2);
-  max-width: var(--global-content-width-maximum);
   text-align: center;
 }
 

@@ -1,7 +1,7 @@
 <template>
   <Layout :show-logo="true">
 
-    <h1 class="about__title">About</h1>
+    <PageTitle>About</PageTitle>
 
     <ContentBox tag="article">
       <g-image class="about__image" alt="Muhammad Rehan Saeed" height="480" width="320" src="~/assets/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg" quality="100"/>
@@ -15,32 +15,15 @@
   </Layout>
 </template>
 
-<static-query>
-query {
-  metadata {
-    name
-    description
-    url
-    language
-    facebookAppId
-    author {
-      name
-      firstName
-      lastName
-      gender
-      twitter
-    }
-  }
-}
-</static-query>
-
 <script>
 import ContentBox from '~/components/ContentBox.vue';
+import PageTitle from '~/components/PageTitle.vue';
 import SocialLinks from '~/components/SocialLinks.vue';
 
 export default {
   components: {
     ContentBox,
+    PageTitle,
     SocialLinks,
   },
   computed: {
@@ -86,17 +69,36 @@ export default {
 }
 </script>
 
+<static-query>
+query {
+  metadata {
+    name
+    description
+    url
+    language
+    facebookAppId
+    author {
+      name
+      firstName
+      lastName
+      gender
+      twitter
+    }
+  }
+}
+</static-query>
+
 <style lang="scss">
+.about__title {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
 .about__image {
   border-radius: var(--global-border-radius);
   display: block;
   margin: 0 auto;
   width: 320px;
-}
-
-.about__title {
-  margin-bottom: 1.5rem;
-  text-align: center;
 }
 
 .about__social-links {
