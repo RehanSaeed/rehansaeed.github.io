@@ -78,7 +78,7 @@ export default {
   visibility: visible;
 }
 
-@media screen and (min-width: 1300px) {
+@media screen and (min-width: 1200px) {
   .navigation {
     grid-template-columns: auto 1fr repeat(2, auto);
     margin-bottom: -8rem;
