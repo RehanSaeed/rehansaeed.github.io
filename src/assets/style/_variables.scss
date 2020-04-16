@@ -1,5 +1,30 @@
-// Default
 :root {
+  // Light theme
+  --bg-color: #F2F4F7;
+  --bg-content-color: #fff;
+  --bg-code: #fffbf3;
+  --body-color: #444;
+  --title-color: #111;
+  --link-color: #6b17e6;
+  --link-visited-color: #4f2391;
+  --border-color: rgba(0,0,0,.1);
+  --scroll-thumb-color: white;
+  --scroll-track-color: #dddddd;
+
+  // Dark theme
+  &[data-theme='dark'] {
+    --bg-color: #0D2538;
+    --bg-content-color: #0f2d44;
+    --bg-code: rgba(0,0,0,.3);
+    --body-color: #ced8de;
+    --title-color: #fff;
+    --link-color: #cbbbff;
+    --link-visited-color: #9d8cd4;
+    --border-color: rgba(255,255,255,.1);
+    --scroll-thumb-color: #272822;
+    --scroll-track-color: #4C4C4C;
+  }
+
   // Breakpoints
   $global-breakpoint-xs: 0;
   $global-breakpoint-sm: 36rem; // 576px
@@ -75,32 +100,4 @@
   --global-space-2: calc(var(--global-space) / 4);
   --global-space-3: calc(var(--global-space) / 2);
   --global-space-4: var(--global-space);
-}
-
-// Light theme
-:root {
- 	--bg-color: #F2F4F7;
- 	--bg-content-color: #fff;
- 	--bg-code: #fffbf3;
- 	--body-color: #444;
- 	--title-color: #111;
- 	--link-color: #6b17e6;
- 	--link-visited-color: #4f2391;
-  --border-color: rgba(0,0,0,.1);
-  --scroll-thumb-color: white;
-  --scroll-track-color: #dddddd;
-}
-
-// Dark theme
-:root[data-theme='dark'] {
- 	--bg-color: #0D2538;
- 	--bg-content-color: #0f2d44;
- 	--bg-code: rgba(0,0,0,.3);
- 	--body-color: #ced8de;
-  --title-color: #fff;
-  --link-color: #cbbbff;
-  --link-visited-color: #9d8cd4;
-  --border-color: rgba(255,255,255,.1);
-  --scroll-thumb-color: #272822;
-  --scroll-track-color: #4C4C4C;
 }
