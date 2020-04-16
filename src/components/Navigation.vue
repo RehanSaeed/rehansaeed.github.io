@@ -93,7 +93,7 @@ export default {
   .navigation {
     grid-gap: var(--global-space-2);
     grid-template-columns: auto 1fr auto auto;
-    margin-bottom: -8rem;
+    margin-bottom: -9.5rem;
     justify-items: left;
   }
 
