@@ -32,7 +32,6 @@ pre[class*="language-"] {
   background-color: white;
   border: var(--global-border-width-1) solid #dddddd;
   border-radius: var(--global-border-radius);
-  scrollbar-color: var(--scroll-thumb-color) var(--scroll-track-color);
 }
 
 /* Inline code */
@@ -209,7 +208,6 @@ body[data-theme="dark"] {
     margin: 1.5em 0;
     border: var(--global-border-width-1) solid #4C4C4C;
     background-color: #272822;
-    scrollbar-color: var(--scroll-thumb-color) var(--scroll-track-color);
   }
 
   /* Inline code */
