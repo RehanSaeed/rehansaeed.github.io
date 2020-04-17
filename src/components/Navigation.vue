@@ -46,8 +46,8 @@ export default {
   display: grid;
   font-size: var(--global-font-size-2);
   grid-template-columns: auto auto 1fr auto;
-  grid-gap: var(--global-space-3);
-  padding: var(--global-space-3);
+  grid-gap: var(--global-space-4);
+  padding: var(--global-space-4);
   visibility: hidden;
 }
 
@@ -66,14 +66,14 @@ export default {
 .navigation__items-left {
   display: grid;
   grid-template-columns: repeat(3, auto);
-  grid-gap: var(--global-space-3);
+  grid-gap: var(--global-space-4);
 }
 
 .navigation__items-right {
   grid-column-start: 6;
   display: grid;
   grid-template-columns: auto auto;
-  grid-gap: var(--global-space-3);
+  grid-gap: var(--global-space-4);
 }
 
 .navigation__item {
@@ -91,14 +91,14 @@ export default {
 
 @media screen and (min-width: 1200px) { // $global-breakpoint-xl
   .navigation {
-    grid-gap: var(--global-space-2);
+    grid-gap: var(--global-space-3);
     grid-template-columns: auto 1fr auto auto;
     margin-bottom: -9.5rem;
     justify-items: left;
   }
 
   .navigation__items-left {
-    grid-gap: var(--global-space-2);
+    grid-gap: var(--global-space-3);
     grid-column-start: 1;
     grid-row-start: 2;
     grid-template-columns: auto;

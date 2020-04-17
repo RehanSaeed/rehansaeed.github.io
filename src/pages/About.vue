@@ -113,6 +113,6 @@ query {
 }
 
 .about__social-links {
-  margin-bottom: var(--global-space-2);
+  margin-bottom: var(--global-space-3);
 }
 </style>

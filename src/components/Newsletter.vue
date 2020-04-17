@@ -72,7 +72,7 @@ query {
 
 .newsletter__input {
   grid-area: input;
-  margin-right: var(--global-space-2)
+  margin-right: var(--global-space-3)
 }
 
 .newsletter__button {
