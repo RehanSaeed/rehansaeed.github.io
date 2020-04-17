@@ -251,7 +251,7 @@ query Post ($id: ID!) {
 }
 
 .post-comments {
-  padding: --global-space-4;
+  padding: var(--global-space-4);
 
   &:empty {
     display: none;
@@ -259,6 +259,6 @@ query Post ($id: ID!) {
 }
 
 .post-author {
-  margin-top: --global-space-4;
+  margin-top: var(--global-space-4);
 }
 </style>

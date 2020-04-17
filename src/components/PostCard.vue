@@ -40,10 +40,10 @@ export default {
 
 .post-card__header {
   border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
-  margin-left: calc(var(--global-space-5) * -1);
-  margin-right: calc(var(--global-space-5) * -1);
+  margin-left: var(--global-space--5);
+  margin-right: var(--global-space--5);
   margin-bottom: var(--global-space-4);
-  margin-top: calc(var(--global-space-5) * -1);
+  margin-top: var(--global-space--5);
   overflow: hidden;
 
   &:empty {

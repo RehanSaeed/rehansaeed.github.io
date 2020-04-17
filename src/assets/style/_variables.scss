@@ -69,6 +69,12 @@
     $global-breakpoint-xxl,
     1.5rem,
     4.5rem);
+  --global-space--6: calc(var(--global-space-6) * -1);
+  --global-space--5: calc(var(--global-space-5) * -1);
+  --global-space--4: calc(var(--global-space-4) * -1);
+  --global-space--3: calc(var(--global-space-3) * -1);
+  --global-space--2: calc(var(--global-space-2) * -1);
+  --global-space--1: calc(var(--global-space-1) * -1);
   --global-space-0: 0;
   --global-space-1: calc(var(--global-space-5) / 16);
   --global-space-2: calc(var(--global-space-5) / 8);
