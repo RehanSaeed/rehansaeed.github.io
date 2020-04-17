@@ -188,24 +188,24 @@ query Post ($id: ID!) {
 
 <style lang="scss">
 .post {
-  margin-bottom: calc(var(--global-space) / 4);
+  margin-bottom: var(--global-space-3);
 }
 
 .post-title {
   display: grid;
   justify-items: center;
   margin: 0 auto;
-  padding: calc(var(--global-space) / 2) 0 calc(var(--global-space) / 2);
+  padding: var(--global-space-4) 0 var(--global-space-4);
   text-align: center;
 }
 
 .post__header {
   border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
-  margin-left: calc(var(--global-space) * -1);
-  margin-top: calc(var(--global-space) * -1);
-  margin-bottom: calc(var(--global-space) / 2);
+  margin-left: calc(var(--global-space-5) * -1);
+  margin-top: calc(var(--global-space-5) * -1);
+  margin-bottom: var(--global-space-4);
   overflow: hidden;
-  width: calc(100% + var(--global-space) * 2);
+  width: calc(100% + var(--global-space-6));
 
   img {
     width: 100%;
@@ -227,8 +227,8 @@ query Post ($id: ID!) {
   }
 
   img {
-    width: calc(100% + var(--global-space) * 2);
-    margin-left: calc(var(--global-space) * -1);
+    width: calc(100% + var(--global-space-5));
+    margin-left: calc(var(--global-space-5) * -1);
     display: block;
     max-width: none;
   }
@@ -251,7 +251,7 @@ query Post ($id: ID!) {
 }
 
 .post-comments {
-  padding: calc(var(--global-space) / 2);
+  padding: --global-space-4;
 
   &:empty {
     display: none;
@@ -259,6 +259,6 @@ query Post ($id: ID!) {
 }
 
 .post-author {
-  margin-top: calc(var(--global-space) / 2);
+  margin-top: --global-space-4;
 }
 </style>

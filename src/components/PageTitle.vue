@@ -4,8 +4,8 @@
 
 <style lang="scss">
 .page-title {
-  margin-top: calc(var(--global-space) / 2);
-  margin-bottom: calc(var(--global-space) / 2);
+  margin-top: var(--global-space-4);
+  margin-bottom: var(--global-space-4);
   margin-left: auto;
   margin-right: auto;
   text-align: center;

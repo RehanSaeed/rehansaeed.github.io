@@ -39,10 +39,10 @@ export default {
 
 .portfolio-card__header {
   border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
-  margin-left: calc(var(--global-space) * -1);
-  margin-right: calc(var(--global-space) * -1);
-  margin-bottom: calc(var(--global-space) / 2);
-  margin-top: calc(var(--global-space) * -1);
+  margin-left: calc(var(--global-space-5) * -1);
+  margin-right: calc(var(--global-space-5) * -1);
+  margin-bottom: var(--global-space-4);
+  margin-top: calc(var(--global-space-5) * -1);
   overflow: hidden;
 
   &:empty {

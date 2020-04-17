@@ -130,7 +130,7 @@ dialog.fixed {
   grid-template-areas:
     "title close"
     "content content";
-  padding: calc(var(--global-space) / 2);
+  padding: var(--global-space-4);
 }
 
 .dialog__title {
@@ -144,6 +144,6 @@ dialog.fixed {
 
 .dialog__content {
   grid-area: content;
-  padding-top: calc(var(--global-space) / 2);
+  padding-top: var(--global-space-4);
 }
 </style>

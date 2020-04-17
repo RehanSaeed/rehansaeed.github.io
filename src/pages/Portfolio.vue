@@ -112,9 +112,9 @@ query {
 
 .portfolio__items {
   display: grid;
-  grid-gap: calc(var(--global-space) / 2);
+  grid-gap: var(--global-space-4);
   grid-template-columns: repeat(auto-fit, minmax(35rem, 46rem));
   justify-content: center;
-  margin-bottom: calc(var(--global-space) / 2);
+  margin-bottom: var(--global-space-4);
 }
 </style>
