@@ -33,7 +33,7 @@ So what are the main aims of a base class implementing [INotifyPropertyChanged](
 
 - Performance - Performance is king. It needs to be fast and I mean **really** fast. You can't afford for your UI to freeze up while your view works out all its bindings to the properties in your view model.
 - Simplicity - I want to raise property changed events with one line of code and I don't want to mess around with strings if I can help it.
-- Reactive Extensions (Rx) - Events are old school, I want an observable property changed event notification system instead of the 'PropertyChanged' C# event.
+- Reactive Extensions (Rx) - Events are old school, I want an observable property changed event notification system instead of the `PropertyChanged` C# event.
 - Human Error - I don't want to raise property change events for properties that don't exist by accident.
 - Dependent Properties - Often, the value of one property depends on the value of another. I need to handle this somehow.
 - Re-factoring - I don't want my code to break when I rename a property and forget to rename a string too.

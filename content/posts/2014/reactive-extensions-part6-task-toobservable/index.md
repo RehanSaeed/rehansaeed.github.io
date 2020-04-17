@@ -36,7 +36,7 @@ In this post I'm going to show how you can also go the other way around. You can
 
 # Converting Tasks to Observables
 
-The `ToObservable` extension method allows you to convert a Task or `Task<T>` into an `IObservable<T>`. Calling `ToObservable` on a `Task` returns an `IObservable<Unit>`. A Unit is a kind of empty object that does nothing, the only reason it is there is because there is no `IObservable` (Without the 'T') interface.
+The `ToObservable` extension method allows you to convert a Task or `Task<T>` into an `IObservable<T>`. Calling `ToObservable` on a `Task` returns an `IObservable<Unit>`. A Unit is a kind of empty object that does nothing, the only reason it is there is because there is no `IObservable` (Without the `T`) interface.
 
 ```cs
 IObservable<Unit> observable = Task.Run(() => Console.WriteLine("Working")).ToObservable();
