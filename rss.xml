@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://preview.rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Thu, 16 Apr 2020 15:53:29 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 18 Apr 2020 08:41:52 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -7434,7 +7434,7 @@ where s.Name = &#39;Death Star&#39;</code></pre>
 <ul>
 <li>Performance - Performance is king. It needs to be fast and I mean <strong>really</strong> fast. You can&#39;t afford for your UI to freeze up while your view works out all its bindings to the properties in your view model.</li>
 <li>Simplicity - I want to raise property changed events with one line of code and I don&#39;t want to mess around with strings if I can help it.</li>
-<li>Reactive Extensions (Rx) - Events are old school, I want an observable property changed event notification system instead of the &#39;PropertyChanged&#39; C# event.</li>
+<li>Reactive Extensions (Rx) - Events are old school, I want an observable property changed event notification system instead of the <code>PropertyChanged</code> C# event.</li>
 <li>Human Error - I don&#39;t want to raise property change events for properties that don&#39;t exist by accident.</li>
 <li>Dependent Properties - Often, the value of one property depends on the value of another. I need to handle this somehow.</li>
 <li>Re-factoring - I don&#39;t want my code to break when I rename a property and forget to rename a string too.</li>
@@ -8062,7 +8062,7 @@ Console.WriteLine(disposable.IsDisposed);</code></pre>
 <p>Once you have your observables, you need to do something with them. In my last post on the subject I showed how and when you can await an observable.</p>
 <p>In this post I&#39;m going to show how you can also go the other way around. You can turn tasks into an observable. I&#39;ll also show one clear reason to use this facility.</p>
 <h1 id="converting-tasks-to-observables">Converting Tasks to Observables</h1>
-<p>The <code>ToObservable</code> extension method allows you to convert a Task or <code>Task&lt;T&gt;</code> into an <code>IObservable&lt;T&gt;</code>. Calling <code>ToObservable</code> on a <code>Task</code> returns an <code>IObservable&lt;Unit&gt;</code>. A Unit is a kind of empty object that does nothing, the only reason it is there is because there is no <code>IObservable</code> (Without the &#39;T&#39;) interface.</p>
+<p>The <code>ToObservable</code> extension method allows you to convert a Task or <code>Task&lt;T&gt;</code> into an <code>IObservable&lt;T&gt;</code>. Calling <code>ToObservable</code> on a <code>Task</code> returns an <code>IObservable&lt;Unit&gt;</code>. A Unit is a kind of empty object that does nothing, the only reason it is there is because there is no <code>IObservable</code> (Without the <code>T</code>) interface.</p>
 <pre><code class="language-cs">IObservable&lt;Unit&gt; observable = Task.Run(() =&gt; Console.WriteLine(&quot;Working&quot;)).ToObservable();
 
 IObservable&lt;string&gt; observableT = Task&lt;string&gt;.Run(() =&gt; &quot;Working&quot;).ToObservable();</code></pre>
