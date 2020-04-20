@@ -1,5 +1,5 @@
 <template>
-  <ContentBox class="post-card" tag="article" hoverable :class="{'post-card--has-poster' : post.poster}">
+  <u-content-box class="post-card" tag="article" hoverable :class="{'post-card--has-poster' : post.poster}">
     <div class="post-card__header">
       <g-image alt="Cover image" v-if="post.cover_image" class="post-card__image" :src="post.cover_image"/>
     </div>
@@ -12,19 +12,19 @@
 
       <g-link class="post-card__link" :to="post.path">Link</g-link>
     </div>
-  </ContentBox>
+  </u-content-box>
 </template>
 
 <script>
+import contentBox from '~/components/shared/u-content-box.vue';
 import heading from '~/components/shared/u-heading.vue';
-import ContentBox from '~/components/ContentBox.vue';
 import Meta from '~/components/Meta.vue';
 import Tags from '~/components/Tags.vue';
 
 export default {
   components: {
+    'u-content-box': contentBox,
     'u-heading': heading,
-    ContentBox,
     Meta,
     Tags,
   },

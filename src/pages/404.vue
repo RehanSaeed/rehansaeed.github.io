@@ -4,10 +4,10 @@
 
       <u-heading level="1">404 Not Found</u-heading>
 
-      <ContentBox class="not-found__content">
+      <u-content-box class="not-found__content">
         <p>Didn't find what you were looking for?</p>
         <u-link button to="/">Go Home</u-link>
-      </ContentBox>
+      </u-content-box>
 
       <Newsletter />
 
@@ -16,16 +16,16 @@
 </template>
 
 <script>
+import contentBox from '~/components/shared/u-content-box.vue';
 import link from '~/components/shared/u-link.vue';
 import heading from '~/components/shared/u-heading.vue';
-import ContentBox from '~/components/ContentBox.vue';
 import Newsletter from '~/components/Newsletter.vue';
 
 export default {
   components: {
+    'u-content-box': contentBox,
     'u-link': link,
     'u-heading': heading,
-    ContentBox,
     Newsletter,
   },
 }

@@ -6,6 +6,7 @@
 
 <script>
 export default {
+  name: 'u-content-box',
   props: {
     hoverable: Boolean,
     tag: {

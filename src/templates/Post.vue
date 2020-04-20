@@ -8,7 +8,7 @@
       <Meta :meta="$page.post" />
     </div>
 
-    <ContentBox class="post" tag="article">
+    <u-content-box class="post" tag="article">
 
       <div class="post__header">
         <g-image alt="Cover image" v-if="$page.post.cover_image" :src="$page.post.cover_image"/>
@@ -24,7 +24,7 @@
         <Tags :tags="$page.post.tags"  class="post__tags" />
       </div>
 
-    </ContentBox>
+    </u-content-box>
 
     <Newsletter/>
 
@@ -37,9 +37,9 @@
 </template>
 
 <script>
+import contentBox from '~/components/shared/u-content-box.vue';
 import heading from '~/components/shared/u-heading.vue';
 import Author from '~/components/Author.vue';
-import ContentBox from '~/components/ContentBox.vue';
 import EditOnGitHubButton from '~/components/EditOnGitHubButton.vue';
 import Meta from '~/components/Meta';
 import Newsletter from '~/components/Newsletter';
@@ -48,9 +48,9 @@ import Tags from '~/components/Tags';
 
 export default {
   components: {
+    'u-content-box': contentBox,
     'u-heading': heading,
     Author,
-    ContentBox,
     EditOnGitHubButton,
     Meta,
     Newsletter,

@@ -1,5 +1,5 @@
 <template>
-  <ContentBox class="newsletter" tag="section">
+  <u-content-box class="newsletter" tag="section">
     <form class="newsletter__form" method="post" :action="this.$static.metadata.mailchimpUrl">
       <u-heading level="2" class="newsletter__title">Newsletter</u-heading>
       <p class="newsletter__content">Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox!</p>
@@ -23,21 +23,21 @@
         Subscribe
       </u-button>
     </form>
-  </ContentBox>
+  </u-content-box>
 </template>
 
 mailchimpUrl
 
 <script>
 import button from '~/components/shared/u-button.vue';
+import contentBox from '~/components/shared/u-content-box.vue';
 import heading from '~/components/shared/u-heading.vue';
-import ContentBox from '~/components/ContentBox.vue';
 
 export default {
   components: {
     'u-button': button,
+    'u-content-box': contentBox,
     'u-heading': heading,
-    ContentBox,
   },
 }
 </script>

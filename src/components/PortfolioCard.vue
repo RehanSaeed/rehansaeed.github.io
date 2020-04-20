@@ -1,5 +1,5 @@
 <template>
-  <ContentBox class="portfolio-card" tag="article" hoverable>
+  <u-content-box class="portfolio-card" tag="article" hoverable>
     <div class="portfolio-card__header">
       <g-image :alt="portfolio.title" v-if="portfolio.cover_image" class="portfolio-card__image" :src="portfolio.cover_image"/>
     </div>
@@ -11,19 +11,19 @@
 
       <g-link class="portfolio-card__link" :to="portfolio.permalink">Link</g-link>
     </div>
-  </ContentBox>
+  </u-content-box>
 </template>
 
 <script>
+import contentBox from '~/components/shared/u-content-box.vue';
 import heading from '~/components/shared/u-heading.vue';
-import ContentBox from '~/components/ContentBox.vue';
 import Meta from '~/components/Meta.vue';
 import Tags from '~/components/Tags.vue';
 
 export default {
   components: {
+    'u-content-box': contentBox,
     'u-heading': heading,
-    ContentBox,
     Meta,
     Tags,
   },
