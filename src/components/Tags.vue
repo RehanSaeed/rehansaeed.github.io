@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import EffectLink from '~/components/EffectLink.vue'
+import EffectLink from '~/components/shared/EffectLink.vue'
 
 export default {
   components: {

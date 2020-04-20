@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import EffectLink from '~/components/EffectLink.vue';
+import EffectLink from '~/components/shared/EffectLink.vue';
 import EmailIcon from '~/components/icons/EmailIcon.vue';
 import GitHubIcon from '~/components/icons/GitHubIcon.vue';
 import LinkedInIcon from '~/components/icons/LinkedInIcon.vue';

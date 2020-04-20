@@ -27,7 +27,7 @@ query {
 </static-query>
 
 <script>
-import EffectLink from '~/components/EffectLink.vue'
+import EffectLink from '~/components/shared/EffectLink.vue'
 import ToggleSearch from '~/components/ToggleSearch.vue'
 import ToggleTheme from '~/components/ToggleTheme.vue'
 

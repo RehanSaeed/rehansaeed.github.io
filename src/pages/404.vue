@@ -17,7 +17,7 @@
 
 <script>
 import ContentBox from '~/components/ContentBox.vue';
-import EffectLink from '~/components/EffectLink.vue';
+import EffectLink from '~/components/shared/EffectLink.vue';
 import Heading from '~/components/shared/Heading.vue';
 import Newsletter from '~/components/Newsletter.vue';
 

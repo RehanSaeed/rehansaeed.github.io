@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import EffectLink from '~/components/EffectLink.vue';
+import EffectLink from '~/components/shared/EffectLink.vue';
 import GitHubIcon from '~/components/icons/GitHubIcon.vue';
 
 export default {
