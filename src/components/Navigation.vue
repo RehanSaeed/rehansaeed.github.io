@@ -1,12 +1,12 @@
 <template>
   <nav class="navigation">
-    <EffectLink class="navigation__image-container" label="Home" to="/">
+    <u-link class="navigation__image-container" label="Home" to="/">
 		  <g-image :alt="this.$static.metadata.author.name" class="navigation__image" src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png" width="50" height="50" blur="0" />
-    </EffectLink>
+    </u-link>
     <div class="navigation__items-left">
-      <EffectLink class="navigation__item" to="/">Blog</EffectLink>
-      <EffectLink class="navigation__item" to="/portfolio/">Portfolio</EffectLink>
-      <EffectLink class="navigation__item" to="/about/">About</EffectLink>
+      <u-link class="navigation__item" to="/">Blog</u-link>
+      <u-link class="navigation__item" to="/portfolio/">Portfolio</u-link>
+      <u-link class="navigation__item" to="/about/">About</u-link>
     </div>
     <div class="navigation__items-right">
       <ToggleSearch class="navigation__search" />
@@ -27,13 +27,13 @@ query {
 </static-query>
 
 <script>
-import EffectLink from '~/components/shared/EffectLink.vue'
+import link from '~/components/shared/u-link.vue'
 import ToggleSearch from '~/components/ToggleSearch.vue'
 import ToggleTheme from '~/components/ToggleTheme.vue'
 
 export default {
   components: {
-    EffectLink,
+    'u-link': link,
     ToggleSearch,
     ToggleTheme,
   }

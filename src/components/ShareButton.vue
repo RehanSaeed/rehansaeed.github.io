@@ -8,26 +8,26 @@
 
     <Dialogue title="Share" :is-open="isDialogueOpen" @close="close" class="share-dialogue">
       <div class="share-dialogue__links">
-        <EffectLink button :to="facebookUrl" @click.native="close" class="share-dialogue__link">
+        <u-link button :to="facebookUrl" @click.native="close" class="share-dialogue__link">
           <FacebookIcon/>
           Facebook
-        </EffectLink>
-        <EffectLink button :to="twitterUrl" @click.native="close" class="share-dialogue__link">
+        </u-link>
+        <u-link button :to="twitterUrl" @click.native="close" class="share-dialogue__link">
           <TwitterIcon/>
           Twitter
-        </EffectLink>
-        <EffectLink button :to="redditUrl" @click.native="close" class="share-dialogue__link">
+        </u-link>
+        <u-link button :to="redditUrl" @click.native="close" class="share-dialogue__link">
           <RedditIcon/>
           Reddit
-        </EffectLink>
-        <EffectLink button :to="linkedinUrl" @click.native="close" class="share-dialogue__link">
+        </u-link>
+        <u-link button :to="linkedinUrl" @click.native="close" class="share-dialogue__link">
           <LinkedInIcon/>
           LinkedIn
-        </EffectLink>
-        <EffectLink button :to="mailUrl" @click.native="close" class="share-dialogue__link">
+        </u-link>
+        <u-link button :to="mailUrl" @click.native="close" class="share-dialogue__link">
           <EmailIcon/>
           Email
-        </EffectLink>
+        </u-link>
       </div>
     </Dialogue>
 
@@ -37,9 +37,9 @@
 <script>
 import Dialogue from '~/components/Dialogue.vue';
 import EffectButton from '~/components/shared/EffectButton.vue';
-import EffectLink from '~/components/shared/EffectLink.vue';
 import EmailIcon from '~/components/icons/EmailIcon.vue';
 import FacebookIcon from '~/components/icons/FacebookIcon.vue';
+import link from '~/components/shared/u-link.vue';
 import LinkedInIcon from '~/components/icons/LinkedInIcon.vue';
 import RedditIcon from '~/components/icons/RedditIcon.vue';
 import ShareIcon from '~/components/icons/ShareIcon.vue';
@@ -47,9 +47,9 @@ import TwitterIcon from '~/components/icons/TwitterIcon.vue';
 
 export default {
   components: {
+    'u-link': link,
     Dialogue,
     EffectButton,
-    EffectLink,
     EmailIcon,
     FacebookIcon,
     LinkedInIcon,

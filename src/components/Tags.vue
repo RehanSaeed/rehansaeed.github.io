@@ -1,17 +1,17 @@
 <template>
    <div class="tags">
-   		<EffectLink class="tags__link" button v-for="tag in tags" :key="tag.id" :to="tag.path">
+   		<u-link class="tags__link" button v-for="tag in tags" :key="tag.id" :to="tag.path">
    			{{tag.title}}
-   		</EffectLink>
+   		</u-link>
     </div>
 </template>
 
 <script>
-import EffectLink from '~/components/shared/EffectLink.vue'
+import link from '~/components/shared/u-link.vue'
 
 export default {
   components: {
-    EffectLink,
+    'u-link': link,
   },
   props: {
     tags: Array,

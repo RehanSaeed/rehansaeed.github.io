@@ -6,7 +6,7 @@
 
       <ContentBox class="not-found__content">
         <p>Didn't find what you were looking for?</p>
-        <EffectLink button to="/">Go Home</EffectLink>
+        <u-link button to="/">Go Home</u-link>
       </ContentBox>
 
       <Newsletter />
@@ -16,15 +16,15 @@
 </template>
 
 <script>
+import link from '~/components/shared/u-link.vue';
 import ContentBox from '~/components/ContentBox.vue';
-import EffectLink from '~/components/shared/EffectLink.vue';
 import Heading from '~/components/shared/Heading.vue';
 import Newsletter from '~/components/Newsletter.vue';
 
 export default {
   components: {
+    'u-link': link,
     ContentBox,
-    EffectLink,
     Heading,
     Newsletter,
   },

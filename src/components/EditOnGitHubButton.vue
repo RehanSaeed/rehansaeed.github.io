@@ -1,17 +1,17 @@
 <template>
-  <EffectLink button :to="url">
+  <u-link button :to="url">
     <GitHubIcon />
     Edit on GitHub
-  </EffectLink>
+  </u-link>
 </template>
 
 <script>
-import EffectLink from '~/components/shared/EffectLink.vue';
+import link from '~/components/shared/u-link.vue';
 import GitHubIcon from '~/components/icons/GitHubIcon.vue';
 
 export default {
   components: {
-    EffectLink,
+    'u-link': link,
     GitHubIcon,
   },
   props: {
