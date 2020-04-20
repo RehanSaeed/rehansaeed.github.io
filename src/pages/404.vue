@@ -6,7 +6,7 @@
 
       <u-content-box class="not-found__content">
         <p>Didn't find what you were looking for?</p>
-        <u-link button to="/">Go Home</u-link>
+        <u-link bordered to="/">Go Home</u-link>
       </u-content-box>
 
       <Newsletter />

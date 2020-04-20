@@ -1,6 +1,6 @@
 <template>
    <div class="tags">
-   		<u-link class="tags__link" button v-for="tag in tags" :key="tag.id" :to="tag.path">
+   		<u-link class="tags__link" bordered v-for="tag in tags" :key="tag.id" :to="tag.path">
    			{{tag.title}}
    		</u-link>
     </div>

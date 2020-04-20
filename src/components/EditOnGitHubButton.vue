@@ -1,5 +1,5 @@
 <template>
-  <u-link button :to="url">
+  <u-link bordered :to="url">
     <u-icon-github />
     Edit on GitHub
   </u-link>

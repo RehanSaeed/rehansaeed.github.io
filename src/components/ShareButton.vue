@@ -8,23 +8,23 @@
 
     <u-dialogue title="Share" :is-open="isDialogueOpen" @close="close" class="share-dialogue">
       <div class="share-dialogue__links">
-        <u-link button :to="facebookUrl" @click.native="close" class="share-dialogue__link">
+        <u-link bordered :to="facebookUrl" @click.native="close" class="share-dialogue__link">
           <FacebookIcon/>
           Facebook
         </u-link>
-        <u-link button :to="twitterUrl" @click.native="close" class="share-dialogue__link">
+        <u-link bordered :to="twitterUrl" @click.native="close" class="share-dialogue__link">
           <TwitterIcon/>
           Twitter
         </u-link>
-        <u-link button :to="redditUrl" @click.native="close" class="share-dialogue__link">
+        <u-link bordered :to="redditUrl" @click.native="close" class="share-dialogue__link">
           <RedditIcon/>
           Reddit
         </u-link>
-        <u-link button :to="linkedinUrl" @click.native="close" class="share-dialogue__link">
+        <u-link bordered :to="linkedinUrl" @click.native="close" class="share-dialogue__link">
           <LinkedInIcon/>
           LinkedIn
         </u-link>
-        <u-link button :to="mailUrl" @click.native="close" class="share-dialogue__link">
+        <u-link bordered :to="mailUrl" @click.native="close" class="share-dialogue__link">
           <EmailIcon/>
           Email
         </u-link>

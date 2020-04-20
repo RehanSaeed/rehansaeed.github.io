@@ -1,5 +1,5 @@
 <template>
-  <g-link class="link" :class="{ 'link--button': button }" :to="to" :aria-label="label">
+  <g-link class="link" :class="{ 'link--bordered': bordered }" :to="to" :aria-label="label">
     <slot/>
   </g-link>
 </template>
@@ -8,7 +8,7 @@
 export default {
   name: 'u-link',
   props: {
-    button: {
+    bordered: {
       type: Boolean,
     },
     label: {
@@ -43,7 +43,7 @@ export default {
   }
 }
 
-.link--button {
+.link--bordered {
   background-color: var(--bg-color);
   border: var(--global-border-width-1) solid var(--border-color);
   border-radius: var(--global-border-radius);
