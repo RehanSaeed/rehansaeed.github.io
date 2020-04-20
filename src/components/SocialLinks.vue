@@ -29,7 +29,7 @@ import link from '~/components/shared/u-link.vue';
 import iconEmail from '~/components/shared/icons/u-icon-email.vue';
 import iconGitHub from '~/components/shared/icons/u-icon-github.vue';
 import iconLinkedIn from '~/components/shared/icons/u-icon-linkedin.vue';
-import iconRss from '~/components/icons/shared/u-icon-rss.vue';
+import iconRss from '~/components/shared/icons/u-icon-rss.vue';
 import iconStackOverflow from '~/components/shared/icons/u-icon-stackoverflow.vue';
 import iconTwitter from '~/components/shared/icons/u-icon-twitter.vue';
 import iconYoutube from '~/components/shared/icons/u-icon-youtube.vue';

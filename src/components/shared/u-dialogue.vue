@@ -4,7 +4,7 @@
       <u-heading level="2" class="dialog__title">{{title}}</u-heading>
       <form class="dialog__form" method="dialog">
         <u-button aria-label="Close search" class="dialog__close">
-          <CloseIcon :size="24"/>
+          <u-icon-close :size="24"/>
         </u-button>
       </form>
       <div class="dialog__content">
@@ -17,14 +17,14 @@
 <script>
 import button from '~/components/shared/u-button.vue';
 import heading from '~/components/shared/u-heading.vue';
-import CloseIcon from '~/components/icons/CloseIcon.vue';
+import iconClose from '~/components/shared/icons/u-icon-close.vue';
 
 export default {
   name: 'u-dialogue',
   components: {
     'u-button': button,
     'u-heading': heading,
-    CloseIcon,
+    'u-icon-close': iconClose,
   },
   props: {
     fullscreen: {
