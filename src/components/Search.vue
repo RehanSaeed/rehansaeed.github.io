@@ -6,6 +6,7 @@
       v-model="searchTerm"
       class="search__input"
       placeholder="Search"
+      inputmode="search"
       type="search">
     <div class="search__results">
       <g-link v-for="result in searchResults"
