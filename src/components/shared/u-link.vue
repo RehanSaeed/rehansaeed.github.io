@@ -8,9 +8,16 @@
 export default {
   name: 'u-link',
   props: {
-    button: Boolean,
-    label: String,
-    to: String,
+    button: {
+      type: Boolean,
+    },
+    label: {
+      type: String,
+    },
+    to: {
+      required: true,
+      type: String,
+    },
   }
 }
 </script>
