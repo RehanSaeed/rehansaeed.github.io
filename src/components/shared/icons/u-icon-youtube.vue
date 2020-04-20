@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import createIcon from '~/components/icons/Icon.js';
+import createIcon from '~/components/shared/icons/icon.js';
 
 export default createIcon('Youtube', 1, 576 / 512);
 </script>

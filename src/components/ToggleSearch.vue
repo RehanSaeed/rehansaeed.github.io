@@ -2,7 +2,7 @@
   <div>
 
     <u-button aria-label="Open search" @click.native.prevent="open">
-      <SearchIcon v-if="!isOpen" :size="24"/>
+      <u-icon-search v-if="!isOpen" :size="24"/>
     </u-button>
 
     <u-dialogue fullscreen title="Search" :is-open="isOpen" @close="close" class="search-dialogue">
@@ -16,14 +16,14 @@
 import button from '~/components/shared/u-button.vue';
 import dialogue from '~/components/shared/u-dialogue.vue';
 import Search from '~/components/Search.vue';
-import SearchIcon from '~/components/icons/SearchIcon.vue';
+import iconSearch from '~/components/shared/icons/u-icon-search.vue';
 
 export default {
   components: {
     'u-button': button,
     'u-dialogue': dialogue,
+    'u-icon-search': iconSearch,
     Search,
-    SearchIcon,
   },
   data() {
     return {

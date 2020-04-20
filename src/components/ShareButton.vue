@@ -38,24 +38,24 @@
 import button from '~/components/shared/u-button.vue';
 import dialogue from '~/components/shared/u-dialogue.vue';
 import link from '~/components/shared/u-link.vue';
-import EmailIcon from '~/components/icons/EmailIcon.vue';
-import FacebookIcon from '~/components/icons/FacebookIcon.vue';
-import LinkedInIcon from '~/components/icons/LinkedInIcon.vue';
-import RedditIcon from '~/components/icons/RedditIcon.vue';
-import ShareIcon from '~/components/icons/ShareIcon.vue';
-import TwitterIcon from '~/components/icons/TwitterIcon.vue';
+import iconEmail from '~/components/shared/icons/u-icon-email.vue';
+import iconFacebook from '~/components/shared/icons/u-icon-facebook.vue';
+import iconLinkedIn from '~/components/shared/icons/u-icon-linkedin.vue';
+import iconReddit from '~/components/shared/icons/u-icon-reddit.vue';
+import iconShare from '~/components/shared/icons/u-icon-share.vue';
+import iconTwitter from '~/components/shared/icons/u-icon-twitter.vue';
 
 export default {
   components: {
     'u-button': button,
     'u-dialogue': dialogue,
     'u-link': link,
-    EmailIcon,
-    FacebookIcon,
-    LinkedInIcon,
-    RedditIcon,
-    ShareIcon,
-    TwitterIcon,
+    'u-icon-email': iconEmail,
+    'u-icon-facebook': iconFacebook,
+    'u-icon-linkedin': iconLinkedIn,
+    'u-icon-reddit': iconReddit,
+    'u-icon-share': iconShare,
+    'u-icon-twitter': iconTwitter,
   },
   data() {
     return {

@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import createIcon from '~/components/icons/Icon.js';
+import createIcon from '~/components/shared/icons/icon.js';
 
 export default createIcon('GitHub', 512 / 496);
 </script>

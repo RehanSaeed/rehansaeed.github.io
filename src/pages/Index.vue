@@ -9,47 +9,6 @@
   </Layout>
 </template>
 
-<static-query>
-query {
-  metadata {
-    name
-    language
-    url
-    facebookAppId
-    author {
-      name
-      firstName
-      lastName
-      gender
-      twitter
-    }
-  }
-}
-</static-query>
-
-<page-query>
-query {
-  posts: allPost(filter: { published: { eq: true }}, sortBy: "date") {
-    edges {
-      node {
-        id
-        title
-        date (format: "D MMMM YYYY")
-        timeToRead
-        description
-        cover_image (width: 770, height: 380, blur: 10)
-        path
-        tags {
-          id
-          title
-          path
-        }
-      }
-    }
-  }
-}
-</page-query>
-
 <script>
 import Author from '~/components/Author.vue'
 import PostCard from '~/components/PostCard.vue'
@@ -148,3 +107,44 @@ export default {
   }
 }
 </script>
+
+<static-query>
+query {
+  metadata {
+    name
+    language
+    url
+    facebookAppId
+    author {
+      name
+      firstName
+      lastName
+      gender
+      twitter
+    }
+  }
+}
+</static-query>
+
+<page-query>
+query {
+  posts: allPost(filter: { published: { eq: true }}, sortBy: "date") {
+    edges {
+      node {
+        id
+        title
+        date (format: "D MMMM YYYY")
+        timeToRead
+        description
+        cover_image (width: 770, height: 380, blur: 10)
+        path
+        tags {
+          id
+          title
+          path
+        }
+      }
+    }
+  }
+}
+</page-query>

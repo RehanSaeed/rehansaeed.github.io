@@ -1,49 +1,49 @@
 <template>
   <div class="social">
     <u-link v-if="this.$static.metadata.author.twitterUrl" label="Twitter" :to="this.$static.metadata.author.twitterUrl" class="social__link">
-      <TwitterIcon :size="30"/>
+      <u-icon-twitter :size="30"/>
     </u-link>
     <u-link v-if="this.$static.metadata.author.gitHubUrl" label="GitHub" :to="this.$static.metadata.author.gitHubUrl" class="social__link">
-      <GitHubIcon :size="30"/>
+      <u-icon-github :size="30"/>
     </u-link>
     <u-link v-if="this.$static.metadata.author.stackOverflowUrl" label="StackOverflow" :to="this.$static.metadata.author.stackOverflowUrl" class="social__link">
-      <StackOverflowIcon :size="30"/>
+      <u-icon-stackoverflow :size="30"/>
     </u-link>
     <u-link v-if="this.$static.metadata.author.linkedInUrl" label="LinkedIn" :to="this.$static.metadata.author.linkedInUrl" class="social__link">
-      <LinkedInIcon :size="30"/>
+      <u-icon-linkedin :size="30"/>
     </u-link>
     <u-link v-if="this.$static.metadata.author.youtubeUrl" label="Youtube" :to="this.$static.metadata.author.youtubeUrl" class="social__link">
-      <YoutubeIcon :size="30"/>
+      <u-icon-youtube :size="30"/>
     </u-link>
     <u-link @click.native="OnEmailClick" label="Email" class="social__link">
-      <EmailIcon :size="30"/>
+      <u-icon-email :size="30"/>
     </u-link>
     <u-link to="/rss.xml" label="RSS" class="social__link">
-      <RssIcon :size="30"/>
+      <u-icon-rss :size="30"/>
     </u-link>
   </div>
 </template>
 
 <script>
 import link from '~/components/shared/u-link.vue';
-import EmailIcon from '~/components/icons/EmailIcon.vue';
-import GitHubIcon from '~/components/icons/GitHubIcon.vue';
-import LinkedInIcon from '~/components/icons/LinkedInIcon.vue';
-import RssIcon from '~/components/icons/RssIcon.vue';
-import StackOverflowIcon from '~/components/icons/StackOverflowIcon.vue';
-import TwitterIcon from '~/components/icons/TwitterIcon.vue';
-import YoutubeIcon from '~/components/icons/YoutubeIcon.vue';
+import iconEmail from '~/components/shared/icons/u-icon-email.vue';
+import iconGitHub from '~/components/shared/icons/u-icon-github.vue';
+import iconLinkedIn from '~/components/shared/icons/u-icon-linkedin.vue';
+import iconRss from '~/components/icons/shared/u-icon-rss.vue';
+import iconStackOverflow from '~/components/shared/icons/u-icon-stackoverflow.vue';
+import iconTwitter from '~/components/shared/icons/u-icon-twitter.vue';
+import iconYoutube from '~/components/shared/icons/u-icon-youtube.vue';
 
 export default {
   components: {
     'u-link': link,
-    EmailIcon,
-    GitHubIcon,
-    LinkedInIcon,
-    RssIcon,
-    StackOverflowIcon,
-    TwitterIcon,
-    YoutubeIcon,
+    'u-icon-email': iconEmail,
+    'u-icon-github': iconGitHub,
+    'u-icon-linkedin': iconLinkedIn,
+    'u-icon-rss': iconRss,
+    'u-icon-stackoverflow': iconStackOverflow,
+    'u-icon-twitter': iconTwitter,
+    'u-icon-youtube': iconYoutube,
   },
   methods: {
     OnEmailClick: function() {

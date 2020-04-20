@@ -1,20 +1,20 @@
 <template>
   <u-button aria-label="Toggle dark/light" @click.native.prevent="toggleTheme">
-    <SunIcon v-if="darkTheme" title="Enable light theme" :size="24"/>
-    <MoonIcon v-else title="Enable dark theme" :size="24"/>
+    <u-icon-sun v-if="darkTheme" title="Enable light theme" :size="24"/>
+    <u-icon-moon v-else title="Enable dark theme" :size="24"/>
   </u-button>
 </template>
 
 <script>
 import button from '~/components/shared/u-button.vue';
-import MoonIcon from '~/components/icons/MoonIcon.vue';
-import SunIcon from '~/components/icons/SunIcon.vue';
+import iconMoon from '~/components/shared/icons/u-icon-moon.vue';
+import iconSun from '~/components/shared/icons/u-icon-sun.vue';
 
 export default {
   components: {
     'u-button': button,
-    MoonIcon,
-    SunIcon,
+    'u-icon-moon': iconMoon,
+    'u-icon-sun': iconSun,
   },
   data() {
     return {

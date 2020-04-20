@@ -1,18 +1,18 @@
 <template>
   <u-link button :to="url">
-    <GitHubIcon />
+    <u-icon-github />
     Edit on GitHub
   </u-link>
 </template>
 
 <script>
 import link from '~/components/shared/u-link.vue';
-import GitHubIcon from '~/components/icons/GitHubIcon.vue';
+import iconGitHub from '~/components/shared/icons/u-icon-github.vue';
 
 export default {
   components: {
     'u-link': link,
-    GitHubIcon,
+    'u-icon-github': iconGitHub,
   },
   props: {
     post: Object,
