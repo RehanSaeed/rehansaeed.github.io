@@ -8,8 +8,12 @@
 export default {
   name: 'u-button',
   props: {
-    bordered: Boolean,
-    submit: Boolean,
+    bordered: {
+      type: Boolean
+    },
+    submit: {
+      type: Boolean
+    },
   },
   computed: {
     type: function() {
