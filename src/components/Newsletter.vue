@@ -30,7 +30,7 @@ mailchimpUrl
 
 <script>
 import ContentBox from '~/components/ContentBox.vue';
-import EffectButton from '~/components/EffectButton.vue';
+import EffectButton from '~/components/shared/EffectButton.vue';
 import Heading from '~/components/shared/Heading.vue';
 
 export default {

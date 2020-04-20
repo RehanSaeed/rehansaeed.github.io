@@ -17,7 +17,7 @@
 <script>
 import CloseIcon from '~/components/icons/CloseIcon.vue';
 import Heading from '~/components/shared/Heading.vue';
-import EffectButton from '~/components/EffectButton.vue';
+import EffectButton from '~/components/shared/EffectButton.vue';
 
 export default {
   components: {

@@ -36,7 +36,7 @@
 
 <script>
 import Dialogue from '~/components/Dialogue.vue';
-import EffectButton from '~/components/EffectButton.vue';
+import EffectButton from '~/components/shared/EffectButton.vue';
 import EffectLink from '~/components/EffectLink.vue';
 import EmailIcon from '~/components/icons/EmailIcon.vue';
 import FacebookIcon from '~/components/icons/FacebookIcon.vue';

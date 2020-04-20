@@ -14,7 +14,7 @@
 
 <script>
 import Dialogue from '~/components/Dialogue.vue';
-import EffectButton from '~/components/EffectButton.vue';
+import EffectButton from '~/components/shared/EffectButton.vue';
 import Search from '~/components/Search.vue';
 import SearchIcon from '~/components/icons/SearchIcon.vue';
 

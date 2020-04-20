@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import EffectButton from '~/components/EffectButton.vue';
+import EffectButton from '~/components/shared/EffectButton.vue';
 import MoonIcon from '~/components/icons/MoonIcon.vue';
 import SunIcon from '~/components/icons/SunIcon.vue';
 
