@@ -19,7 +19,7 @@
         style="position: absolute; left: -5000px;"
         tabindex="-1"
         value="">
-      <u-button button submit class="newsletter__button">
+      <u-button bordered submit class="newsletter__button">
         Subscribe
       </u-button>
     </form>

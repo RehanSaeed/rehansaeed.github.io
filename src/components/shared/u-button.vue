@@ -1,5 +1,5 @@
 <template>
-  <button class="button" :class="{ 'button--button': button }" :type="type">
+  <button class="button" :class="{ 'button--bordered': bordered }" :type="type">
     <slot/>
   </button>
 </template>
@@ -8,7 +8,7 @@
 export default {
   name: 'u-button',
   props: {
-    button: Boolean,
+    bordered: Boolean,
     submit: Boolean,
   },
   computed: {
@@ -42,7 +42,7 @@ export default {
   }
 }
 
-.button--button {
+.button--bordered {
   background-color: var(--bg-color);
   border: var(--global-border-width-1) solid var(--border-color);
   border-radius: var(--global-border-radius);
