@@ -6,7 +6,7 @@
       Share
     </u-button>
 
-    <Dialogue title="Share" :is-open="isDialogueOpen" @close="close" class="share-dialogue">
+    <u-dialogue title="Share" :is-open="isDialogueOpen" @close="close" class="share-dialogue">
       <div class="share-dialogue__links">
         <u-link button :to="facebookUrl" @click.native="close" class="share-dialogue__link">
           <FacebookIcon/>
@@ -29,17 +29,17 @@
           Email
         </u-link>
       </div>
-    </Dialogue>
+    </u-dialogue>
 
   </div>
 </template>
 
 <script>
 import button from '~/components/shared/u-button.vue';
-import Dialogue from '~/components/Dialogue.vue';
+import dialogue from '~/components/shared/u-dialogue.vue';
+import link from '~/components/shared/u-link.vue';
 import EmailIcon from '~/components/icons/EmailIcon.vue';
 import FacebookIcon from '~/components/icons/FacebookIcon.vue';
-import link from '~/components/shared/u-link.vue';
 import LinkedInIcon from '~/components/icons/LinkedInIcon.vue';
 import RedditIcon from '~/components/icons/RedditIcon.vue';
 import ShareIcon from '~/components/icons/ShareIcon.vue';
@@ -48,8 +48,8 @@ import TwitterIcon from '~/components/icons/TwitterIcon.vue';
 export default {
   components: {
     'u-button': button,
+    'u-dialogue': dialogue,
     'u-link': link,
-    Dialogue,
     EmailIcon,
     FacebookIcon,
     LinkedInIcon,

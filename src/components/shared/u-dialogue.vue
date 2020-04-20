@@ -20,6 +20,7 @@ import CloseIcon from '~/components/icons/CloseIcon.vue';
 import Heading from '~/components/shared/Heading.vue';
 
 export default {
+  name: 'u-dialogue',
   components: {
     'u-button': button,
     CloseIcon,

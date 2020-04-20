@@ -5,23 +5,23 @@
       <SearchIcon v-if="!isOpen" :size="24"/>
     </u-button>
 
-    <Dialogue fullscreen title="Search" :is-open="isOpen" @close="close" class="search-dialogue">
+    <u-dialogue fullscreen title="Search" :is-open="isOpen" @close="close" class="search-dialogue">
       <Search :search="this.$route.query.search" @selected="close"/>
-    </Dialogue>
+    </u-dialogue>
 
   </div>
 </template>
 
 <script>
 import button from '~/components/shared/u-button.vue';
-import Dialogue from '~/components/Dialogue.vue';
+import dialogue from '~/components/shared/u-dialogue.vue';
 import Search from '~/components/Search.vue';
 import SearchIcon from '~/components/icons/SearchIcon.vue';
 
 export default {
   components: {
     'u-button': button,
-    Dialogue,
+    'u-dialogue': dialogue,
     Search,
     SearchIcon,
   },
