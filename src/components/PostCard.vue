@@ -4,7 +4,7 @@
       <g-image alt="Cover image" v-if="post.cover_image" class="post-card__image" :src="post.cover_image"/>
     </div>
     <div class="post-card__content">
-      <h2 class="post-card__title" v-html="post.title" />
+      <Heading level="2" class="post-card__title" v-html="post.title" />
       <p class="post-card__description" v-html="post.description" />
 
       <Meta class="post-card__meta" :meta="post" />
@@ -17,12 +17,14 @@
 
 <script>
 import ContentBox from '~/components/ContentBox';
+import Heading from '~/components/shared/Heading';
 import Meta from '~/components/Meta';
 import Tags from '~/components/Tags';
 
 export default {
   components: {
     ContentBox,
+    Heading,
     Meta,
     Tags,
   },

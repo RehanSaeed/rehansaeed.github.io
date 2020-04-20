@@ -4,10 +4,9 @@
       <g-image :alt="portfolio.title" v-if="portfolio.cover_image" class="portfolio-card__image" :src="portfolio.cover_image"/>
     </div>
     <div class="portfolio-card__content">
-      <h2 class="portfolio-card__title" v-html="portfolio.title" />
+      <Heading level="2" class="portfolio-card__title" v-html="portfolio.title" />
       <p class="portfolio-card__description" v-html="portfolio.description" />
 
-      <Meta class="portfolio-card__meta" :meta="portfolio" />
       <Tags v-if="portfolio.tags" class="portfolio-card__tags" :tags="portfolio.tags" />
 
       <g-link class="portfolio-card__link" :to="portfolio.permalink">Link</g-link>
@@ -17,12 +16,14 @@
 
 <script>
 import ContentBox from '~/components/ContentBox';
+import Heading from '~/components/shared/Heading';
 import Meta from '~/components/Meta';
 import Tags from '~/components/Tags';
 
 export default {
   components: {
     ContentBox,
+    Heading,
     Meta,
     Tags,
   },

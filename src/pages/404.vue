@@ -2,7 +2,7 @@
   <Layout :show-logo="true">
     <div class="not-found">
 
-      <PageTitle>404 Not Found</PageTitle>
+      <Heading level="1">404 Not Found</Heading>
 
       <ContentBox class="not-found__content">
         <p>Didn't find what you were looking for?</p>
@@ -18,15 +18,15 @@
 <script>
 import ContentBox from '~/components/ContentBox.vue';
 import EffectLink from '~/components/EffectLink.vue';
+import Heading from '~/components/shared/Heading.vue';
 import Newsletter from '~/components/Newsletter.vue';
-import PageTitle from '~/components/PageTitle.vue';
 
 export default {
   components: {
     ContentBox,
     EffectLink,
+    Heading,
     Newsletter,
-    PageTitle,
   },
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <ContentBox class="newsletter" tag="section">
     <form class="newsletter__form" method="post" :action="this.$static.metadata.mailchimpUrl">
-      <h2 class="newsletter__title">Newsletter</h2>
+      <Heading level="2" class="newsletter__title">Newsletter</Heading>
       <p class="newsletter__content">Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox!</p>
       <input
         class="newsletter__input"
@@ -31,11 +31,13 @@ mailchimpUrl
 <script>
 import ContentBox from '~/components/ContentBox.vue';
 import EffectButton from '~/components/EffectButton.vue';
+import Heading from '~/components/shared/Heading.vue';
 
 export default {
   components: {
     ContentBox,
     EffectButton,
+    Heading,
   },
 }
 </script>

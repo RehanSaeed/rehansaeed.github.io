@@ -2,7 +2,7 @@
   <Layout :show-logo="true">
     <div class="portfolio">
 
-      <PageTitle>Portfolio</PageTitle>
+      <Heading level="1" center>Portfolio</Heading>
 
       <div class="portfolio__items">
         <PortfolioCard
@@ -11,21 +11,21 @@
           :portfolio="edge.node"/>
       </div>
 
-      <Newsletter/>
+      <Newsletter class="portfolio__newsletter"/>
 
     </div>
   </Layout>
 </template>
 
 <script>
-import Newsletter from '~/components/Newsletter.vue'
-import PageTitle from '~/components/PageTitle.vue'
-import PortfolioCard from '~/components/PortfolioCard.vue'
+import Heading from '~/components/shared/Heading.vue';
+import Newsletter from '~/components/Newsletter.vue';
+import PortfolioCard from '~/components/PortfolioCard.vue';
 
 export default {
   components: {
+    Heading,
     Newsletter,
-    PageTitle,
     PortfolioCard,
   },
   computed: {
@@ -89,7 +89,8 @@ query {
       node {
         id
         title
-        date (format: "D MMMM YYYY")
+        displayDate: date (format: "D MMMM YYYY")
+        date (format: "YYYY-MM-DDTHH:mm:ssZ")
         description
         cover_image (width: 770, height: 380, blur: 10)
         permalink
@@ -107,14 +108,21 @@ query {
 <style lang="scss">
 .portfolio {
   display: grid;
+  grid-gap: var(--global-space-4);
   grid-template-columns: 1fr;
 }
 
 .portfolio__items {
+  --portfolio-items-max-width: calc(var(--global-space-5) * 2 + var(--global-line-length-max));
+  --portfolio-items-min-width: calc(var(--global-space-5) * 2 + var(--global-line-length-min));
+
   display: grid;
   grid-gap: var(--global-space-4);
-  grid-template-columns: repeat(auto-fit, minmax(35rem, 46rem));
+  grid-template-columns: repeat(auto-fit, minmax(var(--portfolio-items-min-width), var(--portfolio-items-max-width)));
   justify-content: center;
-  margin-bottom: var(--global-space-4);
+}
+
+.portfolio__newsletter {
+  justify-self: center;
 }
 </style>

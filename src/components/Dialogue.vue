@@ -1,7 +1,7 @@
 <template>
   <dialog class="dialog" ref="dialog" @close="close" :class="{ 'dialog--fullscreen': fullscreen }">
     <div class="dialog__container">
-      <h2 class="dialog__title">{{title}}</h2>
+      <Heading level="2" class="dialog__title">{{title}}</Heading>
       <form class="dialog__form" method="dialog">
         <EffectButton aria-label="Close search" class="dialog__close">
           <CloseIcon :size="24"/>
@@ -16,11 +16,13 @@
 
 <script>
 import CloseIcon from '~/components/icons/CloseIcon.vue';
+import Heading from '~/components/shared/Heading.vue';
 import EffectButton from '~/components/EffectButton.vue';
 
 export default {
   components: {
     CloseIcon,
+    Heading,
     EffectButton,
   },
   props: {

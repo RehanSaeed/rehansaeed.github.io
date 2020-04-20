@@ -1,8 +1,8 @@
 <template>
   <Layout>
-    <h1 class="tag-title text-center space-bottom">
+    <Heading level="1" class="tag-title text-center space-bottom">
       # {{ $page.tag.title }}
-    </h1>
+    </Heading>
 
     <div class="posts">
       <PostCard v-for="edge in $page.tag.belongsTo.edges" :key="edge.node.id" :post="edge.node"/>
@@ -10,52 +10,16 @@
   </Layout>
 </template>
 
-<static-query>
-query {
-  metadata {
-    name
-    url
-    language
-    facebookAppId
-    author {
-      name
-      twitter
-    }
-  }
-}
-</static-query>
-
-<page-query>
-query Tag ($id: ID!) {
-  tag (id: $id) {
-    title
-    path
-    belongsTo {
-      edges {
-        node {
-          ...on Post {
-            title
-            path
-            date (format: "D MMMM YYYY")
-            timeToRead
-            description
-            content
-          }
-        }
-      }
-    }
-  }
-}
-</page-query>
-
 <script>
 import Author from '~/components/Author.vue';
+import Heading from '~/components/shared/Heading.vue';
 import PostCard from '~/components/PostCard.vue';
 
 export default {
   components: {
     Author,
-    PostCard
+    Heading,
+    PostCard,
   },
   computed: {
     description: function() { return `Blog posts authored by ${this.$static.metadata.author.name} about ${this.$page.tag.title}.`; },
@@ -94,3 +58,41 @@ export default {
   }
 }
 </script>
+
+<static-query>
+query {
+  metadata {
+    name
+    url
+    language
+    facebookAppId
+    author {
+      name
+      twitter
+    }
+  }
+}
+</static-query>
+
+<page-query>
+query Tag ($id: ID!) {
+  tag (id: $id) {
+    title
+    path
+    belongsTo {
+      edges {
+        node {
+          ...on Post {
+            title
+            path
+            date (format: "D MMMM YYYY")
+            timeToRead
+            description
+            content
+          }
+        }
+      }
+    }
+  }
+}
+</page-query>

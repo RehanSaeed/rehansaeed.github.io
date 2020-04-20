@@ -3,7 +3,7 @@
 
 		<g-image :alt="$static.metadata.name" immediate class="author__image" src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png" width="120" height="120" />
 
-		<h1 class="author__site-title">{{$static.metadata.name}}</h1>
+		<Heading level="1" class="author__site-title">{{$static.metadata.name}}</Heading>
 
 		<p class="author__description">{{$static.metadata.description}}</p>
 
@@ -11,6 +11,18 @@
 
 	</section>
 </template>
+
+<script>
+import Heading from '~/components/shared/Heading.vue';
+import SocialLinks from '~/components/SocialLinks.vue';
+
+export default {
+  components: {
+    Heading,
+    SocialLinks,
+  },
+}
+</script>
 
 <static-query>
 query {
@@ -20,16 +32,6 @@ query {
   }
 }
 </static-query>
-
-<script>
-import SocialLinks from '~/components/SocialLinks.vue'
-
-export default {
-  components: {
-    SocialLinks,
-  },
-}
-</script>
 
 <style lang="scss">
 .author {

@@ -2,9 +2,9 @@
   <Layout>
 
     <div class="post-title">
-      <h1 class="post-title__text">
+      <Heading level="1" class="post-title__text">
         {{ $page.post.title }}
-      </h1>
+      </Heading>
       <Meta :meta="$page.post" />
     </div>
 
@@ -40,6 +40,7 @@
 import Author from '~/components/Author.vue';
 import ContentBox from '~/components/ContentBox.vue';
 import EditOnGitHubButton from '~/components/EditOnGitHubButton.vue';
+import Heading from '~/components/shared/Heading.vue';
 import Meta from '~/components/Meta';
 import Newsletter from '~/components/Newsletter';
 import ShareButton from '~/components/ShareButton.vue';
@@ -50,6 +51,7 @@ export default {
     Author,
     ContentBox,
     EditOnGitHubButton,
+    Heading,
     Meta,
     Newsletter,
     ShareButton,
