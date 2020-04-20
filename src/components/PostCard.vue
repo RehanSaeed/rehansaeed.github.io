@@ -4,7 +4,7 @@
       <g-image alt="Cover image" v-if="post.cover_image" class="post-card__image" :src="post.cover_image"/>
     </div>
     <div class="post-card__content">
-      <Heading level="2" class="post-card__title" v-html="post.title" />
+      <u-heading level="2" class="post-card__title" v-html="post.title" />
       <p class="post-card__description" v-html="post.description" />
 
       <Meta class="post-card__meta" :meta="post" />
@@ -16,15 +16,15 @@
 </template>
 
 <script>
-import ContentBox from '~/components/ContentBox';
-import Heading from '~/components/shared/Heading';
-import Meta from '~/components/Meta';
-import Tags from '~/components/Tags';
+import heading from '~/components/shared/u-heading.vue';
+import ContentBox from '~/components/ContentBox.vue';
+import Meta from '~/components/Meta.vue';
+import Tags from '~/components/Tags.vue';
 
 export default {
   components: {
+    'u-heading': heading,
     ContentBox,
-    Heading,
     Meta,
     Tags,
   },

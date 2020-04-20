@@ -2,9 +2,9 @@
   <Layout>
 
     <div class="post-title">
-      <Heading level="1" class="post-title__text">
+      <u-heading level="1" class="post-title__text">
         {{ $page.post.title }}
-      </Heading>
+      </u-heading>
       <Meta :meta="$page.post" />
     </div>
 
@@ -37,10 +37,10 @@
 </template>
 
 <script>
+import heading from '~/components/shared/u-heading.vue';
 import Author from '~/components/Author.vue';
 import ContentBox from '~/components/ContentBox.vue';
 import EditOnGitHubButton from '~/components/EditOnGitHubButton.vue';
-import Heading from '~/components/shared/Heading.vue';
 import Meta from '~/components/Meta';
 import Newsletter from '~/components/Newsletter';
 import ShareButton from '~/components/ShareButton.vue';
@@ -48,10 +48,10 @@ import Tags from '~/components/Tags';
 
 export default {
   components: {
+    'u-heading': heading,
     Author,
     ContentBox,
     EditOnGitHubButton,
-    Heading,
     Meta,
     Newsletter,
     ShareButton,

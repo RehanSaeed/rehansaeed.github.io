@@ -2,7 +2,7 @@
   <Layout :show-logo="true">
     <div class="not-found">
 
-      <Heading level="1">404 Not Found</Heading>
+      <u-heading level="1">404 Not Found</u-heading>
 
       <ContentBox class="not-found__content">
         <p>Didn't find what you were looking for?</p>
@@ -17,15 +17,15 @@
 
 <script>
 import link from '~/components/shared/u-link.vue';
+import heading from '~/components/shared/u-heading.vue';
 import ContentBox from '~/components/ContentBox.vue';
-import Heading from '~/components/shared/Heading.vue';
 import Newsletter from '~/components/Newsletter.vue';
 
 export default {
   components: {
     'u-link': link,
+    'u-heading': heading,
     ContentBox,
-    Heading,
     Newsletter,
   },
 }

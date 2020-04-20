@@ -2,7 +2,7 @@
   <Layout :show-logo="true">
     <div class="portfolio">
 
-      <Heading level="1" center>Portfolio</Heading>
+      <u-heading level="1" center>Portfolio</u-heading>
 
       <div class="portfolio__items">
         <PortfolioCard
@@ -18,13 +18,13 @@
 </template>
 
 <script>
-import Heading from '~/components/shared/Heading.vue';
+import heading from '~/components/shared/u-heading.vue';
 import Newsletter from '~/components/Newsletter.vue';
 import PortfolioCard from '~/components/PortfolioCard.vue';
 
 export default {
   components: {
-    Heading,
+    'u-heading': heading,
     Newsletter,
     PortfolioCard,
   },

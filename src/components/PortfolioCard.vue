@@ -4,7 +4,7 @@
       <g-image :alt="portfolio.title" v-if="portfolio.cover_image" class="portfolio-card__image" :src="portfolio.cover_image"/>
     </div>
     <div class="portfolio-card__content">
-      <Heading level="2" class="portfolio-card__title" v-html="portfolio.title" />
+      <u-heading level="2" class="portfolio-card__title" v-html="portfolio.title" />
       <p class="portfolio-card__description" v-html="portfolio.description" />
 
       <Tags v-if="portfolio.tags" class="portfolio-card__tags" :tags="portfolio.tags" />
@@ -15,15 +15,15 @@
 </template>
 
 <script>
-import ContentBox from '~/components/ContentBox';
-import Heading from '~/components/shared/Heading';
-import Meta from '~/components/Meta';
-import Tags from '~/components/Tags';
+import heading from '~/components/shared/u-heading.vue';
+import ContentBox from '~/components/ContentBox.vue';
+import Meta from '~/components/Meta.vue';
+import Tags from '~/components/Tags.vue';
 
 export default {
   components: {
+    'u-heading': heading,
     ContentBox,
-    Heading,
     Meta,
     Tags,
   },

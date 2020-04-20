@@ -1,8 +1,8 @@
 <template>
   <Layout>
-    <Heading level="1" class="tag-title text-center space-bottom">
+    <u-heading level="1" class="tag-title text-center space-bottom">
       # {{ $page.tag.title }}
-    </Heading>
+    </u-heading>
 
     <div class="posts">
       <PostCard v-for="edge in $page.tag.belongsTo.edges" :key="edge.node.id" :post="edge.node"/>
@@ -11,14 +11,14 @@
 </template>
 
 <script>
+import heading from '~/components/shared/u-heading.vue';
 import Author from '~/components/Author.vue';
-import Heading from '~/components/shared/Heading.vue';
 import PostCard from '~/components/PostCard.vue';
 
 export default {
   components: {
+    'u-heading': heading,
     Author,
-    Heading,
     PostCard,
   },
   computed: {

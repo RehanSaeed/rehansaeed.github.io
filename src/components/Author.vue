@@ -3,7 +3,7 @@
 
 		<g-image :alt="$static.metadata.name" immediate class="author__image" src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png" width="120" height="120" />
 
-		<Heading level="1" class="author__site-title">{{$static.metadata.name}}</Heading>
+		<u-heading level="1" class="author__site-title">{{$static.metadata.name}}</u-heading>
 
 		<p class="author__description">{{$static.metadata.description}}</p>
 
@@ -13,12 +13,12 @@
 </template>
 
 <script>
-import Heading from '~/components/shared/Heading.vue';
+import heading from '~/components/shared/u-heading.vue';
 import SocialLinks from '~/components/SocialLinks.vue';
 
 export default {
   components: {
-    Heading,
+    'u-heading': heading,
     SocialLinks,
   },
 }
