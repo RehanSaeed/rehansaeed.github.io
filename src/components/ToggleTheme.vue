@@ -1,18 +1,18 @@
 <template>
-  <EffectButton aria-label="Toggle dark/light" @click.native.prevent="toggleTheme">
+  <u-button aria-label="Toggle dark/light" @click.native.prevent="toggleTheme">
     <SunIcon v-if="darkTheme" title="Enable light theme" :size="24"/>
     <MoonIcon v-else title="Enable dark theme" :size="24"/>
-  </EffectButton>
+  </u-button>
 </template>
 
 <script>
-import EffectButton from '~/components/shared/EffectButton.vue';
+import button from '~/components/shared/u-button.vue';
 import MoonIcon from '~/components/icons/MoonIcon.vue';
 import SunIcon from '~/components/icons/SunIcon.vue';
 
 export default {
   components: {
-    EffectButton,
+    'u-button': button,
     MoonIcon,
     SunIcon,
   },

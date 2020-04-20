@@ -1,9 +1,9 @@
 <template>
   <div>
 
-    <EffectButton aria-label="Open search" @click.native.prevent="open">
+    <u-button aria-label="Open search" @click.native.prevent="open">
       <SearchIcon v-if="!isOpen" :size="24"/>
-    </EffectButton>
+    </u-button>
 
     <Dialogue fullscreen title="Search" :is-open="isOpen" @close="close" class="search-dialogue">
       <Search :search="this.$route.query.search" @selected="close"/>
@@ -13,15 +13,15 @@
 </template>
 
 <script>
+import button from '~/components/shared/u-button.vue';
 import Dialogue from '~/components/Dialogue.vue';
-import EffectButton from '~/components/shared/EffectButton.vue';
 import Search from '~/components/Search.vue';
 import SearchIcon from '~/components/icons/SearchIcon.vue';
 
 export default {
   components: {
+    'u-button': button,
     Dialogue,
-    EffectButton,
     Search,
     SearchIcon,
   },

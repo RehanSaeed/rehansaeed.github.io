@@ -6,6 +6,7 @@
 
 <script>
 export default {
+  name: 'u-button',
   props: {
     button: Boolean,
     submit: Boolean,

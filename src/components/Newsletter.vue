@@ -19,9 +19,9 @@
         style="position: absolute; left: -5000px;"
         tabindex="-1"
         value="">
-      <EffectButton button submit class="newsletter__button">
+      <u-button button submit class="newsletter__button">
         Subscribe
-      </EffectButton>
+      </u-button>
     </form>
   </ContentBox>
 </template>
@@ -29,14 +29,14 @@
 mailchimpUrl
 
 <script>
+import button from '~/components/shared/u-button.vue';
 import ContentBox from '~/components/ContentBox.vue';
-import EffectButton from '~/components/shared/EffectButton.vue';
 import Heading from '~/components/shared/Heading.vue';
 
 export default {
   components: {
+    'u-button': button,
     ContentBox,
-    EffectButton,
     Heading,
   },
 }

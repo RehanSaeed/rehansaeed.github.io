@@ -3,9 +3,9 @@
     <div class="dialog__container">
       <Heading level="2" class="dialog__title">{{title}}</Heading>
       <form class="dialog__form" method="dialog">
-        <EffectButton aria-label="Close search" class="dialog__close">
+        <u-button aria-label="Close search" class="dialog__close">
           <CloseIcon :size="24"/>
-        </EffectButton>
+        </u-button>
       </form>
       <div class="dialog__content">
         <slot/>
@@ -15,15 +15,15 @@
 </template>
 
 <script>
+import button from '~/components/shared/u-button.vue';
 import CloseIcon from '~/components/icons/CloseIcon.vue';
 import Heading from '~/components/shared/Heading.vue';
-import EffectButton from '~/components/shared/EffectButton.vue';
 
 export default {
   components: {
+    'u-button': button,
     CloseIcon,
     Heading,
-    EffectButton,
   },
   props: {
     fullscreen: {

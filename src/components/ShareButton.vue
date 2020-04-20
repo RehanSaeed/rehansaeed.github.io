@@ -1,10 +1,10 @@
 <template>
   <div>
 
-    <EffectButton @click.native="onClick" button>
+    <u-button @click.native="onClick" button>
       <ShareIcon/>
       Share
-    </EffectButton>
+    </u-button>
 
     <Dialogue title="Share" :is-open="isDialogueOpen" @close="close" class="share-dialogue">
       <div class="share-dialogue__links">
@@ -35,8 +35,8 @@
 </template>
 
 <script>
+import button from '~/components/shared/u-button.vue';
 import Dialogue from '~/components/Dialogue.vue';
-import EffectButton from '~/components/shared/EffectButton.vue';
 import EmailIcon from '~/components/icons/EmailIcon.vue';
 import FacebookIcon from '~/components/icons/FacebookIcon.vue';
 import link from '~/components/shared/u-link.vue';
@@ -47,9 +47,9 @@ import TwitterIcon from '~/components/icons/TwitterIcon.vue';
 
 export default {
   components: {
+    'u-button': button,
     'u-link': link,
     Dialogue,
-    EffectButton,
     EmailIcon,
     FacebookIcon,
     LinkedInIcon,
