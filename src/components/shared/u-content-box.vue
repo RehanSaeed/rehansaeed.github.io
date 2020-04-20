@@ -8,10 +8,12 @@
 export default {
   name: 'u-content-box',
   props: {
-    hoverable: Boolean,
+    hoverable: {
+      type: Boolean,
+    },
     tag: {
       default: 'div',
-      type: String
+      type: String,
     }
   }
 }
