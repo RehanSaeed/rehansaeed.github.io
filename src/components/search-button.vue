@@ -19,6 +19,7 @@ import iconSearch from '~/components/shared/icons/icon-search.vue';
 import search from '~/components/search.vue';
 
 export default {
+  name: 'u-search-button',
   components: {
     'u-button': button,
     'u-dialogue': dialogue,

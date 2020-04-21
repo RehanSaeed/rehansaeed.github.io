@@ -9,7 +9,7 @@
       <u-link class="navigation__item" to="/about/">About</u-link>
     </div>
     <div class="navigation__items-right">
-      <ToggleSearch class="navigation__search" />
+      <u-search-button class="navigation__search" />
       <ToggleTheme class="navigation__toggle-theme" />
     </div>
   </nav>
@@ -28,13 +28,13 @@ query {
 
 <script>
 import link from '~/components/shared/link.vue';
-import ToggleSearch from '~/components/ToggleSearch.vue';
+import searchButton from '~/components/search-button.vue';
 import ToggleTheme from '~/components/ToggleTheme.vue';
 
 export default {
   components: {
     'u-link': link,
-    ToggleSearch,
+    'u-search-button': searchButton,
     ToggleTheme,
   }
 }
