@@ -20,6 +20,7 @@ import heading from '~/components/shared/heading.vue';
 import tags from '~/components/tags.vue';
 
 export default {
+  name: 'u-portfolio-card',
   components: {
     'u-content-box': contentBox,
     'u-heading': heading,
@@ -58,7 +59,7 @@ export default {
 }
 
 .portfolio-card__tags {
-  margin-top: 1.5rem;
+  margin-top: var(--global-space-fixed-4);
   z-index: 1;
   position: relative;
 }

@@ -5,7 +5,7 @@
       <u-heading level="1" center>Portfolio</u-heading>
 
       <div class="portfolio__items">
-        <PortfolioCard
+        <u-portfolio-card
           v-for="edge in $page.portfolio.edges"
           :key="edge.node.id"
           :portfolio="edge.node"/>
@@ -20,13 +20,13 @@
 <script>
 import heading from '~/components/shared/heading.vue';
 import newsletter from '~/components/newsletter.vue';
-import PortfolioCard from '~/components/PortfolioCard.vue';
+import portfolioCard from '~/components/portfolio-card.vue';
 
 export default {
   components: {
     'u-heading': heading,
     'u-newsletter': newsletter,
-    PortfolioCard,
+    'u-portfolio-card': portfolioCard,
   },
   computed: {
     title: function() { return 'Portfolio'; },

@@ -154,7 +154,7 @@ query {
 
 <style lang="scss">
 .share-dialogue__links {
-  --gap: var(--global-space-fluid-2);
+  --gap: var(--global-space-fixed-3);
 
   display: flex;
   flex-wrap: wrap;
