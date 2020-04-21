@@ -244,12 +244,12 @@ query Post ($id: ID!) {
 .post__footer-first-row {
   display: grid;
   grid-template-columns: auto auto 1fr;
-  grid-gap: .6rem;
+  grid-gap: var(--global-space-fixed-3);
 }
 
 .post__edit,
 .post__share {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--global-space-fixed-5);
 }
 
 .post-comments {
