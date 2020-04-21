@@ -21,7 +21,7 @@ export default {
 
 <style lang="scss">
 .tags {
-  --gap: .6rem;
+  --gap: var(--global-space-fluid-2);
 
   display: flex;
   flex-wrap: wrap;

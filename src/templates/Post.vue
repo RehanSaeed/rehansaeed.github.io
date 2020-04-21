@@ -21,7 +21,7 @@
           <ShareButton :title="$page.post.title" :tags="$page.post.tags.map(x => x.title)" class="post__share" />
           <u-edit-post-button :post="$page.post" class="post__edit" />
         </div>
-        <Tags :tags="$page.post.tags"  class="post__tags" />
+        <u-tags :tags="$page.post.tags" class="post__tags" />
       </div>
 
     </u-content-box>
@@ -41,10 +41,10 @@ import contentBox from '~/components/shared/content-box.vue';
 import heading from '~/components/shared/heading.vue';
 import author from '~/components/author.vue';
 import editPostButton from '~/components/edit-post-button.vue';
-import newsletter from '~/components/u-newsletter.vue';
+import newsletter from '~/components/newsletter.vue';
 import postMeta from '~/components/post-meta.vue';
 import ShareButton from '~/components/ShareButton.vue';
-import Tags from '~/components/Tags.vue';
+import tags from '~/components/tags.vue';
 
 export default {
   components: {
@@ -55,7 +55,7 @@ export default {
     'u-newsletter': newsletter,
     'u-post-meta': postMeta,
     ShareButton,
-    Tags,
+    'u-tags': tags,
   },
   computed: {
     image: function() { return this.$static.metadata.url + this.$page.post.cover_image; },

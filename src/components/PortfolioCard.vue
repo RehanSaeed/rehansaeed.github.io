@@ -7,7 +7,7 @@
       <u-heading level="2" class="portfolio-card__title" v-html="portfolio.title" />
       <p class="portfolio-card__description" v-html="portfolio.description" />
 
-      <Tags v-if="portfolio.tags" class="portfolio-card__tags" :tags="portfolio.tags" />
+      <u-tags v-if="portfolio.tags" class="portfolio-card__tags" :tags="portfolio.tags" />
 
       <g-link class="portfolio-card__link" :to="portfolio.permalink">Link</g-link>
     </div>
@@ -17,13 +17,13 @@
 <script>
 import contentBox from '~/components/shared/content-box.vue';
 import heading from '~/components/shared/heading.vue';
-import Tags from '~/components/Tags.vue';
+import tags from '~/components/tags.vue';
 
 export default {
   components: {
     'u-content-box': contentBox,
     'u-heading': heading,
-    Tags,
+    'u-tags': tags,
   },
   props: {
     portfolio: Object,

@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <u-button @click.native="onClick" button>
+    <u-button bordered @click.native="onClick">
       <u-icon-share/>
       Share
     </u-button>
