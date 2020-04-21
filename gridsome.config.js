@@ -10,9 +10,9 @@ module.exports = {
   siteUrl: site.url,
 
   templates: {
-    Post: "/:permalink",
-    Tag: "/tag/:title",
-    Portfolio: "/:permalink"
+    post: "/:permalink",
+    tag: "/tag/:title",
+    portfolio: "/:permalink"
   },
 
   plugins: [
@@ -45,12 +45,12 @@ module.exports = {
       // Create posts from markdown files
       use: "@gridsome/source-filesystem",
       options: {
-        typeName: "Post",
+        typeName: "post",
         path: "content/posts/**/*.md",
         refs: {
           // Creates a GraphQL collection from 'tags' in front-matter and adds a reference.
           tags: {
-            typeName: "Tag",
+            typeName: "tag",
             create: true
           }
         }
@@ -60,12 +60,12 @@ module.exports = {
       // Create posts from markdown files
       use: "@gridsome/source-filesystem",
       options: {
-        typeName: "Portfolio",
+        typeName: "portfolio",
         path: "content/portfolio/**/*.md",
         refs: {
           // Creates a GraphQL collection from 'tags' in front-matter and adds a reference.
           tags: {
-            typeName: "Tag",
+            typeName: "tag",
             create: true
           }
         }
@@ -82,7 +82,7 @@ module.exports = {
       use: 'gridsome-plugin-feed',
       options: {
         // Required: array of `GraphQL` type names you wish to include
-        contentTypes: ['Post'],
+        contentTypes: ['post'],
         // Optional: any properties you wish to set for `Feed()` constructor
         // See https://www.npmjs.com/package/feed#example for available properties
         feedOptions: {
@@ -156,13 +156,13 @@ module.exports = {
       options: {
         collections: [
           {
-            typeName: "Post",
-            indexName: "Post",
+            typeName: "post",
+            indexName: "post",
             fields: ["title", "description", "cover_image"]
           },
           {
-            typeName: "Portfolio",
-            indexName: "Portfolio",
+            typeName: "portfolio",
+            indexName: "portfolio",
             fields: ["title", "description", "permalink"]
           }
         ],
