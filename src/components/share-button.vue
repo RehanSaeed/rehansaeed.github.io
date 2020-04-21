@@ -46,6 +46,7 @@ import iconShare from '~/components/shared/icons/icon-share.vue';
 import iconTwitter from '~/components/shared/icons/icon-twitter.vue';
 
 export default {
+  name: 'u-share-button',
   components: {
     'u-button': button,
     'u-dialogue': dialogue,
@@ -153,7 +154,7 @@ query {
 
 <style lang="scss">
 .share-dialogue__links {
-  --gap: .6rem;
+  --gap: var(--global-space-fluid-2);
 
   display: flex;
   flex-wrap: wrap;

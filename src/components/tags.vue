@@ -10,6 +10,7 @@
 import link from '~/components/shared/link.vue'
 
 export default {
+  name: 'u-tags',
   components: {
     'u-link': link,
   },

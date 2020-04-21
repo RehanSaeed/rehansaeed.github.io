@@ -18,7 +18,7 @@
 
       <div class="post__footer">
         <div class="post__footer-first-row">
-          <ShareButton :title="$page.post.title" :tags="$page.post.tags.map(x => x.title)" class="post__share" />
+          <u-share-button :title="$page.post.title" :tags="$page.post.tags.map(x => x.title)" class="post__share" />
           <u-edit-post-button :post="$page.post" class="post__edit" />
         </div>
         <u-tags :tags="$page.post.tags" class="post__tags" />
@@ -43,7 +43,7 @@ import author from '~/components/author.vue';
 import editPostButton from '~/components/edit-post-button.vue';
 import newsletter from '~/components/newsletter.vue';
 import postMeta from '~/components/post-meta.vue';
-import ShareButton from '~/components/ShareButton.vue';
+import shareButton from '~/components/share-button.vue';
 import tags from '~/components/tags.vue';
 
 export default {
@@ -54,7 +54,7 @@ export default {
     'u-edit-post-button': editPostButton,
     'u-newsletter': newsletter,
     'u-post-meta': postMeta,
-    ShareButton,
+    'u-share-button': shareButton,
     'u-tags': tags,
   },
   computed: {
