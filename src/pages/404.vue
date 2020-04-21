@@ -9,7 +9,7 @@
         <u-link bordered to="/">Go Home</u-link>
       </u-content-box>
 
-      <Newsletter />
+      <u-newsletter />
 
     </div>
   </Layout>
@@ -19,14 +19,14 @@
 import contentBox from '~/components/shared/content-box.vue';
 import link from '~/components/shared/link.vue';
 import heading from '~/components/shared/heading.vue';
-import Newsletter from '~/components/Newsletter.vue';
+import newsletter from '~/components/newsletter.vue';
 
 export default {
   components: {
     'u-content-box': contentBox,
     'u-link': link,
     'u-heading': heading,
-    Newsletter,
+    'u-newsletter': newsletter,
   },
 }
 </script>

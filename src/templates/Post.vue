@@ -26,7 +26,7 @@
 
     </u-content-box>
 
-    <Newsletter/>
+    <u-newsletter/>
 
     <div class="post-comments">
       <!-- Add comment widgets here -->
@@ -41,10 +41,10 @@ import contentBox from '~/components/shared/content-box.vue';
 import heading from '~/components/shared/heading.vue';
 import author from '~/components/author.vue';
 import editPostButton from '~/components/edit-post-button.vue';
-import postMeta from '~/components/post-meta';
-import Newsletter from '~/components/Newsletter';
+import newsletter from '~/components/u-newsletter.vue';
+import postMeta from '~/components/post-meta.vue';
 import ShareButton from '~/components/ShareButton.vue';
-import Tags from '~/components/Tags';
+import Tags from '~/components/Tags.vue';
 
 export default {
   components: {
@@ -52,8 +52,8 @@ export default {
     'u-heading': heading,
     'u-author': author,
     'u-edit-post-button': editPostButton,
+    'u-newsletter': newsletter,
     'u-post-meta': postMeta,
-    Newsletter,
     ShareButton,
     Tags,
   },

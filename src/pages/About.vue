@@ -13,7 +13,7 @@
         <p class="about__description">Do you have questions or comments about my work? Please feel free to contact me using any of the links above.</p>
       </u-content-box>
 
-      <Newsletter/>
+      <u-newsletter/>
 
     </div>
   </Layout>
@@ -22,14 +22,14 @@
 <script>
 import contentBox from '~/components/shared/content-box.vue';
 import heading from '~/components/shared/heading.vue';
-import Newsletter from '~/components/Newsletter.vue';
+import newsletter from '~/components/newsletter.vue';
 import SocialLinks from '~/components/SocialLinks.vue';
 
 export default {
   components: {
     'u-content-box': contentBox,
     'u-heading': heading,
-    Newsletter,
+    'u-newsletter': newsletter,
     SocialLinks,
   },
   computed: {

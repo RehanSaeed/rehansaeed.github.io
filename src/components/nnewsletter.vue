@@ -34,6 +34,7 @@ import contentBox from '~/components/shared/content-box.vue';
 import heading from '~/components/shared/heading.vue';
 
 export default {
+  name: 'u-newsletter',
   components: {
     'u-button': button,
     'u-content-box': contentBox,

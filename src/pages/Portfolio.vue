@@ -11,7 +11,7 @@
           :portfolio="edge.node"/>
       </div>
 
-      <Newsletter class="portfolio__newsletter"/>
+      <u-newsletter class="portfolio__newsletter"/>
 
     </div>
   </Layout>
@@ -19,13 +19,13 @@
 
 <script>
 import heading from '~/components/shared/heading.vue';
-import Newsletter from '~/components/Newsletter.vue';
+import newsletter from '~/components/newsletter.vue';
 import PortfolioCard from '~/components/PortfolioCard.vue';
 
 export default {
   components: {
     'u-heading': heading,
-    Newsletter,
+    'u-newsletter': newsletter,
     PortfolioCard,
   },
   computed: {
