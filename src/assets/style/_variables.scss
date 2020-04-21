@@ -64,11 +64,12 @@
 
   // Space
   @include fluid-type(
-    --global-space-5,
+    --global-space-6,
     $global-breakpoint-sm,
     $global-breakpoint-xxl,
     1.5rem,
     4.5rem);
+  --global-space--7: calc(var(--global-space-7) * -1);
   --global-space--6: calc(var(--global-space-6) * -1);
   --global-space--5: calc(var(--global-space-5) * -1);
   --global-space--4: calc(var(--global-space-4) * -1);
@@ -76,11 +77,12 @@
   --global-space--2: calc(var(--global-space-2) * -1);
   --global-space--1: calc(var(--global-space-1) * -1);
   --global-space-0: 0;
-  --global-space-1: calc(var(--global-space-5) / 16);
-  --global-space-2: calc(var(--global-space-5) / 8);
-  --global-space-3: calc(var(--global-space-5) / 4);
-  --global-space-4: calc(var(--global-space-5) / 2);
-  --global-space-6: calc(var(--global-space-5) * 2);
+  --global-space-1: calc(var(--global-space-6) / 16);
+  --global-space-2: calc(var(--global-space-6) / 8);
+  --global-space-3: calc(var(--global-space-6) / 4);
+  --global-space-4: calc(var(--global-space-6) / 3);
+  --global-space-5: calc(var(--global-space-6) / 2);
+  --global-space-7: calc(var(--global-space-6) * 2);
 }
 
 // Light theme

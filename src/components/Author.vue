@@ -37,7 +37,7 @@ query {
 .author {
   display: grid;
   justify-items: center;
-	padding: var(--global-space-4) 0;
+	padding: var(--global-space-5) 0;
 }
 
 .author__image {

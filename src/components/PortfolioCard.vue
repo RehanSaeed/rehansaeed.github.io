@@ -42,7 +42,7 @@ export default {
   border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
   margin-left: var(--global-space--5);
   margin-right: var(--global-space--5);
-  margin-bottom: var(--global-space-4);
+  margin-bottom: var(--global-space-5);
   margin-top: var(--global-space--5);
   overflow: hidden;
 

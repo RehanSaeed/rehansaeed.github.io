@@ -97,7 +97,7 @@ query {
 <style lang="scss">
 .about {
   display: grid;
-  grid-gap: var(--global-space-4);
+  grid-gap: var(--global-space-5);
   justify-items: center;
 }
 

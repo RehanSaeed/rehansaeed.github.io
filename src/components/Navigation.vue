@@ -46,8 +46,8 @@ export default {
   display: grid;
   font-size: var(--global-font-size-2);
   grid-template-columns: auto auto 1fr auto;
-  grid-gap: var(--global-space-4);
-  padding: var(--global-space-4);
+  grid-gap: var(--global-space-5);
+  padding: var(--global-space-5);
   visibility: hidden;
 }
 
@@ -66,14 +66,14 @@ export default {
 .navigation__items-left {
   display: grid;
   grid-template-columns: repeat(3, auto);
-  grid-gap: var(--global-space-4);
+  grid-gap: var(--global-space-5);
 }
 
 .navigation__items-right {
   grid-column-start: 6;
   display: grid;
   grid-template-columns: auto auto;
-  grid-gap: var(--global-space-4);
+  grid-gap: var(--global-space-5);
 }
 
 .navigation__item {
