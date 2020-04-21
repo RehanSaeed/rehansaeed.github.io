@@ -63,8 +63,9 @@ export default {
   }
 
   > p:first-of-type {
-    font-size: var(--global-font-size-3);
     color: var(--title-color);
+    font-size: var(--global-font-size-3);
+    min-width: 0;
   }
 
   img {
