@@ -49,7 +49,7 @@ export default {
 <style lang="scss">
 .search {
   display: grid;
-  grid-gap: 1rem;
+  grid-gap: var(--global-space-fixed-5);
 }
 
 .search__input {
@@ -59,7 +59,7 @@ export default {
 .search__results {
   display: grid;
   grid-template-columns: 1fr;
-  grid-gap: 1rem;
+  grid-gap: var(--global-space-fixed-5);
   overflow-y: auto;
 }
 
@@ -76,7 +76,7 @@ export default {
   border: var(--global-border-width-2) solid var(--border-color);
   border-radius: var(--global-border-radius);
   grid-area: image;
-  margin-right: 1rem;
+  margin-right: var(--global-space-fixed-5);
   min-width: 8rem;
   width: 8rem;
 }
