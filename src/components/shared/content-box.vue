@@ -25,7 +25,7 @@ export default {
   border-radius: var(--global-border-radius);
   box-shadow: 1px 1px 5px 0 rgba(0,0,0,.02), 1px 1px 15px 0 rgba(0,0,0,.03);
 	padding: var(--global-space-fluid-6);
-  transition: transform var(--global-duration-1), background-color var(--global-duration-1), box-shadow var(--global-duration-2);
+  transition: transform var(--global-duration-2), background-color var(--global-duration-2), box-shadow var(--global-duration-3);
 }
 
 .content-box--hoverable {

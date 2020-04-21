@@ -4,7 +4,7 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
   display: block;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--global-space-fixed-5);
   overflow: auto;
   width: 100%;
 
@@ -13,7 +13,7 @@ table {
   }
 
   tr {
-    border-top: var(--global-border-width-1) solid var(--border-color);
+    border-top: var(--global-border-width-2) solid var(--border-color);
   }
 
   tr:nth-child(2n) {
@@ -22,8 +22,8 @@ table {
 
   th,
   td {
-    border: var(--global-border-width-1) solid var(--border-color);
-    padding: .5rem .8rem .5rem .8rem;
+    border: var(--global-border-width-2) solid var(--border-color);
+    padding: var(--global-space-fixed-3) var(--global-space-fixed-4);
   }
 
   tbody {
@@ -34,10 +34,10 @@ table {
     vertical-align: bottom;
   }
 
-  tbody tr {
-    &:hover {
-      background-color: var(--bg-color);
-      color: var(--title-color);
-    }
-  }
+  // tbody tr {
+  //   &:hover {
+  //     background-color: var(--bg-color);
+  //     color: var(--title-color);
+  //   }
+  // }
 }

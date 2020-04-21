@@ -5,8 +5,8 @@ input {
   color: var(--title-color);
   font-family: var(--global-font-family-default);
   min-width: 13rem;
-  padding: .3rem .5rem;
-  transition: border-color .6s;
+  padding: var(--global-space-fixed-2) var(--global-space-fixed-3);
+  transition: border-color var(--global-duration-3);
 
   &:hover {
     border-color: var(--body-color);

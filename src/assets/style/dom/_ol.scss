@@ -1,9 +1,9 @@
 ol {
   list-style-type: decimal;
-  margin-left: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin-left: var(--global-space-fixed-5);
+  margin-bottom: var(--global-space-fixed-5);
 
   li, p, ul, ol {
-    margin-bottom: .6rem;
+    margin-bottom: var(--global-space-fixed-3);
   }
 }

@@ -2,11 +2,11 @@ a:not(.button):not(.post-tags__link):not(.portfolio-tags__link):not(.link):not(.
   color: var(--link-color);
   text-decoration-color: var(--link-color);
   transition:
-    text-decoration-thickness 200ms ease-out,
-    text-underline-offset 200ms ease-out,
-    text-decoration-color 200ms ease-out,
-    color 200ms ease-out,
-    opacity 200ms ease-out;
+    text-decoration-thickness var(--global-duration-1) ease-out,
+    text-underline-offset var(--global-duration-1) ease-out,
+    text-decoration-color var(--global-duration-1) ease-out,
+    color var(--global-duration-1) ease-out,
+    opacity var(--global-duration-1) ease-out;
 
   &:visited {
     color: var(--link-visited-color);
