@@ -1,5 +1,5 @@
 .custom-block {
-  margin: 1.2rem 0;
+  margin: var(--global-space-fixed-5) 0;
 
   .custom-block-title {
     font-weight: var(--global-font-weight-semi-bold);
@@ -11,7 +11,7 @@
   }
 
   &.tip, &.warning, &.danger {
-    padding: 1rem 1.4rem;
+    padding: var(--global-space-fixed-4) var(--global-space-fixed-5);
     border-left-width: var(--global-border-width-4);
     border-left-style: solid;
   }
@@ -44,7 +44,7 @@
   &.details {
     background-color: var(--bg-color);
     display: block;
-    padding: 1rem 1.4rem;
+    padding: var(--global-space-fixed-4) var(--global-space-fixed-5);
     position: relative;
 
     summary {
