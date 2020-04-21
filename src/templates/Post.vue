@@ -5,7 +5,7 @@
       <u-heading level="1" class="post-title__text">
         {{ $page.post.title }}
       </u-heading>
-      <Meta :meta="$page.post" />
+      <u-post-meta :meta="$page.post" />
     </div>
 
     <u-content-box class="post" tag="article">
@@ -41,7 +41,7 @@ import contentBox from '~/components/shared/content-box.vue';
 import heading from '~/components/shared/heading.vue';
 import author from '~/components/author.vue';
 import editPostButton from '~/components/edit-post-button.vue';
-import Meta from '~/components/Meta';
+import postMeta from '~/components/post-meta';
 import Newsletter from '~/components/Newsletter';
 import ShareButton from '~/components/ShareButton.vue';
 import Tags from '~/components/Tags';
@@ -52,7 +52,7 @@ export default {
     'u-heading': heading,
     'u-author': author,
     'u-edit-post-button': editPostButton,
-    Meta,
+    'u-post-meta': postMeta,
     Newsletter,
     ShareButton,
     Tags,

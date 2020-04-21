@@ -7,7 +7,7 @@
       <u-heading level="2" class="post-card__title" v-html="post.title" />
       <p class="post-card__description" v-html="post.description" />
 
-      <Meta class="post-card__meta" :meta="post" />
+      <u-post-meta class="post-card__meta" :meta="post" />
       <Tags v-if="post.tags" class="post-card__tags" :tags="post.tags" />
 
       <g-link class="post-card__link" :to="post.path">Link</g-link>
@@ -18,18 +18,20 @@
 <script>
 import contentBox from '~/components/shared/content-box.vue';
 import heading from '~/components/shared/heading.vue';
-import Meta from '~/components/Meta.vue';
+import postMeta from '~/components/post-meta.vue';
 import Tags from '~/components/Tags.vue';
 
 export default {
   components: {
     'u-content-box': contentBox,
     'u-heading': heading,
-    Meta,
+    'u-post-meta': postMeta,
     Tags,
   },
   props: {
-    post: Object,
+    post: {
+      type: Object,
+    },
   },
 }
 </script>
