@@ -11,6 +11,7 @@ import iconMoon from '~/components/shared/icons/icon-moon.vue';
 import iconSun from '~/components/shared/icons/icon-sun.vue';
 
 export default {
+  name: 'u-theme-button',
   components: {
     'u-button': button,
     'u-icon-moon': iconMoon,
