@@ -40,7 +40,7 @@ export default {
 .not-found__content {
   display: grid;
   justify-items: center;
-  margin-bottom: var(--global-space-5);
+  margin-bottom: var(--global-space-fluid-5);
   text-align: center;
 }
 </style>

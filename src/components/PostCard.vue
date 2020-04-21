@@ -36,16 +36,16 @@ export default {
 
 <style lang="scss">
 .post-card {
-  margin-bottom: var(--global-space-6);
+  margin-bottom: var(--global-space-fluid-6);
   position: relative;
 }
 
 .post-card__header {
   border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
-  margin-left: var(--global-space--5);
-  margin-right: var(--global-space--5);
-  margin-bottom: var(--global-space-5);
-  margin-top: var(--global-space--5);
+  margin-left: var(--global-space-fluid--5);
+  margin-right: var(--global-space-fluid--5);
+  margin-bottom: var(--global-space-fluid-5);
+  margin-top: var(--global-space-fluid--5);
   overflow: hidden;
 
   &:empty {

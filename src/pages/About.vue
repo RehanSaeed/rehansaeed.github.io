@@ -97,7 +97,7 @@ query {
 <style lang="scss">
 .about {
   display: grid;
-  grid-gap: var(--global-space-5);
+  grid-gap: var(--global-space-fluid-5);
   justify-items: center;
 }
 
@@ -118,6 +118,6 @@ query {
 }
 
 .about__social-links {
-  margin-bottom: var(--global-space-3);
+  margin-bottom: var(--global-space-fluid-3);
 }
 </style>

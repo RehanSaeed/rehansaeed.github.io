@@ -47,6 +47,6 @@ export default {
   border: var(--global-border-width-1) solid var(--border-color);
   border-radius: var(--global-border-radius);
   font-size: var(--global-font-size-0);
-  padding: .5rem 1rem;
+  padding: var(--global-space-fixed-2) var(--global-space-fixed-4);
 }
 </style>

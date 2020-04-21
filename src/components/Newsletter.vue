@@ -74,7 +74,7 @@ query {
 
 .newsletter__input {
   grid-area: input;
-  margin-right: var(--global-space-3)
+  margin-right: var(--global-space-fluid-3)
 }
 
 .newsletter__button {

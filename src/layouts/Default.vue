@@ -56,15 +56,15 @@ query {
 
 .main {
   margin: 0 auto;
-  padding-left: calc(var(--global-space-6) * 2.7);
-  padding-right: calc(var(--global-space-6) * 2.7);
+  padding-left: calc(var(--global-space-fluid-6) * 2.7);
+  padding-right: calc(var(--global-space-fluid-6) * 2.7);
 }
 
 .footer {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--global-space-5);
+  padding: var(--global-space-fluid-5);
   text-align: center;
   font-size: var(--global-font-size-0);
 

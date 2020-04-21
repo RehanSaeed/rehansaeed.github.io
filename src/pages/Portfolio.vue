@@ -108,16 +108,16 @@ query {
 <style lang="scss">
 .portfolio {
   display: grid;
-  grid-gap: var(--global-space-5);
+  grid-gap: var(--global-space-fluid-5);
   grid-template-columns: 1fr;
 }
 
 .portfolio__items {
-  --portfolio-items-max-width: calc(var(--global-space-6) * 2 + var(--global-line-length-max));
-  --portfolio-items-min-width: calc(var(--global-space-6) * 2 + var(--global-line-length-min));
+  --portfolio-items-max-width: calc(var(--global-space-fluid-6) * 2 + var(--global-line-length-max));
+  --portfolio-items-min-width: calc(var(--global-space-fluid-6) * 2 + var(--global-line-length-min));
 
   display: grid;
-  grid-gap: var(--global-space-5);
+  grid-gap: var(--global-space-fluid-5);
   grid-template-columns: repeat(auto-fit, minmax(var(--portfolio-items-min-width), var(--portfolio-items-max-width)));
   justify-content: center;
 }

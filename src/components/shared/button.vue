@@ -33,7 +33,7 @@ export default {
   cursor: pointer;
   font-family: var(--global-font-family-heading);
   line-height: var(--global-line-height-1);
-  padding: var(--global-space-0);
+  padding: var(--global-space-fluid--0);
   transition: all var(--global-duration-1) ease-out;
 
   &:hover {
@@ -51,6 +51,6 @@ export default {
   border: var(--global-border-width-1) solid var(--border-color);
   border-radius: var(--global-border-radius);
   font-size: var(--global-font-size-0);
-  padding: .5rem 1rem;
+  padding: var(--global-space-fixed-2) var(--global-space-fixed-4);
 }
 </style>
