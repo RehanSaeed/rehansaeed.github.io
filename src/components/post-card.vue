@@ -39,7 +39,6 @@ export default {
 
 <style lang="scss">
 .post-card {
-  margin-bottom: var(--global-space-fluid-6);
   position: relative;
 }
 

@@ -1,22 +1,28 @@
 <template>
   <Layout>
-
-    <u-author/>
-
     <div class="posts">
-      <u-post-card v-for="edge in $page.posts.edges" :key="edge.node.id" :post="edge.node"/>
-    </div>
 
+      <u-author/>
+
+      <div class="posts__items">
+        <u-post-card v-for="edge in $page.posts.edges" :key="edge.node.id" :post="edge.node"/>
+      </div>
+
+      <u-newsletter class="posts__newsletter"/>
+
+    </div>
   </Layout>
 </template>
 
 <script>
 import author from '~/components/author.vue';
+import newsletter from '~/components/newsletter.vue';
 import postCard from '~/components/post-card.vue';
 
 export default {
   components: {
     'u-author': author,
+    'u-newsletter': newsletter,
     'u-post-card': postCard,
   },
   computed: {
@@ -149,3 +155,25 @@ query {
   }
 }
 </page-query>
+
+<style lang="scss">
+.posts {
+  display: grid;
+  grid-gap: var(--global-space-fluid-5);
+  grid-template-columns: 1fr;
+}
+
+.posts__items {
+  --posts-items-max-width: calc(var(--global-space-fluid-6) * 2 + var(--global-line-length-max));
+  --posts-items-min-width: calc(var(--global-space-fluid-6) * 2 + var(--global-line-length-min));
+
+  display: grid;
+  grid-gap: var(--global-space-fluid-5);
+  grid-template-columns: repeat(auto-fit, minmax(var(--posts-items-min-width), var(--posts-items-max-width)));
+  justify-content: center;
+}
+
+.posts__newsletter {
+  justify-self: center;
+}
+</style>
