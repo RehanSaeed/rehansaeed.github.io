@@ -21,6 +21,7 @@ pre[class*="language-"] ::selection,
 code[class*="language-"]::selection,
 code[class*="language-"] ::selection {
   background: #C1DEF1;
+  color: unset;
 }
 
 /* Code blocks */
@@ -200,6 +201,7 @@ pre[class*="language-"].line-numbers > code {
   code[class*="language-"]::selection,
   code[class*="language-"] ::selection {
     background: rgb(106, 108, 109);
+    color: unset;
   }
 
   /* Code blocks */
