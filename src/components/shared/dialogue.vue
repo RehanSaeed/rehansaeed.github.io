@@ -138,7 +138,7 @@ dialog.fixed {
 
 .dialog__title {
   grid-area: title;
-  margin: var(--global-space-fluid-0);
+  margin: 0;
 }
 
 .dialog__close {

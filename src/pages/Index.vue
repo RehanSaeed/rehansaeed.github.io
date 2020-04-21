@@ -1,6 +1,6 @@
 <template>
   <Layout :show-logo="false">
-    <Author />
+    <u-author/>
 
     <div class="posts">
       <PostCard v-for="edge in $page.posts.edges" :key="edge.node.id" :post="edge.node"/>
@@ -10,12 +10,12 @@
 </template>
 
 <script>
-import Author from '~/components/Author.vue'
-import PostCard from '~/components/PostCard.vue'
+import author from '~/components/author.vue';
+import PostCard from '~/components/PostCard.vue';
 
 export default {
   components: {
-    Author,
+    'u-author': author,
     PostCard
   },
   computed: {

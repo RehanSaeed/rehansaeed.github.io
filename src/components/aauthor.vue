@@ -17,6 +17,7 @@ import heading from '~/components/shared/heading.vue';
 import SocialLinks from '~/components/SocialLinks.vue';
 
 export default {
+  name: 'u-author',
   components: {
     'u-heading': heading,
     SocialLinks,
@@ -45,7 +46,7 @@ query {
   border-radius: 100%;
   width: 6rem;
   height: 6rem;
-  margin-bottom: 1rem;
+  margin-bottom: var(--global-space-fluid-3);
 }
 
 .author__site-title {
