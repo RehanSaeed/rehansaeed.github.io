@@ -7,43 +7,22 @@
       <slot/>
     </main>
 
-    <footer class="footer">
-      <span class="footer__copyright">Copyright © {{new Date().getFullYear()}} {{this.$static.metadata.author.name}}</span>
-      <span>|</span>
-      <span class="footer__copyright"><g-link to="/sitemap.xml">Sitemap</g-link></span>
-      <span>|</span>
-      <span class="footer__links">Built with <g-link to="https://gridsome.org">Gridsome</g-link></span>
-      <span>|</span>
-      <span class="footer__links">Code on <g-link :to="this.$static.metadata.repository.url">GitHub</g-link></span>
-    </footer>
+    <u-footer class="footer"/>
 
   </div>
 </template>
 
 <script>
-import navigation from '~/components/navigation.vue'
-import Search from '~/components/Search.vue'
+import footer from '~/components/footer.vue';
+import navigation from '~/components/navigation.vue';
 
 export default {
   components: {
+    'u-footer': footer,
     'u-navigation': navigation,
-    Search,
   }
 }
 </script>
-
-<static-query>
-query {
-  metadata {
-    author {
-      name
-    }
-    repository {
-      url
-    }
-  }
-}
-</static-query>
 
 <style lang="scss">
 @media screen and (min-width: 1200px) { // $global-breakpoint-xl
@@ -58,22 +37,5 @@ query {
   margin: 0 auto;
   padding-left: calc(var(--global-space-fluid-6) * 2.7);
   padding-right: calc(var(--global-space-fluid-6) * 2.7);
-}
-
-.footer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--global-space-fluid-5);
-  text-align: center;
-  font-size: var(--global-font-size-0);
-
-  > span {
-    margin: 0 .35em;
-  }
-
-  a {
-    color: currentColor;
-  }
 }
 </style>
