@@ -22,6 +22,7 @@ import postMeta from '~/components/post-meta.vue';
 import tags from '~/components/tags.vue';
 
 export default {
+  name: 'u-post-card',
   components: {
     'u-content-box': contentBox,
     'u-heading': heading,
@@ -64,7 +65,7 @@ export default {
 }
 
 .post-card__tags {
-  margin-top: 1.5rem;
+  margin-top: var(--global-space-fixed-4);
   z-index: 1;
   position: relative;
 }

@@ -5,7 +5,7 @@
     </u-heading>
 
     <div class="posts">
-      <PostCard v-for="edge in $page.tag.belongsTo.edges" :key="edge.node.id" :post="edge.node"/>
+      <u-post-card v-for="edge in $page.tag.belongsTo.edges" :key="edge.node.id" :post="edge.node"/>
     </div>
   </Layout>
 </template>
@@ -13,13 +13,13 @@
 <script>
 import heading from '~/components/shared/heading.vue';
 import author from '~/components/author.vue';
-import PostCard from '~/components/PostCard.vue';
+import postCard from '~/components/post-card.vue';
 
 export default {
   components: {
     'u-heading': heading,
     'u-author': author,
-    PostCard,
+    'u-post-card': postCard,
   },
   computed: {
     description: function() { return `Blog posts authored by ${this.$static.metadata.author.name} about ${this.$page.tag.title}.`; },

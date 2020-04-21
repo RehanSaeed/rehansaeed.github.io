@@ -3,7 +3,7 @@
     <u-author/>
 
     <div class="posts">
-      <PostCard v-for="edge in $page.posts.edges" :key="edge.node.id" :post="edge.node"/>
+      <u-post-card v-for="edge in $page.posts.edges" :key="edge.node.id" :post="edge.node"/>
     </div>
 
   </Layout>
@@ -11,12 +11,12 @@
 
 <script>
 import author from '~/components/author.vue';
-import PostCard from '~/components/PostCard.vue';
+import postCard from '~/components/post-card.vue';
 
 export default {
   components: {
     'u-author': author,
-    PostCard
+    'u-post-card': postCard,
   },
   computed: {
     title: function() { return 'Blog'; },
