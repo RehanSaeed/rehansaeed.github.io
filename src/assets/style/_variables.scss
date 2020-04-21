@@ -104,6 +104,8 @@
   --global-duration-3: 600ms;
 }
 
+
+
 // Light theme
 [data-theme='light'] {
   --bg-color: hsl(216, 24%, 96%);
@@ -111,6 +113,8 @@
   --bg-code: hsl(40, 100%, 98%);
   --body-color: hsl(0, 0%, 27%);
   --title-color: hsl(0, 0%, 7%);
+  --selection-background-color: hsl(264, 82%, 50%);
+  --selection-foreground-color: hsl(216, 24%, 96%);
   --link-color: hsl(264, 82%, 50%);
   --link-visited-color: hsl(264, 61%, 35%);
   --border-color: hsla(0, 0%, 0%, 0.1);
@@ -125,6 +129,8 @@
   --bg-code: hsla(0, 0%, 0%, 0.3);
   --body-color: hsl(203, 20%, 84%);
   --title-color: hsl(0, 0%, 100%);
+  --selection-background-color: hsl(254, 100%, 87%);
+  --selection-foreground-color: hsl(216, 24%, 96%);
   --link-color: hsl(254, 100%, 87%);
   --link-visited-color: hsl(254, 46%, 69%);
   --border-color: hsla(0, 0%, 100%, 0.1);
