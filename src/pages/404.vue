@@ -1,5 +1,5 @@
 <template>
-  <Layout :show-logo="true">
+  <Layout>
     <div class="not-found">
 
       <u-heading level="1">404 Not Found</u-heading>

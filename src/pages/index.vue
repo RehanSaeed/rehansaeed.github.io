@@ -1,5 +1,6 @@
 <template>
-  <Layout :show-logo="false">
+  <Layout>
+
     <u-author/>
 
     <div class="posts">

@@ -1,5 +1,5 @@
 <template>
-  <Layout :show-logo="true">
+  <Layout>
     <div class="portfolio">
 
       <u-heading level="1" center>Portfolio</u-heading>
