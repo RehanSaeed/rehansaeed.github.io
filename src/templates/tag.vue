@@ -1,11 +1,15 @@
 <template>
   <Layout>
-    <u-heading level="1" class="tag-title text-center space-bottom">
-      # {{ $page.tag.title }}
-    </u-heading>
+    <div class="tag">
 
-    <div class="posts">
-      <u-post-card v-for="edge in $page.tag.belongsTo.edges" :key="edge.node.id" :post="edge.node"/>
+      <u-heading level="1" center># {{$page.tag.title}}</u-heading>
+
+      <div class="tag__items">
+        <u-post-card v-for="edge in $page.tag.belongsTo.edges" :key="edge.node.id" :post="edge.node"/>
+      </div>
+
+      <u-newsletter class="tag__newsletter"/>
+
     </div>
   </Layout>
 </template>
@@ -13,12 +17,14 @@
 <script>
 import heading from '~/components/shared/heading.vue';
 import author from '~/components/author.vue';
+import newsletter from '~/components/newsletter.vue';
 import postCard from '~/components/post-card.vue';
 
 export default {
   components: {
     'u-heading': heading,
     'u-author': author,
+    'u-newsletter': newsletter,
     'u-post-card': postCard,
   },
   computed: {
@@ -96,3 +102,25 @@ query Tag ($id: ID!) {
   }
 }
 </page-query>
+
+<style lang="scss">
+.tag {
+  display: grid;
+  grid-gap: var(--global-space-fluid-5);
+  grid-template-columns: 1fr;
+}
+
+.tag__items {
+  --tag-items-max-width: calc(var(--global-space-fluid-6) * 2 + var(--global-line-length-max));
+  --tag-items-min-width: calc(var(--global-space-fluid-6) * 2 + var(--global-line-length-min));
+
+  display: grid;
+  grid-gap: var(--global-space-fluid-5);
+  grid-template-columns: repeat(auto-fit, minmax(var(--tag-items-min-width), var(--tag-items-max-width)));
+  justify-content: center;
+}
+
+.tag__newsletter {
+  justify-self: center;
+}
+</style>
