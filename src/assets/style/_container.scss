@@ -55,7 +55,7 @@
 
 }
 
-body[data-theme="dark"] {
+[data-theme="dark"] {
   .custom-block {
     &.warning {
       background-color: hsla(50, 100%, 46%, 0.3);
@@ -67,7 +67,7 @@ body[data-theme="dark"] {
     }
 
     &.danger {
-      background-color: hsl(0, 100%, 9%);
+      background-color: #300000;
       color: var(--title-color);
 
       .custom-block-title {
