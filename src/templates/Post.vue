@@ -19,7 +19,7 @@
       <div class="post__footer">
         <div class="post__footer-first-row">
           <ShareButton :title="$page.post.title" :tags="$page.post.tags.map(x => x.title)" class="post__share" />
-          <EditOnGitHubButton :post="$page.post" class="post__edit" />
+          <u-edit-post-button :post="$page.post" class="post__edit" />
         </div>
         <Tags :tags="$page.post.tags"  class="post__tags" />
       </div>
@@ -32,15 +32,15 @@
       <!-- Add comment widgets here -->
     </div>
 
-    <Author class="post-author" />
+    <u-author class="post-author" />
   </Layout>
 </template>
 
 <script>
 import contentBox from '~/components/shared/content-box.vue';
 import heading from '~/components/shared/heading.vue';
-import Author from '~/components/Author.vue';
-import EditOnGitHubButton from '~/components/EditOnGitHubButton.vue';
+import author from '~/components/author.vue';
+import editPostButton from '~/components/edit-post-button.vue';
 import Meta from '~/components/Meta';
 import Newsletter from '~/components/Newsletter';
 import ShareButton from '~/components/ShareButton.vue';
@@ -50,8 +50,8 @@ export default {
   components: {
     'u-content-box': contentBox,
     'u-heading': heading,
-    Author,
-    EditOnGitHubButton,
+    'u-author': author,
+    'u-edit-post-button': editPostButton,
     Meta,
     Newsletter,
     ShareButton,

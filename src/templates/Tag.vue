@@ -12,13 +12,13 @@
 
 <script>
 import heading from '~/components/shared/heading.vue';
-import Author from '~/components/Author.vue';
+import author from '~/components/author.vue';
 import PostCard from '~/components/PostCard.vue';
 
 export default {
   components: {
     'u-heading': heading,
-    Author,
+    'u-author': author,
     PostCard,
   },
   computed: {

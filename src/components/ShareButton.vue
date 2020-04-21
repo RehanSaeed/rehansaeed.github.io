@@ -2,30 +2,30 @@
   <div>
 
     <u-button @click.native="onClick" button>
-      <ShareIcon/>
+      <u-icon-share/>
       Share
     </u-button>
 
     <u-dialogue title="Share" :is-open="isDialogueOpen" @close="close" class="share-dialogue">
       <div class="share-dialogue__links">
         <u-link bordered :to="facebookUrl" @click.native="close" class="share-dialogue__link">
-          <FacebookIcon/>
+          <u-icon-facebook/>
           Facebook
         </u-link>
         <u-link bordered :to="twitterUrl" @click.native="close" class="share-dialogue__link">
-          <TwitterIcon/>
+          <u-icon-twitter/>
           Twitter
         </u-link>
         <u-link bordered :to="redditUrl" @click.native="close" class="share-dialogue__link">
-          <RedditIcon/>
+          <u-icon-reddit/>
           Reddit
         </u-link>
         <u-link bordered :to="linkedinUrl" @click.native="close" class="share-dialogue__link">
-          <LinkedInIcon/>
+          <u-icon-linkedin/>
           LinkedIn
         </u-link>
         <u-link bordered :to="mailUrl" @click.native="close" class="share-dialogue__link">
-          <EmailIcon/>
+          <u-icon-email/>
           Email
         </u-link>
       </div>

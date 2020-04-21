@@ -10,12 +10,15 @@ import link from '~/components/shared/link.vue';
 import iconGitHub from '~/components/shared/icons/icon-github.vue';
 
 export default {
+  name: 'u-edit-post-button',
   components: {
     'u-link': link,
     'u-icon-github': iconGitHub,
   },
   props: {
-    post: Object,
+    post: {
+      type: Object,
+    },
   },
   computed: {
     url: function() {
