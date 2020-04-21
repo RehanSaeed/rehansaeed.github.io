@@ -35,6 +35,7 @@ import iconTwitter from '~/components/shared/icons/icon-twitter.vue';
 import iconYoutube from '~/components/shared/icons/icon-youtube.vue';
 
 export default {
+  name: 'u-social-links',
   components: {
     'u-link': link,
     'u-icon-email': iconEmail,
@@ -74,7 +75,7 @@ query {
   align-items: center;
   display: grid;
   grid-template-columns: repeat(7, auto);
-  grid-gap: 1.8rem;
+  grid-gap: var(--global-space-fixed-5);
   justify-content: center;
 }
 </style>

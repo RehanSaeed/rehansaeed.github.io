@@ -7,20 +7,20 @@
 
 		<p class="author__description">{{$static.metadata.description}}</p>
 
-		<SocialLinks />
+		<u-social-links />
 
 	</section>
 </template>
 
 <script>
 import heading from '~/components/shared/heading.vue';
-import SocialLinks from '~/components/SocialLinks.vue';
+import socialLinks from '~/components/social-links.vue';
 
 export default {
   name: 'u-author',
   components: {
     'u-heading': heading,
-    SocialLinks,
+    'u-social-links': socialLinks,
   },
 }
 </script>
