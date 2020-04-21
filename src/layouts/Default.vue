@@ -1,7 +1,7 @@
 <template>
   <div id="app">
 
-    <Navigation class="navigation" />
+    <u-navigation class="navigation" />
 
     <main class="main">
       <slot/>
@@ -21,12 +21,12 @@
 </template>
 
 <script>
-import Navigation from '~/components/Navigation.vue'
+import navigation from '~/components/navigation.vue'
 import Search from '~/components/Search.vue'
 
 export default {
   components: {
-    Navigation,
+    'u-navigation': navigation,
     Search,
   }
 }

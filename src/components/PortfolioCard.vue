@@ -17,14 +17,12 @@
 <script>
 import contentBox from '~/components/shared/content-box.vue';
 import heading from '~/components/shared/heading.vue';
-import Meta from '~/components/Meta.vue';
 import Tags from '~/components/Tags.vue';
 
 export default {
   components: {
     'u-content-box': contentBox,
     'u-heading': heading,
-    Meta,
     Tags,
   },
   props: {
