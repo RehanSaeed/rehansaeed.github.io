@@ -34,7 +34,6 @@ query {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: var(--global-space-fluid-5);
   padding: var(--global-space-fluid-5);
   text-align: center;
   font-size: var(--global-font-size-0);

@@ -1,7 +1,8 @@
 h1, h2, h3, h4, h5, h6 {
   transition: color .6s;
   color: var(--title-color);
-  margin: 2.75rem 0 1rem;
+  margin-top: var(--global-space-fixed-5);
+  margin-bottom: var(--global-space-fixed-4);
   font-family: var(--global-font-family-heading);
   font-weight: var(--global-font-weight-normal);
   line-height: var(--global-line-height-1);

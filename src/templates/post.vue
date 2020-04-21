@@ -1,61 +1,39 @@
 <template>
   <Layout>
+    <div class="post-page">
 
-    <div class="post-title">
-      <u-heading level="1" class="post-title__text">
-        {{ $page.post.title }}
-      </u-heading>
-      <u-post-meta :meta="$page.post" />
-    </div>
-
-    <u-content-box class="post" tag="article">
-
-      <div class="post__header">
-        <g-image alt="Cover image" v-if="$page.post.cover_image" :src="$page.post.cover_image"/>
+      <div class="post-page__title">
+        <u-heading level="1" center>{{$page.post.title}}</u-heading>
+        <u-post-meta :meta="$page.post" />
       </div>
 
-      <div class="post__content" v-html="$page.post.content" />
+      <u-post class="post-page__content" :post="$page.post" />
 
-      <div class="post__footer">
-        <div class="post__footer-first-row">
-          <u-share-button :title="$page.post.title" :tags="$page.post.tags.map(x => x.title)" class="post__share" />
-          <u-edit-post-button :post="$page.post" class="post__edit" />
-        </div>
-        <u-tags :tags="$page.post.tags" class="post__tags" />
+      <u-newsletter/>
+
+      <div class="post-page__comments">
       </div>
 
-    </u-content-box>
+      <u-author class="post-page__author" />
 
-    <u-newsletter/>
-
-    <div class="post-comments">
-      <!-- Add comment widgets here -->
     </div>
-
-    <u-author class="post-author" />
   </Layout>
 </template>
 
 <script>
-import contentBox from '~/components/shared/content-box.vue';
 import heading from '~/components/shared/heading.vue';
 import author from '~/components/author.vue';
-import editPostButton from '~/components/edit-post-button.vue';
 import newsletter from '~/components/newsletter.vue';
+import post from '~/components/post.vue';
 import postMeta from '~/components/post-meta.vue';
-import shareButton from '~/components/share-button.vue';
-import tags from '~/components/tags.vue';
 
 export default {
   components: {
-    'u-content-box': contentBox,
     'u-heading': heading,
     'u-author': author,
-    'u-edit-post-button': editPostButton,
     'u-newsletter': newsletter,
+    'u-post': post,
     'u-post-meta': postMeta,
-    'u-share-button': shareButton,
-    'u-tags': tags,
   },
   computed: {
     image: function() { return this.$static.metadata.url + this.$page.post.cover_image; },
@@ -189,11 +167,17 @@ query Post ($id: ID!) {
 </page-query>
 
 <style lang="scss">
-.post {
-  margin-bottom: var(--global-space-fluid-3);
+.post-page {
+  --post-page-content-max-width: calc(var(--global-space-fluid-6) * 2 + var(--global-line-length-max));
+  --post-page-content-min-width: calc(var(--global-space-fluid-6) * 2 + var(--global-line-length-min));
+
+  display: grid;
+  grid-gap: var(--global-space-fluid-5);
+  grid-template-columns: repeat(1, minmax(var(--post-page-content-min-width), var(--post-page-content-max-width)));
+  justify-content: center;
 }
 
-.post-title {
+.post-page__title {
   display: grid;
   justify-items: center;
   margin: 0 auto;
@@ -201,66 +185,11 @@ query Post ($id: ID!) {
   text-align: center;
 }
 
-.post__header {
-  border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
-  margin-left: calc(var(--global-space-fluid-6) * -1);
-  margin-top: calc(var(--global-space-fluid-6) * -1);
-  margin-bottom: var(--global-space-fluid-5);
-  overflow: hidden;
-  width: calc(100% + var(--global-space-fluid-7));
-
-  img {
-    width: 100%;
-  }
-
-  &:empty {
-    display: none;
-  }
-}
-
-.post__content {
-  > h2:first-child {
-    margin-top: 0;
-  }
-
-  > p:first-of-type {
-    font-size: var(--global-font-size-3);
-    color: var(--title-color);
-  }
-
-  img {
-    width: calc(100% + var(--global-space-fluid-6));
-    margin-left: calc(var(--global-space-fluid-6) * -1);
-    display: block;
-    max-width: none;
-  }
-}
-
-.post__footer {
-  display: grid;
-  justify-items: start;
-}
-
-.post__footer-first-row {
-  display: grid;
-  grid-template-columns: auto auto 1fr;
-  grid-gap: var(--global-space-fixed-3);
-}
-
-.post__edit,
-.post__share {
-  margin-bottom: var(--global-space-fixed-5);
-}
-
-.post-comments {
+.post-page__comments {
   padding: var(--global-space-fluid-5);
 
   &:empty {
     display: none;
   }
-}
-
-.post-author {
-  margin-top: var(--global-space-fluid-5);
 }
 </style>

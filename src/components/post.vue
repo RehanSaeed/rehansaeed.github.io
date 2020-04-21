@@ -1,0 +1,93 @@
+<template>
+  <u-content-box class="post" tag="article">
+
+    <header class="post__header">
+      <g-image alt="Cover image" v-if="post.cover_image" :src="post.cover_image"/>
+    </header>
+
+    <div class="post__content" v-html="post.content" />
+
+    <footer class="post__footer">
+      <div class="post__footer__first-row">
+        <u-share-button class="post__share" :title="post.title" :tags="post.tags.map(x => x.title)" />
+        <u-edit-post-button class="post__edit" :post="post" />
+      </div>
+      <u-tags :tags="post.tags" class="post__tags" />
+    </footer>
+
+  </u-content-box>
+</template>
+
+<script>
+import contentBox from '~/components/shared/content-box.vue';
+import editPostButton from '~/components/edit-post-button.vue';
+import shareButton from '~/components/share-button.vue';
+import tags from '~/components/tags.vue';
+
+export default {
+  components: {
+    'u-content-box': contentBox,
+    'u-edit-post-button': editPostButton,
+    'u-share-button': shareButton,
+    'u-tags': tags,
+  },
+  props: {
+    post: {
+      type: Object,
+    },
+  },
+}
+</script>
+
+<style lang="scss">
+.post__header {
+  border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
+  margin-left: calc(var(--global-space-fluid-6) * -1);
+  margin-top: calc(var(--global-space-fluid-6) * -1);
+  margin-bottom: var(--global-space-fluid-5);
+  overflow: hidden;
+  width: calc(100% + var(--global-space-fluid-7));
+
+  img {
+    width: 100%;
+  }
+
+  &:empty {
+    display: none;
+  }
+}
+
+.post__content {
+  > h2:first-child {
+    margin-top: 0;
+  }
+
+  > p:first-of-type {
+    font-size: var(--global-font-size-3);
+    color: var(--title-color);
+  }
+
+  img {
+    width: calc(100% + var(--global-space-fluid-6));
+    margin-left: calc(var(--global-space-fluid-6) * -1);
+    display: block;
+    max-width: none;
+  }
+}
+
+.post__footer {
+  display: grid;
+  justify-items: start;
+}
+
+.post__footer__first-row {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  grid-gap: var(--global-space-fixed-3);
+}
+
+.post__edit,
+.post__share {
+  margin-bottom: var(--global-space-fixed-5);
+}
+</style>
