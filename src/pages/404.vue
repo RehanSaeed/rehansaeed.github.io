@@ -34,13 +34,13 @@ export default {
 <style lang="scss">
 .not-found {
   display: grid;
-  justify-content: center;
+  grid-gap: var(--global-space-fluid-5);
+  justify-items: center;
 }
 
 .not-found__content {
   display: grid;
   justify-items: center;
-  margin-bottom: var(--global-space-fluid-5);
   text-align: center;
 }
 </style>
