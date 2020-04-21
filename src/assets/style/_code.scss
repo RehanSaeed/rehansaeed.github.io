@@ -188,7 +188,7 @@ pre[class*="language-"].line-numbers > code {
   border-left: var(--global-border-width-3) solid rgba(193, 222, 241, 1);
 }
 
-body[data-theme="dark"] {
+[data-theme="dark"] {
   code[class*="language-"],
   pre[class*="language-"] {
     color:#f8f8f2;
