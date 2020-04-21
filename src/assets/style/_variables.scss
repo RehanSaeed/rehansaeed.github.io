@@ -105,28 +105,28 @@
 
 // Light theme
 [data-theme='light'] {
-  --bg-color: #F2F4F7;
-  --bg-content-color: #fff;
-  --bg-code: #fffbf3;
-  --body-color: #444;
-  --title-color: #111;
-  --link-color: #6b17e6;
-  --link-visited-color: #4f2391;
-  --border-color: rgba(0,0,0,.1);
-  --scroll-thumb-color: #fff;
-  --scroll-track-color: #dddddd;
+  --bg-color: hsl(216, 24%, 96%);
+  --bg-content-color: hsl(0, 0%, 100%);
+  --bg-code: hsl(40, 100%, 98%);
+  --body-color: hsl(0, 0%, 27%);
+  --title-color: hsl(0, 0%, 7%);
+  --link-color: hsl(264, 82%, 50%);
+  --link-visited-color: hsl(264, 61%, 35%);
+  --border-color: hsla(0, 0%, 0%, 0.1);
+  --scroll-thumb-color: hsl(0, 0%, 100%);
+  --scroll-track-color: hsl(0, 0%, 87%);
 }
 
 // Dark theme
 [data-theme='dark'] {
-  --bg-color: #0D2538;
-  --bg-content-color: #0f2d44;
-  --bg-code: rgba(0,0,0,.3);
-  --body-color: #ced8de;
-  --title-color: #fff;
-  --link-color: #cbbbff;
-  --link-visited-color: #9d8cd4;
-  --border-color: rgba(255,255,255,.1);
-  --scroll-thumb-color: #272822;
-  --scroll-track-color: #4C4C4C;
+  --bg-color: hsl(207, 62%, 14%);
+  --bg-content-color: hsl(206, 64%, 16%);
+  --bg-code: hsla(0, 0%, 0%, 0.3);
+  --body-color: hsl(203, 20%, 84%);
+  --title-color: hsl(0, 0%, 100%);
+  --link-color: hsl(254, 100%, 87%);
+  --link-visited-color: hsl(254, 46%, 69%);
+  --border-color: hsla(0, 0%, 100%, 0.1);
+  --scroll-thumb-color: hsl(70, 8%, 15%);
+  --scroll-track-color: hsl(0, 0%, 30%);
 }
