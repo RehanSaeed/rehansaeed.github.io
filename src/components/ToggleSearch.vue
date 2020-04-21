@@ -6,7 +6,7 @@
     </u-button>
 
     <u-dialogue fullscreen title="Search" :is-open="isOpen" @close="close" class="search-dialogue">
-      <Search :search="this.$route.query.search" @selected="close"/>
+      <u-search :search="this.$route.query.search" @selected="close"/>
     </u-dialogue>
 
   </div>
@@ -16,14 +16,14 @@
 import button from '~/components/shared/button.vue';
 import dialogue from '~/components/shared/dialogue.vue';
 import iconSearch from '~/components/shared/icons/icon-search.vue';
-import Search from '~/components/Search.vue';
+import search from '~/components/search.vue';
 
 export default {
   components: {
     'u-button': button,
     'u-dialogue': dialogue,
     'u-icon-search': iconSearch,
-    Search,
+    'u-search': search,
   },
   data() {
     return {

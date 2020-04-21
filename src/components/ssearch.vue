@@ -26,6 +26,7 @@
 import Search from 'gridsome-plugin-flexsearch/SearchMixin';
 
 export default {
+  name: 'u-search',
   mixins: [Search],
   props: {
     search: {
