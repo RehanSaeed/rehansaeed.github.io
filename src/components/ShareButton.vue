@@ -35,15 +35,15 @@
 </template>
 
 <script>
-import button from '~/components/shared/u-button.vue';
-import dialogue from '~/components/shared/u-dialogue.vue';
-import link from '~/components/shared/u-link.vue';
-import iconEmail from '~/components/shared/icons/u-icon-email.vue';
-import iconFacebook from '~/components/shared/icons/u-icon-facebook.vue';
-import iconLinkedIn from '~/components/shared/icons/u-icon-linkedin.vue';
-import iconReddit from '~/components/shared/icons/u-icon-reddit.vue';
-import iconShare from '~/components/shared/icons/u-icon-share.vue';
-import iconTwitter from '~/components/shared/icons/u-icon-twitter.vue';
+import button from '~/components/shared/button.vue';
+import dialogue from '~/components/shared/dialogue.vue';
+import link from '~/components/shared/link.vue';
+import iconEmail from '~/components/shared/icons/icon-email.vue';
+import iconFacebook from '~/components/shared/icons/icon-facebook.vue';
+import iconLinkedIn from '~/components/shared/icons/icon-linkedin.vue';
+import iconReddit from '~/components/shared/icons/icon-reddit.vue';
+import iconShare from '~/components/shared/icons/icon-share.vue';
+import iconTwitter from '~/components/shared/icons/icon-twitter.vue';
 
 export default {
   components: {

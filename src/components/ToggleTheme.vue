@@ -6,9 +6,9 @@
 </template>
 
 <script>
-import button from '~/components/shared/u-button.vue';
-import iconMoon from '~/components/shared/icons/u-icon-moon.vue';
-import iconSun from '~/components/shared/icons/u-icon-sun.vue';
+import button from '~/components/shared/button.vue';
+import iconMoon from '~/components/shared/icons/icon-moon.vue';
+import iconSun from '~/components/shared/icons/icon-sun.vue';
 
 export default {
   components: {

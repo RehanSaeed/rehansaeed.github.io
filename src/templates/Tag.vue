@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import heading from '~/components/shared/u-heading.vue';
+import heading from '~/components/shared/heading.vue';
 import Author from '~/components/Author.vue';
 import PostCard from '~/components/PostCard.vue';
 

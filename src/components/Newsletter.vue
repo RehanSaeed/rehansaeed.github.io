@@ -29,9 +29,9 @@
 mailchimpUrl
 
 <script>
-import button from '~/components/shared/u-button.vue';
-import contentBox from '~/components/shared/u-content-box.vue';
-import heading from '~/components/shared/u-heading.vue';
+import button from '~/components/shared/button.vue';
+import contentBox from '~/components/shared/content-box.vue';
+import heading from '~/components/shared/heading.vue';
 
 export default {
   components: {

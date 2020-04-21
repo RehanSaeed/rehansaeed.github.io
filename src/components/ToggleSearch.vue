@@ -13,10 +13,10 @@
 </template>
 
 <script>
-import button from '~/components/shared/u-button.vue';
-import dialogue from '~/components/shared/u-dialogue.vue';
+import button from '~/components/shared/button.vue';
+import dialogue from '~/components/shared/dialogue.vue';
+import iconSearch from '~/components/shared/icons/icon-search.vue';
 import Search from '~/components/Search.vue';
-import iconSearch from '~/components/shared/icons/u-icon-search.vue';
 
 export default {
   components: {

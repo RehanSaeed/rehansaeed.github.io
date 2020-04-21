@@ -15,9 +15,9 @@
 </template>
 
 <script>
-import button from '~/components/shared/u-button.vue';
-import heading from '~/components/shared/u-heading.vue';
-import iconClose from '~/components/shared/icons/u-icon-close.vue';
+import button from '~/components/shared/button.vue';
+import heading from '~/components/shared/heading.vue';
+import iconClose from '~/components/shared/icons/icon-close.vue';
 
 export default {
   name: 'u-dialogue',

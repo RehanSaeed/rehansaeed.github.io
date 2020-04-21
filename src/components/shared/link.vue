@@ -15,7 +15,6 @@ export default {
       type: String,
     },
     to: {
-      required: true,
       type: String,
     },
   }

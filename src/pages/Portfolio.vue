@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import heading from '~/components/shared/u-heading.vue';
+import heading from '~/components/shared/heading.vue';
 import Newsletter from '~/components/Newsletter.vue';
 import PortfolioCard from '~/components/PortfolioCard.vue';
 

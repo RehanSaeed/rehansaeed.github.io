@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import heading from '~/components/shared/u-heading.vue';
+import heading from '~/components/shared/heading.vue';
 import SocialLinks from '~/components/SocialLinks.vue';
 
 export default {

@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import link from '~/components/shared/u-link.vue'
+import link from '~/components/shared/link.vue'
 
 export default {
   components: {

@@ -27,7 +27,7 @@ query {
 </static-query>
 
 <script>
-import link from '~/components/shared/u-link.vue'
+import link from '~/components/shared/link.vue'
 import ToggleSearch from '~/components/ToggleSearch.vue'
 import ToggleTheme from '~/components/ToggleTheme.vue'
 

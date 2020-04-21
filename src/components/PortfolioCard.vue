@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import contentBox from '~/components/shared/u-content-box.vue';
-import heading from '~/components/shared/u-heading.vue';
+import contentBox from '~/components/shared/content-box.vue';
+import heading from '~/components/shared/heading.vue';
 import Meta from '~/components/Meta.vue';
 import Tags from '~/components/Tags.vue';
 

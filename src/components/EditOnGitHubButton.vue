@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import link from '~/components/shared/u-link.vue';
-import iconGitHub from '~/components/shared/icons/u-icon-github.vue';
+import link from '~/components/shared/link.vue';
+import iconGitHub from '~/components/shared/icons/icon-github.vue';
 
 export default {
   components: {

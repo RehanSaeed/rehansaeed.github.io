@@ -16,9 +16,9 @@
 </template>
 
 <script>
-import contentBox from '~/components/shared/u-content-box.vue';
-import link from '~/components/shared/u-link.vue';
-import heading from '~/components/shared/u-heading.vue';
+import contentBox from '~/components/shared/content-box.vue';
+import link from '~/components/shared/link.vue';
+import heading from '~/components/shared/heading.vue';
 import Newsletter from '~/components/Newsletter.vue';
 
 export default {
