@@ -48,14 +48,16 @@
 
   &.details {
     background-color: var(--bg-color);
+    border: var(--global-border-width-1) solid var(--border-color);
+    color: var(--body-color);
     display: block;
     padding: var(--global-space-fixed-4) var(--global-space-fixed-5);
     position: relative;
 
-    summary {
+    .custom-block-title {
+      color: var(--title-color);
       cursor: pointer;
       outline: none;
     }
   }
-
 }
