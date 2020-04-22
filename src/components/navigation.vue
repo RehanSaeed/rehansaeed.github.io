@@ -46,6 +46,7 @@ query {
   display: grid;
   font-size: var(--global-font-size-3);
   grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto;
   grid-gap: var(--global-space-fluid-5);
   padding: var(--global-space-fluid-5);
   visibility: hidden;
@@ -71,9 +72,9 @@ query {
 }
 
 .navigation__items-right {
-  grid-column-start: 5;
+  grid-column-start: 3;
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: repeat(2, auto);
   grid-gap: var(--global-space-fluid-5);
 }
 
@@ -93,7 +94,7 @@ query {
 @media screen and (min-width: 1200px) { // $global-breakpoint-xl
   .navigation {
     grid-gap: var(--global-space-fluid-3);
-    grid-template-columns: auto 1fr auto auto;
+    grid-template-rows: auto auto;
     margin-bottom: -9.5rem;
     justify-items: left;
   }
