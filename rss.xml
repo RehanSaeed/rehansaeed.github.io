@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://preview.rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Wed, 22 Apr 2020 07:54:12 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 22 Apr 2020 14:06:04 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -28,28 +28,29 @@
 <blockquote>
 <p>Quote</p>
 </blockquote>
+<p>This uses <code>&lt;kbd&gt;</code> and looks like this ||CTRL+C||. Cool!</p>
 <h1 id="lists">Lists</h1>
 <ul>
-<li>One</li>
-<li>two</li>
-<li>Three</li>
+<li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+<li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+<li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
 </ul>
 <ol>
-<li>One</li>
-<li>Two</li>
-<li>Three</li>
+<li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+<li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+<li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
 </ol>
 <ul>
-<li>One<ul>
-<li>One One</li>
-<li>One Two</li>
-<li>One Three</li>
+<li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.<ul>
+<li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+<li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+<li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
 </ul>
 </li>
-<li>Two<ol>
-<li>Two One</li>
-<li>Two Two</li>
-<li>Two Three</li>
+<li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.<ol>
+<li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+<li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+<li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
 </ol>
 </li>
 </ul>
