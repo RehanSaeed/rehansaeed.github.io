@@ -1,6 +1,6 @@
 table {
-  color: var(--title-color);
-  background-color: var(--bg-content-color);
+  color: var(--global-title-color);
+  background-color: var(--global-content-background-color);
   border-collapse: collapse;
   border-spacing: 0;
   display: block;
@@ -13,16 +13,16 @@ table {
   }
 
   tr {
-    border-top: var(--global-border-width-2) solid var(--border-color);
+    border-top: var(--global-border-width-2) solid var(--global-border-color);
   }
 
   tr:nth-child(2n) {
-    background-color: var(--bg-color);
+    background-color: var(--global-background-color);
   }
 
   th,
   td {
-    border: var(--global-border-width-2) solid var(--border-color);
+    border: var(--global-border-width-2) solid var(--global-border-color);
     padding: var(--global-space-fixed-3) var(--global-space-fixed-4);
   }
 
@@ -36,8 +36,8 @@ table {
 
   // tbody tr {
   //   &:hover {
-  //     background-color: var(--bg-color);
-  //     color: var(--title-color);
+  //     background-color: var(--global-background-color);
+  //     color: var(--global-title-color);
   //   }
   // }
 }

@@ -42,7 +42,7 @@ query {
 }
 
 .author__image {
-  border: var(--global-border-width-2) solid var(--title-color);
+  border: var(--global-border-width-2) solid var(--global-title-color);
   border-radius: 100%;
   width: 6rem;
   height: 6rem;

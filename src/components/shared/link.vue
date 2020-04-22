@@ -23,7 +23,7 @@ export default {
 
 <style lang="scss">
 .link {
-  color: var(--title-color);
+  color: var(--global-title-color);
   font-family: var(--global-font-family-heading);
   line-height: var(--global-line-height-1);
   text-decoration: none;
@@ -32,19 +32,19 @@ export default {
   &:visited,
   &:focus,
   &:active {
-    color: var(--title-color);
+    color: var(--global-title-color);
   }
 
   &:hover {
-    color: var(--title-color);
+    color: var(--global-title-color);
     opacity: .7;
     transform: scale(1.07);
   }
 }
 
 .link--bordered {
-  background-color: var(--bg-color);
-  border: var(--global-border-width-1) solid var(--border-color);
+  background-color: var(--global-background-color);
+  border: var(--global-border-width-1) solid var(--global-border-color);
   border-radius: var(--global-border-radius);
   font-size: var(--global-font-size-0);
   padding: var(--global-space-fixed-2) var(--global-space-fixed-4);

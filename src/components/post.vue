@@ -63,7 +63,7 @@ export default {
   }
 
   > p:first-of-type {
-    color: var(--title-color);
+    color: var(--global-title-color);
     font-size: var(--global-font-size-3);
     min-width: 0;
   }

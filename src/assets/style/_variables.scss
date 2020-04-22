@@ -104,33 +104,39 @@
   --global-duration-3: 600ms;
 }
 
-
-
 // Light theme
 [data-theme='light'] {
-  --bg-color: hsl(216, 24%, 96%);
-  --bg-content-color: hsl(0, 0%, 100%);
-  --bg-code: hsl(40, 100%, 98%);
-  --body-color: hsl(0, 0%, 27%);
-  --title-color: hsl(0, 0%, 7%);
-  --selection-background-color: hsl(264, 82%, 50%);
-  --selection-foreground-color: hsl(216, 24%, 96%);
-  --link-color: hsl(264, 82%, 50%);
-  --link-visited-color: hsl(264, 61%, 35%);
-  --border-color: hsla(0, 0%, 0%, 0.1);
-  --scroll-thumb-color: hsl(0, 0%, 100%);
-  --scroll-track-color: hsl(0, 0%, 87%);
+  --global-background-color: hsl(216, 24%, 96%);
+  --global-content-background-color: hsl(0, 0%, 100%);
+  --global-border-color: hsla(0, 0%, 0%, 0.1);
+  --global-body-color: hsl(0, 0%, 27%);
+  --global-title-color: hsl(0, 0%, 7%);
 
-  --global-info-background-color: var(--bg-color);
+  // Link
+  --global-link-color: hsl(264, 82%, 50%);
+  --global-link-visited-color: hsl(264, 61%, 35%);
+
+  // Selection
+  --global-selection-background-color: hsl(264, 82%, 50%);
+  --global-selection-body-color: hsl(216, 24%, 96%);
+
+  // Scroll
+  --global-scroll-thumb-color: hsl(0, 0%, 100%);
+  --global-scroll-track-color: hsl(0, 0%, 87%);
+
+  // Info
+  --global-info-background-color: var(--global-background-color);
   --global-info-border-color: hsl(153, 47%, 49%);
-  --global-info-body-color: var(--body-color);
-  --global-info-title-color: var(--title-color);
+  --global-info-body-color: var(--global-body-color);
+  --global-info-title-color: var(--global-title-color);
 
+  // Warning
   --global-warning-background-color: hsla(50, 100%, 70%, 0.3);
   --global-warning-border-color: hsl(50, 100%, 35%);
   --global-warning-body-color: hsl(0, 0%, 0%);
   --global-warning-title-color: hsl(50, 100%, 20%);
 
+  // Danger
   --global-danger-background-color: hsl(0, 100%, 95%);
   --global-danger-border-color: hsl(0, 100%, 30%);
   --global-danger-body-color: hsl(0, 0%, 0%);
@@ -139,31 +145,39 @@
 
 // Dark theme
 [data-theme='dark'] {
-  --bg-color: hsl(207, 62%, 14%);
-  --bg-content-color: hsl(206, 64%, 16%);
-  --bg-code: hsla(0, 0%, 0%, 0.3);
-  --body-color: hsl(203, 20%, 84%);
-  --title-color: hsl(0, 0%, 100%);
-  --selection-background-color: hsl(254, 100%, 87%);
-  --selection-foreground-color: hsl(216, 24%, 96%);
-  --link-color: hsl(254, 100%, 87%);
-  --link-visited-color: hsl(254, 46%, 69%);
-  --border-color: hsla(0, 0%, 100%, 0.1);
-  --scroll-thumb-color: hsl(70, 8%, 15%);
-  --scroll-track-color: hsl(0, 0%, 30%);
+  --global-background-color: hsl(207, 62%, 14%);
+  --global-content-background-color: hsl(206, 64%, 16%);
+  --global-border-color: hsla(0, 0%, 100%, 0.1);
+  --global-body-color: hsl(203, 20%, 84%);
+  --global-title-color: hsl(0, 0%, 100%);
 
-  --global-info-background-color: var(--bg-color);
+  // Link
+  --global-link-color: hsl(254, 100%, 87%);
+  --global-link-visited-color: hsl(254, 46%, 69%);
+
+  // Scroll
+  --global-scroll-thumb-color: hsl(70, 8%, 15%);
+  --global-scroll-track-color: hsl(0, 0%, 30%);
+
+  // Selection
+  --global-selection-background-color: hsl(254, 100%, 87%);
+  --global-selection-body-color: hsl(216, 24%, 96%);
+
+  // Info
+  --global-info-background-color: var(--global-background-color);
   --global-info-border-color: hsl(153, 47%, 49%);
-  --global-info-body-color: var(--body-color);
-  --global-info-title-color: var(--title-color);
+  --global-info-body-color: var(--global-body-color);
+  --global-info-title-color: var(--global-title-color);
 
+  // Warning
   --global-warning-background-color: hsla(50, 100%, 46%, 0.3);
   --global-warning-border-color: hsl(50, 100%, 35%);
-  --global-warning-body-color: var(--title-color);
-  --global-warning-title-color: var(--title-color);
+  --global-warning-body-color: var(--global-title-color);
+  --global-warning-title-color: var(--global-title-color);
 
+  // Danger
   --global-danger-background-color: hsl(0, 100%, 9%);
   --global-danger-border-color: hsl(0, 100%, 30%);
-  --global-danger-body-color: var(--title-color);
-  --global-danger-title-color: var(--title-color);
+  --global-danger-body-color: var(--global-title-color);
+  --global-danger-title-color: var(--global-title-color);
 }

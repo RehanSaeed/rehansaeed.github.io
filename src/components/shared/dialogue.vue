@@ -96,7 +96,7 @@ dialog::backdrop,
 dialog + .backdrop {
   position: fixed;
   top: 0; right: 0; bottom: 0; left: 0;
-  background: var(--border-color);
+  background: var(--global-border-color);
   backdrop-filter: blur(2px);
 }
 
@@ -112,10 +112,10 @@ dialog.fixed {
 }
 
 .dialog {
-  background: var(--bg-content-color);
-  border: var(--global-border-width-2) solid var(--border-color);
+  background: var(--global-content-background-color);
+  border: var(--global-border-width-2) solid var(--global-border-color);
   border-radius: var(--global-border-radius);
-  color: var(--title-color);
+  color: var(--global-title-color);
 }
 
 .dialog--fullscreen {

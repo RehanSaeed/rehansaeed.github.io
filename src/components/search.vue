@@ -73,7 +73,7 @@ export default {
 }
 
 .search__result__image {
-  border: var(--global-border-width-2) solid var(--border-color);
+  border: var(--global-border-width-2) solid var(--global-border-color);
   border-radius: var(--global-border-radius);
   grid-area: image;
   margin-right: var(--global-space-fixed-5);
@@ -82,14 +82,14 @@ export default {
 }
 
 .search__result__title {
-  color: var(--title-color);
+  color: var(--global-title-color);
   font-size: var(--global-font-size-2);
   grid-area: title;
   margin: 0;
 }
 
 .search__result__description {
-  color: var(--body-color);
+  color: var(--global-body-color);
   font-size: var(--global-font-size-0);
   grid-area: description;
   margin: 0;

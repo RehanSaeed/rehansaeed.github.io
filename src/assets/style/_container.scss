@@ -47,15 +47,15 @@
   }
 
   &.details {
-    background-color: var(--bg-color);
-    border: var(--global-border-width-1) solid var(--border-color);
-    color: var(--body-color);
+    background-color: var(--global-background-color);
+    border: var(--global-border-width-1) solid var(--global-border-color);
+    color: var(--global-body-color);
     display: block;
     padding: var(--global-space-fixed-4) var(--global-space-fixed-5);
     position: relative;
 
     .custom-block-title {
-      color: var(--title-color);
+      color: var(--global-title-color);
       cursor: pointer;
       outline: none;
     }

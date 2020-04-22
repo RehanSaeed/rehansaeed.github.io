@@ -1,6 +1,6 @@
 a:not(.button):not(.post-tags__link):not(.portfolio-tags__link):not(.link):not(.search__result) {
-  color: var(--link-color);
-  text-decoration-color: var(--link-color);
+  color: var(--global-link-color);
+  text-decoration-color: var(--global-link-color);
   transition:
     text-decoration-thickness var(--global-duration-1) ease-out,
     text-underline-offset var(--global-duration-1) ease-out,
@@ -9,14 +9,14 @@ a:not(.button):not(.post-tags__link):not(.portfolio-tags__link):not(.link):not(.
     opacity var(--global-duration-1) ease-out;
 
   &:visited {
-    color: var(--link-visited-color);
+    color: var(--global-link-visited-color);
   }
 
   &:hover,
   &:focus,
   &:active {
     opacity: .7;
-    text-decoration-color: var(--link-color);
+    text-decoration-color: var(--global-link-color);
   }
 
   @supports (text-decoration-thickness: 1em) {
@@ -25,15 +25,15 @@ a:not(.button):not(.post-tags__link):not(.portfolio-tags__link):not(.link):not(.
     text-decoration-skip-ink: none;
 
     &:visited {
-      color: var(--link-visited-color);
-      text-decoration-color: var(--link-visited-color);
+      color: var(--global-link-visited-color);
+      text-decoration-color: var(--global-link-visited-color);
     }
 
     &:hover,
     &:focus,
     &:active {
-      color: var(--bg-color);
-      text-decoration-color: var(--link-color);
+      color: var(--global-background-color);
+      text-decoration-color: var(--global-link-color);
       text-decoration-thickness: 1.125rem;
       text-underline-offset: -0.875rem;
     }

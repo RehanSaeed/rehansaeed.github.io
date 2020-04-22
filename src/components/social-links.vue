@@ -111,8 +111,8 @@ query {
 .social {
   align-items: center;
   display: grid;
-  grid-template-columns: repeat(7, auto);
   grid-gap: var(--global-space-fixed-5);
+  grid-template-columns: repeat(7, auto);
   justify-content: center;
 }
 </style>

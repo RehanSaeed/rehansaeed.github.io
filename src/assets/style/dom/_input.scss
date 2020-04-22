@@ -1,14 +1,14 @@
 input {
-  background: var(--bg-content-color);
-  border: var(--global-border-width-2) solid var(--title-color);
+  background: var(--global-content-background-color);
+  border: var(--global-border-width-2) solid var(--global-title-color);
   border-radius: var(--global-border-radius);
-  color: var(--title-color);
+  color: var(--global-title-color);
   font-family: var(--global-font-family-default);
   min-width: 13rem;
   padding: var(--global-space-fixed-2) var(--global-space-fixed-3);
   transition: border-color var(--global-duration-3);
 
   &:hover {
-    border-color: var(--body-color);
+    border-color: var(--global-body-color);
   }
 }
