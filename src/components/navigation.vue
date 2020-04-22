@@ -15,17 +15,6 @@
   </nav>
 </template>
 
-<static-query>
-query {
-  metadata {
-    name
-    author {
-      name
-    }
-  }
-}
-</static-query>
-
 <script>
 import link from '~/components/shared/link.vue';
 import searchButton from '~/components/search-button.vue';
@@ -40,12 +29,23 @@ export default {
 }
 </script>
 
+<static-query>
+query {
+  metadata {
+    name
+    author {
+      name
+    }
+  }
+}
+</static-query>
+
 <style lang="scss">
 .navigation {
   align-items: center;
   display: grid;
   font-size: var(--global-font-size-3);
-  grid-template-columns: auto auto 1fr auto;
+  grid-template-columns: auto 1fr auto;
   grid-gap: var(--global-space-fluid-5);
   padding: var(--global-space-fluid-5);
   visibility: hidden;
@@ -67,10 +67,11 @@ export default {
   display: grid;
   grid-template-columns: repeat(3, auto);
   grid-gap: var(--global-space-fluid-5);
+  justify-content: start;
 }
 
 .navigation__items-right {
-  grid-column-start: 6;
+  grid-column-start: 5;
   display: grid;
   grid-template-columns: auto auto;
   grid-gap: var(--global-space-fluid-5);
