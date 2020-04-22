@@ -170,25 +170,25 @@ module.exports = {
       }
     },
     // https://gridsome.org/plugins/gridsome-plugin-pwa
-    // {
-    //   use: 'gridsome-plugin-pwa',
-    //   options: {
-    //     title: site.name,
-    //     startUrl: '/',
-    //     display: 'standalone',
-    //     statusBarStyle: 'default',
-    //     manifestPath: 'manifest.json',
-    //     disableServiceWorker: false,
-    //     serviceWorkerPath: 'service-worker.js',
-    //     cachedFileTypes: 'js,json,css,html,png,jpg,jpeg,svg,gif',
-    //     shortName: site.name,
-    //     themeColor: '#cbbbff',
-    //     backgroundColor: '#0d2538',
-    //     icon: 'src/favicon.png',
-    //     msTileImage: 'src/favicon.png',
-    //     msTileColor: '#cbbbff',
-    //   }
-    // },
+    {
+      use: 'gridsome-plugin-pwa',
+      options: {
+        title: site.name,
+        startUrl: '/',
+        display: 'standalone',
+        statusBarStyle: 'default',
+        manifestPath: 'manifest.json',
+        disableServiceWorker: false,
+        serviceWorkerPath: 'service-worker.js',
+        cachedFileTypes: 'js,json,css,html,png,jpg,jpeg,svg,gif',
+        shortName: site.shortName,
+        themeColor: '#6b17e8',
+        backgroundColor: '#f2f4f7',
+        icon: 'src/favicon.png',
+        msTileImage: 'src/favicon.png',
+        msTileColor: '#6b17e8',
+      }
+    },
     // https://gridsome.org/plugins/gridsome-plugin-robots
     {
       use: 'gridsome-plugin-robots',
