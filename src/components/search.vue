@@ -53,7 +53,7 @@ export default {
 }
 
 .search__input {
-  font-size: var(--global-font-size-4);
+  font-size: var(--global-font-size-5);
 }
 
 .search__results {
@@ -83,14 +83,14 @@ export default {
 
 .search__result__title {
   color: var(--global-title-color);
-  font-size: var(--global-font-size-2);
+  font-size: var(--global-font-size-3);
   grid-area: title;
   margin: 0;
 }
 
 .search__result__description {
   color: var(--global-body-color);
-  font-size: var(--global-font-size-0);
+  font-size: var(--global-font-size-1);
   grid-area: description;
   margin: 0;
 }

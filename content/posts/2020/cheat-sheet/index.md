@@ -24,24 +24,26 @@ Duis aliquet ex eu scelerisque ultricies. Nam ac sagittis ligula. Vestibulum vel
 
 > Quote
 
+This uses `<kbd>` and looks like this ||CTRL+C||. Cool!
+
 # Lists
 
-- One
-- two
-- Three
+- Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+- Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+- Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 
-1. One
-2. Two
-3. Three
+1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+2. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+3. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 
-- One
-  - One One
-  - One Two
-  - One Three
-- Two
-  1. Two One
-  2. Two Two
-  3. Two Three
+- Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  - Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  - Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  - Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+- Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  2. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  3. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 
 # Tables
 

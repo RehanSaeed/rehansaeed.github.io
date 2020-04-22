@@ -44,7 +44,7 @@ export default {
 .navigation {
   align-items: center;
   display: grid;
-  font-size: var(--global-font-size-2);
+  font-size: var(--global-font-size-3);
   grid-template-columns: auto auto 1fr auto;
   grid-gap: var(--global-space-fluid-5);
   padding: var(--global-space-fluid-5);

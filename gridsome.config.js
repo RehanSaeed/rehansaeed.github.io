@@ -261,6 +261,7 @@ module.exports = {
             ]
           }
         ],
+        'remark-kbd',
         'remark-toc',
         [
           "gridsome-plugin-remark-prismjs-all",

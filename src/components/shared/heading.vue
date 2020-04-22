@@ -36,24 +36,24 @@ export default {
 
 <style>
 .heading--1 {
-  font-size: var(--global-font-size-6);
+  font-size: var(--global-font-size-7);
   margin-top: 0;
 }
 
 .heading--2 {
-  font-size: var(--global-font-size-5);
+  font-size: var(--global-font-size-6);
 }
 
 .heading--3 {
-  font-size: var(--global-font-size-4);
+  font-size: var(--global-font-size-5);
 }
 
 .heading--4 {
-  font-size: var(--global-font-size-3);
+  font-size: var(--global-font-size-4);
 }
 
 .heading--5 {
-  font-size: var(--global-font-size-2);
+  font-size: var(--global-font-size-3);
 }
 
 .heading--center {

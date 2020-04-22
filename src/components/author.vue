@@ -50,7 +50,7 @@ query {
 }
 
 .author__site-title {
-  font-size: var(--global-font-size-7);
+  font-size: var(--global-font-size-8);
   text-align: center;
 }
 

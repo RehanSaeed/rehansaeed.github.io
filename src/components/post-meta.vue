@@ -20,7 +20,7 @@ export default {
 
 <style lang="scss">
 .post-meta {
-  font-size: var(--global-font-size-0);
+  font-size: var(--global-font-size-1);
   opacity: .8;
 }
 </style>

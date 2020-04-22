@@ -36,7 +36,7 @@ query {
   justify-content: center;
   padding: var(--global-space-fluid-5);
   text-align: center;
-  font-size: var(--global-font-size-0);
+  font-size: var(--global-font-size-1);
 
   > span {
     margin: 0 .35em;

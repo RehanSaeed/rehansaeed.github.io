@@ -1,0 +1,16 @@
+kbd {
+  background: #eee;
+  border-radius: var(--global-border-radius);
+  box-shadow: 1px 1px 1px #777;
+  color: #555;
+  display: inline-block;
+  font-family: var(--global-font-family-monospace);
+  font-size: var(--global-font-size-0);
+  font-variant: small-caps;
+  font-weight: var(--global-font-weight-semi-bold);
+  letter-spacing: .05rem;
+  line-height: var(--global-line-height-1);
+  margin: .1rem;
+  padding: 0 .25rem;
+  vertical-align: text-bottom;
+}
