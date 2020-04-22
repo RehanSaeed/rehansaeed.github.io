@@ -17,27 +17,32 @@
   }
 
   &.tip {
-    background-color: var(--bg-color);
-    border-color: hsl(153, 47%, 49%);
+    background-color: var(--global-info-background-color);
+    border-color: var(--global-info-border-color);
+    color: var(--global-info-body-color);
+
+    .custom-block-title {
+      color: var(--global-info-title-color);
+    }
   }
 
   &.warning {
-    background-color: hsla(50, 100%, 70%, 0.3);
-    border-color: darken(hsl(50, 100%, 70%), 35%);
-    color: darken(hsl(50, 100%, 70%), 70%);
+    background-color: var(--global-warning-background-color);
+    border-color: var(--global-warning-border-color);
+    color: var(--global-warning-body-color);
 
     .custom-block-title {
-      color: darken(hsl(50, 100%, 70%), 50%);
+      color: var(--global-warning-title-color);
     }
   }
 
   &.danger {
-    background-color: #ffe6e6;
-    border-color: darken(hsl(0, 100%, 50%), 20%);
-    color: darken(hsl(0, 100%, 50%), 70%);
+    background-color: var(--global-danger-background-color);
+    border-color: var(--global-danger-border-color);
+    color: var(--global-danger-body-color);
 
     .custom-block-title {
-      color: darken(hsl(0, 100%, 50%), 40%);
+      color: var(--global-danger-title-color);
     }
   }
 
@@ -53,26 +58,4 @@
     }
   }
 
-}
-
-[data-theme="dark"] {
-  .custom-block {
-    &.warning {
-      background-color: hsla(50, 100%, 46%, 0.3);
-      color: var(--title-color);
-
-      .custom-block-title {
-        color: var(--title-color);
-      }
-    }
-
-    &.danger {
-      background-color: #300000;
-      color: var(--title-color);
-
-      .custom-block-title {
-        color: var(--title-color);
-      }
-    }
-  }
 }

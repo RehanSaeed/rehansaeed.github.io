@@ -120,6 +120,21 @@
   --border-color: hsla(0, 0%, 0%, 0.1);
   --scroll-thumb-color: hsl(0, 0%, 100%);
   --scroll-track-color: hsl(0, 0%, 87%);
+
+  --global-info-background-color: var(--bg-color);
+  --global-info-border-color: hsl(153, 47%, 49%);
+  --global-info-body-color: var(--body-color);
+  --global-info-title-color: var(--title-color);
+
+  --global-warning-background-color: hsla(50, 100%, 70%, 0.3);
+  --global-warning-border-color: hsl(50, 100%, 35%);
+  --global-warning-body-color: hsl(0, 0%, 0%);
+  --global-warning-title-color: hsl(50, 100%, 20%);
+
+  --global-danger-background-color: hsl(0, 100%, 95%);
+  --global-danger-border-color: hsl(0, 100%, 30%);
+  --global-danger-body-color: hsl(0, 0%, 0%);
+  --global-danger-title-color: hsl(0, 100%, 10%);
 }
 
 // Dark theme
@@ -136,4 +151,19 @@
   --border-color: hsla(0, 0%, 100%, 0.1);
   --scroll-thumb-color: hsl(70, 8%, 15%);
   --scroll-track-color: hsl(0, 0%, 30%);
+
+  --global-info-background-color: var(--bg-color);
+  --global-info-border-color: hsl(153, 47%, 49%);
+  --global-info-body-color: var(--body-color);
+  --global-info-title-color: var(--title-color);
+
+  --global-warning-background-color: hsla(50, 100%, 46%, 0.3);
+  --global-warning-border-color: hsl(50, 100%, 35%);
+  --global-warning-body-color: var(--title-color);
+  --global-warning-title-color: var(--title-color);
+
+  --global-danger-background-color: hsl(0, 100%, 9%);
+  --global-danger-border-color: hsl(0, 100%, 30%);
+  --global-danger-body-color: var(--title-color);
+  --global-danger-title-color: var(--title-color);
 }
