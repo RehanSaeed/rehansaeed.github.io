@@ -59,6 +59,9 @@
   --global-line-length-min: 45ch;
   --global-line-length-ideal: 66ch;
   --global-line-length-max: 75ch;
+  @media screen and (max-width: $global-breakpoint-sm) {
+    --global-line-length-min: 0;
+  }
 
   // Content Width
   --global-content-width-maximum: 45rem;
