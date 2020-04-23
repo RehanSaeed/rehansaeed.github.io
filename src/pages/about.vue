@@ -106,7 +106,7 @@ query {
   justify-items: center;
   text-align: center;
 
-  :last-child {
+  &:last-child {
     margin-bottom: 0;
   }
 }

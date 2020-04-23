@@ -110,9 +110,15 @@ query {
 <style lang="scss">
 .social {
   align-items: center;
-  display: grid;
-  grid-gap: var(--global-space-fixed-5);
-  grid-template-columns: repeat(7, auto);
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
+  margin-right: var(--global-space-fixed--4);
+  margin-bottom: var(--global-space-fixed--4);
+}
+
+.social__link {
+  margin-right: var(--global-space-fixed-4);
+  margin-bottom: var(--global-space-fixed-4);
 }
 </style>
