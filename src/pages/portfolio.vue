@@ -92,7 +92,7 @@ query {
         displayDate: date (format: "D MMMM YYYY")
         date (format: "YYYY-MM-DDTHH:mm:ssZ")
         description
-        cover_image (width: 770, height: 380, blur: 10)
+        heroImage (width: 770, height: 380, blur: 10)
         permalink
         tags {
           id

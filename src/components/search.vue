@@ -14,7 +14,7 @@
         :key="result.id"
         :to="result.permalink || result.path"
         class="search__result">
-        <g-image v-if="result.cover_image" alt="Cover image" class="search__result__image" :src="result.cover_image"/>
+        <g-image v-if="result.heroImage" alt="Cover image" class="search__result__image" :src="result.heroImage"/>
         <p class="search__result__title">{{result.title}}</p>
         <p class="search__result__description">{{result.description}}</p>
       </g-link>

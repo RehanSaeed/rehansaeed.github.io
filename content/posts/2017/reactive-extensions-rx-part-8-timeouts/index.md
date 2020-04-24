@@ -3,7 +3,7 @@ title: "Reactive Extensions (Rx) – Part 8 – Timeouts"
 description: "Should you use Reactive Extensions (Rx) to do timeouts in .NET? It turns out it's better to use CancellationTokenSource in the Task Parallel Library (TPL)."
 author: "Muhammad Rehan Saeed"
 permalink: "/reactive-extensions-rx-part-8-timeouts/"
-cover_image: "/images/hero/Reactive-Extensions-1366x768.png"
+heroImage: "/images/hero/Reactive-Extensions-1366x768.png"
 date: "2017-01-02"
 dateModified: null
 published: true

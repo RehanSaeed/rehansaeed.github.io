@@ -36,7 +36,7 @@ export default {
     'u-post-meta': postMeta,
   },
   computed: {
-    image: function() { return this.$static.metadata.url + this.$page.post.cover_image; },
+    image: function() { return this.$static.metadata.url + this.$page.post.heroImage; },
     imageHeight: function() { return this.image.match(/(\d*)x(\d*)/)[2]; },
     imageWidth: function() { return this.image.match(/(\d*)x(\d*)/)[1]; },
     url: function() { return this.$static.metadata.url + this.$page.post.path; }
@@ -164,7 +164,7 @@ query Post ($id: ID!) {
     }
     description
     content
-    cover_image (width: 860, blur: 10)
+    heroImage (width: 860, blur: 10)
   }
 }
 </page-query>

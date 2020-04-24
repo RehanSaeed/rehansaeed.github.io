@@ -3,7 +3,7 @@ title: "WPF Metro Part 4 - Elysium Extra"
 description: "Elysium Extra is an excellent Windows Presentation Foundation (WPF) SDK providing Metro styles for built in WPF controls and some custom controls."
 author: "Muhammad Rehan Saeed"
 permalink: "/wpf-metro-part4-elysium-extra/"
-cover_image: "/images/hero/Elysium-Extra-1366x768.png"
+heroImage: "/images/hero/Elysium-Extra-1366x768.png"
 date: "2014-03-19"
 dateModified: null
 published: true

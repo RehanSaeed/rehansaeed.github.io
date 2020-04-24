@@ -145,7 +145,7 @@ module.exports = {
             ],
             date: new Date(node.date),
             categories: node.tags,
-            image: node.cover_image,
+            image: node.heroImage,
           };
         }
       }
@@ -158,12 +158,12 @@ module.exports = {
           {
             typeName: "post",
             indexName: "post",
-            fields: ["title", "description", "cover_image"]
+            fields: ["title", "description", "heroImage"]
           },
           {
             typeName: "portfolio",
             indexName: "portfolio",
-            fields: ["title", "description", "permalink"]
+            fields: ["title", "description", "heroImage", "permalink"]
           }
         ],
         searchFields: ["title", "description"]

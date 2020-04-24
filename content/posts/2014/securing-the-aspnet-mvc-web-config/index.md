@@ -3,7 +3,7 @@ title: "Securing the ASP.NET MVC Web.config"
 description: "The web.config file is insecure in the default ASP.NET MVC project template. This post talks you through securing the ASP.NET MVC Web.config file."
 author: "Muhammad Rehan Saeed"
 permalink: "/securing-the-aspnet-mvc-web-config/"
-cover_image: "/images/hero/ASP.NET-Core-Boilerplate-1366x768.png"
+heroImage: "/images/hero/ASP.NET-Core-Boilerplate-1366x768.png"
 date: "2014-12-17"
 dateModified: null
 published: true

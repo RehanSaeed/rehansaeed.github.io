@@ -3,7 +3,7 @@ title: "Optimally Configuring ASP.NET Core HttpClientFactory"
 description: "How to optimally configure a HttpClient using the new HttpClientFactory API in ASP.NET Core 2.1 for best performance, usability, resiliency and easy of use."
 author: "Muhammad Rehan Saeed"
 permalink: "/optimally-configuring-asp-net-core-httpclientfactory/"
-cover_image: "/images/hero/NET-1366x768.png"
+heroImage: "/images/hero/NET-1366x768.png"
 date: "2018-08-20"
 dateModified: null
 published: true

@@ -3,7 +3,7 @@ title: "Building RSS/Atom Feeds for ASP.NET MVC"
 description: "How to build a fully featured RSS/Atom feed for ASP.NET MVC, including Google's PubSubHubbub and the 'Subscribe to this feed' button."
 author: "Muhammad Rehan Saeed"
 permalink: "/building-rssatom-feeds-for-asp-net-mvc/"
-cover_image: "/images/hero/RSS-And-Atom-1366x768.png"
+heroImage: "/images/hero/RSS-And-Atom-1366x768.png"
 date: "2015-06-26"
 dateModified: null
 published: true

@@ -3,7 +3,7 @@ title: "Whats New in ASP.NET Core Boilerplate"
 description: "With the release of ASP.NET Core Boilerplate, this post discusses what's new and what is currently missing due to ASP.NET Core still being in beta."
 author: "Muhammad Rehan Saeed"
 permalink: "/whats-new-in-asp-net-5-mvc-6-boilerplate/"
-cover_image: "/images/hero/ASP.NET-Core-Boilerplate-1366x768.png"
+heroImage: "/images/hero/ASP.NET-Core-Boilerplate-1366x768.png"
 date: "2015-08-23"
 dateModified: null
 published: true

@@ -3,7 +3,7 @@ title: "ConfigureAwait in Task Parallel Library (TPL)"
 description: "The importance of using ConfigureAwait when using the Task Parallel Library (TPL) to improve performance and reduce context switching."
 author: "Muhammad Rehan Saeed"
 permalink: "/configureawait-task-parallel-library/"
-cover_image: "/images/hero/NET-1366x768.png"
+heroImage: "/images/hero/NET-1366x768.png"
 date: "2014-02-07"
 dateModified: null
 published: true

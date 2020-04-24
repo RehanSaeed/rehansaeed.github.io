@@ -3,7 +3,7 @@ title: "Subresource Integrity TagHelper Using ASP.NET Core - Part 1"
 description: "Use an ASP.NET Core TagHelper to implement Subresource Integrity (SRI) to ensure that external resources have not been tampered with."
 author: "Muhammad Rehan Saeed"
 permalink: "/subresource-integrity-taghelper-using-asp-net-core/"
-cover_image: "/images/hero/Make-Security-Easy-1366x768.png"
+heroImage: "/images/hero/Make-Security-Easy-1366x768.png"
 date: "2016-03-06"
 dateModified: null
 published: true

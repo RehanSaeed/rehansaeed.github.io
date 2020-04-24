@@ -3,7 +3,7 @@ title: "C# 6.0 - Saving Developers From Themselves"
 description: "C# 6.0 helps reduce human error and save developers from themselves using the nameof operator, string interpolation and the null-conditional operator."
 author: "Muhammad Rehan Saeed"
 permalink: "/c-6-0-saving-developers-from-themselves/"
-cover_image: "/images/hero/NET-1366x768.png"
+heroImage: "/images/hero/NET-1366x768.png"
 date: "2015-05-10"
 dateModified: null
 published: true

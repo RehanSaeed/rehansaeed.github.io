@@ -3,7 +3,7 @@ title: "Make Certificate"
 description: "Make certificate files by answering a few simple questions instead of using makecert.exe and pvk2pfx.exe, passing in some pretty cryptic arguments."
 author: "Muhammad Rehan Saeed"
 permalink: "/make-certificate/"
-cover_image: "/images/hero/Make-Certificate-1366x768.png"
+heroImage: "/images/hero/Make-Certificate-1366x768.png"
 date: "2016-02-07"
 dateModified: null
 published: true

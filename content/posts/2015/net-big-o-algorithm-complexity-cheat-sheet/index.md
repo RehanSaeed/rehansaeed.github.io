@@ -3,7 +3,7 @@ title: ".NET Big-O Algorithm Complexity Cheat Sheet"
 description: "Shows Big-O time and space complexities of common algorithms used in Computer Science and the.NET Framework to write the most efficient code."
 author: "Muhammad Rehan Saeed"
 permalink: "/net-big-o-algorithm-complexity-cheat-sheet/"
-cover_image: "/images/hero/NET-Big-O-Algorithm-Complexity-Cheat-Sheet-1366x768.jpg"
+heroImage: "/images/hero/NET-Big-O-Algorithm-Complexity-Cheat-Sheet-1366x768.jpg"
 date: "2015-10-15"
 dateModified: null
 published: true

@@ -3,7 +3,7 @@ title: "Colorful.Console"
 description: "Colorful.Console is a C# library that wraps around the System.Console class, making your console apps more colourful. Write ASCII art using Figlet fonts."
 author: "Muhammad Rehan Saeed"
 permalink: "/colorful-console/"
-cover_image: "/images/hero/Colorful.Console-1366x768.png"
+heroImage: "/images/hero/Colorful.Console-1366x768.png"
 date: "2016-02-14"
 dateModified: null
 published: true

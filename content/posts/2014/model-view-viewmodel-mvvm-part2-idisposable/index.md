@@ -3,7 +3,7 @@ title: "Model-View-ViewModel (MVVM) - Part 2 - IDisposable"
 description: "Implementing IDisposable correctly is ridiculously hard. A Disposable base class can make it easier. Using IDisposable in Model-View-ViewModel (MVVM) really helps."
 author: "Muhammad Rehan Saeed"
 permalink: "/model-view-viewmodel-mvvm-part2-idisposable/"
-cover_image: "/images/hero/MVVM-1366x768.png"
+heroImage: "/images/hero/MVVM-1366x768.png"
 date: "2014-06-13"
 dateModified: null
 published: true

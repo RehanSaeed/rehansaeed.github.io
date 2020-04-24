@@ -3,7 +3,7 @@ title: "Elysium Extra 1.1 Released"
 description: "Elysium Extra Version 1.1 is a Windows Presentation Foundation (WPF) SDK providing Metro styles for built in WPF controls and some custom controls."
 author: "Muhammad Rehan Saeed"
 permalink: "/elysium-extra-1-1-released/"
-cover_image: "/images/hero/Elysium-Extra-1366x768.png"
+heroImage: "/images/hero/Elysium-Extra-1366x768.png"
 date: "2014-11-05"
 dateModified: null
 published: true

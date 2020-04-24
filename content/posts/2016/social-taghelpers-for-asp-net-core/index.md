@@ -3,7 +3,7 @@ title: "Social TagHelpers for ASP.NET Core"
 description: "Enhance the experience of sharing a page from your site through the use of social media meta tags implemented with ASP.NET Core TagHelpers."
 author: "Muhammad Rehan Saeed"
 permalink: "/social-taghelpers-for-asp-net-core/"
-cover_image: "/images/hero/Social-Media-1366x768.png"
+heroImage: "/images/hero/Social-Media-1366x768.png"
 date: "2016-03-19"
 dateModified: null
 published: true

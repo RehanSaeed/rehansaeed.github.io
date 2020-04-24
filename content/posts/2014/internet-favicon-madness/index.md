@@ -3,7 +3,7 @@ title: "Internet Favicon Madness (Updated)"
 description: "Add favicon's to your website to support iOS, Android, Windows 7, Windows 8, Windows Phone and more. Find out where icons are used on each platform and how."
 author: "Muhammad Rehan Saeed"
 permalink: "/internet-favicon-madness/"
-cover_image: "/images/hero/Favicons-1366x768.png"
+heroImage: "/images/hero/Favicons-1366x768.png"
 date: "2014-11-24"
 dateModified: null
 published: true

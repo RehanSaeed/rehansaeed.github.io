@@ -3,7 +3,7 @@ title: "Windows 8.1 TouchScreen Gaming Laptops"
 description: "Would you buy a sandwich without the filling? No? Then why are most Windows 8.1 laptops sold without touchscreens? We need a touchscreen gaming laptop."
 author: "Muhammad Rehan Saeed"
 permalink: "/windows-8-touchscreen-gaming-laptops/"
-cover_image: "/images/hero/Fry-Shutup-And-Take-My-Money-1366x768.png"
+heroImage: "/images/hero/Fry-Shutup-And-Take-My-Money-1366x768.png"
 date: "2014-03-06"
 dateModified: null
 published: true

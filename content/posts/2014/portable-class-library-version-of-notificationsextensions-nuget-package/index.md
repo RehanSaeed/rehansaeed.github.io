@@ -3,7 +3,7 @@ title: "Portable Class Library (PCL) version of NotificationsExtensions NuGet pa
 description: "NotificationsExtensions.Portable is a Portable Class Library (PCL) used to Create Windows 8.1 or Windows Phone 8.1 Tile, Toast and Badge Notification XML."
 author: "Muhammad Rehan Saeed"
 permalink: "/portable-class-library-version-of-notificationsextensions-nuget-package/"
-cover_image: "/images/hero/NuGet-1366x768.png"
+heroImage: "/images/hero/NuGet-1366x768.png"
 date: "2014-05-06"
 dateModified: null
 published: true

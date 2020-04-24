@@ -3,7 +3,7 @@ title: "PluralSight vs LinkedIn Learning vs FrontendMasters vs Egghead.io vs You
 description: "A comparison between PluralSight, LinkedIn Learning, Frontend Masters, Egghead.io, YouTube and other resources for software developers."
 author: "Muhammad Rehan Saeed"
 permalink: "/pluralsight-vs-linkedin-learning-vs-frontendmasters-vs-egghead-io-vs-youtube/"
-cover_image: "/images/hero/Online-Learning-1366x768.png"
+heroImage: "/images/hero/Online-Learning-1366x768.png"
 date: "2018-11-12"
 dateModified: null
 published: true

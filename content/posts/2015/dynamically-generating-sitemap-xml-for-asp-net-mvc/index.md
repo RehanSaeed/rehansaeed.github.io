@@ -3,7 +3,7 @@ title: "Dynamically Generating Sitemap.xml for ASP.NET MVC"
 description: "How to dynamically generate a sitemap.xml file using ASP.NET MVC to improve the Search Engine Optimization (SEO) of your site and get better search rankings."
 author: "Muhammad Rehan Saeed"
 permalink: "/dynamically-generating-sitemap-xml-for-asp-net-mvc/"
-cover_image: "/images/hero/Sitemaps-1366x768.png"
+heroImage: "/images/hero/Sitemaps-1366x768.png"
 date: "2015-09-15"
 dateModified: null
 published: true

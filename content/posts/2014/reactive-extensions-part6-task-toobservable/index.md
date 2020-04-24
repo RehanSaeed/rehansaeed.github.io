@@ -3,7 +3,7 @@ title: "Reactive Extensions (Rx) – Part 6 – Task ToObservable"
 description: "How and where to use the Reactive Extensions (Rx) ToObservable Extension method to turn a Task Parallel Library (TPL) Task into an IObservable."
 author: "Muhammad Rehan Saeed"
 permalink: "/reactive-extensions-part6-task-toobservable/"
-cover_image: "/images/hero/Reactive-Extensions-1366x768.png"
+heroImage: "/images/hero/Reactive-Extensions-1366x768.png"
 date: "2014-04-25"
 dateModified: null
 published: true

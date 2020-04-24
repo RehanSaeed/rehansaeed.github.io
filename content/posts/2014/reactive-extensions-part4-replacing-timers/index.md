@@ -3,7 +3,7 @@ title: "Reactive Extensions (Rx) – Part 4 – Replacing Timers"
 description: "You should definitely consider using Reactive Extensions (Rx) is as a direct replacement for .NET Timers. This post will explain how."
 author: "Muhammad Rehan Saeed"
 permalink: "/reactive-extensions-part4-replacing-timers/"
-cover_image: "/images/hero/Reactive-Extensions-1366x768.png"
+heroImage: "/images/hero/Reactive-Extensions-1366x768.png"
 date: "2014-03-11"
 dateModified: null
 published: true

@@ -3,7 +3,7 @@ title: "dotnet new Feature Selection"
 description: "How to add feature selection to your dotnet new template using symbols (bool, string, choice, computed) and pre-processor directives."
 author: "Muhammad Rehan Saeed"
 permalink: "/dotnet-new-feature-selection/"
-cover_image: "/images/hero/Who-Wants-To-Be-A-Millionaire-1366x768.png"
+heroImage: "/images/hero/Who-Wants-To-Be-A-Millionaire-1366x768.png"
 date: "2017-03-26"
 dateModified: null
 published: true

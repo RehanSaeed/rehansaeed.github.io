@@ -1,7 +1,7 @@
 <template>
   <u-content-box class="post-card" tag="article" hoverable :class="{'post-card--has-poster' : post.poster}">
     <div class="post-card__header">
-      <g-image alt="Cover image" v-if="post.cover_image" class="post-card__image" :src="post.cover_image"/>
+      <g-image alt="Cover image" v-if="post.heroImage" class="post-card__image" :src="post.heroImage"/>
     </div>
     <div class="post-card__content">
       <u-heading level="2" class="post-card__title" v-html="post.title" />

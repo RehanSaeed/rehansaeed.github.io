@@ -3,7 +3,7 @@ title: "Naming Conventions"
 description: "Code is written to be read by humans, not machines. Naming conventions and standard code styling can boost productivity, particularly if working in teams."
 author: "Muhammad Rehan Saeed"
 permalink: "/naming-conventions/"
-cover_image: "/images/hero/Naming-Conventions-1366x768.png"
+heroImage: "/images/hero/Naming-Conventions-1366x768.png"
 date: "2014-09-04"
 dateModified: null
 published: true

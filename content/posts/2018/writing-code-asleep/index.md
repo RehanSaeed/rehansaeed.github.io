@@ -3,7 +3,7 @@ title: "Writing Code while Asleep"
 description: "How to write code while you sleep using tools like StackOverflow, GitHub and forums effectively."
 author: "Muhammad Rehan Saeed"
 permalink: "/writing-code-asleep/"
-cover_image: "/images/hero/While-Alive-Eat-Sleep-Code-Repeat-1366x768.png"
+heroImage: "/images/hero/While-Alive-Eat-Sleep-Code-Repeat-1366x768.png"
 date: "2018-01-29"
 dateModified: null
 published: true

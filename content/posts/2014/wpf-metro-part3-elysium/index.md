@@ -3,7 +3,7 @@ title: "WPF Metro Part 3 - Elysium"
 description: "Elysium is an excellent Windows Presentation Foundation (WPF) SDK (On CodePlex) providing Metro styles for built in WPF controls and some custom controls."
 author: "Muhammad Rehan Saeed"
 permalink: "/wpf-metro-part3-elysium/"
-cover_image: "/images/hero/Elysium-1366x768.png"
+heroImage: "/images/hero/Elysium-1366x768.png"
 date: "2014-03-17"
 dateModified: null
 published: true

@@ -3,7 +3,7 @@ title: "ASP.NET Core Hidden Gem - QueryHelpers"
 description: "How to build a URL containing dynamic query arguments using the ASP.NET Core QueryHelpers.AddQueryString method. A hidden gem in ASP.NET Core."
 author: "Muhammad Rehan Saeed"
 permalink: "/asp-net-core-hidden-gem-queryhelpers/"
-cover_image: "/images/hero/NET-1366x768.png"
+heroImage: "/images/hero/NET-1366x768.png"
 date: "2018-07-14"
 dateModified: null
 published: true

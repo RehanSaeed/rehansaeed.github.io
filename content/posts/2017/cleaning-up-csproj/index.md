@@ -3,7 +3,7 @@ title: "Cleaning Up CSPROJ"
 description: "I show how to make the new Visual Studio 2017 .NET Core based csproj XML concise and pretty for hand editing."
 author: "Muhammad Rehan Saeed"
 permalink: "/cleaning-up-csproj/"
-cover_image: "/images/hero/Cleaning-Up-CSPROJ-1366x768.png"
+heroImage: "/images/hero/Cleaning-Up-CSPROJ-1366x768.png"
 date: "2017-03-18"
 dateModified: null
 published: true
