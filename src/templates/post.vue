@@ -69,6 +69,7 @@ export default {
         { property: 'og:site_name', content: this.$static.metadata.name },
         { property: 'og:type', content: 'article' },
         { property: 'article:published_time', content: this.$page.post.date },
+        ...[this.$page.post.dateModified].filter(x => x).map(x => ({ property: 'article:modified_time', content: x })),
         { property: 'article:author', content: this.$page.post.author },
         ...this.$page.post.headings.map(x => ({ property: 'article:section', content: x.value })),
         ...this.$page.post.tags.map(x => ({ property: 'article:tag', content: x.title })),
@@ -97,6 +98,7 @@ export default {
               }
             ],
             datePublished: this.$page.post.date,
+            dateModified: this.$page.post.dateModified,
             author: {
               '@type': 'Person',
               name: this.$page.post.author,
@@ -149,6 +151,7 @@ query Post ($id: ID!) {
     path
     displayDate: date (format: "D MMMM YYYY")
     date (format: "YYYY-MM-DDTHH:mm:ssZ")
+    dateModified (format: "YYYY-MM-DDTHH:mm:ssZ")
     timeToRead
     author
     headings {
