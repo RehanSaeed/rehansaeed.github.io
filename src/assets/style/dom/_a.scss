@@ -1,13 +1,7 @@
 a:not(.button):not(.post-tags__link):not(.portfolio-tags__link):not(.link):not(.search__result) {
   color: var(--global-link-color);
   text-decoration-color: var(--global-link-color);
-  transition:
-    text-decoration-thickness var(--global-duration-1) ease-out,
-    text-underline-offset var(--global-duration-1) ease-out,
-    text-decoration-color var(--global-duration-1) ease-out,
-    color var(--global-duration-1) ease-out,
-    opacity var(--global-duration-1) ease-out;
-
+  transition: text-decoration-thickness var(--global-duration-1) ease-out, text-underline-offset var(--global-duration-1) ease-out, text-decoration-color var(--global-duration-1) ease-out, color var(--global-duration-1) ease-out, opacity var(--global-duration-1) ease-out;
   &:visited {
     color: var(--global-link-visited-color);
   }
