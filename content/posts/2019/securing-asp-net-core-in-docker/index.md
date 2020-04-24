@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/securing-asp-net-core-in-docker/"
 cover_image: "/images/hero/Docker-1366x768.png"
 date: "2019-03-25"
+dateModified: null
 published: true
 categories:
   - "Docker"

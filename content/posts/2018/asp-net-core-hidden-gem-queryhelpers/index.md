@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/asp-net-core-hidden-gem-queryhelpers/"
 cover_image: "/images/hero/NET-1366x768.png"
 date: "2018-07-14"
+dateModified: null
 published: true
 categories:
   - "ASP.NET"

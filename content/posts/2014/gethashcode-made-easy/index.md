@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/gethashcode-made-easy/"
 cover_image: "/images/hero/NET-1366x768.png"
 date: "2014-04-14"
+dateModified: "2019-06-12"
 published: true
 categories:
   - "Base Class Library (BCL)"

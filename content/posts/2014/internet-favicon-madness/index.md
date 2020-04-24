@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/internet-favicon-madness/"
 cover_image: "/images/hero/Favicons-1366x768.png"
 date: "2014-11-24"
+dateModified: null
 published: true
 categories:
   - "ASP.NET"

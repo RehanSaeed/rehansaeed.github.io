@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/pluralsight-vs-linkedin-learning-vs-frontendmasters-vs-egghead-io-vs-youtube/"
 cover_image: "/images/hero/Online-Learning-1366x768.png"
 date: "2018-11-12"
+dateModified: null
 published: true
 categories:
   - "Thoughts"

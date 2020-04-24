@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/is-asp-net-core-now-a-mature-platform/"
 cover_image: "/images/hero/Rocket-1366x768.jpg"
 date: "2018-12-18"
+dateModified: null
 published: true
 categories:
   - "ASP.NET"

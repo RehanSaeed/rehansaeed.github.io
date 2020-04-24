@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/canonical-urls-for-asp-net-mvc/"
 cover_image: "/images/hero/Link-Juice-1366x768.png"
 date: "2015-07-14"
+dateModified: null
 published: true
 categories:
   - "ASP.NET"

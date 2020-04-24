@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/configuration-file-transforms-in-visual-studio-should-be-built-in/"
 cover_image: "/images/hero/Visual-Studio-1366x768.png"
 date: "2014-12-15"
+dateModified: null
 published: true
 categories:
   - "Visual Studio"

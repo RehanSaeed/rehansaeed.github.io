@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/minifying-html-for-asp-net-mvc/"
 cover_image: "/images/hero/The-Internet-Is-A-Series-Of-Tubes-1366x768.jpg"
 date: "2015-08-06"
+dateModified: null
 published: true
 categories:
   - "ASP.NET"

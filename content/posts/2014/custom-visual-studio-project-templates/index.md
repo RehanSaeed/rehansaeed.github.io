@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/custom-visual-studio-project-templates/"
 cover_image: "/images/hero/Visual-Studio-1366x768.png"
 date: "2014-12-10"
+dateModified: null
 published: true
 categories:
   - "Visual Studio"

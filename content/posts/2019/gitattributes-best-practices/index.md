@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/gitattributes-best-practices/"
 cover_image: "/images/hero/Git-1366x768.png"
 date: "2019-07-22"
+dateModified: null
 published: true
 categories:
 tags:

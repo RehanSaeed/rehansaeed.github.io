@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/naming-conventions/"
 cover_image: "/images/hero/Naming-Conventions-1366x768.png"
 date: "2014-09-04"
+dateModified: null
 published: true
 categories:
   - "C++"

@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/wpf-metro-part3-elysium/"
 cover_image: "/images/hero/Elysium-1366x768.png"
 date: "2014-03-17"
+dateModified: null
 published: true
 categories:
   - "Windows Presentation Foundation (WPF)"

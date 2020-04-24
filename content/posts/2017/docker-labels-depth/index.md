@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/docker-labels-depth/"
 cover_image: "/images/hero/Docker-1366x768.png"
 date: "2017-11-20"
+dateModified: null
 published: true
 categories:
   - "Docker"

@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/writing-your-webpack-configuration-in-typescript/"
 cover_image: "/images/hero/TypeScript-1366x768.png"
 date: "2018-01-03"
+dateModified: null
 published: true
 categories:
   - "Front End"

@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/securing-the-aspnet-mvc-web-config/"
 cover_image: "/images/hero/ASP.NET-Core-Boilerplate-1366x768.png"
 date: "2014-12-17"
+dateModified: null
 published: true
 categories:
   - "ASP.NET"

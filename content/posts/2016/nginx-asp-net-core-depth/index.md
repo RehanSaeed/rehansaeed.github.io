@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/nginx-asp-net-core-depth/"
 cover_image: "/images/hero/NGINX-1366x768.png"
 date: "2016-08-21"
+dateModified: null
 published: true
 categories:
   - "ASP.NET"

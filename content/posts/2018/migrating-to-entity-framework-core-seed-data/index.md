@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/migrating-to-entity-framework-core-seed-data/"
 cover_image: "/images/hero/NET-1366x768.png"
 date: "2018-07-01"
+dateModified: null
 published: true
 categories:
   - "Entity Framework Core"

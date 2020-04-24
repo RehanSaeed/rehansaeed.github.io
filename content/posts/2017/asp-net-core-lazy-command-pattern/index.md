@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/asp-net-core-lazy-command-pattern/"
 cover_image: "/images/hero/ASP.NET-Core-Lazy-Command-Pattern-1366x768.png"
 date: "2017-04-08"
+dateModified: null
 published: true
 categories:
   - "ASP.NET"

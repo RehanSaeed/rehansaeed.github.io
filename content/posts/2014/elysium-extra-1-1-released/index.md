@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/elysium-extra-1-1-released/"
 cover_image: "/images/hero/Elysium-Extra-1366x768.png"
 date: "2014-11-05"
+dateModified: null
 published: true
 categories:
   - "Windows Presentation Foundation (WPF)"

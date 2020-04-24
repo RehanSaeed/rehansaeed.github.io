@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/stop-brace-wars-use-stylecop/"
 cover_image: "/images/hero/StyleCop-1366x768.png"
 date: "2014-02-08"
+dateModified: null
 published: true
 categories:
   - "Tools"

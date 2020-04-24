@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/cleaning-up-csproj/"
 cover_image: "/images/hero/Cleaning-Up-CSPROJ-1366x768.png"
 date: "2017-03-18"
+dateModified: null
 published: true
 categories:
   - ".NET"

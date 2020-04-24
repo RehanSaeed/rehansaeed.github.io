@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/logging-with-serilog-exceptions/"
 cover_image: "/images/hero/Serilog.Exceptions-1366x768.png"
 date: "2016-01-31"
+dateModified: null
 published: true
 categories:
   - "Base Class Library (BCL)"

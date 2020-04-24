@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/structured-data-using-schema-net/"
 cover_image: "/images/hero/Schema.NET-1366x768.png"
 date: "2017-07-02"
+dateModified: null
 published: true
 categories:
   - "ASP.NET"

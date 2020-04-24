@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/wpf-metro-part2-mahapps-metro/"
 cover_image: "/images/hero/MahApps-Metro-1366x768.png"
 date: "2014-03-02"
+dateModified: null
 published: true
 categories:
   - "Windows Presentation Foundation (WPF)"

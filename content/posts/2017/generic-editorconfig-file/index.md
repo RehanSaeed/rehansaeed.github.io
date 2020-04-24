@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/generic-editorconfig-file/"
 cover_image: "/images/hero/A-Very-Generic-Editorconfig-File-1366x768.png"
 date: "2017-10-01"
+dateModified: null
 published: true
 categories:
   - "Tools"

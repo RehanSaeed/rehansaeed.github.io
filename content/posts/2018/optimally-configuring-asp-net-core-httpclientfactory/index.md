@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/optimally-configuring-asp-net-core-httpclientfactory/"
 cover_image: "/images/hero/NET-1366x768.png"
 date: "2018-08-20"
+dateModified: null
 published: true
 categories:
   - "ASP.NET"

@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/custom-project-templates-using-dotnet-new/"
 cover_image: "/images/hero/NET-1366x768.png"
 date: "2017-01-18"
+dateModified: null
 published: true
 categories:
   - "Tools"

@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/subresource-integrity-taghelper-using-asp-net-core/"
 cover_image: "/images/hero/Make-Security-Easy-1366x768.png"
 date: "2016-03-06"
+dateModified: null
 published: true
 categories:
   - "ASP.NET"

@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/just-start-the-first-blog-post/"
 cover_image: "/images/hero/Just-Start-1366x768.png"
 date: "2014-02-01"
+dateModified: null
 published: true
 categories:
   - "Thoughts"

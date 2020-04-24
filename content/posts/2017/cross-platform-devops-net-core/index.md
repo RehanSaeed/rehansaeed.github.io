@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/cross-platform-devops-net-core/"
 cover_image: "/images/hero/Dotnet-Cake-AppVeyor-Travis-1366x768.png"
 date: "2017-01-28"
+dateModified: null
 published: true
 categories:
   - "Tools"

@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/content-security-policy-for-asp-net-mvc/"
 cover_image: "/images/hero/Content-Security-Policy-CSP-for-ASP.NET-MVC-1366x768.png"
 date: "2015-03-17"
+dateModified: null
 published: true
 categories:
   - "ASP.NET"

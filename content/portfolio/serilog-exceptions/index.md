@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "https://github.com/RehanSaeed/Serilog.Exceptions"
 cover_image: "/images/hero/Serilog.Exceptions-1366x768.png"
 date: "2015-12-07"
+dateModified: null
 published: true
 categories:
   - "Open Source"

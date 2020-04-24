@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/what-dotnet-new-could-be/"
 cover_image: "/images/hero/Dotnet-Boxed-1366x768.png"
 date: "2019-12-31"
+dateModified: null
 published: true
 categories:
   - "Tools"

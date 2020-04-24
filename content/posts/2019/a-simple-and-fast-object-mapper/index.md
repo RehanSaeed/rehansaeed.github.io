@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/a-simple-and-fast-object-mapper/"
 cover_image: "/images/hero/Dotnet-Boxed-1366x768.png"
 date: "2019-03-05"
+dateModified: null
 published: true
 categories:
   - "Entity Framework Core"

@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/reactive-extensions-part2-wrapping-events/"
 cover_image: "/images/hero/Reactive-Extensions-1366x768.png"
 date: "2014-02-13"
+dateModified: null
 published: true
 categories:
   - "Reactive Extensions (Rx)"

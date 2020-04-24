@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/wpf-metro-part1-modern-ui-for-wpf/"
 cover_image: "/images/hero/Modern-UI-for-WPF-1366x768.png"
 date: "2014-02-19"
+dateModified: null
 published: true
 categories:
   - "Windows Presentation Foundation (WPF)"

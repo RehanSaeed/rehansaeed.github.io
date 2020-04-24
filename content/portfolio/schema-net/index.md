@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "https://github.com/RehanSaeed/Schema.NET"
 cover_image: "/images/hero/Schema.NET-1366x768.png"
 date: "2017-06-07"
+dateModified: null
 published: true
 categories:
   - "Open Source"

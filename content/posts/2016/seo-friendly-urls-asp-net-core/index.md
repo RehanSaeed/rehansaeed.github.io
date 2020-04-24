@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/seo-friendly-urls-asp-net-core/"
 cover_image: "/images/hero/Search-Engine-Optimization-SEO-1366x768.png"
 date: "2016-12-17"
+dateModified: null
 published: true
 categories:
   - "ASP.NET"

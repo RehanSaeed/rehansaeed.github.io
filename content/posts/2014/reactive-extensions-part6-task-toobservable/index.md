@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/reactive-extensions-part6-task-toobservable/"
 cover_image: "/images/hero/Reactive-Extensions-1366x768.png"
 date: "2014-04-25"
+dateModified: null
 published: true
 categories:
   - "Reactive Extensions (Rx)"

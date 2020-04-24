@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/model-view-viewmodel-mvvm-part2-idisposable/"
 cover_image: "/images/hero/MVVM-1366x768.png"
 date: "2014-06-13"
+dateModified: null
 published: true
 categories:
   - "Design Patterns"

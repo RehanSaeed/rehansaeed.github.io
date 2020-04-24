@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/optimally-configuring-entity-framework-core/"
 cover_image: "/images/hero/NET-1366x768.png"
 date: "2018-07-08"
+dateModified: null
 published: true
 categories:
   - "Entity Framework Core"
