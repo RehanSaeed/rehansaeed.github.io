@@ -2,7 +2,7 @@
   <u-content-box class="post" tag="article">
 
     <header class="post__header">
-      <g-image alt="Cover image" v-if="post.heroImage" :src="post.heroImage"/>
+      <g-image :alt="post.heroImageAlt || post.title" v-if="post.heroImage" :src="post.heroImage"/>
     </header>
 
     <div class="post__content" v-html="post.content" />

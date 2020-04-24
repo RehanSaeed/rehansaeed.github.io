@@ -165,6 +165,7 @@ query Post ($id: ID!) {
     description
     content
     heroImage (width: 860, blur: 10)
+    heroImageAlt
   }
 }
 </page-query>
