@@ -44,7 +44,7 @@
     "remark-validate-links": "^10.0.0"
   },
   "devDependencies": {
-    "node-sass": "^4.13.1",
+    "node-sass": "^4.14.0",
     "sass-loader": "^8.0.2"
   },
   "scripts": {
