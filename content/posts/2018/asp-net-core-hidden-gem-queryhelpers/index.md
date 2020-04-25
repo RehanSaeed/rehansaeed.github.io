@@ -4,7 +4,6 @@ description: "How to build a URL containing dynamic query arguments using the AS
 author: "Muhammad Rehan Saeed"
 permalink: "/asp-net-core-hidden-gem-queryhelpers/"
 heroImage: "/images/hero/NET-1366x768.png"
-heroImageAlt: ".NET"
 date: "2018-07-14"
 dateModified: null
 published: true

@@ -4,7 +4,6 @@ description: "How to optimally configure a HttpClient using the new HttpClientFa
 author: "Muhammad Rehan Saeed"
 permalink: "/optimally-configuring-asp-net-core-httpclientfactory/"
 heroImage: "/images/hero/NET-1366x768.png"
-heroImageAlt: ".NET"
 date: "2018-08-20"
 dateModified: null
 published: true

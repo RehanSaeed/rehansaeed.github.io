@@ -4,7 +4,6 @@ description: "Implementing GetHashCode is hard work and little understood. Learn
 author: "Muhammad Rehan Saeed"
 permalink: "/gethashcode-made-easy/"
 heroImage: "/images/hero/NET-1366x768.png"
-heroImageAlt: ".NET"
 date: "2014-04-14"
 dateModified: "2019-06-12"
 published: true

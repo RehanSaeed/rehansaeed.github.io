@@ -4,7 +4,6 @@ description: "It's difficult to know if your 'dotnet new' based project will wor
 author: "Muhammad Rehan Saeed"
 permalink: "/unit-testing-dotnet-new-templates/"
 heroImage: "/images/hero/NET-1366x768.png"
-heroImageAlt: ".NET"
 date: "2019-08-21"
 dateModified: null
 published: true

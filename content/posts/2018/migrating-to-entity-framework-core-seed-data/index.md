@@ -4,7 +4,6 @@ description: "How to migrate an existing database to use Entity Framework Core 2
 author: "Muhammad Rehan Saeed"
 permalink: "/migrating-to-entity-framework-core-seed-data/"
 heroImage: "/images/hero/NET-1366x768.png"
-heroImageAlt: ".NET"
 date: "2018-07-01"
 dateModified: null
 published: true

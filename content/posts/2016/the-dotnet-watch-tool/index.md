@@ -4,7 +4,6 @@ description: "The dotnet watch tool is a file watcher for dotnet that restarts t
 author: "Muhammad Rehan Saeed"
 permalink: "/the-dotnet-watch-tool/"
 heroImage: "/images/hero/NET-1366x768.png"
-heroImageAlt: ".NET"
 date: "2016-09-10"
 dateModified: null
 published: true

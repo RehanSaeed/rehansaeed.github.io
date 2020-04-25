@@ -4,7 +4,6 @@ description: "The importance of using ConfigureAwait when using the Task Paralle
 author: "Muhammad Rehan Saeed"
 permalink: "/configureawait-task-parallel-library/"
 heroImage: "/images/hero/NET-1366x768.png"
-heroImageAlt: ".NET"
 date: "2014-02-07"
 dateModified: null
 published: true

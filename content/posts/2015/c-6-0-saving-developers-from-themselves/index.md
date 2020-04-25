@@ -4,7 +4,6 @@ description: "C# 6.0 helps reduce human error and save developers from themselve
 author: "Muhammad Rehan Saeed"
 permalink: "/c-6-0-saving-developers-from-themselves/"
 heroImage: "/images/hero/NET-1366x768.png"
-heroImageAlt: ".NET"
 date: "2015-05-10"
 dateModified: null
 published: true
