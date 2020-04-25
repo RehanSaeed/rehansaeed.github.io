@@ -3,7 +3,7 @@ title: "Migrating to Entity Framework Core Seed Data"
 description: "How to migrate an existing database to use Entity Framework Core 2.1 Seed Data to insert static data into your tables while using migrations."
 author: "Muhammad Rehan Saeed"
 permalink: "/migrating-to-entity-framework-core-seed-data/"
-heroImage: "/images/hero/NET-1366x768.png"
+heroImage: "/images/hero/Microsoft-.NET-1366x768.png"
 date: "2018-07-01"
 dateModified: null
 published: true
