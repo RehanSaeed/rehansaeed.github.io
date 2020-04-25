@@ -26,6 +26,7 @@ import author from '~/components/author.vue';
 import newsletter from '~/components/newsletter.vue';
 import post from '~/components/post.vue';
 import postMeta from '~/components/post-meta.vue';
+import { getOpenGraphImage, getSchemaImageObject } from '~/framework/images.js';
 
 export default {
   components: {
@@ -37,8 +38,6 @@ export default {
   },
   computed: {
     image: function() { return this.$static.metadata.url + this.$page.post.heroImage; },
-    imageHeight: function() { return this.image.match(/(\d*)x(\d*)/)[2]; },
-    imageWidth: function() { return this.image.match(/(\d*)x(\d*)/)[1]; },
     url: function() { return this.$static.metadata.url + this.$page.post.path; }
   },
   metaInfo () {
@@ -61,9 +60,7 @@ export default {
         // Open Graph
         { property: 'og:title', content: this.$page.post.title },
         { property: 'og:url', content: this.url },
-        { property: 'og:image', content: this.image },
-        { property: 'og:image:height', content: this.imageHeight },
-        { property: 'og:image:width', content: this.imageWidth },
+        ...getOpenGraphImage(this.image),
         { property: 'og:description', content: this.$page.post.description },
         { property: 'og:locale', content: this.$static.metadata.language.replace('-', '_') },
         { property: 'og:site_name', content: this.$static.metadata.name },
@@ -90,12 +87,7 @@ export default {
             keywords: this.$page.post.tags.map(x => x.title).join(),
             url: this.url,
             image: [
-              {
-                '@type': 'ImageObject',
-                url: this.image,
-                width: this.imageWidth,
-                height: this.imageHeight,
-              }
+              getSchemaImageObject(this.image),
             ],
             datePublished: this.$page.post.date,
             dateModified: this.$page.post.dateModified,
@@ -165,7 +157,6 @@ query Post ($id: ID!) {
     description
     content
     heroImage (width: 860, blur: 10)
-    heroImageAlt
   }
 }
 </page-query>

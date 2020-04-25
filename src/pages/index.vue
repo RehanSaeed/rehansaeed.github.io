@@ -144,7 +144,6 @@ query {
         timeToRead
         description
         heroImage (width: 770, height: 380, blur: 10)
-        heroImageAlt
         path
         tags {
           id

@@ -1,7 +1,10 @@
 <template>
   <u-content-box class="post-card" tag="article" hoverable :class="{'post-card--has-poster' : post.poster}">
     <div class="post-card__header">
-      <g-image :alt="post.heroImageAlt || post.title" v-if="post.heroImage" class="post-card__image" :src="post.heroImage"/>
+      <g-image v-if="post.heroImage"
+        class="post-card__image"
+        :alt="imageMeta.alt"
+        :src="post.heroImage"/>
     </div>
     <div class="post-card__content">
       <u-heading level="2" class="post-card__title" v-html="post.title" />
@@ -20,6 +23,7 @@ import contentBox from '~/components/shared/content-box.vue';
 import heading from '~/components/shared/heading.vue';
 import postMeta from '~/components/post-meta.vue';
 import tags from '~/components/tags.vue';
+import { getImageMetadata } from '~/framework/images.js';
 
 export default {
   name: 'u-post-card',
@@ -33,6 +37,9 @@ export default {
     post: {
       type: Object,
     },
+  },
+  computed: {
+    imageMeta: function() { return getImageMetadata(this.post.heroImage); },
   },
 }
 </script>

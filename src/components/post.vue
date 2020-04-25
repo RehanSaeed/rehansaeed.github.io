@@ -2,7 +2,9 @@
   <u-content-box class="post" tag="article">
 
     <header class="post__header">
-      <g-image :alt="post.heroImageAlt || post.title" v-if="post.heroImage" :src="post.heroImage"/>
+      <g-image v-if="post.heroImage"
+        :alt="imageMeta.alt"
+        :src="post.heroImage"/>
     </header>
 
     <div class="post__content" v-html="post.content" />
@@ -23,6 +25,7 @@ import contentBox from '~/components/shared/content-box.vue';
 import editPostButton from '~/components/edit-post-button.vue';
 import shareButton from '~/components/share-button.vue';
 import tags from '~/components/tags.vue';
+import { getImageMetadata } from '~/framework/images.js';
 
 export default {
   components: {
@@ -35,6 +38,9 @@ export default {
     post: {
       type: Object,
     },
+  },
+  computed: {
+    imageMeta: function() { return getImageMetadata(this.post.heroImage); },
   },
 }
 </script>
