@@ -4,6 +4,7 @@ description: "Mocking services using Moq while integration testing ASP.NET Core 
 author: "Muhammad Rehan Saeed"
 permalink: "/asp-net-core-integration-testing-mocking-using-moq/"
 heroImage: "/images/hero/NET-1366x768.png"
+heroImageAlt: ".NET"
 date: "2020-01-03"
 dateModified: null
 published: true

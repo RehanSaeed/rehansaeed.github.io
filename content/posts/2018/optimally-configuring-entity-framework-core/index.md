@@ -4,6 +4,7 @@ description: "How to optimally configure your Entity Framework Core DbContext fo
 author: "Muhammad Rehan Saeed"
 permalink: "/optimally-configuring-entity-framework-core/"
 heroImage: "/images/hero/NET-1366x768.png"
+heroImageAlt: ".NET"
 date: "2018-07-08"
 dateModified: null
 published: true

@@ -5,6 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/cheat-sheet/"
 heroImage: "/images/hero/NET-1366x768.png"
 heroImageAlt: ".NET"
+heroImageAlt: ".NET"
 date: "2020-03-04T11:22:33Z"
 dateModified: "2020-04-22T11:22:33Z"
 published: false

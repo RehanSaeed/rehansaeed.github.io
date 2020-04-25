@@ -4,6 +4,7 @@ description: "How to create project templates using dotnet new and the template.
 author: "Muhammad Rehan Saeed"
 permalink: "/custom-project-templates-using-dotnet-new/"
 heroImage: "/images/hero/NET-1366x768.png"
+heroImageAlt: ".NET"
 date: "2017-01-18"
 dateModified: null
 published: true
