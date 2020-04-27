@@ -1,12 +1,14 @@
 h1, h2, h3, h4, h5, h6 {
-  transition: color var(--global-duration-3);
   color: var(--global-title-color);
-  margin-top: var(--global-space-fixed-5);
-  margin-bottom: var(--global-space-fixed-4);
   font-family: var(--global-font-family-heading);
   font-weight: var(--global-font-weight-normal);
+  hyphens: auto;
   line-height: var(--global-line-height-1);
+  margin-top: var(--global-space-fixed-5);
+  margin-bottom: var(--global-space-fixed-4);
   max-width: var(--global-line-length-max);
+  transition: color var(--global-duration-3);
+  word-break: break-all;
 }
 
 h1 {
