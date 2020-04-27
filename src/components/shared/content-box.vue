@@ -21,9 +21,10 @@ export default {
 
 <style lang="scss">
 .content-box {
-	background-color: var(--global-content-background-color);
+  background-color: var(--global-content-background-color);
   border-radius: var(--global-border-radius);
   box-shadow: 1px 1px 5px 0 rgba(0,0,0,.02), 1px 1px 15px 0 rgba(0,0,0,.03);
+  overflow-wrap: break-word;
 	padding: var(--global-space-fluid-6);
   transition: transform var(--global-duration-2), background-color var(--global-duration-2), box-shadow var(--global-duration-3);
 }
