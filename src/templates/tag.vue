@@ -85,7 +85,7 @@ query Tag ($id: ID!) {
   tag (id: $id) {
     title
     path
-    belongsTo {
+    belongsTo(filter:{typeName:{eq:post}}) {
       edges {
         node {
           ...on post {
