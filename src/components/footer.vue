@@ -41,9 +41,5 @@ query {
   > span {
     margin: 0 .35em;
   }
-
-  a {
-    color: currentColor;
-  }
 }
 </style>

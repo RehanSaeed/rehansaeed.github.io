@@ -1,4 +1,4 @@
-a:not(.button):not(.post-tags__link):not(.portfolio-tags__link):not(.link):not(.search__result) {
+a {
   cursor: pointer;
   color: var(--global-link-color);
   text-decoration-color: var(--global-link-color);
