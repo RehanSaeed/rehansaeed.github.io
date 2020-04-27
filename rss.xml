@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://preview.rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Sun, 26 Apr 2020 06:59:29 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 27 Apr 2020 17:32:28 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -118,7 +118,7 @@ Some Code
 <h1 id="embed-codepen">Embed CodePen</h1>
 <p><a href="https://codepen.io/dyarfi/pen/VwLEjBd">https://codepen.io/dyarfi/pen/VwLEjBd</a></p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/NET-1366x768.png"/>
+            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
         </item>
         <item>
             <title><![CDATA[ASP.NET Core Integration Testing & Mocking using Moq]]></title>
@@ -258,7 +258,7 @@ Some Code
 <h2 id="conclusions">Conclusions</h2>
 <p>I wrote this because there is little to no information on how to combine ASP.NET Core with Moq in integration tests. I&#39;ve messed about with using <code>IClassFixture</code> as the ASP.NET Core documentation tells you to do and it&#39;s just not a good idea with Moq which needs a clean slate before each test. I hope this stops others going through much pain.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/NET-1366x768.png"/>
+            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
         </item>
         <item>
             <title><![CDATA[What dotnet new Could Be]]></title>
@@ -362,7 +362,7 @@ Some Code
 <h2 id="where-to-get-it">Where To Get It?</h2>
 <p>You can download the <a href="https://www.nuget.org/packages/Boxed.DotnetNewTest/">Boxed.DotnetNewTest</a> NuGet package or see the <a href="https://github.com/Dotnet-Boxed/Framework#boxeddotnetnewtest">source code</a> on GitHub.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/NET-1366x768.png"/>
+            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
         </item>
         <item>
             <title><![CDATA[.gitattributes Best Practices]]></title>
@@ -1162,7 +1162,7 @@ public class HttpClientOptions
 <p>I realize that was a lot of boilerplate code to write. It was difficult to write this as more than one blog post. To aid in digestion, I&#39;ve created a <a href="https://github.com/RehanSaeed/HttpClientSample">GitHub sample project</a> with the full working code.</p>
 <p>The sample project contains two API&#39;s. One makes a HTTP request to the other. You can pass a query argument to decide whether the callee API will fail or not and try out the retry and circuit breaker logic. Feel free to play with the configuration in <code>appsettings.json</code> and see what options work best for your application.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/NET-1366x768.png"/>
+            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
         </item>
         <item>
             <title><![CDATA[ASP.NET Core Hidden Gem - QueryHelpers]]></title>
@@ -1186,7 +1186,7 @@ string url = QueryHelpers.AddQueryString(&quot;/example/path&quot;, queryArgumen
 <p>It&#39;s also worth noting that the values of the query arguments are URL encoded for you too. The type also has a <code>ParseQuery</code> method to parse query strings but that&#39;s less useful to us as ASP.NET Core controllers do that for you.</p>
 <p>Finally, .NET also has a type called <code>UriBuilder</code> that you should know about. It&#39;s more geared towards building up a full URL, rather than a relative URL as I&#39;m doing above. It has a <code>Query</code> property that you can use to set the query string but it&#39;s only of type string, so much less useful than <code>QueryHelpers.AddQueryString</code>.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/NET-1366x768.png"/>
+            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
         </item>
         <item>
             <title><![CDATA[Optimally Configuring Entity Framework Core]]></title>
@@ -1227,7 +1227,7 @@ string url = QueryHelpers.AddQueryString(&quot;/example/path&quot;, queryArgumen
 <h1 id="the-end">The End...</h1>
 <p>It took me a while to craft this setup, I hope you find it useful. You can find out more by reading the excellent Entity Framework Core <a href="https://docs.microsoft.com/en-us/ef/core/miscellaneous/configuring-dbcontext">docs</a>.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/NET-1366x768.png"/>
+            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
         </item>
         <item>
             <title><![CDATA[Migrating to Entity Framework Core Seed Data]]></title>
@@ -1312,7 +1312,7 @@ public class ApplicationDbContext : DbContext
 </ol>
 <p>That&#39;s it, hope that helps someone.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/NET-1366x768.png"/>
+            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
         </item>
         <item>
             <title><![CDATA[.NET Boxed]]></title>
@@ -1412,7 +1412,7 @@ In both cases you have to be careful to start the application by clicking Debug 
 <h1 id="net-boxed-templates">.NET Boxed Templates</h1>
 <p>I&#39;ve updated the <a href="https://github.com/Dotnet-Boxed/Templates">.NET Boxed</a> family of project templates with this feature built in. Happy coding!</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/NET-1366x768.png"/>
+            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
         </item>
         <item>
             <title><![CDATA[Writing Code while Asleep]]></title>
@@ -3091,7 +3091,7 @@ script:
 <h1 id="conclusions">Conclusions</h1>
 <p>Overall I&#39;m really impressed with where the new project templating system is headed. It&#39;s very easy to do something simple but also very powerful should you need to do something complicated. There is a few blog posts worth of material here, so expect a few more posts in the coming weeks.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/NET-1366x768.png"/>
+            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
         </item>
         <item>
             <title><![CDATA[Reactive Extensions (Rx) – Part 8 – Timeouts]]></title>
@@ -3565,7 +3565,7 @@ In both cases you have to be careful to start the application by clicking <code>
 <h1 id="net-boxed">.NET Boxed</h1>
 <p>If you read my blog posts, you&#39;ll be seeing a trend by now. I built the above feature into the <a href="https://github.com/Dotnet-Boxed/Templates">.NET Boxed</a> project templates by default so you can create a new project with this feature built-in, right out of the box. Happy coding!</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/NET-1366x768.png"/>
+            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
         </item>
         <item>
             <title><![CDATA[NGINX for ASP.NET Core In-Depth]]></title>
@@ -5825,7 +5825,7 @@ string nameAndAge = $&quot;Name:{name}, Age:{age}&quot;;</code></pre>
 <p>As you can see there is a common theme with two of the three C# 6.0 features I&#39;ve picked above. They give us tools to better deal with strings which have terrible IDE and language support. Making a typo in a string gives us no compile time errors and Visual Studio doesn&#39;t help either. Each of these features has allowed us to deal with strongly typed objects instead, which have full language and IDE support.</p>
 <p>The Null-Conditional operator is another great tool to help mitigate really common but minor bugs that catch even the most experienced developers out. These are great features, and should help stop silly mistakes that all of us developers make. We are after all, human.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/NET-1366x768.png"/>
+            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
         </item>
         <item>
             <title><![CDATA[Content Security Policy (CSP) for ASP.NET MVC]]></title>
@@ -8417,7 +8417,7 @@ public struct HashCode : IEquatable&lt;HashCode&gt;
 <h1 id="license">License</h1>
 <p>I&#39;ve been asked repeatedly for licensing of my code above. Developers have been asking permission to use it in a Kerbal Space program plugin and even in the excellent <a href="https://chocolatey.org">Chocolatey</a> project which has been totally unexpected for me because this is code I wrote years ago. It just goes to show how fundamental <code>GetHashCode</code> is. Please consider the code as MIT licensed, do good with it and be excellent to each other!</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/NET-1366x768.png"/>
+            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
         </item>
         <item>
             <title><![CDATA[Reactive Extensions (Rx) – Part 5 – Awaiting Observables]]></title>
@@ -9300,7 +9300,7 @@ public async Task UpdateUserInterface()
 <p>So now all our XML manipulation is done on the <code>ThreadPool</code> thread along with the HTTP GET we are doing using the <code>HttpClient</code>. Notice however, that when we return the blog titles to the calling method we are back on the UI thread. Each time you do an <code>await</code>, the default behaviour is to continue on the thread we started with. By adding <code>ConfigureAwait(false)</code>, we are overriding this behaviour to continue on whatever thread the Task was running on.</p>
 <p>For more on the Task Parallel Library (TPL) I highly recommend reading <a href="http://blogs.msdn.com/b/toub/" title="Stephen Toub&#39;s">Stephen Toub&#39;s</a> blog.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/NET-1366x768.png"/>
+            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
         </item>
         <item>
             <title><![CDATA[Just Start - The First Blog Post]]></title>
