@@ -44,6 +44,12 @@ export default {
   &:focus {
     outline: none;
   }
+
+  &:disabled {
+    color: var(--global-disabled-color);
+    cursor: not-allowed;
+    transform: scale(1);
+  }
 }
 
 .button--bordered {

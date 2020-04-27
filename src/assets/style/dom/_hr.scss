@@ -1,0 +1,8 @@
+hr {
+  display: block;
+  height: var(--global-border-width-1);
+  border: 0;
+  border-top: var(--global-border-width-1) solid var(--global-border-color);
+  margin: var(--global-space-fixed-5) 0;
+  padding: 0;
+}
