@@ -21,6 +21,7 @@ import author from '~/components/author.vue';
 import newsletter from '~/components/newsletter.vue';
 import pager from '~/components/pager.vue';
 import postCard from '~/components/post-card.vue';
+import { previousUrl, nextUrl } from '~/framework/paging.js';
 
 export default {
   components: {
@@ -35,12 +36,16 @@ export default {
     image: function() { return this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'; },
     imageHeight: function() { return this.image.match(/(\d*)x(\d*)/)[2]; },
     imageWidth: function() { return this.image.match(/(\d*)x(\d*)/)[1]; },
+    nextUrl: function() { return nextUrl(this.$page.posts.pageInfo, this.$static.metadata.url); },
+    previousUrl: function() { return previousUrl(this.$page.posts.pageInfo, this.$static.metadata.url); }
   },
   metaInfo() {
     return {
       title: this.title,
       link: [
         { rel: 'canonical', href: this.$static.metadata.url },
+        ...[{ rel: 'next', href: this.nextUrl }].filter(x => x.href),
+        ...[{ rel: 'prev', href: this.previousUrl }].filter(x => x.href),
       ],
       meta: [
         { name: 'description', content: this.description },

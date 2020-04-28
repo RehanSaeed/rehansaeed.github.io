@@ -11,6 +11,7 @@
 <script>
 import contentBox from '~/components/shared/content-box.vue';
 import link from '~/components/shared/link.vue';
+import { previousUrl, nextUrl } from '~/framework/paging.js';
 
 export default {
   components: {
@@ -24,14 +25,8 @@ export default {
     }
   },
   computed: {
-    previousUrl: function() {
-      if (this.pageInfo.currentPage == 2) {
-        return '/';
-      }
-
-      return `/${this.pageInfo.currentPage - 1}/`;
-    },
-    nextUrl: function() { return `/${this.pageInfo.currentPage + 1}/`; }
+    previousUrl: function() { return previousUrl(this.pageInfo); },
+    nextUrl: function() { return nextUrl(this.pageInfo); }
   }
 }
 </script>
