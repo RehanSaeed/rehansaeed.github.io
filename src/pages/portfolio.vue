@@ -2,7 +2,10 @@
   <Layout>
     <div class="portfolio">
 
-      <u-heading level="1" center>Portfolio</u-heading>
+      <div class="portfolio__title">
+        <u-heading level="1" center>Portfolio</u-heading>
+        <p>These are some of the open source projects that I've started and maintained. There are many others I've contributed to which you can see in my GitHub profile and of course there are other commercial projects that I cannot disclose.</p>
+      </div>
 
       <div class="portfolio__items">
         <u-portfolio-card
@@ -110,6 +113,12 @@ query {
   display: grid;
   grid-gap: var(--global-space-fluid-5);
   grid-template-columns: 1fr;
+}
+
+.portfolio__title {
+  display: grid;
+  justify-items: center;
+  text-align: center;
 }
 
 .portfolio__items {
