@@ -8,6 +8,8 @@
         <u-post-card v-for="edge in $page.posts.edges" :key="edge.node.id" :post="edge.node"/>
       </div>
 
+      <u-pager class="posts__pager" :page-info="$page.posts.pageInfo"/>
+
       <u-newsletter class="posts__newsletter"/>
 
     </div>
@@ -17,12 +19,14 @@
 <script>
 import author from '~/components/author.vue';
 import newsletter from '~/components/newsletter.vue';
+import pager from '~/components/pager.vue';
 import postCard from '~/components/post-card.vue';
 
 export default {
   components: {
     'u-author': author,
     'u-newsletter': newsletter,
+    'u-pager': pager,
     'u-post-card': postCard,
   },
   computed: {
@@ -134,8 +138,18 @@ query {
 </static-query>
 
 <page-query>
-query {
-  posts: allPost(filter: { published: { eq: true }}, sortBy: "date") {
+query($page: Int) {
+  posts: allPost(perPage: 10, page: $page, filter: { published: { eq: true }}, sortBy: "date") @paginate {
+    pageInfo {
+      totalPages
+      currentPage
+      perPage
+      totalItems
+      hasPreviousPage
+      hasNextPage
+      isFirst
+      isLast
+    }
     edges {
       node {
         id
@@ -170,6 +184,10 @@ query {
   grid-gap: var(--global-space-fluid-5);
   grid-template-columns: repeat(auto-fit, minmax(var(--global-space-content-min-width), var(--global-space-content-max-width)));
   justify-content: center;
+}
+
+.posts__pager {
+  justify-self: center;
 }
 
 .posts__newsletter {

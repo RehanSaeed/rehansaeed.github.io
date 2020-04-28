@@ -1,0 +1,65 @@
+<template>
+  <div class="pager">
+    <u-link v-if="pageInfo.hasPreviousPage" class="pager__previous-button" bordered contrast :to="previousUrl">Previous</u-link>
+
+    <strong class="pager__info">Page {{pageInfo.currentPage}} of {{pageInfo.totalPages}}</strong>
+
+    <u-link v-if="pageInfo.hasNextPage" class="pager__next-button" bordered contrast :to="nextUrl">Next</u-link>
+  </div>
+</template>
+
+<script>
+import contentBox from '~/components/shared/content-box.vue';
+import link from '~/components/shared/link.vue';
+
+export default {
+  components: {
+    'u-content-box': contentBox,
+    'u-link': link,
+  },
+  props: {
+    pageInfo: {
+      required: true,
+      type: Object
+    }
+  },
+  computed: {
+    previousUrl: function() {
+      if (this.pageInfo.currentPage == 2) {
+        return '/';
+      }
+
+      return `/${this.pageInfo.currentPage - 1}/`;
+    },
+    nextUrl: function() { return `/${this.pageInfo.currentPage + 1}/`; }
+  }
+}
+</script>
+
+<style lang="scss">
+.pager {
+  align-items: center;
+  display: grid;
+  grid-gap: var(--global-space-fluid-4);
+  grid-template-areas: "previous info next";
+  grid-template-columns: 1fr 1fr 1fr;
+  text-align: center;
+}
+
+.pager__info {
+  grid-area: info;
+}
+
+.pager__previous-button,
+.pager__next-button {
+  width: 7rem;
+}
+
+.pager__previous-button {
+  grid-area: previous;
+}
+
+.pager__next-button {
+  grid-area: next;
+}
+</style>

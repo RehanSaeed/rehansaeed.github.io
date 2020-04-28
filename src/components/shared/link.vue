@@ -1,5 +1,5 @@
 <template>
-  <g-link class="link" :class="{ 'link--bordered': bordered }" :to="to" :aria-label="label">
+  <g-link class="link" :class="{ 'link--bordered': bordered, 'link--contrast': contrast, 'link--primary': primary }" :to="to" :aria-label="label">
     <slot/>
   </g-link>
 </template>
@@ -10,6 +10,12 @@ export default {
   props: {
     bordered: {
       type: Boolean,
+    },
+    contrast: {
+      type: Boolean
+    },
+    primary: {
+      type: Boolean
     },
     label: {
       type: String,
@@ -48,5 +54,24 @@ export default {
   border-radius: var(--global-border-radius);
   font-size: var(--global-font-size-1);
   padding: var(--global-space-fixed-2) var(--global-space-fixed-4);
+}
+
+.link--contrast {
+  background-color: var(--global-content-background-color);
+}
+
+.link--primary {
+  color: var(--global-accent-color);
+  border-color: var(--global-accent-color);
+
+  &:visited,
+  &:focus,
+  &:active {
+    color: var(--global-accent-color);
+  }
+
+  &:hover {
+    color: var(--global-accent-color);
+  }
 }
 </style>

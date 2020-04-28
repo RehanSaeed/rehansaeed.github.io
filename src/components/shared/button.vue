@@ -1,5 +1,5 @@
 <template>
-  <button class="button" :class="{ 'button--bordered': bordered }" :type="type">
+  <button class="button" :class="{ 'button--bordered': bordered, 'button--contrast': contrast, 'button--primary': primary }" :type="type">
     <slot/>
   </button>
 </template>
@@ -9,6 +9,12 @@ export default {
   name: 'u-button',
   props: {
     bordered: {
+      type: Boolean
+    },
+    contrast: {
+      type: Boolean
+    },
+    primary: {
       type: Boolean
     },
     submit: {
@@ -58,5 +64,13 @@ export default {
   border-radius: var(--global-border-radius);
   font-size: var(--global-font-size-1);
   padding: var(--global-space-fixed-2) var(--global-space-fixed-4);
+}
+
+.button--contrast {
+  background-color: var(--global-content-background-color);
+}
+
+.link--primary {
+  color: var(--global-accent-color);
 }
 </style>
