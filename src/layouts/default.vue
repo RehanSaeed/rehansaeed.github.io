@@ -35,8 +35,8 @@ export default {
 
 .main {
   margin: 0 auto;
-  padding-left: calc(var(--global-space-fluid-6) * 2.7);
-  padding-right: calc(var(--global-space-fluid-6) * 2.7);
+  padding-left: var(--global-space-main);
+  padding-right: var(--global-space-main);
 
   @media screen and (max-width: 576px) { // $global-breakpoint-sm
     padding-left: 0;

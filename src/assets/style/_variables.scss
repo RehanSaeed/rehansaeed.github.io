@@ -102,6 +102,11 @@
   --global-space-fixed-5: calc(var(--global-space-fixed-6) / 2);
   --global-space-fixed-7: calc(var(--global-space-fixed-6) * 2);
 
+  --global-space-main: calc(var(--global-space-fluid-6) * 2.7);
+  @media screen and (max-width: 576px) { // $global-breakpoint-sm
+    --global-space-main: 0;
+  }
+
   // Duration
   --global-duration-1: 200ms;
   --global-duration-2: 300ms;
