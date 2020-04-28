@@ -113,12 +113,9 @@ query {
 }
 
 .portfolio__items {
-  --portfolio-items-max-width: calc(var(--global-space-fluid-6) * 2 + var(--global-line-length-max));
-  --portfolio-items-min-width: calc(var(--global-space-fluid-6) * 2 + var(--global-line-length-min));
-
   display: grid;
   grid-gap: var(--global-space-fluid-5);
-  grid-template-columns: repeat(auto-fit, minmax(var(--portfolio-items-min-width), var(--portfolio-items-max-width)));
+  grid-template-columns: repeat(auto-fit, minmax(var(--global-space-content-min-width), var(--global-space-content-max-width)));
   justify-content: center;
 }
 

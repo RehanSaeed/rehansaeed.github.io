@@ -107,6 +107,12 @@
     --global-space-main: 0;
   }
 
+  --global-space-content-max-width: calc(var(--global-space-fluid-6) * 2 + var(--global-line-length-max));
+  --global-space-content-min-width: calc(var(--global-space-fluid-6) * 2 + var(--global-line-length-min));
+  @media screen and (max-width: 576px) { // $global-breakpoint-sm
+    --global-space-content-min-width: calc(var(--global-space-fluid-6) * 2);
+  }
+
   // Duration
   --global-duration-1: 200ms;
   --global-duration-2: 300ms;

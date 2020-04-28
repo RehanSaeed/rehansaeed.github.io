@@ -163,12 +163,9 @@ query Post ($id: ID!) {
 
 <style lang="scss">
 .post-page {
-  --post-page-content-max-width: calc(var(--global-space-fluid-6) * 2 + var(--global-line-length-max));
-  --post-page-content-min-width: calc(var(--global-space-fluid-6) * 2 + var(--global-line-length-min));
-
   display: grid;
   grid-gap: var(--global-space-fluid-5);
-  grid-template-columns: repeat(1, minmax(var(--post-page-content-min-width), var(--post-page-content-max-width)));
+  grid-template-columns: repeat(1, minmax(var(--global-space-content-min-width), var(--global-space-content-max-width)));
   justify-content: center;
 }
 
