@@ -24,7 +24,7 @@ For a little bit of added security you can make the file system of your containe
 When using the docker run command using the CLI, you can simply use the following command:
 
 ```powershell
-docker run --read-only redis
+> docker run --read-only redis
 ```
 
 # Docker Compose/Swarm

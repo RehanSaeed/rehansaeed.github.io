@@ -57,7 +57,7 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
 If we run a command to add a database migration, the generated code looks like this:
 
 ```powershell
-dotnet ef migrations add AddSeedData
+> dotnet ef migrations add AddSeedData
 ```
 
 ```cs
