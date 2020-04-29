@@ -5,7 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/is-asp-net-core-now-a-mature-platform/"
 heroImage: "/images/hero/Rocket-1366x768.jpg"
 date: "2018-12-18"
-dateModified: null
+dateModified: "2019-01-12"
 published: true
 categories:
   - "ASP.NET"
@@ -17,9 +17,9 @@ tags:
   - "Lets Encrypt"
 ---
 
-# Update (12/01/2019)
-
+::: tip Update (12 January 2019)
 It seems that Damian Edwards (The ASP.NET Core Project Manager) likes this post and agrees with the points I've made! It's great to hear that he's is in alignment with my thoughts and that's a great indication that the pain points of the platform will get solved in the future. Take a look at what he says in the ASP.NET Community Stand-up below:
+:::
 
 <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/ho-VF2dAszI?start=1299" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
