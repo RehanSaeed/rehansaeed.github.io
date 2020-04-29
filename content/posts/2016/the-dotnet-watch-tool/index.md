@@ -25,7 +25,7 @@ The `dotnet watch` tool is a file watcher for .NET that restarts the application
 ![Dotnet Watch Run Console](./images/Dotnet-Watch-Run-Console.png)
 
 ::: warning
-In both cases you have to be careful to start the application by clicking `Debug -> Start Without Debugging` or hitting the `CTRL+F5` keyboard shortcut.
+In both cases you have to be careful to start the application by clicking `Debug -> Start Without Debugging` or hitting the ||CTRL+F5|| keyboard shortcut.
 :::
 
 # project.json

@@ -21,8 +21,6 @@ tags:
 
 [.NET Boxed](https://github.com/Dotnet-Boxed/Templates) is a set of project templates with batteries included, providing the minimum amount of code required to get you going faster. Right now it includes API and GraphQL project templates.
 
-![.NET Boxed Icon](./images/Icon-512x512-150x150.png)
-
 # ASP.NET Core API Boxed
 
 The default [ASP.NET Core API Boxed](https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/API.md) options will give you an API with [Swagger](https://swagger.io/), ASP.NET Core versioning, HTTPS and much more enabled right out of the box. You can totally turn any of that off if you want to, the point is that it's up to you.

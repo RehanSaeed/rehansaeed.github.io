@@ -5,7 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/generic-editorconfig-file/"
 heroImage: "/images/hero/A-Very-Generic-Editorconfig-File-1366x768.png"
 date: "2017-10-01"
-dateModified: null
+dateModified: "2018-07-01"
 published: true
 categories:
   - "Tools"
@@ -46,7 +46,7 @@ Extensive code style settings for C# and VB.NET have been defined that require t
 
 # How do I use It?
 
-All you have to do is drop it into the root of your project. Then any time you open a file in Visual Studio, the .editorconfig file settings will be used to help format the document and also raise warnings if your code style and formatting does not conform.
+All you have to do is drop it into the root of your project. Then any time you open a file in Visual Studio, the `.editorconfig` file settings will be used to help format the document and also raise warnings if your code style and formatting does not conform.
 
 For Visual Studio Code, you can install the [EditorConfig for VS Code](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig) extension to get support.
 
@@ -58,4 +58,4 @@ Microsoft also updated their documentation for `.editorconfig` settings pertaini
 
 In addition, while I was working on this, I added support for a few more file extensions, including `yaml` (`yml` was already there), `json5` (If you haven't heard of `json5`, [check it out](https://json5.org/)), `cmd` and `bat` (If you haven't switched to PowerShell yet, what are you waiting for).
 
-Finally, Microsoft [announced last week](https://blogs.msdn.microsoft.com/visualstudio/2018/06/26/visual-studio-2017-version-15-8-preview-3/) that the Visual Studio 15.8 update which is currently being released as preview 3 will automatically fix errors when you format the document using the `CTRL+K` followed by `CTRL+D` shortcut. This is huge! It means that you can drop a `.editorconfig` file in an existing codebase and with a few clicks or keyboard shortcuts (if that's how you roll) you can clean up your code base to use the latest C# 7.3 features and a code style that suits you.
+Finally, Microsoft [announced last week](https://blogs.msdn.microsoft.com/visualstudio/2018/06/26/visual-studio-2017-version-15-8-preview-3/) that the Visual Studio 15.8 update which is currently being released as preview 3 will automatically fix errors when you format the document using the ||CTRL+K|| followed by ||CTRL+D|| shortcut. This is huge! It means that you can drop a `.editorconfig` file in an existing codebase and with a few clicks or keyboard shortcuts (if that's how you roll) you can clean up your code base to use the latest C# 7.3 features and a code style that suits you.

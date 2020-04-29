@@ -46,7 +46,7 @@ In terms of Beats, I use three of them which I'll talk about below:
 
 As well as shipping Docker logs, I write the logs from my ASP.NET Core applications to disk (The best way to make sure you never lose log information) and then use Filebeat to ship these log files to ElasticSearch.
 
-The Dockerfile below is used to add Filebeat configuration files to the base Filebeat image and nothing more. The configuration files are pretty lengthy and heavily commented so I've omitted them:
+The `Dockerfile` below is used to add Filebeat configuration files to the base Filebeat image and nothing more. The configuration files are pretty lengthy and heavily commented so I've omitted them:
 
 ```dockerfile
 FROM docker.elastic.co/beats/filebeat:6.0.0
@@ -95,7 +95,7 @@ volumes:
 
 ![Metricbeat Kibana Dashboard](./images/Metricbeat-Kibana-Dashboard.jpg)
 
-Here is an example of a custom Metricbeat Dockerfile which I use to configure Metricbeat:
+Here is an example of a custom Metricbeat `Dockerfile` which I use to configure Metricbeat:
 
 ```dockerfile
 FROM docker.elastic.co/beats/metricbeat:6.0.0

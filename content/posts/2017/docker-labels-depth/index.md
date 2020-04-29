@@ -20,7 +20,7 @@ tags:
 
 # Static Docker Labels
 
-Docker image names are short and usually not very descriptive. You have the ability to label your Docker images to give them some extra metadata. You can add any information you like, labels are just key value pairs. Here I've added an author label to my Dockerfile:
+Docker image names are short and usually not very descriptive. You have the ability to label your Docker images to give them some extra metadata. You can add any information you like, labels are just key value pairs. Here I've added an author label to my `Dockerfile`:
 
 ```dockerfile
 FROM microsoft/aspnetcore:2.0

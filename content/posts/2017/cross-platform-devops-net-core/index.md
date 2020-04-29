@@ -158,7 +158,7 @@ One very important effect of using Cake is that your build script is easily test
 
 # AppVeyor
 
-[AppVeyor](https://www.appveyor.com/docs/) is my favourite CI system but only works if you are hosting your code with Git based repositories and it only runs builds on Windows. All you need to do is sign-up, enable AppVeyor for your git repository and add an appveyor.yml file which is in [YAML](https://en.wikipedia.org/wiki/YAML) format. Here is one of my commented appveyor.yml files:
+[AppVeyor](https://www.appveyor.com/docs/) is my favourite CI system but only works if you are hosting your code with Git based repositories and it only runs builds on Windows. All you need to do is sign-up, enable AppVeyor for your git repository and add an `appveyor.yml` file which is in [YAML](https://en.wikipedia.org/wiki/YAML) format. Here is one of my commented `appveyor.yml` files:
 
 ```yaml
 version: '{build}'
@@ -210,11 +210,11 @@ It basically executes the `build.ps1` file at the root of my project and collect
 
 AppVeyor, knows about NuGet and I use AppVeyor as my primary build system to publish my NuGet packages (You don't want AppVeyor and Travis CI both publishing your NuGet packages). Now I could have created a task in my cake file to publish NuGet packages and only execute that task if I was running on AppVeyor but AppVeyor has a pretty easy to use configuration file that I've chosen to do this step instead.
 
-To publish packages to NuGet, you sign-up and receive an API key. Of course, you don't want to share that with the whole world by checking it into GitHub or Bitbucket, so AppVeyor lets you [encrypt](https://ci.appveyor.com/tools/encrypt) it and paste the encrypted value into the appveyor.yml file.
+To publish packages to NuGet, you sign-up and receive an API key. Of course, you don't want to share that with the whole world by checking it into GitHub or Bitbucket, so AppVeyor lets you [encrypt](https://ci.appveyor.com/tools/encrypt) it and paste the encrypted value into the `appveyor.yml` file.
 
 # Travis CI
 
-[Travis CI](https://travis-ci.org/) is very similar to AppVeyor but it targets both Mac and Linux. All you have to do is sign-up, turn on Travis for your repository and stick a .travis.yml file in the root of your project. Here is mine:
+[Travis CI](https://travis-ci.org/) is very similar to AppVeyor but it targets both Mac and Linux. All you have to do is sign-up, turn on Travis for your repository and stick a `.travis.yml` file in the root of your project. Here is mine:
 
 ```yaml
 language: csharp
@@ -263,7 +263,7 @@ Once again, I set the .NET environment variables to make the build a bit quicker
 git update-index --chmod=+x build.sh
 ```
 
-Another thing to note is that if you are still using the older xproj project system and your unit tests are using xUnit, then your tests will not run due to this [bug](https://github.com/dotnet/cli/issues/3073). There is a very nasty workaround in the link.
+Another thing to note is that if you are still using the older `xproj` project system and your unit tests are using xUnit, then your tests will not run due to this [bug](https://github.com/dotnet/cli/issues/3073). There is a very nasty workaround in the link.
 
 # Conclusions
 

@@ -112,11 +112,11 @@ This will append a query string to the link to site.js which will contain a hash
 
 [E-tags](https://en.wikipedia.org/wiki/HTTP_ETag) are typically generated in three ways (Read the link to understand what they are):
 
-1. Hashing the HTTP response body - You'd want to use a very fast and collision resistant hash function like MD5 (MD5 is broken security wise and you should never use it but it's ok to use it for caching). Unfortunately, this method is slow because you have to load the entire response body into memory (which is not the default in ASP.NET Core which streams it straight to the client for better performance) to hash it. If you're still interested in implementing this E-Tags using this method [Mads Kristensen](https://madskristensen.net/post/send-etag-headers-in-aspnet-core) wrote a nice blog post showing how it can be done.
-2. Last modification timestamp - The E-Tag can literally be the time the object was last modified which you can store in your database (I usually store created and modified timestamps for anything I store in a database anyway). This solves the performance problem above but now what is the difference between doing this and using the Last Modified HTTP header?
+1. Hashing the HTTP response body - You'd want to use a very fast and collision resistant hash function like MD5 (MD5 is broken security wise and you should never use it but it's ok to use it for caching). Unfortunately, this method is slow because you have to load the entire response body into memory (which is not the default in ASP.NET Core which streams it straight to the client for better performance) to hash it. If you're still interested in implementing this `E-Tag`'s using this method [Mads Kristensen](https://madskristensen.net/post/send-etag-headers-in-aspnet-core) wrote a nice blog post showing how it can be done.
+2. Last modification timestamp - The `E-Tag` can literally be the time the object was last modified which you can store in your database (I usually store created and modified timestamps for anything I store in a database anyway). This solves the performance problem above but now what is the difference between doing this and using the Last Modified HTTP header?
 3. Revision Number - This could be some kind of integer stored in the database which gets incremented each time the data is modified. I don't see any advantage of doing this over using the last modification timestamp above, unless you have a naturally occurring revision number in your data that you could use.
 
-One additional thing you need to be careful of is the `Accept`, `Accept-Encoding` and `Accept-Language` HTTP headers. Any time you send a different response based on these HTTP headers, your E-Tag needs to be different e.g. a JSON non-gzip'ed response in Mandarin needs to have a different E-Tag to an XML gzip'ed response in Urdu.
+One additional thing you need to be careful of is the `Accept`, `Accept-Encoding` and `Accept-Language` HTTP headers. Any time you send a different response based on these HTTP headers, your `E-Tag` needs to be different e.g. a JSON non-gzip'ed response in Mandarin needs to have a different `E-Tag` to an XML gzip'ed response in Urdu.
 
 For option one, this can be achieved by calculating the hash after the response body has gone through GZIP compression. For the second and third options, you would need to append the value of the Accept HTTP headers to the last modified date or revision number and then hash all of that.
 
@@ -169,8 +169,8 @@ All of our cats have a ModifiedTimestamp, so we know when they were last changed
 3. `Last-Modified` HTTP header exists and cats have been modified since that date, so return all cats.
 4. `Last-Modified` HTTP header exists but no cats have been modified since that date, so return a 304 Not Modified response.
 
-In all cases, except when we have no cats at all, we set the Last-Modified date to the latest date than any cat has been modified.
+In all cases, except when we have no cats at all, we set the `Last-Modified` date to the latest date than any cat has been modified.
 
 # Conclusions
 
-Which caching HTTP headers you pick, depends on your data but at a minimum, I would add E-Tags or `Last-Modified`. Add `Cache-Control` where possible, usually for static assets.
+Which caching HTTP headers you pick, depends on your data but at a minimum, I would add `E-Tag`'s or `Last-Modified`. Add `Cache-Control` where possible, usually for static assets.

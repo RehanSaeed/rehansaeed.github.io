@@ -103,8 +103,8 @@ public partial class AddSeedData : Migration
 
 This is what you need to do:
 
-1. Comment out all of the InsertData lines in the generated migration.
-2. Run the migration on your database containing the existing seed data. This is effectively doing a null operation but records the fact that the AddSeedData migration has been run.
-3. Uncomment the InsertData lines in the generated migration so that if you run the migrations on a fresh database, seed data still gets added. For your existing databases, since the migration has already been run on them, they will not add the seed data twice.
+1. Comment out all of the `InsertData` lines in the generated migration.
+2. Run the migration on your database containing the existing seed data. This is effectively doing a null operation but records the fact that the `AddSeedData` migration has been run.
+3. Uncomment the `InsertData` lines in the generated migration so that if you run the migrations on a fresh database, seed data still gets added. For your existing databases, since the migration has already been run on them, they will not add the seed data twice.
 
 That's it, hope that helps someone.

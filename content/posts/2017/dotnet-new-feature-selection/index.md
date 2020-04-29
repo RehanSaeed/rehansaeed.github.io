@@ -157,7 +157,7 @@ As you can see from the output, there are a few different types of feature you c
 
 # Bool Symbols
 
-You can create a boolean feature by adding symbols section to your template.json file. If you look at the example below, I've specified an optional bool symbol, with a default value of true.
+You can create a boolean feature by adding symbols section to your `template.json` file. If you look at the example below, I've specified an optional bool symbol, with a default value of true.
 
 ```json
 {

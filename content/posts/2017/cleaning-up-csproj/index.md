@@ -134,7 +134,7 @@ You no longer need to explicitly reference `System.*` references in your `csproj
 </Project>
 ```
 
-This meant that I could remove the entire code block below except System.ServiceModel because that reference is not given to you by the NETStandard.Library NuGet package.
+This meant that I could remove the entire code block below except `System.ServiceModel` because that reference is not given to you by the `NETStandard.Library` NuGet package.
 
 ```xml
 <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
