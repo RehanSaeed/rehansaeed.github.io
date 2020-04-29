@@ -7,6 +7,8 @@ heroImage: "/images/hero/Modern-UI-for-WPF-1366x768.png"
 date: "2014-02-19"
 dateModified: null
 published: true
+series: "WPF Metro"
+seriesOrder: 1
 categories:
   - "Windows Presentation Foundation (WPF)"
 tags:

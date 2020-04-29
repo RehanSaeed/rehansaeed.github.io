@@ -7,6 +7,8 @@ heroImage: "/images/hero/Reactive-Extensions-1366x768.png"
 date: "2014-03-27"
 dateModified: null
 published: true
+series: "Reactive Extensions (Rx)"
+seriesOrder: 5
 categories:
   - "Reactive Extensions (Rx)"
 tags:

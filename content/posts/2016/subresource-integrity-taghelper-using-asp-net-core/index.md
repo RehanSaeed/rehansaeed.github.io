@@ -7,6 +7,8 @@ heroImage: "/images/hero/Make-Security-Easy-1366x768.png"
 date: "2016-03-06"
 dateModified: null
 published: true
+series: "Subresource Integrity TagHelper Using ASP.NET Core"
+seriesOrder: 1
 categories:
   - "ASP.NET"
 tags:

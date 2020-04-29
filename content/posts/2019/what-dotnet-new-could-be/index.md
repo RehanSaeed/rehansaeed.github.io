@@ -56,7 +56,7 @@ As far as I can work out, the only post action that works is the one that restor
 
 Other post actions that are half implemented (They exist and you can use them but they just print content to the console) are for opening files in the editor, opening files or links in the web browser or even running arbitrary scripts. The last one has the potential for being a security risk however, so it would be better to have a health list of post actions for specific tasks. I'd love to be able to open the ReadMe.md file that ships with my project template.
 
-In terms of new post actions, I'd really like to see one that removes and sorts using statements. I have a lot of optional pieces of code in my project templates, so I have to have a lot of `#if` `#endif` code to tell the templating engine which lines of code to remove. It's particularly easy to get this wrong with using statements, leaving you with a fresh project that doesn't compile because you've removed one too many using statements by accident. To avoid this, I created my own unit testing framework for dotnet new projects called [Boxed.DotnetNewTest](https://github.com/Dotnet-Boxed/Framework#boxeddotnetnewtest).
+In terms of new post actions, I'd really like to see one that removes and sorts using statements. I have a lot of optional pieces of code in my project templates, so I have to have a lot of `#if` `#endif` code to tell the templating engine which lines of code to remove. It's particularly easy to get this wrong with using statements, leaving you with a fresh project that doesn't compile because you've removed one too many using statements by accident. To avoid this, I created my own unit testing framework for `dotnet new` projects called [Boxed.DotnetNewTest](https://github.com/Dotnet-Boxed/Framework#boxeddotnetnewtest).
 
 ## Docs, Docs & Docs
 
@@ -66,7 +66,7 @@ Secondary to the docs is the [GitHub issues](https://github.com/dotnet/templatin
 
 ## Fixing Bugs
 
-The latest version of the dotnet CLI has fixed some bugs but there are still a few that really get in the way of a great experience:
+The latest version of the `dotnet` CLI has fixed some bugs but there are still a few that really get in the way of a great experience:
 
 - [#1544](https://github.com/dotnet/templating/issues/1544)/[#348](https://github.com/dotnet/templating/issues/348) - Running `dotnet new foo --help` outputs some pretty terrible looking text if you have any custom options.
 - [#2208](https://github.com/dotnet/templating/issues/2208) - You cannot conditionally remove text from a file if it has no file extension, so that means `Dockerfile`, `.gitignore`, `.editorconfig` files.

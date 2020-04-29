@@ -7,6 +7,8 @@ heroImage: "/images/hero/Docker-1366x768.png"
 date: "2017-11-30"
 dateModified: null
 published: true
+series: "Useful Docker Images"
+seriesOrder: 1
 categories:
   - "Docker"
 tags:

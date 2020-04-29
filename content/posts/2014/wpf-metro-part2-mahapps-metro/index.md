@@ -7,6 +7,8 @@ heroImage: "/images/hero/MahApps-Metro-1366x768.png"
 date: "2014-03-02"
 dateModified: null
 published: true
+series: "WPF Metro"
+seriesOrder: 2
 categories:
   - "Windows Presentation Foundation (WPF)"
 tags:

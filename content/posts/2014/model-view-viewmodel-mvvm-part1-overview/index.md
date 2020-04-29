@@ -7,6 +7,8 @@ heroImage: "/images/hero/MVVM-1366x768.png"
 date: "2014-05-14"
 dateModified: null
 published: true
+series: "Model-View-ViewModel (MVVM)"
+seriesOrder: 1
 categories:
   - "Design Patterns"
   - "Model-View-ViewModel (MVVM)"

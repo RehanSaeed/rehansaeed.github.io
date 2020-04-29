@@ -23,13 +23,13 @@ tags:
 
 # Current dotnet new
 
-If you run dotnet new today, you can create a simple console app. The command has very few options, including selecting the language you want to use (C#, VB or F#). However, this is all about to change. [Sayed I. Hashimi](https://twitter.com/sayedihashimi) and [Mike Lorbetske](https://twitter.com/mlorbetske) who work at Microsoft in the .NET tooling team have been kind enough to show me what they've been working on with the intention of getting some feedback.
+If you run `dotnet new` today, you can create a simple console app. The command has very few options, including selecting the language you want to use (C#, VB or F#). However, this is all about to change. [Sayed I. Hashimi](https://twitter.com/sayedihashimi) and [Mike Lorbetske](https://twitter.com/mlorbetske) who work at Microsoft in the .NET tooling team have been kind enough to show me what they've been working on with the intention of getting some feedback.
 
 ![old dotnet new](./images/first-dotnet-new.png)
 
 # dotnet new3
 
-Microsoft is working on a new version of the dotnet new command with support for installing custom project templates from NuGet packages, zip files or folders. If you head over to the [dotnet/templating](https://github.com/dotnet/templating) GitHub repository you can follow the very simple instructions and try out a fairly complete version of this command which is temporarily called `dotnet new3`. The full `dotnet new` experience is due to be released in conjunction with Visual Studio 2017.
+Microsoft is working on a new version of the `dotnet new` command with support for installing custom project templates from NuGet packages, zip files or folders. If you head over to the [dotnet/templating](https://github.com/dotnet/templating) GitHub repository you can follow the very simple instructions and try out a fairly complete version of this command which is temporarily called `dotnet new3`. The full `dotnet new` experience is due to be released in conjunction with Visual Studio 2017.
 
 ![dotnet new3](./images/dotnet-new3.png)
 
@@ -73,7 +73,7 @@ Installing the above template from a folder is as easy as using the install comm
 
 ## Template NuGet Packages
 
-So how do you create a NuGet package containing a project template that's compatible with dotnet new? I'm assuming you are familiar with creating NuGet packages, if not take a look at the NuGet [documentation](https://docs.microsoft.com/en-gb/nuget/quickstart/create-and-publish-a-package). You can create NuGet packages of your project templates by creating a `Templates.nuspec` file like the one below and placing all of your templates in a content folder beside it. The content folder is a special folder which NuGet understands to contain static files. If you look at the nuspec file below, you'll notice the packageType element. This is a new way to tell NuGet that this NuGet package contains project templates.
+So how do you create a NuGet package containing a project template that's compatible with `dotnet new`? I'm assuming you are familiar with creating NuGet packages, if not take a look at the NuGet [documentation](https://docs.microsoft.com/en-gb/nuget/quickstart/create-and-publish-a-package). You can create NuGet packages of your project templates by creating a `Templates.nuspec` file like the one below and placing all of your templates in a content folder beside it. The content folder is a special folder which NuGet understands to contain static files. If you look at the nuspec file below, you'll notice the packageType element. This is a new way to tell NuGet that this NuGet package contains project templates.
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -102,7 +102,7 @@ This new method makes creating project templates about as easy as it's ever goin
 
 # .NET Boxed API
 
-I've been working on a brand new project template for building API's using dotnet new with a lot of help from the guys at Microsoft. My project templates are quite complex so it's a good test of the system. The API comes jam packed full of security, performance and best practice features and also implements Swagger right out of the box. You can try installing it with `dotnet new` from [NuGet](https://github.com/Dotnet-Boxed/Templates).
+I've been working on a brand new project template for building API's using `dotnet new` with a lot of help from the guys at Microsoft. My project templates are quite complex so it's a good test of the system. The API comes jam packed full of security, performance and best practice features and also implements Swagger right out of the box. You can try installing it with `dotnet new` from [NuGet](https://github.com/Dotnet-Boxed/Templates).
 
 # Conclusions
 

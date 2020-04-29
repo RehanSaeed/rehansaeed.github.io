@@ -98,7 +98,7 @@ After migrating my `project.json` projects to csproj using Visual Studio 2017 (Y
 
 ## Understanding new csproj Projects
 
-The top of the project contains a new SDK property. This imports some MSBuild targets and props files in your dotnet installation folder shown below:
+The top of the project contains a new SDK property. This imports some MSBuild targets and props files in your `dotnet` installation folder shown below:
 
 ![dotnet SDK's](./images/Dotnet-SDKs.png)
 

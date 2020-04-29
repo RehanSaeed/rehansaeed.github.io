@@ -7,6 +7,8 @@ heroImage: "/images/hero/Elysium-1366x768.png"
 date: "2014-03-17"
 dateModified: null
 published: true
+series: "WPF Metro"
+seriesOrder: 3
 categories:
   - "Windows Presentation Foundation (WPF)"
 tags:

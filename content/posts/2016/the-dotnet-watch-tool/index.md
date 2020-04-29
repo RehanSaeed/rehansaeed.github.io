@@ -20,7 +20,7 @@ tags:
   - "Visual Studio"
 ---
 
-The `dotnet watch` tool is a file watcher for dotnet that restarts the application when changes in the source code are detected. If you are using IIS Express then, it actually does this restart for you already. The `dotnet watch` tool is only really useful if you like to run your app in the console. I personally like to do this over using IIS Express because I can see all my logs flashing by in the console like the movies which is occasionally useful if you get an exception.
+The `dotnet watch` tool is a file watcher for .NET that restarts the application when changes in the source code are detected. If you are using IIS Express then, it actually does this restart for you already. The `dotnet watch` tool is only really useful if you like to run your app in the console. I personally like to do this over using IIS Express because I can see all my logs flashing by in the console like the movies which is occasionally useful if you get an exception.
 
 ![Dotnet Watch Run Console](./images/Dotnet-Watch-Run-Console.png)
 

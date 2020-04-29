@@ -7,6 +7,8 @@ heroImage: "/images/hero/Reactive-Extensions-1366x768.png"
 date: "2017-01-02"
 dateModified: null
 published: true
+series: "Reactive Extensions (Rx)"
+seriesOrder: 8
 categories:
   - "Reactive Extensions (Rx)"
   - "Task Parallel Library (TPL)"
