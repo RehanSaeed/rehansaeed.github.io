@@ -75,8 +75,9 @@ export default {
   }
 
   img {
-    width: calc(100% + var(--global-space-fluid-6));
-    margin-left: calc(var(--global-space-fluid-6) * -1);
+    width: calc(100% + (2 * var(--global-space-fluid-6)));
+    margin-left: var(--global-space-fluid--6);
+    margin-right: var(--global-space-fluid--6);
     display: block;
     max-width: none;
   }
