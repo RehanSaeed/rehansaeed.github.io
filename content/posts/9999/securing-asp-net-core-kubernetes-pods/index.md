@@ -1,6 +1,6 @@
 ---
 title: "Securing ASP.NET Core Kubernetes Pods"
-description: "Shows how to use markdown"
+description: ""
 author: "Muhammad Rehan Saeed"
 permalink: "/securing-asp-net-core-kubernetes-pods/"
 heroImage: "/images/hero/Kubernetes-1366x768.png"
