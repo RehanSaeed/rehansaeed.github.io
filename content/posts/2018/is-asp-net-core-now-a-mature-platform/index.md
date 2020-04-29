@@ -27,7 +27,7 @@ It seems that Damian Edwards (The ASP.NET Core Project Manager) likes this post 
 
 I started using ASP.NET Core back when it was still called ASP.NET 5 and it was still in beta. In those early days every release introduced a sea change. The beta's were not beta's at all but more like alpha quality bits. I spent more time than I'd like just updating things to the latest version with each release.
 
-Compared to the past, updates are moving at a glacial pace. Compared to the full fat .NET Framework though, it's been like moving from a camel to an electric car. When releases do come there is still a lot in each release. If you have a number of micro services using ASP.NET Core, it's not quick to get them all updated. Also, it's not just ASP.NET Core but all of the satellite assemblies built on top of .NET Core that keep changing too, things like Serilog and Swashbuckle.
+Compared to the past, updates are moving at a glacial pace. Compared to the full fat .NET Framework though, it's been like moving from a camel to an electric car. When releases do come there is still a lot in each release. If you have a number of micro services using ASP.NET Core, it's not quick to get them all updated. Also, it's not just ASP.NET Core but all of the satellite assemblies built on top of .NET Core that keep changing too, things like [Serilog](https://serilog.net/) and [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore).
 
 What about other platforms? Well, I'm familiar with Node.js and the situation there is bordering on silly. Packages are very unstable and constantly being rev'ed. Keeping up and staying on latest is a constant battle almost every day. Each time you upgrade a package, there is also a danger that you will break something. With .NET Core, there are fewer packages and they are much more stable.
 
@@ -77,7 +77,7 @@ First of all, let me say that every platform has gaps that are sometimes filled 
 
 ## Caching Could be Better
 
-The response caching still only supports in-memory caching. If you want to cache to Redis using the IDistributedCache, [bad luck](https://github.com/aspnet/AspNetCore/issues/2603). Even if you go with it and use the in-memory cache, if you're using cookies or the Authorization HTTP header, you've only got more [bad luck](https://github.com/aspnet/AspNetCore/issues/2606) as response caching turns itself off in those cases. Caching is an intrinsic part of the web, we need to do a better job of making it easier to work with.
+The response caching still only supports in-memory caching. If you want to cache to Redis using the `IDistributedCache`, [bad luck](https://github.com/aspnet/AspNetCore/issues/2603). Even if you go with it and use the in-memory cache, if you're using cookies or the Authorization HTTP header, you've only got more [bad luck](https://github.com/aspnet/AspNetCore/issues/2606) as response caching turns itself off in those cases. Caching is an intrinsic part of the web, we need to do a better job of making it easier to work with.
 
 ## Everyone is Partying with Lets Encrypt
 
