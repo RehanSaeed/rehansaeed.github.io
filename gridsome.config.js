@@ -310,16 +310,16 @@ module.exports = {
         [
           '@noxify/gridsome-plugin-remark-embed',
           {
-            enabledProviders: ['Youtube', 'Twitter', 'Codepen'],
+            enabledProviders: ['Youtube'], // 'Twitter', 'Codepen'
             Youtube: {
               margin: "25px 0 25px 0"
             },
-            Twitter: {
-              hideMedia: false
-            },
-            Codepen: {
-              // iframe: true
-            }
+            // Twitter: {
+            //   hideMedia: false
+            // },
+            // Codepen: {
+            //   // iframe: true
+            // }
           }
         ],
         [
