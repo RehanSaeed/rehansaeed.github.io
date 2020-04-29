@@ -159,7 +159,6 @@ query($page: Int) {
       node {
         id
         title
-        displayDate: date (format: "D MMMM YYYY")
         date (format: "YYYY-MM-DDTHH:mm:ssZ")
         dateModified (format: "YYYY-MM-DDTHH:mm:ssZ")
         timeToRead

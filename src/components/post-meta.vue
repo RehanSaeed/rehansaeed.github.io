@@ -1,7 +1,7 @@
 <template>
   <div class="post-meta">
-    Posted <time :datetime="meta.date">{{meta.displayDate}}</time>
-    <span v-if="updated"> and updated <time :datetime="meta.dateModified">{{updated}}</time></span>
+    Posted <time :datetime="meta.date" :title="meta.date">{{postedDisplayDate}}</time>
+    <span v-if="meta.dateModified"> and updated <time :datetime="meta.dateModified" :title="meta.dateModified">{{updatedDisplayDate}}</time></span>
     <template v-if="meta.timeToRead">
       - <strong>{{ meta.timeToRead }} min read</strong>
     </template>
@@ -9,7 +9,25 @@
 </template>
 
 <script>
-import { formatDistance } from 'date-fns';
+import { differenceInDays, format, formatDistance, getYear } from 'date-fns';
+
+function getDisplayDate(date) {
+  const now = new Date();
+  if (differenceInDays(now, date) <= 30) {
+    return formatDistance(date, now, { addSuffix: true })
+  } else if (getYear(now) == getYear(date)) {
+    return format(date, 'd MMMM');
+  } else {
+    return format(date, 'd MMMM yyyy');
+  }
+}
+
+function getDisplayDateFromString(date) {
+  if (date) {
+    return getDisplayDate(new Date(date));
+  }
+  return undefined;
+}
 
 export default {
   name: 'u-post-meta',
@@ -19,12 +37,8 @@ export default {
     },
   },
   computed: {
-    updated: function() {
-      if (this.meta.dateModified) {
-        return formatDistance(new Date(this.meta.dateModified), new Date(), { addSuffix: true });
-      }
-      return undefined;
-    }
+    postedDisplayDate: function() { return getDisplayDateFromString(new Date(this.meta.date)); },
+    updatedDisplayDate: function() { return getDisplayDateFromString(this.meta.dateModified); },
   }
 }
 </script>

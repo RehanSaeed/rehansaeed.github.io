@@ -141,7 +141,6 @@ query Post ($id: ID!) {
   post: post (id: $id) {
     title
     path
-    displayDate: date (format: "D MMMM YYYY")
     date (format: "YYYY-MM-DDTHH:mm:ssZ")
     dateModified (format: "YYYY-MM-DDTHH:mm:ssZ")
     timeToRead

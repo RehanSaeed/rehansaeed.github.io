@@ -92,7 +92,6 @@ query {
       node {
         id
         title
-        displayDate: date (format: "D MMMM YYYY")
         date (format: "YYYY-MM-DDTHH:mm:ssZ")
         description
         heroImage (width: 770, height: 380, blur: 10)
