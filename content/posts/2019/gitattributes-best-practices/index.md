@@ -30,7 +30,7 @@ If you've studied a little computer science, you'll have seen that operating sys
 
 Newline characters often cause problems in Git when you have developers working on different operating systems (Windows, Mac and Linux). If you've ever seen a phantom file change where there are no visible changes, that could be because the line endings in the file have been changed from CRLF to LF or vice versa.
 
-Git can actually be configured to automatically handle line endings using a setting called [autocrlf](https://help.github.com/en/articles/configuring-git-to-handle-line-endings). This automatically changes the line endings in files depending on the operating system. However, you shouldn't rely on people having correctly configured Git installations. If someone with an incorrect configuration checked in a file, it would not be easily visible in a PR and you'd end up with a repository with inconsistent line endings.
+Git can actually be configured to automatically handle line endings using a setting called [autocrlf](https://help.github.com/en/articles/configuring-git-to-handle-line-endings). This automatically changes the line endings in files depending on the operating system. However, you shouldn't rely on people having correctly configured Git installations. If someone with an incorrect configuration checked in a file, it would not be easily visible in a pull request and you'd end up with a repository with inconsistent line endings.
 
 The solution to this is to add a `.gitattributes` file at the root of your repository and set the line endings to be automatically normalised like so:
 

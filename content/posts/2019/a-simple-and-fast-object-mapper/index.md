@@ -41,7 +41,7 @@ Automapper is great when you have a small project that you want to throw togethe
 
 It's also great for unit testing because once you've written your mapper, testing it is just a matter of adding a one liner to test that all the properties in your object have a mapping setup for them.
 
-Finally if you use Automapper with Entity Framework, you can use the ProjectTo method which uses the property mapping information to limit the number of fields pulled back from your database making the query a lot more efficient. I think this is probably the biggest selling point of Automapper. The alternative is to write your own Entity Framework Core projection.
+Finally if you use Automapper with Entity Framework, you can use the `ProjectTo` method which uses the property mapping information to limit the number of fields pulled back from your database making the query a lot more efficient. I think this is probably the biggest selling point of Automapper. The alternative is to write your own Entity Framework Core projection.
 
 # What is wrong with Automapper?
 
@@ -51,9 +51,9 @@ Cezary Piatek writes a [very good rundown](https://cezarypiatek.github.io/post/w
 2. If you have similar classes you are mapping between, there is no guarantee that they will not diverge, requiring you to write increasingly complex Automapper code or rewriting the mapping logic without Automapper.
 3. Finding all usages of a property no longer works when using Automapper unless you explicitly map every property, lowering discoverability.
 4. If you have a complex scenario, [Jimmy Bogard](https://jimmybogard.com/) (the author of the tool) [suggests not using Automapper](https://jimmybogard.com/automapper-usage-guidelines/):
-    - "DO NOT use AutoMapper except in cases where the destination type is a flattened subset of properties of the source type"
-    - "DO NOT use AutoMapper to support a complex layered architecture"
-    - "AVOID using AutoMapper when you have a significant percentage of custom configuration in the form of Ignore or MapFrom"
+    - DO NOT use AutoMapper except in cases where the destination type is a flattened subset of properties of the source type.
+    - DO NOT use AutoMapper to support a complex layered architecture.
+    - AVOID using AutoMapper when you have a significant percentage of custom configuration in the form of `Ignore` or `MapFrom`.
 5. If you're mapping from database models to view models in an API, then dumping your database schema out as JSON makes for a bad API. You usually want more complex nested objects.
 6. How much time does it really save? Object mapping code is the simplest code a developer can write, I can do it without thinking and knock a few mappings out in a couple of minutes.
 7. Automapper is complex, it has a massive [documentation](https://automapper.readthedocs.io) site just to show you how to use it and just checkout the 29 point list of [guidelines](https://jimmybogard.com/automapper-usage-guidelines/) on how to use it. Why should copying values from one object to another need to be so complex?
@@ -116,7 +116,7 @@ I told you it was simple! Just a few convenience extension methods bundled toget
 
 Keeping things simple makes the .NET Boxed Mapper fast. I put together some benchmarks using [Benchmark.NET](https://github.com/dotnet/BenchmarkDotNet) which you can find [here](https://github.com/Dotnet-Boxed/Framework/tree/master/Benchmarks/Boxed.Mapping.Benchmark). The baseline is hand written mapping code and I compare that to Automapper and the .NET Boxed Mapper.
 
-I even got [a bit of help from the great Jon Skeet himself](https://stackoverflow.com/questions/46500630/how-to-improve-performance-of-c-sharp-object-mapping-code) on how to improve the performance of instantiating an instance when using the generic new() constraint which it turns out is pretty slow because it uses `Activator.CreateInstance` under the hood.
+I even got [a bit of help from the great Jon Skeet himself](https://stackoverflow.com/questions/46500630/how-to-improve-performance-of-c-sharp-object-mapping-code) on how to improve the performance of instantiating an instance when using the generic `new()` constraint which it turns out is pretty slow because it uses `Activator.CreateInstance` under the hood.
 
 ## Object to Object Mapping Benchmark
 

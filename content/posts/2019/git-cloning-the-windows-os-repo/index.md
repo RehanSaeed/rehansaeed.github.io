@@ -61,4 +61,4 @@ Once I'd finally pushed the branch containing my changes up to the server, I cre
 
 The Azure Pipelines build only took 25 minutes to complete. A quick look shows a bunch of builds with five hours or more. I'm guessing that my changes had only gone through a cursory initial build to make sure nothing was completely broken.
 
-A few days later I got a notification telling me my PR had been merged. All I did was change a few config files and upload a package or two, but it was an interesting experience none the less.
+A few days later I got a notification telling me my pull request had been merged. All I did was change a few config files and upload a package or two, but it was an interesting experience none the less.

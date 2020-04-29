@@ -50,7 +50,7 @@ This outputs the following error as read-only file systems are not supported by 
 
 > Failed to initialize CoreCLR, HRESULT: 0x80004005
 
-If I now run the same image with the COMPlus_EnableDiagnostics environment variable turned off:
+If I now run the same image with the `COMPlus_EnableDiagnostics` environment variable turned off:
 
 ```powershell
 docker run --rm --read-only -it -p 8000:80 -e COMPlus_EnableDiagnostics=0 read-only-test
