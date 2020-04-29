@@ -21,7 +21,7 @@ tags:
 Steve Gordon kindly suggested a [further optimisation](https://github.com/RehanSaeed/HttpClientSample/pull/1) to use `ConfigureHttpClient`. I've updated the code below to reflect this.
 :::
 
-In this post, I'm going to show how to optimally configure a HttpClient using the new [HttpClientFactory](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-2.1) API in ASP.NET Core 2.1. If you haven't already I recommend reading Steve Gordon's [series of blog posts](https://www.stevejgordon.co.uk/introduction-to-httpclientfactory-aspnetcore) on the subject since this post builds on that knowledge. You should also read his post about [Correlation ID's](https://www.stevejgordon.co.uk/asp-net-core-correlation-ids) as I'm making use of that library in this post. The main aims of the code in this post are to:
+In this post, I'm going to show how to optimally configure a `HttpClient` using the new [HttpClientFactory](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-2.1) API in ASP.NET Core 2.1. If you haven't already I recommend reading Steve Gordon's [series of blog posts](https://www.stevejgordon.co.uk/introduction-to-httpclientfactory-aspnetcore) on the subject since this post builds on that knowledge. You should also read his post about [Correlation ID's](https://www.stevejgordon.co.uk/asp-net-core-correlation-ids) as I'm making use of that library in this post. The main aims of the code in this post are to:
 
 1. Use the `HttpClientFactory` typed client, I don't know why the ASP.NET team bothered to provide three ways to register a client, the typed client is the one to use. It provides type safety and removes the need for magic strings.
 2. Enable GZIP decompression of responses for better performance. Interestingly, the `HttpClient` and ASP.NET Core does not support compression of GZIP requests, only responses. Doing some searching online some time ago suggests that this is an optimisation that is not very common at all, I thought this was pretty unbelievable at the time.
@@ -57,7 +57,7 @@ public class RocketClient : IRocketClient
 }
 ```
 
-Here is how we register the typed client above with our dependency injection container. All of the meat lives in these three methods. `AddCorrelationId` adds a middleware written by Steve Gordon to handle [Correlation ID's](https://www.stevejgordon.co.uk/asp-net-core-correlation-ids). `AddPolicies` registers a policy registry and the policies themselves (A policy is [Polly's](https://github.com/App-vNext/Polly) way of specifying how you want to deal with errors e.g. using retries, circuit breaker pattern etc.). Finally, we add the typed HttpClient but with configuration options, so we can configure it's settings from `appsettings.json`.
+Here is how we register the typed client above with our dependency injection container. All of the meat lives in these three methods. `AddCorrelationId` adds a middleware written by Steve Gordon to handle [Correlation ID's](https://www.stevejgordon.co.uk/asp-net-core-correlation-ids). `AddPolicies` registers a policy registry and the policies themselves (A policy is [Polly's](https://github.com/App-vNext/Polly) way of specifying how you want to deal with errors e.g. using retries, circuit breaker pattern etc.). Finally, we add the typed `HttpClient` but with configuration options, so we can configure it's settings from `appsettings.json`.
 
 ```cs
 public virtual void ConfigureServices(IServiceCollection services) =>

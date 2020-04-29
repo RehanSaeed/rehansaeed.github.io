@@ -63,7 +63,7 @@ public sealed class SuperHero
 }
 ```
 
-In our example we have an immutable object with a variety of fields of different types, including a collection. One possible implementation of `GetHashCode` according to the highest rated [StackOverflow post](http://stackoverflow.com/questions/263400/what-is-the-best-algorithm-for-an-overridden-system-object-gethashcode/263416#263416) (If modified to fit our example and deal with nulls) may be:
+In our example we have an immutable object with a variety of fields of different types, including a collection. One possible implementation of `GetHashCode` according to the highest rated [StackOverflow post](http://stackoverflow.com/questions/263400/what-is-the-best-algorithm-for-an-overridden-system-object-gethashcode/263416#263416) (If modified to fit our example and deal with `null`'s) may be:
 
 ```cs
 public override int GetHashCode()
@@ -153,7 +153,8 @@ public struct HashCode : IEquatable<HashCode>
     /// <typeparam name="T">The type of the item.</typeparam>
     /// <param name="item">The item.</param>
     /// <returns>The new hash code.</returns>
-    public HashCode And<T>(T item) => new HashCode(CombineHashCodes(this.value, GetHashCode(item)));
+    public HashCode And<T>(T item) => 
+        new HashCode(CombineHashCodes(this.value, GetHashCode(item)));
 
     /// <summary>
     /// Adds the hash code of the specified items in the collection.
@@ -192,7 +193,8 @@ public struct HashCode : IEquatable<HashCode>
     /// <exception cref="NotSupportedException">Implicitly convert this struct to an <see cref="int" /> to get the hash code.</exception>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public override int GetHashCode() =>
-        throw new NotSupportedException("Implicitly convert this struct to an int to get the hash code.");
+        throw new NotSupportedException(
+            "Implicitly convert this struct to an int to get the hash code.");
 
     private static int CombineHashCodes(int h1, int h2)
     {
@@ -229,7 +231,7 @@ public struct HashCode : IEquatable<HashCode>
 }
 ```
 
-The helper struct can be used in our SuperHero class like so:
+The helper `struct` can be used in our `SuperHero` class like so:
 
 ```cs
 public override int GetHashCode()
@@ -243,10 +245,9 @@ public override int GetHashCode()
 
 Now isn't that pretty? All the nasty magic numbers and `unchecked` code has been hidden away. It is a very lightweight and simple `struct`, so although we create new instances of it, it's stored in the stack rather than the memory heap. What's more, is that is code is just as fast (I've timed it)! We're using generics so there is no boxing or unboxing going on. We're still using the `unchecked` keyword, so overflow checking is still disabled.
 
-One interesting edge case is what to do when hashing a collection and you get either a `null` or empty collection. Should you use a zero to represent both scenarios (zero is usually used to represent a `null` value) or differentiate them somehow. I managed to get a response from Jon Skeet himself on StackOverflow:
+One interesting edge case is what to do when hashing a collection and you get either a `null` or empty collection. Should you use a zero to represent both scenarios (zero is usually used to represent a `null` value) or differentiate them somehow. I managed to get a response from [Jon Skeet]() himself on StackOverflow:
 
 > if both states are valid, it seems perfectly reasonable to differentiate between them. (Someone carrying an empty box isn't the same as someone not carrying a box at all...)
-> 
 > [Jon Skeet](https://stackoverflow.com/questions/8094867/good-gethashcode-override-for-list-of-foo-objects-respecting-the-order/8094931?noredirect=1#comment99700237_8094931)
 
 This is why we use the prime number 19 (it could have been any prime number) to represent an empty collection. Whether this matters or not depends on your use case. If an empty collection means something different in your scenario, then we've got you covered. Generally speaking though, if you are exposing a collection property in your class you should consider making it a getter only and initializing it in the constructor, so that it is never `null` in the first place but here we're trying to cover all scenarios.

@@ -41,9 +41,9 @@ This series of blog posts goes through the additions made to the default ASP.NET
 
 ## Turn On Custom Errors
 
-In the early stages of development, you want to see the full stack trace of your exceptions when an error occurs on a page. When it comes to releasing your site, you need to hide this sensitive information. Unbelievably, the default ASP.NET MVC template leaves this sensitive information wide open. To hide this, you need to add the [customErrors](http://msdn.microsoft.com/en-us/library/vstudio/h0hfz6fc%28v=vs.100%29.aspx) section to your web.config file and turn it on.
+In the early stages of development, you want to see the full stack trace of your exceptions when an error occurs on a page. When it comes to releasing your site, you need to hide this sensitive information. Unbelievably, the default ASP.NET MVC template leaves this sensitive information wide open. To hide this, you need to add the [customErrors](http://msdn.microsoft.com/en-us/library/vstudio/h0hfz6fc%28v=vs.100%29.aspx) section to your `web.config` file and turn it on.
 
-The problem is that we still want this setting to be turned off when debugging. This is where [configuration file transforms](http://go.microsoft.com/fwlink/?LinkId=301874) come in. This setting is off when the solution configuration is 'Debug' and on when it is 'Release'. The debug attribute in the compilation section is set in the same way.
+The problem is that we still want this setting to be turned off when debugging. This is where [configuration file transforms](http://go.microsoft.com/fwlink/?LinkId=301874) come in. This setting is off when the solution configuration is `Debug` and on when it is `Release`. The debug attribute in the compilation section is set in the same way.
 
 ## Securing Cookies
 
@@ -103,7 +103,7 @@ By default, ASP.NET MVC allows 4096 characters in the request URL. This is to re
 
 ## Machine Keys
 
-Machine keys are used by MVC to generate anti-forgery tokens, which you should be using with any form on your site. If your site is deployed to a server cluster, you need to generate a machine key and add it to the system.web section of your web.config file. This is to ensure that both machines in your server cluster are using the same machine key to generate anti-forgery tokens. [This](http://blogs.msdn.com/b/amb/archive/2012/07/31/easiest-way-to-generate-machinekey.aspx) link tells you more about how to do this.
+Machine keys are used by MVC to generate anti-forgery tokens, which you should be using with any form on your site. If your site is deployed to a server cluster, you need to generate a machine key and add it to the system.web section of your `web.config` file. This is to ensure that both machines in your server cluster are using the same machine key to generate anti-forgery tokens. [This](http://blogs.msdn.com/b/amb/archive/2012/07/31/easiest-way-to-generate-machinekey.aspx) link tells you more about how to do this.
 
 ```xml
 <machineKey decryptionKey="[YOUR DECRYPTION KEY GOES HERE]" validationKey="[YOUR VALIDATION KEY GOES HERE]"/>

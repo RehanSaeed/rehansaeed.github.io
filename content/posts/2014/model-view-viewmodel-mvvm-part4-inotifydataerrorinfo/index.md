@@ -33,10 +33,12 @@ tags:
 In this next part, I'm going to discuss validation of your view models using the [INotifyDataErrorInfo](http://msdn.microsoft.com/en-us/library/system.componentmodel.inotifydataerrorinfo%28v=vs.110%29.aspx) interface. Validation is an often ignored part of the Model-View-ViewModel (MVVM) story. If you need to create a form for your users to fill in (which is probably most applications, I would have thought), then you probably need to validate user input in some way and the [INotifyDataErrorInfo](http://msdn.microsoft.com/en-us/library/system.componentmodel.inotifydataerrorinfo%28v=vs.110%29.aspx) interface can get you there.
 
 ![INotifyDataErrorInfo Valid TextBox](./images/Valid.png)
-INotifyDataErrorInfo Valid TextBox
+
+That was a **valid** `TextBox` using `INotifyDataErrorInfo`.
 
 ![INotifyDataErrorInfo Invalid TextBox](./images/Invalid.png)
-INotifyDataErrorInfo Invalid TextBox
+
+That was an **invalid** `TextBox` using `INotifyDataErrorInfo`.
 
 In the example above you can see a name text box which requires text, to be in a valid state. In the valid state there is a big green tick next to the text box and conversely in an invalid state, there is a big yellow warning sign, the text box background becomes pink and you get a nice tool-tip telling you what the error is. By the way, this example is taken from my [Elysium Extra](https://github.com/RehanSaeed/Elysium-Extra) WPF project which is freely available on GitHub.
 

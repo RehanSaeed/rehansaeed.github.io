@@ -45,7 +45,7 @@ CSP is all about adding an extra layer of security to your site using a [Defence
 
 ## Real World Example
 
-So what does this look like in a web browser. Well, here is an example of a Content-Security-Policy HTTP header shown in Chrome. I used the [ASP.NET Core Boilerplate](https://visualstudiogallery.msdn.microsoft.com/6cf50a48-fc1e-4eaf-9e82-0b2a6705ca7d) Visual Studio project template to create a ASP.NET MVC project that has CSP applied, right out of the box.
+So what does this look like in a web browser. Well, here is an example of a `Content-Security-Policy` HTTP header shown in Chrome. I used the [ASP.NET Core Boilerplate](https://visualstudiogallery.msdn.microsoft.com/6cf50a48-fc1e-4eaf-9e82-0b2a6705ca7d) Visual Studio project template to create a ASP.NET MVC project that has CSP applied, right out of the box.
 
 ![Content Security Policy HTTP Header](./images/Content-Security-Policy-HTTP-Header.png)
 
@@ -386,7 +386,7 @@ The big disadvantage with this approach is that the nonce is different for each 
 
 ## Hashes
 
-Using hashes solves the caching problem we have with nonces. The server computes the hash of a particular style or script tags contents, and includes the base64 encoding of that value in the Content-Security-Policy header like so:
+Using hashes solves the caching problem we have with nonces. The server computes the hash of a particular style or script tags contents, and includes the base64 encoding of that value in the `Content-Security-Policy` header like so:
 
 ```http
 Content-Security-Policy: script-src 'sha512-YWIzOWNiNzJjNDRlYzc4MTgwMDhmZDlkOWI0NTAyMjgyY2MyMWJlMWUyNjc1ODJlYWJhNjU5MGU4NmZmNGU3OAo='

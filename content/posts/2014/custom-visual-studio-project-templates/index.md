@@ -23,31 +23,36 @@ Creating a custom Visual Studio project template that you can use from the 'New 
 The [Visual Studio Gallery](https://visualstudiogallery.msdn.microsoft.com) is a great place to share your custom Visual Studio project template with the community. There are actually two ways to create a template. I recently had to create one for [ASP.NET Core Boilerplate](https://visualstudiogallery.msdn.microsoft.com/6cf50a48-fc1e-4eaf-9e82-0b2a6705ca7d) and found it less than simple. This post talks you through creating one and submitting it to the Visual Studio Gallery, allowing anyone to use it from the 'New Project' dialogue.
 
 ![The project template shown in the 'Web' section of Visual Studio's 'New Project' dialogue.](./images/VisualStudioGallery2.png)
+
 The project template shown in the 'Web' section of Visual Studio's 'New Project' dialogue.
 
 # Export Template as .zip
 
-The first method of creating a custom project template is to use the 'Export Template' wizard in Visual Studio, as shown in the steps below, you can create a .zip file which contains a template of your selected project.
+The first method of creating a custom project template is to use the 'Export Template' wizard in Visual Studio, as shown in the steps below, you can create a `.zip` file which contains a template of your selected project.
 
 ![Export .zip Project Template](./images/ExportTemplate1.png)
-The Visual Studio Export Template menu item for exporting a .zip project template.
+
+The Visual Studio Export Template menu item for exporting a `.zip` project template.
 
 The wizard allows you to select the project from your solution you want to export as a template.
 
 ![The export template 'Choose template type' screen.](./images/ExportTemplate2.png)
+
 The export template 'Choose template type' screen.
 
 You can even specify an icon and preview image of the project template. This is perfect as this information also gets displayed in the Visual Studio 'New Project' dialogue.
 
 ![The export template 'Select template options' screen, where you can describe your template.](./images/ExportTemplate3.png)
+
 The export template 'Select template options' screen, where you can describe your template.
 
-The .zip file that is output must be copied into the following folder, for Visual Studio to pick it up:
+The `.zip` file that is output must be copied into the following folder, for Visual Studio to pick it up:
 
 > C:/Users/[Your User Name]/Documents/Visual Studio [2010|2012|2013|2015]/Templates/ProjectTemplates
 
 ![The .zip file output as part of the Visual Studio Export Template wizard.](./images/ExportTemplate4.png)
-The .zip file output as part of the Visual Studio Export Template wizard.
+
+The `.zip` file output as part of the Visual Studio Export Template wizard.
 
 This is a super easy process and you should really consider creating your own templates if you find yourself making the same old changes to every project you are creating. The downside is that its not very customizable and these types of project templates cannot be submitted to the [Visual Studio Gallery](https://visualstudiogallery.msdn.microsoft.com).
 
@@ -65,24 +70,28 @@ There is even an alternative method of creating project templates and sharing th
 
 # Creating a VSIX Package
 
-The first step is to create a .zip project template package using the steps above. Once you've done that, download and install the [Microsoft Visual Studio 2013 SDK](https://www.microsoft.com/en-us/download/details.aspx?id=40758). This will give you new project templates to create VSIX packages. The first thing to do is create a new C# Project Template (Or a Visual Basic one if you prefer).
+The first step is to create a `.zip` project template package using the steps above. Once you've done that, download and install the [Microsoft Visual Studio 2013 SDK](https://www.microsoft.com/en-us/download/details.aspx?id=40758). This will give you new project templates to create VSIX packages. The first thing to do is create a new C# Project Template (Or a Visual Basic one if you prefer).
 
 ![The new project dialogue, showing how to create a new VSIX C# project.](./images/ExportVSIX1.png)
+
 The new project dialogue, showing how to create a new VSIX C# project.
 
-The next step is to open the .zip version of your project template and copy the contents into your new project. Copy everything (Including the project file), except the 'Properties' folder as this will conflict with the existing one in the project.
+The next step is to open the `.zip` version of your project template and copy the contents into your new project. Copy everything (Including the project file), except the 'Properties' folder as this will conflict with the existing one in the project.
 
 ![An example of a VSIX C# project from the ASP.NET Core Boilerplate project template.](./images/ExportVSIX2.png)
+
 An example of a VSIX C# project from the ASP.NET Core Boilerplate project template.
 
 Select all the files in the project and in the properties window, ensure that their 'Build Action' is set to 'Content'.
 
 ![The properties window for a file in a VSIX C# project. Note, that the file build action has been set to 'Content'.](./images/ExportVSIX3.png)
+
 The properties window for a file in a VSIX C# project. Note, that the file build action has been set to 'Content'.
 
-The .vstemplate file in the project contains all the information about the contents of the project template. If you select it and go to the 'Properties' window, you can set the 'Category' property which determines where your project template will appear in the 'New Project' dialogue.
+The `.vstemplate` file in the project contains all the information about the contents of the project template. If you select it and go to the 'Properties' window, you can set the 'Category' property which determines where your project template will appear in the 'New Project' dialogue.
 
 ![The category a VSIX C# project is displayed under, in the Visual Studio New Project dialogue.](./images/ExportVSIX4.png)
+
 The category a VSIX C# project is displayed under, in the Visual Studio New Project dialogue.
 
 An example of the `.vstemplate` file is shown below. Note, that I've set the project template name, description and the default name of the project which is shown in the 'New Project' dialogue and the user can rename. The XML then goes on to declare the name of the `.csproj` file in the `Project` node, followed by each and every file and folder to be included in the template.
@@ -122,26 +131,30 @@ You can use the `OpenInWebBrowser` or `OpenInEditor` attributes on a `ProjectIte
 </VSTemplate>
 ```
 
-The next step is to add a VSIX Project to our solution. This is the project that will actually build a .vsix file.
+The next step is to add a VSIX Project to our solution. This is the project that will actually build a `.vsix` file.
 
 ![The new project dialogue, showing how to create a new VSIX project.](./images/ExportVSIX5.png)
+
 The new project dialogue, showing how to create a new VSIX project.
 
 If you open the `.vsixmanifest` file, you can fill in basic information about the template. This information will be displayed in the 'New Project' dialogue. I have specified an Icon, Preview Image and Licence file. All three of these files are added to the project.
 
 ![The metadata for the VSIX project, describing the .vsix installer file and also the project shown in the solution explorer, showing the files included.](./images/ExportVSIX6.png)
-The metadata for the VSIX project, describing the .vsix installer file and also the project shown in the solution explorer, showing the files included.
+
+The metadata for the VSIX project, describing the `.vsix` installer file and also the project shown in the solution explorer, showing the files included.
 
 The 'Install Targets' tab lets you target a specific version of Visual Studio. I changed this to support Visual Studio 2012 and above by specifying the version range to be `[11.0,]`. More information [here](http://blogs.msdn.com/b/visualstudio/archive/2013/08/08/update-for-extension-authors-vsix-manifest-version-ranges.aspx).
 
 The 'Dependencies' tab is very similar. Here you can specify which version of the .NET Framework your project depends on. I stuck with the defaults of .NET 4.5 only.
 
 ![The installation targets or versions of Visual Studio your VSIX extension will install to.](./images/ExportVSIX7.png)
+
 The installation targets or versions of Visual Studio your VSIX extension will install to.
 
 If you click on the 'Assets' tab on the left, you can add a reference to your other 'C# Project Template' project.
 
 ![The VSIX C# projects you want to add to the VSIX extension as an asset to be installed.](./images/ExportVSIX8.png)
+
 The VSIX C# projects you want to add to the VSIX extension as an asset to be installed.
 
 # Submitting your VSIX Project Template to the Visual Studio Gallery
@@ -151,18 +164,21 @@ Submitting your new VSIX extension to the Visual Studio Gallery is a great way t
 If you've followed the steps above to create a VSIX package and tested that it works correctly then submitting one to the site is really easy. Follow [this](https://visualstudiogallery.msdn.microsoft.com/site/upload/view) link to the submission page and fill in the form. An example of what it looks like can be seen below:
 
 ![An example of the Visual Studio Gallery Submission Page.](./images/VisualStudioGallery1.png)
+
 An example of the Visual Studio Gallery Submission Page.
 
 Once you have made your submission and you go to the 'New Project' dialogue, you can go to the 'Online' section and see your project template listed.
 
 ![The project template shown in the 'Web' section of Visual Studio's 'New Project' dialogue.](./images/VisualStudioGallery2.png)
+
 The project template shown in the 'Web' section of Visual Studio's 'New Project' dialogue.
 
 If you use the template above, explicitly install it from the Visual Studio Gallery or install it from 'Extensions and Updates', you will then see the project appear in the 'New Project' dialogue under the category you specified in the settings above.
 
 ![The project template shown in the 'Online' section of Visual Studio's 'New Project' dialogue.](./images/VisualStudioGallery3.png)
+
 The project template shown in the 'Online' section of Visual Studio's 'New Project' dialogue.
 
 # Conclusions
 
-Creating a simple .zip project template is super simple and something everyone should know and use for larger projects. Creating VSIX project templates is a lot more involved but to be honest, there is no reason why it should be. I hope Microsoft makes this process a lot easier.
+Creating a simple `.zip` project template is super simple and something everyone should know and use for larger projects. Creating VSIX project templates is a lot more involved but to be honest, there is no reason why it should be. I hope Microsoft makes this process a lot easier.

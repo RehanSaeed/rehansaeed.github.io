@@ -29,7 +29,7 @@ The second set of features is what I am really interested in. These are features
 
 # The nameof Operator
 
-The nameof operator simply gives you the name of any type you pass into it. You can take a look at the simple example below:
+The `nameof` operator simply gives you the name of any type you pass into it. You can take a look at the simple example below:
 
 ```cs
 string obiwan;  
@@ -105,7 +105,7 @@ public class Ship : INotifyPropertyChanged
 
 ## ASP.NET MVC
 
-ASP.NET MVC makes massive use of strings everywhere. This is a massive problem when you want to rename something. In fact, I've taken to using constants everywhere. It's more work to setup but in the long run its much easier to maintain. Here is an example of how we can use nameof to create a link and do away with strings and constants:
+ASP.NET MVC makes massive use of strings everywhere. This is a massive problem when you want to rename something. In fact, I've taken to using constants everywhere. It's more work to setup but in the long run its much easier to maintain. Here is an example of how we can use `nameof` to create a link and do away with strings and constants:
 
 ```cs
 @Html.ActionLink("Home", "Index", "Home")
@@ -135,7 +135,7 @@ As you can see, you can now use your parameters directly in the strings with ful
 
 # The Null-Conditional Operator
 
-Every C# developer has at some point stared at the text from a `NullReferenceException` and thought in their head, this is a really rubbish message and leaves out vital information. In fact there is [this](https://visualstudio.uservoice.com/forums/121579-visual-studio/suggestions/2371587-better-nullpointerexception-error-message) post on UserVoice, asking Microsoft to improve their NullReferenceException messages. It turns out that Microsoft has thought of this, they haven't improved the message (They still should, please up-vote the UserVoice post) but they have introduced the Null-Conditional operator.
+Every C# developer has at some point stared at the text from a `NullReferenceException` and thought in their head, this is a really rubbish message and leaves out vital information. In fact there is [this](https://visualstudio.uservoice.com/forums/121579-visual-studio/suggestions/2371587-better-nullpointerexception-error-message) post on UserVoice, asking Microsoft to improve their `NullReferenceException` messages. It turns out that Microsoft has thought of this, they haven't improved the message (They still should, please up-vote the UserVoice post) but they have introduced the Null-Conditional operator.
 
 ```cs
 public string Truncate(string value, int length)

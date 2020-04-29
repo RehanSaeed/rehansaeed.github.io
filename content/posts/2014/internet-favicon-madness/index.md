@@ -173,7 +173,8 @@ iOS devices can pin your site to the home screen and you can provide icons in a 
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 ```
 
-![iOS Web App Capable](./images/iOS-Web-App-Capable.png)]
+![iOS Web App Capable](./images/iOS-Web-App-Capable.png)
+
 The left screen shows a normal web browsing experience on iOS and the right shows a web app capable experience.
 
 If you decide to make your site web app capable by using the meta tag above, you can also set a splash screen which gets shown when your site is first launched. Once again, there are several sizes depending on the screen resolution and all the images start with `apple-touch-startup-image`. Find more information about iOS favicon's, startup images and meta tags [here](http://blog.teamtreehouse.com/optimizing-mobile-web-apps-ios).

@@ -71,7 +71,7 @@ The rest of this article is going to briefly go through the improvements made ov
 
 ## Secure By Default
 
-The default MVC template is not as secure as it could be. There are various settings (Mostly in the web.config file) which are insecure by default. For example, it leaks information about which version of IIS you are using and allows external scripts to access cookies by default!
+The default MVC template is not as secure as it could be. There are various settings (Mostly in the `web.config` file) which are insecure by default. For example, it leaks information about which version of IIS you are using and allows external scripts to access cookies by default!
 
 [ASP.NET Core Boilerplate](https://github.com/Dotnet-Boxed/Templates) makes everything secure by default but goes further and uses various HTTP headers which are sent to the browser to restrict things further.
 
@@ -81,7 +81,7 @@ Setting up [SSL](http://en.wikipedia.org/wiki/SSL)/[TLS](http://en.wikipedia.org
 
 ## Fast By Default
 
-The default MVC template does a pretty poor job in the performance department. Probably because they don't make any assumptions about which web server you are using. Most of the world and dog that are writing ASP.NET MVC sites use IIS and there are settings in the web.config file under the system.webServer section which can make a big difference when it comes to performance.
+The default MVC template does a pretty poor job in the performance department. Probably because they don't make any assumptions about which web server you are using. Most of the world and dog that are writing ASP.NET MVC sites use IIS and there are settings in the `web.config` file under the system.webServer section which can make a big difference when it comes to performance.
 
 [ASP.NET Core Boilerplate](https://github.com/Dotnet-Boxed/Templates) makes no such assumptions. It turns on GZip compression for static and dynamic files being sent to the browsers making them smaller and quicker to download. It also uses Content Delivery Networks (CDN) by default to make common scripts like jQuery quicker to download (You can turn this off of course but the point is [ASP.NET Core Boilerplate](https://github.com/Dotnet-Boxed/Templates) is fast by default).
 
@@ -89,7 +89,7 @@ That's not all! There are a bunch of other tweaks and examples of practices whic
 
 ## Search Engine Optimization (SEO)
 
-The default ASP.NET MVC template takes no consideration of Search Engine Optimization at all. ASP.NET Core Boilerplate adds a dynamically generated robots.txt file to tell search engines which pages they can index. It also adds a dynamically generated sitemap.xml file where you can help search engines even further by giving them links to all your pages.
+The default ASP.NET MVC template takes no consideration of Search Engine Optimization at all. ASP.NET Core Boilerplate adds a dynamically generated `robots.txt` file to tell search engines which pages they can index. It also adds a dynamically generated `sitemap.xml` file where you can help search engines even further by giving them links to all your pages.
 
 ASP.NET MVC has some very useful settings for appending trailing slashes to URL's and making all URL's lower case. Unfortunately, both of these are turned off by default, which is terrible for SEO. This project turns them on by default.
 
@@ -157,6 +157,6 @@ Please report any bugs or issues on the GitHub issues page [here](https://github
 
 ## Future of the project
 
-At some point, I will try to create a [Visual Studio Deployment package (VSIX)](//msdn.microsoft.com/en-us/library/ff363239.aspx) and list this project template on the [Visual Studio extensions](https://visualstudiogallery.msdn.microsoft.com/site/search?f[0].Type=RootCategory&f[0].Value=templates&f[0].Text=Templates&f[1].Type=SubCategory&f[1].Value=aspnet&f[1].Text=ASP.NET) site. To use the template, it will be as easy as choosing ASP.NET Core Boilerplate from the online templates in the File -> New Project -> Online Template menu. Unbelievably, it's actually pretty complicated to create one of these. I found the [Export Template Wizard](https://visualstudiogallery.msdn.microsoft.com/57320b20-34a2-42e4-b97e-e615c71aca24) Visual Studio extension which can do this easily but it's not been updated since Visual Studio 2010.
+At some point, I will try to create a [Visual Studio Deployment package (VSIX)](//msdn.microsoft.com/en-us/library/ff363239.aspx) and list this project template on the [Visual Studio extensions](https://visualstudiogallery.msdn.microsoft.com/site/search?f[0].Type=RootCategory&f[0].Value=templates&f[0].Text=Templates&f[1].Type=SubCategory&f[1].Value=aspnet&f[1].Text=ASP.NET) site. To use the template, it will be as easy as choosing ASP.NET Core Boilerplate from the online templates in the `File -> New Project -> Online Template` menu. Unbelievably, it's actually pretty complicated to create one of these. I found the [Export Template Wizard](https://visualstudiogallery.msdn.microsoft.com/57320b20-34a2-42e4-b97e-e615c71aca24) Visual Studio extension which can do this easily but it's not been updated since Visual Studio 2010.
 
 I am also taking a look at creating separate Visual Studio templates which include ASP.NET Web API and OAuth authentication. This is of course an open source project, I fully expect contributions and suggestions from the community.

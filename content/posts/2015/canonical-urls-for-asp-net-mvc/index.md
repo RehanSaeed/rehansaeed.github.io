@@ -388,7 +388,7 @@ That's it! It's as simple as that! Now there are two special cases, which is whe
 
 ## Special Case 1
 
-Say you want to have the following action method where visiting `http://example.com/robots.txt` returns a text result. We want the client to think it's just visiting a static `robots.txt` file but in reality we are dynamically generating it (One reason for doing this is that a robots.txt file must contain an absolute URL and you want to use the `UrlHelper` to just handle that, no matter what domain the site is running under).
+Say you want to have the following action method where visiting `http://example.com/robots.txt` returns a text result. We want the client to think it's just visiting a static `robots.txt` file but in reality we are dynamically generating it (One reason for doing this is that a `robots.txt` file must contain an absolute URL and you want to use the `UrlHelper` to just handle that, no matter what domain the site is running under).
 
 ```cs
 [NoTrailingSlash]
@@ -400,9 +400,9 @@ public ContentResult RobotsText()
 }
 ```
 
-Adding a trailing slash to robots.txt would just be weird. Also, the last thing you want to do when search engines try to visit `http://example.com/robots.txt` is 301 permanent redirect them to `http://example.com/robots.txt/`. So we add the `NoTrailingSlashAttribute` filter.
+Adding a trailing slash to `robots.txt` would just be weird. Also, the last thing you want to do when search engines try to visit `http://example.com/robots.txt` is 301 permanent redirect them to `http://example.com/robots.txt/`. So we add the `NoTrailingSlashAttribute` filter.
 
-The `RedirectToCanonicalUrlAttribute` knows about the `NoTrailingSlashAttribute` filter and when it sees it and we make a request to the above action, it ignores the `AppendTrailingSlash` setting and it works just like requesting a static robots.txt file from the file system.
+The `RedirectToCanonicalUrlAttribute` knows about the `NoTrailingSlashAttribute` filter and when it sees it and we make a request to the above action, it ignores the `AppendTrailingSlash` setting and it works just like requesting a static `robots.txt` file from the file system.
 
 ## Special Case 2
 

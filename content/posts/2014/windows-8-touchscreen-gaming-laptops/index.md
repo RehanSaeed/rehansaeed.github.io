@@ -24,16 +24,19 @@ I do a bit of Windows 8 and Windows Phone development on the side, so a touch sc
 Windows 8 seems to have gotten a bad rap in recent times, mostly due to the full screen start screen. I personally can't see the problem, it just downright statistically [more efficient and quicker](http://blogs.msdn.com/b/b8/archive/2011/10/11/reflecting-on-your-comments-on-the-start-screen.aspx) to open an application than the old cramped Windows7/Vista start menu and has lots of cool features like pausing file transfers and mounting ISO files which I use all the time.
 
 ![Windows 7 Start Menu](./images/Windows-7-Start-Menu.png)
+
 Heat map of time to reach items in the Start menu from the Start button  
 (green items are the fastest to get to, red items are the slowest)
 
 ![Windows 8 Start Menu](./images/Windows-8-Start-Menu.png)
+
 Heat map of time to reach tiles in the Start screen from the Start button  
 (green tiles are the fastest to get to, red tiles are the slowest)
 
 That's not to say it doesn't have its problems, I like to use the Windows 8.1 mail application. I like it because I can pin it to my start screen and get notifications on the tile for any new emails. As a heavy desktop user though, I want to open the application on the desktop in a window and not in the full screen touch friendly window. Happily though :), this is going to be fixed in the next update where [WinRT apps can now be run on the good old desktop](http://www.wpcentral.com/more-windows-81-update-leaks-appear-apps-desktop).
 
 ![Windows 8 app running on Desktop](./images/Windows-8-app-on-Desktop.jpg)
+
 Windows 8 Bing Finance app running on Desktop
 
 I've been looking to replace my trusty old non-touch screen Samsung laptop running Windows 8.1 with a new touch screen model. However, I like to shoot a few HE shells at some tanks while playing [World of Tanks](http://worldoftanks.com/) on the weekend in my down time. Its not the most demanding of games but I'd like to look forward to future updates and other games like Battlefield 4.

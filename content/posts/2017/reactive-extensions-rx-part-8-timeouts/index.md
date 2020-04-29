@@ -61,6 +61,6 @@ using (var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMi
 }
 ```
 
-I'm using an overload on CancellationTokenSource which takes a timeout value. Then passing the `CancellationToken` to `DownloadTheInternet`. This method should be periodically checking the `CancellationToken` to see if it has been cancelled and if so, throw an `OperationCanceledException`. In this example you'd probably use HttpClient which handles this for you if you give it the CancellationToken.
+I'm using an overload on `CancellationTokenSource` which takes a timeout value. Then passing the `CancellationToken` to `DownloadTheInternet`. This method should be periodically checking the `CancellationToken` to see if it has been cancelled and if so, throw an `OperationCanceledException`. In this example you'd probably use `HttpClient` which handles this for you if you give it the CancellationToken.
 
 The main reason why this method is better is that the task is actually being cancelled and stopped from doing any more work. In my above reactive extensions example, the task continues doing work but it's result is just ignored.

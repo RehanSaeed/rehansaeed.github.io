@@ -24,11 +24,11 @@ tags:
   - "WinRT"
 ---
 
-I've recently got into creating NuGet packages, when I had to create one for [Elysium Extra](/wpf-metro-part4-elysium-extra). I discovered it was [really easy](http://docs.nuget.org/docs/creating-packages/using-a-gui-to-build-packages) to do too. I've just finished creating another one called NotificationsExtensions.Portable and I did in in 5 minutes!
+I've recently got into creating NuGet packages, when I had to create one for [Elysium Extra](/wpf-metro-part4-elysium-extra). I discovered it was [really easy](http://docs.nuget.org/docs/creating-packages/using-a-gui-to-build-packages) to do too. I've just finished creating another one called, you guessed it `NotificationsExtensions.Portable` and I did in in 5 minutes!
 
 # About
 
-NotificationsExtensions.Portable is a [Portable Class Library (PCL)](http://msdn.microsoft.com/en-us/library/gg597391%28v=vs.110%29.aspx) version of other NotificationsExtensions NuGet Packages. It's used to Create Windows 8.1 or Windows Phone 8.1 Tile, Toast and Badge Notification XML. This package is intended for use, instead of or as well as the following NuGet packages:
+`NotificationsExtensions.Portable` is a [Portable Class Library (PCL)](http://msdn.microsoft.com/en-us/library/gg597391%28v=vs.110%29.aspx) version of other `NotificationsExtensions` NuGet Packages. It's used to Create Windows 8.1 or Windows Phone 8.1 Tile, Toast and Badge Notification XML. This package is intended for use, instead of or as well as the following NuGet packages:
 
 - [NotificationsExtensions.WinRT](https://www.nuget.org/packages/NotificationsExtensions.WinRT)
 - [NotificationsExtensions.UniversalApps](https://www.nuget.org/packages/NotificationsExtensions.UniversalApps)
@@ -45,14 +45,17 @@ It's useful when trying to send notifications from the server side using Azure M
 
 # NuGet
 
-NotificationsExtensions.Portable is available on NuGet. Simply follow the instructions below:
+`NotificationsExtensions.Portable` is available on NuGet. Simply follow the instructions below:
 
 1. Click Tools Menu Item in Visual Studio
 2. Click NuGet Package Manager
 3. Click Package Manager Console
 4. Select Your Project in the Package Manager Console
-5. Execute the following command to install NotificationsExtensions.Portable: **PM> Install-Package NotificationsExtensions.Portable -Version 1.0.0**
+5. Execute the following command to install `NotificationsExtensions.Portable`:
+  ```powershell
+  Install-Package NotificationsExtensions.Portable -Version 1.0.0
+  ```
 
 # Attribution and Changes Made
 
-All praise goes to the above two projects and the Microsoft developers who built them. The only changes I made to the code was to switch from XmlDocument to XDocument, remove a few WinRT specific references and stick it into a Portable Class Library (PCL).
+All praise goes to the above two projects and the Microsoft developers who built them. The only changes I made to the code was to switch from `XmlDocument` to `XDocument`, remove a few WinRT specific references and stick it into a Portable Class Library (PCL).

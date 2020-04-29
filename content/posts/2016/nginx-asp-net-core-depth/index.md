@@ -48,7 +48,7 @@ IIS on the other hand does have a UI and what a travesty it is. It hasn't really
 
 The command line experience for IIS is another matter. It has very powerful IIS extensions you can install and the latest version of IIS even has an API that you can use to make simple HTTP calls to to update it.
 
-Configuration is where NGINX shines. It has a single super simple nginx.conf file which is pretty well documented. IIS is also actually pretty simple to configure if you only rely on the web.config file.
+Configuration is where NGINX shines. It has a single super simple `nginx.conf` file which is pretty well documented. IIS is also actually pretty simple to configure if you only rely on the `web.config` file.
 
 # Setting up NGINX
 
@@ -64,9 +64,9 @@ Once you have NGINX setup, you need to run your ASP.NET Core app using the Kestr
 
 # Aiming For The Perfect Config File
 
-You've got NGINX running, all you need now is a nginx.conf file to forward requests from the internet to your ASP.NET Core app running using the Kestrel web server.
+You've got NGINX running, all you need now is a `nginx.conf` file to forward requests from the internet to your ASP.NET Core app running using the Kestrel web server.
 
-I've taken the time to combine the recommendations from the [HTML5 Boilerplate](https://github.com/h5bp/server-configs-nginx/blob/master/nginx.conf) project, the [ASP.NET Core NGINX Documentation](https://docs.asp.net/en/latest/publishing/linuxproduction.html), the [NGINX Docs](http://nginx.org/en/docs/) and my own experience to build the nginx.config (and mime.types file) file below specifically for the best performance and security and to target .NET Core apps.
+I've taken the time to combine the recommendations from the [HTML5 Boilerplate](https://github.com/h5bp/server-configs-nginx/blob/master/nginx.conf) project, the [ASP.NET Core NGINX Documentation](https://docs.asp.net/en/latest/publishing/linuxproduction.html), the [NGINX Docs](http://nginx.org/en/docs/) and my own experience to build the `nginx.config` (and `mime.types` file) file below specifically for the best performance and security and to target .NET Core apps.
 
 Not only that but I've gone to extreme lengths to find out what every setting actually does and have written short comments describing each and every setting. The config file is self describing, from this point forward it needs no explanation.
 

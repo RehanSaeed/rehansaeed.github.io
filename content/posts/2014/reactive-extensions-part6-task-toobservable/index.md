@@ -39,7 +39,7 @@ In this post I'm going to show how you can also go the other way around. You can
 
 # Converting Tasks to Observables
 
-The `ToObservable` extension method allows you to convert a Task or `Task<T>` into an `IObservable<T>`. Calling `ToObservable` on a `Task` returns an `IObservable<Unit>`. A Unit is a kind of empty object that does nothing, the only reason it is there is because there is no `IObservable` (Without the `T`) interface.
+The `ToObservable` extension method allows you to convert a Task or `Task<T>` into an `IObservable<T>`. Calling `ToObservable` on a `Task` returns an `IObservable<Unit>`. A `Unit` is a kind of empty object that does nothing, the only reason it is there is because there is no `IObservable` (Without the `T`) interface.
 
 ```cs
 IObservable<Unit> observable = Task.Run(() => Console.WriteLine("Working")).ToObservable();
@@ -97,7 +97,7 @@ public async Task<string> WaitForFirstResultAndReturn()
 
 In the Task Parallel Library (TPL) example, I simply use the `WhenAny` method to await the first task that completes and then return the result.
 
-In the Reactive Extensions example above, I'm converting my tasks to observables, using the Merge method to convert them to a single observable and then using the FirstAsync method to await the first result (We covered await'ing observables in the last post).
+In the Reactive Extensions example above, I'm converting my tasks to observables, using the Merge method to convert them to a single observable and then using the `FirstAsync` method to await the first result (We covered `await`'ing observables in the last post).
 
 Overall the two techniques look pretty similar, with the TPL having a slight edge in terms of simplicity.
 

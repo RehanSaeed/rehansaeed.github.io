@@ -63,6 +63,7 @@ Other major differences between this SDK over Elysium are that the TextBox and C
 The ability to change theme's is unfortunately currently broken as a side effect of Elysium Extra having to wrap the Elysium XAML styles. This is pretty high up the list of things planned to be fixed though.
 
 ![Elysium Extra - Sample application screenshot of the Colours](./images/Colour.png)
+
 Custom colours over and above what Elysium provides and guidelines on how to use them.
 
 As this SDK has been open sourced from a live application. There are lots of styles for icons, menu items and app-bar buttons. These are things you'd use in every application. Things like cut, copy and paste buttons etc.

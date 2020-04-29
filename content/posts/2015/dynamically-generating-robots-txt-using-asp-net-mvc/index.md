@@ -86,7 +86,7 @@ public class HomeController : Controller
 
 I set up a route to the `robots.txt` path at the root of the site in my main `HomeController` and cached the response for a day for better performance (You can and should probably specify a much longer period of time if you know yours won't change).
 
-I then go on to append my commands to the StringBuilder. The great thing is that I can easily use the `UrlHelper` to generate a complete absolute URL to the sitemap.xml path which is also dynamically generated in much the same way. Finally, I just return the string as plain text using the UTF-8 encoding.
+I then go on to append my commands to the StringBuilder. The great thing is that I can easily use the `UrlHelper` to generate a complete absolute URL to the `sitemap.xml` path which is also dynamically generated in much the same way. Finally, I just return the string as plain text using the UTF-8 encoding.
 
 Creating a route ending with a file extension is not allowed by default in ASP.NET Core. To get around this security restriction, you need to add the following to the `Web.config` file:
 
@@ -112,6 +112,6 @@ Creating a route ending with a file extension is not allowed by default in ASP.N
 
 Dynamically generating your `robots.txt` file is pretty easy and only takes as many lines of code as you need to write your `robots.txt` file anyway. It also means that you don't need to pollute your project structure with yet another file at the root of it (This problem is fixed in MVC Core, where all static files must be added to the wwwroot folder). You can also dynamically generate your site-map URL so you don't need to remember to update it every time you change the domain.
 
-You could argue that performance is an issue when compared to a static robots.txt text file but its a matter of a few bytes and if you cache the response with a sufficient time limit then I think that even that problem goes away.
+You could argue that performance is an issue when compared to a static `robots.txt` text file but its a matter of a few bytes and if you cache the response with a sufficient time limit then I think that even that problem goes away.
 
 Once again, you can find a working example of this and much more using the [ASP.NET Core Boilerplate](https://visualstudiogallery.msdn.microsoft.com/6cf50a48-fc1e-4eaf-9e82-0b2a6705ca7d) project template.

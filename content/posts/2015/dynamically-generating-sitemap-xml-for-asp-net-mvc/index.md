@@ -40,10 +40,10 @@ The official [sitemaps.org](http://www.sitemaps.org/) site says it best:
 
 As you can see each URL in a sitemap contains four pieces of metadata:
 
-- **url** - The URL itself.
-- **lastmod** (Optional) - A last modified timestamp. This tells search engines whether or not they should re-index the page to reflect any changes that have been made.
-- **changefreq** (Optional) - A change frequency indicator (This can take the values: always, hourly, daily, weekly, monthly, yearly, never). This gives search engines an indication of how often they should come back and re-index the page.
-- **priority** (Optional) - A number from zero to one indicating the importance of the page compared to other pages on the site.
+- `url` - The URL itself.
+- `lastmod` (Optional) - A last modified timestamp. This tells search engines whether or not they should re-index the page to reflect any changes that have been made.
+- `changefreq` (Optional) - A change frequency indicator (This can take the values: always, hourly, daily, weekly, monthly, yearly, never). This gives search engines an indication of how often they should come back and re-index the page.
+- `priority` (Optional) - A number from zero to one indicating the importance of the page compared to other pages on the site.
 
 The latter three values only give search engines an indication of when they can or should index or even re-index a page. It is not a guarantee that it will happen, although it makes it more likely.
 
@@ -55,11 +55,11 @@ Search engines are black boxes. We only know what goes into them (Our sitemap) a
 
 # Generating a Static sitemap.xml File
 
-There are tools online you can use to generate a static sitemap.xml file, which you can dump at the root of your site but you have to manually update these every time your site changes. This may be fine if your site does not change much but adding a dynamically generated sitemap.xml file is fairly simple process and worth the effort.
+There are tools online you can use to generate a static `sitemap.xml` file, which you can dump at the root of your site but you have to manually update these every time your site changes. This may be fine if your site does not change much but adding a dynamically generated `sitemap.xml` file is fairly simple process and worth the effort.
 
 # Dynamically Generating Sitemap.xml for ASP.NET MVC
 
-Dynamically generating a simple sitemap.xml file for ASP.NET MVC is really simple but adding all the bells and whistles requires a bit more work. We start with a SitemapNode and frequency enumeration which represents a single URL in our sitemap:
+Dynamically generating a simple `sitemap.xml` file for ASP.NET MVC is really simple but adding all the bells and whistles requires a bit more work. We start with a SitemapNode and frequency enumeration which represents a single URL in our sitemap:
 
 ```cs
 public class SitemapNode
@@ -199,7 +199,7 @@ For most people the above code will be enough. You can only have a maximum of 50
 
 It's not clear what happens if search engines come across a file that breaches these limits. I would have thought that the likes of Google or Bing would have a margin of error but it's better to be well under the limits than over. Not many sites have that many pages but you'd be surprised at how easy it is to hit these limits.
 
-This is where sitemap index files come in. The idea is that you break up your sitemap into pages and list all of these in an index file. When a search engine visits your sitemap.xml file, they retrieve the index file and visit each page in turn. Here is an example of an index file:
+This is where sitemap index files come in. The idea is that you break up your sitemap into pages and list all of these in an index file. When a search engine visits your `sitemap.xml` file, they retrieve the index file and visit each page in turn. Here is an example of an index file:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>

@@ -125,34 +125,34 @@ So what does an Atom feed look like, well you can look at the official specifica
 
 At the root of the XML we have the feed element which represents the Atom Feed. Within that, there is various meta-data about the feed at the top, including:
 
-- title - The title of the feed.
-- subtitle - A short description or subtitle of the feed.
-- id - A unique ID for the feed. No other feed on the internet should have the same ID.
-- rights - Copyright information.
-- updated - When the feed was last updated.
-- category - Zero or more categories the feed belongs to.
-- logo - A wide 2:1 ratio image representing the feed.
-- author - Zero or more authors of the feed.
-- contributor - Zero or more contributors of the feed.
-- link rel="self" - A link to the feed itself.
-- link rel="alternate" - A link to an alternative representation of the feed.
-- link rel="hub" - A link to the [PubSubHubbub](https://pubsubhubbub.googlecode.com/git/pubsubhubbub-core-0.4.html) hub. I'll talk more about this further on.
-- icon - A square 1:1 ratio image representing the feed.
+- `title` - The title of the feed.
+- `subtitle` - A short description or subtitle of the feed.
+- `id` - A unique ID for the feed. No other feed on the internet should have the same ID.
+- `rights` - Copyright information.
+- `updated` - When the feed was last updated.
+- `category` - Zero or more categories the feed belongs to.
+- `logo` - A wide 2:1 ratio image representing the feed.
+- `author` - Zero or more authors of the feed.
+- `contributor` - Zero or more contributors of the feed.
+- `link rel="self"` - A link to the feed itself.
+- `link rel="alternate"` - A link to an alternative representation of the feed.
+- `link rel="hub"` - A link to the [PubSubHubbub](https://pubsubhubbub.googlecode.com/git/pubsubhubbub-core-0.4.html) hub. I'll talk more about this further on.
+- `icon` - A square 1:1 ratio image representing the feed.
 
 The entry elements are where it gets interesting, these are the actual 'things' in your feed you are describing. Each entry has meta-data which looks very similar to the meta-data we used to describe the feed itself.
 
-- id - A unique identifier to the entry. This can be a database row ID, it doesn't have to be a GUID.
-- title - The title of the entry.
-- summary - A short summary for what the entry is about.
-- published - When the entry was published.
-- updated - When the entry was last changed.
-- author - Zero or more authors of the entry.
-- contributor- Zero or more contributors of the entry.
-- link rel="alternate" - A link to an alternative representation of the entry.
-- link rel="enclosure" - An image representing the entry.
-- category - The category of the entry.
-- rights - Some copyright information.
-- media:thumbnail - A thumbnail representing the entry. This is a non-standard extension to the Atom 1.0 specification created by Yahoo but is common enough to be used here.
+- `id` - A unique identifier to the entry. This can be a database row ID, it doesn't have to be a GUID.
+- `title` - The title of the entry.
+- `summary` - A short summary for what the entry is about.
+- `published` - When the entry was published.
+- `updated` - When the entry was last changed.
+- `author` - Zero or more authors of the entry.
+- `contributor` - Zero or more contributors of the entry.
+- `link rel="alternate"` - A link to an alternative representation of the entry.
+- `link rel="enclosure"` - An image representing the entry.
+- `category` - The category of the entry.
+- `rights` - Some copyright information.
+- `media:thumbnail` - A thumbnail representing the entry. This is a non-standard extension to the Atom 1.0 specification created by Yahoo but is common enough to be used here.
 
 One thing to note is that all of the links are full absolute URL's. Relative URL's are allowed but you have to specify a single base URI which is added to the start of all URL's. Unfortunately, this feature is [buggy](https://bugzilla.mozilla.org/show_bug.cgi?id=480600) in Firefox and so should not be used.
 

@@ -37,7 +37,7 @@ Now using powershell, you can navigate to your project folder and run the `dotne
 
 # launchSettings.json
 
-The `launchSettings.json` file is used by Visual Studio to launch your application and controls what happens when you hit F5. It turns out you can add additional launch settings here to launch the application using the `dotnet watch` tool. You can do so by adding a new launch configuration as I've done at the bottom of this file:
+The `launchSettings.json` file is used by Visual Studio to launch your application and controls what happens when you hit ||F5||. It turns out you can add additional launch settings here to launch the application using the `dotnet watch` tool. You can do so by adding a new launch configuration as I've done at the bottom of this file:
 
 ```json
 {
