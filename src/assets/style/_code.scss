@@ -277,7 +277,9 @@ pre[class*="language-"].line-numbers > code {
 
 // PowerShell
 code[class*="language-powershell"],
-pre[class*="language-powershell"] {
+pre[class*="language-powershell"],
+[data-theme="dark"] code[class*="language-powershell"],
+[data-theme="dark"] pre[class*="language-powershell"] {
   background-color: hsl(215, 98%, 17%);
   color:#ffffff;
 
