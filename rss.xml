@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://preview.rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Wed, 29 Apr 2020 13:43:52 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 29 Apr 2020 14:51:11 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -900,7 +900,7 @@ public class RocketClient : IRocketClient
         return await response.Content.ReadAsAsync&lt;TakeoffStatus&gt;();
     }
 }</code></pre>
-<p>Here is how we register the typed client above with our dependency injection container. All of the meat lives in these three methods. <code>AddCorrelationId</code> adds a middleware written by Steve Gordon to handle <a href="https://www.stevejgordon.co.uk/asp-net-core-correlation-ids">Correlation ID&#39;s</a>. <code>AddPolicies</code> registers a policy registry and the policies themselves (A policy is <a href="https://github.com/App-vNext/Polly">Polly&#39;s</a> way of specifying how you want to deal with errors e.g. using retries, circuit breaker pattern etc.). Finally, we add the typed HttpClient but with configuration options, so we can configure it&#39;s settings from appsettings.json.</p>
+<p>Here is how we register the typed client above with our dependency injection container. All of the meat lives in these three methods. <code>AddCorrelationId</code> adds a middleware written by Steve Gordon to handle <a href="https://www.stevejgordon.co.uk/asp-net-core-correlation-ids">Correlation ID&#39;s</a>. <code>AddPolicies</code> registers a policy registry and the policies themselves (A policy is <a href="https://github.com/App-vNext/Polly">Polly&#39;s</a> way of specifying how you want to deal with errors e.g. using retries, circuit breaker pattern etc.). Finally, we add the typed HttpClient but with configuration options, so we can configure it&#39;s settings from <code>appsettings.json</code>.</p>
 <pre><code class="language-cs">public virtual void ConfigureServices(IServiceCollection services) =&gt;
     services
         .AddCorrelationId() // Add Correlation ID support to ASP.NET Core
@@ -929,7 +929,7 @@ public class RocketClient : IRocketClient
   }
 }</code></pre>
 <h1 id="configuring-polly-policies">Configuring Polly Policies</h1>
-<p>Below is the implementation for <code>AddPollyPolicies</code>. It starts by setting up and reading a configuration section in our <code>appsettings.json</code> file of type <code>PolicyOptions</code>. Then adds the Polly <a href="https://github.com/App-vNext/Polly/wiki/PolicyRegistry">PolicyRegistry</a> which is where Polly stores it&#39;s policies. Finally, we add a retry and circuit breaker policy and configure them using the settings we&#39;ve read from the <code>PolicyOptions</code>.</p>
+<p>Below is the implementation for <code>AddPollyPolicies</code>. It starts by setting up and reading a configuration section in our <code>appsettings.json</code> file of type <code>PolicyOptions</code>. Then adds the <a href="https://github.com/App-vNext/Polly/wiki/PolicyRegistry">PolicyRegistry</a> which is where Polly stores it&#39;s policies. Finally, we add a retry and circuit breaker policy and configure them using the settings we&#39;ve read from the <code>PolicyOptions</code>.</p>
 <pre><code class="language-cs">public static class ServiceCollectionExtensions
 {
     private const string PoliciesConfigurationSectionName = &quot;Policies&quot;;
@@ -1028,8 +1028,8 @@ public class RetryPolicyOptions
 
 public class DefaultHttpClientHandler : HttpClientHandler
 {
-    public DefaultHttpClientHandler() =&gt;
-        this.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+    public DefaultHttpClientHandler() =&gt; this.AutomaticDecompression = 
+        DecompressionMethods.Deflate | DecompressionMethods.GZip;
 }
 
 public class HttpClientOptions
@@ -1070,7 +1070,7 @@ public class HttpClientOptions
 }</code></pre>
 <h1 id="useragentdelegatinghandler">UserAgentDelegatingHandler</h1>
 <p>It&#39;s often useful to know something about the client that is calling your API for logging and debugging purposes. You can use the <code>User-Agent</code> HTTP header for this purpose.</p>
-<p>The <code>UserAgentDelegatingHandler</code> just sets the <code>User-Agent</code> HTTP header by taking the API&#39;s assembly name and version attributes. You need to set the <code>Version</code> and <code>Product</code> attributes in your csproj file for this to work. The name and version are then placed along with the current operating system into the User-Agent string.</p>
+<p>The <code>UserAgentDelegatingHandler</code> just sets the <code>User-Agent</code> HTTP header by taking the API&#39;s assembly name and version attributes. You need to set the <code>Version</code> and <code>Product</code> attributes in your <code>csproj</code> file for this to work. The name and version are then placed along with the current operating system into the User-Agent string.</p>
 <p>Now the next time you get an error in your API, you&#39;ll know the client application that caused it (if it&#39;s under your control).</p>
 <pre><code class="language-cs">public class UserAgentDelegatingHandler : DelegatingHandler
 {
@@ -1125,7 +1125,8 @@ public class HttpClientOptions
         return base.SendAsync(request, cancellationToken);
     }
 
-    private static string GetProduct(Assembly assembly) =&gt; GetAttributeValue&lt;AssemblyProductAttribute&gt;(assembly);
+    private static string GetProduct(Assembly assembly) =&gt; 
+        GetAttributeValue&lt;AssemblyProductAttribute&gt;(assembly);
 
     private static string GetVersion(Assembly assembly)
     {
@@ -1203,7 +1204,7 @@ string url = QueryHelpers.AddQueryString(&quot;/example/path&quot;, queryArgumen
             .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking))
     ...</code></pre>
 <h1 id="enableretryonfailure">EnableRetryOnFailure</h1>
-<p><a href="https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency">EnableRetryOnFailure</a> enables retries for transient exceptions. So what is a transient exception? Entity Framework Core has a <code>SqlServerTransientExceptionDetector</code> class that defines that. It turns out that any SqlException with a very specific list of SQL error codes or <code>TimeoutExceptions</code> are considered transient exceptions and thus, safe to retry.</p>
+<p><a href="https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency">EnableRetryOnFailure</a> enables retries for transient exceptions. So what is a transient exception? Entity Framework Core has a <code>SqlServerTransientExceptionDetector</code> class that defines that. It turns out that any <code>SqlException</code> with a very specific list of SQL error codes or <code>TimeoutExceptions</code> are considered transient exceptions and thus, safe to retry.</p>
 <h1 id="configurewarnings">ConfigureWarnings</h1>
 <p>By default, Entity Framework Core will log warnings when it can&#39;t translate your C# LINQ code to SQL and it will evaluate parts of your LINQ query it does not understand in-memory. This is usually catastrophic for performance because this usually means that EF Core will retrieve a huge amount of data from the database and then filter it down in-memory.</p>
 <p>Luckily in EF Core 2.1, they added support to translate the <code>GroupBy</code> LINQ method to SQL. However, I found out yesterday that you have to write Where clauses after <code>GroupBy</code> for this to work. If you write the Where clause before your <code>GroupBy</code>, EF Core will evaluate your <code>GroupBy</code> in-memory in the client instead of in SQL. The key is to know when this is happening.</p>
@@ -1211,7 +1212,7 @@ string url = QueryHelpers.AddQueryString(&quot;/example/path&quot;, queryArgumen
 <h1 id="enablesensitivedatalogging">EnableSensitiveDataLogging</h1>
 <p><a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbcontextoptionsbuilder.enablesensitivedatalogging?view=efcore-2.1">EnableSensitiveDataLogging</a> enables application data to be included in exception messages. This can include SQL, secrets and other sensitive information, so I am only doing it when running in the development environment. It&#39;s useful to see warnings and errors coming from Entity Framework Core in the console window when I am debugging my application using the Kestrel webserver directly, instead of with IIS Express.</p>
 <h1 id="usequerytrackingbehavior">UseQueryTrackingBehavior</h1>
-<p>If you are building an ASP.NET Core API, each request creates a new instance of your DbContext and then this is disposed at the end of the request. Query tracking keeps track of entities in memory for the lifetime of your DbContext so that if they are updated any changes can be saved, this is a waste of resources if you are just going to throw away the <code>DbContext</code> at the end of the request. By passing NoTracking to the <a href="https://docs.microsoft.com/en-us/ef/core/querying/tracking#no-tracking-queries">UseQueryTrackingBehavior</a> method, you can turn off this default behaviour. Note that if you are performing updates to your entities, don&#39;t use this option, this is only for API&#39;s that perform reads and/or inserts.</p>
+<p>If you are building an ASP.NET Core API, each request creates a new instance of your <code>DbContext</code> and then this is disposed at the end of the request. Query tracking keeps track of entities in memory for the lifetime of your <code>DbContext</code> so that if they are updated any changes can be saved, this is a waste of resources if you are just going to throw away the <code>DbContext</code> at the end of the request. By passing NoTracking to the <a href="https://docs.microsoft.com/en-us/ef/core/querying/tracking#no-tracking-queries">UseQueryTrackingBehavior</a> method, you can turn off this default behaviour. Note that if you are performing updates to your entities, don&#39;t use this option, this is only for API&#39;s that perform reads and/or inserts.</p>
 <h1 id="connection-strings">Connection Strings</h1>
 <p>You can also pass certain settings to connection strings. These are specific to the database you are using, here I&#39;m talking about SQL Server. Here is an example of a connection string:</p>
 <blockquote>
@@ -1253,7 +1254,7 @@ public class ApplicationDbContext : DbContext
 
     public DbSet&lt;Car&gt; Cars { get; set; }
 }</code></pre>
-<p>We can add some seed data by overriding the OnModelCreating method on our database context class. You need to make sure your seed data matches the existing data in your database.</p>
+<p>We can add some seed data by overriding the <code>OnModelCreating</code> method on our database context class. You need to make sure your seed data matches the existing data in your database.</p>
 <pre><code class="language-cs">protected override void OnModelCreating(ModelBuilder modelBuilder)
 {
     modelBuilder.Entity&lt;Car&gt;().HasData(
@@ -1534,7 +1535,7 @@ const configurationBuilder: INewConfigurationBuilder =
   };
 export default configurationBuilder;</code></pre>
 <p>In this case, you can pass arguments to the webpack configuration file like so:</p>
-<pre><code class="language-powershell">webpack --env.prod</code></pre>
+<pre><code class="language-powershell">&gt; webpack --env.prod</code></pre>
 <h1 id="conclusion">Conclusion</h1>
 <p>I think most people have huge trouble getting to grips with Webpack, once you understand that there are so many ways to supply the same config and how to translate between them, the learning curve gets shallower. You will be able to translate all of the examples you see online that inevitably are using a different syntax to you, so you can &#39;borrow&#39; (It&#39;s what us software developers do for much of the day) their code and get stuff done.</p>
 ]]></content:encoded>
@@ -2623,14 +2624,14 @@ Swagger feature was not selected
             <pubDate>Sat, 18 Mar 2017 00:00:00 GMT</pubDate>
             <description><![CDATA[I show how to make the new Visual Studio 2017 .NET Core based csproj XML concise and pretty for hand editing.]]></description>
             <content:encoded><![CDATA[<p>::: tip TLDR
-I show how to make csproj XML concise and pretty for hand editing.
+I show how to make <code>csproj</code> XML concise and pretty for hand editing.
 :::</p>
 <p>I used <code>project.json</code> since Beta 7 and got used to hand editing it, I&#39;ve continues that practice with <code>.csproj</code> files and I think you should too. Recent version of Visual Studio have made a lot of performance improvements but it&#39;s still a lot slower than hand editing a text file.</p>
-<p>The NuGet package screen in Visual Studio is achingly slow. Bulk editing takes seconds. I can update NuGet package references, package properties etc. all in one go, rather than visiting multiple disparate UI&#39;s in Visual Studio. Finally, I create new projects by copying and pasting an existing csproj and tweaking it. Much faster than Visual Studio&#39;s New Project dialogue.</p>
+<p>The NuGet package screen in Visual Studio is achingly slow. Bulk editing takes seconds. I can update NuGet package references, package properties etc. all in one go, rather than visiting multiple disparate UI&#39;s in Visual Studio. Finally, I create new projects by copying and pasting an existing <code>csproj</code> and tweaking it. Much faster than Visual Studio&#39;s New Project dialogue.</p>
 <h1 id="install-project-file-tools">Install Project File Tools</h1>
-<p>The <a href="https://marketplace.visualstudio.com/items?itemName=ms-madsk.ProjectFileTools">Project File Tools</a> Visual Studio extension gives you intellisense for NuGet packages in the new csproj projects. Unfortunately, due to MSBuild being around for so long and being so complex, intellisense for the rest of the project XML consists of a massive list of possible properties so it becomes less useful than it was in <code>project.json</code>.</p>
+<p>The <a href="https://marketplace.visualstudio.com/items?itemName=ms-madsk.ProjectFileTools">Project File Tools</a> Visual Studio extension gives you intellisense for NuGet packages in the new <code>csproj</code> projects. Unfortunately, due to MSBuild being around for so long and being so complex, intellisense for the rest of the project XML consists of a massive list of possible properties so it becomes less useful than it was in <code>project.json</code>.</p>
 <h1 id="dotnet-migrate---wow-thats-ugly">dotnet migrate - Wow that&#39;s ugly!</h1>
-<p>After migrating my <code>project.json</code> projects to csproj using Visual Studio 2017 (You could also use the <code>dotnet migrate</code> command), I found that that the XML generated was pretty ugly and contained superfluous elements you just didn&#39;t need. Here is an example csproj library project straight after migration:</p>
+<p>After migrating my <code>project.json</code> projects to <code>csproj</code> using Visual Studio 2017 (You could also use the <code>dotnet migrate</code> command), I found that that the XML generated was pretty ugly and contained superfluous elements you just didn&#39;t need. Here is an example <code>csproj</code> library project straight after migration:</p>
 <pre><code class="language-xml">&lt;Project Sdk=&quot;Microsoft.NET.Sdk&quot;&gt;
 
   &lt;PropertyGroup&gt;
@@ -2701,7 +2702,7 @@ I show how to make csproj XML concise and pretty for hand editing.
 <li><code>node_modules</code>, <code>jspm_packages</code> and <code>bower_components</code> are excluded by default.</li>
 </ul>
 <h2 id="assemblyinfocs-is-partially-dead">AssemblyInfo.cs is Partially Dead</h2>
-<p>You don&#39;t need <code>AssemblyInfo.cs</code> anymore by default as the csproj Package settings also set many of the assembly attributes. In fact, you didn&#39;t really need it with <code>project.json</code> either but the default templates mostly included it for some reason. However, I still found I needed to resurrect it in some cases to use the <code>InternalsVisibleTo</code> attribute. <code>InternalsVisibleTo</code> allows my unit test projects to access internal members in my library project. After a <code>dotnet migrate</code>, you may see the following elements which stop certain assembly attributes from being generated. You can safely delete these.</p>
+<p>You don&#39;t need <code>AssemblyInfo.cs</code> anymore by default as the <code>csproj</code> Package settings also set many of the assembly attributes. In fact, you didn&#39;t really need it with <code>project.json</code> either but the default templates mostly included it for some reason. However, I still found I needed to resurrect it in some cases to use the <code>InternalsVisibleTo</code> attribute. <code>InternalsVisibleTo</code> allows my unit test projects to access internal members in my library project. After a <code>dotnet migrate</code>, you may see the following elements which stop certain assembly attributes from being generated. You can safely delete these.</p>
 <pre><code class="language-xml">&lt;PropertyGroup&gt;
   &lt;!-- ...Omitted --&gt;
   &lt;GenerateAssemblyConfigurationAttribute&gt;false&lt;/GenerateAssemblyConfigurationAttribute&gt;
@@ -2709,7 +2710,7 @@ I show how to make csproj XML concise and pretty for hand editing.
   &lt;GenerateAssemblyProductAttribute&gt;false&lt;/GenerateAssemblyProductAttribute&gt;
 &lt;PropertyGroup&gt;</code></pre>
 <h2 id="remove-system-references">Remove System.* References</h2>
-<p>You no longer need to explicitly reference <code>System.*</code> references in your csproj. David Fowler recommends that you always reference the <code>NETStandard.Library</code> meta NuGet package gives you most <code>System.*</code> references. You get <code>NETStandard.Library</code> by default if you use the SDK attribute at the top of the csproj:</p>
+<p>You no longer need to explicitly reference <code>System.*</code> references in your <code>csproj</code>. David Fowler recommends that you always reference the <code>NETStandard.Library</code> meta NuGet package gives you most <code>System.*</code> references. You get <code>NETStandard.Library</code> by default if you use the SDK attribute at the top of the <code>csproj</code>:</p>
 <pre><code class="language-xml">&lt;Project Sdk=&quot;Microsoft.NET.Sdk&quot;&gt;
   &lt;!-- ...Omitted --&gt;
 &lt;/Project&gt;</code></pre>
@@ -2740,7 +2741,7 @@ I show how to make csproj XML concise and pretty for hand editing.
 <p>So the question becomes, how should we label them? Well, the convention I use is to use the same label names as the ones in Visual Studio&#39;s project properties screen:</p>
 <p><img src="https://preview.rehansaeed.com/cleaning-up-csproj/images/Project-Properties-Tabs.png" alt="Project Properties Tabs"></p>
 <h1 id="the-end-result">The End Result</h1>
-<p>This is what my csproj looks like at the end of all that. I&#39;ve removed all the extra fluff you don&#39;t need and labelled the properties in a way that makes navigating the file with your eye that much quicker.</p>
+<p>This is what my <code>csproj</code> looks like at the end of all that. I&#39;ve removed all the extra fluff you don&#39;t need and labelled the properties in a way that makes navigating the file with your eye that much quicker.</p>
 <pre><code class="language-xml">&lt;Project Sdk=&quot;Microsoft.NET.Sdk&quot;&gt;
 
   &lt;PropertyGroup Label=&quot;Build&quot;&gt;
@@ -6481,7 +6482,7 @@ The properties window for a file in a VSIX C# project. Note, that the file build
 <p>The .vstemplate file in the project contains all the information about the contents of the project template. If you select it and go to the &#39;Properties&#39; window, you can set the &#39;Category&#39; property which determines where your project template will appear in the &#39;New Project&#39; dialogue.</p>
 <p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportVSIX4.png" alt="The category a VSIX C# project is displayed under, in the Visual Studio New Project dialogue.">
 The category a VSIX C# project is displayed under, in the Visual Studio New Project dialogue.</p>
-<p>An example of the <code>.vstemplate</code> file is shown below. Note, that I&#39;ve set the project template name, description and the default name of the project which is shown in the &#39;New Project&#39; dialogue and the user can rename. The XML then goes on to declare the name of the .csproj file in the <code>Project</code> node, followed by each and every file and folder to be included in the template.</p>
+<p>An example of the <code>.vstemplate</code> file is shown below. Note, that I&#39;ve set the project template name, description and the default name of the project which is shown in the &#39;New Project&#39; dialogue and the user can rename. The XML then goes on to declare the name of the <code>.csproj</code> file in the <code>Project</code> node, followed by each and every file and folder to be included in the template.</p>
 <p>Note, that the <code>AssemblyInfo.cs</code> file is a little special. There are two of them in the project. The one we are interested in was already located in the root of the project when we created it. We also need to add it to the XML below slightly differently than the other files (See below).</p>
 <p>You can use the <code>OpenInWebBrowser</code> or <code>OpenInEditor</code> attributes on a <code>ProjectItem</code> to get the file to be opened in a web browser or text editor when the project is first created. I&#39;ve used <code>OpenInWebBrowser</code> to open the <code>ReadMe.html</code> file containing basic information about the project, when the project is first created.</p>
 <pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
