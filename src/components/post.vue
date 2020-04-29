@@ -86,6 +86,7 @@ export default {
 .post__footer {
   display: grid;
   justify-items: start;
+  margin-top: var(--global-space-fixed-6);
 }
 
 .post__footer__first-row {
