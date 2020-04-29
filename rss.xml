@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://preview.rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Wed, 29 Apr 2020 14:51:11 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 29 Apr 2020 15:53:59 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -532,7 +532,7 @@ ENTRYPOINT [&quot;dotnet&quot;, &quot;ReadOnlyTest.dll&quot;]</code></pre>
 </blockquote>
 <p>If I now run the same image with the <code>COMPlus_EnableDiagnostics</code> environment variable turned off:</p>
 <pre><code class="language-powershell">docker run --rm --read-only -it -p 8000:80 -e COMPlus_EnableDiagnostics=0 read-only-test</code></pre>
-<p>The app now starts! The <code>COMPlus_EnableDiagnostics</code> environment variable (which is <a href="https://github.com/dotnet/docs/issues/10217">undocumented</a>) turns off debugging and profiling support, so I would not bake this environment variable into the Dockerfile. For some reason these features need a read/write file system to work properly. If you&#39;d like to try this yourself, you can checkout all the code in <a href="https://github.com/RehanSaeed/ReadOnlyDockerTest">this repo</a>.</p>
+<p>The app now starts! The <code>COMPlus_EnableDiagnostics</code> environment variable (which is <a href="https://github.com/dotnet/docs/issues/10217">undocumented</a>) turns off debugging and profiling support, so I would not bake this environment variable into the <code>Dockerfile</code>. For some reason these features need a read/write file system to work properly. If you&#39;d like to try this yourself, you can checkout all the code in <a href="https://github.com/RehanSaeed/ReadOnlyDockerTest">this repo</a>.</p>
 ]]></content:encoded>
             <enclosure url="/images/hero/Docker-1366x768.png"/>
         </item>
@@ -869,7 +869,7 @@ It seems that Damian Edwards (The ASP.NET Core Project Manager) likes this post 
             <content:encoded><![CDATA[<p>::: warning Update (20 August 2018)
 Steve Gordon kindly suggested a <a href="https://github.com/RehanSaeed/HttpClientSample/pull/1">further optimisation</a> to use <code>ConfigureHttpClient</code>. I&#39;ve updated the code below to reflect this.
 :::</p>
-<p>In this post, I&#39;m going to show how to optimally configure a HttpClient using the new <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-2.1">HttpClientFactory</a> API in ASP.NET Core 2.1. If you haven&#39;t already I recommend reading Steve Gordon&#39;s <a href="https://www.stevejgordon.co.uk/introduction-to-httpclientfactory-aspnetcore">series of blog posts</a> on the subject since this post builds on that knowledge. You should also read his post about <a href="https://www.stevejgordon.co.uk/asp-net-core-correlation-ids">Correlation ID&#39;s</a> as I&#39;m making use of that library in this post. The main aims of the code in this post are to:</p>
+<p>In this post, I&#39;m going to show how to optimally configure a <code>HttpClient</code> using the new <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-2.1">HttpClientFactory</a> API in ASP.NET Core 2.1. If you haven&#39;t already I recommend reading Steve Gordon&#39;s <a href="https://www.stevejgordon.co.uk/introduction-to-httpclientfactory-aspnetcore">series of blog posts</a> on the subject since this post builds on that knowledge. You should also read his post about <a href="https://www.stevejgordon.co.uk/asp-net-core-correlation-ids">Correlation ID&#39;s</a> as I&#39;m making use of that library in this post. The main aims of the code in this post are to:</p>
 <ol>
 <li>Use the <code>HttpClientFactory</code> typed client, I don&#39;t know why the ASP.NET team bothered to provide three ways to register a client, the typed client is the one to use. It provides type safety and removes the need for magic strings.</li>
 <li>Enable GZIP decompression of responses for better performance. Interestingly, the <code>HttpClient</code> and ASP.NET Core does not support compression of GZIP requests, only responses. Doing some searching online some time ago suggests that this is an optimisation that is not very common at all, I thought this was pretty unbelievable at the time.</li>
@@ -900,7 +900,7 @@ public class RocketClient : IRocketClient
         return await response.Content.ReadAsAsync&lt;TakeoffStatus&gt;();
     }
 }</code></pre>
-<p>Here is how we register the typed client above with our dependency injection container. All of the meat lives in these three methods. <code>AddCorrelationId</code> adds a middleware written by Steve Gordon to handle <a href="https://www.stevejgordon.co.uk/asp-net-core-correlation-ids">Correlation ID&#39;s</a>. <code>AddPolicies</code> registers a policy registry and the policies themselves (A policy is <a href="https://github.com/App-vNext/Polly">Polly&#39;s</a> way of specifying how you want to deal with errors e.g. using retries, circuit breaker pattern etc.). Finally, we add the typed HttpClient but with configuration options, so we can configure it&#39;s settings from <code>appsettings.json</code>.</p>
+<p>Here is how we register the typed client above with our dependency injection container. All of the meat lives in these three methods. <code>AddCorrelationId</code> adds a middleware written by Steve Gordon to handle <a href="https://www.stevejgordon.co.uk/asp-net-core-correlation-ids">Correlation ID&#39;s</a>. <code>AddPolicies</code> registers a policy registry and the policies themselves (A policy is <a href="https://github.com/App-vNext/Polly">Polly&#39;s</a> way of specifying how you want to deal with errors e.g. using retries, circuit breaker pattern etc.). Finally, we add the typed <code>HttpClient</code> but with configuration options, so we can configure it&#39;s settings from <code>appsettings.json</code>.</p>
 <pre><code class="language-cs">public virtual void ConfigureServices(IServiceCollection services) =&gt;
     services
         .AddCorrelationId() // Add Correlation ID support to ASP.NET Core
@@ -1304,9 +1304,9 @@ public class ApplicationDbContext : DbContext
 }</code></pre>
 <p>This is what you need to do:</p>
 <ol>
-<li>Comment out all of the InsertData lines in the generated migration.</li>
-<li>Run the migration on your database containing the existing seed data. This is effectively doing a null operation but records the fact that the AddSeedData migration has been run.</li>
-<li>Uncomment the InsertData lines in the generated migration so that if you run the migrations on a fresh database, seed data still gets added. For your existing databases, since the migration has already been run on them, they will not add the seed data twice.</li>
+<li>Comment out all of the <code>InsertData</code> lines in the generated migration.</li>
+<li>Run the migration on your database containing the existing seed data. This is effectively doing a null operation but records the fact that the <code>AddSeedData</code> migration has been run.</li>
+<li>Uncomment the <code>InsertData</code> lines in the generated migration so that if you run the migrations on a fresh database, seed data still gets added. For your existing databases, since the migration has already been run on them, they will not add the seed data twice.</li>
 </ol>
 <p>That&#39;s it, hope that helps someone.</p>
 ]]></content:encoded>
@@ -1319,7 +1319,6 @@ public class ApplicationDbContext : DbContext
             <pubDate>Sun, 13 May 2018 00:00:00 GMT</pubDate>
             <description><![CDATA[.NET Boxed is a set of project templates with batteries included, providing the minimum amount of code required to get you going faster.]]></description>
             <content:encoded><![CDATA[<p><a href="https://github.com/Dotnet-Boxed/Templates">.NET Boxed</a> is a set of project templates with batteries included, providing the minimum amount of code required to get you going faster. Right now it includes API and GraphQL project templates.</p>
-<p><img src="https://preview.rehansaeed.com/net-boxed/images/Icon-512x512-150x150.png" alt=".NET Boxed Icon"></p>
 <h1 id="aspnet-core-api-boxed">ASP.NET Core API Boxed</h1>
 <p>The default <a href="https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/API.md">ASP.NET Core API Boxed</a> options will give you an API with <a href="https://swagger.io/">Swagger</a>, ASP.NET Core versioning, HTTPS and much more enabled right out of the box. You can totally turn any of that off if you want to, the point is that it&#39;s up to you.</p>
 <p><img src="https://preview.rehansaeed.com/net-boxed/images/API-Preview.png" alt="ASP.NET Core API Boxed Preview"></p>
@@ -1354,13 +1353,13 @@ public class ApplicationDbContext : DbContext
 <p>The <code>dotnet watch</code> tool is a file watcher for .NET that restarts the application when changes in the source code are detected. This is super useful when you just want to hack away at code and see the changes instantly when you refresh your browser. It increases productivity and reduces the magical inner-loop which reduces the time taken to write some code and then see it&#39;s effects. I also like using this tool because it opens a console window which lets you see all of your logs flashing by.</p>
 <p><img src="https://preview.rehansaeed.com/the-dotnet-watch-tool-revisited/images/Dotnet-Watch-Run-Console.png" alt="Dotnet Watch Run Console"></p>
 <p>::: warning
-In both cases you have to be careful to start the application by clicking Debug -&gt; Start Without Debugging or hitting the CTRL+F5 keyboard shortcut.
+In both cases you have to be careful to start the application by clicking <code>Debug -&gt; Start Without Debugging</code> or hitting the ||CTRL+F5|| keyboard shortcut.
 :::</p>
 <h1 id="net-core-20-vs-21">.NET Core 2.0 vs 2.1</h1>
 <p>Setting up the &#39;dotnet watch&#39; tool is as easy as installing the <code>Microsoft.DotNet.Watcher.Tools</code> NuGet package if you are using .NET Core 2.0. If you are using .NET Core 2.1 or above, this tool comes pre-installed in the .NET Core SDK.</p>
 <p>Now using powershell, you can navigate to your project folder and run the <code>dotnet watch run</code> command and your set. But using the command line is a bit lame if you are using Visual Studio, we can do one better.</p>
 <h1 id="launchsettingsjson">launchSettings.json</h1>
-<p>The <code>launchSettings.json</code> file is used by Visual Studio to launch your application and controls what happens when you hit F5. It turns out you can add additional launch settings here to launch the application using the <code>dotnet watch</code> tool. You can do so by adding a new launch configuration as I&#39;ve done at the bottom of this file:</p>
+<p>The <code>launchSettings.json</code> file is used by Visual Studio to launch your application and controls what happens when you hit ||F5||. It turns out you can add additional launch settings here to launch the application using the <code>dotnet watch</code> tool. You can do so by adding a new launch configuration as I&#39;ve done at the bottom of this file:</p>
 <pre><code class="language-json">{
   &quot;iisSettings&quot;: {
     &quot;windowsAuthentication&quot;: false,
@@ -1561,7 +1560,7 @@ export default configurationBuilder;</code></pre>
 <p><a href="https://www.elastic.co/products/beats/filebeat">Filebeat</a> is a tool used to ship Docker log files to ElasticSearch. The latest version 6.0 queries Docker APIs and enriches these logs with the container name, image, labels, and so on which is a great feature, because you can then filter and search your logs by these properties. You can then view these logs in a fully customizable Kibana dashboard. Filebeat ships with a sample Kibana dashboard that looks like this:</p>
 <p><img src="https://preview.rehansaeed.com/useful-docker-images-part2/images/Filebeat-Kibana-Dashboard.jpg" alt="Filebeat Kibana Dashboard"></p>
 <p>As well as shipping Docker logs, I write the logs from my ASP.NET Core applications to disk (The best way to make sure you never lose log information) and then use Filebeat to ship these log files to ElasticSearch.</p>
-<p>The Dockerfile below is used to add Filebeat configuration files to the base Filebeat image and nothing more. The configuration files are pretty lengthy and heavily commented so I&#39;ve omitted them:</p>
+<p>The <code>Dockerfile</code> below is used to add Filebeat configuration files to the base Filebeat image and nothing more. The configuration files are pretty lengthy and heavily commented so I&#39;ve omitted them:</p>
 <pre><code class="language-dockerfile">FROM docker.elastic.co/beats/filebeat:6.0.0
 COPY filebeat.yml filebeat.template.json /usr/share/filebeat/
 USER root
@@ -1599,7 +1598,7 @@ volumes:
 <h2 id="metricbeat">Metricbeat</h2>
 <p><a href="https://www.elastic.co/downloads/beats/metricbeat">Metricbeat</a> can be used to monitor the CPU, memory and disk usage on your Docker nodes and then ship those logs to your ElasticSearch cluster. Once again Metricbeat ships with a sample Kibana dashboard that looks like this:</p>
 <p><img src="https://preview.rehansaeed.com/useful-docker-images-part2/images/Metricbeat-Kibana-Dashboard.jpg" alt="Metricbeat Kibana Dashboard"></p>
-<p>Here is an example of a custom Metricbeat Dockerfile which I use to configure Metricbeat:</p>
+<p>Here is an example of a custom Metricbeat <code>Dockerfile</code> which I use to configure Metricbeat:</p>
 <pre><code class="language-dockerfile">FROM docker.elastic.co/beats/metricbeat:6.0.0
 COPY metricbeat.yml metricbeat.template.json /usr/share/metricbeat/
 USER root
@@ -1765,7 +1764,7 @@ networks:
             <pubDate>Mon, 20 Nov 2017 00:00:00 GMT</pubDate>
             <description><![CDATA[How to use Docker Labels with Docker run, Docker compose and Docker Swarm. Also talk about naming conventions and the Open Containers Initiative (OCI) spec.]]></description>
             <content:encoded><![CDATA[<h1 id="static-docker-labels">Static Docker Labels</h1>
-<p>Docker image names are short and usually not very descriptive. You have the ability to label your Docker images to give them some extra metadata. You can add any information you like, labels are just key value pairs. Here I&#39;ve added an author label to my Dockerfile:</p>
+<p>Docker image names are short and usually not very descriptive. You have the ability to label your Docker images to give them some extra metadata. You can add any information you like, labels are just key value pairs. Here I&#39;ve added an author label to my <code>Dockerfile</code>:</p>
 <pre><code class="language-dockerfile">FROM microsoft/aspnetcore:2.0
 LABEL &quot;author&quot;=&quot;Muhammad Rehan Saeed&quot;
 LABEL &quot;company&quot;=&quot;Acme Co.&quot;
@@ -1909,11 +1908,11 @@ public class Startup
 <h1 id="e-tags">E-Tags</h1>
 <p><a href="https://en.wikipedia.org/wiki/HTTP_ETag">E-tags</a> are typically generated in three ways (Read the link to understand what they are):</p>
 <ol>
-<li>Hashing the HTTP response body - You&#39;d want to use a very fast and collision resistant hash function like MD5 (MD5 is broken security wise and you should never use it but it&#39;s ok to use it for caching). Unfortunately, this method is slow because you have to load the entire response body into memory (which is not the default in ASP.NET Core which streams it straight to the client for better performance) to hash it. If you&#39;re still interested in implementing this E-Tags using this method <a href="https://madskristensen.net/post/send-etag-headers-in-aspnet-core">Mads Kristensen</a> wrote a nice blog post showing how it can be done.</li>
-<li>Last modification timestamp - The E-Tag can literally be the time the object was last modified which you can store in your database (I usually store created and modified timestamps for anything I store in a database anyway). This solves the performance problem above but now what is the difference between doing this and using the Last Modified HTTP header?</li>
+<li>Hashing the HTTP response body - You&#39;d want to use a very fast and collision resistant hash function like MD5 (MD5 is broken security wise and you should never use it but it&#39;s ok to use it for caching). Unfortunately, this method is slow because you have to load the entire response body into memory (which is not the default in ASP.NET Core which streams it straight to the client for better performance) to hash it. If you&#39;re still interested in implementing this <code>E-Tag</code>&#39;s using this method <a href="https://madskristensen.net/post/send-etag-headers-in-aspnet-core">Mads Kristensen</a> wrote a nice blog post showing how it can be done.</li>
+<li>Last modification timestamp - The <code>E-Tag</code> can literally be the time the object was last modified which you can store in your database (I usually store created and modified timestamps for anything I store in a database anyway). This solves the performance problem above but now what is the difference between doing this and using the Last Modified HTTP header?</li>
 <li>Revision Number - This could be some kind of integer stored in the database which gets incremented each time the data is modified. I don&#39;t see any advantage of doing this over using the last modification timestamp above, unless you have a naturally occurring revision number in your data that you could use.</li>
 </ol>
-<p>One additional thing you need to be careful of is the <code>Accept</code>, <code>Accept-Encoding</code> and <code>Accept-Language</code> HTTP headers. Any time you send a different response based on these HTTP headers, your E-Tag needs to be different e.g. a JSON non-gzip&#39;ed response in Mandarin needs to have a different E-Tag to an XML gzip&#39;ed response in Urdu.</p>
+<p>One additional thing you need to be careful of is the <code>Accept</code>, <code>Accept-Encoding</code> and <code>Accept-Language</code> HTTP headers. Any time you send a different response based on these HTTP headers, your <code>E-Tag</code> needs to be different e.g. a JSON non-gzip&#39;ed response in Mandarin needs to have a different <code>E-Tag</code> to an XML gzip&#39;ed response in Urdu.</p>
 <p>For option one, this can be achieved by calculating the hash after the response body has gone through GZIP compression. For the second and third options, you would need to append the value of the Accept HTTP headers to the last modified date or revision number and then hash all of that.</p>
 <h1 id="last-modified--if-modified-since">Last-Modified &amp; If-Modified-Since</h1>
 <p>I&#39;m assuming you already know about the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Last-Modified">Last-Modified</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-Modified-Since">If-Modified-Since</a> HTTP headers. If not, go ahead and read the links. Below is an example controller and action method that returns a list of cats.</p>
@@ -1959,9 +1958,9 @@ public class CatsController : ControllerBase
 <li><code>Last-Modified</code> HTTP header exists and cats have been modified since that date, so return all cats.</li>
 <li><code>Last-Modified</code> HTTP header exists but no cats have been modified since that date, so return a 304 Not Modified response.</li>
 </ol>
-<p>In all cases, except when we have no cats at all, we set the Last-Modified date to the latest date than any cat has been modified.</p>
+<p>In all cases, except when we have no cats at all, we set the <code>Last-Modified</code> date to the latest date than any cat has been modified.</p>
 <h1 id="conclusions">Conclusions</h1>
-<p>Which caching HTTP headers you pick, depends on your data but at a minimum, I would add E-Tags or <code>Last-Modified</code>. Add <code>Cache-Control</code> where possible, usually for static assets.</p>
+<p>Which caching HTTP headers you pick, depends on your data but at a minimum, I would add <code>E-Tag</code>&#39;s or <code>Last-Modified</code>. Add <code>Cache-Control</code> where possible, usually for static assets.</p>
 ]]></content:encoded>
             <enclosure url="/images/hero/ASP.NET-Core-Caching-in-Practice-1366x768.png"/>
         </item>
@@ -1993,13 +1992,13 @@ public class CatsController : ControllerBase
 </ul>
 <p>Extensive code style settings for C# and VB.NET have been defined that require the latest C# features to be used. In addition, it sets various more advanced C# style settings. All C# related code styles are consistent with <a href="https://github.com/DotNetAnalyzers/StyleCopAnalyzers">StyleCop&#39;s</a> default styles. You can find our more about the C# code style settings from the official <a href="https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-code-style-settings-reference">docs</a> and also in <a href="http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers">Kent Boogaart&#39;s</a> blog post.</p>
 <h1 id="how-do-i-use-it">How do I use It?</h1>
-<p>All you have to do is drop it into the root of your project. Then any time you open a file in Visual Studio, the .editorconfig file settings will be used to help format the document and also raise warnings if your code style and formatting does not conform.</p>
+<p>All you have to do is drop it into the root of your project. Then any time you open a file in Visual Studio, the <code>.editorconfig</code> file settings will be used to help format the document and also raise warnings if your code style and formatting does not conform.</p>
 <p>For Visual Studio Code, you can install the <a href="https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig">EditorConfig for VS Code</a> extension to get support.</p>
 <h1 id="exciting-july-2018-update">Exciting July 2018 Update</h1>
 <p>I noticed that Microsoft silently released several new C# code style settings. I&#39;m not sure when they were released but they&#39;re available in the current Visual Studio 15.7 update. The majority of them are to enforce the use of newer C# 7.3 syntax. I updated my generic <code>.editorconfig</code> file to add these new settings with C# 7.3 as the default.</p>
 <p>Microsoft also updated their documentation for <code>.editorconfig</code> settings pertaining to .NET, so I added links to the docs site, so it&#39;s easy to see what each setting does and change it, if it&#39;s not to your liking. I&#39;ve also included a undocumented dozen settings. There is an <a href="https://github.com/MicrosoftDocs/visualstudio-docs/issues/1070">open issue</a> on GitHub to get them documented, so it&#39;s easy to see what they do.</p>
 <p>In addition, while I was working on this, I added support for a few more file extensions, including <code>yaml</code> (<code>yml</code> was already there), <code>json5</code> (If you haven&#39;t heard of <code>json5</code>, <a href="https://json5.org/">check it out</a>), <code>cmd</code> and <code>bat</code> (If you haven&#39;t switched to PowerShell yet, what are you waiting for).</p>
-<p>Finally, Microsoft <a href="https://blogs.msdn.microsoft.com/visualstudio/2018/06/26/visual-studio-2017-version-15-8-preview-3/">announced last week</a> that the Visual Studio 15.8 update which is currently being released as preview 3 will automatically fix errors when you format the document using the <code>CTRL+K</code> followed by <code>CTRL+D</code> shortcut. This is huge! It means that you can drop a <code>.editorconfig</code> file in an existing codebase and with a few clicks or keyboard shortcuts (if that&#39;s how you roll) you can clean up your code base to use the latest C# 7.3 features and a code style that suits you.</p>
+<p>Finally, Microsoft <a href="https://blogs.msdn.microsoft.com/visualstudio/2018/06/26/visual-studio-2017-version-15-8-preview-3/">announced last week</a> that the Visual Studio 15.8 update which is currently being released as preview 3 will automatically fix errors when you format the document using the ||CTRL+K|| followed by ||CTRL+D|| shortcut. This is huge! It means that you can drop a <code>.editorconfig</code> file in an existing codebase and with a few clicks or keyboard shortcuts (if that&#39;s how you roll) you can clean up your code base to use the latest C# 7.3 features and a code style that suits you.</p>
 ]]></content:encoded>
             <enclosure url="/images/hero/A-Very-Generic-Editorconfig-File-1366x768.png"/>
         </item>
@@ -2490,7 +2489,7 @@ Options:
 <li><strong>computed</strong> - These are features flags that can be computed based on other symbols.</li>
 </ul>
 <h1 id="bool-symbols">Bool Symbols</h1>
-<p>You can create a boolean feature by adding symbols section to your template.json file. If you look at the example below, I&#39;ve specified an optional bool symbol, with a default value of true.</p>
+<p>You can create a boolean feature by adding symbols section to your <code>template.json</code> file. If you look at the example below, I&#39;ve specified an optional bool symbol, with a default value of true.</p>
 <pre><code class="language-json">{
   ...
   &quot;symbols&quot;: {
@@ -2714,7 +2713,7 @@ I show how to make <code>csproj</code> XML concise and pretty for hand editing.
 <pre><code class="language-xml">&lt;Project Sdk=&quot;Microsoft.NET.Sdk&quot;&gt;
   &lt;!-- ...Omitted --&gt;
 &lt;/Project&gt;</code></pre>
-<p>This meant that I could remove the entire code block below except System.ServiceModel because that reference is not given to you by the NETStandard.Library NuGet package.</p>
+<p>This meant that I could remove the entire code block below except <code>System.ServiceModel</code> because that reference is not given to you by the <code>NETStandard.Library</code> NuGet package.</p>
 <pre><code class="language-xml">&lt;ItemGroup Condition=&quot; &#39;$(TargetFramework)&#39; == &#39;netstandard1.6&#39; &quot;&gt;
   &lt;PackageReference Include=&quot;System.Xml.XDocument&quot; Version=&quot;4.3.0&quot; /&gt;
 &lt;/ItemGroup&gt;
@@ -2923,7 +2922,7 @@ RunTarget(target);</code></pre>
 <p>The rest of the script is made up of a series of chained tasks which execute one after the other, starting with the task with no dependencies. Alternatively you can pass in a Target argument which specifies which task you&#39;d like the script to start executing from. A key thing to note is that the script does not need to know about any file names or file paths, everything is done by convention.</p>
 <p>One very important effect of using Cake is that your build script is easily testable. I&#39;ve used many continuous integration systems that have their own proprietary tasks and when a slower build fails, debugging it was a nightmare, since it could only be done on the build machine. Since Cake is just a script, you can run it on your local machine and test it to your hearts content which gives you a quicker tighter development loop.</p>
 <h1 id="appveyor">AppVeyor</h1>
-<p><a href="https://www.appveyor.com/docs/">AppVeyor</a> is my favourite CI system but only works if you are hosting your code with Git based repositories and it only runs builds on Windows. All you need to do is sign-up, enable AppVeyor for your git repository and add an appveyor.yml file which is in <a href="https://en.wikipedia.org/wiki/YAML">YAML</a> format. Here is one of my commented appveyor.yml files:</p>
+<p><a href="https://www.appveyor.com/docs/">AppVeyor</a> is my favourite CI system but only works if you are hosting your code with Git based repositories and it only runs builds on Windows. All you need to do is sign-up, enable AppVeyor for your git repository and add an <code>appveyor.yml</code> file which is in <a href="https://en.wikipedia.org/wiki/YAML">YAML</a> format. Here is one of my commented <code>appveyor.yml</code> files:</p>
 <pre><code class="language-yaml">version: &#39;{build}&#39;
 
 pull_requests:
@@ -2969,9 +2968,9 @@ deploy:
     appveyor_repo_tag: true</code></pre>
 <p>It basically executes the <code>build.ps1</code> file at the root of my project and collects all the NuGet package and XML unit test result files in my artefacts folder. I also set some environment variables to turn off some lesser known .NET Core features for a faster build.</p>
 <p>AppVeyor, knows about NuGet and I use AppVeyor as my primary build system to publish my NuGet packages (You don&#39;t want AppVeyor and Travis CI both publishing your NuGet packages). Now I could have created a task in my cake file to publish NuGet packages and only execute that task if I was running on AppVeyor but AppVeyor has a pretty easy to use configuration file that I&#39;ve chosen to do this step instead.</p>
-<p>To publish packages to NuGet, you sign-up and receive an API key. Of course, you don&#39;t want to share that with the whole world by checking it into GitHub or Bitbucket, so AppVeyor lets you <a href="https://ci.appveyor.com/tools/encrypt">encrypt</a> it and paste the encrypted value into the appveyor.yml file.</p>
+<p>To publish packages to NuGet, you sign-up and receive an API key. Of course, you don&#39;t want to share that with the whole world by checking it into GitHub or Bitbucket, so AppVeyor lets you <a href="https://ci.appveyor.com/tools/encrypt">encrypt</a> it and paste the encrypted value into the <code>appveyor.yml</code> file.</p>
 <h1 id="travis-ci">Travis CI</h1>
-<p><a href="https://travis-ci.org/">Travis CI</a> is very similar to AppVeyor but it targets both Mac and Linux. All you have to do is sign-up, turn on Travis for your repository and stick a .travis.yml file in the root of your project. Here is mine:</p>
+<p><a href="https://travis-ci.org/">Travis CI</a> is very similar to AppVeyor but it targets both Mac and Linux. All you have to do is sign-up, turn on Travis for your repository and stick a <code>.travis.yml</code> file in the root of your project. Here is mine:</p>
 <pre><code class="language-yaml">language: csharp
 os:
   - linux
@@ -3011,7 +3010,7 @@ script:
 <p>You&#39;ll notice that we are specifying that we want to build our code on both Mac and Linux. Travis CI will actually run one build for each operating system. We then specify some details about the version of operating system we want to use and what we would like to install on them.</p>
 <p>Once again, I set the .NET environment variables to make the build a bit quicker and finally we run the <code>build.sh</code> Bash script to kick things off. Note that you need to run the following command to give Travis permission to execute the build.sh file (This is Linux after all):</p>
 <pre><code class="language-powershell">git update-index --chmod=+x build.sh</code></pre>
-<p>Another thing to note is that if you are still using the older xproj project system and your unit tests are using xUnit, then your tests will not run due to this <a href="https://github.com/dotnet/cli/issues/3073">bug</a>. There is a very nasty workaround in the link.</p>
+<p>Another thing to note is that if you are still using the older <code>xproj</code> project system and your unit tests are using xUnit, then your tests will not run due to this <a href="https://github.com/dotnet/cli/issues/3073">bug</a>. There is a very nasty workaround in the link.</p>
 <h1 id="conclusions">Conclusions</h1>
 <p>If you want to learn how to add AppVeyor and Travis CI build status badges to your Git repository ReadMe or learn how to deploy to MyGet/NuGet using tags, I recommend going back to read Andrew&#39;s blog post which is still useful. If you&#39;re looking for more examples of Cake build scripts, you can take a look at the following Cake repositories:</p>
 <ul>
@@ -3129,7 +3128,7 @@ script:
         Console.WriteLine(&quot;Timed Out&quot;);
     }
 }</code></pre>
-<p>I&#39;m using an overload on CancellationTokenSource which takes a timeout value. Then passing the <code>CancellationToken</code> to <code>DownloadTheInternet</code>. This method should be periodically checking the <code>CancellationToken</code> to see if it has been cancelled and if so, throw an <code>OperationCanceledException</code>. In this example you&#39;d probably use HttpClient which handles this for you if you give it the CancellationToken.</p>
+<p>I&#39;m using an overload on <code>CancellationTokenSource</code> which takes a timeout value. Then passing the <code>CancellationToken</code> to <code>DownloadTheInternet</code>. This method should be periodically checking the <code>CancellationToken</code> to see if it has been cancelled and if so, throw an <code>OperationCanceledException</code>. In this example you&#39;d probably use <code>HttpClient</code> which handles this for you if you give it the CancellationToken.</p>
 <p>The main reason why this method is better is that the task is actually being cancelled and stopped from doing any more work. In my above reactive extensions example, the task continues doing work but it&#39;s result is just ignored.</p>
 ]]></content:encoded>
             <enclosure url="/images/hero/Reactive-Extensions-1366x768.png"/>
@@ -3497,7 +3496,7 @@ gulp.task(&#39;build-app-insights-js&#39;,
             <content:encoded><![CDATA[<p>The <code>dotnet watch</code> tool is a file watcher for .NET that restarts the application when changes in the source code are detected. If you are using IIS Express then, it actually does this restart for you already. The <code>dotnet watch</code> tool is only really useful if you like to run your app in the console. I personally like to do this over using IIS Express because I can see all my logs flashing by in the console like the movies which is occasionally useful if you get an exception.</p>
 <p><img src="https://preview.rehansaeed.com/the-dotnet-watch-tool/images/Dotnet-Watch-Run-Console.png" alt="Dotnet Watch Run Console"></p>
 <p>::: warning
-In both cases you have to be careful to start the application by clicking <code>Debug -&gt; Start Without Debugging</code> or hitting the <code>CTRL+F5</code> keyboard shortcut.
+In both cases you have to be careful to start the application by clicking <code>Debug -&gt; Start Without Debugging</code> or hitting the ||CTRL+F5|| keyboard shortcut.
 :::</p>
 <h1 id="projectjson">project.json</h1>
 <p>Setting up the <code>dotnet watch</code> tool is as easy as installing the <code>Microsoft.DotNet.Watcher.Tools</code> NuGet package into the tools section of your <code>project.json</code> file like so (You may need to manually restore packages as there is a bug in the tooling which doesn&#39;t restore packages if you only change the <code>tools</code> section):</p>
@@ -3513,7 +3512,7 @@ In both cases you have to be careful to start the application by clicking <code>
 }</code></pre>
 <p>Now using powershell, you can navigate to your project folder and run the <code>dotnet watch run</code> command and your set. But using the command line is a bit lame if you are using Visual Studio, we can do one better.</p>
 <h1 id="launchsettingsjson">launchSettings.json</h1>
-<p>The <code>launchSettings.json</code> file is used by Visual Studio to launch your application and controls what happens when you hit <code>F5</code>. It turns out you can add additional launch settings here to launch the application using the <code>dotnet watch</code> tool. You can do so by adding a new launch configuration as I&#39;ve done at the bottom of this file:</p>
+<p>The <code>launchSettings.json</code> file is used by Visual Studio to launch your application and controls what happens when you hit ||F5||. It turns out you can add additional launch settings here to launch the application using the <code>dotnet watch</code> tool. You can do so by adding a new launch configuration as I&#39;ve done at the bottom of this file:</p>
 <pre><code class="language-json">{
   &quot;iisSettings&quot;: {
     &quot;windowsAuthentication&quot;: false,
@@ -3590,7 +3589,7 @@ Muhammad Rehan Saeed</p>
 </ol>
 <p>IIS on the other hand does have a UI and what a travesty it is. It hasn&#39;t really changed for several years and really needs a usability study to hack it to pieces and start again.</p>
 <p>The command line experience for IIS is another matter. It has very powerful IIS extensions you can install and the latest version of IIS even has an API that you can use to make simple HTTP calls to to update it.</p>
-<p>Configuration is where NGINX shines. It has a single super simple nginx.conf file which is pretty well documented. IIS is also actually pretty simple to configure if you only rely on the web.config file.</p>
+<p>Configuration is where NGINX shines. It has a single super simple <code>nginx.conf</code> file which is pretty well documented. IIS is also actually pretty simple to configure if you only rely on the <code>web.config</code> file.</p>
 <h1 id="setting-up-nginx">Setting up NGINX</h1>
 <p>The <a href="https://docs.asp.net/en/latest/publishing/linuxproduction.html">ASP.NET Core Documentation</a> site has some very good documentation on how to get started on Ubuntu. Unfortunately, it&#39;s not as simple as just installing NGINX using <code>apt-get install nginx</code>, there are a few moving parts to the process and a lot more moving parts if you want to install any additional modules.</p>
 <p>If you&#39;re on Windows, as I mentioned earlier you have the options of installing NGINX using Bash for Windows 10 Anniversary Update but I couldn&#39;t get this working. Alternatively you can download the NGINX executable for Windows. If you do this, beware that NGINX tries to start on port 80 and there are a number of things that use that port already on Windows:</p>
@@ -3601,8 +3600,8 @@ Muhammad Rehan Saeed</p>
 </ol>
 <p>Once you have NGINX setup, you need to run your ASP.NET Core app using the Kestrel web server. Why does ASP.NET Core use two web servers? Well Kestrel is not security hardened enough to be exposed on the internet and it does not have all of the features that a full blown web server like IIS or NGINX has. NGINX takes the role of a <a href="https://en.wikipedia.org/wiki/Reverse_proxy">reverse proxy</a> and simply forwards requests to the Kestrel web server. One day this may change. Reliably keeping your ASP.NET Core app running in Linux is also described in the <a href="https://docs.asp.net/en/latest/publishing/linuxproduction.html">ASP.NET Core Documentation</a>.</p>
 <h1 id="aiming-for-the-perfect-config-file">Aiming For The Perfect Config File</h1>
-<p>You&#39;ve got NGINX running, all you need now is a nginx.conf file to forward requests from the internet to your ASP.NET Core app running using the Kestrel web server.</p>
-<p>I&#39;ve taken the time to combine the recommendations from the <a href="https://github.com/h5bp/server-configs-nginx/blob/master/nginx.conf">HTML5 Boilerplate</a> project, the <a href="https://docs.asp.net/en/latest/publishing/linuxproduction.html">ASP.NET Core NGINX Documentation</a>, the <a href="http://nginx.org/en/docs/">NGINX Docs</a> and my own experience to build the nginx.config (and mime.types file) file below specifically for the best performance and security and to target .NET Core apps.</p>
+<p>You&#39;ve got NGINX running, all you need now is a <code>nginx.conf</code> file to forward requests from the internet to your ASP.NET Core app running using the Kestrel web server.</p>
+<p>I&#39;ve taken the time to combine the recommendations from the <a href="https://github.com/h5bp/server-configs-nginx/blob/master/nginx.conf">HTML5 Boilerplate</a> project, the <a href="https://docs.asp.net/en/latest/publishing/linuxproduction.html">ASP.NET Core NGINX Documentation</a>, the <a href="http://nginx.org/en/docs/">NGINX Docs</a> and my own experience to build the <code>nginx.config</code> (and <code>mime.types</code> file) file below specifically for the best performance and security and to target .NET Core apps.</p>
 <p>Not only that but I&#39;ve gone to extreme lengths to find out what every setting actually does and have written short comments describing each and every setting. The config file is self describing, from this point forward it needs no explanation.</p>
 <pre><code># Configure the Nginx web server to run your ASP.NET Core site efficiently.
 # See https://docs.asp.net/en/latest/publishing/linuxproduction.html
@@ -4566,10 +4565,10 @@ ILogger logger = new LoggerConfiguration()
 &lt;/urlset&gt;</code></pre>
 <p>As you can see each URL in a sitemap contains four pieces of metadata:</p>
 <ul>
-<li><strong>url</strong> - The URL itself.</li>
-<li><strong>lastmod</strong> (Optional) - A last modified timestamp. This tells search engines whether or not they should re-index the page to reflect any changes that have been made.</li>
-<li><strong>changefreq</strong> (Optional) - A change frequency indicator (This can take the values: always, hourly, daily, weekly, monthly, yearly, never). This gives search engines an indication of how often they should come back and re-index the page.</li>
-<li><strong>priority</strong> (Optional) - A number from zero to one indicating the importance of the page compared to other pages on the site.</li>
+<li><code>url</code> - The URL itself.</li>
+<li><code>lastmod</code> (Optional) - A last modified timestamp. This tells search engines whether or not they should re-index the page to reflect any changes that have been made.</li>
+<li><code>changefreq</code> (Optional) - A change frequency indicator (This can take the values: always, hourly, daily, weekly, monthly, yearly, never). This gives search engines an indication of how often they should come back and re-index the page.</li>
+<li><code>priority</code> (Optional) - A number from zero to one indicating the importance of the page compared to other pages on the site.</li>
 </ul>
 <p>The latter three values only give search engines an indication of when they can or should index or even re-index a page. It is not a guarantee that it will happen, although it makes it more likely.</p>
 <h1 id="is-it-worth-the-effort">Is it Worth the Effort?</h1>
@@ -4578,9 +4577,9 @@ ILogger logger = new LoggerConfiguration()
 <p>Using a sitemap doesn&#39;t guarantee that all the items in your sitemap will be crawled and indexed, as Google processes rely on complex algorithms to schedule crawling. However, <strong>in most cases, your site will benefit from having a sitemap</strong>, and you&#39;ll never be penalized for having one.</p>
 </blockquote>
 <h1 id="generating-a-static-sitemapxml-file">Generating a Static sitemap.xml File</h1>
-<p>There are tools online you can use to generate a static sitemap.xml file, which you can dump at the root of your site but you have to manually update these every time your site changes. This may be fine if your site does not change much but adding a dynamically generated sitemap.xml file is fairly simple process and worth the effort.</p>
+<p>There are tools online you can use to generate a static <code>sitemap.xml</code> file, which you can dump at the root of your site but you have to manually update these every time your site changes. This may be fine if your site does not change much but adding a dynamically generated <code>sitemap.xml</code> file is fairly simple process and worth the effort.</p>
 <h1 id="dynamically-generating-sitemapxml-for-aspnet-mvc">Dynamically Generating Sitemap.xml for ASP.NET MVC</h1>
-<p>Dynamically generating a simple sitemap.xml file for ASP.NET MVC is really simple but adding all the bells and whistles requires a bit more work. We start with a SitemapNode and frequency enumeration which represents a single URL in our sitemap:</p>
+<p>Dynamically generating a simple <code>sitemap.xml</code> file for ASP.NET MVC is really simple but adding all the bells and whistles requires a bit more work. We start with a SitemapNode and frequency enumeration which represents a single URL in our sitemap:</p>
 <pre><code class="language-cs">public class SitemapNode
 {
     public SitemapFrequency? Frequency { get; set; }
@@ -4697,7 +4696,7 @@ public class HomeController : Controller
 <h1 id="sitemap-index-files">Sitemap Index Files</h1>
 <p>For most people the above code will be enough. You can only have a maximum of 50,000 URL&#39;s in your sitemap and it must not exceed 10MB in size. I did some testing and if your URL&#39;s are fairly long and you supply all of the metadata for each URL, you can easily hit the 10MB mark with 25,000 URL&#39;s.</p>
 <p>It&#39;s not clear what happens if search engines come across a file that breaches these limits. I would have thought that the likes of Google or Bing would have a margin of error but it&#39;s better to be well under the limits than over. Not many sites have that many pages but you&#39;d be surprised at how easy it is to hit these limits.</p>
-<p>This is where sitemap index files come in. The idea is that you break up your sitemap into pages and list all of these in an index file. When a search engine visits your sitemap.xml file, they retrieve the index file and visit each page in turn. Here is an example of an index file:</p>
+<p>This is where sitemap index files come in. The idea is that you break up your sitemap into pages and list all of these in an index file. When a search engine visits your <code>sitemap.xml</code> file, they retrieve the index file and visit each page in turn. Here is an example of an index file:</p>
 <pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;sitemapindex xmlns=&quot;http://www.sitemaps.org/schemas/sitemap/0.9&quot;&gt;
    &lt;sitemap&gt;
@@ -4854,7 +4853,7 @@ sitemap: http://example.com/sitemap.xml</code></pre><p>In the above code, all co
     }
 }</code></pre>
 <p>I set up a route to the <code>robots.txt</code> path at the root of the site in my main <code>HomeController</code> and cached the response for a day for better performance (You can and should probably specify a much longer period of time if you know yours won&#39;t change).</p>
-<p>I then go on to append my commands to the StringBuilder. The great thing is that I can easily use the <code>UrlHelper</code> to generate a complete absolute URL to the sitemap.xml path which is also dynamically generated in much the same way. Finally, I just return the string as plain text using the UTF-8 encoding.</p>
+<p>I then go on to append my commands to the StringBuilder. The great thing is that I can easily use the <code>UrlHelper</code> to generate a complete absolute URL to the <code>sitemap.xml</code> path which is also dynamically generated in much the same way. Finally, I just return the string as plain text using the UTF-8 encoding.</p>
 <p>Creating a route ending with a file extension is not allowed by default in ASP.NET Core. To get around this security restriction, you need to add the following to the <code>Web.config</code> file:</p>
 <pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
 &lt;configuration&gt;
@@ -4873,7 +4872,7 @@ sitemap: http://example.com/sitemap.xml</code></pre><p>In the above code, all co
 &lt;/configuration&gt;</code></pre>
 <h1 id="conclusion">Conclusion</h1>
 <p>Dynamically generating your <code>robots.txt</code> file is pretty easy and only takes as many lines of code as you need to write your <code>robots.txt</code> file anyway. It also means that you don&#39;t need to pollute your project structure with yet another file at the root of it (This problem is fixed in MVC Core, where all static files must be added to the wwwroot folder). You can also dynamically generate your site-map URL so you don&#39;t need to remember to update it every time you change the domain.</p>
-<p>You could argue that performance is an issue when compared to a static robots.txt text file but its a matter of a few bytes and if you cache the response with a sufficient time limit then I think that even that problem goes away.</p>
+<p>You could argue that performance is an issue when compared to a static <code>robots.txt</code> text file but its a matter of a few bytes and if you cache the response with a sufficient time limit then I think that even that problem goes away.</p>
 <p>Once again, you can find a working example of this and much more using the <a href="https://visualstudiogallery.msdn.microsoft.com/6cf50a48-fc1e-4eaf-9e82-0b2a6705ca7d">ASP.NET Core Boilerplate</a> project template.</p>
 ]]></content:encoded>
             <enclosure url="/images/hero/Robots.txt-1366x768.jpg"/>
@@ -5229,7 +5228,7 @@ public class NoLowercaseQueryStringAttribute : FilterAttribute
     RouteTable.Routes.LowercaseUrls));</code></pre>
 <p>That&#39;s it! It&#39;s as simple as that! Now there are two special cases, which is where the <code>NoTrailingSlashAttribute</code> and <code>NoLowercaseQueryStringAttribute</code> filters comes in.</p>
 <h2 id="special-case-1">Special Case 1</h2>
-<p>Say you want to have the following action method where visiting <code>http://example.com/robots.txt</code> returns a text result. We want the client to think it&#39;s just visiting a static <code>robots.txt</code> file but in reality we are dynamically generating it (One reason for doing this is that a robots.txt file must contain an absolute URL and you want to use the <code>UrlHelper</code> to just handle that, no matter what domain the site is running under).</p>
+<p>Say you want to have the following action method where visiting <code>http://example.com/robots.txt</code> returns a text result. We want the client to think it&#39;s just visiting a static <code>robots.txt</code> file but in reality we are dynamically generating it (One reason for doing this is that a <code>robots.txt</code> file must contain an absolute URL and you want to use the <code>UrlHelper</code> to just handle that, no matter what domain the site is running under).</p>
 <pre><code class="language-cs">[NoTrailingSlash]
 [Route(&quot;robots.txt&quot;)]
 public ContentResult RobotsText()
@@ -5237,8 +5236,8 @@ public ContentResult RobotsText()
     string content = this.robotsService.GetRobotsText();
     return this.Content(content, ContentType.Text, Encoding.UTF8);
 }</code></pre>
-<p>Adding a trailing slash to robots.txt would just be weird. Also, the last thing you want to do when search engines try to visit <code>http://example.com/robots.txt</code> is 301 permanent redirect them to <code>http://example.com/robots.txt/</code>. So we add the <code>NoTrailingSlashAttribute</code> filter.</p>
-<p>The <code>RedirectToCanonicalUrlAttribute</code> knows about the <code>NoTrailingSlashAttribute</code> filter and when it sees it and we make a request to the above action, it ignores the <code>AppendTrailingSlash</code> setting and it works just like requesting a static robots.txt file from the file system.</p>
+<p>Adding a trailing slash to <code>robots.txt</code> would just be weird. Also, the last thing you want to do when search engines try to visit <code>http://example.com/robots.txt</code> is 301 permanent redirect them to <code>http://example.com/robots.txt/</code>. So we add the <code>NoTrailingSlashAttribute</code> filter.</p>
+<p>The <code>RedirectToCanonicalUrlAttribute</code> knows about the <code>NoTrailingSlashAttribute</code> filter and when it sees it and we make a request to the above action, it ignores the <code>AppendTrailingSlash</code> setting and it works just like requesting a static <code>robots.txt</code> file from the file system.</p>
 <h2 id="special-case-2">Special Case 2</h2>
 <p>Sometimes you want your query string parameters to be a mix of upper-case and lower-case. When you want to do this, simply add the <code>NoLowercaseQueryStringAttribute</code> attribute to the action method like so:</p>
 <pre><code class="language-cs">[NoLowercaseQueryString]
@@ -5356,34 +5355,34 @@ public void Action(string mixedCaseParameter)
 &lt;/feed&gt;</code></pre>
 <p>At the root of the XML we have the feed element which represents the Atom Feed. Within that, there is various meta-data about the feed at the top, including:</p>
 <ul>
-<li>title - The title of the feed.</li>
-<li>subtitle - A short description or subtitle of the feed.</li>
-<li>id - A unique ID for the feed. No other feed on the internet should have the same ID.</li>
-<li>rights - Copyright information.</li>
-<li>updated - When the feed was last updated.</li>
-<li>category - Zero or more categories the feed belongs to.</li>
-<li>logo - A wide 2:1 ratio image representing the feed.</li>
-<li>author - Zero or more authors of the feed.</li>
-<li>contributor - Zero or more contributors of the feed.</li>
-<li>link rel=&quot;self&quot; - A link to the feed itself.</li>
-<li>link rel=&quot;alternate&quot; - A link to an alternative representation of the feed.</li>
-<li>link rel=&quot;hub&quot; - A link to the <a href="https://pubsubhubbub.googlecode.com/git/pubsubhubbub-core-0.4.html">PubSubHubbub</a> hub. I&#39;ll talk more about this further on.</li>
-<li>icon - A square 1:1 ratio image representing the feed.</li>
+<li><code>title</code> - The title of the feed.</li>
+<li><code>subtitle</code> - A short description or subtitle of the feed.</li>
+<li><code>id</code> - A unique ID for the feed. No other feed on the internet should have the same ID.</li>
+<li><code>rights</code> - Copyright information.</li>
+<li><code>updated</code> - When the feed was last updated.</li>
+<li><code>category</code> - Zero or more categories the feed belongs to.</li>
+<li><code>logo</code> - A wide 2:1 ratio image representing the feed.</li>
+<li><code>author</code> - Zero or more authors of the feed.</li>
+<li><code>contributor</code> - Zero or more contributors of the feed.</li>
+<li><code>link rel=&quot;self&quot;</code> - A link to the feed itself.</li>
+<li><code>link rel=&quot;alternate&quot;</code> - A link to an alternative representation of the feed.</li>
+<li><code>link rel=&quot;hub&quot;</code> - A link to the <a href="https://pubsubhubbub.googlecode.com/git/pubsubhubbub-core-0.4.html">PubSubHubbub</a> hub. I&#39;ll talk more about this further on.</li>
+<li><code>icon</code> - A square 1:1 ratio image representing the feed.</li>
 </ul>
 <p>The entry elements are where it gets interesting, these are the actual &#39;things&#39; in your feed you are describing. Each entry has meta-data which looks very similar to the meta-data we used to describe the feed itself.</p>
 <ul>
-<li>id - A unique identifier to the entry. This can be a database row ID, it doesn&#39;t have to be a GUID.</li>
-<li>title - The title of the entry.</li>
-<li>summary - A short summary for what the entry is about.</li>
-<li>published - When the entry was published.</li>
-<li>updated - When the entry was last changed.</li>
-<li>author - Zero or more authors of the entry.</li>
-<li>contributor- Zero or more contributors of the entry.</li>
-<li>link rel=&quot;alternate&quot; - A link to an alternative representation of the entry.</li>
-<li>link rel=&quot;enclosure&quot; - An image representing the entry.</li>
-<li>category - The category of the entry.</li>
-<li>rights - Some copyright information.</li>
-<li>media:thumbnail - A thumbnail representing the entry. This is a non-standard extension to the Atom 1.0 specification created by Yahoo but is common enough to be used here.</li>
+<li><code>id</code> - A unique identifier to the entry. This can be a database row ID, it doesn&#39;t have to be a GUID.</li>
+<li><code>title</code> - The title of the entry.</li>
+<li><code>summary</code> - A short summary for what the entry is about.</li>
+<li><code>published</code> - When the entry was published.</li>
+<li><code>updated</code> - When the entry was last changed.</li>
+<li><code>author</code> - Zero or more authors of the entry.</li>
+<li><code>contributor</code> - Zero or more contributors of the entry.</li>
+<li><code>link rel=&quot;alternate&quot;</code> - A link to an alternative representation of the entry.</li>
+<li><code>link rel=&quot;enclosure&quot;</code> - An image representing the entry.</li>
+<li><code>category</code> - The category of the entry.</li>
+<li><code>rights</code> - Some copyright information.</li>
+<li><code>media:thumbnail</code> - A thumbnail representing the entry. This is a non-standard extension to the Atom 1.0 specification created by Yahoo but is common enough to be used here.</li>
 </ul>
 <p>One thing to note is that all of the links are full absolute URL&#39;s. Relative URL&#39;s are allowed but you have to specify a single base URI which is added to the start of all URL&#39;s. Unfortunately, this feature is <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=480600">buggy</a> in Firefox and so should not be used.</p>
 <h1 id="implementing-an-atom-feed">Implementing an Atom Feed</h1>
@@ -5728,7 +5727,7 @@ if (hasNextPage)
 <p>This is a problem that C++ developers know well, C++ is a pretty old language now but is still undergoing rapid development with C++ 11, 14 and beyond. It&#39;s got to the stage where there are so many ways to skin a cat in C++, even experienced developers can be slowed down when looking at code using older patterns and paradigms. The C# caretakers need to be careful that each new feature is genuinely worth the effort and not just bloat.</p>
 <p>The second set of features is what I am really interested in. These are features which will genuinely save you from yourself. They will stop developers making many common mistakes.</p>
 <h1 id="the-nameof-operator">The nameof Operator</h1>
-<p>The nameof operator simply gives you the name of any type you pass into it. You can take a look at the simple example below:</p>
+<p>The <code>nameof</code> operator simply gives you the name of any type you pass into it. You can take a look at the simple example below:</p>
 <pre><code class="language-cs">string obiwan;  
 Console.WriteLine(nameof(obiwan));
 // Prints obiwan
@@ -5785,7 +5784,7 @@ Console.WriteLine(nameof(kenobi));
     }
 }</code></pre>
 <h2 id="aspnet-mvc">ASP.NET MVC</h2>
-<p>ASP.NET MVC makes massive use of strings everywhere. This is a massive problem when you want to rename something. In fact, I&#39;ve taken to using constants everywhere. It&#39;s more work to setup but in the long run its much easier to maintain. Here is an example of how we can use nameof to create a link and do away with strings and constants:</p>
+<p>ASP.NET MVC makes massive use of strings everywhere. This is a massive problem when you want to rename something. In fact, I&#39;ve taken to using constants everywhere. It&#39;s more work to setup but in the long run its much easier to maintain. Here is an example of how we can use <code>nameof</code> to create a link and do away with strings and constants:</p>
 <pre><code class="language-cs">@Html.ActionLink(&quot;Home&quot;, &quot;Index&quot;, &quot;Home&quot;)
 
 @Html.ActionLink2(&quot;Home&quot;, nameof(HomeController.Index), nameof(HomeController))
@@ -5803,7 +5802,7 @@ string nameAndAge = string.Format(&quot;Name:{0}, Age:{1}&quot;, name, age);
 string nameAndAge = $&quot;Name:{name}, Age:{age}&quot;;</code></pre>
 <p>As you can see, you can now use your parameters directly in the strings with full syntax highlighting and renaming support too. In fact the C# 6.0 code actually compiles down to doing a <code>string.Format</code> behind the scenes.</p>
 <h1 id="the-null-conditional-operator">The Null-Conditional Operator</h1>
-<p>Every C# developer has at some point stared at the text from a <code>NullReferenceException</code> and thought in their head, this is a really rubbish message and leaves out vital information. In fact there is <a href="https://visualstudio.uservoice.com/forums/121579-visual-studio/suggestions/2371587-better-nullpointerexception-error-message">this</a> post on UserVoice, asking Microsoft to improve their NullReferenceException messages. It turns out that Microsoft has thought of this, they haven&#39;t improved the message (They still should, please up-vote the UserVoice post) but they have introduced the Null-Conditional operator.</p>
+<p>Every C# developer has at some point stared at the text from a <code>NullReferenceException</code> and thought in their head, this is a really rubbish message and leaves out vital information. In fact there is <a href="https://visualstudio.uservoice.com/forums/121579-visual-studio/suggestions/2371587-better-nullpointerexception-error-message">this</a> post on UserVoice, asking Microsoft to improve their <code>NullReferenceException</code> messages. It turns out that Microsoft has thought of this, they haven&#39;t improved the message (They still should, please up-vote the UserVoice post) but they have introduced the Null-Conditional operator.</p>
 <pre><code class="language-cs">public string Truncate(string value, int length)
 {
     string result = value;
@@ -5853,7 +5852,7 @@ string nameAndAge = $&quot;Name:{name}, Age:{age}&quot;;</code></pre>
 <p>Content Security Policy or CSP is a great new HTTP header that controls where a web browser is allowed to load content from and the type of content it is allowed to load. It uses a white-list of allowed content and blocks anything not in the allowed list. It gives us very fine grained control and allows us to run our site in a sandbox in the users browser.</p>
 <p>CSP is all about adding an extra layer of security to your site using a <a href="http://en.wikipedia.org/wiki/Defense_in_depth_%28computing%29">Defence in Depth</a> strategy. It helps detect and mitigate <a href="https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29">Cross Site Scripting (XSS)</a> and various data injection attacks, such as <a href="https://www.owasp.org/index.php/SQL_Injection">SQL Injection</a>.</p>
 <h2 id="real-world-example">Real World Example</h2>
-<p>So what does this look like in a web browser. Well, here is an example of a Content-Security-Policy HTTP header shown in Chrome. I used the <a href="https://visualstudiogallery.msdn.microsoft.com/6cf50a48-fc1e-4eaf-9e82-0b2a6705ca7d">ASP.NET Core Boilerplate</a> Visual Studio project template to create a ASP.NET MVC project that has CSP applied, right out of the box.</p>
+<p>So what does this look like in a web browser. Well, here is an example of a <code>Content-Security-Policy</code> HTTP header shown in Chrome. I used the <a href="https://visualstudiogallery.msdn.microsoft.com/6cf50a48-fc1e-4eaf-9e82-0b2a6705ca7d">ASP.NET Core Boilerplate</a> Visual Studio project template to create a ASP.NET MVC project that has CSP applied, right out of the box.</p>
 <p><img src="https://preview.rehansaeed.com/content-security-policy-for-asp-net-mvc/images/Content-Security-Policy-HTTP-Header.png" alt="Content Security Policy HTTP Header"></p>
 <p>This is the HTTP header in the screenshot above. We&#39;ll discuss it in a lot more detail later in this post. Essentially it says, block everything, except scripts, images, fonts, Ajax requests and forms to or from my domain and also allow scripts from the Google and Microsoft CDN&#39;s.</p>
 <pre><code class="language-http">Content-Security-Policy: default-src &#39;none&#39;;
@@ -6083,7 +6082,7 @@ alert(&quot;Allowed because nonce is valid.&quot;)
 &lt;/style&gt;</code></pre>
 <p>The big disadvantage with this approach is that the nonce is different for each response sent to the client. This means that you cannot cache any page using nonces. If your page is specific to a user, then you probably don&#39;t want to cache that page anyway and it doesn&#39;t matter but otherwise using nonces is not possible.</p>
 <h2 id="hashes">Hashes</h2>
-<p>Using hashes solves the caching problem we have with nonces. The server computes the hash of a particular style or script tags contents, and includes the base64 encoding of that value in the Content-Security-Policy header like so:</p>
+<p>Using hashes solves the caching problem we have with nonces. The server computes the hash of a particular style or script tags contents, and includes the base64 encoding of that value in the <code>Content-Security-Policy</code> header like so:</p>
 <pre><code class="language-http">Content-Security-Policy: script-src &#39;sha512-YWIzOWNiNzJjNDRlYzc4MTgwMDhmZDlkOWI0NTAyMjgyY2MyMWJlMWUyNjc1ODJlYWJhNjU5MGU4NmZmNGU3OAo=&#39;</code></pre>
 <pre><code class="language-xml">&lt;script&gt;
 &quot;alert(&#39;Hello, world.&#39;);&quot;
@@ -6235,7 +6234,7 @@ filters.Add(
 <li><a href="https://preview.rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
 <li><a href="https://preview.rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Part 8 - Timeouts</a></li>
 </ul>
-<p>Its been a while since I&#39;ve done another Rx post. They&#39;ve been pretty popular and thanks to the community for all the positive feedback. I was talking to a colleague yesterday who had been using standard C# events in WPF (The principals learned in this post can apply anywhere). He had subscribed to the TextChanged event in C# and was updating the user interface on the fly, whenever the user typed in a character of text. He was getting way too many events being fired and his user interface couldn&#39;t keep up with all the work it was being asked to do.</p>
+<p>Its been a while since I&#39;ve done another Rx post. They&#39;ve been pretty popular and thanks to the community for all the positive feedback. I was talking to a colleague yesterday who had been using standard C# events in WPF (The principals learned in this post can apply anywhere). He had subscribed to the <code>TextChanged</code> event in C# and was updating the user interface on the fly, whenever the user typed in a character of text. He was getting way too many events being fired and his user interface couldn&#39;t keep up with all the work it was being asked to do.</p>
 <pre><code class="language-cs">this.TextBox.TextChanged += this.OnTextBoxTextChanged;
 
 private void OnTextBoxTextChanged(object sender, TextChangedEventArgs e)
@@ -6243,7 +6242,7 @@ private void OnTextBoxTextChanged(object sender, TextChangedEventArgs e)
     // Heavy User Interface updates that can cause the application to lock up.
 }</code></pre>
 <p>This is a very common scenario which I myself have come across several times. The solution to this problem is to take a sample of the events being fired and only update the user interface every few seconds. This is possible without Reactive Extensions (Rx) but you have to write a fair amount of boilerplate code (I know, I&#39;ve done it myself).</p>
-<p>Reactive Extensions (Rx) can do this with a few easy to understand (This is the real bonus) lines of code. The first step is to wrap the WPF TextChanged event (I&#39;ve shown how to do this in a previous post <a href="https://preview.rehansaeed.com/reactive-extensions-part2-wrapping-events/">here</a>).</p>
+<p>Reactive Extensions (Rx) can do this with a few easy to understand (This is the real bonus) lines of code. The first step is to wrap the WPF <code>TextChanged</code> event (I&#39;ve shown how to do this in a previous post <a href="https://preview.rehansaeed.com/reactive-extensions-part2-wrapping-events/">here</a>).</p>
 <pre><code class="language-cs">public IObservable&lt;TextChangedEventArgs&gt; WhenTextChanged
 {
     get
@@ -6289,8 +6288,8 @@ this.WhenTextChanged
 <p>This series of blog posts goes through the additions made to the default ASP.NET MVC template to build the <a href="https://github.com/Dotnet-Boxed/Templates">ASP.NET Core Boilerplate</a> project template. You can create a new project using this template by installing the <a href="https://visualstudiogallery.msdn.microsoft.com/6cf50a48-fc1e-4eaf-9e82-0b2a6705ca7d">Visual Studio template extension</a> or visit the <a href="https://github.com/Dotnet-Boxed/Templates">GitHub</a> site to view the source code.</p>
 <h1 id="securing-webconfig">Securing Web.config</h1>
 <h2 id="turn-on-custom-errors">Turn On Custom Errors</h2>
-<p>In the early stages of development, you want to see the full stack trace of your exceptions when an error occurs on a page. When it comes to releasing your site, you need to hide this sensitive information. Unbelievably, the default ASP.NET MVC template leaves this sensitive information wide open. To hide this, you need to add the <a href="http://msdn.microsoft.com/en-us/library/vstudio/h0hfz6fc%28v=vs.100%29.aspx">customErrors</a> section to your web.config file and turn it on.</p>
-<p>The problem is that we still want this setting to be turned off when debugging. This is where <a href="http://go.microsoft.com/fwlink/?LinkId=301874">configuration file transforms</a> come in. This setting is off when the solution configuration is &#39;Debug&#39; and on when it is &#39;Release&#39;. The debug attribute in the compilation section is set in the same way.</p>
+<p>In the early stages of development, you want to see the full stack trace of your exceptions when an error occurs on a page. When it comes to releasing your site, you need to hide this sensitive information. Unbelievably, the default ASP.NET MVC template leaves this sensitive information wide open. To hide this, you need to add the <a href="http://msdn.microsoft.com/en-us/library/vstudio/h0hfz6fc%28v=vs.100%29.aspx">customErrors</a> section to your <code>web.config</code> file and turn it on.</p>
+<p>The problem is that we still want this setting to be turned off when debugging. This is where <a href="http://go.microsoft.com/fwlink/?LinkId=301874">configuration file transforms</a> come in. This setting is off when the solution configuration is <code>Debug</code> and on when it is <code>Release</code>. The debug attribute in the compilation section is set in the same way.</p>
 <h2 id="securing-cookies">Securing Cookies</h2>
 <p>By default JavaScript from external sites can access the cookies from the default ASP.NET MVC template. They can also be sent unencrypted over the wire, because they don&#39;t use SSL. The <a href="http://msdn.microsoft.com/en-us/library/vstudio/ms228262%28v=vs.100%29.aspx">httpCookies</a> section can be added to secure your cookies (This can also be done in code but the point is that we are making it secure by default. You could easily forget to turn this on in code).</p>
 <pre><code class="language-xml">&lt;!-- httpOnlyCookies - Ensure that external script cannot access the cookie. --&gt;
@@ -6320,7 +6319,7 @@ this.WhenTextChanged
 <pre><code class="language-xml">&lt;!-- maxRequestLength=&quot;4096&quot; - The maximum length of the url request in kilobytes. --&gt;
 &lt;httpRuntime maxRequestLength=&quot;4096&quot;/&gt;</code></pre>
 <h2 id="machine-keys">Machine Keys</h2>
-<p>Machine keys are used by MVC to generate anti-forgery tokens, which you should be using with any form on your site. If your site is deployed to a server cluster, you need to generate a machine key and add it to the system.web section of your web.config file. This is to ensure that both machines in your server cluster are using the same machine key to generate anti-forgery tokens. <a href="http://blogs.msdn.com/b/amb/archive/2012/07/31/easiest-way-to-generate-machinekey.aspx">This</a> link tells you more about how to do this.</p>
+<p>Machine keys are used by MVC to generate anti-forgery tokens, which you should be using with any form on your site. If your site is deployed to a server cluster, you need to generate a machine key and add it to the system.web section of your <code>web.config</code> file. This is to ensure that both machines in your server cluster are using the same machine key to generate anti-forgery tokens. <a href="http://blogs.msdn.com/b/amb/archive/2012/07/31/easiest-way-to-generate-machinekey.aspx">This</a> link tells you more about how to do this.</p>
 <pre><code class="language-xml">&lt;machineKey decryptionKey=&quot;[YOUR DECRYPTION KEY GOES HERE]&quot; validationKey=&quot;[YOUR VALIDATION KEY GOES HERE]&quot;/&gt;</code></pre>
 <h2 id="securing-third-party-plugins">Securing Third Party Plugins</h2>
 <p>The popular <a href="https://code.google.com/p/elmah/">Elmah</a> NuGet package is included and configured for error logging out of the box. However, to properly secure it, you should change the URL pointing to it (An attacker can only probe your Elmah page for vulnerabilities if they can find it). You should also use some form of authentication to limit the Elmah page to certain roles or users. Both of these steps can only be taken by the person using the template. However, where we can&#39;t write the code for you, we add liberal comments and add an entry into the check-list so you don&#39;t forget to do this. By default we also allow remote access to the Elmah pages, consider turning this off if you have local access to machine the site is hosted on. Here are the relevant app settings:</p>
@@ -6444,24 +6443,24 @@ this.WhenTextChanged
             <description><![CDATA[A guide to creating custom Visual Studio project templates in .zip and VSIX form and submitting them to the Visual Studio Gallery, so it can be downloaded.]]></description>
             <content:encoded><![CDATA[<p>Creating a custom Visual Studio project template that you can use from the &#39;New Project&#39; dialogue is a great way to reduce the amount of repetitive code you have to write. It gets you running through the jungle with the leaves brushing against your face, instead of sitting at the starting block wondering where your shoes are.</p>
 <p>The <a href="https://visualstudiogallery.msdn.microsoft.com">Visual Studio Gallery</a> is a great place to share your custom Visual Studio project template with the community. There are actually two ways to create a template. I recently had to create one for <a href="https://visualstudiogallery.msdn.microsoft.com/6cf50a48-fc1e-4eaf-9e82-0b2a6705ca7d">ASP.NET Core Boilerplate</a> and found it less than simple. This post talks you through creating one and submitting it to the Visual Studio Gallery, allowing anyone to use it from the &#39;New Project&#39; dialogue.</p>
-<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/VisualStudioGallery2.png" alt="The project template shown in the &#39;Web&#39; section of Visual Studio&#39;s &#39;New Project&#39; dialogue.">
-The project template shown in the &#39;Web&#39; section of Visual Studio&#39;s &#39;New Project&#39; dialogue.</p>
+<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/VisualStudioGallery2.png" alt="The project template shown in the &#39;Web&#39; section of Visual Studio&#39;s &#39;New Project&#39; dialogue."></p>
+<p>The project template shown in the &#39;Web&#39; section of Visual Studio&#39;s &#39;New Project&#39; dialogue.</p>
 <h1 id="export-template-as-zip">Export Template as .zip</h1>
-<p>The first method of creating a custom project template is to use the &#39;Export Template&#39; wizard in Visual Studio, as shown in the steps below, you can create a .zip file which contains a template of your selected project.</p>
-<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportTemplate1.png" alt="Export .zip Project Template">
-The Visual Studio Export Template menu item for exporting a .zip project template.</p>
+<p>The first method of creating a custom project template is to use the &#39;Export Template&#39; wizard in Visual Studio, as shown in the steps below, you can create a <code>.zip</code> file which contains a template of your selected project.</p>
+<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportTemplate1.png" alt="Export .zip Project Template"></p>
+<p>The Visual Studio Export Template menu item for exporting a <code>.zip</code> project template.</p>
 <p>The wizard allows you to select the project from your solution you want to export as a template.</p>
-<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportTemplate2.png" alt="The export template &#39;Choose template type&#39; screen.">
-The export template &#39;Choose template type&#39; screen.</p>
+<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportTemplate2.png" alt="The export template &#39;Choose template type&#39; screen."></p>
+<p>The export template &#39;Choose template type&#39; screen.</p>
 <p>You can even specify an icon and preview image of the project template. This is perfect as this information also gets displayed in the Visual Studio &#39;New Project&#39; dialogue.</p>
-<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportTemplate3.png" alt="The export template &#39;Select template options&#39; screen, where you can describe your template.">
-The export template &#39;Select template options&#39; screen, where you can describe your template.</p>
-<p>The .zip file that is output must be copied into the following folder, for Visual Studio to pick it up:</p>
+<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportTemplate3.png" alt="The export template &#39;Select template options&#39; screen, where you can describe your template."></p>
+<p>The export template &#39;Select template options&#39; screen, where you can describe your template.</p>
+<p>The <code>.zip</code> file that is output must be copied into the following folder, for Visual Studio to pick it up:</p>
 <blockquote>
 <p>C:/Users/[Your User Name]/Documents/Visual Studio [2010|2012|2013|2015]/Templates/ProjectTemplates</p>
 </blockquote>
-<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportTemplate4.png" alt="The .zip file output as part of the Visual Studio Export Template wizard.">
-The .zip file output as part of the Visual Studio Export Template wizard.</p>
+<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportTemplate4.png" alt="The .zip file output as part of the Visual Studio Export Template wizard."></p>
+<p>The <code>.zip</code> file output as part of the Visual Studio Export Template wizard.</p>
 <p>This is a super easy process and you should really consider creating your own templates if you find yourself making the same old changes to every project you are creating. The downside is that its not very customizable and these types of project templates cannot be submitted to the <a href="https://visualstudiogallery.msdn.microsoft.com">Visual Studio Gallery</a>.</p>
 <p>The gallery website only supports project templates created using the VSIX package. Creating a VSIX package is a pretty involved process and will take a couple of hours.</p>
 <h1 id="export-template-wizard-extension">Export Template Wizard Extension</h1>
@@ -6470,18 +6469,18 @@ The .zip file output as part of the Visual Studio Export Template wizard.</p>
 <h1 id="sidewaffle-project-templates">SideWaffle Project Templates</h1>
 <p>There is even an alternative method of creating project templates and sharing them with the community that I should mention. It&#39;s called <a href="http://sidewaffle.com">SideWaffle</a> (I like the name for some reason). It makes it slightly easier to create a template but its still not as simple as a few clicks. It&#39;s certainly something worth taking a look at though.</p>
 <h1 id="creating-a-vsix-package">Creating a VSIX Package</h1>
-<p>The first step is to create a .zip project template package using the steps above. Once you&#39;ve done that, download and install the <a href="https://www.microsoft.com/en-us/download/details.aspx?id=40758">Microsoft Visual Studio 2013 SDK</a>. This will give you new project templates to create VSIX packages. The first thing to do is create a new C# Project Template (Or a Visual Basic one if you prefer).</p>
-<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportVSIX1.png" alt="The new project dialogue, showing how to create a new VSIX C# project.">
-The new project dialogue, showing how to create a new VSIX C# project.</p>
-<p>The next step is to open the .zip version of your project template and copy the contents into your new project. Copy everything (Including the project file), except the &#39;Properties&#39; folder as this will conflict with the existing one in the project.</p>
-<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportVSIX2.png" alt="An example of a VSIX C# project from the ASP.NET Core Boilerplate project template.">
-An example of a VSIX C# project from the ASP.NET Core Boilerplate project template.</p>
+<p>The first step is to create a <code>.zip</code> project template package using the steps above. Once you&#39;ve done that, download and install the <a href="https://www.microsoft.com/en-us/download/details.aspx?id=40758">Microsoft Visual Studio 2013 SDK</a>. This will give you new project templates to create VSIX packages. The first thing to do is create a new C# Project Template (Or a Visual Basic one if you prefer).</p>
+<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportVSIX1.png" alt="The new project dialogue, showing how to create a new VSIX C# project."></p>
+<p>The new project dialogue, showing how to create a new VSIX C# project.</p>
+<p>The next step is to open the <code>.zip</code> version of your project template and copy the contents into your new project. Copy everything (Including the project file), except the &#39;Properties&#39; folder as this will conflict with the existing one in the project.</p>
+<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportVSIX2.png" alt="An example of a VSIX C# project from the ASP.NET Core Boilerplate project template."></p>
+<p>An example of a VSIX C# project from the ASP.NET Core Boilerplate project template.</p>
 <p>Select all the files in the project and in the properties window, ensure that their &#39;Build Action&#39; is set to &#39;Content&#39;.</p>
-<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportVSIX3.png" alt="The properties window for a file in a VSIX C# project. Note, that the file build action has been set to &#39;Content&#39;.">
-The properties window for a file in a VSIX C# project. Note, that the file build action has been set to &#39;Content&#39;.</p>
-<p>The .vstemplate file in the project contains all the information about the contents of the project template. If you select it and go to the &#39;Properties&#39; window, you can set the &#39;Category&#39; property which determines where your project template will appear in the &#39;New Project&#39; dialogue.</p>
-<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportVSIX4.png" alt="The category a VSIX C# project is displayed under, in the Visual Studio New Project dialogue.">
-The category a VSIX C# project is displayed under, in the Visual Studio New Project dialogue.</p>
+<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportVSIX3.png" alt="The properties window for a file in a VSIX C# project. Note, that the file build action has been set to &#39;Content&#39;."></p>
+<p>The properties window for a file in a VSIX C# project. Note, that the file build action has been set to &#39;Content&#39;.</p>
+<p>The <code>.vstemplate</code> file in the project contains all the information about the contents of the project template. If you select it and go to the &#39;Properties&#39; window, you can set the &#39;Category&#39; property which determines where your project template will appear in the &#39;New Project&#39; dialogue.</p>
+<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportVSIX4.png" alt="The category a VSIX C# project is displayed under, in the Visual Studio New Project dialogue."></p>
+<p>The category a VSIX C# project is displayed under, in the Visual Studio New Project dialogue.</p>
 <p>An example of the <code>.vstemplate</code> file is shown below. Note, that I&#39;ve set the project template name, description and the default name of the project which is shown in the &#39;New Project&#39; dialogue and the user can rename. The XML then goes on to declare the name of the <code>.csproj</code> file in the <code>Project</code> node, followed by each and every file and folder to be included in the template.</p>
 <p>Note, that the <code>AssemblyInfo.cs</code> file is a little special. There are two of them in the project. The one we are interested in was already located in the root of the project when we created it. We also need to add it to the XML below slightly differently than the other files (See below).</p>
 <p>You can use the <code>OpenInWebBrowser</code> or <code>OpenInEditor</code> attributes on a <code>ProjectItem</code> to get the file to be opened in a web browser or text editor when the project is first created. I&#39;ve used <code>OpenInWebBrowser</code> to open the <code>ReadMe.html</code> file containing basic information about the project, when the project is first created.</p>
@@ -6513,32 +6512,32 @@ The category a VSIX C# project is displayed under, in the Visual Studio New Proj
     &lt;/Project&gt;
   &lt;/TemplateContent&gt;
 &lt;/VSTemplate&gt;</code></pre>
-<p>The next step is to add a VSIX Project to our solution. This is the project that will actually build a .vsix file.</p>
-<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportVSIX5.png" alt="The new project dialogue, showing how to create a new VSIX project.">
-The new project dialogue, showing how to create a new VSIX project.</p>
+<p>The next step is to add a VSIX Project to our solution. This is the project that will actually build a <code>.vsix</code> file.</p>
+<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportVSIX5.png" alt="The new project dialogue, showing how to create a new VSIX project."></p>
+<p>The new project dialogue, showing how to create a new VSIX project.</p>
 <p>If you open the <code>.vsixmanifest</code> file, you can fill in basic information about the template. This information will be displayed in the &#39;New Project&#39; dialogue. I have specified an Icon, Preview Image and Licence file. All three of these files are added to the project.</p>
-<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportVSIX6.png" alt="The metadata for the VSIX project, describing the .vsix installer file and also the project shown in the solution explorer, showing the files included.">
-The metadata for the VSIX project, describing the .vsix installer file and also the project shown in the solution explorer, showing the files included.</p>
+<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportVSIX6.png" alt="The metadata for the VSIX project, describing the .vsix installer file and also the project shown in the solution explorer, showing the files included."></p>
+<p>The metadata for the VSIX project, describing the <code>.vsix</code> installer file and also the project shown in the solution explorer, showing the files included.</p>
 <p>The &#39;Install Targets&#39; tab lets you target a specific version of Visual Studio. I changed this to support Visual Studio 2012 and above by specifying the version range to be <code>[11.0,]</code>. More information <a href="http://blogs.msdn.com/b/visualstudio/archive/2013/08/08/update-for-extension-authors-vsix-manifest-version-ranges.aspx">here</a>.</p>
 <p>The &#39;Dependencies&#39; tab is very similar. Here you can specify which version of the .NET Framework your project depends on. I stuck with the defaults of .NET 4.5 only.</p>
-<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportVSIX7.png" alt="The installation targets or versions of Visual Studio your VSIX extension will install to.">
-The installation targets or versions of Visual Studio your VSIX extension will install to.</p>
+<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportVSIX7.png" alt="The installation targets or versions of Visual Studio your VSIX extension will install to."></p>
+<p>The installation targets or versions of Visual Studio your VSIX extension will install to.</p>
 <p>If you click on the &#39;Assets&#39; tab on the left, you can add a reference to your other &#39;C# Project Template&#39; project.</p>
-<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportVSIX8.png" alt="The VSIX C# projects you want to add to the VSIX extension as an asset to be installed.">
-The VSIX C# projects you want to add to the VSIX extension as an asset to be installed.</p>
+<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportVSIX8.png" alt="The VSIX C# projects you want to add to the VSIX extension as an asset to be installed."></p>
+<p>The VSIX C# projects you want to add to the VSIX extension as an asset to be installed.</p>
 <h1 id="submitting-your-vsix-project-template-to-the-visual-studio-gallery">Submitting your VSIX Project Template to the Visual Studio Gallery</h1>
 <p>Submitting your new VSIX extension to the Visual Studio Gallery is a great way to share your new Project Template with the world. The <a href="https://visualstudiogallery.msdn.microsoft.com/6cf50a48-fc1e-4eaf-9e82-0b2a6705ca7d">ASP.NET Core Boilerplate</a> extension now has over a hundred downloads within two days of submitting it!</p>
 <p>If you&#39;ve followed the steps above to create a VSIX package and tested that it works correctly then submitting one to the site is really easy. Follow <a href="https://visualstudiogallery.msdn.microsoft.com/site/upload/view">this</a> link to the submission page and fill in the form. An example of what it looks like can be seen below:</p>
-<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/VisualStudioGallery1.png" alt="An example of the Visual Studio Gallery Submission Page.">
-An example of the Visual Studio Gallery Submission Page.</p>
+<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/VisualStudioGallery1.png" alt="An example of the Visual Studio Gallery Submission Page."></p>
+<p>An example of the Visual Studio Gallery Submission Page.</p>
 <p>Once you have made your submission and you go to the &#39;New Project&#39; dialogue, you can go to the &#39;Online&#39; section and see your project template listed.</p>
-<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/VisualStudioGallery2.png" alt="The project template shown in the &#39;Web&#39; section of Visual Studio&#39;s &#39;New Project&#39; dialogue.">
-The project template shown in the &#39;Web&#39; section of Visual Studio&#39;s &#39;New Project&#39; dialogue.</p>
+<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/VisualStudioGallery2.png" alt="The project template shown in the &#39;Web&#39; section of Visual Studio&#39;s &#39;New Project&#39; dialogue."></p>
+<p>The project template shown in the &#39;Web&#39; section of Visual Studio&#39;s &#39;New Project&#39; dialogue.</p>
 <p>If you use the template above, explicitly install it from the Visual Studio Gallery or install it from &#39;Extensions and Updates&#39;, you will then see the project appear in the &#39;New Project&#39; dialogue under the category you specified in the settings above.</p>
-<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/VisualStudioGallery3.png" alt="The project template shown in the &#39;Online&#39; section of Visual Studio&#39;s &#39;New Project&#39; dialogue.">
-The project template shown in the &#39;Online&#39; section of Visual Studio&#39;s &#39;New Project&#39; dialogue.</p>
+<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/VisualStudioGallery3.png" alt="The project template shown in the &#39;Online&#39; section of Visual Studio&#39;s &#39;New Project&#39; dialogue."></p>
+<p>The project template shown in the &#39;Online&#39; section of Visual Studio&#39;s &#39;New Project&#39; dialogue.</p>
 <h1 id="conclusions">Conclusions</h1>
-<p>Creating a simple .zip project template is super simple and something everyone should know and use for larger projects. Creating VSIX project templates is a lot more involved but to be honest, there is no reason why it should be. I hope Microsoft makes this process a lot easier.</p>
+<p>Creating a simple <code>.zip</code> project template is super simple and something everyone should know and use for larger projects. Creating VSIX project templates is a lot more involved but to be honest, there is no reason why it should be. I hope Microsoft makes this process a lot easier.</p>
 ]]></content:encoded>
             <enclosure url="/images/hero/Visual-Studio-1366x768.png"/>
         </item>
@@ -6675,8 +6674,8 @@ The project template shown in the &#39;Online&#39; section of Visual Studio&#39;
 &lt;!-- apple-mobile-web-app-status-bar-style - default/black/black-translucent Styles the IOS status bar. Using 
      black-translucent makes it transparent and overlays it on top of your site, so make sure you have enough margin. --&gt;
 &lt;meta name=&quot;apple-mobile-web-app-status-bar-style&quot; content=&quot;black&quot;&gt;</code></pre>
-<p><img src="https://preview.rehansaeed.com/internet-favicon-madness/images/iOS-Web-App-Capable.png" alt="iOS Web App Capable">]
-The left screen shows a normal web browsing experience on iOS and the right shows a web app capable experience.</p>
+<p><img src="https://preview.rehansaeed.com/internet-favicon-madness/images/iOS-Web-App-Capable.png" alt="iOS Web App Capable"></p>
+<p>The left screen shows a normal web browsing experience on iOS and the right shows a web app capable experience.</p>
 <p>If you decide to make your site web app capable by using the meta tag above, you can also set a splash screen which gets shown when your site is first launched. Once again, there are several sizes depending on the screen resolution and all the images start with <code>apple-touch-startup-image</code>. Find more information about iOS favicon&#39;s, startup images and meta tags <a href="http://blog.teamtreehouse.com/optimizing-mobile-web-apps-ios">here</a>.</p>
 <h2 id="microsoft-windows-7-taskbar">Microsoft Windows 7 Taskbar</h2>
 <p>If your site is pinned to the Windows 7 taskbar then you can customize the jump list items with additional links to pages on your site. There are lots of other additional features (See image below) but these require JavaScript and some additional work. Also, I&#39;m not really sure how often people pin websites to the taskbar (I personally have never done it), so I&#39;m not sure if its worth it. Check out the <a href="http://www.buildmypinnedsite.com/windows7">Windows 7 Build My Pinned Site</a> page for examples and more information.</p>
@@ -6785,16 +6784,16 @@ The left screen shows a normal web browsing experience on iOS and the right show
 <p>The default MVC template that Visual Studio gives you does not make best use of the tools available. It&#39;s insecure, slow, and really has a very basic feature list (That&#39;s the point of it). <a href="https://github.com/Dotnet-Boxed/Templates">ASP.NET Core Boilerplate</a> provides you with a few more pieces of the puzzle to get you started quicker. It makes liberal use of comments and even gives you a check-list of tasks which you need to perform to make it even better.</p>
 <p>The rest of this article is going to briefly go through the improvements made over using the default MVC template. I&#39;ll then finish up with instructions on how you can use it. Also, look out for more posts in the future, where I will go through each feature in detail.</p>
 <h2 id="secure-by-default">Secure By Default</h2>
-<p>The default MVC template is not as secure as it could be. There are various settings (Mostly in the web.config file) which are insecure by default. For example, it leaks information about which version of IIS you are using and allows external scripts to access cookies by default!</p>
+<p>The default MVC template is not as secure as it could be. There are various settings (Mostly in the <code>web.config</code> file) which are insecure by default. For example, it leaks information about which version of IIS you are using and allows external scripts to access cookies by default!</p>
 <p><a href="https://github.com/Dotnet-Boxed/Templates">ASP.NET Core Boilerplate</a> makes everything secure by default but goes further and uses various HTTP headers which are sent to the browser to restrict things further.</p>
 <p>It also makes use of the new <a href="https://developer.mozilla.org/en-US/docs/Web/Security/CSP/Introducing_Content_Security_Policy%20">Content Security Policy (CSP)</a> HTTP Header using the <a href="https://nwebsec.codeplex.com/">NWebSec</a> NuGet packages. CSP revolutionizes web security and I highly recommend reading the above link.</p>
 <p>Setting up <a href="http://en.wikipedia.org/wiki/SSL">SSL</a>/<a href="http://en.wikipedia.org/wiki/Transport_Layer_Security">TLS</a>, so that your site runs over HTTPS is made easy with easy step by step instructions and links.</p>
 <h2 id="fast-by-default">Fast By Default</h2>
-<p>The default MVC template does a pretty poor job in the performance department. Probably because they don&#39;t make any assumptions about which web server you are using. Most of the world and dog that are writing ASP.NET MVC sites use IIS and there are settings in the web.config file under the system.webServer section which can make a big difference when it comes to performance.</p>
+<p>The default MVC template does a pretty poor job in the performance department. Probably because they don&#39;t make any assumptions about which web server you are using. Most of the world and dog that are writing ASP.NET MVC sites use IIS and there are settings in the <code>web.config</code> file under the system.webServer section which can make a big difference when it comes to performance.</p>
 <p><a href="https://github.com/Dotnet-Boxed/Templates">ASP.NET Core Boilerplate</a> makes no such assumptions. It turns on GZip compression for static and dynamic files being sent to the browsers making them smaller and quicker to download. It also uses Content Delivery Networks (CDN) by default to make common scripts like jQuery quicker to download (You can turn this off of course but the point is <a href="https://github.com/Dotnet-Boxed/Templates">ASP.NET Core Boilerplate</a> is fast by default).</p>
 <p>That&#39;s not all! There are a bunch of other tweaks and examples of practices which can help improve the performance of the site. <a href="https://github.com/Dotnet-Boxed/Templates">ASP.NET Core Boilerplate</a> achieves a score of 96/100 on <a href="http://yslow.org/">YSlow</a> (Its not possible to get the full 100 as some of it&#39;s criteria contradict each other and site scripts need to be moved to a CDN).</p>
 <h2 id="search-engine-optimization-seo">Search Engine Optimization (SEO)</h2>
-<p>The default ASP.NET MVC template takes no consideration of Search Engine Optimization at all. ASP.NET Core Boilerplate adds a dynamically generated robots.txt file to tell search engines which pages they can index. It also adds a dynamically generated sitemap.xml file where you can help search engines even further by giving them links to all your pages.</p>
+<p>The default ASP.NET MVC template takes no consideration of Search Engine Optimization at all. ASP.NET Core Boilerplate adds a dynamically generated <code>robots.txt</code> file to tell search engines which pages they can index. It also adds a dynamically generated <code>sitemap.xml</code> file where you can help search engines even further by giving them links to all your pages.</p>
 <p>ASP.NET MVC has some very useful settings for appending trailing slashes to URL&#39;s and making all URL&#39;s lower case. Unfortunately, both of these are turned off by default, which is terrible for SEO. This project turns them on by default.</p>
 <p>It also includes an MVC filter which helps to redirect non-canonical URL&#39;s (URL&#39;s without a trailing slash or mixed case characters which are considered different URL&#39;s by search engines) to their canonical equivalent.</p>
 <h2 id="accessibility">Accessibility</h2>
@@ -6830,7 +6829,7 @@ The left screen shows a normal web browsing experience on iOS and the right show
 <h2 id="bugs-and-issues">Bugs and Issues</h2>
 <p>Please report any bugs or issues on the GitHub issues page <a href="https://github.com/Dotnet-Boxed/Templates/issues">here</a>.</p>
 <h2 id="future-of-the-project">Future of the project</h2>
-<p>At some point, I will try to create a <a href="https://msdn.microsoft.com/en-us/library/ff363239.aspx">Visual Studio Deployment package (VSIX)</a> and list this project template on the <a href="https://visualstudiogallery.msdn.microsoft.com/site/search?f%5B0%5D.Type=RootCategory&amp;f%5B0%5D.Value=templates&amp;f%5B0%5D.Text=Templates&amp;f%5B1%5D.Type=SubCategory&amp;f%5B1%5D.Value=aspnet&amp;f%5B1%5D.Text=ASP.NET">Visual Studio extensions</a> site. To use the template, it will be as easy as choosing ASP.NET Core Boilerplate from the online templates in the File -&gt; New Project -&gt; Online Template menu. Unbelievably, it&#39;s actually pretty complicated to create one of these. I found the <a href="https://visualstudiogallery.msdn.microsoft.com/57320b20-34a2-42e4-b97e-e615c71aca24">Export Template Wizard</a> Visual Studio extension which can do this easily but it&#39;s not been updated since Visual Studio 2010.</p>
+<p>At some point, I will try to create a <a href="https://msdn.microsoft.com/en-us/library/ff363239.aspx">Visual Studio Deployment package (VSIX)</a> and list this project template on the <a href="https://visualstudiogallery.msdn.microsoft.com/site/search?f%5B0%5D.Type=RootCategory&amp;f%5B0%5D.Value=templates&amp;f%5B0%5D.Text=Templates&amp;f%5B1%5D.Type=SubCategory&amp;f%5B1%5D.Value=aspnet&amp;f%5B1%5D.Text=ASP.NET">Visual Studio extensions</a> site. To use the template, it will be as easy as choosing ASP.NET Core Boilerplate from the online templates in the <code>File -&gt; New Project -&gt; Online Template</code> menu. Unbelievably, it&#39;s actually pretty complicated to create one of these. I found the <a href="https://visualstudiogallery.msdn.microsoft.com/57320b20-34a2-42e4-b97e-e615c71aca24">Export Template Wizard</a> Visual Studio extension which can do this easily but it&#39;s not been updated since Visual Studio 2010.</p>
 <p>I am also taking a look at creating separate Visual Studio templates which include ASP.NET Web API and OAuth authentication. This is of course an open source project, I fully expect contributions and suggestions from the community.</p>
 ]]></content:encoded>
             <enclosure url="/images/hero/ASP.NET-Core-Boilerplate-1366x768.png"/>
@@ -6930,10 +6929,10 @@ The left screen shows a normal web browsing experience on iOS and the right show
 <li><a href="https://preview.rehansaeed.com/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/">Model-View-ViewModel (MVVM) - Part 4 - INotifyDataErrorInfo</a></li>
 </ul>
 <p>In this next part, I&#39;m going to discuss validation of your view models using the <a href="http://msdn.microsoft.com/en-us/library/system.componentmodel.inotifydataerrorinfo%28v=vs.110%29.aspx">INotifyDataErrorInfo</a> interface. Validation is an often ignored part of the Model-View-ViewModel (MVVM) story. If you need to create a form for your users to fill in (which is probably most applications, I would have thought), then you probably need to validate user input in some way and the <a href="http://msdn.microsoft.com/en-us/library/system.componentmodel.inotifydataerrorinfo%28v=vs.110%29.aspx">INotifyDataErrorInfo</a> interface can get you there.</p>
-<p><img src="https://preview.rehansaeed.com/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/images/Valid.png" alt="INotifyDataErrorInfo Valid TextBox">
-INotifyDataErrorInfo Valid TextBox</p>
-<p><img src="https://preview.rehansaeed.com/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/images/Invalid.png" alt="INotifyDataErrorInfo Invalid TextBox">
-INotifyDataErrorInfo Invalid TextBox</p>
+<p><img src="https://preview.rehansaeed.com/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/images/Valid.png" alt="INotifyDataErrorInfo Valid TextBox"></p>
+<p>That was a <strong>valid</strong> <code>TextBox</code> using <code>INotifyDataErrorInfo</code>.</p>
+<p><img src="https://preview.rehansaeed.com/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/images/Invalid.png" alt="INotifyDataErrorInfo Invalid TextBox"></p>
+<p>That was an <strong>invalid</strong> <code>TextBox</code> using <code>INotifyDataErrorInfo</code>.</p>
 <p>In the example above you can see a name text box which requires text, to be in a valid state. In the valid state there is a big green tick next to the text box and conversely in an invalid state, there is a big yellow warning sign, the text box background becomes pink and you get a nice tool-tip telling you what the error is. By the way, this example is taken from my <a href="https://github.com/RehanSaeed/Elysium-Extra">Elysium Extra</a> WPF project which is freely available on GitHub.</p>
 <h1 id="how-does-it-work">How Does It Work?</h1>
 <p>You can see the interface and its corresponding event arguments below. If the name property in our view model changes and is empty then the state of our view model is invalid, we can raise the <code>ErrorsChanged</code> event, set the <code>HasErrors</code> property to return true and make any calls to <code>GetErrors</code> return a list of the errors (In our case we only have one but there could be multiple errors).</p>
@@ -8014,9 +8013,9 @@ Console.WriteLine(disposable.IsDisposed);</code></pre>
             <guid>https://preview.rehansaeed.com/portable-class-library-version-of-notificationsextensions-nuget-package/</guid>
             <pubDate>Tue, 06 May 2014 00:00:00 GMT</pubDate>
             <description><![CDATA[NotificationsExtensions.Portable is a Portable Class Library (PCL) used to Create Windows 8.1 or Windows Phone 8.1 Tile, Toast and Badge Notification XML.]]></description>
-            <content:encoded><![CDATA[<p>I&#39;ve recently got into creating NuGet packages, when I had to create one for <a href="https://preview.rehansaeed.com/wpf-metro-part4-elysium-extra">Elysium Extra</a>. I discovered it was <a href="http://docs.nuget.org/docs/creating-packages/using-a-gui-to-build-packages">really easy</a> to do too. I&#39;ve just finished creating another one called NotificationsExtensions.Portable and I did in in 5 minutes!</p>
+            <content:encoded><![CDATA[<p>I&#39;ve recently got into creating NuGet packages, when I had to create one for <a href="https://preview.rehansaeed.com/wpf-metro-part4-elysium-extra">Elysium Extra</a>. I discovered it was <a href="http://docs.nuget.org/docs/creating-packages/using-a-gui-to-build-packages">really easy</a> to do too. I&#39;ve just finished creating another one called, you guessed it <code>NotificationsExtensions.Portable</code> and I did in in 5 minutes!</p>
 <h1 id="about">About</h1>
-<p>NotificationsExtensions.Portable is a <a href="http://msdn.microsoft.com/en-us/library/gg597391%28v=vs.110%29.aspx">Portable Class Library (PCL)</a> version of other NotificationsExtensions NuGet Packages. It&#39;s used to Create Windows 8.1 or Windows Phone 8.1 Tile, Toast and Badge Notification XML. This package is intended for use, instead of or as well as the following NuGet packages:</p>
+<p><code>NotificationsExtensions.Portable</code> is a <a href="http://msdn.microsoft.com/en-us/library/gg597391%28v=vs.110%29.aspx">Portable Class Library (PCL)</a> version of other <code>NotificationsExtensions</code> NuGet Packages. It&#39;s used to Create Windows 8.1 or Windows Phone 8.1 Tile, Toast and Badge Notification XML. This package is intended for use, instead of or as well as the following NuGet packages:</p>
 <ul>
 <li><a href="https://www.nuget.org/packages/NotificationsExtensions.WinRT">NotificationsExtensions.WinRT</a></li>
 <li><a href="https://www.nuget.org/packages/NotificationsExtensions.UniversalApps">NotificationsExtensions.UniversalApps</a></li>
@@ -8027,16 +8026,17 @@ Console.WriteLine(disposable.IsDisposed);</code></pre>
 <h1 id="why-is-this-useful">Why is this Useful?</h1>
 <p>It&#39;s useful when trying to send notifications from the server side using Azure Mobile Services .NET Backend or some other .NET based push notification. When you want to create notification XML in a standard .NET project and not a WinRT project. I personally use it for my <a href="http://apps.microsoft.com/windows/en-gb/app/london-travel-live/2916d32f-2ca3-4325-adc0-c62b44306fae">London Travel Live</a> and <a href="http://apps.microsoft.com/windows/en-gb/app/currency-converter-pro/32863ebf-c907-4806-a2dd-864fb4b573da">Currency Converter Pro</a> apps.</p>
 <h1 id="nuget">NuGet</h1>
-<p>NotificationsExtensions.Portable is available on NuGet. Simply follow the instructions below:</p>
+<p><code>NotificationsExtensions.Portable</code> is available on NuGet. Simply follow the instructions below:</p>
 <ol>
 <li>Click Tools Menu Item in Visual Studio</li>
 <li>Click NuGet Package Manager</li>
 <li>Click Package Manager Console</li>
 <li>Select Your Project in the Package Manager Console</li>
-<li>Execute the following command to install NotificationsExtensions.Portable: <strong>PM&gt; Install-Package NotificationsExtensions.Portable -Version 1.0.0</strong></li>
+<li>Execute the following command to install <code>NotificationsExtensions.Portable</code>:<pre><code class="language-powershell">Install-Package NotificationsExtensions.Portable -Version 1.0.0</code></pre>
+</li>
 </ol>
 <h1 id="attribution-and-changes-made">Attribution and Changes Made</h1>
-<p>All praise goes to the above two projects and the Microsoft developers who built them. The only changes I made to the code was to switch from XmlDocument to XDocument, remove a few WinRT specific references and stick it into a Portable Class Library (PCL).</p>
+<p>All praise goes to the above two projects and the Microsoft developers who built them. The only changes I made to the code was to switch from <code>XmlDocument</code> to <code>XDocument</code>, remove a few WinRT specific references and stick it into a Portable Class Library (PCL).</p>
 ]]></content:encoded>
             <enclosure url="/images/hero/NuGet-1366x768.png"/>
         </item>
@@ -8061,7 +8061,7 @@ Console.WriteLine(disposable.IsDisposed);</code></pre>
 <p>Once you have your observables, you need to do something with them. In my last post on the subject I showed how and when you can await an observable.</p>
 <p>In this post I&#39;m going to show how you can also go the other way around. You can turn tasks into an observable. I&#39;ll also show one clear reason to use this facility.</p>
 <h1 id="converting-tasks-to-observables">Converting Tasks to Observables</h1>
-<p>The <code>ToObservable</code> extension method allows you to convert a Task or <code>Task&lt;T&gt;</code> into an <code>IObservable&lt;T&gt;</code>. Calling <code>ToObservable</code> on a <code>Task</code> returns an <code>IObservable&lt;Unit&gt;</code>. A Unit is a kind of empty object that does nothing, the only reason it is there is because there is no <code>IObservable</code> (Without the <code>T</code>) interface.</p>
+<p>The <code>ToObservable</code> extension method allows you to convert a Task or <code>Task&lt;T&gt;</code> into an <code>IObservable&lt;T&gt;</code>. Calling <code>ToObservable</code> on a <code>Task</code> returns an <code>IObservable&lt;Unit&gt;</code>. A <code>Unit</code> is a kind of empty object that does nothing, the only reason it is there is because there is no <code>IObservable</code> (Without the <code>T</code>) interface.</p>
 <pre><code class="language-cs">IObservable&lt;Unit&gt; observable = Task.Run(() =&gt; Console.WriteLine(&quot;Working&quot;)).ToObservable();
 
 IObservable&lt;string&gt; observableT = Task&lt;string&gt;.Run(() =&gt; &quot;Working&quot;).ToObservable();</code></pre>
@@ -8104,7 +8104,7 @@ public async Task&lt;string&gt; WaitForFirstResultAndReturn()
     return await observable1.Merge(observable2).FirstAsync();
 }</code></pre>
 <p>In the Task Parallel Library (TPL) example, I simply use the <code>WhenAny</code> method to await the first task that completes and then return the result.</p>
-<p>In the Reactive Extensions example above, I&#39;m converting my tasks to observables, using the Merge method to convert them to a single observable and then using the FirstAsync method to await the first result (We covered await&#39;ing observables in the last post).</p>
+<p>In the Reactive Extensions example above, I&#39;m converting my tasks to observables, using the Merge method to convert them to a single observable and then using the <code>FirstAsync</code> method to await the first result (We covered <code>await</code>&#39;ing observables in the last post).</p>
 <p>Overall the two techniques look pretty similar, with the TPL having a slight edge in terms of simplicity.</p>
 <p>How about another example. Here we will try to await both of the results and put them together to get some meaningful result.</p>
 <pre><code class="language-cs">public async Task&lt;string&gt; WaitForAllResultsAndReturnCombinedResult()
@@ -8213,7 +8213,7 @@ I updated this article to talk about a new <code>HashCode</code> class included 
         // TODO
     }
 }</code></pre>
-<p>In our example we have an immutable object with a variety of fields of different types, including a collection. One possible implementation of <code>GetHashCode</code> according to the highest rated <a href="http://stackoverflow.com/questions/263400/what-is-the-best-algorithm-for-an-overridden-system-object-gethashcode/263416#263416">StackOverflow post</a> (If modified to fit our example and deal with nulls) may be:</p>
+<p>In our example we have an immutable object with a variety of fields of different types, including a collection. One possible implementation of <code>GetHashCode</code> according to the highest rated <a href="http://stackoverflow.com/questions/263400/what-is-the-best-algorithm-for-an-overridden-system-object-gethashcode/263416#263416">StackOverflow post</a> (If modified to fit our example and deal with <code>null</code>&#39;s) may be:</p>
 <pre><code class="language-cs">public override int GetHashCode()
 {
     unchecked
@@ -8295,7 +8295,8 @@ public struct HashCode : IEquatable&lt;HashCode&gt;
     /// &lt;typeparam name=&quot;T&quot;&gt;The type of the item.&lt;/typeparam&gt;
     /// &lt;param name=&quot;item&quot;&gt;The item.&lt;/param&gt;
     /// &lt;returns&gt;The new hash code.&lt;/returns&gt;
-    public HashCode And&lt;T&gt;(T item) =&gt; new HashCode(CombineHashCodes(this.value, GetHashCode(item)));
+    public HashCode And&lt;T&gt;(T item) =&gt; 
+        new HashCode(CombineHashCodes(this.value, GetHashCode(item)));
 
     /// &lt;summary&gt;
     /// Adds the hash code of the specified items in the collection.
@@ -8334,7 +8335,8 @@ public struct HashCode : IEquatable&lt;HashCode&gt;
     /// &lt;exception cref=&quot;NotSupportedException&quot;&gt;Implicitly convert this struct to an &lt;see cref=&quot;int&quot; /&gt; to get the hash code.&lt;/exception&gt;
     [EditorBrowsable(EditorBrowsableState.Never)]
     public override int GetHashCode() =&gt;
-        throw new NotSupportedException(&quot;Implicitly convert this struct to an int to get the hash code.&quot;);
+        throw new NotSupportedException(
+            &quot;Implicitly convert this struct to an int to get the hash code.&quot;);
 
     private static int CombineHashCodes(int h1, int h2)
     {
@@ -8369,7 +8371,7 @@ public struct HashCode : IEquatable&lt;HashCode&gt;
         return temp;
     }
 }</code></pre>
-<p>The helper struct can be used in our SuperHero class like so:</p>
+<p>The helper <code>struct</code> can be used in our <code>SuperHero</code> class like so:</p>
 <pre><code class="language-cs">public override int GetHashCode()
 {
     return HashCode
@@ -8378,10 +8380,10 @@ public struct HashCode : IEquatable&lt;HashCode&gt;
         .AndEach(this.powers);
 }</code></pre>
 <p>Now isn&#39;t that pretty? All the nasty magic numbers and <code>unchecked</code> code has been hidden away. It is a very lightweight and simple <code>struct</code>, so although we create new instances of it, it&#39;s stored in the stack rather than the memory heap. What&#39;s more, is that is code is just as fast (I&#39;ve timed it)! We&#39;re using generics so there is no boxing or unboxing going on. We&#39;re still using the <code>unchecked</code> keyword, so overflow checking is still disabled.</p>
-<p>One interesting edge case is what to do when hashing a collection and you get either a <code>null</code> or empty collection. Should you use a zero to represent both scenarios (zero is usually used to represent a <code>null</code> value) or differentiate them somehow. I managed to get a response from Jon Skeet himself on StackOverflow:</p>
+<p>One interesting edge case is what to do when hashing a collection and you get either a <code>null</code> or empty collection. Should you use a zero to represent both scenarios (zero is usually used to represent a <code>null</code> value) or differentiate them somehow. I managed to get a response from <a href="">Jon Skeet</a> himself on StackOverflow:</p>
 <blockquote>
-<p>if both states are valid, it seems perfectly reasonable to differentiate between them. (Someone carrying an empty box isn&#39;t the same as someone not carrying a box at all...)</p>
-<p><a href="https://stackoverflow.com/questions/8094867/good-gethashcode-override-for-list-of-foo-objects-respecting-the-order/8094931?noredirect=1#comment99700237_8094931">Jon Skeet</a></p>
+<p>if both states are valid, it seems perfectly reasonable to differentiate between them. (Someone carrying an empty box isn&#39;t the same as someone not carrying a box at all...)
+<a href="https://stackoverflow.com/questions/8094867/good-gethashcode-override-for-list-of-foo-objects-respecting-the-order/8094931?noredirect=1#comment99700237_8094931">Jon Skeet</a></p>
 </blockquote>
 <p>This is why we use the prime number 19 (it could have been any prime number) to represent an empty collection. Whether this matters or not depends on your use case. If an empty collection means something different in your scenario, then we&#39;ve got you covered. Generally speaking though, if you are exposing a collection property in your class you should consider making it a getter only and initializing it in the constructor, so that it is never <code>null</code> in the first place but here we&#39;re trying to cover all scenarios.</p>
 <h1 id="net-core-hashcode">.NET Core HashCode</h1>
@@ -8542,8 +8544,8 @@ I am the developer of Elysium Extra. It was developed at the company where I wor
 <p>The window has be heavily modified to allow full customization. Pretty much every feature you can think of has been added. Changes include Window border glow effects, saving window placement, full screen mode...the list goes on.</p>
 <p>Other major differences between this SDK over Elysium are that the TextBox and ComboBox controls have been brought more into line with each other, so if you add them in a form they don&#39;t look out of place.</p>
 <p>The ability to change theme&#39;s is unfortunately currently broken as a side effect of Elysium Extra having to wrap the Elysium XAML styles. This is pretty high up the list of things planned to be fixed though.</p>
-<p><img src="https://preview.rehansaeed.com/wpf-metro-part4-elysium-extra/images/Colour.png" alt="Elysium Extra - Sample application screenshot of the Colours">
-Custom colours over and above what Elysium provides and guidelines on how to use them.</p>
+<p><img src="https://preview.rehansaeed.com/wpf-metro-part4-elysium-extra/images/Colour.png" alt="Elysium Extra - Sample application screenshot of the Colours"></p>
+<p>Custom colours over and above what Elysium provides and guidelines on how to use them.</p>
 <p>As this SDK has been open sourced from a live application. There are lots of styles for icons, menu items and app-bar buttons. These are things you&#39;d use in every application. Things like cut, copy and paste buttons etc.</p>
 <p><img src="https://preview.rehansaeed.com/wpf-metro-part4-elysium-extra/images/App-Bar.png" alt="Elysium Extra - Sample application screenshot of the App Bar"></p>
 <p><img src="https://preview.rehansaeed.com/wpf-metro-part4-elysium-extra/images/MenuItem.png" alt="Elysium Extra - Sample application screenshot of the built in MenuItem&#39;s"></p>
@@ -8797,13 +8799,13 @@ private void OnTimerElapsed(object sender, ElapsedEventArgs e)
             <content:encoded><![CDATA[<p>Would you buy a sandwich without the filling? Would you buy a car without the radio? No? Then why are most Windows 8.1 laptops sold without touch screens?</p>
 <p>I do a bit of Windows 8 and Windows Phone development on the side, so a touch screen is handy for testing but you&#39;re probably asking, whats so good about a touch screen? Well this is a little difficult to quantify. Having tried a laptop with one, there are some operations which are just more natural with your fingers. Resizing an image with a two finger gesture sticks out as one good example. You find yourself using it every now and then wherever appropriate.</p>
 <p>Windows 8 seems to have gotten a bad rap in recent times, mostly due to the full screen start screen. I personally can&#39;t see the problem, it just downright statistically <a href="http://blogs.msdn.com/b/b8/archive/2011/10/11/reflecting-on-your-comments-on-the-start-screen.aspx">more efficient and quicker</a> to open an application than the old cramped Windows7/Vista start menu and has lots of cool features like pausing file transfers and mounting ISO files which I use all the time.</p>
-<p><img src="https://preview.rehansaeed.com/windows-8-touchscreen-gaming-laptops/images/Windows-7-Start-Menu.png" alt="Windows 7 Start Menu">
-Heat map of time to reach items in the Start menu from the Start button<br>(green items are the fastest to get to, red items are the slowest)</p>
-<p><img src="https://preview.rehansaeed.com/windows-8-touchscreen-gaming-laptops/images/Windows-8-Start-Menu.png" alt="Windows 8 Start Menu">
-Heat map of time to reach tiles in the Start screen from the Start button<br>(green tiles are the fastest to get to, red tiles are the slowest)</p>
+<p><img src="https://preview.rehansaeed.com/windows-8-touchscreen-gaming-laptops/images/Windows-7-Start-Menu.png" alt="Windows 7 Start Menu"></p>
+<p>Heat map of time to reach items in the Start menu from the Start button<br>(green items are the fastest to get to, red items are the slowest)</p>
+<p><img src="https://preview.rehansaeed.com/windows-8-touchscreen-gaming-laptops/images/Windows-8-Start-Menu.png" alt="Windows 8 Start Menu"></p>
+<p>Heat map of time to reach tiles in the Start screen from the Start button<br>(green tiles are the fastest to get to, red tiles are the slowest)</p>
 <p>That&#39;s not to say it doesn&#39;t have its problems, I like to use the Windows 8.1 mail application. I like it because I can pin it to my start screen and get notifications on the tile for any new emails. As a heavy desktop user though, I want to open the application on the desktop in a window and not in the full screen touch friendly window. Happily though :), this is going to be fixed in the next update where <a href="http://www.wpcentral.com/more-windows-81-update-leaks-appear-apps-desktop">WinRT apps can now be run on the good old desktop</a>.</p>
-<p><img src="https://preview.rehansaeed.com/windows-8-touchscreen-gaming-laptops/images/Windows-8-app-on-Desktop.jpg" alt="Windows 8 app running on Desktop">
-Windows 8 Bing Finance app running on Desktop</p>
+<p><img src="https://preview.rehansaeed.com/windows-8-touchscreen-gaming-laptops/images/Windows-8-app-on-Desktop.jpg" alt="Windows 8 app running on Desktop"></p>
+<p>Windows 8 Bing Finance app running on Desktop</p>
 <p>I&#39;ve been looking to replace my trusty old non-touch screen Samsung laptop running Windows 8.1 with a new touch screen model. However, I like to shoot a few HE shells at some tanks while playing <a href="http://worldoftanks.com/">World of Tanks</a> on the weekend in my down time. Its not the most demanding of games but I&#39;d like to look forward to future updates and other games like Battlefield 4.</p>
 <p>So I&#39;ve been doing my research on what my options are for a touch screen gaming laptop and was very surprised to discover that they are pretty non-existent. The closest thing you&#39;ll find is the <a href="http://www.notebookcheck.net/Review-Asus-N550JV-CN201H-Notebook.98311.0.html">Asus N550JV-CN201H</a>, which is not really a gaming laptop with an <a href="http://www.notebookcheck.net/NVIDIA-GeForce-GT-750M.90245.0.html">nVidia GT750M</a> low to mid-range graphics card. It&#39;ll play today&#39;s games at mid-range settings and will probably choke on tomorrows games altogether.</p>
 <p>Why is this? Well after some reading I get the impression that laptop manufacturers believe that enthusiasts don&#39;t like glossy screens and adding a touch screen means adding a glossy layer on top of the screen. This I think is personal preference, I have seen one matt screened touch screen laptop in the wild but I can&#39;t remember where, so it is at least possible to have a matt screen. So why the delay?</p>
