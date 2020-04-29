@@ -85,7 +85,7 @@ The .vstemplate file in the project contains all the information about the conte
 ![The category a VSIX C# project is displayed under, in the Visual Studio New Project dialogue.](./images/ExportVSIX4.png)
 The category a VSIX C# project is displayed under, in the Visual Studio New Project dialogue.
 
-An example of the `.vstemplate` file is shown below. Note, that I've set the project template name, description and the default name of the project which is shown in the 'New Project' dialogue and the user can rename. The XML then goes on to declare the name of the .csproj file in the `Project` node, followed by each and every file and folder to be included in the template.
+An example of the `.vstemplate` file is shown below. Note, that I've set the project template name, description and the default name of the project which is shown in the 'New Project' dialogue and the user can rename. The XML then goes on to declare the name of the `.csproj` file in the `Project` node, followed by each and every file and folder to be included in the template.
 
 Note, that the `AssemblyInfo.cs` file is a little special. There are two of them in the project. The one we are interested in was already located in the root of the project when we created it. We also need to add it to the XML below slightly differently than the other files (See below).
 

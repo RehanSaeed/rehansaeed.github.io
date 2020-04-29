@@ -21,20 +21,20 @@ tags:
 ---
 
 ::: tip TLDR
-I show how to make csproj XML concise and pretty for hand editing.
+I show how to make `csproj` XML concise and pretty for hand editing.
 :::
 
 I used `project.json` since Beta 7 and got used to hand editing it, I've continues that practice with `.csproj` files and I think you should too. Recent version of Visual Studio have made a lot of performance improvements but it's still a lot slower than hand editing a text file.
 
-The NuGet package screen in Visual Studio is achingly slow. Bulk editing takes seconds. I can update NuGet package references, package properties etc. all in one go, rather than visiting multiple disparate UI's in Visual Studio. Finally, I create new projects by copying and pasting an existing csproj and tweaking it. Much faster than Visual Studio's New Project dialogue.
+The NuGet package screen in Visual Studio is achingly slow. Bulk editing takes seconds. I can update NuGet package references, package properties etc. all in one go, rather than visiting multiple disparate UI's in Visual Studio. Finally, I create new projects by copying and pasting an existing `csproj` and tweaking it. Much faster than Visual Studio's New Project dialogue.
 
 # Install Project File Tools
 
-The [Project File Tools](https://marketplace.visualstudio.com/items?itemName=ms-madsk.ProjectFileTools) Visual Studio extension gives you intellisense for NuGet packages in the new csproj projects. Unfortunately, due to MSBuild being around for so long and being so complex, intellisense for the rest of the project XML consists of a massive list of possible properties so it becomes less useful than it was in `project.json`.
+The [Project File Tools](https://marketplace.visualstudio.com/items?itemName=ms-madsk.ProjectFileTools) Visual Studio extension gives you intellisense for NuGet packages in the new `csproj` projects. Unfortunately, due to MSBuild being around for so long and being so complex, intellisense for the rest of the project XML consists of a massive list of possible properties so it becomes less useful than it was in `project.json`.
 
 # dotnet migrate - Wow that's ugly!
 
-After migrating my `project.json` projects to csproj using Visual Studio 2017 (You could also use the `dotnet migrate` command), I found that that the XML generated was pretty ugly and contained superfluous elements you just didn't need. Here is an example csproj library project straight after migration:
+After migrating my `project.json` projects to `csproj` using Visual Studio 2017 (You could also use the `dotnet migrate` command), I found that that the XML generated was pretty ugly and contained superfluous elements you just didn't need. Here is an example `csproj` library project straight after migration:
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
@@ -113,7 +113,7 @@ If you root around in those files, you can find defaults for all kinds of settin
 
 ## AssemblyInfo.cs is Partially Dead
 
-You don't need `AssemblyInfo.cs` anymore by default as the csproj Package settings also set many of the assembly attributes. In fact, you didn't really need it with `project.json` either but the default templates mostly included it for some reason. However, I still found I needed to resurrect it in some cases to use the `InternalsVisibleTo` attribute. `InternalsVisibleTo` allows my unit test projects to access internal members in my library project. After a `dotnet migrate`, you may see the following elements which stop certain assembly attributes from being generated. You can safely delete these.
+You don't need `AssemblyInfo.cs` anymore by default as the `csproj` Package settings also set many of the assembly attributes. In fact, you didn't really need it with `project.json` either but the default templates mostly included it for some reason. However, I still found I needed to resurrect it in some cases to use the `InternalsVisibleTo` attribute. `InternalsVisibleTo` allows my unit test projects to access internal members in my library project. After a `dotnet migrate`, you may see the following elements which stop certain assembly attributes from being generated. You can safely delete these.
 
 ```xml
 <PropertyGroup>
@@ -126,7 +126,7 @@ You don't need `AssemblyInfo.cs` anymore by default as the csproj Package settin
 
 ## Remove System.* References
 
-You no longer need to explicitly reference `System.*` references in your csproj. David Fowler recommends that you always reference the `NETStandard.Library` meta NuGet package gives you most `System.*` references. You get `NETStandard.Library` by default if you use the SDK attribute at the top of the csproj:
+You no longer need to explicitly reference `System.*` references in your `csproj`. David Fowler recommends that you always reference the `NETStandard.Library` meta NuGet package gives you most `System.*` references. You get `NETStandard.Library` by default if you use the SDK attribute at the top of the `csproj`:
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
@@ -182,7 +182,7 @@ So the question becomes, how should we label them? Well, the convention I use is
 
 # The End Result
 
-This is what my csproj looks like at the end of all that. I've removed all the extra fluff you don't need and labelled the properties in a way that makes navigating the file with your eye that much quicker.
+This is what my `csproj` looks like at the end of all that. I've removed all the extra fluff you don't need and labelled the properties in a way that makes navigating the file with your eye that much quicker.
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">

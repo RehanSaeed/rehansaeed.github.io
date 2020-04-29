@@ -57,7 +57,7 @@ public class RocketClient : IRocketClient
 }
 ```
 
-Here is how we register the typed client above with our dependency injection container. All of the meat lives in these three methods. `AddCorrelationId` adds a middleware written by Steve Gordon to handle [Correlation ID's](https://www.stevejgordon.co.uk/asp-net-core-correlation-ids). `AddPolicies` registers a policy registry and the policies themselves (A policy is [Polly's](https://github.com/App-vNext/Polly) way of specifying how you want to deal with errors e.g. using retries, circuit breaker pattern etc.). Finally, we add the typed HttpClient but with configuration options, so we can configure it's settings from appsettings.json.
+Here is how we register the typed client above with our dependency injection container. All of the meat lives in these three methods. `AddCorrelationId` adds a middleware written by Steve Gordon to handle [Correlation ID's](https://www.stevejgordon.co.uk/asp-net-core-correlation-ids). `AddPolicies` registers a policy registry and the policies themselves (A policy is [Polly's](https://github.com/App-vNext/Polly) way of specifying how you want to deal with errors e.g. using retries, circuit breaker pattern etc.). Finally, we add the typed HttpClient but with configuration options, so we can configure it's settings from `appsettings.json`.
 
 ```cs
 public virtual void ConfigureServices(IServiceCollection services) =>
@@ -99,7 +99,7 @@ You can of course play with these numbers, what you set them to will depend on y
 
 # Configuring Polly Policies
 
-Below is the implementation for `AddPollyPolicies`. It starts by setting up and reading a configuration section in our `appsettings.json` file of type `PolicyOptions`. Then adds the Polly [PolicyRegistry](https://github.com/App-vNext/Polly/wiki/PolicyRegistry) which is where Polly stores it's policies. Finally, we add a retry and circuit breaker policy and configure them using the settings we've read from the `PolicyOptions`.
+Below is the implementation for `AddPollyPolicies`. It starts by setting up and reading a configuration section in our `appsettings.json` file of type `PolicyOptions`. Then adds the [PolicyRegistry](https://github.com/App-vNext/Polly/wiki/PolicyRegistry) which is where Polly stores it's policies. Finally, we add a retry and circuit breaker policy and configure them using the settings we've read from the `PolicyOptions`.
 
 ```cs
 public static class ServiceCollectionExtensions
@@ -206,8 +206,8 @@ public static class ServiceCollectionExtensions
 
 public class DefaultHttpClientHandler : HttpClientHandler
 {
-    public DefaultHttpClientHandler() =>
-        this.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+    public DefaultHttpClientHandler() => this.AutomaticDecompression = 
+        DecompressionMethods.Deflate | DecompressionMethods.GZip;
 }
 
 public class HttpClientOptions
@@ -258,7 +258,7 @@ public class CorrelationIdDelegatingHandler : DelegatingHandler
 
 It's often useful to know something about the client that is calling your API for logging and debugging purposes. You can use the `User-Agent` HTTP header for this purpose.
 
-The `UserAgentDelegatingHandler` just sets the `User-Agent` HTTP header by taking the API's assembly name and version attributes. You need to set the `Version` and `Product` attributes in your csproj file for this to work. The name and version are then placed along with the current operating system into the User-Agent string.
+The `UserAgentDelegatingHandler` just sets the `User-Agent` HTTP header by taking the API's assembly name and version attributes. You need to set the `Version` and `Product` attributes in your `csproj` file for this to work. The name and version are then placed along with the current operating system into the User-Agent string.
 
 Now the next time you get an error in your API, you'll know the client application that caused it (if it's under your control).
 
