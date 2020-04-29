@@ -273,3 +273,69 @@ pre[class*="language-"].line-numbers > code {
     counter-reset: linenumber;
   }
 }
+
+
+// PowerShell
+code[class*="language-powershell"],
+pre[class*="language-powershell"] {
+  background-color: hsl(215, 98%, 17%);
+  color:#ffffff;
+
+  .token.cdata,
+  .token.comment,
+  .token.doctype,
+  .token.prolog {
+    color:hsl(129, 79%, 35%);
+  }
+  .token.punctuation {
+    color:#ffffff
+  }
+  .token.constant,
+  .token.deleted,
+  .token.property,
+  .token.symbol,
+  .token.tag {
+    color:hsl(338, 95%, 56%)
+  }
+  .token.number {
+    color:hsl(0, 0%, 100%);
+  }
+  .token.boolean {
+    color:hsl(118, 88%, 41%);
+  }
+  .token.attr-name,
+  .token.builtin,
+  .token.char,
+  .token.inserted,
+  .token.selector,
+  .token.string {
+    color:hsl(194, 51%, 46%);
+  }
+  .language-css .token.string,
+  .style .token.string,
+  .token.entity,
+  .token.operator,
+  .token.url,
+  .token.variable {
+    color:hsl(0, 0%, 100%);
+  }
+  .token.atrule,
+  .token.attr-value,
+  .token.class-name,
+  .token.function {
+    color:hsl(0, 0%, 100%);
+  }
+  .token.keyword {
+    color:hsl(190, 81%, 67%)
+  }
+  .token.important,
+  .token.regex {
+    color:hsl(32, 98%, 56%)
+  }
+}
+pre[class*="language-powershell"]::selection,
+pre[class*="language-powershell"] ::selection,
+code[class*="language-powershell"]::selection,
+code[class*="language-powershell"] ::selection {
+  background: hsl(35, 98%, 83%);
+}
