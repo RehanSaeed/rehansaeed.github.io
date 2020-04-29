@@ -5,7 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/optimally-configuring-asp-net-core-httpclientfactory/"
 heroImage: "/images/hero/Microsoft-.NET-1366x768.png"
 date: "2018-08-20"
-dateModified: null
+dateModified: "2018-08-20"
 published: true
 categories:
   - "ASP.NET"
@@ -17,7 +17,7 @@ tags:
   - "Polly"
 ---
 
-::: warning Update (20-08-2018)
+::: warning Update (20 August 2018)
 Steve Gordon kindly suggested a [further optimisation](https://github.com/RehanSaeed/HttpClientSample/pull/1) to use `ConfigureHttpClient`. I've updated the code below to reflect this.
 :::
 
