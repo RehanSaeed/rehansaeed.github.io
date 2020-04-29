@@ -18,7 +18,7 @@ tags:
   - "Vue CLI"
 ---
 
-The '[dotnet new](https://docs.microsoft.com/en-us/dotnet/core/tools/custom-templates)' CLI command is a great way to create projects from templates in dotnet. However, I think it could provide a much better experience than it currently does. I also suspect it isn't used much, mostly because templates authored for the `dotnet new` experience are not included in the Visual Studio File -> New Project experience. For template authors, the experience of developing templates could do with some improvements. I tweeted about it this morning and got asked to write a short gist about what could be improved, so this is that list.
+The '[dotnet new](https://docs.microsoft.com/en-us/dotnet/core/tools/custom-templates)' CLI command is a great way to create projects from templates in dotnet. However, I think it could provide a much better experience than it currently does. I also suspect it isn't used much, mostly because templates authored for the `dotnet new` experience are not included in the `Visual Studio File -> New Project` experience. For template authors, the experience of developing templates could do with some improvements. I tweeted about it this morning and got asked to write a short gist about what could be improved, so this is that list.
 
 [![Any plans to improve the dotnet new templating engine? Lots of unfixed bugs. Lots of rough edges needing smoothing. A 'dotnet new ui' command to create projects using a visual editor would be cool](./images/Twitter.png)](https://twitter.com/RehanSaeedUK/status/1211663043840684036?s=20)
 
@@ -28,9 +28,9 @@ I author a [Swagger API](https://github.com/Dotnet-Boxed/Templates/blob/master/D
 
 ## Visual Studio Integration
 
-In the past, I also authored the [ASP.NET Core Boilerplate](https://marketplace.visualstudio.com/items?itemName=RehanSaeed.ASPNETMVCBoilerplate) project templates which are published as a Visual Studio extension. This extension currently has 159,307 installs which is an order of magnitude more than the 12,149 installs of my `dotnet new` based Boxed.Templates NuGet package.
+In the past, I also authored the [ASP.NET Core Boilerplate](https://marketplace.visualstudio.com/items?itemName=RehanSaeed.ASPNETMVCBoilerplate) project templates which are published as a Visual Studio extension. This extension currently has 159,307 installs which is an order of magnitude more than the 12,149 installs of my `dotnet new` based `Boxed.Templates` NuGet package.
 
-I've read in the dotnet/templating GitHub issues that there is eventually going to be Visual Studio integration in which you'd be able to search and install `dotnet new` based templates on NuGet, and then create projects from those templates much as you would with Visual Studio today. Given the download counts of my two projects, this would be the number one feature I'd like to see implemented.
+I've read in the [dotnet/templating](https://github.com/dotnet/templating) GitHub issues that there is eventually going to be Visual Studio integration in which you'd be able to search and install `dotnet new` based templates on NuGet, and then create projects from those templates much as you would with Visual Studio today. Given the download counts of my two projects, this would be the number one feature I'd like to see implemented.
 
 You could create a Visual Studio extension that wraps your `dotnet new` templates but having messed around with them in the past, it's a lot of effort. I'm in the template making business, not in the extension making business. Also, given the above rumour, I've held off going this route.
 
@@ -56,7 +56,7 @@ As far as I can work out, the only post action that works is the one that restor
 
 Other post actions that are half implemented (They exist and you can use them but they just print content to the console) are for opening files in the editor, opening files or links in the web browser or even running arbitrary scripts. The last one has the potential for being a security risk however, so it would be better to have a health list of post actions for specific tasks. I'd love to be able to open the ReadMe.md file that ships with my project template.
 
-In terms of new post actions, I'd really like to see one that removes and sorts using statements. I have a lot of optional pieces of code in my project templates, so I have to have a lot of #if #endif code to tell the templating engine which lines of code to remove. It's particularly easy to get this wrong with using statements, leaving you with a fresh project that doesn't compile because you've removed one too many using statements by accident. To avoid this, I created my own unit testing framework for dotnet new projects called [Boxed.DotnetNewTest](https://github.com/Dotnet-Boxed/Framework#boxeddotnetnewtest).
+In terms of new post actions, I'd really like to see one that removes and sorts using statements. I have a lot of optional pieces of code in my project templates, so I have to have a lot of `#if` `#endif` code to tell the templating engine which lines of code to remove. It's particularly easy to get this wrong with using statements, leaving you with a fresh project that doesn't compile because you've removed one too many using statements by accident. To avoid this, I created my own unit testing framework for dotnet new projects called [Boxed.DotnetNewTest](https://github.com/Dotnet-Boxed/Framework#boxeddotnetnewtest).
 
 ## Docs, Docs & Docs
 
@@ -68,10 +68,10 @@ Secondary to the docs is the [GitHub issues](https://github.com/dotnet/templatin
 
 The latest version of the dotnet CLI has fixed some bugs but there are still a few that really get in the way of a great experience:
 
-- [#1544](https://github.com/dotnet/templating/issues/1544)/[#348](https://github.com/dotnet/templating/issues/348) - Running dotnet new foo --help outputs some pretty terrible looking text if you have any custom options.
-- [#2208](https://github.com/dotnet/templating/issues/2208) - You cannot conditionally remove text from a file if it has no file extension, so that means Dockerfile, .gitignore, .editorconfig files.
+- [#1544](https://github.com/dotnet/templating/issues/1544)/[#348](https://github.com/dotnet/templating/issues/348) - Running `dotnet new foo --help` outputs some pretty terrible looking text if you have any custom options.
+- [#2208](https://github.com/dotnet/templating/issues/2208) - You cannot conditionally remove text from a file if it has no file extension, so that means `Dockerfile`, `.gitignore`, `.editorconfig` files.
 - [#2209](https://github.com/dotnet/templating/issues/2209) - Complex conditionals fail if not wrapped in parentheses. I always forget to do this. There is no warnings, your template won't work.
-- [#1438](https://github.com/dotnet/templating/issues/1438) - Using conditional code in csproj files requires some workarounds to work.
+- [#1438](https://github.com/dotnet/templating/issues/1438) - Using conditional code in `.csproj` files requires some workarounds to work.
 
 ## Conclusions
 
