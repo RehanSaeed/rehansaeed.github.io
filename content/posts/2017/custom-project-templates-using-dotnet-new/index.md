@@ -7,6 +7,8 @@ heroImage: "/images/hero/Microsoft-.NET-1366x768.png"
 date: "2017-01-18"
 dateModified: null
 published: true
+series: "dotnet new"
+seriesOrder: 1
 categories:
   - "Tools"
 tags:

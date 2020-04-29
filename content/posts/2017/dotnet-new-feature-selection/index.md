@@ -7,6 +7,8 @@ heroImage: "/images/hero/Who-Wants-To-Be-A-Millionaire-1366x768.png"
 date: "2017-03-26"
 dateModified: null
 published: true
+series: "dotnet new"
+seriesOrder: 2
 categories:
   - "Tools"
 tags:
