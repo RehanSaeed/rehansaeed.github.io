@@ -42,7 +42,7 @@ public class ApplicationDbContext : DbContext
 }
 ```
 
-We can add some seed data by overriding the OnModelCreating method on our database context class. You need to make sure your seed data matches the existing data in your database.
+We can add some seed data by overriding the `OnModelCreating` method on our database context class. You need to make sure your seed data matches the existing data in your database.
 
 ```cs
 protected override void OnModelCreating(ModelBuilder modelBuilder)

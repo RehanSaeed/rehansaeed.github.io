@@ -32,7 +32,7 @@ public virtual void ConfigureServices(IServiceCollection services) =>
 
 # EnableRetryOnFailure
 
-[EnableRetryOnFailure](https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency) enables retries for transient exceptions. So what is a transient exception? Entity Framework Core has a `SqlServerTransientExceptionDetector` class that defines that. It turns out that any SqlException with a very specific list of SQL error codes or `TimeoutExceptions` are considered transient exceptions and thus, safe to retry.
+[EnableRetryOnFailure](https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency) enables retries for transient exceptions. So what is a transient exception? Entity Framework Core has a `SqlServerTransientExceptionDetector` class that defines that. It turns out that any `SqlException` with a very specific list of SQL error codes or `TimeoutExceptions` are considered transient exceptions and thus, safe to retry.
 
 # ConfigureWarnings
 
@@ -48,7 +48,7 @@ One thing you can do is throw an exception when you are evaluating a query in-me
 
 # UseQueryTrackingBehavior
 
-If you are building an ASP.NET Core API, each request creates a new instance of your DbContext and then this is disposed at the end of the request. Query tracking keeps track of entities in memory for the lifetime of your DbContext so that if they are updated any changes can be saved, this is a waste of resources if you are just going to throw away the `DbContext` at the end of the request. By passing NoTracking to the [UseQueryTrackingBehavior](https://docs.microsoft.com/en-us/ef/core/querying/tracking#no-tracking-queries) method, you can turn off this default behaviour. Note that if you are performing updates to your entities, don't use this option, this is only for API's that perform reads and/or inserts.
+If you are building an ASP.NET Core API, each request creates a new instance of your `DbContext` and then this is disposed at the end of the request. Query tracking keeps track of entities in memory for the lifetime of your `DbContext` so that if they are updated any changes can be saved, this is a waste of resources if you are just going to throw away the `DbContext` at the end of the request. By passing NoTracking to the [UseQueryTrackingBehavior](https://docs.microsoft.com/en-us/ef/core/querying/tracking#no-tracking-queries) method, you can turn off this default behaviour. Note that if you are performing updates to your entities, don't use this option, this is only for API's that perform reads and/or inserts.
 
 # Connection Strings
 

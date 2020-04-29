@@ -316,7 +316,8 @@ public class UserAgentDelegatingHandler : DelegatingHandler
         return base.SendAsync(request, cancellationToken);
     }
 
-    private static string GetProduct(Assembly assembly) => GetAttributeValue<AssemblyProductAttribute>(assembly);
+    private static string GetProduct(Assembly assembly) => 
+        GetAttributeValue<AssemblyProductAttribute>(assembly);
 
     private static string GetVersion(Assembly assembly)
     {
