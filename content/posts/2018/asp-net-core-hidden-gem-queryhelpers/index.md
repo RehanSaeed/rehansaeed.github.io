@@ -16,7 +16,7 @@ tags:
   - "URL"
 ---
 
-I discovered a hidden gem in ASP.NET Core a couple of weeks ago that can help to build up and parse URL's called `QueryHelpers`. Here's how you can use it to build a URL using the `AddQueryString`` method:
+I discovered a hidden gem in ASP.NET Core a couple of weeks ago that can help to build up and parse URL's called `QueryHelpers`. Here's how you can use it to build a URL using the `AddQueryString` method:
 
 ```cs
 var queryArguments = new Dictionary<string, string>()
