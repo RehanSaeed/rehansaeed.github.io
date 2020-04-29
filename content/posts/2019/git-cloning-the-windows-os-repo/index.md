@@ -25,7 +25,7 @@ I recently had the unique opportunity to git clone the Windows OS repository. Fo
 A colleague who was doing some work in the repo was on leave and the task of completing the job unexpectedly fell on me to finish up. I asked around to see if anyone had any pointers on what to do and I was pointed towards an Azure DevOps project. The first thing I naively tried was running:
 
 ```powershell
-> git clone https://microsoft.fake.com/foo/bar/os
+git clone https://microsoft.fake.com/foo/bar/os
 ```
 
 This gave me the very helpful error:

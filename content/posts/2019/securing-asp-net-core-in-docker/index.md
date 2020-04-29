@@ -37,13 +37,13 @@ ENTRYPOINT ["dotnet", "ReadOnlyTest.dll"]
 I build the Docker image using this command:
 
 ```powershell
-> docker build -t read-only-test .
+docker build -t read-only-test .
 ```
 
 If I run this image with a read-only file system:
 
 ```powershell
-> docker run --rm --read-only -it -p 8000:80 read-only-test
+docker run --rm --read-only -it -p 8000:80 read-only-test
 ```
 
 This outputs the following error as read-only file systems are not supported by default:
@@ -53,7 +53,7 @@ This outputs the following error as read-only file systems are not supported by 
 If I now run the same image with the `COMPlus_EnableDiagnostics` environment variable turned off:
 
 ```powershell
-> docker run --rm --read-only -it -p 8000:80 -e COMPlus_EnableDiagnostics=0 read-only-test
+docker run --rm --read-only -it -p 8000:80 -e COMPlus_EnableDiagnostics=0 read-only-test
 ```
 
 The app now starts! The `COMPlus_EnableDiagnostics` environment variable (which is [undocumented](https://github.com/dotnet/docs/issues/10217)) turns off debugging and profiling support, so I would not bake this environment variable into the Dockerfile. For some reason these features need a read/write file system to work properly. If you'd like to try this yourself, you can checkout all the code in [this repo](https://github.com/RehanSaeed/ReadOnlyDockerTest).

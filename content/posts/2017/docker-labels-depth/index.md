@@ -42,7 +42,7 @@ This is great for static data like the author but not so great for dynamic data 
 To add dynamic labels you can pass them from the command line when you run the docker build command like so:
 
 ```powershell
-> docker image build --tag foo:1.0.0 --label "build"="123" --label "changeset"="0d9c7d3b77817caab3977b16d1d76bb3eb024837" .
+docker image build --tag foo:1.0.0 --label "build"="123" --label "changeset"="0d9c7d3b77817caab3977b16d1d76bb3eb024837" .
 ```
 
 # Open Containers Annotations Spec

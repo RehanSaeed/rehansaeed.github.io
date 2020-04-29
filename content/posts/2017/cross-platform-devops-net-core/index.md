@@ -260,7 +260,7 @@ You'll notice that we are specifying that we want to build our code on both Mac 
 Once again, I set the .NET environment variables to make the build a bit quicker and finally we run the `build.sh` Bash script to kick things off. Note that you need to run the following command to give Travis permission to execute the build.sh file (This is Linux after all):
 
 ```powershell
-> git update-index --chmod=+x build.sh
+git update-index --chmod=+x build.sh
 ```
 
 Another thing to note is that if you are still using the older xproj project system and your unit tests are using xUnit, then your tests will not run due to this [bug](https://github.com/dotnet/cli/issues/3073). There is a very nasty workaround in the link.

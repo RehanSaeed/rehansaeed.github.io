@@ -144,7 +144,7 @@ That's easy, just choose one of the following options:
 1. Get the Visual Studio 2013 extension [here](https://visualstudiogallery.msdn.microsoft.com/6cf50a48-fc1e-4eaf-9e82-0b2a6705ca7d) and in Visual Studio go to `File -> New Project -> Web`.
 2. Clone the git repository:
     ```powershell
-    > git clone https://github.com/Dotnet-Boxed/Templates
+    git clone https://github.com/Dotnet-Boxed/Templates
     ```    
 
 ## Release Notes and To-Do List

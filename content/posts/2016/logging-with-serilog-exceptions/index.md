@@ -128,7 +128,7 @@ You're probably thinking it uses reflection right? Well...sometimes. This librar
 Add the Serilog.Exceptions NuGet package to your project using the NuGet Package Manager or run the following command in the Package Console Window:
 
 ```powershell
-> Install-Package Serilog.Exceptions
+Install-Package Serilog.Exceptions
 ```
 
 When setting up your logger, add the `WithExceptionDetails` line like so:

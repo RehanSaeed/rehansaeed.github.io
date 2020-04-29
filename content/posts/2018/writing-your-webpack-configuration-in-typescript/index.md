@@ -46,8 +46,8 @@ It turns out that Webpack [supports](https://webpack.js.org/configuration/config
 In my opinion, a much simpler and cleaner way is to use the TypeScript tsc command line tool to transpile TypeScript to JavaScript before running Webpack. You could add this command as a simple NPM script in your package.json file. Here are the commands you need to use:
 
 ```powershell
-> tsc --lib es6 webpack.config.ts
-> webpack --config webpack.config.js
+tsc --lib es6 webpack.config.ts
+webpack --config webpack.config.js
 ```
 
 Webpack does not come with TypeScript typings, so you'll also need to install the `@types/webpack` NPM package. Finally, to remove all Webpack 1 syntax, you need to create some new types extending the Webpack types, which remove the Webpack 1 syntax, I stuck all of these typings in a `webpack.common.ts` file:
