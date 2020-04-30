@@ -1,9 +1,11 @@
 <template>
   <div id="app">
 
+    <!-- <u-skip-link /> -->
+
     <u-navigation class="navigation" />
 
-    <main class="main">
+    <main id="main" class="main">
       <slot/>
     </main>
 
@@ -13,11 +15,13 @@
 </template>
 
 <script>
+import skipLink from '~/components/shared/skip-link.vue';
 import footer from '~/components/footer.vue';
 import navigation from '~/components/navigation.vue';
 
 export default {
   components: {
+    'u-skip-link': skipLink,
     'u-footer': footer,
     'u-navigation': navigation,
   }
