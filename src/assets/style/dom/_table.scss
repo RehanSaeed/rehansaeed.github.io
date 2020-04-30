@@ -7,7 +7,6 @@ table {
   border-radius: var(--global-border-radius);
   border-collapse: collapse;
   border-spacing: 0;
-  display: block;
   margin-bottom: var(--global-space-fixed-5);
   overflow: auto;
   width: 100%;
@@ -17,7 +16,7 @@ table {
       color: var(--global-background-color);
       background-color: var(--global-title-color);
       font-weight: var(--global-font-weight-bold);
-      // font-size: var(--global-font-size-1);
+      font-size: var(--global-font-size-1);
       padding: var(--global-space-fixed-2) var(--global-space-fixed-3);
       vertical-align: bottom;
     }
