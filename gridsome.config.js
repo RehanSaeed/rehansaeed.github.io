@@ -217,14 +217,12 @@ module.exports = {
           {
           }
         ],
-        // TODO: Add GitHub style heading anchors.
         // https://github.com/remarkjs/remark-autolink-headings
-        // [
-        //   'remark-autolink-headings',
-        //   {
-        //     // behavior: 'before'
-        //   }
-        // ],
+        [
+          'remark-autolink-headings',
+          {
+          }
+        ],
         [
           'remark-containers',
           {
