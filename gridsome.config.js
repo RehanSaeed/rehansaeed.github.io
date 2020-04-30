@@ -126,7 +126,7 @@ module.exports = {
         enforceTrailingSlashes: false,
         // Optional: a method that accepts a node and returns true (include) or false (exclude)
         // Example: only past-dated nodes: `filterNodes: (node) => node.date <= new Date()`
-        filterNodes: (node) => true,
+        filterNodes: (node) => { return node.published; },
         // Optional: a method that accepts a node and returns an object for `Feed.addItem()`
         // See https://www.npmjs.com/package/feed#example for available properties
         // NOTE: `date` field MUST be a Javascript `Date` object
