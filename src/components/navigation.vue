@@ -60,6 +60,7 @@ query {
 .navigation__image {
   border: var(--global-border-width-2) solid var(--global-title-color);
   border-radius: 100%;
+  transition: border-color var(--global-duration-3);
   height: 2.5rem;
   width: 2.5rem;
 }
