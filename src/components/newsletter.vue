@@ -2,8 +2,9 @@
   <u-content-box class="newsletter" tag="section">
     <form class="newsletter__form" method="post" :action="this.$static.metadata.mailchimpUrl">
       <u-heading level="2" class="newsletter__title">Newsletter</u-heading>
-      <p class="newsletter__content">Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox!</p>
+      <label class="newsletter__content" for="email">Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox!</label>
       <input
+        id="email"
         class="newsletter__input"
         name="EMAIL"
         placeholder="youremail@example.com"
@@ -70,6 +71,7 @@ query {
 .newsletter__content {
   grid-area: content;
   justify-self: center;
+  margin-bottom: var(--global-space-fixed-5);
   text-align: center;
 }
 
