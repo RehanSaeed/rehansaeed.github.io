@@ -6,7 +6,7 @@ const marked = require('marked');
 
 module.exports = {
   siteName: site.name,
-  siteDescription: site.description,
+  // siteDescription: site.description,
   siteUrl: site.url,
 
   templates: {
