@@ -7,8 +7,8 @@
         :src="post.heroImage"/>
     </div>
     <div class="post-card__content">
-      <u-heading level="2" class="post-card__title" v-html="post.title" />
-      <p class="post-card__description" v-html="post.description" />
+      <u-heading level="2" class="post-card__title">{{post.title}}</u-heading>
+      <p class="post-card__description">{{post.description}}</p>
 
       <u-post-meta class="post-card__meta" :meta="post" />
       <u-tags v-if="post.tags" class="post-card__tags" :tags="post.tags" />
