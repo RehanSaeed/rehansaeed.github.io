@@ -1,5 +1,5 @@
 <template>
-  <u-link class="skip-link" bordered contrast to="#main">Skip to content</u-link>
+  <u-link class="skip-link" bordered contrast href="#main">Skip to content</u-link>
 </template>
 
 <script>

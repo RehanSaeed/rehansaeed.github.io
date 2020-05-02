@@ -1,7 +1,7 @@
 <template>
   <div id="app">
 
-    <!-- <u-skip-link /> -->
+    <u-skip-link />
 
     <u-navigation class="navigation" />
 
