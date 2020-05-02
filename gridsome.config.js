@@ -79,78 +79,78 @@ module.exports = {
       }
     },
     // https://github.com/onecrayon/gridsome-plugin-feed
-    {
-      use: 'gridsome-plugin-feed',
-      options: {
-        // Required: array of `GraphQL` type names you wish to include
-        contentTypes: ['post'],
-        // Optional: any properties you wish to set for `Feed()` constructor
-        // See https://www.npmjs.com/package/feed#example for available properties
-        feedOptions: {
-          title: site.name,
-          description: site.description,
-          id: site.url,
-          link: site.url,
-          language: site.language,
-          image: site.url + "/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg",
-          favicon: site.url + "/favicon.ico",
-          copyright: `Copyright © ${new Date().getFullYear()} ${site.author.name}`,
-          feedLinks: {
-            atom: site.url + "/atom.xml",
-            json: site.url + "/feed.json",
-            rss: site.url + "/rss.xml",
-          },
-          author: {
-            name: site.author.name,
-            link: site.url,
-          }
-        },
-        atom: {
-          enabled: false,
-          output: '/atom.xml'
-        },
-        json: {
-          enabled: false,
-          output: '/feed.json'
-        },
-        rss: {
-          enabled: true,
-          output: '/rss.xml'
-        },
-        // Optional: the maximum number of items to include in your feed
-        maxItems: 300,
-        // Optional: an array of properties passed to `Feed.addItem()` that will be parsed for
-        // URLs in HTML (ensures that URLs are full `http` URLs rather than site-relative).
-        // To disable this functionality, set to `null`.
-        htmlFields: ['description', 'content'],
-        // Optional: if you wish to enforce trailing slashes for site URLs
-        enforceTrailingSlashes: false,
-        // Optional: a method that accepts a node and returns true (include) or false (exclude)
-        // Example: only past-dated nodes: `filterNodes: (node) => node.date <= new Date()`
-        filterNodes: (node) => { return node.published; },
-        // Optional: a method that accepts a node and returns an object for `Feed.addItem()`
-        // See https://www.npmjs.com/package/feed#example for available properties
-        // NOTE: `date` field MUST be a Javascript `Date` object
-        nodeToFeedItem: (node) => {
-          return {
-            title: node.title,
-            id: site.url + node.permalink,
-            link: site.url + node.permalink,
-            description: node.description,
-            content: marked(node.content),
-            author: [
-              {
-                name: node.author.name,
-                link: site.url,
-              }
-            ],
-            date: new Date(node.date),
-            categories: node.tags,
-            image: node.heroImage,
-          };
-        }
-      }
-    },
+    // {
+    //   use: 'gridsome-plugin-feed',
+    //   options: {
+    //     // Required: array of `GraphQL` type names you wish to include
+    //     contentTypes: ['post'],
+    //     // Optional: any properties you wish to set for `Feed()` constructor
+    //     // See https://www.npmjs.com/package/feed#example for available properties
+    //     feedOptions: {
+    //       title: site.name,
+    //       description: site.description,
+    //       id: site.url,
+    //       link: site.url,
+    //       language: site.language,
+    //       image: site.url + "/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg",
+    //       favicon: site.url + "/favicon.ico",
+    //       copyright: `Copyright © ${new Date().getFullYear()} ${site.author.name}`,
+    //       feedLinks: {
+    //         atom: site.url + "/atom.xml",
+    //         json: site.url + "/feed.json",
+    //         rss: site.url + "/rss.xml",
+    //       },
+    //       author: {
+    //         name: site.author.name,
+    //         link: site.url,
+    //       }
+    //     },
+    //     atom: {
+    //       enabled: false,
+    //       output: '/atom.xml'
+    //     },
+    //     json: {
+    //       enabled: false,
+    //       output: '/feed.json'
+    //     },
+    //     rss: {
+    //       enabled: true,
+    //       output: '/rss.xml'
+    //     },
+    //     // Optional: the maximum number of items to include in your feed
+    //     maxItems: 300,
+    //     // Optional: an array of properties passed to `Feed.addItem()` that will be parsed for
+    //     // URLs in HTML (ensures that URLs are full `http` URLs rather than site-relative).
+    //     // To disable this functionality, set to `null`.
+    //     htmlFields: ['description', 'content'],
+    //     // Optional: if you wish to enforce trailing slashes for site URLs
+    //     enforceTrailingSlashes: false,
+    //     // Optional: a method that accepts a node and returns true (include) or false (exclude)
+    //     // Example: only past-dated nodes: `filterNodes: (node) => node.date <= new Date()`
+    //     filterNodes: (node) => { return node.published; },
+    //     // Optional: a method that accepts a node and returns an object for `Feed.addItem()`
+    //     // See https://www.npmjs.com/package/feed#example for available properties
+    //     // NOTE: `date` field MUST be a Javascript `Date` object
+    //     nodeToFeedItem: (node) => {
+    //       return {
+    //         title: node.title,
+    //         id: site.url + node.permalink,
+    //         link: site.url + node.permalink,
+    //         description: node.description,
+    //         content: marked(node.content),
+    //         author: [
+    //           {
+    //             name: node.author.name,
+    //             link: site.url,
+    //           }
+    //         ],
+    //         date: new Date(node.date),
+    //         categories: node.tags,
+    //         image: node.heroImage,
+    //       };
+    //     }
+    //   }
+    // },
     // https://gridsome.org/plugins/gridsome-plugin-flexsearch
     {
       use: "gridsome-plugin-flexsearch",
