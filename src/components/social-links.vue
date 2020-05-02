@@ -1,21 +1,21 @@
 <template>
   <div class="social">
-    <u-link v-if="this.$static.metadata.author.twitterUrl" label="Twitter" :to="this.$static.metadata.author.twitterUrl" class="social__link">
+    <u-link v-if="this.$static.metadata.author.twitterUrl" label="Twitter" :href="this.$static.metadata.author.twitterUrl" class="social__link">
       <u-icon-twitter :size="30"/>
     </u-link>
-    <u-link v-if="this.$static.metadata.author.gitHubUrl" label="GitHub" :to="this.$static.metadata.author.gitHubUrl" class="social__link">
+    <u-link v-if="this.$static.metadata.author.gitHubUrl" label="GitHub" :href="this.$static.metadata.author.gitHubUrl" class="social__link">
       <u-icon-github :size="30"/>
     </u-link>
-    <u-link v-if="this.$static.metadata.author.stackOverflowUrl" label="StackOverflow" :to="this.$static.metadata.author.stackOverflowUrl" class="social__link">
+    <u-link v-if="this.$static.metadata.author.stackOverflowUrl" label="StackOverflow" :href="this.$static.metadata.author.stackOverflowUrl" class="social__link">
       <u-icon-stackoverflow :size="30"/>
     </u-link>
-    <u-link v-if="this.$static.metadata.author.linkedInUrl" label="LinkedIn" :to="this.$static.metadata.author.linkedInUrl" class="social__link">
+    <u-link v-if="this.$static.metadata.author.linkedInUrl" label="LinkedIn" :href="this.$static.metadata.author.linkedInUrl" class="social__link">
       <u-icon-linkedin :size="30"/>
     </u-link>
-    <u-link v-if="this.$static.metadata.author.youtubeUrl" label="Youtube" :to="this.$static.metadata.author.youtubeUrl" class="social__link">
+    <u-link v-if="this.$static.metadata.author.youtubeUrl" label="Youtube" :href="this.$static.metadata.author.youtubeUrl" class="social__link">
       <u-icon-youtube :size="30"/>
     </u-link>
-    <u-link class="social__link" label="Email" :to="mailTo">
+    <u-link class="social__link" label="Email" :href="mailTo">
       <u-icon-email :size="30"/>
     </u-link>
     <u-link to="/rss.xml" label="RSS" class="social__link">

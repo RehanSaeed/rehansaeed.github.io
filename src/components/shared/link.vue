@@ -1,7 +1,7 @@
 <template>
-  <g-link class="link" :class="{ 'link--bordered': bordered, 'link--contrast': contrast, 'link--primary': primary }" :to="to" :aria-label="label">
+  <Component :is="tag" class="link" :class="{ 'link--bordered': bordered, 'link--contrast': contrast, 'link--primary': primary }" :href="href" :to="to" :aria-label="label">
     <slot/>
-  </g-link>
+  </Component>
 </template>
 
 <script>
@@ -23,6 +23,12 @@ export default {
     to: {
       type: String,
     },
+    href: {
+      type: String,
+    },
+  },
+  computed: {
+    tag: function() { return this.to ? 'g-link' : 'a'; }
   }
 }
 </script>
