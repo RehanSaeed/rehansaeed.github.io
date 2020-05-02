@@ -18,7 +18,7 @@
     <u-link class="social__link" label="Email" :href="mailTo">
       <u-icon-email :size="30"/>
     </u-link>
-    <u-link to="/rss.xml" label="RSS" class="social__link">
+    <u-link href="/rss.xml" label="RSS" class="social__link">
       <u-icon-rss :size="30"/>
     </u-link>
   </div>
