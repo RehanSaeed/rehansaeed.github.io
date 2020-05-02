@@ -78,6 +78,7 @@ module.exports = {
         extensions: ["css", "html", "js", "svg", "json"]
       }
     },
+    // https://github.com/onecrayon/gridsome-plugin-feed
     {
       use: 'gridsome-plugin-feed',
       options: {
