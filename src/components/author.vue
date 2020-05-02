@@ -38,7 +38,7 @@ query {
 .author {
   display: grid;
   justify-items: center;
-  padding: var(--global-space-fluid-5) 0;
+  padding: var(--global-space-fluid-5) var(--global-space-fluid-3);
 }
 
 .author__image {
