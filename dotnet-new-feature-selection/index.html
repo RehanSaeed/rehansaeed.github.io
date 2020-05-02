@@ -172,7 +172,7 @@ Options:
 <li><strong>choice</strong> - This is a feature with two or more named choices. Each choice can have it's own description. The default value must be one of the choices.</li>
 <li><strong>computed</strong> - These are features flags that can be computed based on other symbols.</li>
 </ul>
-<h1 id="bool-symbols"><a href="#bool-symbols" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="aria-hidden"><path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Bool Symbols</h1>
+<h1 id="bool-symbols"><a href="#bool-symbols" aria-hidden="true"><span class="icon icon-link"></span></a>Bool Symbols</h1>
 <p>You can create a boolean feature by adding symbols section to your <code class="language-text">template.json</code> file. If you look at the example below, I've specified an optional bool symbol, with a default value of true.</p>
 <div class="line-highlight" data-language="json"><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   ...
@@ -206,7 +206,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <span class="token class-name">Swagger</span> feature was not selected
 <span class="token preprocessor property">#<span class="token directive keyword">endif</span></span></code></pre></div>
 <p>You can look at <a href="https://github.com/dotnet/templating/blob/cb9edbfe02c038a306fbcb6bbe162462d5fb59f0/src/Microsoft.TemplateEngine.Orchestrator.RunnableProjects/Config/ConditionalConfig.cs" target="_blank" rel="nofollow noopener noreferrer">this</a> code in the templating engine for a full list of supported file extensions and comment types.</p>
-<h1 id="string-symbols"><a href="#string-symbols" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="aria-hidden"><path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>String Symbols</h1>
+<h1 id="string-symbols"><a href="#string-symbols" aria-hidden="true"><span class="icon icon-link"></span></a>String Symbols</h1>
 <p>String symbols can be used to do simple file replace operations.</p>
 <div class="line-highlight" data-language="json"><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   ...
@@ -222,7 +222,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre></div>
 <p>The above symbol looks for a <code class="language-text">PROJECT-TITLE</code> string and replaces it with whatever the user specifies or with the default value <code class="language-text">Default Project Title</code> if the user doesn't set anything.</p>
-<h1 id="choice-symbols"><a href="#choice-symbols" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="aria-hidden"><path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Choice Symbols</h1>
+<h1 id="choice-symbols"><a href="#choice-symbols" aria-hidden="true"><span class="icon icon-link"></span></a>Choice Symbols</h1>
 <p>A choice symbol is useful when you have more than two options and can't use bool.</p>
 <div class="line-highlight" data-language="json"><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   ...
@@ -250,7 +250,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre></div>
 <p>In the example above, you have the choice of selecting a target framework, with a value of <code class="language-text">.NET Core</code>, <code class="language-text">.NET Framework</code> or <code class="language-text">Both</code>. Each choice has it's own description and the overall symbol also has it's description.</p>
-<h1 id="computed-symbols"><a href="#computed-symbols" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="aria-hidden"><path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Computed Symbols</h1>
+<h1 id="computed-symbols"><a href="#computed-symbols" aria-hidden="true"><span class="icon icon-link"></span></a>Computed Symbols</h1>
 <p>In the above example, you can't use the value '.NET Core' as a C# pre-processor variable because it contains a dot and a space. This is where a computed symbol comes in handy.</p>
 <div class="line-highlight" data-language="json"><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   ...
@@ -266,7 +266,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre></div>
 <p>Here I have set up two computed symbols which determines whether '.NET Core' or '.NET Framework' was selected individually in the previous choice symbol. I have named these symbols without a dot or space i.e. <code class="language-text">NETCore</code> and <code class="language-text">NETFramework</code> so I can use these as C# pre-processor symbols, the same way I showed above.</p>
-<h1 id="conditionally-deleting-files-or-folders"><a href="#conditionally-deleting-files-or-folders" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="aria-hidden"><path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Conditionally Deleting Files or Folders</h1>
+<h1 id="conditionally-deleting-files-or-folders"><a href="#conditionally-deleting-files-or-folders" aria-hidden="true"><span class="icon icon-link"></span></a>Conditionally Deleting Files or Folders</h1>
 <p>You can also use symbols to delete certain files or folders. In this example, I've extended my bool symbol example to additionally remove two files and a folder if the feature is deselected by the user.</p>
 <div class="line-highlight" data-language="json"><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   ...
@@ -295,7 +295,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
   <span class="token punctuation">]</span>
 <span class="token punctuation">}</span></code></pre></div>
 <p>You do this by adding source modifiers. I've added one here with a condition and three file and folder exclusions. The exclusions use a globbing pattern.</p>
-<h1 id="whats-next"><a href="#whats-next" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="aria-hidden"><path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>What's Next?</h1>
+<h1 id="whats-next"><a href="#whats-next" aria-hidden="true"><span class="icon icon-link"></span></a>What's Next?</h1>
 <p>There are several other useful features of the templating engine which I'll cover in a follow up post as this is starting to get quite long. Feel free to take a look at the <a href="https://github.com/Dotnet-Boxed/Templates" target="_blank" rel="nofollow noopener noreferrer">source code</a> for my API template to see a full example.</p>
 </div><footer class="post__footer"><div class="post__footer__first-row"><div class="post__share"><button class="button button--bordered"><svg aria-hidden="true" focusable="false" height="14" width="16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><title>Share</title><path fill="currentColor" d="M352 320c-22.608 0-43.387 7.819-59.79 20.895l-102.486-64.054a96.551 96.551 0 0 0 0-41.683l102.486-64.054C308.613 184.181 329.392 192 352 192c53.019 0 96-42.981 96-96S405.019 0 352 0s-96 42.981-96 96c0 7.158.79 14.13 2.276 20.841L155.79 180.895C139.387 167.819 118.608 160 96 160c-53.019 0-96 42.981-96 96s42.981 96 96 96c22.608 0 43.387-7.819 59.79-20.895l102.486 64.054A96.301 96.301 0 0 0 256 416c0 53.019 42.981 96 96 96s96-42.981 96-96-42.981-96-96-96z"></path></svg>
     Share
