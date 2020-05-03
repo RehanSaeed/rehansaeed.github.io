@@ -48,8 +48,8 @@ export default {
 <style lang="scss">
 .post__header {
   border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
-  margin-left: calc(var(--global-space-fluid-6) * -1);
-  margin-top: calc(var(--global-space-fluid-6) * -1);
+  margin-left: var(--global-space-fluid--6);
+  margin-top: var(--global-space-fluid--6);
   margin-bottom: var(--global-space-fluid-5);
   overflow: hidden;
   width: calc(100% + var(--global-space-fluid-7));
