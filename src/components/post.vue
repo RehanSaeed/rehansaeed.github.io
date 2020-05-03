@@ -54,10 +54,6 @@ export default {
   overflow: hidden;
   width: calc(100% + var(--global-space-fluid-7));
 
-  img {
-    width: 100%;
-  }
-
   &:empty {
     display: none;
   }
