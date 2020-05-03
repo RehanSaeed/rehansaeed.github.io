@@ -9,8 +9,6 @@ import defaultLayout from '~/layouts/default.vue';
 // The Client API can be used here. Learn more: gridsome.org/docs/client-api
 export default function (Vue, { router, head, isClient }) {
 
-
-  // <link rel="preload" href="font.woff2" as="font" type="font/woff2" crossorigin>
   head.link.push({
     rel: 'preload',
     href: audiowide,
@@ -43,6 +41,7 @@ export default function (Vue, { router, head, isClient }) {
     href: '/rss.xml',
     title: 'Muhammad Rehan Saeed'
   });
+
   head.meta.push({
     name: 'referrer',
     content: 'no-referrer-when-downgrade',
