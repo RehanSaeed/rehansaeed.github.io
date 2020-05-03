@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://preview.rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Sun, 03 May 2020 14:20:08 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 03 May 2020 17:40:35 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -661,8 +661,7 @@ public class MapTo
             <content:encoded><![CDATA[<p>::: tip Update (12 January 2019)
 It seems that Damian Edwards (The ASP.NET Core Project Manager) likes this post and agrees with the points I&#39;ve made! It&#39;s great to hear that he&#39;s is in alignment with my thoughts and that&#39;s a great indication that the pain points of the platform will get solved in the future. Take a look at what he says in the ASP.NET Community Stand-up below:
 :::</p>
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/ho-VF2dAszI?start=1299" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
+<p><a href="https://www.youtube.com/watch?v=ho-VF2dAszI">https://www.youtube.com/watch?v=ho-VF2dAszI</a></p>
 <h1 id="the-upgrade-train">The Upgrade Train</h1>
 <p>I started using ASP.NET Core back when it was still called ASP.NET 5 and it was still in beta. In those early days every release introduced a sea change. The beta&#39;s were not beta&#39;s at all but more like alpha quality bits. I spent more time than I&#39;d like just updating things to the latest version with each release.</p>
 <p>Compared to the past, updates are moving at a glacial pace. Compared to the full fat .NET Framework though, it&#39;s been like moving from a camel to an electric car. When releases do come there is still a lot in each release. If you have a number of micro services using ASP.NET Core, it&#39;s not quick to get them all updated. Also, it&#39;s not just ASP.NET Core but all of the satellite assemblies built on top of .NET Core that keep changing too, things like <a href="https://serilog.net/">Serilog</a> and <a href="https://github.com/domaindrivendev/Swashbuckle.AspNetCore">Swashbuckle</a>.</p>
