@@ -1,4 +1,5 @@
 // Import main css
+import 'typeface-audiowide';
 import '~/assets/style/index.scss';
 
 // Import default layout so we don't need to import it to every page
