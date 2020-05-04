@@ -1,0 +1,5 @@
+@media print {
+  abbr[title]:after {
+    content: " (" attr(title) ")";
+  }
+}
