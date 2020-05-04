@@ -25,6 +25,8 @@ export default {
     type: function() {
       if (this.submit) {
         return 'submit';
+      } else {
+        return 'button';
       }
     }
   }
