@@ -83,4 +83,10 @@ query {
 .newsletter__button {
   grid-area: button;
 }
+
+@media print {
+  .newsletter {
+    display: none;
+  }
+}
 </style>

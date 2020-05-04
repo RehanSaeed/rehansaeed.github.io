@@ -59,4 +59,10 @@ query {
   opacity: .8;
   text-align: center;
 }
+
+@media print {
+  .author {
+    display: none;
+  }
+}
 </style>

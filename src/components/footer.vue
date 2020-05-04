@@ -42,4 +42,10 @@ query {
     margin: 0 .35em;
   }
 }
+
+@media print {
+  .footer {
+    display: none;
+  }
+}
 </style>

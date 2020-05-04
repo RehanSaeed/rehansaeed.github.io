@@ -107,4 +107,10 @@ query {
     grid-template-columns: auto;
   }
 }
+
+@media print {
+  .navigation {
+    display: none;
+  }
+}
 </style>
