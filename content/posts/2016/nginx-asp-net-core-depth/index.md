@@ -21,8 +21,8 @@ tags:
   - "Web Server"
 ---
 
-> **There are only two things a web server needs to be.....fast.....really fast.....and secure.**
-> Muhammad Rehan Saeed
+> There are only two things a web server needs to be.....fast.....really fast.....and secure.
+> <footer><cite>Muhammad Rehan Saeed</cite></footer>
 
 # About NGINX
 

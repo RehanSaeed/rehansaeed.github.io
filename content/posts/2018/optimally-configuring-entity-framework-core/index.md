@@ -54,7 +54,9 @@ If you are building an ASP.NET Core API, each request creates a new instance of 
 
 You can also pass certain settings to connection strings. These are specific to the database you are using, here I'm talking about SQL Server. Here is an example of a connection string:
 
-> Data Source=localhost;Initial Catalog=MyDatabase;Integrated Security=True;Min Pool Size=3;Application Name=MyApplication
+```
+Data Source=localhost;Initial Catalog=MyDatabase;Integrated Security=True;Min Pool Size=3;Application Name=MyApplication
+```
 
 ## Application Name
 

@@ -48,7 +48,9 @@ The export template 'Select template options' screen, where you can describe you
 
 The `.zip` file that is output must be copied into the following folder, for Visual Studio to pick it up:
 
-> C:/Users/[Your User Name]/Documents/Visual Studio [2010|2012|2013|2015]/Templates/ProjectTemplates
+```
+C:/Users/[Your User Name]/Documents/Visual Studio [2010|2012|2013|2015]/Templates/ProjectTemplates
+```
 
 ![The .zip file output as part of the Visual Studio Export Template wizard.](./images/ExportTemplate4.png)
 

@@ -19,7 +19,7 @@ tags:
 
 # What is a sitemap.xml File
 
-The official [sitemaps.org](http://www.sitemaps.org/) site says it best:
+The official [sitemaps.org](http://www.sitemaps.org/) site really does says it best:
 
 > Sitemaps are an easy way for webmasters to inform search engines about pages on their sites that are available for crawling. In its simplest form, a Sitemap is an XML file that lists URL's for a site along with additional metadata about each URL (when it was last updated, how often it usually changes, and how important it is, relative to other URL's in the site) so that search engines can more intelligently crawl the site.
 > 
@@ -49,9 +49,10 @@ The latter three values only give search engines an indication of when they can 
 
 # Is it Worth the Effort?
 
-Search engines are black boxes. We only know what goes into them (Our sitemap) and what comes out the other end (The search results). I can make no promises that adding a sitemap will increase your sites search rankings but **Google** [says](https://support.google.com/webmasters/answer/156184?hl=en):
+Search engines are black boxes. We only know what goes into them (Our sitemap) and what comes out the other end (The search results). I can make no promises that adding a sitemap will increase your sites search rankings but **Google** says:
 
 > Using a sitemap doesn't guarantee that all the items in your sitemap will be crawled and indexed, as Google processes rely on complex algorithms to schedule crawling. However, **in most cases, your site will benefit from having a sitemap**, and you'll never be penalized for having one.
+> <footer><cite>[Google](https://support.google.com/webmasters/answer/156184?hl=en)</cite></footer>
 
 # Generating a Static sitemap.xml File
 

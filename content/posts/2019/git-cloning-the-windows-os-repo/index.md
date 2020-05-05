@@ -30,8 +30,10 @@ git clone https://microsoft.fake.com/foo/bar/os
 
 This gave me the very helpful error:
 
-> remote: This repository requires GVFS. Ensure the version of git you are using supports GVFS.
-> fatal: protocol error: bad pack header
+```
+remote: This repo requires GVFS. Ensure the version of git you are using supports GVFS.
+fatal: protocol error: bad pack header
+```
 
 This triggered a memory in the dark recesses of my mind about [GVFS (Git Virtual File System)](https://devblogs.microsoft.com/devops/announcing-gvfs-git-virtual-file-system/). The Windows OS repository is around 250GB in size. When you consider that there are tens or maybe hundreds of developers committing changes every day, you are not going to have a very pleasant developer experiences if you just used Git and tried to pull all 250GB of files. So GVFS abstracts away the file system and only downloads files when you try to access them.
 

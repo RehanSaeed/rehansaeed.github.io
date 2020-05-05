@@ -48,7 +48,9 @@ docker run --rm --read-only -it -p 8000:80 read-only-test
 
 This outputs the following error as read-only file systems are not supported by default:
 
-> Failed to initialize CoreCLR, HRESULT: 0x80004005
+```
+Failed to initialize CoreCLR, HRESULT: 0x80004005
+```
 
 If I now run the same image with the `COMPlus_EnableDiagnostics` environment variable turned off:
 
