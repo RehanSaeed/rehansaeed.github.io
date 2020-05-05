@@ -68,6 +68,19 @@ export default {
     color: var(--global-title-color);
     font-size: var(--global-font-size-4);
     min-width: 0;
+
+    &:first-letter {
+      color: var(--global-accent-color);
+      font-family: Georgia;
+
+      // initial-letter: 2; // Only supported by Safari
+      // OR
+      float: left;
+      font-size: calc(var(--global-font-size-4) * 2.55);
+      line-height: calc(var(--global-line-height-1) * .65);
+      padding-right: 10px;
+      margin-bottom: -5px;
+    }
   }
 
   img {
