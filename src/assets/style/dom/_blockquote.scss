@@ -4,4 +4,18 @@ blockquote {
   line-height: var(--global-line-height-2);
   margin-bottom: var(--global-space-fixed-5);
   padding-left: var(--global-space-fluid-5);
+
+  p:last-of-type {
+    margin-bottom: 0;
+  }
+
+  cite {
+    display: block;
+    font-style: italic;
+
+    &:before {
+      content: '—';
+      margin-right: 5px;
+    }
+  }
 }
