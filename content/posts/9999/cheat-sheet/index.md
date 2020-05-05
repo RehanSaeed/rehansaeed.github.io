@@ -21,15 +21,29 @@ tags:
 #### Heading 4
 ##### Heading 5
 
-# Formatting
+# Paragraphs
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dolor in tellus dictum, vel pharetra lacus ultricies. Phasellus porttitor scelerisque elit et ultrices. Donec auctor sapien finibus metus commodo, nec tempus tortor interdum. Vestibulum porttitor venenatis eros quis lacinia.
 
 Duis aliquet ex eu scelerisque ultricies. Nam ac sagittis ligula. Vestibulum velit erat, tristique nec elit nec, venenatis ullamcorper mi. Aliquam sollicitudin finibus enim in volutpat. Duis cursus hendrerit turpis, vitae porta mi euismod rutrum. Suspendisse blandit aliquet rutrum. Nunc nec pharetra magna. Maecenas posuere in leo vitae tempus. Suspendisse potenti. Duis sed faucibus massa.
 
-**Bold** *Italic* [Link](https://example.com)
+# Formatting
 
-> Quote
+**Bold**, *Italic*, ~~Strikethrough~~,
+
+# Links
+
+[Link](https://example.com)
+
+# Blockquotes
+
+> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dolor in tellus dictum, vel pharetra lacus ultricies. Phasellus porttitor scelerisque elit et ultrices. Donec auctor sapien finibus metus commodo, nec tempus tortor interdum. Vestibulum porttitor venenatis eros quis lacinia.
+
+# Horizontal Rule
+
+---
+
+# Keyboard
 
 This uses `<kbd>` and looks like this ||CTRL+C||. Cool!
 
