@@ -61,7 +61,8 @@ export default {
   font-size: var(--global-font-size-1);
   padding: var(--global-space-fixed-2) var(--global-space-fixed-4);
 
-  &:hover {
+  &:hover,
+  &:focus {
     box-shadow: 0 3px 5px hsl(0, 0%, 70%);
     transform: translateY(-2px);
   }
