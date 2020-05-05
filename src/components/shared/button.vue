@@ -63,7 +63,7 @@ export default {
   background-color: var(--global-background-color);
   border: var(--global-border-width-1) solid var(--global-border-color);
   border-radius: var(--global-border-radius);
-  box-shadow: 0 1px 1px hsl(0, 0%, 90%);
+  box-shadow: 0 1px 3px hsl(0, 0%, 90%);
   font-size: var(--global-font-size-1);
   padding: var(--global-space-fixed-2) var(--global-space-fixed-4);
 
