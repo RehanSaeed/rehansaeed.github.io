@@ -24,7 +24,7 @@ tags:
   - "WinRT"
 ---
 
-I've recently got into creating NuGet packages, when I had to create one for [Elysium Extra](/wpf-metro-part4-elysium-extra). I discovered it was [really easy](http://docs.nuget.org/docs/creating-packages/using-a-gui-to-build-packages) to do too. I've just finished creating another one called, you guessed it `NotificationsExtensions.Portable` and I did in in 5 minutes!
+I have recently got into creating NuGet packages, when I had to create one for [Elysium Extra](/wpf-metro-part4-elysium-extra). I discovered it was [really easy](http://docs.nuget.org/docs/creating-packages/using-a-gui-to-build-packages) to do too. I've just finished creating another one called, you guessed it `NotificationsExtensions.Portable` and I did in in 5 minutes!
 
 # About
 

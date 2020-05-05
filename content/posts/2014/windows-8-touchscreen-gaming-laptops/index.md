@@ -39,7 +39,7 @@ That's not to say it doesn't have its problems, I like to use the Windows 8.1 ma
 
 Windows 8 Bing Finance app running on Desktop
 
-I've been looking to replace my trusty old non-touch screen Samsung laptop running Windows 8.1 with a new touch screen model. However, I like to shoot a few HE shells at some tanks while playing [World of Tanks](http://worldoftanks.com/) on the weekend in my down time. Its not the most demanding of games but I'd like to look forward to future updates and other games like Battlefield 4.
+Ihave been looking to replace my trusty old non-touch screen Samsung laptop running Windows 8.1 with a new touch screen model. However, I like to shoot a few HE shells at some tanks while playing [World of Tanks](http://worldoftanks.com/) on the weekend in my down time. Its not the most demanding of games but I'd like to look forward to future updates and other games like Battlefield 4.
 
 So I've been doing my research on what my options are for a touch screen gaming laptop and was very surprised to discover that they are pretty non-existent. The closest thing you'll find is the [Asus N550JV-CN201H](http://www.notebookcheck.net/Review-Asus-N550JV-CN201H-Notebook.98311.0.html), which is not really a gaming laptop with an [nVidia GT750M](http://www.notebookcheck.net/NVIDIA-GeForce-GT-750M.90245.0.html) low to mid-range graphics card. It'll play today's games at mid-range settings and will probably choke on tomorrows games altogether.
 

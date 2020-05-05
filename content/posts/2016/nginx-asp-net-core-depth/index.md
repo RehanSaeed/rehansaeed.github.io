@@ -66,7 +66,7 @@ Once you have NGINX setup, you need to run your ASP.NET Core app using the Kestr
 
 You've got NGINX running, all you need now is a `nginx.conf` file to forward requests from the internet to your ASP.NET Core app running using the Kestrel web server.
 
-I've taken the time to combine the recommendations from the [HTML5 Boilerplate](https://github.com/h5bp/server-configs-nginx/blob/master/nginx.conf) project, the [ASP.NET Core NGINX Documentation](https://docs.asp.net/en/latest/publishing/linuxproduction.html), the [NGINX Docs](http://nginx.org/en/docs/) and my own experience to build the `nginx.config` (and `mime.types` file) file below specifically for the best performance and security and to target .NET Core apps.
+I have taken the time to combine the recommendations from the [HTML5 Boilerplate](https://github.com/h5bp/server-configs-nginx/blob/master/nginx.conf) project, the [ASP.NET Core NGINX Documentation](https://docs.asp.net/en/latest/publishing/linuxproduction.html), the [NGINX Docs](http://nginx.org/en/docs/) and my own experience to build the `nginx.config` (and `mime.types` file) file below specifically for the best performance and security and to target .NET Core apps.
 
 Not only that but I've gone to extreme lengths to find out what every setting actually does and have written short comments describing each and every setting. The config file is self describing, from this point forward it needs no explanation.
 
@@ -376,7 +376,7 @@ Depending on how much extra CPU power you are wanting to use (it can max out you
 
 # .NET Boxed
 
-I've updated the [.NET Boxed](https://github.com/Dotnet-Boxed/Templates/) project template, so you can now choose the web server (IIS or NGINX) you want to use. If you choose to use NGINX, you can have it pre-configured just for you, right out of the box.
+I have updated the [.NET Boxed](https://github.com/Dotnet-Boxed/Templates/) project template, so you can now choose the web server (IIS or NGINX) you want to use. If you choose to use NGINX, you can have it pre-configured just for you, right out of the box.
 
 # Conclusions
 

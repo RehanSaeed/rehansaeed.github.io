@@ -23,7 +23,7 @@ tags:
 1. [Useful Docker Images - Part 1 - Administering Docker](/useful-docker-images-part1/)
 2. [Useful Docker Images - Part 2 - The EKL-B Stack](/useful-docker-images-part2/)
 
-I've been running Docker Swarm in production for a few API's and single page applications for a couple of months now. Here are some Docker images I've found generally useful. Most of these images are not specific to Docker Swarm. For each image, I'm also going to show a `docker-stack.yml` file that you can use to deploy the image and the settings I use for them. To deploy a Docker stack file, just run the following commands:
+I have been running Docker Swarm in production for a few API's and single page applications for a couple of months now. Here are some Docker images I've found generally useful. Most of these images are not specific to Docker Swarm. For each image, I'm also going to show a `docker-stack.yml` file that you can use to deploy the image and the settings I use for them. To deploy a Docker stack file, just run the following commands:
 
 ```powershell
 # To enable Docker Swarm mode on your local machine if you haven't already.
@@ -138,7 +138,7 @@ Sonatype Nexus has some pretty hefty minimum system requirements, so I've reserv
 
 ![Sonatype Nexus Administration](./images/Sonatype-Nexus-Administration.png)
 
-I've also gone to the effort of setting up a health check. Health checks are a wonderful feature of Docker. The container will not start and join the network until the health check has succeeded. This has stopped failed production releases for me in the past for my ASP.NET Core apps. Use health checks people!
+I have also gone to the effort of setting up a health check. Health checks are a wonderful feature of Docker. The container will not start and join the network until the health check has succeeded. This has stopped failed production releases for me in the past for my ASP.NET Core apps. Use health checks people!
 
 # Conclusions
 

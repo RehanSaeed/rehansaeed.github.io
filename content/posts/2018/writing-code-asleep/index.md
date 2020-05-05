@@ -35,7 +35,7 @@ The solution is to ask the kind people of the internet for help! Then go home an
 
 Ask your question on StackOverflow. The undisputed number one resource for every developer.
 
-I've reviewed a lot of CV's in the last two years and there is a growing trend to list your GitHub and StackOverflow profiles on there. Even if your profile is not listed, I can sometimes find it anyway (the internet is a stalkers dream).
+I have reviewed a lot of CV's in the last two years and there is a growing trend to list your GitHub and StackOverflow profiles on there. Even if your profile is not listed, I can sometimes find it anyway (the internet is a stalkers dream).
 
 In all the StackOverflow profiles I've seen, there is a worrying trend. Very few people actually ask many StackOverflow questions! The thing is, asking questions is the easiest way to get points and build a very nice StackOverflow profile too, so it's silly not to do it.
 

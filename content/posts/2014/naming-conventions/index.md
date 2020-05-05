@@ -25,7 +25,7 @@ Code is written to be read by humans, not for machines so it makes sense that fo
 At the end of the day, there are no rules for coding style. This is all a matter of personal preference.
 :::
 
-I've recently been doing a fair amount of T-SQL and C++ and thought I'd look into some form of naming conventions for the two languages. If you've read my previous blog post '[Stop the Brace Wars, Use StyleCop](/stop-brace-wars-use-stylecop/)', then you'll know how I feel about coding style in the C# language.
+I have recently been doing a fair amount of T-SQL and C++ and thought I'd look into some form of naming conventions for the two languages. If you've read my previous blog post '[Stop the Brace Wars, Use StyleCop](/stop-brace-wars-use-stylecop/)', then you'll know how I feel about coding style in the C# language.
 
 # SQL Coding Style
 

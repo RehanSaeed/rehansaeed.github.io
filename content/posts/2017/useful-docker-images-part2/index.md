@@ -169,4 +169,4 @@ Ping monitors on the internet are super [expensive](https://www.pingdom.com/free
 
 # Conclusions
 
-I've discovered that I have enough material for a third and final part to this series of blog posts. In the next part, you can expect to learn more about Redis and Metabase Docker images.
+I have discovered that I have enough material for a third and final part to this series of blog posts. In the next part, you can expect to learn more about Redis and Metabase Docker images.

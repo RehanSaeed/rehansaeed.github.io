@@ -17,7 +17,7 @@ tags:
   - "GitHub"
 ---
 
-I've just updated the [ASP.NET Core Boilerplate](https://visualstudiogallery.msdn.microsoft.com/6cf50a48-fc1e-4eaf-9e82-0b2a6705ca7d) Visual Studio extension with a new project template targeting ASP.NET Core. This post is just a quick one to talk about what's new and different about this version of the template compared to the ASP.NET 4.6 MVC 5 version.
+I have just updated the [ASP.NET Core Boilerplate](https://visualstudiogallery.msdn.microsoft.com/6cf50a48-fc1e-4eaf-9e82-0b2a6705ca7d) Visual Studio extension with a new project template targeting ASP.NET Core. This post is just a quick one to talk about what's new and different about this version of the template compared to the ASP.NET 4.6 MVC 5 version.
 
 # What's New
 

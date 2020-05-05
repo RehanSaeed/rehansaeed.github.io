@@ -516,4 +516,4 @@ This interface used to be used for validation but was replaced by `INotifyDataEr
 
 # Conclusions
 
-I've been tweaking this base class for the last few years and feel I've got a fairly good balance. I've not seen too many implementations of this interface, most blogs seem to cover `INotifyPropertyChanged` pretty well though. I'd be very interested if anyone has any comments or thoughts on improvements. Feel free to sound-off in the comments.
+I have been tweaking this base class for the last few years and feel I've got a fairly good balance. I've not seen too many implementations of this interface, most blogs seem to cover `INotifyPropertyChanged` pretty well though. I'd be very interested if anyone has any comments or thoughts on improvements. Feel free to sound-off in the comments.

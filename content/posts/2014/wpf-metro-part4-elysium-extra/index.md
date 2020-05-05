@@ -242,7 +242,7 @@ There are several custom border controls available, although usage is discourage
 
 The code is available on GitHub and I've tried to keep it up to date with new additions and fixes being made over the weekends.
 
-I've tried to keep the code in keeping with the existing Elysium project, so when controls are moved to the parent Elysium project (I don't know how or when this will happen) this should be a fairly simple process.
+I have tried to keep the code in keeping with the existing Elysium project, so when controls are moved to the parent Elysium project (I don't know how or when this will happen) this should be a fairly simple process.
 
 The code is fully StyleCop compliant. If you don't use StyleCop or even don't know what it is, I suggest you read [this](/stop-brace-wars-use-stylecop/).
 

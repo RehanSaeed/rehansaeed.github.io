@@ -30,7 +30,7 @@ Microsoft has just announced on their [UserVoice](http://visualstudio.uservoice.
 
 # Introduction
 
-I've used a number of IDE's in my time as a developer, from bare bones text editors like [Sublime](http://www.sublimetext.com/) (Which you should seriously consider purchasing. It beats the pants off of notepad and most notepad competitors) to fully fledged development environments like [Netbeans](https://netbeans.org/) and Visual Studio. It has to be said though that Microsoft does a much better job than most and packs a lot of power into their punch.
+I have used a number of IDE's in my time as a developer, from bare bones text editors like [Sublime](http://www.sublimetext.com/) (Which you should seriously consider purchasing. It beats the pants off of notepad and most notepad competitors) to fully fledged development environments like [Netbeans](https://netbeans.org/) and Visual Studio. It has to be said though that Microsoft does a much better job than most and packs a lot of power into their punch.
 
 It is with puzzlement and confusion then that something as useful and common as transforms for configuration files (.config) are still not supported by Microsoft. You may be wondering what I'm babbling about. Well, every developer at some point has had to release their application on more than one environment, even if it's just your own development machine and wherever your application is released. In the past I've worked with as many as four distinct environments. Each with it's own application settings, database connection strings and other settings stored in .config files. In the past, this has been a nightmare.
 

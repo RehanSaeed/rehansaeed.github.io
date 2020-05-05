@@ -412,4 +412,4 @@ If you find the interface useful and you too are using a Portable Class Library 
 
 # Conclusions
 
-I've gone through many iterations to get to this base class. As I've shown, I've had very particular goals in mind. Your mileage may vary but I believe with the tools Microsoft have given us, this is a good compromise and covers all the scenarios I can think of. I'd be very interested if anyone has any comments or thoughts on improvements. Feel free to sound-off in the comments.
+I have gone through many iterations to get to this base class. As I've shown, I've had very particular goals in mind. Your mileage may vary but I believe with the tools Microsoft have given us, this is a good compromise and covers all the scenarios I can think of. I'd be very interested if anyone has any comments or thoughts on improvements. Feel free to sound-off in the comments.

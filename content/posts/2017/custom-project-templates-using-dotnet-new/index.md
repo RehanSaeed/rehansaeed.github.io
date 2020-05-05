@@ -104,7 +104,7 @@ This new method makes creating project templates about as easy as it's ever goin
 
 # .NET Boxed API
 
-I've been working on a brand new project template for building API's using `dotnet new` with a lot of help from the guys at Microsoft. My project templates are quite complex so it's a good test of the system. The API comes jam packed full of security, performance and best practice features and also implements Swagger right out of the box. You can try installing it with `dotnet new` from [NuGet](https://github.com/Dotnet-Boxed/Templates).
+I have been working on a brand new project template for building API's using `dotnet new` with a lot of help from the guys at Microsoft. My project templates are quite complex so it's a good test of the system. The API comes jam packed full of security, performance and best practice features and also implements Swagger right out of the box. You can try installing it with `dotnet new` from [NuGet](https://github.com/Dotnet-Boxed/Templates).
 
 # Conclusions
 

@@ -30,7 +30,7 @@ I author a [Swagger API](https://github.com/Dotnet-Boxed/Templates/blob/master/D
 
 In the past, I also authored the [ASP.NET Core Boilerplate](https://marketplace.visualstudio.com/items?itemName=RehanSaeed.ASPNETMVCBoilerplate) project templates which are published as a Visual Studio extension. This extension currently has 159,307 installs which is an order of magnitude more than the 12,149 installs of my `dotnet new` based `Boxed.Templates` NuGet package.
 
-I've read in the [dotnet/templating](https://github.com/dotnet/templating) GitHub issues that there is eventually going to be Visual Studio integration in which you'd be able to search and install `dotnet new` based templates on NuGet, and then create projects from those templates much as you would with Visual Studio today. Given the download counts of my two projects, this would be the number one feature I'd like to see implemented.
+I have read in the [dotnet/templating](https://github.com/dotnet/templating) GitHub issues that there is eventually going to be Visual Studio integration in which you'd be able to search and install `dotnet new` based templates on NuGet, and then create projects from those templates much as you would with Visual Studio today. Given the download counts of my two projects, this would be the number one feature I'd like to see implemented.
 
 You could create a Visual Studio extension that wraps your `dotnet new` templates but having messed around with them in the past, it's a lot of effort. I'm in the template making business, not in the extension making business. Also, given the above rumour, I've held off going this route.
 

@@ -246,7 +246,7 @@ feed.AddYahooMediaNamespace();
 
 Unfortunately, the property to set the icon does not exist on the `SyndicationFeed`, even though it is part of the official specification. Luckily for you I have created a quick extension method (Usage shown above) which allows us to set the icon.
 
-I've also created an extension method to add a Yahoo media thumbnail to an Atom entry. This is a non-standard extension but worth the effort. To use non-standard extensions, requires adding a namespace to the feed element in the XML, that is what the `AddYahooMediaNamespace` method does towards the bottom.
+I have also created an extension method to add a Yahoo media thumbnail to an Atom entry. This is a non-standard extension but worth the effort. To use non-standard extensions, requires adding a namespace to the feed element in the XML, that is what the `AddYahooMediaNamespace` method does towards the bottom.
 
 The extension methods are shown below. They use extensibility points on the `SyndicationFeed`, that allows us to augment its functionality.
 

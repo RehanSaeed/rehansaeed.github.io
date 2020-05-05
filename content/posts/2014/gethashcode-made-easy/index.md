@@ -295,4 +295,4 @@ The disadvantages are:
 
 # License
 
-I've been asked repeatedly for licensing of my code above. Developers have been asking permission to use it in a Kerbal Space program plugin and even in the excellent [Chocolatey](https://chocolatey.org) project which has been totally unexpected for me because this is code I wrote years ago. It just goes to show how fundamental `GetHashCode` is. Please consider the code as MIT licensed, do good with it and be excellent to each other!
+I have been asked repeatedly for licensing of my code above. Developers have been asking permission to use it in a Kerbal Space program plugin and even in the excellent [Chocolatey](https://chocolatey.org) project which has been totally unexpected for me because this is code I wrote years ago. It just goes to show how fundamental `GetHashCode` is. Please consider the code as MIT licensed, do good with it and be excellent to each other!

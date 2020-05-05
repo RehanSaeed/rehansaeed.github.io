@@ -93,4 +93,4 @@ The `dotnet watch` launch profile is running the `dotnet watch run` command as a
 
 # .NET Boxed Templates
 
-I've updated the [.NET Boxed](https://github.com/Dotnet-Boxed/Templates) family of project templates with this feature built in. Happy coding!
+I have updated the [.NET Boxed](https://github.com/Dotnet-Boxed/Templates) family of project templates with this feature built in. Happy coding!

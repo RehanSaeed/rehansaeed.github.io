@@ -19,7 +19,7 @@ tags:
 
 # What is a sitemap.xml File
 
-The official [sitemaps.org](http://www.sitemaps.org/) site really does says it best:
+What is a `sitemap.xml` file used for? The official [sitemaps.org](http://www.sitemaps.org/) site really does says it best:
 
 > Sitemaps are an easy way for webmasters to inform search engines about pages on their sites that are available for crawling. In its simplest form, a Sitemap is an XML file that lists URL's for a site along with additional metadata about each URL (when it was last updated, how often it usually changes, and how important it is, relative to other URL's in the site) so that search engines can more intelligently crawl the site.
 > 
