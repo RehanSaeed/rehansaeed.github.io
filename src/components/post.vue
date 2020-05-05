@@ -71,7 +71,7 @@ export default {
 
     &:first-letter {
       color: var(--global-accent-color);
-      font-family: Georgia;
+      font-family: var(--global-font-family-serif);
 
       // initial-letter: 2; // Only supported by Safari
       // OR
