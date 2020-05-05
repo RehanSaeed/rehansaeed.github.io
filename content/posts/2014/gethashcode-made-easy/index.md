@@ -248,7 +248,7 @@ Now isn't that pretty? All the nasty magic numbers and `unchecked` code has been
 One interesting edge case is what to do when hashing a collection and you get either a `null` or empty collection. Should you use a zero to represent both scenarios (zero is usually used to represent a `null` value) or differentiate them somehow. I managed to get a response from [Jon Skeet]() himself on StackOverflow:
 
 > if both states are valid, it seems perfectly reasonable to differentiate between them. (Someone carrying an empty box isn't the same as someone not carrying a box at all...)
-> <footer><cite>[Jon Skeet](https://stackoverflow.com/questions/8094867/good-gethashcode-override-for-list-of-foo-objects-respecting-the-order/8094931?noredirect=1#comment99700237_8094931)</cite></footer>
+> <footer><cite><a href="https://stackoverflow.com/questions/8094867/good-gethashcode-override-for-list-of-foo-objects-respecting-the-order/8094931?noredirect=1#comment99700237_8094931">Jon Skeet</a></cite></footer>
 
 This is why we use the prime number 19 (it could have been any prime number) to represent an empty collection. Whether this matters or not depends on your use case. If an empty collection means something different in your scenario, then we've got you covered. Generally speaking though, if you are exposing a collection property in your class you should consider making it a getter only and initializing it in the constructor, so that it is never `null` in the first place but here we're trying to cover all scenarios.
 

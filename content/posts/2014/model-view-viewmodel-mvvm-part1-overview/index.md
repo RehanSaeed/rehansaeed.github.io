@@ -55,17 +55,15 @@ In Mike Taulty's post, he goes through a list of 'bits' which all come together 
 I'll pause just here as I think the above listed items are all base classes that could be used across the board on all the major platforms. They are at the very heart of MVVM in .NET. The rest of the list below are more dependant on the type of application you are building.
 
 1. Navigation - This has always been a stone in my shoe. Navigation is inherently something that happens in the view but it is something that view models often need to understand. The problem is, that the view model is not supposed to know about the view at all. This problem occurs again and again in different forms on each platform.
-
-> - Navigating pages in Windows Store, Windows Phone, Silverlight.
-> - Navigating Windows in Windows Presentation Foundation (WPF) and Windows Store.
-
-1. User Interaction - I'm talking about `MessageBox`'s, `MessageDialog`'s, Toast's etc. Giving the user information or asking them questions happens on all platforms. This problem is very similar to the Navigation problem.
-2. Connecting your Views to ViewModels - This is usually some by-product of which IoC container you choose to use, whether it's MEF, Unity, Autofac or some other. There is no recommended way of doing this and I don't think I've ever found a 'correct' way of doing this.
-3. Saving View Model state - This usually needs to be done when the application closes or suspends due to some user interaction. A lot of frameworks simply serialize the whole View Model and save it away but is that the best way and what about doing that in a WPF application?
-4. Events - Passing events between view models is a fairly useful ability, allowing communication and passing of state.
-5. Composing Views - Some MVVM frameworks like PRISM provide support for composing different views together. Alternatively, this process usually has a connection with the type of IoC container you are using.
-6. Firing Commands - A lot of controls can't fire off `ICommand`'s in XAML because they don't provide a Command property or sometimes you want to fire a command based on some event or even a key press.
-7. Other Stuff - Reactive Extensions can help in some pretty interesting ways with MVVM. What about Portable Class Library's? Why does the MVVM on one platform need to be different from another?
+    - Navigating pages in Windows Store, Windows Phone, Silverlight.
+    - Navigating Windows in Windows Presentation Foundation (WPF) and Windows Store.
+2. User Interaction - I'm talking about `MessageBox`'s, `MessageDialog`'s, Toast's etc. Giving the user information or asking them questions happens on all platforms. This problem is very similar to the Navigation problem.
+3. Connecting your Views to ViewModels - This is usually some by-product of which IoC container you choose to use, whether it's MEF, Unity, Autofac or some other. There is no recommended way of doing this and I don't think I've ever found a 'correct' way of doing this.
+4. Saving View Model state - This usually needs to be done when the application closes or suspends due to some user interaction. A lot of frameworks simply serialize the whole View Model and save it away but is that the best way and what about doing that in a WPF application?
+5. Events - Passing events between view models is a fairly useful ability, allowing communication and passing of state.
+6. Composing Views - Some MVVM frameworks like PRISM provide support for composing different views together. Alternatively, this process usually has a connection with the type of IoC container you are using.
+7. Firing Commands - A lot of controls can't fire off `ICommand`'s in XAML because they don't provide a Command property or sometimes you want to fire a command based on some event or even a key press.
+8. Other Stuff - Reactive Extensions can help in some pretty interesting ways with MVVM. What about Portable Class Library's? Why does the MVVM on one platform need to be different from another?
 
 The last two things in the list are more abstract requirements for any MVVM framework.
 
