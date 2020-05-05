@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://preview.rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Tue, 05 May 2020 18:55:55 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 05 May 2020 19:12:28 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -379,11 +379,8 @@ I&#39;m a Microsoft employee but my opinions in this personal blog post are my o
 <p>A colleague who was doing some work in the repo was on leave and the task of completing the job unexpectedly fell on me to finish up. I asked around to see if anyone had any pointers on what to do and I was pointed towards an Azure DevOps project. The first thing I naively tried was running:</p>
 <pre><code class="language-powershell">git clone https://microsoft.fake.com/foo/bar/os</code></pre>
 <p>This gave me the very helpful error:</p>
-<blockquote>
-<p>remote: This repository requires GVFS. Ensure the version of git you are using supports GVFS.
-fatal: protocol error: bad pack header</p>
-</blockquote>
-<p>This triggered a memory in the dark recesses of my mind about <a href="https://devblogs.microsoft.com/devops/announcing-gvfs-git-virtual-file-system/">GVFS (Git Virtual File System)</a>. The Windows OS repository is around 250GB in size. When you consider that there are tens or maybe hundreds of developers committing changes every day, you are not going to have a very pleasant developer experiences if you just used Git and tried to pull all 250GB of files. So GVFS abstracts away the file system and only downloads files when you try to access them.</p>
+<pre><code>remote: This repo requires GVFS. Ensure the version of git you are using supports GVFS.
+fatal: protocol error: bad pack header</code></pre><p>This triggered a memory in the dark recesses of my mind about <a href="https://devblogs.microsoft.com/devops/announcing-gvfs-git-virtual-file-system/">GVFS (Git Virtual File System)</a>. The Windows OS repository is around 250GB in size. When you consider that there are tens or maybe hundreds of developers committing changes every day, you are not going to have a very pleasant developer experiences if you just used Git and tried to pull all 250GB of files. So GVFS abstracts away the file system and only downloads files when you try to access them.</p>
 <p>The Windows OS has a very large and thorough internal Wiki. This wiki has sections covering all areas of the Windows OS going back for years. After a short time searching the wiki I discovered a very thorough getting started guide for new developers.</p>
 <p>The getting started guide involves running some PowerShell files which install a very specific but recent version of Git and setting up GVFS. Interestingly, you can also optionally point your Git client at a cache server to speed up git commands. There are a few cache servers all over the world to choose from. Finally, there is a VS Code extension specific to the OS repo that gives you some extra intelli-sense, very fancy.</p>
 <p>Even though pulling the code using GVFS should in theory only pull what you need at any given time, it still took a fair amount of time to get started. Standard git commands still worked but took tens of seconds to execute, so you had to be pretty sure of what you were doing.</p>
@@ -425,10 +422,7 @@ ENTRYPOINT [&quot;dotnet&quot;, &quot;ReadOnlyTest.dll&quot;]</code></pre>
 <p>If I run this image with a read-only file system:</p>
 <pre><code class="language-powershell">docker run --rm --read-only -it -p 8000:80 read-only-test</code></pre>
 <p>This outputs the following error as read-only file systems are not supported by default:</p>
-<blockquote>
-<p>Failed to initialize CoreCLR, HRESULT: 0x80004005</p>
-</blockquote>
-<p>If I now run the same image with the <code>COMPlus_EnableDiagnostics</code> environment variable turned off:</p>
+<pre><code>Failed to initialize CoreCLR, HRESULT: 0x80004005</code></pre><p>If I now run the same image with the <code>COMPlus_EnableDiagnostics</code> environment variable turned off:</p>
 <pre><code class="language-powershell">docker run --rm --read-only -it -p 8000:80 -e COMPlus_EnableDiagnostics=0 read-only-test</code></pre>
 <p>The app now starts! The <code>COMPlus_EnableDiagnostics</code> environment variable (which is <a href="https://github.com/dotnet/docs/issues/10217">undocumented</a>) turns off debugging and profiling support, so I would not bake this environment variable into the <code>Dockerfile</code>. For some reason these features need a read/write file system to work properly. If you&#39;d like to try this yourself, you can checkout all the code in <a href="https://github.com/RehanSaeed/ReadOnlyDockerTest">this repo</a>.</p>
 ]]></content:encoded>
@@ -1112,10 +1106,7 @@ string url = QueryHelpers.AddQueryString(&quot;/example/path&quot;, queryArgumen
 <p>If you are building an ASP.NET Core API, each request creates a new instance of your <code>DbContext</code> and then this is disposed at the end of the request. Query tracking keeps track of entities in memory for the lifetime of your <code>DbContext</code> so that if they are updated any changes can be saved, this is a waste of resources if you are just going to throw away the <code>DbContext</code> at the end of the request. By passing NoTracking to the <a href="https://docs.microsoft.com/en-us/ef/core/querying/tracking#no-tracking-queries">UseQueryTrackingBehavior</a> method, you can turn off this default behaviour. Note that if you are performing updates to your entities, don&#39;t use this option, this is only for API&#39;s that perform reads and/or inserts.</p>
 <h1 id="connection-strings">Connection Strings</h1>
 <p>You can also pass certain settings to connection strings. These are specific to the database you are using, here I&#39;m talking about SQL Server. Here is an example of a connection string:</p>
-<blockquote>
-<p>Data Source=localhost;Initial Catalog=MyDatabase;Integrated Security=True;Min Pool Size=3;Application Name=MyApplication</p>
-</blockquote>
-<h2 id="application-name">Application Name</h2>
+<pre><code>Data Source=localhost;Initial Catalog=MyDatabase;Integrated Security=True;Min Pool Size=3;Application Name=MyApplication</code></pre><h2 id="application-name">Application Name</h2>
 <p>SQL Server can log or profile queries that are running through it. If you set the application name, you can more easily identify the applications that may be causing problems in your database with slow or failing queries.</p>
 <h2 id="min-pool-size">Min Pool Size</h2>
 <p>Creating database connections is an expensive process that takes time. You can specify that you want a minimum pool of connections that should be created and kept open for the lifetime of the application. These are then reused for each database call. Ideally, you need to performance test with different values and see what works for you. Failing that you need to know how many concurrent connections you want to support at any one time.</p>
@@ -3468,8 +3459,8 @@ In both cases you have to be careful to start the application by clicking <code>
             <pubDate>Sun, 21 Aug 2016 00:00:00 GMT</pubDate>
             <description><![CDATA[NGINX is a popular open source web server. It can act as a reverse proxy server for ASP.NET Core web apps. How to configure NGINX for ASP.NET Core.]]></description>
             <content:encoded><![CDATA[<blockquote>
-<p><strong>There are only two things a web server needs to be.....fast.....really fast.....and secure.</strong>
-Muhammad Rehan Saeed</p>
+<p>There are only two things a web server needs to be.....fast.....really fast.....and secure.</p>
+<footer><cite>Muhammad Rehan Saeed</cite></footer>
 </blockquote>
 <h1 id="about-nginx">About NGINX</h1>
 <p><a href="http://nginx.org/">NGINX</a> (Pronounced engine-x) is a popular open source web server. It can act as a reverse proxy server for TCP, UDP, HTTP, HTTPS, SMTP, POP3, and IMAP protocols, as well as a load balancer and a HTTP cache.</p>
@@ -4445,7 +4436,7 @@ ILogger logger = new LoggerConfiguration()
             <pubDate>Tue, 15 Sep 2015 00:00:00 GMT</pubDate>
             <description><![CDATA[How to dynamically generate a sitemap.xml file using ASP.NET MVC to improve the Search Engine Optimization (SEO) of your site and get better search rankings.]]></description>
             <content:encoded><![CDATA[<h1 id="what-is-a-sitemapxml-file">What is a sitemap.xml File</h1>
-<p>The official <a href="http://www.sitemaps.org/">sitemaps.org</a> site says it best:</p>
+<p>The official <a href="http://www.sitemaps.org/">sitemaps.org</a> site really does says it best:</p>
 <blockquote>
 <p>Sitemaps are an easy way for webmasters to inform search engines about pages on their sites that are available for crawling. In its simplest form, a Sitemap is an XML file that lists URL&#39;s for a site along with additional metadata about each URL (when it was last updated, how often it usually changes, and how important it is, relative to other URL&#39;s in the site) so that search engines can more intelligently crawl the site.</p>
 <p>Web crawlers usually discover pages from links within the site and from other sites. Sitemaps supplement this data to allow crawlers that support Sitemaps to pick up all URL&#39;s in the Sitemap and learn about those URL&#39;s using the associated metadata. Using the Sitemap protocol does not guarantee that web pages are included in search engines, but provides hints for web crawlers to do a better job of crawling your site.</p>
@@ -4469,9 +4460,10 @@ ILogger logger = new LoggerConfiguration()
 </ul>
 <p>The latter three values only give search engines an indication of when they can or should index or even re-index a page. It is not a guarantee that it will happen, although it makes it more likely.</p>
 <h1 id="is-it-worth-the-effort">Is it Worth the Effort?</h1>
-<p>Search engines are black boxes. We only know what goes into them (Our sitemap) and what comes out the other end (The search results). I can make no promises that adding a sitemap will increase your sites search rankings but <strong>Google</strong> <a href="https://support.google.com/webmasters/answer/156184?hl=en">says</a>:</p>
+<p>Search engines are black boxes. We only know what goes into them (Our sitemap) and what comes out the other end (The search results). I can make no promises that adding a sitemap will increase your sites search rankings but <strong>Google</strong> says:</p>
 <blockquote>
 <p>Using a sitemap doesn&#39;t guarantee that all the items in your sitemap will be crawled and indexed, as Google processes rely on complex algorithms to schedule crawling. However, <strong>in most cases, your site will benefit from having a sitemap</strong>, and you&#39;ll never be penalized for having one.</p>
+<footer><cite>[Google](https://support.google.com/webmasters/answer/156184?hl=en)</cite></footer>
 </blockquote>
 <h1 id="generating-a-static-sitemapxml-file">Generating a Static sitemap.xml File</h1>
 <p>There are tools online you can use to generate a static <code>sitemap.xml</code> file, which you can dump at the root of your site but you have to manually update these every time your site changes. This may be fine if your site does not change much but adding a dynamically generated <code>sitemap.xml</code> file is fairly simple process and worth the effort.</p>
@@ -6353,10 +6345,7 @@ this.WhenTextChanged
 <p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportTemplate3.png" alt="The export template &#39;Select template options&#39; screen, where you can describe your template."></p>
 <p>The export template &#39;Select template options&#39; screen, where you can describe your template.</p>
 <p>The <code>.zip</code> file that is output must be copied into the following folder, for Visual Studio to pick it up:</p>
-<blockquote>
-<p>C:/Users/[Your User Name]/Documents/Visual Studio [2010|2012|2013|2015]/Templates/ProjectTemplates</p>
-</blockquote>
-<p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportTemplate4.png" alt="The .zip file output as part of the Visual Studio Export Template wizard."></p>
+<pre><code>C:/Users/[Your User Name]/Documents/Visual Studio [2010|2012|2013|2015]/Templates/ProjectTemplates</code></pre><p><img src="https://preview.rehansaeed.com/custom-visual-studio-project-templates/images/ExportTemplate4.png" alt="The .zip file output as part of the Visual Studio Export Template wizard."></p>
 <p>The <code>.zip</code> file output as part of the Visual Studio Export Template wizard.</p>
 <p>This is a super easy process and you should really consider creating your own templates if you find yourself making the same old changes to every project you are creating. The downside is that its not very customizable and these types of project templates cannot be submitted to the <a href="https://visualstudiogallery.msdn.microsoft.com">Visual Studio Gallery</a>.</p>
 <p>The gallery website only supports project templates created using the VSIX package. Creating a VSIX package is a pretty involved process and will take a couple of hours.</p>
@@ -8279,8 +8268,8 @@ public struct HashCode : IEquatable&lt;HashCode&gt;
 <p>Now isn&#39;t that pretty? All the nasty magic numbers and <code>unchecked</code> code has been hidden away. It is a very lightweight and simple <code>struct</code>, so although we create new instances of it, it&#39;s stored in the stack rather than the memory heap. What&#39;s more, is that is code is just as fast (I&#39;ve timed it)! We&#39;re using generics so there is no boxing or unboxing going on. We&#39;re still using the <code>unchecked</code> keyword, so overflow checking is still disabled.</p>
 <p>One interesting edge case is what to do when hashing a collection and you get either a <code>null</code> or empty collection. Should you use a zero to represent both scenarios (zero is usually used to represent a <code>null</code> value) or differentiate them somehow. I managed to get a response from <a href="">Jon Skeet</a> himself on StackOverflow:</p>
 <blockquote>
-<p>if both states are valid, it seems perfectly reasonable to differentiate between them. (Someone carrying an empty box isn&#39;t the same as someone not carrying a box at all...)
-<a href="https://stackoverflow.com/questions/8094867/good-gethashcode-override-for-list-of-foo-objects-respecting-the-order/8094931?noredirect=1#comment99700237_8094931">Jon Skeet</a></p>
+<p>if both states are valid, it seems perfectly reasonable to differentiate between them. (Someone carrying an empty box isn&#39;t the same as someone not carrying a box at all...)</p>
+<footer><cite>[Jon Skeet](https://stackoverflow.com/questions/8094867/good-gethashcode-override-for-list-of-foo-objects-respecting-the-order/8094931?noredirect=1#comment99700237_8094931)</cite></footer>
 </blockquote>
 <p>This is why we use the prime number 19 (it could have been any prime number) to represent an empty collection. Whether this matters or not depends on your use case. If an empty collection means something different in your scenario, then we&#39;ve got you covered. Generally speaking though, if you are exposing a collection property in your class you should consider making it a getter only and initializing it in the constructor, so that it is never <code>null</code> in the first place but here we&#39;re trying to cover all scenarios.</p>
 <h1 id="net-core-hashcode">.NET Core HashCode</h1>
