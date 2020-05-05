@@ -119,7 +119,7 @@ dialog.fixed {
 
   &:before {
     content: '';
-    background: linear-gradient(to right, var(--global-accent-color) 0%,var(--global-accent-alternate-color) 100%);
+    background: linear-gradient(to right, var(--global-accent-color) 0%,var(--global-alternate-accent-color) 100%);
     display: block;
     height: .5rem;
     position: absolute;
