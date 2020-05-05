@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://preview.rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Tue, 05 May 2020 19:12:28 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 05 May 2020 19:19:06 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -7861,15 +7861,11 @@ Console.WriteLine(disposable.IsDisposed);</code></pre>
 </ol>
 <p>I&#39;ll pause just here as I think the above listed items are all base classes that could be used across the board on all the major platforms. They are at the very heart of MVVM in .NET. The rest of the list below are more dependant on the type of application you are building.</p>
 <ol>
-<li>Navigation - This has always been a stone in my shoe. Navigation is inherently something that happens in the view but it is something that view models often need to understand. The problem is, that the view model is not supposed to know about the view at all. This problem occurs again and again in different forms on each platform.</li>
-</ol>
-<blockquote>
-<ul>
+<li>Navigation - This has always been a stone in my shoe. Navigation is inherently something that happens in the view but it is something that view models often need to understand. The problem is, that the view model is not supposed to know about the view at all. This problem occurs again and again in different forms on each platform.<ul>
 <li>Navigating pages in Windows Store, Windows Phone, Silverlight.</li>
 <li>Navigating Windows in Windows Presentation Foundation (WPF) and Windows Store.</li>
 </ul>
-</blockquote>
-<ol>
+</li>
 <li>User Interaction - I&#39;m talking about <code>MessageBox</code>&#39;s, <code>MessageDialog</code>&#39;s, Toast&#39;s etc. Giving the user information or asking them questions happens on all platforms. This problem is very similar to the Navigation problem.</li>
 <li>Connecting your Views to ViewModels - This is usually some by-product of which IoC container you choose to use, whether it&#39;s MEF, Unity, Autofac or some other. There is no recommended way of doing this and I don&#39;t think I&#39;ve ever found a &#39;correct&#39; way of doing this.</li>
 <li>Saving View Model state - This usually needs to be done when the application closes or suspends due to some user interaction. A lot of frameworks simply serialize the whole View Model and save it away but is that the best way and what about doing that in a WPF application?</li>
@@ -8269,7 +8265,7 @@ public struct HashCode : IEquatable&lt;HashCode&gt;
 <p>One interesting edge case is what to do when hashing a collection and you get either a <code>null</code> or empty collection. Should you use a zero to represent both scenarios (zero is usually used to represent a <code>null</code> value) or differentiate them somehow. I managed to get a response from <a href="">Jon Skeet</a> himself on StackOverflow:</p>
 <blockquote>
 <p>if both states are valid, it seems perfectly reasonable to differentiate between them. (Someone carrying an empty box isn&#39;t the same as someone not carrying a box at all...)</p>
-<footer><cite>[Jon Skeet](https://stackoverflow.com/questions/8094867/good-gethashcode-override-for-list-of-foo-objects-respecting-the-order/8094931?noredirect=1#comment99700237_8094931)</cite></footer>
+<footer><cite><a href="https://stackoverflow.com/questions/8094867/good-gethashcode-override-for-list-of-foo-objects-respecting-the-order/8094931?noredirect=1#comment99700237_8094931">Jon Skeet</a></cite></footer>
 </blockquote>
 <p>This is why we use the prime number 19 (it could have been any prime number) to represent an empty collection. Whether this matters or not depends on your use case. If an empty collection means something different in your scenario, then we&#39;ve got you covered. Generally speaking though, if you are exposing a collection property in your class you should consider making it a getter only and initializing it in the constructor, so that it is never <code>null</code> in the first place but here we&#39;re trying to cover all scenarios.</p>
 <h1 id="net-core-hashcode">.NET Core HashCode</h1>
