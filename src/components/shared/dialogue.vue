@@ -116,6 +116,17 @@ dialog.fixed {
   border: var(--global-border-width-2) solid var(--global-border-color);
   border-radius: var(--global-border-radius);
   color: var(--global-title-color);
+
+  &:before {
+    content: '';
+    background: linear-gradient(to right, var(--global-accent-color) 0%,var(--global-accent-alternate-color) 100%);
+    display: block;
+    height: .5rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
 }
 
 .dialog--fullscreen {

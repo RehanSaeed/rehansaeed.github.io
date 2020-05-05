@@ -122,6 +122,7 @@
 // Light theme
 [data-theme='light'] {
   --global-accent-color: hsl(264, 82%, 50%);
+  --global-accent-alternate-color: hsl(254, 100%, 87%);
   --global-background-color: hsl(216, 24%, 98%);
   --global-content-background-color: hsl(0, 0%, 100%);
   --global-border-color: hsla(0, 0%, 0%, 0.1);
@@ -164,6 +165,7 @@
 // Dark theme
 [data-theme='dark'] {
   --global-accent-color: hsl(254, 100%, 87%);
+  --global-accent-alternate-color: hsl(264, 82%, 50%);
   --global-background-color: hsl(207, 62%, 14%);
   --global-content-background-color: hsl(206, 64%, 16%);
   --global-border-color: hsla(0, 0%, 100%, 0.1);
