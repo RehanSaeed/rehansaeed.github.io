@@ -78,8 +78,8 @@ export default {
       float: left;
       font-size: calc(var(--global-font-size-4) * 2.55);
       line-height: calc(var(--global-line-height-1) * .65);
-      padding-right: 10px;
-      margin-bottom: -5px;
+      padding-right: var(--global-space-fixed-3);
+      margin-bottom: var(--global-space-fixed--2);
     }
   }
 
