@@ -230,8 +230,8 @@ module.exports = {
                 'xmlns:xlink': 'http://www.w3.org/1999/xlink',
                 viewBox: '0 0 16 16',
                 version: '1.1',
-                width: 16,
-                height: 16,
+                width: 22,
+                height: 22,
                 'aria-hidden': true,
               },
               children: [
