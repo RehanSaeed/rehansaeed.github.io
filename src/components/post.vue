@@ -76,10 +76,10 @@ export default {
       // initial-letter: 2; // Only supported by Safari
       // OR
       float: left;
-      font-size: calc(var(--global-font-size-4) * 2.4);
+      font-size: calc(var(--global-font-size-4) * 2.6);
       line-height: calc(var(--global-line-height-1) * .44);
       padding-right: var(--global-space-fixed-3);
-      margin-top: .85rem;
+      margin-top: .65rem;
     }
   }
 
