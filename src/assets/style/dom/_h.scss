@@ -6,23 +6,25 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: var(--global-space-fixed-5);
   margin-bottom: var(--global-space-fixed-4);
   max-width: var(--global-line-length-max);
-  transition: color var(--global-duration-3) ease-out;
+  transition: color var(--global-duration-3);
 
   a {
+    color: var(--global-link-color);
     float: left;
-    line-height: 1.4;
-    margin-left: -22px;
+    margin-left: -30px;
     opacity: 0;
-    padding-right: 6px;
-    height: 16px;
-    width: 16px;
+    margin-right: 8px;
+    height: 22px;
+    width: 22px;
     text-decoration: none;
-    transition: opacity var(--global-duration-2) ease-out;
+    text-decoration-skip-ink: initial;
+    transition: opacity var(--global-duration-2) ease-out 100ms;
     vertical-align: middle;
   }
 
   &:hover {
     a {
+      color: var(--global-link-color);
       opacity: 1;
       text-decoration: none;
       transition-delay: 0;
