@@ -91,7 +91,7 @@ export default {
     max-width: none;
   }
 
-  div[style="width: 100%; margin: 25px 0 25px 0;"] div {
+  .youtube-embed div {
     margin-left: var(--global-space-fluid--6);
     margin-right: var(--global-space-fluid--6);
   }
