@@ -6,4 +6,8 @@ ul {
   li, p, ul, ol {
     margin-bottom: var(--global-space-fixed-3);
   }
+
+  li::marker {
+    color: var(--global-accent-color);
+  }
 }
