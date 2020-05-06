@@ -6,7 +6,7 @@ input {
   font-family: var(--global-font-family-sans-serif);
   min-width: 13rem;
   padding: var(--global-space-fixed-2) var(--global-space-fixed-3);
-  transition: border-color var(--global-duration-3);
+  transition: border-color var(--global-duration-3) ease-out;
 
   &:hover {
     border-color: var(--global-body-color);

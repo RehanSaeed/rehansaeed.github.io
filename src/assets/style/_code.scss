@@ -33,7 +33,7 @@ pre[class*="language-"] {
   background-color: hsl(0, 0%, 100%);
   border: var(--global-border-width-1) solid hsl(0, 0%, 87%);
   border-radius: var(--global-border-radius);
-  transition: background-color var(--global-duration-3), border-color var(--global-duration-3), color var(--global-duration-3);
+  transition: background-color var(--global-duration-3) ease-out, border-color var(--global-duration-3) ease-out, color var(--global-duration-3) ease-out;
 }
 
 /* Inline code */
@@ -41,7 +41,7 @@ pre[class*="language-"] {
   padding: .05rem .25rem;
   background: hsla(210, 13, 12, 0.05);
   border-radius: var(--global-border-radius);
-  transition: background-color var(--global-duration-3), color var(--global-duration-3);
+  transition: background-color var(--global-duration-3) ease-out, color var(--global-duration-3) ease-out;
 }
 
 .token.comment,

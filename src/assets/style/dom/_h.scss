@@ -6,7 +6,7 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: var(--global-space-fixed-5);
   margin-bottom: var(--global-space-fixed-4);
   max-width: var(--global-line-length-max);
-  transition: color var(--global-duration-3);
+  transition: color var(--global-duration-3) ease-out;
 
   a {
     float: left;
@@ -17,7 +17,7 @@ h1, h2, h3, h4, h5, h6 {
     height: 16px;
     width: 16px;
     text-decoration: none;
-    transition: opacity var(--global-duration-2) ease-in-out 0;
+    transition: opacity var(--global-duration-2) ease-out;
     vertical-align: middle;
   }
 

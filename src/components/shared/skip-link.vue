@@ -21,7 +21,7 @@ export default {
   right: 0;
   text-align: center;
   transform: translateY(-100%);
-  transition: transform var(--global-duration-2);
+  transition: transform var(--global-duration-2) ease-out;
   width: 10rem;
 }
 

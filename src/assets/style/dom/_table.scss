@@ -9,7 +9,7 @@ table {
   border-spacing: 0;
   margin-bottom: var(--global-space-fixed-5);
   overflow: auto;
-  transition: background-color var(--global-duration-3), border-color var(--global-duration-3), color var(--global-duration-3);
+  transition: background-color var(--global-duration-3) ease-out, border-color var(--global-duration-3) ease-out, color var(--global-duration-3) ease-out;
   width: 100%;
 
   thead {
@@ -19,7 +19,7 @@ table {
       font-weight: var(--global-font-weight-bold);
       font-size: var(--global-font-size-1);
       padding: var(--global-space-fixed-2) var(--global-space-fixed-3);
-      transition: background-color var(--global-duration-3), color var(--global-duration-3);
+      transition: background-color var(--global-duration-3) ease-out, color var(--global-duration-3) ease-out;
       vertical-align: bottom;
     }
 

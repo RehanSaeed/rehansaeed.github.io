@@ -47,7 +47,7 @@ query {
   width: 6rem;
   height: 6rem;
   margin-bottom: var(--global-space-fluid-3);
-  transition: border-color var(--global-duration-3);
+  transition: border-color var(--global-duration-3) ease-out;
 }
 
 .author__site-title {
