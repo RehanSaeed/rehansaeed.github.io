@@ -17,11 +17,14 @@ pre[class*="language-"] {
 }
 
 pre[class*="language-"]::selection,
-pre[class*="language-"] ::selection,
-code[class*="language-"]::selection,
-code[class*="language-"] ::selection {
+pre[class*="language-"] ::selection {
   background: hsl(204, 63%, 85%);
   color: unset;
+}
+
+:not(pre) > code ::selection {
+  background: var(--global-selection-background-color);
+  color: var(--global-selection-body-color);
 }
 
 /* Code blocks */

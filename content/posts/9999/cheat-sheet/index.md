@@ -103,6 +103,8 @@ Some Code
 
 # Syntax Highlighting
 
+This is `inline` code.
+
 ```js{codeTitle: "Code Title Code Title"}
 // Code Title
 ```
