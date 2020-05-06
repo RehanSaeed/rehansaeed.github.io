@@ -78,7 +78,7 @@ export default {
       float: left;
       font-size: calc(var(--global-font-size-4) * 2.6);
       line-height: calc(var(--global-line-height-1) * .44);
-      padding-right: var(--global-space-fixed-3);
+      padding-right: var(--global-space-fixed-2);
       margin-top: .65rem;
     }
   }
