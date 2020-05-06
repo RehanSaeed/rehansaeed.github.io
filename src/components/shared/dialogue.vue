@@ -113,7 +113,7 @@ dialog.fixed {
 
 .dialog {
   background: var(--global-content-background-color);
-  border: var(--global-border-width-2) solid var(--global-border-color);
+  border: none;
   border-radius: var(--global-border-radius);
   color: var(--global-title-color);
 
