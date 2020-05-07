@@ -6,6 +6,13 @@ import '~/assets/style/index.scss';
 // Import default layout so we don't need to import it to every page
 import defaultLayout from '~/layouts/default.vue';
 
+// Import comments
+import Vssue from 'vssue';
+import GithubV3 from '@vssue/api-github-v3';
+
+import { decode } from '~/framework/obfuscate.js';
+const site = require('./../site.json');
+
 // The Client API can be used here. Learn more: gridsome.org/docs/client-api
 export default function (Vue, { router, head, isClient }) {
 
@@ -49,4 +56,20 @@ export default function (Vue, { router, head, isClient }) {
 
   // Set default layout as a global component
   Vue.component('Layout', defaultLayout);
+
+  Vue.use(Vssue, {
+    api: GithubV3,
+    owner: site.repository.owner,
+    repo: site.repository.name,
+    clientId: decode(site.repository.clientId),
+    clientSecret: decode(site.repository.clientSecret),
+    labels: ['comment'],
+    prefix: '[Comment] ',
+    admins: [
+      site.repository.owner
+    ],
+    perPage: 9999,
+    locale: 'en',
+    autoCreateIssue: true,
+  });
 }

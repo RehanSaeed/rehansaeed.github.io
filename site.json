@@ -7,7 +7,11 @@
 
   "repository": {
     "url": "https://github.com/RehanSaeed/rehansaeed.github.io",
-    "branch": "develop"
+    "branch": "develop",
+    "name": "rehansaeed.github.io",
+    "owner": "RehanSaeed",
+    "clientId": "9caaaba5fdaea4f9feaff8fda5aef8a8f9ffa9fdad",
+    "clientSecret": "9cfeaea8fefaaea9aea9ffabaafeafffafa9faa5acaefdf9affea8feafa4fafef9fda4acacf9f8acad"
   },
 
   "googleAnalyticsId": "UA-159632920-1",

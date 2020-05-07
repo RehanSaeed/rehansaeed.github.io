@@ -33,6 +33,7 @@ import iconRss from '~/components/shared/icons/icon-rss.vue';
 import iconStackOverflow from '~/components/shared/icons/icon-stackoverflow.vue';
 import iconTwitter from '~/components/shared/icons/icon-twitter.vue';
 import iconYoutube from '~/components/shared/icons/icon-youtube.vue';
+import { decode } from '~/framework/obfuscate.js';
 
 export default {
   name: 'u-social-links',
@@ -47,46 +48,10 @@ export default {
     'u-icon-youtube': iconYoutube,
   },
   computed: {
-    email: function() { return this.decodeEmail(this.$static.metadata.author.email); },
+    email: function() { return decode(this.$static.metadata.author.email); },
     mailTo: function() {
       const body = encodeURIComponent('If you have an issue with one of my GitHub projects, please raise a GitHub issue. If you need help answering a coding problem, post your question on StackOverflow where you will get quicker and better answers. Otherwise, please do feel free to contact me!')
       return `mailto:${this.email}?body=${body}`;
-    }
-  },
-  methods: {
-    encodeEmail: function(email, key) {
-      // Hex encode the key
-      let encodedString = key.toString(16);
-      // loop through every character in the email
-      for(let n = 0; n < email.length; n++) {
-          // Get the code (in decimal) for the nth character
-          let charCode = email.charCodeAt(n);
-          // XOR the character with the key
-          let encoded = charCode ^ key;
-          // Hex encode the result, and append to the output string
-          encodedString += encoded.toString(16);
-      }
-      return encodedString;
-    },
-    decodeEmail(encodedString) {
-      // Holds the final output
-      let email = "";
-      // Extract the first 2 letters
-      let keyInHex = encodedString.substr(0, 2);
-      // Convert the hex-encoded key into decimal
-      let key = parseInt(keyInHex, 16);
-      // Loop through the remaining encoded characters in steps of 2
-      for (let n = 2; n < encodedString.length; n += 2) {
-          // Get the next pair of characters
-          let charInHex = encodedString.substr(n, 2)
-          // Convert hex to decimal
-          let char = parseInt(charInHex, 16);
-          // XOR the character with the key to get the original character
-          let output = char ^ key;
-          // Append the decoded character to the output
-          email += String.fromCharCode(output);
-      }
-      return email;
     }
   }
 }

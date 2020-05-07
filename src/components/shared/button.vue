@@ -34,7 +34,8 @@ export default {
 </script>
 
 <style lang="scss">
-.button {
+.button,
+.vssue-button {
   background-color: transparent;
   border: none;
   color: var(--global-title-color);
@@ -59,7 +60,8 @@ export default {
   }
 }
 
-.button--bordered {
+.button--bordered,
+.vssue-button {
   background-color: var(--global-background-color);
   border: var(--global-border-width-1) solid var(--global-border-color);
   border-radius: var(--global-border-radius);

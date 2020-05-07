@@ -9,10 +9,9 @@
 
       <u-post class="post-page__content" :post="$page.post" />
 
-      <u-newsletter/>
+      <u-comments class="post-page__comments" :title="$page.post.title" />
 
-      <div class="post-page__comments">
-      </div>
+      <u-newsletter/>
 
       <u-author class="post-page__author" />
 
@@ -24,12 +23,14 @@
 import heading from '~/components/shared/heading.vue';
 import author from '~/components/author.vue';
 import newsletter from '~/components/newsletter.vue';
+import comments from '~/components/comments.vue';
 import post from '~/components/post.vue';
 import postMeta from '~/components/post-meta.vue';
 import { getOpenGraphImage, getSchemaImageObject } from '~/framework/images.js';
 
 export default {
   components: {
+    'u-comments': comments,
     'u-heading': heading,
     'u-author': author,
     'u-newsletter': newsletter,
@@ -174,13 +175,5 @@ query Post ($id: ID!) {
   margin: 0 auto;
   padding: var(--global-space-fluid-5) 0 var(--global-space-fluid-5);
   text-align: center;
-}
-
-.post-page__comments {
-  padding: var(--global-space-fluid-5);
-
-  &:empty {
-    display: none;
-  }
 }
 </style>

@@ -34,7 +34,8 @@ export default {
 </script>
 
 <style lang="scss">
-.link {
+.link,
+.vssue-logout {
   color: var(--global-title-color);
   font-family: var(--global-font-family-heading);
   line-height: var(--global-line-height-1);
@@ -53,7 +54,8 @@ export default {
   }
 }
 
-.link--bordered {
+.link--bordered,
+.vssue-logout {
   background-color: var(--global-background-color);
   border: var(--global-border-width-1) solid var(--global-border-color);
   border-radius: var(--global-border-radius);
