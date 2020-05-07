@@ -254,6 +254,11 @@ export default {
   overflow: hidden;
   padding: var(--global-space-fixed-3) var(--global-space-fixed-4);
 }
+.vssue-comment-author a {
+  color: var(--global-link-color);
+  font-family: var(--global-font-family-heading);
+  text-decoration: none;
+}
 .vssue-comment-created-at {
   float: right;
 }
