@@ -255,7 +255,7 @@ export default {
   padding: var(--global-space-fixed-3) var(--global-space-fixed-4);
 }
 .vssue-comment-author a {
-  color: var(--global-link-color);
+  color: var(--global-title-color);
   font-family: var(--global-font-family-heading);
   text-decoration: none;
 }
@@ -377,7 +377,7 @@ export default {
 .markdown-body {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
-  color: #24292e;
+  //color: #24292e;
   line-height: 1.5;
   font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
   font-size: 16px;
