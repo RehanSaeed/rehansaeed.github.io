@@ -33,6 +33,10 @@ a {
       text-underline-offset: -0.875rem;
     }
   }
+
+  &:not([href]) {
+    text-decoration: none;
+  }
 }
 
 @media print {
