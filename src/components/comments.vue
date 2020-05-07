@@ -172,6 +172,7 @@ export default {
   grid-area: footer;
 
   display: grid;
+  grid-gap: var(--global-space-fixed-3);
   grid-template-columns: 1fr auto;
   grid-template-areas: "user operations";
 }
