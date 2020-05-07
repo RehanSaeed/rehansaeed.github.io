@@ -27,7 +27,7 @@
     "@gridsome/transformer-remark": "^0.5.0",
     "@noxify/gridsome-plugin-remark-embed": "^1.2.0",
     "@vssue/api-github-v3": "^1.4.4",
-    "date-fns": "^2.12.0",
+    "date-fns": "^2.13.0",
     "dialog-polyfill": "^0.5.1",
     "gh-pages": "^2.2.0",
     "gridsome": "^0.7.14",

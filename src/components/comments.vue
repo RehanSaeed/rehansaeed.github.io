@@ -177,6 +177,7 @@ export default {
 }
 .vssue-current-user {
   grid-area: user;
+  align-self: center;
 }
 .vssue-current-user span {
   display: none;
