@@ -155,7 +155,7 @@ export default {
       padding: 5px;
       height: 60px;
       width: 60px;
-      fill: #757f8a;
+      fill: var(--global-body-color);
     }
   }
 }
