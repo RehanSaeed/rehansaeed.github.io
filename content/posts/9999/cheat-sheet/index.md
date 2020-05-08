@@ -36,30 +36,9 @@ Duis aliquet ex eu scelerisque ultricies. Nam ac sagittis ligula. Vestibulum vel
 [Link](https://example.com)
 [Empty Link]()
 
-# Blockquotes
-
-> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dolor in tellus dictum, vel pharetra lacus ultricies.
-
-With line break:
-
-> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dolor in tellus dictum, vel pharetra lacus ultricies.
-> 
-> Phasellus porttitor scelerisque elit et ultrices. Donec auctor sapien finibus metus commodo, nec tempus tortor interdum. Vestibulum porttitor venenatis eros quis lacinia.
-
-With `<cite>`:
-
-> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dolor in tellus dictum, vel pharetra lacus ultricies.
-> 
-> Phasellus porttitor scelerisque elit et ultrices. Donec auctor sapien finibus metus commodo, nec tempus tortor interdum. Vestibulum porttitor venenatis eros quis lacinia.
-> <footer><cite>Muhammad Rehan Saeed</cite></footer>
-
 # Horizontal Rule
 
 ---
-
-# Keyboard
-
-This uses `<kbd>` and looks like this ||CTRL+C||. Cool!
 
 # Lists
 
@@ -79,6 +58,23 @@ This uses `<kbd>` and looks like this ||CTRL+C||. Cool!
   1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   2. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   3. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+
+# Blockquotes
+
+> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dolor in tellus dictum, vel pharetra lacus ultricies.
+
+With line break:
+
+> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dolor in tellus dictum, vel pharetra lacus ultricies.
+> 
+> Phasellus porttitor scelerisque elit et ultrices. Donec auctor sapien finibus metus commodo, nec tempus tortor interdum. Vestibulum porttitor venenatis eros quis lacinia.
+
+With `<cite>`:
+
+> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dolor in tellus dictum, vel pharetra lacus ultricies.
+> 
+> Phasellus porttitor scelerisque elit et ultrices. Donec auctor sapien finibus metus commodo, nec tempus tortor interdum. Vestibulum porttitor venenatis eros quis lacinia.
+> <footer><cite>Muhammad Rehan Saeed</cite></footer>
 
 # Tables
 
@@ -105,6 +101,10 @@ This is a dangerous warning
 ::: details Title
 Some Code
 :::
+
+# Keyboard
+
+This uses `<kbd>` and looks like this ||CTRL+C||. Cool!
 
 # Syntax Highlighting
 
