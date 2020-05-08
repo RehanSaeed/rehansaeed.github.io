@@ -16,6 +16,11 @@ a {
     text-decoration-color: var(--global-link-visited-color);
   }
 
+  &:not([href]),
+  &[href=''] {
+    text-decoration: none;
+  }
+
   @supports (text-decoration-thickness: 1em) {
     text-decoration-thickness: 0.1rem;
     text-underline-offset: 0.125rem;
@@ -34,11 +39,11 @@ a {
     &:visited {
       text-decoration-color: var(--global-link-visited-color);
     }
-  }
 
-  &:not([href]),
-  &[href=''] {
-    text-decoration: none;
+    &:not([href]),
+    &[href=''] {
+      color: var(--global-link-color);
+    }
   }
 }
 
