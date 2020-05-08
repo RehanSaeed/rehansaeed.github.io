@@ -110,6 +110,10 @@ This uses `<kbd>` and looks like this ||CTRL+C||. Cool!
 
 This is `inline` code.
 
+```
+No language specified
+```
+
 ```js{codeTitle: "Code Title Code Title"}
 // Code Title
 ```
@@ -136,6 +140,10 @@ export default {
     }
   }
 }
+```
+
+```powershell
+docker image build --tag foo:1.0.0 --label "build"="123" --label "changeset"="0d9c7d3b77817caab3977b16d1d76bb3eb024837" .
 ```
 
 # Embed Code Snippets
