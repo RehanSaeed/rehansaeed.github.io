@@ -3,9 +3,6 @@ a {
   color: var(--global-link-color);
   text-decoration-color: var(--global-link-color);
   transition: text-decoration-thickness var(--global-duration-1) ease-out, text-underline-offset var(--global-duration-1) ease-out, text-decoration-color var(--global-duration-1) ease-out, color var(--global-duration-1) ease-out, opacity var(--global-duration-1) ease-out;
-  &:visited {
-    color: var(--global-link-visited-color);
-  }
 
   &:hover,
   &:focus,
@@ -14,23 +11,28 @@ a {
     text-decoration-color: var(--global-link-color);
   }
 
+  &:visited {
+    color: var(--global-link-visited-color);
+    text-decoration-color: var(--global-link-visited-color);
+  }
+
   @supports (text-decoration-thickness: 1em) {
     text-decoration-thickness: 0.1rem;
     text-underline-offset: 0.125rem;
     text-decoration-skip-ink: none;
 
-    &:visited {
-      color: var(--global-link-visited-color);
-      text-decoration-color: var(--global-link-visited-color);
-    }
-
     &:hover,
     &:focus,
     &:active {
       color: var(--global-background-color);
+      opacity: 1;
       text-decoration-color: var(--global-link-color);
       text-decoration-thickness: 1.125rem;
       text-underline-offset: -0.875rem;
+    }
+
+    &:visited {
+      text-decoration-color: var(--global-link-visited-color);
     }
   }
 
