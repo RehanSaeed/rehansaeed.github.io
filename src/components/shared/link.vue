@@ -74,6 +74,11 @@ export default {
     box-shadow: 0 0 0 hsl(0, 0%, 70%);
     transform: translateY(0);
   }
+
+  &:not([href]),
+  &[href=''] {
+    color: var(--global-body-color);
+  }
 }
 
 .link--contrast {
@@ -91,6 +96,11 @@ export default {
   }
 
   &:hover {
+    color: var(--global-accent-color);
+  }
+
+  &:not([href]),
+  &[href=''] {
     color: var(--global-accent-color);
   }
 }
