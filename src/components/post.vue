@@ -60,6 +60,8 @@ export default {
 }
 
 .post__content {
+  overflow: hidden;
+
   > h2:first-child {
     margin-top: 0;
   }
