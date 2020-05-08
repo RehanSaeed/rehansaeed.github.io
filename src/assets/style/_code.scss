@@ -29,8 +29,8 @@ pre[class*="language-"] ::selection {
 
 /* Code blocks */
 pre[class*="language-"] {
-  padding: 1em;
-  margin: 1.5em 0;
+  padding: .85rem;
+  margin: 1.275rem 0;
   overflow-x: auto;
   overflow-y: hidden;
   background-color: hsl(0, 0%, 100%);
@@ -211,8 +211,8 @@ pre[class*="language-"].line-numbers > code {
 
   /* Code blocks */
   pre[class*="language-"] {
-    padding: 1em;
-    margin: 1.5em 0;
+    padding: .85rem;
+    margin: 1.275rem 0;
     border: var(--global-border-width-1) solid hsl(0, 0%, 30%);
     background-color: hsl(70, 8%, 15%);
   }
