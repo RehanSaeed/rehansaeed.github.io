@@ -5,6 +5,11 @@ ol {
 
   li, p, ul, ol {
     margin-bottom: var(--global-space-fixed-3);
+    margin-top: var(--global-space-fixed-3);
+  }
+
+  li:first-child {
+    margin-top: 0;
   }
 
   li::marker {
