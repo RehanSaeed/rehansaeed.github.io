@@ -34,6 +34,7 @@ Duis aliquet ex eu scelerisque ultricies. Nam ac sagittis ligula. Vestibulum vel
 # Links
 
 [Link](https://example.com)
+[Empty Link]()
 
 # Blockquotes
 

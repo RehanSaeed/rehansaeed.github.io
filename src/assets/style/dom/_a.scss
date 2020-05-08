@@ -36,7 +36,8 @@ a {
     }
   }
 
-  &:not([href]) {
+  &:not([href]),
+  &[href=''] {
     text-decoration: none;
   }
 }
