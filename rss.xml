@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://preview.rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Fri, 08 May 2020 11:43:13 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 09 May 2020 07:39:11 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -2979,7 +2979,7 @@ script:
             <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
         </item>
         <item>
-            <title><![CDATA[Reactive Extensions (Rx) – Part 8 – Timeouts]]></title>
+            <title><![CDATA[Reactive Extensions (Rx) - Part 8 - Timeouts]]></title>
             <link>https://preview.rehansaeed.com/reactive-extensions-rx-part-8-timeouts/</link>
             <guid>https://preview.rehansaeed.com/reactive-extensions-rx-part-8-timeouts/</guid>
             <pubDate>Mon, 02 Jan 2017 00:00:00 GMT</pubDate>
@@ -6108,7 +6108,7 @@ filters.Add(
             <enclosure url="/images/hero/NWebSec-1366x768.png"/>
         </item>
         <item>
-            <title><![CDATA[Reactive Extensions (Rx) – Part 7 – Sample Events]]></title>
+            <title><![CDATA[Reactive Extensions (Rx) - Part 7 - Sample Events]]></title>
             <link>https://preview.rehansaeed.com/reactive-extensions-part7-sample-events/</link>
             <guid>https://preview.rehansaeed.com/reactive-extensions-part7-sample-events/</guid>
             <pubDate>Wed, 24 Dec 2014 00:00:00 GMT</pubDate>
@@ -6803,7 +6803,7 @@ this.WhenTextChanged
             <enclosure url="/images/hero/Elysium-Extra-1366x768.png"/>
         </item>
         <item>
-            <title><![CDATA[Model-View-ViewModel (MVVM) – Part 4 – INotifyDataErrorInfo]]></title>
+            <title><![CDATA[Model-View-ViewModel (MVVM) - Part 4 - INotifyDataErrorInfo]]></title>
             <link>https://preview.rehansaeed.com/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/</link>
             <guid>https://preview.rehansaeed.com/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/</guid>
             <pubDate>Tue, 09 Sep 2014 00:00:00 GMT</pubDate>
@@ -6843,10 +6843,10 @@ this.WhenTextChanged
 <p>That&#39;s a fair amount of work and a base class to do all that makes life much easier. So what are the main aims of a base class implementing <code>INotifyDataErrorInfo</code>?</p>
 <ul>
 <li>Integration - I usually want to raise an error in response to a property changing. So, we probably want to also implement <code>INotifyPropertyChanged</code>. Handily, I showed how best to create a base class for that in my last article in this series. So our new base class can inherit from the <code>NotifyPropertyChanges</code> base class.</li>
-<li>Performance – Performance is king. It needs to be fast and I mean really fast. You can&#39;t afford for your UI to freeze up while your view model works out if it has an error to raise or not. Some validation frameworks use an attribute based approach but this requires reflection so we will not be using that here.</li>
-<li>Reactive Extensions (Rx) – Events are old school, I want an observable error changed event notification system instead of the <code>ErrorsChanged</code> C# event.</li>
-<li>Human Error – I don&#39;t want to raise error change events for properties that don&#39;t exist by accident.</li>
-<li>Has it Really Error&#39;ed – I don&#39;t want to raise a error changed event twice by accident or if it has not really error&#39;ed.</li>
+<li>Performance - Performance is king. It needs to be fast and I mean really fast. You can&#39;t afford for your UI to freeze up while your view model works out if it has an error to raise or not. Some validation frameworks use an attribute based approach but this requires reflection so we will not be using that here.</li>
+<li>Reactive Extensions (Rx) - Events are old school, I want an observable error changed event notification system instead of the <code>ErrorsChanged</code> C# event.</li>
+<li>Human Error - I don&#39;t want to raise error change events for properties that don&#39;t exist by accident.</li>
+<li>Has it Really Error&#39;ed - I don&#39;t want to raise a error changed event twice by accident or if it has not really error&#39;ed.</li>
 </ul>
 <p>So, without further ado, here is my implementation. Note that there are three classes:</p>
 <pre><code class="language-cs">namespace Framework.ComponentModel
@@ -7923,7 +7923,7 @@ Console.WriteLine(disposable.IsDisposed);</code></pre>
             <enclosure url="/images/hero/NuGet-1366x768.png"/>
         </item>
         <item>
-            <title><![CDATA[Reactive Extensions (Rx) – Part 6 – Task ToObservable]]></title>
+            <title><![CDATA[Reactive Extensions (Rx) - Part 6 - Task ToObservable]]></title>
             <link>https://preview.rehansaeed.com/reactive-extensions-part6-task-toobservable/</link>
             <guid>https://preview.rehansaeed.com/reactive-extensions-part6-task-toobservable/</guid>
             <pubDate>Fri, 25 Apr 2014 00:00:00 GMT</pubDate>
@@ -8302,7 +8302,7 @@ public struct HashCode : IEquatable&lt;HashCode&gt;
             <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
         </item>
         <item>
-            <title><![CDATA[Reactive Extensions (Rx) – Part 5 – Awaiting Observables]]></title>
+            <title><![CDATA[Reactive Extensions (Rx) - Part 5 - Awaiting Observables]]></title>
             <link>https://preview.rehansaeed.com/reactive-extensions-part5-awaiting-observables/</link>
             <guid>https://preview.rehansaeed.com/reactive-extensions-part5-awaiting-observables/</guid>
             <pubDate>Thu, 27 Mar 2014 00:00:00 GMT</pubDate>
@@ -8571,7 +8571,7 @@ I am the developer of Elysium Extra. It was developed at the company where I wor
             <enclosure url="/images/hero/Elysium-1366x768.png"/>
         </item>
         <item>
-            <title><![CDATA[Reactive Extensions (Rx) – Part 4 – Replacing Timers]]></title>
+            <title><![CDATA[Reactive Extensions (Rx) - Part 4 - Replacing Timers]]></title>
             <link>https://preview.rehansaeed.com/reactive-extensions-part4-replacing-timers/</link>
             <guid>https://preview.rehansaeed.com/reactive-extensions-part4-replacing-timers/</guid>
             <pubDate>Tue, 11 Mar 2014 00:00:00 GMT</pubDate>
@@ -8818,7 +8818,7 @@ private void OnTimerElapsed(object sender, ElapsedEventArgs e)
             <enclosure url="/images/hero/Modern-UI-for-WPF-1366x768.png"/>
         </item>
         <item>
-            <title><![CDATA[Reactive Extensions (Rx) – Part 3 – Naming Conventions]]></title>
+            <title><![CDATA[Reactive Extensions (Rx) - Part 3 - Naming Conventions]]></title>
             <link>https://preview.rehansaeed.com/reactive-extensions-part3-naming-conventions/</link>
             <guid>https://preview.rehansaeed.com/reactive-extensions-part3-naming-conventions/</guid>
             <pubDate>Fri, 14 Feb 2014 00:00:00 GMT</pubDate>
@@ -8847,7 +8847,7 @@ private void OnTimerElapsed(object sender, ElapsedEventArgs e)
             <enclosure url="/images/hero/Reactive-Extensions-1366x768.png"/>
         </item>
         <item>
-            <title><![CDATA[Reactive Extensions (Rx) – Part 2 – Wrapping C# Events]]></title>
+            <title><![CDATA[Reactive Extensions (Rx) - Part 2 - Wrapping C# Events]]></title>
             <link>https://preview.rehansaeed.com/reactive-extensions-part2-wrapping-events/</link>
             <guid>https://preview.rehansaeed.com/reactive-extensions-part2-wrapping-events/</guid>
             <pubDate>Thu, 13 Feb 2014 00:00:00 GMT</pubDate>
