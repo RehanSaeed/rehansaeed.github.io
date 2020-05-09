@@ -1,5 +1,5 @@
 ---
-title: "Reactive Extensions (Rx) – Part 7 – Sample Events"
+title: "Reactive Extensions (Rx) - Part 7 - Sample Events"
 description: "Shows how to use the Reactive Extensions (Rx) Sample method to reduce the number of subscribed events by taking a sample from them over a given time period."
 author: "Muhammad Rehan Saeed"
 permalink: "/reactive-extensions-part7-sample-events/"

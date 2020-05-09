@@ -1,5 +1,5 @@
 ---
-title: "Model-View-ViewModel (MVVM) – Part 4 – INotifyDataErrorInfo"
+title: "Model-View-ViewModel (MVVM) - Part 4 - INotifyDataErrorInfo"
 description: "An base class implementation for the INotifyDataErrorInfo interface. Used in the Model-View-ViewModel (MVVM) pattern. Targeted for best performance."
 author: "Muhammad Rehan Saeed"
 permalink: "/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/"
@@ -70,10 +70,10 @@ namespace System.ComponentModel
 That's a fair amount of work and a base class to do all that makes life much easier. So what are the main aims of a base class implementing `INotifyDataErrorInfo`?
 
 - Integration - I usually want to raise an error in response to a property changing. So, we probably want to also implement `INotifyPropertyChanged`. Handily, I showed how best to create a base class for that in my last article in this series. So our new base class can inherit from the `NotifyPropertyChanges` base class.
-- Performance – Performance is king. It needs to be fast and I mean really fast. You can't afford for your UI to freeze up while your view model works out if it has an error to raise or not. Some validation frameworks use an attribute based approach but this requires reflection so we will not be using that here.
-- Reactive Extensions (Rx) – Events are old school, I want an observable error changed event notification system instead of the `ErrorsChanged` C# event.
-- Human Error – I don't want to raise error change events for properties that don't exist by accident.
-- Has it Really Error'ed – I don't want to raise a error changed event twice by accident or if it has not really error'ed.
+- Performance - Performance is king. It needs to be fast and I mean really fast. You can't afford for your UI to freeze up while your view model works out if it has an error to raise or not. Some validation frameworks use an attribute based approach but this requires reflection so we will not be using that here.
+- Reactive Extensions (Rx) - Events are old school, I want an observable error changed event notification system instead of the `ErrorsChanged` C# event.
+- Human Error - I don't want to raise error change events for properties that don't exist by accident.
+- Has it Really Error'ed - I don't want to raise a error changed event twice by accident or if it has not really error'ed.
 
 So, without further ado, here is my implementation. Note that there are three classes:
 

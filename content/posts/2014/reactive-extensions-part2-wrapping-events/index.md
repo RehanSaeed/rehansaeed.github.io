@@ -1,5 +1,5 @@
 ---
-title: "Reactive Extensions (Rx) – Part 2 – Wrapping C# Events"
+title: "Reactive Extensions (Rx) - Part 2 - Wrapping C# Events"
 description: "Reactive Extensions IObservable wrappers for C# events and hiding the C# events entirely from subscribers using explicit interface implementations."
 author: "Muhammad Rehan Saeed"
 permalink: "/reactive-extensions-part2-wrapping-events/"
