@@ -1,5 +1,6 @@
 // https://github.com/sindresorhus/github-markdown-css
 .markdown-body {
+  overflow: hidden;
   // line-height: 1.5;
   // color: #24292e;
   // font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
@@ -816,6 +817,7 @@
   .highlight {
     // margin-bottom: 16px;
     margin-bottom: var(--global-space-fixed-5);
+    display: grid;
   }
 
   >pre {
@@ -830,7 +832,8 @@
   .highlight pre,
   pre {
     padding: .85rem;
-    overflow: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
     font-size: 85%;
     line-height: 1.45;
     background-color: #f6f8fa;

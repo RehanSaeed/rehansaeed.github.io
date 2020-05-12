@@ -32,6 +32,7 @@ export default {
 .vssue {
   display: grid;
   grid-gap: var(--global-space-fixed-5);
+  overflow: hidden;
 
   p {
     min-width: 0;
