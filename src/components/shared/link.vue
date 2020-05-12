@@ -39,6 +39,7 @@ export default {
   color: var(--global-title-color);
   font-family: var(--global-font-family-heading);
   line-height: var(--global-line-height-1);
+  text-align: center;
   text-decoration: none;
   transition: all var(--global-duration-1) ease-out;
 

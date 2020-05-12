@@ -43,6 +43,7 @@ export default {
   font-family: var(--global-font-family-heading);
   line-height: var(--global-line-height-1);
   padding: 0;
+  text-align: center;
   transition: all var(--global-duration-1) ease-out;
 
   &:hover {
