@@ -94,7 +94,7 @@ When talking about the `.gitattributes` file, you will quite often hear some peo
 
 As you saw above, we already do this with Git LFS but if you don't use LFS, read on as you may need to explicitly list binary files in certain rare circumstances.
 
-I was interested so I asked a [StackOverflow question](https://stackoverflow.com/questions/57030698/do-i-really-need-to-specify-all-binary-files-in-gitattributes) and got great answers. If you look at the [Git source code](https://github.com/git/git/blob/9c9b961d7eb15fb583a2a812088713a68a85f1c0/xdiff-interface.c#L187-L193), it checks first 8,000 bytes of a file to see if it contains a NUL character. If it does, the file is assumed to be binary. However, there are cases where you may need to do it explicitly:
+I was interested so I asked a [Stack Overflow question](https://stackoverflow.com/questions/57030698/do-i-really-need-to-specify-all-binary-files-in-gitattributes) and got great answers. If you look at the [Git source code](https://github.com/git/git/blob/9c9b961d7eb15fb583a2a812088713a68a85f1c0/xdiff-interface.c#L187-L193), it checks first 8,000 bytes of a file to see if it contains a NUL character. If it does, the file is assumed to be binary. However, there are cases where you may need to do it explicitly:
 
 - UTF-16 encoded files could be mis-detected as binary.
 - Some image format or file that consists only of printable ASCII bytes. This is pretty weird and sounds unlikely to happen.

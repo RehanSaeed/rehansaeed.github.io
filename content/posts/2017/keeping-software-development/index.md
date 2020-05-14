@@ -98,8 +98,8 @@ These people don't really fit into any one category but are well worth reading:
 - [Elton Stoneman](http://blog.sixeyed.com/) ([RSS](http://blog.sixeyed.com/rss/)) - Works for Docker, also produced nice PluralSight courses on Docker.
 - [Nicholas Blumhardt](https://nblumhardt.com/) ([RSS](http://nblumhardt.com/feed/)) - Started the excellent Serilog logging framework. Mostly Serilog updates.
 - [James Newton-King](http://james.newtonking.com:80/) ([RSS](http://feeds.newtonking.com/jamesnewtonking)) - The author of JSON.NET. Find out about any updates to this important library.
-- [Coding Horror](https://blog.codinghorror.com/) ([RSS](http://feeds.feedburner.com/codinghorror/)) - Founder of [StackOverflow.com](https://stackoverflow.com) and [Discourse.org](https://discourse.org).
-- [Nick Craver](https://nickcraver.com/blog) ([RSS](http://nickcraver.com/blog/feed.xml)) - Developer at StackOverflow. Blog posts are rare but very long and detailed when they come.
+- [Coding Horror](https://blog.codinghorror.com/) ([RSS](http://feeds.feedburner.com/codinghorror/)) - Founder of [Stack Overflow.com](https://stackoverflow.com) and [Discourse.org](https://discourse.org).
+- [Nick Craver](https://nickcraver.com/blog) ([RSS](http://nickcraver.com/blog/feed.xml)) - Developer at Stack Overflow. Blog posts are rare but very long and detailed when they come.
 - [Muhammad Rehan Saeed](https://rehansaeed.com) ([RSS](https://rehansaeed.com/feed/)) - I do a lot of ASP.NET blog posts but some more general .NET posts too.
 - [Nate McMaster](http://www.natemcmaster.com/) ([RSS](http://www.natemcmaster.com/feed.xml)) - Microsoft developer posting about MSBuild.
 

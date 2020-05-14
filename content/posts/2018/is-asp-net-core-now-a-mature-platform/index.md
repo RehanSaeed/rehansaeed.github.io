@@ -1,6 +1,6 @@
 ---
 title: "Is ASP.NET Core now a Mature Platform?"
-description: "ASP.NET Core a large developer base, a large number of GitHub projects, StackOverflow questions, bloggers and companies who use it. It's a mature platform."
+description: "ASP.NET Core a large developer base, a large number of GitHub projects, Stack Overflow questions, bloggers and companies who use it. It's a mature platform."
 author: "Muhammad Rehan Saeed"
 permalink: "/is-asp-net-core-now-a-mature-platform/"
 heroImage: "/images/hero/Rocket-1366x768.jpg"
@@ -69,7 +69,7 @@ Overall this is all about reducing risk. There will always be a chance that some
 
 # Who is using it?
 
-Bing.com is [running on ASP.NET Core](https://blogs.msdn.microsoft.com/dotnet/2018/08/20/bing-com-runs-on-net-core-2-1/) and a site doesn't get much bigger than that. StackOverflow is [working on their transition](https://nickcraver.com/blog/2018/11/29/stack-overflow-how-we-do-monitoring/) to .NET Core. The [Orchard CMS](https://github.com/OrchardCMS/OrchardCore) uses .NET Core. Even WordPress and various PHP applications can be run on .NET Core these days using [peachpie](https://www.peachpie.io/).
+Bing.com is [running on ASP.NET Core](https://blogs.msdn.microsoft.com/dotnet/2018/08/20/bing-com-runs-on-net-core-2-1/) and a site doesn't get much bigger than that. Stack Overflow is [working on their transition](https://nickcraver.com/blog/2018/11/29/stack-overflow-how-we-do-monitoring/) to .NET Core. The [Orchard CMS](https://github.com/OrchardCMS/OrchardCore) uses .NET Core. Even WordPress and various PHP applications can be run on .NET Core these days using [peachpie](https://www.peachpie.io/).
 
 # What's Still Missing?
 
@@ -99,7 +99,7 @@ Serving static files is one of the most basic features. There are a few things t
 
 # Is It A Mature Platform?
 
-There is a lot less churn. There are a lot of open source projects you can leverage. A large enough developer base has now grown up, so you see a lot more GitHub projects, StackOverflow questions, bloggers like myself and companies who make their living from the platform.
+There is a lot less churn. There are a lot of open source projects you can leverage. A large enough developer base has now grown up, so you see a lot more GitHub projects, Stack Overflow questions, bloggers like myself and companies who make their living from the platform.
 
 There seems to be a trend at the moment where people are jumping ship from long standing platforms and languages to brand new ones. Android developers have jumped from Java to Kotlin (and have managed to delete half their code in the process, Java is so verbose!). The poor souls who wrote Objective C, have jumped to Swift. Where once applications would be written in C++, they are now written in Go or Rust. Where once people wrote JavaScript, they are still writing JavaScript (TypeScript has taken off but not completely)...ok that has not changed. .NET Core seems to be the only one that seems to have bucked the trend and tried to reinvent itself completely while not changing things too much and still succeeding in the process.
 

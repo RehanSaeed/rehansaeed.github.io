@@ -75,7 +75,7 @@ This generated friendly title is compared with the one that is passed in and if 
 
 # The FriendlyUrlHelper
 
-The `FriendlyUrlHelper` was inspired by a famous StackOverflow question '[How does Stack Overflow generate its SEO-friendly URLs?](https://stackoverflow.com/questions/25259/how-does-stack-overflow-generate-its-seo-friendly-urls/25486)'. The full source code for it is shown below.
+The `FriendlyUrlHelper` was inspired by a famous Stack Overflow question '[How does Stack Overflow generate its SEO-friendly URLs?](https://stackoverflow.com/questions/25259/how-does-stack-overflow-generate-its-seo-friendly-urls/25486)'. The full source code for it is shown below.
 
 ```cs
 /// <summary>
@@ -290,7 +290,7 @@ public static class FriendlyUrlHelper
 }
 ```
 
-The difference between my version and the one in the StackOverflow answer is that mine optionally handles non-ASCII characters using the boolean remapToAscii parameter. This parameter remaps special UTF8 characters like `è` to their ASCII equivalent `e`. If there is no equivalent, then those characters are dropped. All modern browsers except Internet Explorer and Edge display the `è` correctly. Older browsers like Internet Explorer percent encode these international characters so they are displayed as `%C3%A8`. What you set this to depends on whether your target users are English speakers and if you care about supporting IE and Edge. I must say that I was hoping Edge would have added support so that `remapToAscii` could be turned off by default but I'm sorely disappointed.
+The difference between my version and the one in the Stack Overflow answer is that mine optionally handles non-ASCII characters using the boolean remapToAscii parameter. This parameter remaps special UTF8 characters like `è` to their ASCII equivalent `e`. If there is no equivalent, then those characters are dropped. All modern browsers except Internet Explorer and Edge display the `è` correctly. Older browsers like Internet Explorer percent encode these international characters so they are displayed as `%C3%A8`. What you set this to depends on whether your target users are English speakers and if you care about supporting IE and Edge. I must say that I was hoping Edge would have added support so that `remapToAscii` could be turned off by default but I'm sorely disappointed.
 
 Using the third parameter you can specify a maximum length for the title with any additional characters being dropped. Finally, the last thing to say about this method is that it has been tuned for speed.
 

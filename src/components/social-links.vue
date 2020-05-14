@@ -6,7 +6,7 @@
     <u-link v-if="this.$static.metadata.author.gitHubUrl" label="GitHub" :href="this.$static.metadata.author.gitHubUrl" class="social__link">
       <u-icon-github :size="30"/>
     </u-link>
-    <u-link v-if="this.$static.metadata.author.stackOverflowUrl" label="StackOverflow" :href="this.$static.metadata.author.stackOverflowUrl" class="social__link">
+    <u-link v-if="this.$static.metadata.author.stackOverflowUrl" label="Stack Overflow" :href="this.$static.metadata.author.stackOverflowUrl" class="social__link">
       <u-icon-stackoverflow :size="30"/>
     </u-link>
     <u-link v-if="this.$static.metadata.author.linkedInUrl" label="LinkedIn" :href="this.$static.metadata.author.linkedInUrl" class="social__link">

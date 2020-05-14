@@ -25,7 +25,7 @@ I updated my HashCode implementation to cover a few more scenarios which I discu
 I updated this article to talk about a new `HashCode` class included in .NET Core 2.1 and licensing information for my code since I've been asked repeatedly.
 :::
 
-Implementing `GetHashCode` is hard work and little understood. If you take a look on MSDN or StackOverflow for a few pointers, you'll see a plethora of examples with all kinds of little used C# operators and magic numbers with little explanation for developers (Especially the newbies) what they are for and why we need them. This, for a method which exists on the `Object` class and is the root of all that is good and wholesome in C# is surprising.
+Implementing `GetHashCode` is hard work and little understood. If you take a look on MSDN or Stack Overflow for a few pointers, you'll see a plethora of examples with all kinds of little used C# operators and magic numbers with little explanation for developers (Especially the newbies) what they are for and why we need them. This, for a method which exists on the `Object` class and is the root of all that is good and wholesome in C# is surprising.
 
 Before I continue, I recommend reading [Eric Lippert's blog post](http://blogs.msdn.com/b/ericlippert/archive/2011/02/28/guidelines-and-rules-for-gethashcode.aspx) about the subject. He does not show any code, just goes into when and where we need to implement the `GetHashCode` method. Eric does a much better job than I could do but in short, `GetHashCode` is implemented wherever you implement the `Equals` method and ideally your class should be immutable.
 
@@ -63,7 +63,7 @@ public sealed class SuperHero
 }
 ```
 
-In our example we have an immutable object with a variety of fields of different types, including a collection. One possible implementation of `GetHashCode` according to the highest rated [StackOverflow post](http://stackoverflow.com/questions/263400/what-is-the-best-algorithm-for-an-overridden-system-object-gethashcode/263416#263416) (If modified to fit our example and deal with `null`'s) may be:
+In our example we have an immutable object with a variety of fields of different types, including a collection. One possible implementation of `GetHashCode` according to the highest rated [Stack Overflow post](http://stackoverflow.com/questions/263400/what-is-the-best-algorithm-for-an-overridden-system-object-gethashcode/263416#263416) (If modified to fit our example and deal with `null`'s) may be:
 
 ```cs
 public override int GetHashCode()
@@ -245,7 +245,7 @@ public override int GetHashCode()
 
 Now isn't that pretty? All the nasty magic numbers and `unchecked` code has been hidden away. It is a very lightweight and simple `struct`, so although we create new instances of it, it's stored in the stack rather than the memory heap. What's more, is that is code is just as fast (I've timed it)! We're using generics so there is no boxing or unboxing going on. We're still using the `unchecked` keyword, so overflow checking is still disabled.
 
-One interesting edge case is what to do when hashing a collection and you get either a `null` or empty collection. Should you use a zero to represent both scenarios (zero is usually used to represent a `null` value) or differentiate them somehow. I managed to get a response from [Jon Skeet]() himself on StackOverflow:
+One interesting edge case is what to do when hashing a collection and you get either a `null` or empty collection. Should you use a zero to represent both scenarios (zero is usually used to represent a `null` value) or differentiate them somehow. I managed to get a response from [Jon Skeet]() himself on Stack Overflow:
 
 > if both states are valid, it seems perfectly reasonable to differentiate between them. (Someone carrying an empty box isn't the same as someone not carrying a box at all...)
 > <footer><cite><a href="https://stackoverflow.com/questions/8094867/good-gethashcode-override-for-list-of-foo-objects-respecting-the-order/8094931?noredirect=1#comment99700237_8094931">Jon Skeet</a></cite></footer>

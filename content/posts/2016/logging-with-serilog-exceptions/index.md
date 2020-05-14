@@ -69,7 +69,7 @@ Not only that but if you set up something like [Kibana](https://www.elastic.co/p
 
 One major problem with all exceptions is that they do not log all the properties of an exception and throw away vital information. Take the `DbEntityValidationException` from EntityFramework as an example. This exception contains vital information buried not in the message but in a custom property called `EntityValidationErrors`. The problem is that when you do an `exception.ToString()` call, this vital information is not included in the resulting string. Even worse, it's not included in the debugger either. This is a pretty major failing in the .NET framework but alas we have to work around it.
 
-There are literally dozens of questions on [StackOverflow](https://stackoverflow.com/questions/15820505/dbentityvalidationexception-how-can-i-easily-tell-what-caused-the-error) asking how to deal with this problem and all the major logging frameworks fail in this regard. All of them call `exception.ToString()` and fail to log the `EntityValidationErrors` collection.
+There are literally dozens of questions on [Stack Overflow](https://stackoverflow.com/questions/15820505/dbentityvalidationexception-how-can-i-easily-tell-what-caused-the-error) asking how to deal with this problem and all the major logging frameworks fail in this regard. All of them call `exception.ToString()` and fail to log the `EntityValidationErrors` collection.
 
 `DbEntityValidationException` is not the only culprit, half the exceptions in the .NET framework contain custom properties that are not logged. The `Exception` base class itself has a `Data` dictionary collection which is never logged either.
 
