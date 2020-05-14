@@ -10,7 +10,7 @@
 
       <!-- <u-pager class="posts__pager" :page-info="$page.posts.pageInfo"/> -->
 
-      <u-newsletter class="posts__newsletter"/>
+      <!-- <u-newsletter class="posts__newsletter"/> -->
 
     </div>
   </Layout>
