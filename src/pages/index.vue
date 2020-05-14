@@ -2,15 +2,15 @@
   <Layout>
     <div class="posts">
 
-      <!-- <u-author/> -->
+      <u-author/>
 
-      <div class="posts__items">
+      <!-- <div class="posts__items">
         <u-post-card v-for="edge in $page.posts.edges" :key="edge.node.id" :post="edge.node"/>
-      </div>
+      </div> -->
 
-      <!-- <u-pager class="posts__pager" :page-info="$page.posts.pageInfo"/> -->
+      <u-pager class="posts__pager" :page-info="$page.posts.pageInfo"/>
 
-      <!-- <u-newsletter class="posts__newsletter"/> -->
+      <u-newsletter class="posts__newsletter"/>
 
     </div>
   </Layout>

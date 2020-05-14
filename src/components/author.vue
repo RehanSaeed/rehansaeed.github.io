@@ -7,7 +7,7 @@
 
 		<p class="author__description">{{$static.metadata.description}}</p>
 
-		<!-- <u-social-links /> -->
+		<u-social-links />
 
 	</section>
 </template>
