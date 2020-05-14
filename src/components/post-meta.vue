@@ -1,11 +1,11 @@
 <template>
-  <div class="post-meta">
+  <p class="post-meta">
     Posted <time :datetime="meta.date" :title="meta.date">{{postedDisplayDate}}</time>
     <span v-if="meta.dateModified"> and updated <time :datetime="meta.dateModified" :title="meta.dateModified">{{updatedDisplayDate}}</time></span>
     <span v-if="meta.timeToRead">
       - <strong>{{ meta.timeToRead }} min read</strong>
     </span>
-  </div>
+  </p>
 </template>
 
 <script>
@@ -46,6 +46,7 @@ export default {
 <style lang="scss">
 .post-meta {
   font-size: var(--global-font-size-1);
+  margin-bottom: 0;
   opacity: .8;
 }
 </style>
