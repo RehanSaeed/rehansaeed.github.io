@@ -1,14 +1,14 @@
 <template>
   <Layout>
-    <div class="post-tag">
+    <div class="tag-page">
 
       <u-heading level="1" center># {{$page.tag.title}}</u-heading>
 
-      <div class="post-tag__items">
+      <div class="tag-page__items">
         <u-post-card v-for="edge in $page.tag.belongsTo.edges" :key="edge.node.id" :post="edge.node"/>
       </div>
 
-      <u-newsletter class="post-tag__newsletter"/>
+      <u-newsletter class="tag-page__newsletter"/>
 
     </div>
   </Layout>
@@ -104,20 +104,20 @@ query Tag ($id: ID!) {
 </page-query>
 
 <style lang="scss">
-.post-tag {
+.tag-page {
   display: grid;
   grid-gap: var(--global-space-fluid-5);
   grid-template-columns: 1fr;
 }
 
-.post-tag__items {
+.tag-page__items {
   display: grid;
   grid-gap: var(--global-space-fluid-5);
   grid-template-columns: repeat(auto-fit, minmax(var(--global-space-content-min-width), var(--global-space-content-max-width)));
   justify-content: center;
 }
 
-.post-tag__newsletter {
+.tag-page__newsletter {
   justify-self: center;
 }
 </style>
