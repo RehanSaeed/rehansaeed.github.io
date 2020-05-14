@@ -1,6 +1,6 @@
 <template>
-  <p class="post-meta">Posted <time :datetime="meta.date" :title="meta.date">{{postedDisplayDate}}</time>
-    <span v-if="meta.dateModified"> and updated <time :datetime="meta.dateModified" :title="meta.dateModified">{{updatedDisplayDate}}</time></span>
+  <p class="post-meta">Posted {{postedDisplayDate}}
+    <span v-if="meta.dateModified"> and updated {{updatedDisplayDate}}</span>
     <span v-if="meta.timeToRead"> - <strong>{{ meta.timeToRead }} min read</strong></span>
   </p>
 </template>
