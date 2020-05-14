@@ -28,6 +28,11 @@ export default {
     'u-heading': heading,
     'u-newsletter': newsletter,
   },
+  metaInfo () {
+    return {
+      title: 'Not Found',
+    }
+  },
 }
 </script>
 
