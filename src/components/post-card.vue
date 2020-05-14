@@ -11,7 +11,7 @@
       <p class="post-card__description">{{post.description}}</p>
 
       <u-post-meta class="post-card__meta" :meta="post" />
-      <!-- <u-tags v-if="post.tags" class="post-card__tags" :tags="post.tags" /> -->
+      <u-tags v-if="post.tags" class="post-card__tags" :tags="post.tags" />
 
       <g-link class="post-card__link" :to="post.path">Link</g-link>
     </div>
