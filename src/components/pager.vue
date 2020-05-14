@@ -1,10 +1,14 @@
 <template>
   <div class="pager">
-    <g-link v-if="pageInfo.hasPreviousPage" class="pager__previous-button" bordered contrast :to="previousUrl">Previous</g-link>
+    <div v-if="pageInfo.hasPreviousPage">
+      <u-link class="pager__previous-button" bordered contrast :to="previousUrl">Previous</u-link>
+    </div>
 
     <p class="pager__info"><strong>Page {{pageInfo.currentPage}} of {{pageInfo.totalPages}}</strong></p>
 
-    <g-link v-if="pageInfo.hasNextPage" class="pager__next-button" bordered contrast :to="nextUrl">Next</g-link>
+    <div v-if="pageInfo.hasNextPage">
+      <u-link class="pager__next-button" bordered contrast :to="nextUrl">Next</u-link>
+    </div>
   </div>
 </template>
 
