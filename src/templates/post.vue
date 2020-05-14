@@ -38,12 +38,13 @@ export default {
     'u-post-meta': postMeta,
   },
   computed: {
+    title: function() { return this.$page && this.$page.post ? this.$page.post.title : '' },
     image: function() { return this.$static.metadata.url + this.$page.post.heroImage; },
     url: function() { return this.$static.metadata.url + this.$page.post.path; }
   },
   metaInfo () {
     return {
-      title: this.$page?.post?.title,
+      title: this.title,
       link: [
         { rel: 'canonical', href: this.url },
       ],
@@ -55,11 +56,11 @@ export default {
         { name: 'twitter:card', content: 'summary_large_image' },
         { name: 'twitter:site', content: this.$static.metadata.author.twitter },
         { name: 'twitter:creator', content: this.$static.metadata.author.twitter },
-        { name: 'twitter:title', content: this.$page.post.title },
+        { name: 'twitter:title', content: this.title },
         { name: 'twitter:description', content: this.$page.post.description },
         { name: 'twitter:image', content: this.image },
         // Open Graph
-        { property: 'og:title', content: this.$page.post.title },
+        { property: 'og:title', content: this.title },
         { property: 'og:url', content: this.url },
         ...getOpenGraphImage(this.image),
         { property: 'og:description', content: this.$page.post.description },
@@ -83,7 +84,7 @@ export default {
               '@type': 'WebPage',
               '@id': this.$static.metadata.url,
             },
-            headline: this.$page.post.title,
+            headline: this.title,
             description: this.$page.post.description,
             keywords: this.$page.post.tags.map(x => x.title).join(),
             url: this.url,

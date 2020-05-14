@@ -28,13 +28,14 @@ export default {
     'u-post-card': postCard,
   },
   computed: {
+    title: function() { return this.$page && this.$page.tag ? this.$page.tag.title : '' },
     description: function() { return `Blog posts authored by ${this.$static.metadata.author.name} about ${this.$page.tag.title}.`; },
     image: function() { return this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'; },
     url: function() { return this.$static.metadata.url + this.$page.tag.path; }
   },
   metaInfo() {
     return {
-      title: this.$page?.tag?.title,
+      title: this.title,
       link: [
         { rel: 'canonical', href: this.url },
       ],
@@ -45,11 +46,11 @@ export default {
         { name: 'twitter:card', content: 'summary_large_image' },
         { name: 'twitter:site', content: this.$static.metadata.author.twitter },
         { name: 'twitter:creator', content: this.$static.metadata.author.twitter },
-        { name: 'twitter:title', content: this.$page.tag.title },
+        { name: 'twitter:title', content: this.title },
         { name: 'twitter:description', content: this.description },
         { name: 'twitter:image', content: this.image },
         // Open Graph
-        { property: 'og:title', content: this.$page.tag.title },
+        { property: 'og:title', content: this.title },
         { property: 'og:url', content: this.url },
         { property: 'og:image', content: this.image },
         { property: 'og:image:height', content: this.image.match(/(\d*)x(\d*)/)[2] },
