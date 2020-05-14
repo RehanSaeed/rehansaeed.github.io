@@ -56,7 +56,7 @@ export default {
   margin-top: var(--global-space-fluid--6);
   margin-bottom: var(--global-space-fluid-5);
   overflow: hidden;
-  width: calc(100% + var(--global-space-fluid-7));
+  width: calc(100% + (2 * var(--global-space-fluid-6)));
 
   &:empty {
     display: none;
