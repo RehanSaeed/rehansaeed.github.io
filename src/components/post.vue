@@ -46,6 +46,10 @@ export default {
 </script>
 
 <style lang="scss">
+.post {
+  overflow: hidden;
+}
+
 .post__header {
   border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
   margin-left: var(--global-space-fluid--6);
@@ -60,8 +64,6 @@ export default {
 }
 
 .post__content {
-  overflow: hidden;
-
   > h2:first-child {
     margin-top: 0;
   }
