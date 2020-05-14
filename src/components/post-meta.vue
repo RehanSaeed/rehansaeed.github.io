@@ -1,7 +1,10 @@
 <template>
-  <p class="post-meta">Posted <time :datetime="meta.date" :title="meta.date">{{postedDisplayDate}}</time>
-    <span v-if="meta.dateModified"> and updated <time :datetime="meta.dateModified" :title="meta.dateModified">{{updatedDisplayDate}}</time></span> - <strong>{{ meta.timeToRead }} min read</strong>
+  <p class="post-meta">
+    Posted <time :datetime="meta.date" :title="meta.date">{{postedDisplayDate}}</time>
   </p>
+  <!-- <p class="post-meta">Posted <time :datetime="meta.date" :title="meta.date">{{postedDisplayDate}}</time>
+    <span v-if="meta.dateModified"> and updated <time :datetime="meta.dateModified" :title="meta.dateModified">{{updatedDisplayDate}}</time></span> - <strong>{{ meta.timeToRead }} min read</strong>
+  </p> -->
 </template>
 
 <script>
