@@ -9,6 +9,8 @@ module.exports = {
   // siteDescription: site.description,
   siteUrl: site.url,
 
+  chainWebpack: config => config.mode('development'),
+
   templates: {
     post: "/:permalink",
     tag: "/tag/:title",
