@@ -2,7 +2,7 @@
   <Layout>
     <div class="posts">
 
-      <u-author/>
+      <!-- <u-author/> -->
 
       <div class="posts__items">
         <u-post-card v-for="edge in $page.posts.edges" :key="edge.node.id" :post="edge.node"/>
