@@ -1,11 +1,13 @@
 <template>
-  <p class="post-meta">
-    Posted <time :datetime="meta.date" :title="meta.date">{{postedDisplayDate}}</time>
-    <span v-if="meta.dateModified"> and updated <time :datetime="meta.dateModified" :title="meta.dateModified">{{updatedDisplayDate}}</time></span>
-    <span v-if="meta.timeToRead">
-      - <strong>{{ meta.timeToRead }} min read</strong>
-    </span>
-  </p>
+  <ClientOnly>
+    <p class="post-meta">
+      Posted <time :datetime="meta.date" :title="meta.date">{{postedDisplayDate}}</time>
+      <span v-if="meta.dateModified"> and updated <time :datetime="meta.dateModified" :title="meta.dateModified">{{updatedDisplayDate}}</time></span>
+      <span v-if="meta.timeToRead">
+        - <strong>{{ meta.timeToRead }} min read</strong>
+      </span>
+    </p>
+  </ClientOnly>
 </template>
 
 <script>
@@ -37,7 +39,7 @@ export default {
     },
   },
   computed: {
-    postedDisplayDate: function() { return getDisplayDateFromString(new Date(this.meta.date)); },
+    postedDisplayDate: function() { return getDisplayDateFromString(this.meta.date); },
     updatedDisplayDate: function() { return getDisplayDateFromString(this.meta.dateModified); },
   }
 }
