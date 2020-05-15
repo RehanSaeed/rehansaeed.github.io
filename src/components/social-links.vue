@@ -3,10 +3,10 @@
     <u-link v-if="this.$static.metadata.author.twitterUrl" label="Twitter" :href="this.$static.metadata.author.twitterUrl" class="social__link">
       <u-icon-twitter :size="30"/>
     </u-link>
-    <u-link v-if="this.$static.metadata.author.gitHubUrl" label="GitHub" :href="this.$static.metadata.author.gitHubUrl" class="social__link">
+    <u-link v-if="this.$static.metadata.author.gitHub.url" label="GitHub" :href="this.$static.metadata.author.gitHub.url" class="social__link">
       <u-icon-github :size="30"/>
     </u-link>
-    <u-link v-if="this.$static.metadata.author.stackOverflowUrl" label="Stack Overflow" :href="this.$static.metadata.author.stackOverflowUrl" class="social__link">
+    <u-link v-if="this.$static.metadata.author.stackOverflow.url" label="Stack Overflow" :href="this.$static.metadata.author.stackOverflow.url" class="social__link">
       <u-icon-stackoverflow :size="30"/>
     </u-link>
     <u-link v-if="this.$static.metadata.author.linkedInUrl" label="LinkedIn" :href="this.$static.metadata.author.linkedInUrl" class="social__link">
@@ -62,9 +62,13 @@ query {
   metadata {
     author {
       email
-      gitHubUrl
+      gitHub {
+        url
+      }
       linkedInUrl
-      stackOverflowUrl
+      stackOverflow {
+        url
+      }
       twitterUrl
       youtubeUrl
     }

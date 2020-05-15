@@ -24,8 +24,15 @@
     "lastName": "Saeed",
     "gender": "male",
     "email": "9ceef9f4fdf2effdf9f9f8dcfbf1fdf5f0b2fff3f1",
-    "gitHubUrl": "https://github.com/RehanSaeed",
-    "stackOverflowUrl": "https://stackoverflow.com/users/1212017/muhammad-rehan-saeed",
+    "gitHub": {
+      "user": "RehanSaeed",
+      "url": "https://github.com/RehanSaeed"
+    },
+    "stackOverflow": {
+      "user": "1212017",
+      "url": "https://stackoverflow.com/users/1212017/muhammad-rehan-saeed",
+      "storyUrl": "https://stackoverflow.com/story/muhammad-rehan-saeed"
+    },
     "linkedInUrl": "https://www.linkedin.com/in/muhammad-rehan-saeed/",
     "twitter": "@RehanSaeedUK",
     "twitterUrl": "https://twitter.com/RehanSaeedUK",

@@ -9,10 +9,10 @@
         <u-heading level="2" class="about__title">Muhammad Rehan Saeed</u-heading>
         <u-social-links class="about__social-links"/>
         <p class="about__description">Rehan is a professional Software Developer at Microsoft. Although he works for Microsoft his opinions are his own. If it’s written in C# or .NET, Rehan has probably written something using it in anger!</p>
-        <p class="about__description">You can see some of the open source projects that I've started and maintained in my <g-link to="/portfolio/">portfolio</g-link>. There are many others I've contributed to which you can see in my <a href="https://github.com/RehanSaeed">GitHub profile</a> and of course there are other commercial projects that I cannot disclose.</p>
-        <a href="https://github.com/RehanSaeed"><img class="about__github-followers" alt="GitHub follower count" height="20" width="112" src="https://img.shields.io/github/followers/RehanSaeed?style=social"/></a>
-        <p class="about__description">You can see a timeline of my open source work and blog posts in my <a href="https://stackoverflow.com/story/muhammad-rehan-saeed">Stack Overflow Developer Story</a> or just view my <a href="https://stackoverflow.com/users/1212017/muhammad-rehan-saeed">Stack Overflow profile</a>.</p>
-        <a href="https://stackoverflow.com/story/muhammad-rehan-saeed"><img class="about__stack-overflow-image" alt="Stack Overflow profile statistics" height="58" width="208" :src="stackOverflow"/></a>
+        <p class="about__description">You can see some of the open source projects that I've started and maintained in my <g-link to="/portfolio/">portfolio</g-link>. There are many others I've contributed to which you can see in my <a :href="gitHubUrl">GitHub profile</a> and of course there are other commercial projects that I cannot disclose.</p>
+        <a :href="gitHubUrl"><img class="about__github-followers" alt="GitHub follower count" height="20" width="112" :src="gitHubFollowersUrl"/></a>
+        <p class="about__description">You can see a timeline of my open source work and blog posts in my <a :href="stackOverflowStoryUrl">Stack Overflow Developer Story</a> or just view my <a :href="stackOverflowUrl">Stack Overflow profile</a>.</p>
+        <a :href="stackOverflowUrl"><img class="about__stack-overflow-image" alt="Stack Overflow profile statistics" height="58" width="208" :src="stackOverflowProfileUrl"/></a>
         <p class="about__description">Do you have questions or comments about my work? Please feel free to contact me using any of the links above.</p>
       </u-content-box>
 
@@ -41,7 +41,11 @@ export default {
     image: function() { return this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'; },
     url: function() { return this.$static.metadata.url + '/about/'; },
     theme: function() { return (window?.__theme || 'light') == 'light' ? 'dark' : 'light'; },
-    stackOverflow: function() { return `https://stackoverflow.com/users/flair/1212017.png?theme=${this.theme}`; },
+    stackOverflowUrl: function() { return this.$static.metadata.author.stackOverflow.url; },
+    stackOverflowStoryUrl: function() { return this.$static.metadata.author.stackOverflow.storyUrl; },
+    stackOverflowProfileUrl: function() { return `https://stackoverflow.com/users/flair/${this.$static.metadata.author.stackOverflow.user}.png?theme=${this.theme}`; },
+    gitHubUrl: function() { return this.$static.metadata.author.gitHub.url; },
+    gitHubFollowersUrl: function() { return `https://img.shields.io/github/followers/${this.$static.metadata.author.gitHub.user}?style=social`; }
   },
   metaInfo() {
     return {
@@ -94,6 +98,15 @@ query {
       lastName
       gender
       twitter
+      gitHub {
+        user
+        url
+      }
+      stackOverflow {
+        user
+        url
+        storyUrl
+      }
     }
   }
 }
