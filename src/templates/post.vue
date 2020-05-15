@@ -3,13 +3,13 @@
     <div class="post-page">
 
       <div class="post-page__title">
-        <u-heading level="1" center>{{$page.post.title}}</u-heading>
-        <u-post-meta :meta="$page.post" />
+        <u-heading level="1" center>{{title}}</u-heading>
+        <u-post-meta :meta="post" />
       </div>
 
-      <u-post class="post-page__content" :post="$page.post" />
+      <u-post class="post-page__content" :post="post" />
 
-      <u-comments class="post-page__comments" :title="$page.post.title" />
+      <u-comments class="post-page__comments" :title="title" />
 
       <u-newsletter/>
 
@@ -38,9 +38,18 @@ export default {
     'u-post-meta': postMeta,
   },
   computed: {
-    title: function() { return this.$page && this.$page.post ? this.$page.post.title : '' },
-    image: function() { return this.$static.metadata.url + this.$page.post.heroImage; },
-    url: function() { return this.$static.metadata.url + this.$page.post.path; }
+    metadata: function() { return this.$static.metadata; },
+    post: function() { return this.$page.post; },
+
+    title: function() { return this.post.title; },
+    description: function() { return this.post.description; },
+    author: function() { return this.post.author; },
+    date: function() { return this.post.date; },
+    dateModified: function() { return this.post.dateModified; },
+    image: function() { return this.metadata.url + this.post.heroImage; },
+    url: function() { return this.metadata.url + this.post.path; },
+    tags: function() { return this.post.tags ?? []; },
+    headings: function() { return this.post.headings ?? []; },
   },
   metaInfo () {
     return {
@@ -49,30 +58,30 @@ export default {
         { rel: 'canonical', href: this.url },
       ],
       meta: [
-        { name: 'description', content: this.$page.post.description },
-        { name: 'author', content: this.$page.post.author.name },
-        { name: 'keywords', content: this.$page.post.tags.map(x => x.title).join(",") },
+        { name: 'description', content: this.description },
+        { name: 'author', content: this.author },
+        { name: 'keywords', content: this.tags.map(x => x.title).join(",") },
         // Twitter card
         { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:site', content: this.$static.metadata.author.twitter },
-        { name: 'twitter:creator', content: this.$static.metadata.author.twitter },
+        { name: 'twitter:site', content: this.metadata.author.twitter },
+        { name: 'twitter:creator', content: this.metadata.author.twitter },
         { name: 'twitter:title', content: this.title },
-        { name: 'twitter:description', content: this.$page.post.description },
+        { name: 'twitter:description', content: this.description },
         { name: 'twitter:image', content: this.image },
         // Open Graph
         { property: 'og:title', content: this.title },
         { property: 'og:url', content: this.url },
         ...getOpenGraphImage(this.image),
-        { property: 'og:description', content: this.$page.post.description },
-        { property: 'og:locale', content: this.$static.metadata.language.replace('-', '_') },
-        { property: 'og:site_name', content: this.$static.metadata.name },
+        { property: 'og:description', content: this.description },
+        { property: 'og:locale', content: this.metadata.language.replace('-', '_') },
+        { property: 'og:site_name', content: this.metadata.name },
         { property: 'og:type', content: 'article' },
-        { property: 'article:published_time', content: this.$page.post.date },
-        ...[this.$page.post.dateModified].filter(x => x).map(x => ({ property: 'article:modified_time', content: x })),
-        { property: 'article:author', content: this.$page.post.author },
-        ...this.$page.post.headings.map(x => ({ property: 'article:section', content: x.value })),
-        ...this.$page.post.tags.map(x => ({ property: 'article:tag', content: x.title })),
-        { property: 'fb:app_id', content: this.$static.metadata.facebookAppId },
+        { property: 'article:published_time', content: this.date },
+        ...[this.dateModified].filter(x => x).map(x => ({ property: 'article:modified_time', content: x })),
+        { property: 'article:author', content: this.author },
+        ...this.headings.map(x => ({ property: 'article:section', content: x.value })),
+        ...this.tags.map(x => ({ property: 'article:tag', content: x.title })),
+        { property: 'fb:app_id', content: this.metadata.facebookAppId },
       ],
       script: [
         {
@@ -82,38 +91,38 @@ export default {
             '@type': 'Article',
             mainEntityOfPage: {
               '@type': 'WebPage',
-              '@id': this.$static.metadata.url,
+              '@id': this.metadata.url,
             },
             headline: this.title,
-            description: this.$page.post.description,
-            keywords: this.$page.post.tags.map(x => x.title).join(),
+            description: this.description,
+            keywords: this.tags.map(x => x.title).join(),
             url: this.url,
             image: [
               getSchemaImageObject(this.image),
             ],
-            datePublished: this.$page.post.date,
-            dateModified: this.$page.post.dateModified,
+            datePublished: this.date,
+            dateModified: this.dateModified,
             author: {
               '@type': 'Person',
-              name: this.$page.post.author,
+              name: this.author,
               logo: {
                 '@type': 'ImageObject',
-                url: `${this.$static.metadata.url}/images/author/${this.$page.post.author.split(' ').join('-')}/Logo-260x260.png`, //
+                url: `${this.metadata.url}/images/author/${this.author.split(' ').join('-')}/Logo-260x260.png`, //
                 width: 260,
                 height: 260,
               },
-              url: this.$static.metadata.url + '/about/',
+              url: this.metadata.url + '/about/',
             },
             publisher: {
               '@type': 'Organization',
-              name: this.$static.metadata.name,
+              name: this.metadata.name,
               logo: {
                 '@type': 'ImageObject',
-                url: this.$static.metadata.url + '/images/schema/Publisher-600x60.png',
+                url: this.metadata.url + '/images/schema/Publisher-600x60.png',
                 width: 600,
                 height: 60,
               },
-              url: this.$static.metadata.url,
+              url: this.metadata.url,
             },
           }
         }
