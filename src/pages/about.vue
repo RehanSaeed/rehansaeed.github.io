@@ -47,9 +47,10 @@ export default {
     url: function() { return this.$static.metadata.url + '/about/'; },
     stackOverflowUrl: function() { return this.$static.metadata.author.stackOverflow.url; },
     stackOverflowStoryUrl: function() { return this.$static.metadata.author.stackOverflow.storyUrl; },
-    stackOverflowProfileUrl: function() { return `https://stackoverflow.com/users/flair/${this.$static.metadata.author.stackOverflow.user}.png?theme=${this.theme}`; },
+    stackOverflowProfileUrl: function() { return `https://stackoverflow.com/users/flair/${this.$static.metadata.author.stackOverflow.user}.png?theme=${this.oppositeTheme}`; },
     gitHubUrl: function() { return this.$static.metadata.author.gitHub.url; },
-    gitHubFollowersUrl: function() { return `https://img.shields.io/github/followers/${this.$static.metadata.author.gitHub.user}?style=social`; }
+    gitHubFollowersUrl: function() { return `https://img.shields.io/github/followers/${this.$static.metadata.author.gitHub.user}?style=social`; },
+    oppositeTheme: function() { return this.theme === 'light' ? 'dark' : 'light'; },
   },
   metaInfo() {
     return {
@@ -86,11 +87,11 @@ export default {
     }
   },
   methods: {
-    setTheme(e) { console.log(e.detail); this.theme = e.detail == 'light' ? 'dark' : 'light'; },
+    setTheme(e) { this.theme = e.detail; },
   },
   mounted() {
     if (window) {
-      this.setTheme({detail: window.__theme});
+      this.theme = window.__theme;
       window.addEventListener('__themeChanged', this.setTheme, false);
     }
   },
