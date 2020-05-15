@@ -72,12 +72,12 @@ module.exports = {
       }
     },
     // https://gridsome.org/plugins/gridsome-plugin-brotli
-    // {
-    //   use: "gridsome-plugin-brotli",
-    //   options: {
-    //     extensions: ["css", "html", "js", "svg", "json"]
-    //   }
-    // },
+    {
+      use: "gridsome-plugin-brotli",
+      options: {
+        extensions: ["css", "html", "js", "svg", "json"]
+      }
+    },
     // https://github.com/onecrayon/gridsome-plugin-feed
     {
       use: 'gridsome-plugin-feed',
