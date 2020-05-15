@@ -31,6 +31,8 @@ export default {
   metaInfo () {
     return {
       title: 'Not Found',
+      link: [],
+      meta: [],
     }
   },
 }
