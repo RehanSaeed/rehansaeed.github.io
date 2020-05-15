@@ -16,8 +16,7 @@ tags:
   - "Colorful.Console"
   - "Console"
   - "DNVM"
-  - "Figlet"
-  - "Font"
+  - "Figlet Font"
   - "GitHub"
   - "NuGet"
 ---
