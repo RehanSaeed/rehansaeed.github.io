@@ -2,10 +2,10 @@
   <Layout>
     <div class="tag-page">
 
-      <u-heading level="1" center># {{$page.tag.title}}</u-heading>
+      <u-heading level="1" center># {{title}}</u-heading>
 
       <div class="tag-page__items">
-        <u-post-card v-for="edge in $page.tag.belongsTo.edges" :key="edge.node.id" :post="edge.node"/>
+        <u-post-card v-for="post in posts" :key="post.id" :post="post"/>
       </div>
 
       <u-newsletter class="tag-page__newsletter"/>
@@ -28,10 +28,14 @@ export default {
     'u-post-card': postCard,
   },
   computed: {
-    title: function() { return this.$page && this.$page.tag ? this.$page.tag.title : '' },
-    description: function() { return `Blog posts authored by ${this.$static.metadata.author.name} about ${this.$page.tag.title}.`; },
-    image: function() { return this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'; },
-    url: function() { return this.$static.metadata.url + this.$page.tag.path; }
+    metadata: function() { return this.$static.metadata; },
+    tag: function() { return this.$page.tag; },
+    posts: function() { return this.tag.belongsTo.edges.map(x => x.node).filter(x => x.published); },
+
+    title: function() { return this.tag.title; },
+    description: function() { return `Blog posts authored by ${this.metadata.author.name} about ${this.title}.`; },
+    image: function() { return `${this.metadata.url}/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg`; },
+    url: function() { return this.metadata.url + this.tag.path; }
   },
   metaInfo() {
     return {
@@ -41,11 +45,11 @@ export default {
       ],
       meta: [
         { name: 'description', content: this.description },
-        { name: 'author', content: this.$static.metadata.author.name },
+        { name: 'author', content: this.metadata.author.name },
         // Twitter card
         { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:site', content: this.$static.metadata.author.twitter },
-        { name: 'twitter:creator', content: this.$static.metadata.author.twitter },
+        { name: 'twitter:site', content: this.metadata.author.twitter },
+        { name: 'twitter:creator', content: this.metadata.author.twitter },
         { name: 'twitter:title', content: this.title },
         { name: 'twitter:description', content: this.description },
         { name: 'twitter:image', content: this.image },
@@ -56,10 +60,10 @@ export default {
         { property: 'og:image:height', content: this.image.match(/(\d*)x(\d*)/)[2] },
         { property: 'og:image:width', content: this.image.match(/(\d*)x(\d*)/)[1] },
         { property: 'og:description', content: this.description },
-        { property: 'og:locale', content: this.$static.metadata.language.replace('-', '_') },
-        { property: 'og:site_name', content: this.$static.metadata.name },
+        { property: 'og:locale', content: this.metadata.language.replace('-', '_') },
+        { property: 'og:site_name', content: this.metadata.name },
         { property: 'og:type', content: 'website' },
-        { property: 'fb:app_id', content: this.$static.metadata.facebookAppId },
+        { property: 'fb:app_id', content: this.metadata.facebookAppId },
       ]
     }
   }
@@ -82,20 +86,21 @@ query {
 </static-query>
 
 <page-query>
-query Tag ($id: ID!) {
-  tag (id: $id) {
+query Tag($id: ID!) {
+  tag(id: $id) {
     title
     path
-    belongsTo(filter:{typeName:{eq:post}}) {
+    belongsTo(filter: {typeName: {eq: post}}, sort: {by: "date", order: DESC}) {
       edges {
         node {
           ...on post {
             title
-            path
-            date (format: "D MMMM YYYY")
+            date(format: "YYYY-MM-DDTHH:mm:ssZ")
+            dateModified(format: "YYYY-MM-DDTHH:mm:ssZ")
             timeToRead
             description
-            content
+            path
+            published
           }
         }
       }
