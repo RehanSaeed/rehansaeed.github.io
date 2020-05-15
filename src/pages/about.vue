@@ -10,8 +10,9 @@
         <u-social-links class="about__social-links"/>
         <p class="about__description">Rehan is a professional Software Developer at Microsoft. Although he works for Microsoft his opinions are his own. If it’s written in C# or .NET, Rehan has probably written something using it in anger!</p>
         <p class="about__description">You can see some of the open source projects that I've started and maintained in my <g-link to="/portfolio/">portfolio</g-link>. There are many others I've contributed to which you can see in my <a href="https://github.com/RehanSaeed">GitHub profile</a> and of course there are other commercial projects that I cannot disclose.</p>
+        <a href="https://github.com/RehanSaeed"><img class="about__github-followers" alt="GitHub follower count" height="20" width="112" src="https://img.shields.io/github/followers/RehanSaeed?style=social"/></a>
         <p class="about__description">You can see a timeline of my open source work and blog posts in my <a href="https://stackoverflow.com/story/muhammad-rehan-saeed">Stack Overflow Developer Story</a> or just view my <a href="https://stackoverflow.com/users/1212017/muhammad-rehan-saeed">Stack Overflow profile</a>.</p>
-        <img class="about__stack-overflow-image" height="58" width="208" :src="stackOverflow"/>
+        <a href="https://stackoverflow.com/story/muhammad-rehan-saeed"><img class="about__stack-overflow-image" alt="Stack Overflow profile statistics" height="58" width="208" :src="stackOverflow"/></a>
         <p class="about__description">Do you have questions or comments about my work? Please feel free to contact me using any of the links above.</p>
       </u-content-box>
 
@@ -123,6 +124,13 @@ query {
 
 .about__social-links {
   margin-bottom: var(--global-space-fluid-3);
+}
+
+.about__github-followers {
+  display: block;
+  margin-bottom: var(--global-space-fixed-5);
+  height: 20px;
+  width: 112px;
 }
 
 .about__stack-overflow-image {
