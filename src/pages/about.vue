@@ -10,7 +10,7 @@
         <u-social-links class="about__social-links"/>
         <p class="about__description">Rehan is a professional Software Developer at Microsoft. Although he works for Microsoft his opinions are his own. If it’s written in C# or .NET, Rehan has probably written something using it in anger!</p>
         <p class="about__description">You can see some of the open source projects that I've started and maintained in my <g-link to="/portfolio/">portfolio</g-link>. There are many others I've contributed to which you can see in my <a :href="gitHubUrl">GitHub profile</a> and of course there are other commercial projects that I cannot disclose.</p>
-        <a :href="gitHubUrl"><img class="about__github-followers" alt="GitHub follower count" height="20" width="112" :src="gitHubFollowersUrl"/></a>
+        <a :href="gitHubUrl"><img class="about__github-followers" alt="GitHub follower count" height="30" width="168" :src="gitHubFollowersUrl"/></a>
         <p class="about__description">You can see a timeline of my open source work and blog posts in my <a :href="stackOverflowStoryUrl">Stack Overflow Developer Story</a> or just view my <a :href="stackOverflowUrl">Stack Overflow profile</a>.</p>
         <a :href="stackOverflowUrl"><img class="about__stack-overflow-image" alt="Stack Overflow profile statistics" height="58" width="208" :src="stackOverflowProfileUrl"/></a>
         <p class="about__description">Do you have questions or comments about my work? Please feel free to contact me using any of the links above.</p>
@@ -35,12 +35,16 @@ export default {
     'u-newsletter': newsletter,
     'u-social-links': socialLinks,
   },
+  data() {
+    return {
+      theme: 'light',
+    }
+  },
   computed: {
     title: function() { return 'About'; },
     description: function() { return `About ${this.$static.metadata.author.name}. ${this.$static.metadata.description}.`; },
     image: function() { return this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'; },
     url: function() { return this.$static.metadata.url + '/about/'; },
-    theme: function() { return (window?.__theme || 'light') == 'light' ? 'dark' : 'light'; },
     stackOverflowUrl: function() { return this.$static.metadata.author.stackOverflow.url; },
     stackOverflowStoryUrl: function() { return this.$static.metadata.author.stackOverflow.storyUrl; },
     stackOverflowProfileUrl: function() { return `https://stackoverflow.com/users/flair/${this.$static.metadata.author.stackOverflow.user}.png?theme=${this.theme}`; },
@@ -79,6 +83,20 @@ export default {
         { property: 'profile:gender', content: this.$static.metadata.author.gender },
         { property: 'fb:app_id', content: this.$static.metadata.facebookAppId },
       ]
+    }
+  },
+  methods: {
+    setTheme(e) { console.log(e.detail); this.theme = e.detail == 'light' ? 'dark' : 'light'; },
+  },
+  mounted() {
+    if (window) {
+      this.setTheme({detail: window.__theme});
+      window.addEventListener('__themeChanged', this.setTheme, false);
+    }
+  },
+  unmounted() {
+    if (window) {
+      window.removeEventListener('__themeChanged', this.setTheme, false);
     }
   }
 }
@@ -142,8 +160,8 @@ query {
 .about__github-followers {
   display: block;
   margin-bottom: var(--global-space-fixed-5);
-  height: 20px;
-  width: 112px;
+  height: 30px;
+  width: 168px;
 }
 
 .about__stack-overflow-image {
