@@ -133,9 +133,8 @@ dialog.fixed {
 .dialog--fullscreen {
   border: none;
   border-radius: 0;
-  // 100vw or 100vh includes the width of the scrollbar. This removes it.
-  height: calc(100vh - (100vh - 100%));
-  width: calc(100vw - (100vw - 100%));
+  height: 100vh;
+  width: 100vw;
 }
 
 .dialog__container {
