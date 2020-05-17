@@ -16,6 +16,14 @@ module.exports = {
   },
 
   plugins: [
+    {
+      use: '@gridsome/plugin-critical',
+      options: {
+        paths: ['/*'],
+        width: 1300,
+        height: 900
+      }
+    },
     // https://gridsome.org/plugins/@gridsome/plugin-google-analytics
     {
       use: "@gridsome/plugin-google-analytics",
