@@ -1,14 +1,10 @@
 <template>
   <div class="pager">
-    <div v-if="pageInfo.hasPreviousPage" class="pager__previous-button">
-      <u-link bordered contrast :to="previousUrl">Previous</u-link>
-    </div>
+    <u-link class="pager__previous-button" :class="{ 'pager__button--none': !pageInfo.hasPreviousPage }" bordered contrast :to="previousUrl">Previous</u-link>
 
     <p class="pager__info"><strong>Page {{pageInfo.currentPage}} of {{pageInfo.totalPages}}</strong></p>
 
-    <div v-if="pageInfo.hasNextPage" class="pager__next-button">
-      <u-link bordered contrast :to="nextUrl">Next</u-link>
-    </div>
+    <u-link class="pager__next-button" :class="{ 'pager__button--none': !pageInfo.hasNextPage }" bordered contrast :to="nextUrl">Next</u-link>
   </div>
 </template>
 
@@ -64,5 +60,9 @@ export default {
 
 .pager__next-button {
   grid-area: next;
+}
+
+.pager__button--none {
+  display: none;
 }
 </style>
