@@ -207,6 +207,11 @@ export default {
   grid-gap: var(--global-space-fixed-3);
   grid-template-columns: auto 1fr;
   grid-template-areas: "avatar body";
+
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 
