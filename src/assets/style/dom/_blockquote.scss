@@ -6,6 +6,7 @@ blockquote {
   padding-top: var(--global-space-fixed-2);
   padding-left: var(--global-space-fixed-5);
   padding-bottom: var(--global-space-fixed-2);
+  quotes: none;
 
   p:last-of-type {
     margin-bottom: 0;
