@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Sun, 17 May 2020 07:38:22 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 18 May 2020 08:36:08 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -380,7 +380,8 @@ I&#39;m a Microsoft employee but my opinions in this personal blog post are my o
 <pre><code class="language-powershell">git clone https://microsoft.fake.com/foo/bar/os</code></pre>
 <p>This gave me the very helpful error:</p>
 <pre><code>remote: This repo requires GVFS. Ensure the version of git you are using supports GVFS.
-fatal: protocol error: bad pack header</code></pre><p>This triggered a memory in the dark recesses of my mind about <a href="https://devblogs.microsoft.com/devops/announcing-gvfs-git-virtual-file-system/">GVFS (Git Virtual File System)</a>. The Windows OS repository is around 250GB in size. When you consider that there are tens or maybe hundreds of developers committing changes every day, you are not going to have a very pleasant developer experiences if you just used Git and tried to pull all 250GB of files. So GVFS abstracts away the file system and only downloads files when you try to access them.</p>
+fatal: protocol error: bad pack header</code></pre>
+<p>This triggered a memory in the dark recesses of my mind about <a href="https://devblogs.microsoft.com/devops/announcing-gvfs-git-virtual-file-system/">GVFS (Git Virtual File System)</a>. The Windows OS repository is around 250GB in size. When you consider that there are tens or maybe hundreds of developers committing changes every day, you are not going to have a very pleasant developer experiences if you just used Git and tried to pull all 250GB of files. So GVFS abstracts away the file system and only downloads files when you try to access them.</p>
 <p>The Windows OS has a very large and thorough internal Wiki. This wiki has sections covering all areas of the Windows OS going back for years. After a short time searching the wiki I discovered a very thorough getting started guide for new developers.</p>
 <p>The getting started guide involves running some PowerShell files which install a very specific but recent version of Git and setting up GVFS. Interestingly, you can also optionally point your Git client at a cache server to speed up git commands. There are a few cache servers all over the world to choose from. Finally, there is a VS Code extension specific to the OS repo that gives you some extra intelli-sense, very fancy.</p>
 <p>Even though pulling the code using GVFS should in theory only pull what you need at any given time, it still took a fair amount of time to get started. Standard git commands still worked but took tens of seconds to execute, so you had to be pretty sure of what you were doing.</p>
@@ -422,7 +423,8 @@ ENTRYPOINT [&quot;dotnet&quot;, &quot;ReadOnlyTest.dll&quot;]</code></pre>
 <p>If I run this image with a read-only file system:</p>
 <pre><code class="language-powershell">docker run --rm --read-only -it -p 8000:80 read-only-test</code></pre>
 <p>This outputs the following error as read-only file systems are not supported by default:</p>
-<pre><code>Failed to initialize CoreCLR, HRESULT: 0x80004005</code></pre><p>If I now run the same image with the <code>COMPlus_EnableDiagnostics</code> environment variable turned off:</p>
+<pre><code>Failed to initialize CoreCLR, HRESULT: 0x80004005</code></pre>
+<p>If I now run the same image with the <code>COMPlus_EnableDiagnostics</code> environment variable turned off:</p>
 <pre><code class="language-powershell">docker run --rm --read-only -it -p 8000:80 -e COMPlus_EnableDiagnostics=0 read-only-test</code></pre>
 <p>The app now starts! The <code>COMPlus_EnableDiagnostics</code> environment variable (which is <a href="https://github.com/dotnet/docs/issues/10217">undocumented</a>) turns off debugging and profiling support, so I would not bake this environment variable into the <code>Dockerfile</code>. For some reason these features need a read/write file system to work properly. If you&#39;d like to try this yourself, you can checkout all the code in <a href="https://github.com/RehanSaeed/ReadOnlyDockerTest">this repo</a>.</p>
 ]]></content:encoded>
@@ -1106,7 +1108,8 @@ string url = QueryHelpers.AddQueryString(&quot;/example/path&quot;, queryArgumen
 <p>If you are building an ASP.NET Core API, each request creates a new instance of your <code>DbContext</code> and then this is disposed at the end of the request. Query tracking keeps track of entities in memory for the lifetime of your <code>DbContext</code> so that if they are updated any changes can be saved, this is a waste of resources if you are just going to throw away the <code>DbContext</code> at the end of the request. By passing NoTracking to the <a href="https://docs.microsoft.com/en-us/ef/core/querying/tracking#no-tracking-queries">UseQueryTrackingBehavior</a> method, you can turn off this default behaviour. Note that if you are performing updates to your entities, don&#39;t use this option, this is only for API&#39;s that perform reads and/or inserts.</p>
 <h1 id="connection-strings">Connection Strings</h1>
 <p>You can also pass certain settings to connection strings. These are specific to the database you are using, here I&#39;m talking about SQL Server. Here is an example of a connection string:</p>
-<pre><code>Data Source=localhost;Initial Catalog=MyDatabase;Integrated Security=True;Min Pool Size=3;Application Name=MyApplication</code></pre><h2 id="application-name">Application Name</h2>
+<pre><code>Data Source=localhost;Initial Catalog=MyDatabase;Integrated Security=True;Min Pool Size=3;Application Name=MyApplication</code></pre>
+<h2 id="application-name">Application Name</h2>
 <p>SQL Server can log or profile queries that are running through it. If you set the application name, you can more easily identify the applications that may be causing problems in your database with slow or failing queries.</p>
 <h2 id="min-pool-size">Min Pool Size</h2>
 <p>Creating database connections is an expensive process that takes time. You can specify that you want a minimum pool of connections that should be created and kept open for the lifetime of the application. These are then reused for each database call. Ideally, you need to performance test with different values and see what works for you. Failing that you need to know how many concurrent connections you want to support at any one time.</p>
@@ -2369,7 +2372,8 @@ Options:
   -Hu|--HumansTxt: Adds a humans.txt file where you can tell the world who wrote the application. This file is a good
     place to thank your developers.
     bool - Optional
-    Default: true</code></pre><p>As you can see from the output, there are a few different types of feature you can create. You can also choose to make a feature required or optional. An optional feature, if not specified by the user will fall-back to a default value. Here are the different types available:</p>
+    Default: true</code></pre>
+<p>As you can see from the output, there are a few different types of feature you can create. You can also choose to make a feature required or optional. An optional feature, if not specified by the user will fall-back to a default value. Here are the different types available:</p>
 <ul>
 <li><strong>bool</strong> - This feature can be turned on or off and has a default of true or false.</li>
 <li><strong>string</strong> - This can be used to do a string replacement in your template. It has a default value which you can set to any arbitrary value.</li>
@@ -3775,7 +3779,8 @@ types {
     text/vtt                              vtt;
     text/x-component                      htc;
 
-}</code></pre><h1 id="nginx-modules">NGINX Modules</h1>
+}</code></pre>
+<h1 id="nginx-modules">NGINX Modules</h1>
 <p>Like IIS, NGINX has modules that you can add to it, to provide extra features. There are a number of them out there. I&#39;ve listed two that I care about and you should too.</p>
 <p>Installing modules is best done by downloading the NGINX source, as well as the modules you need and then compiling the application. There is a feature called <a href="https://www.nginx.com/blog/dynamic-modules-nginx-1-9-11/">dynamic modules</a> which lets you dynamically load additional separate modules after installing NGINX but the link suggests third party modules may not be supported so I didn&#39;t try it out.</p>
 <h2 id="http-20">HTTP 2.0</h2>
@@ -4714,7 +4719,8 @@ disallow: /error/
 allow: /error/foo/
 
 # Add a link to the site-map. Unfortunately this must be an absolute URL.
-sitemap: http://example.com/sitemap.xml</code></pre><p>In the above code, all comments start with the hash character. It tells all robots that they can index everything on the site except pages under the <code>/error</code> path because we don&#39;t want our error pages showing up in peoples search results. The only exception to that rule is to allow the resources under the <code>/error/foo</code> path to be indexed.</p>
+sitemap: http://example.com/sitemap.xml</code></pre>
+<p>In the above code, all comments start with the hash character. It tells all robots that they can index everything on the site except pages under the <code>/error</code> path because we don&#39;t want our error pages showing up in peoples search results. The only exception to that rule is to allow the resources under the <code>/error/foo</code> path to be indexed.</p>
 <p>The last line is interesting and tells robots where to find an XML file called a site-map. A site-map contains a list of URL&#39;s to all the pages in the site and is used to give search engines a list of URL&#39;s they can go through to index the entire site. It&#39;s a great SEO (Search Engine Optimization) technique to give your site a boost in it&#39;s search rankings.</p>
 <p>I will discuss creating a dynamic <code>sitemap.xml</code> file for ASP.NET Core in a future post. For now, all you need to know is that the site-map URL has to be an absolute URL according to the specification. This is a pretty terrible decision by whoever created the robots exclusion standard. It&#39;s really annoying that when you&#39;re creating a site, you have to remember to manually update this URL. If the URL was relative we would not have this problem.</p>
 <h1 id="dynamically-generating-a-robotstxt-file">Dynamically Generating a robots.txt File</h1>
@@ -6345,7 +6351,8 @@ this.WhenTextChanged
 <p><img src="https://rehansaeed.com/custom-visual-studio-project-templates/images/ExportTemplate3.png" alt="The export template &#39;Select template options&#39; screen, where you can describe your template."></p>
 <p>The export template &#39;Select template options&#39; screen, where you can describe your template.</p>
 <p>The <code>.zip</code> file that is output must be copied into the following folder, for Visual Studio to pick it up:</p>
-<pre><code>C:/Users/[Your User Name]/Documents/Visual Studio [2010|2012|2013|2015]/Templates/ProjectTemplates</code></pre><p><img src="https://rehansaeed.com/custom-visual-studio-project-templates/images/ExportTemplate4.png" alt="The .zip file output as part of the Visual Studio Export Template wizard."></p>
+<pre><code>C:/Users/[Your User Name]/Documents/Visual Studio [2010|2012|2013|2015]/Templates/ProjectTemplates</code></pre>
+<p><img src="https://rehansaeed.com/custom-visual-studio-project-templates/images/ExportTemplate4.png" alt="The .zip file output as part of the Visual Studio Export Template wizard."></p>
 <p>The <code>.zip</code> file output as part of the Visual Studio Export Template wizard.</p>
 <p>This is a super easy process and you should really consider creating your own templates if you find yourself making the same old changes to every project you are creating. The downside is that its not very customizable and these types of project templates cannot be submitted to the <a href="https://visualstudiogallery.msdn.microsoft.com">Visual Studio Gallery</a>.</p>
 <p>The gallery website only supports project templates created using the VSIX package. Creating a VSIX package is a pretty involved process and will take a couple of hours.</p>
@@ -6707,7 +6714,7 @@ this.WhenTextChanged
 <p>That&#39;s easy, just choose one of the following options:</p>
 <ol>
 <li>Get the Visual Studio 2013 extension <a href="https://visualstudiogallery.msdn.microsoft.com/6cf50a48-fc1e-4eaf-9e82-0b2a6705ca7d">here</a> and in Visual Studio go to <code>File -&gt; New Project -&gt; Web</code>.</li>
-<li>Clone the git repository:<pre><code class="language-powershell"> git clone https://github.com/Dotnet-Boxed/Templates</code></pre>
+<li>Clone the git repository:<pre><code class="language-powershell">git clone https://github.com/Dotnet-Boxed/Templates</code></pre>
 </li>
 </ol>
 <h2 id="release-notes-and-to-do-list">Release Notes and To-Do List</h2>
