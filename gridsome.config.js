@@ -240,7 +240,7 @@ module.exports = {
                 version: '1.1',
                 width: 22,
                 height: 22,
-                'aria-hidden': true,
+                'aria-hidden': "true",
               },
               children: [
                 {
