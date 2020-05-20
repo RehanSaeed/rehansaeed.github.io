@@ -807,7 +807,7 @@
   pre > code {
     // padding: 0;
     // margin: 0;
-    font-size: 100%;
+    // font-size: 100%;
     word-break: normal;
     white-space: pre;
     // background: transparent;
@@ -816,8 +816,9 @@
 
   .highlight {
     // margin-bottom: 16px;
-    margin-bottom: var(--global-space-fixed-5);
     display: grid;
+    font-size: var(--global-font-size-1);
+    margin-bottom: var(--global-space-fixed-5);
   }
 
   > pre {
