@@ -825,32 +825,38 @@
   }
 
   .highlight pre {
-    // margin-bottom: 0;
-    word-break: normal;
+    display: block;
+    padding: .85rem;
+  }
+
+  pre {
+    display: grid;
   }
 
   .highlight pre,
   pre {
-    padding: .85rem;
-    overflow-x: auto;
-    overflow-y: hidden;
-    font-size: var(--global-font-size-1);
-    line-height: 1.45;
-    background-color: #f6f8fa;
     background-color: hsl(210, 29%, 97%);
     border-radius: var(--global-border-radius);
+    font-size: var(--global-font-size-1);
+    line-height: 1.45;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    direction: ltr;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    tab-size:4;
+    hyphens: none;
   }
 
   pre code {
-    display: inline;
-    max-width: auto;
-    padding: 0;
-    margin: 0;
-    overflow: visible;
-    line-height: inherit;
-    word-wrap: normal;
-    background-color: initial;
-    border: 0;
+    display: grid;
+    padding: .85rem;
+    overflow-x: auto;
+    overflow-y: hidden;
   }
 
   .commit-tease-sha {
