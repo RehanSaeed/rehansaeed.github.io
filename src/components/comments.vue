@@ -197,7 +197,7 @@ export default {
 
 
 // Comment
-.vssue-comments > span {
+.vssue-comments > div {
   display: grid;
   grid-gap: var(--global-space-fixed-4);
   grid-template-columns: 1fr;
