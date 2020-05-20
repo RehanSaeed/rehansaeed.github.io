@@ -1,6 +1,6 @@
 code[class*="language-"],
 pre[class*="language-"] {
-  --code-line-height: 1.2;
+  --code-line-height: 1.3;
 
   color: hsl(70, 5%, 22%);
   font-family: var(--global-font-family-monospace);
@@ -140,8 +140,11 @@ code[class*="language-css"] {
   margin-bottom: -.8rem;
   padding-left: 1rem;
   padding-right: 1rem;
-  padding-top: 0.5rem;
   position: relative;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 // Line Numbers
@@ -189,8 +192,10 @@ pre[class*="language-"].line-numbers > code {
   background: hsla(204, 63%, 85%, 0.3);
   background: linear-gradient(to right, hsla(204, 63%, 85%, 0.3) 80%, hsla(237, 42%, 91%, 0));
   display: block;
-  margin-left: -0.25em;
-  padding-top: 0.16em;
+  margin-left: -.45rem;
+  padding-left: .25rem;
+  padding-top: 0.09rem;
+  padding-bottom: 0.08rem;
   border-left: var(--global-border-width-3) solid hsl(204, 63%, 85%);
 }
 

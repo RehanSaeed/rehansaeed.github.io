@@ -111,7 +111,7 @@ This uses `<kbd>` and looks like this ||CTRL+C||. Cool!
 This is `inline` code.
 
 ```
-No language specified
+// No Language
 ```
 
 ```js{codeTitle: "Code Title Code Title"}
@@ -120,9 +120,24 @@ No language specified
 
 ```js{numberLines: true}
 // Line Numbers
+// Line Numbers
+// Line Numbers
+// Line Numbers
+// Line Numbers
+// Line Numbers
+// Line Numbers
+// Line Numbers
+// Line Numbers
+// Line Numbers
+// Line Numbers
+// Line Numbers
+// Line Numbers
+// Line Numbers
+// Line Numbers
 ```
 
-```js{2,4-5}
+```js
+// Line Highlight
 export default {
   data () {
     return {
@@ -132,11 +147,12 @@ export default {
 }
 ```
 
-```js{codeTitle: "Code Title Code Title"}{numberLines: true}{2,4-5}
+```js{2,4-5}
+// Line Highlight
 export default {
   data () {
     return {
-      msg: 'All'
+      msg: 'Line Highlight'
     }
   }
 }
@@ -144,6 +160,24 @@ export default {
 
 ```powershell
 docker image build --tag foo:1.0.0 --label "build"="123" --label "changeset"="0d9c7d3b77817caab3977b16d1d76bb3eb024837" .
+```
+
+```js{codeTitle: "Code Title Code Title Code Title Code Title Code Title Code Title Code Title Code Title Code Title Code Title Code Title Code Title Code Title Code Title"}{numberLines: true}{2,4-5,9-10}
+// Code Title, Line Numbers, Line Highlight ----------------------------------------------
+// Code Title, Line Numbers, Line Highlight
+// Code Title, Line Numbers, Line Highlight
+// Code Title, Line Numbers, Line Highlight
+// Code Title, Line Numbers, Line Highlight
+// Code Title, Line Numbers, Line Highlight
+// Code Title, Line Numbers, Line Highlight
+// Code Title, Line Numbers, Line Highlight
+export default {
+  data () {
+    return {
+      msg: 'All'
+    }
+  }
+}
 ```
 
 # Embed Code Snippets
