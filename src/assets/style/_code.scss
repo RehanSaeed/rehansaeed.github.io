@@ -141,6 +141,8 @@ code[class*="language-css"] {
   padding-left: 1rem;
   padding-right: 1rem;
   position: relative;
+
+  // @mixin word-wrap()
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;

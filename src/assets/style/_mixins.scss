@@ -17,9 +17,17 @@
   }
 }
 
+// Word wrap text
 @mixin word-wrap() {
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
   hyphens: auto;
+}
+
+// Don't wrap text and show an ellipses instead
+@mixin ellipsis() {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }

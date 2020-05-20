@@ -24,12 +24,14 @@ export default {
   background-color: var(--global-content-background-color);
   border-radius: var(--global-border-radius);
   box-shadow: 1px 1px 5px 0 rgba(0,0,0,.02), 1px 1px 15px 0 rgba(0,0,0,.03);
+  padding: var(--global-space-fluid-6);
+  transition: transform var(--global-duration-2) ease-out, background-color var(--global-duration-2) ease-out, box-shadow var(--global-duration-3) ease-out;
+
+  // @mixin word-wrap()
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
   hyphens: auto;
-	padding: var(--global-space-fluid-6);
-  transition: transform var(--global-duration-2) ease-out, background-color var(--global-duration-2) ease-out, box-shadow var(--global-duration-3) ease-out;
 }
 
 .content-box--hoverable {

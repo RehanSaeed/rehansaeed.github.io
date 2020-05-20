@@ -208,6 +208,7 @@ export default {
   grid-template-columns: auto 1fr;
   grid-template-areas: "avatar body";
 
+  // @mixin word-wrap()
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
