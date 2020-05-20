@@ -853,7 +853,7 @@
   }
 
   pre code {
-    display: grid;
+    display: block;
     padding: .85rem;
     overflow-x: auto;
     overflow-y: hidden;
@@ -862,7 +862,7 @@
   .commit-tease-sha {
     display: inline-block;
     font-family: var(--global-font-family-monospace);
-    font-size: 90%;
+    font-size: var(--global-font-size-1);
     color: #444d56;
   }
 
