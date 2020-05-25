@@ -26,7 +26,7 @@
     "@gridsome/plugin-sitemap": "^0.2.3",
     "@gridsome/source-filesystem": "^0.6.2",
     "@gridsome/transformer-remark": "^0.5.0",
-    "@noxify/gridsome-plugin-remark-embed": "^1.2.0",
+    "@noxify/gridsome-plugin-remark-embed": "^1.2.1",
     "@vssue/api-github-v3": "^1.4.4",
     "date-fns": "^2.14.0",
     "dialog-polyfill": "^0.5.1",
