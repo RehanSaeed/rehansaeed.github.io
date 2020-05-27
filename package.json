@@ -25,7 +25,7 @@
     "@gridsome/plugin-google-analytics": "^0.1.0",
     "@gridsome/plugin-sitemap": "^0.2.3",
     "@gridsome/source-filesystem": "^0.6.2",
-    "@gridsome/transformer-remark": "^0.5.0",
+    "@gridsome/transformer-remark": "^0.6.0",
     "@noxify/gridsome-plugin-remark-embed": "^1.2.0",
     "@vssue/api-github-v3": "^1.4.4",
     "date-fns": "^2.14.0",
