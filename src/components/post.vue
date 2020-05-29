@@ -13,6 +13,7 @@
       <div class="post__footer__first-row">
         <u-share-button class="post__share" :title="post.title" :tags="post.tags.map(x => x.title)" />
         <u-edit-post-button class="post__edit" :post="post" />
+        <u-support-button/>
       </div>
       <u-tags :tags="post.tags" class="post__tags" />
     </footer>
@@ -24,6 +25,7 @@
 import contentBox from '~/components/shared/content-box.vue';
 import editPostButton from '~/components/edit-post-button.vue';
 import shareButton from '~/components/share-button.vue';
+import supportButton from '~/components/support-button.vue';
 import tags from '~/components/tags.vue';
 import { getImageMetadata } from '~/framework/images.js';
 
@@ -32,6 +34,7 @@ export default {
     'u-content-box': contentBox,
     'u-edit-post-button': editPostButton,
     'u-share-button': shareButton,
+    'u-support-button': supportButton,
     'u-tags': tags,
   },
   props: {
