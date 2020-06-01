@@ -14,11 +14,11 @@
         :key="result.id"
         :to="result.permalink || result.path"
         class="search__result">
-        <g-image v-if="result.heroImage"
+        <g-image v-if="result.node.heroImage"
           class="search__result__image"
-          :src="result.heroImage"/>
-        <p class="search__result__title">{{result.title}}</p>
-        <p class="search__result__description">{{result.description}}</p>
+          :src="result.node.heroImage"/>
+        <p class="search__result__title">{{result.node.title}}</p>
+        <p class="search__result__description">{{result.node.description}}</p>
       </g-link>
     </div>
   </div>
