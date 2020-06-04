@@ -44,12 +44,15 @@ console.log('%c ▄██▄▄▄▄███   ██▄▄▄██ █▄  �
     crossorigin: ''
   });
 
+  // Search
   head.link.push({
     rel: 'search',
     type: 'application/opensearchdescription+xml',
     href: '/opensearch.xml',
     title: 'Muhammad Rehan Saeed'
   });
+
+  // Feeds
   head.link.push({
     rel: 'alternate',
     type: 'application/atom+xml',
@@ -69,6 +72,17 @@ console.log('%c ▄██▄▄▄▄███   ██▄▄▄██ █▄  �
     title: 'Muhammad Rehan Saeed'
   });
 
+  // Webmention
+  head.link.push({
+    rel: 'webmention',
+    href: site.webmention.webmentionUrl,
+  });
+  head.link.push({
+    rel: 'pingback',
+    href: site.webmention.pingbackUrl,
+  });
+
+  // Referrer
   head.meta.push({
     name: 'referrer',
     content: 'no-referrer-when-downgrade',

@@ -17,6 +17,11 @@
   "googleAnalyticsId": "UA-159632920-1",
   "facebookAppId": "632414437490344",
   "mailchimpUrl": "https://rehansaeed.us19.list-manage.com/subscribe/post?u=0d1d7c30db26dd0a4aa1b5b40&amp;id=07ce865066",
+  "webmention": {
+    "webmentionUrl": "https://webmention.io/rehansaeed.com/webmention",
+    "pingbackUrl": "https://webmention.io/rehansaeed.com/xmlrpc",
+    "apiKey": "un7W_LO7lWSHSfjyUgZupw"
+  },
 
   "author": {
     "name": "Muhammad Rehan Saeed",
