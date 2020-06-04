@@ -1,21 +1,21 @@
 <template>
   <div class="social">
-    <u-link v-if="this.$static.metadata.author.twitterUrl" label="Twitter" :href="this.$static.metadata.author.twitterUrl" class="social__link">
+    <u-link v-if="this.$static.metadata.author.twitterUrl" label="Twitter" :href="this.$static.metadata.author.twitterUrl" class="social__link" rel="me">
       <u-icon-twitter :size="30"/>
     </u-link>
-    <u-link v-if="this.$static.metadata.author.gitHub.url" label="GitHub" :href="this.$static.metadata.author.gitHub.url" class="social__link">
+    <u-link v-if="this.$static.metadata.author.gitHub.url" label="GitHub" :href="this.$static.metadata.author.gitHub.url" class="social__link" rel="me">
       <u-icon-github :size="30"/>
     </u-link>
-    <u-link v-if="this.$static.metadata.author.stackOverflow.url" label="Stack Overflow" :href="this.$static.metadata.author.stackOverflow.url" class="social__link">
+    <u-link v-if="this.$static.metadata.author.stackOverflow.url" label="Stack Overflow" :href="this.$static.metadata.author.stackOverflow.url" class="social__link" rel="me">
       <u-icon-stackoverflow :size="30"/>
     </u-link>
-    <u-link v-if="this.$static.metadata.author.linkedInUrl" label="LinkedIn" :href="this.$static.metadata.author.linkedInUrl" class="social__link">
+    <u-link v-if="this.$static.metadata.author.linkedInUrl" label="LinkedIn" :href="this.$static.metadata.author.linkedInUrl" class="social__link" rel="me">
       <u-icon-linkedin :size="30"/>
     </u-link>
-    <u-link v-if="this.$static.metadata.author.youtubeUrl" label="Youtube" :href="this.$static.metadata.author.youtubeUrl" class="social__link">
+    <u-link v-if="this.$static.metadata.author.youtubeUrl" label="Youtube" :href="this.$static.metadata.author.youtubeUrl" class="social__link" rel="me">
       <u-icon-youtube :size="30"/>
     </u-link>
-    <u-link class="social__link" label="Email" :href="mailTo">
+    <u-link class="social__link" label="Email" :href="mailTo" rel="me">
       <u-icon-email :size="30"/>
     </u-link>
     <u-link href="/rss.xml" label="RSS" class="social__link">

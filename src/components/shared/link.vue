@@ -1,5 +1,11 @@
 <template>
-  <Component :is="tag" class="link" :class="{ 'link--bordered': bordered, 'link--contrast': contrast, 'link--primary': primary }" :href="href" :to="to" :aria-label="label">
+  <Component :is="tag"
+    class="link"
+    :class="{ 'link--bordered': bordered, 'link--contrast': contrast, 'link--primary': primary }"
+    :href="href"
+    :to="to"
+    :aria-label="label"
+    :rel="rel">
     <slot/>
   </Component>
 </template>
@@ -18,6 +24,9 @@ export default {
       type: Boolean
     },
     label: {
+      type: String,
+    },
+    rel: {
       type: String,
     },
     to: {
