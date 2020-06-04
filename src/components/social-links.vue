@@ -3,7 +3,7 @@
     <u-link v-if="this.$static.metadata.author.twitterUrl" label="Twitter" :href="this.$static.metadata.author.twitterUrl" class="social__link" rel="me">
       <u-icon-twitter :size="30"/>
     </u-link>
-    <u-link v-if="this.$static.metadata.author.gitHub.url" label="GitHub" :href="this.$static.metadata.author.gitHub.url" class="social__link" rel="me">
+    <u-link v-if="this.$static.metadata.author.gitHub.url" label="GitHub" :href="this.$static.metadata.author.gitHub.url" class="social__link" rel="me authn">
       <u-icon-github :size="30"/>
     </u-link>
     <u-link v-if="this.$static.metadata.author.stackOverflow.url" label="Stack Overflow" :href="this.$static.metadata.author.stackOverflow.url" class="social__link" rel="me">
