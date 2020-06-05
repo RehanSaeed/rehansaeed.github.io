@@ -4,7 +4,7 @@
 
 		<g-image class="author__image u-photo" :alt="$static.metadata.name" immediate src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png" width="120" height="120" />
 
-		<u-heading class="author__site-title" link-class="u-url u-uid p-name" level="1" :to="$static.metadata.url" center>{{$static.metadata.name}}</u-heading>
+		<u-heading class="author__site-title" link-class="u-url u-uid p-name" level="1" :href="$static.metadata.url" center>{{$static.metadata.name}}</u-heading>
 
 		<p class="author__description p-note">{{$static.metadata.description}}</p>
 
