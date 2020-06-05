@@ -2,8 +2,8 @@
   <Layout>
     <div class="post-page h-entry">
 
-      <div class="post-page__title">
-        <u-heading class="p-name" level="1" center>{{title}}</u-heading>
+      <div class="post-page__title-container">
+        <u-heading level="1" center><a class="post-page__link p-name u-url" :href="url">{{title}}</a></u-heading>
         <u-post-meta :meta="post" />
       </div>
 
@@ -185,11 +185,28 @@ query Post ($id: ID!) {
   justify-content: center;
 }
 
-.post-page__title {
+.post-page__title-container {
   display: grid;
   justify-items: center;
   margin: 0 auto;
   padding: var(--global-space-fluid-5) 0 var(--global-space-fluid-5);
   text-align: center;
+}
+
+.post-page__link {
+  color: var(--global-title-color);
+  opacity: 1;
+  text-decoration: none;
+
+  &:hover,
+  &:focus,
+  &:active {
+    color: var(--global-title-color);
+    opacity: .7;
+  }
+
+  &:visited {
+    color: var(--global-title-color);
+  }
 }
 </style>

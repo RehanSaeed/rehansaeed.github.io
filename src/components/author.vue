@@ -66,6 +66,7 @@ query {
   &:hover,
   &:focus,
   &:active {
+    color: var(--global-title-color);
     opacity: .7;
   }
 
