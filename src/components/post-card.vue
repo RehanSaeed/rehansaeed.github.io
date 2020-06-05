@@ -39,7 +39,7 @@ export default {
     },
   },
   computed: {
-    imageMeta: function() { return getImageMetadata(this.post.heroImage); },
+    imageMeta() { return getImageMetadata(this.post.heroImage); },
   },
 }
 </script>

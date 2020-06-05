@@ -25,8 +25,8 @@ export default {
     }
   },
   computed: {
-    previousUrl: function() { return previousUrl(this.pageInfo); },
-    nextUrl: function() { return nextUrl(this.pageInfo); }
+    previousUrl() { return previousUrl(this.pageInfo); },
+    nextUrl() { return nextUrl(this.pageInfo); }
   }
 }
 </script>

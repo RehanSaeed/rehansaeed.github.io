@@ -22,7 +22,7 @@ export default {
     },
   },
   computed: {
-    type: function() {
+    type() {
       if (this.submit) {
         return 'submit';
       } else {

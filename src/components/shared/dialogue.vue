@@ -40,12 +40,12 @@ export default {
     }
   },
   computed: {
-    dialog: function() {
+    dialog() {
       return this.$refs.dialog;
     }
   },
   watch: {
-    isOpen: function () {
+    isOpen() {
       if (this.isOpen) {
         this.dialog.showModal();
       } else {

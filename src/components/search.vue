@@ -36,7 +36,7 @@ export default {
     }
   },
   methods: {
-    onSelected: function() {
+    onSelected() {
       this.$emit('selected');
     }
   },

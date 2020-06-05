@@ -43,7 +43,7 @@ export default {
     }
   },
   computed: {
-    timestamp: function() { return getDisplayDateFromString(this.reply.data.published); }
+    timestamp() { return getDisplayDateFromString(this.reply.data.published); }
   }
 }
 </script>

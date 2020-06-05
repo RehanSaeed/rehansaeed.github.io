@@ -34,8 +34,8 @@ export default {
     },
   },
   computed: {
-    postedDisplayDate: function() { return getDisplayDateFromString(this.meta.date); },
-    updatedDisplayDate: function() { return getDisplayDateFromString(this.meta.dateModified); },
+    postedDisplayDate() { return getDisplayDateFromString(this.meta.date); },
+    updatedDisplayDate() { return getDisplayDateFromString(this.meta.dateModified); },
   }
 }
 </script>

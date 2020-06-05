@@ -11,8 +11,8 @@ function createIcon(title, widthMultiplier = 1, heightMultiplier = 1) {
       }
     },
     computed: {
-      height: function() { return this.size * heightMultiplier; },
-      width: function() { return this.size * widthMultiplier; }
+      height() { return this.size * heightMultiplier; },
+      width() { return this.size * widthMultiplier; }
     }
   }
 }

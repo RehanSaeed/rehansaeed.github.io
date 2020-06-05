@@ -76,10 +76,10 @@ export default {
     }
   },
   computed: {
-    internalTitle: function() {
+    internalTitle() {
       return this.title || document.title;
     },
-    internalUrl: function() {
+    internalUrl() {
       let url = this.url;
       if (!url && process.isClient) {
         const canonicalElement = document.querySelector('link[rel=canonical]');
@@ -91,30 +91,30 @@ export default {
       }
       return url;
     },
-    encodedTitle: function() { return encodeURIComponent(this.internalTitle); },
-    encodedUrl: function() { return encodeURIComponent(this.internalUrl); },
-    encodedTags: function() {
+    encodedTitle() { return encodeURIComponent(this.internalTitle); },
+    encodedUrl() { return encodeURIComponent(this.internalUrl); },
+    encodedTags() {
       if (this.tags) {
         return encodeURIComponent(this.tags.map(x => x.replace(/[\W_]+/g, '')).join(','));
       }
       return '';
     },
-    facebookUrl: function() {
+    facebookUrl() {
       // https://developers.facebook.com/docs/sharing/reference/share-dialog
       return `https://www.facebook.com/sharer/sharer.php?u=${this.encodedUrl}&quote=${this.encodedTitle}`;
     },
-    twitterUrl: function() {
+    twitterUrl() {
       // https://developer.twitter.com/en/docs/twitter-for-websites/tweet-button/overview
       return `https://twitter.com/intent/tweet?text=${this.encodedTitle}&url=${this.encodedUrl}&hashtags=${this.encodedTags}&via=${this.$static.metadata.author.twitter.user.replace('@', '')}`;
     },
-    redditUrl: function() {
+    redditUrl() {
       return `http://www.reddit.com/submit?url=${this.encodedUrl}&title=${this.encodedTitle}`;
     },
-    linkedinUrl: function() {
+    linkedinUrl() {
       // https://docs.microsoft.com/en-us/linkedin/consumer/integrations/self-serve/share-on-linkedin
       return `http://www.linkedin.com/shareArticle?mini=true&url=${this.encodedUrl}&title=${this.encodedTitle}`;
     },
-    mailUrl: function() {
+    mailUrl() {
       return `mailto:?subject=${this.encodedTitle}&body=${this.encodedUrl}`;
     }
   },
@@ -131,7 +131,7 @@ export default {
         url: this.internalUrl
       });
     },
-    onClick: function() {
+    onClick() {
       if (this.isSupported) {
         this.share();
       } else {

@@ -31,13 +31,13 @@ export default {
     'u-post-card': postCard,
   },
   computed: {
-    title: function() { return 'Blog'; },
-    description: function() { return `Blog posts and more authored by ${this.$static.metadata.author.name}.`; },
-    image: function() { return this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'; },
-    imageHeight: function() { return this.image.match(/(\d*)x(\d*)/)[2]; },
-    imageWidth: function() { return this.image.match(/(\d*)x(\d*)/)[1]; },
-    nextUrl: function() { return nextUrl(this.$page.posts.pageInfo, this.$static.metadata.url); },
-    previousUrl: function() { return previousUrl(this.$page.posts.pageInfo, this.$static.metadata.url); }
+    title() { return 'Blog'; },
+    description() { return `Blog posts and more authored by ${this.$static.metadata.author.name}.`; },
+    image() { return this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'; },
+    imageHeight() { return this.image.match(/(\d*)x(\d*)/)[2]; },
+    imageWidth() { return this.image.match(/(\d*)x(\d*)/)[1]; },
+    nextUrl() { return nextUrl(this.$page.posts.pageInfo, this.$static.metadata.url); },
+    previousUrl() { return previousUrl(this.$page.posts.pageInfo, this.$static.metadata.url); }
   },
   metaInfo() {
     return {

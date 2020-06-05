@@ -38,7 +38,7 @@ export default {
     close() {
       this.isDialogueOpen = false;
     },
-    onClick: function() {
+    onClick() {
       this.open();
     }
   }

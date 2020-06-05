@@ -48,8 +48,8 @@ export default {
     'u-icon-youtube': iconYoutube,
   },
   computed: {
-    email: function() { return decode(this.$static.metadata.author.email); },
-    mailTo: function() {
+    email() { return decode(this.$static.metadata.author.email); },
+    mailTo() {
       const body = encodeURIComponent('If you have an issue with one of my GitHub projects, please raise a GitHub issue. If you need help answering a coding problem, post your question on StackOverflow where you will get quicker and better answers. Otherwise, please do feel free to contact me!')
       return `mailto:${this.email}?body=${body}`;
     }

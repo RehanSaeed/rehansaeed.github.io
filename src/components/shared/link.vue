@@ -33,7 +33,7 @@ export default {
     },
   },
   computed: {
-    tag: function() { return this.to ? 'g-link' : 'a'; }
+    tag() { return this.to ? 'g-link' : 'a'; }
   }
 }
 </script>
