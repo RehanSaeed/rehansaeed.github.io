@@ -3,12 +3,14 @@
     class="heading"
     :is="headingTag"
     :class="[sizeClass, { 'heading--center': center }]">
-    <Component :is="linkTag"
+    <Component v-if="hasLink"
+      :is="linkTag"
       class="heading__link"
       :href="href"
       :to="to">
       <slot/>
     </Component>
+    <slot v-else/>
   </Component>
 </template>
 
@@ -36,10 +38,11 @@ export default {
     },
   },
   computed: {
+    hasLink() { return this.to || this.href; },
     headingTag() { return `h${this.level}`; },
     sizeClass() { return `heading--${this.size || this.level}`; },
     linkTag() {
-      if (this.to || this.href) {
+      if (this.hasLink) {
         return this.to ? 'g-link' : 'a';
       } else {
         return 'span';
