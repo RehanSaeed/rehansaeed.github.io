@@ -83,7 +83,7 @@ console.log('%c ▄██▄▄▄▄███   ██▄▄▄██ █▄  �
   });
   head.link.push({
     rel: 'authorization_endpoint',
-    href: site.author.gitHub.url,
+    href: 'https://indieauth.com/auth',
   });
   head.link.push({
     rel: 'me',
