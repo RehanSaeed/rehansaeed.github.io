@@ -6,6 +6,7 @@
     <Component v-if="hasLink"
       :is="linkTag"
       class="heading__link"
+      :class="linkClass"
       :href="href"
       :to="to">
       <slot/>
@@ -36,6 +37,9 @@ export default {
       default: false,
       type: Boolean,
     },
+    linkClass: {
+      type: String
+    }
   },
   computed: {
     hasLink() { return this.to || this.href; },
