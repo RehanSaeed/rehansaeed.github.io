@@ -9,6 +9,8 @@
 
       <u-post class="post-page__content" :post="post" />
 
+      <u-webmentions class="post-page__webmentions" :url="url" />
+
       <u-comments class="post-page__comments" :title="title" />
 
       <u-newsletter/>
@@ -26,6 +28,7 @@ import newsletter from '~/components/newsletter.vue';
 import comments from '~/components/comments.vue';
 import post from '~/components/post.vue';
 import postMeta from '~/components/post-meta.vue';
+import webmentions from '~/components/webmentions.vue';
 import { getOpenGraphImage, getSchemaImageObject } from '~/framework/images.js';
 
 export default {
@@ -36,6 +39,7 @@ export default {
     'u-newsletter': newsletter,
     'u-post': post,
     'u-post-meta': postMeta,
+    'u-webmentions': webmentions,
   },
   computed: {
     metadata: function() { return this.$static.metadata; },

@@ -1,0 +1,88 @@
+<template>
+  <article class="webmention-reply">
+    <a class="webmention-reply__image-link" :href="reply.data.url">
+      <g-image class="webmention-reply__image"
+        :alt="reply.data.author.name"
+        :src="reply.data.author.photo"
+        height="60"
+        width="60"/>
+    </a>
+    <a class="webmention-reply__author" :href="reply.data.url">{{reply.data.author.name}}</a>
+    <span class="webmention-reply__timestamp">{{timestamp}}</span>
+    <div class="webmention-reply__content" v-html="reply.data.content"></div>
+  </article>
+</template>
+
+<script>
+import { differenceInDays, format, formatDistance, getYear } from 'date-fns';
+
+function getDisplayDate(date) {
+  const now = new Date();
+  if (differenceInDays(now, date) <= 30) {
+    return formatDistance(date, now, { addSuffix: true })
+  } else if (getYear(now) == getYear(date)) {
+    return format(date, 'd MMMM');
+  } else {
+    return format(date, 'd MMMM yyyy');
+  }
+}
+
+function getDisplayDateFromString(date) {
+  if (date) {
+    return getDisplayDate(new Date(date));
+  }
+  return undefined;
+}
+
+export default {
+  name: 'u-webmention-reply',
+  props: {
+    reply: {
+      required: true,
+      type: Object,
+    }
+  },
+  computed: {
+    timestamp: function() { return getDisplayDateFromString(this.reply.data.published); }
+  }
+}
+</script>
+
+<style lang="scss">
+.webmention-reply {
+  display: grid;
+  grid-column-gap: var(--global-space-fixed-3);
+  grid-template-areas:
+    "image author timestamp"
+    "image content content";
+  grid-template-columns: auto  auto 1fr;
+}
+
+.webmention-reply__image-link {
+  grid-area: image;
+}
+.webmention-reply__image {
+  display: block;
+  border-radius: 50%;
+  object-fit: cover;
+  height: var(--global-space-fixed-6);
+  width: var(--global-space-fixed-6);
+}
+
+.webmention-reply__author {
+  grid-area: author;
+
+  color: var(--global-title-color);
+  font-family: var(--global-font-family-heading);
+  text-decoration: none;
+}
+
+.webmention-reply__timestamp {
+  grid-area: timestamp;
+  font-size: var(--global-font-size-1);
+}
+
+.webmention-reply__content {
+  grid-area: content;
+}
+</style>
