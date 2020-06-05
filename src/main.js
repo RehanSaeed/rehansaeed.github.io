@@ -90,7 +90,7 @@ console.log('%c ▄██▄▄▄▄███   ██▄▄▄██ █▄  �
     href: site.author.twitter.url,
   });
   head.link.push({
-    rel: 'me authn',
+    rel: 'me',
     href: site.author.gitHub.url,
   });
   head.link.push({
