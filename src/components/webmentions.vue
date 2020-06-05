@@ -1,5 +1,5 @@
 <template>
-  <u-intersect @enter="load" root-margin="200px 200px 200px 200px">
+  <u-intersect @enterFirstTime="onEnterFirstTime" root-margin="200px 200px 200px 200px">
     <u-content-box class="webmentions" :class="{ 'webmentions--empty': isEmpty, 'webmentions--loaded': isLoaded }" tag="section">
       <u-heading class="webmentions__title" center level="2">Web Mentions</u-heading>
       <a class="webmentions__help" href="https://en.wikipedia.org/wiki/Webmention"><u-icon-question class="webmentions__icon" :size="18"/> <span>What's this?</span></a>
@@ -47,7 +47,6 @@ export default {
   },
   data() {
     return {
-      isLoading: false,
       isLoaded: false,
       isEmpty: false,
       likes: [],
@@ -62,9 +61,9 @@ export default {
     },
   },
   computed: {
-    likesDescription: function() { return `${this.likes?.length ?? 0} ${this.pluralise(this.likes?.length, 'Like', 'Likes')}`; },
-    repostsDescription: function() { return `${this.reposts?.length ?? 0} ${this.pluralise(this.reposts?.length, 'Repost', 'Reposts')}`; },
-    repliesDescription: function() { return `${this.replies?.length ?? 0} ${this.pluralise(this.replies?.length, 'Reply', 'Replies')}`; },
+    likesDescription() { return `${this.likes?.length ?? 0} ${this.pluralise(this.likes?.length, 'Like', 'Likes')}`; },
+    repostsDescription() { return `${this.reposts?.length ?? 0} ${this.pluralise(this.reposts?.length, 'Repost', 'Reposts')}`; },
+    repliesDescription() { return `${this.replies?.length ?? 0} ${this.pluralise(this.replies?.length, 'Reply', 'Replies')}`; },
   },
   methods: {
     pluralise(count, one, many) { return count === 1 ? one : many; },
@@ -73,19 +72,16 @@ export default {
       const list = await response.json();
       return list.links;
     },
-    async load() {
-      if (!this.isLoading) {
-        try {
-          this.isLoading = true;
-          const mentions = await this.getMentions(0, 999);
-          this.likes = mentions.filter(x => x.activity.type === 'like');
-          this.reposts = mentions.filter(x => x.activity.type === 'repost');
-          this.replies = mentions.filter(x => x.activity.type === 'reply');
-          this.isEmpty = mentions.length === 0;
-          this.isLoaded = true;
-        } catch (error) {
-          console.log(error);
-        }
+    async onEnterFirstTime() {
+      try {
+        const mentions = await this.getMentions(0, 999);
+        this.likes = mentions.filter(x => x.activity.type === 'like');
+        this.reposts = mentions.filter(x => x.activity.type === 'repost');
+        this.replies = mentions.filter(x => x.activity.type === 'reply');
+        this.isEmpty = mentions.length === 0;
+        this.isLoaded = true;
+      } catch (error) {
+        console.log(error);
       }
     }
   }

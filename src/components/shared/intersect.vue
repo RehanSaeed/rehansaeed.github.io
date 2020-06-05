@@ -2,6 +2,11 @@
 export default {
   name: 'u-intersect',
   abstract: true,
+  data() {
+    return {
+      hasIntersected: false,
+    }
+  },
   props: {
     threshold: {
       type: Array,
@@ -19,12 +24,16 @@ export default {
       default: () => '0px 0px 0px 0px',
     }
   },
-  mounted () {
+  mounted() {
     this.observer = new IntersectionObserver((entries) => {
       if (!entries[0].isIntersecting) {
         this.$emit('leave', [entries[0]])
       } else {
         this.$emit('enter', [entries[0]])
+        if (!this.hasIntersected) {
+          this.hasIntersected = true;
+          this.$emit('enterFirstTime', [entries[0]])
+        }
       }
 
       this.$emit('change', [entries[0]])
@@ -45,7 +54,7 @@ export default {
       this.observer.observe(this.$slots.default[0].elm)
     })
   },
-  destroyed () {
+  destroyed() {
     this.$emit('destroyed')
     this.observer.disconnect()
   },
