@@ -30,6 +30,7 @@ import tags from '~/components/tags.vue';
 import { getImageMetadata } from '~/framework/images.js';
 
 export default {
+  name: 'u-post',
   components: {
     'u-content-box': contentBox,
     'u-edit-post-button': editPostButton,
