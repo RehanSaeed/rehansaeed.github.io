@@ -4,9 +4,11 @@
 
 		<g-image :alt="$static.metadata.name" immediate class="author__image u-photo" src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png" width="120" height="120" />
 
-		<a class="author__site-title-link u-url" :href="$static.metadata.url"><u-heading level="1" class="author__site-title p-name">{{$static.metadata.name}}</u-heading></a>
+		<u-heading level="1" class="author__site-title">
+      <a :href="$static.metadata.url" class="author__site-title-link u-url p-name">{{$static.metadata.name}}</a>
+    </u-heading>
 
-		<p class="author__description">{{$static.metadata.description}}</p>
+		<p class="author__description p-note">{{$static.metadata.description}}</p>
 
 		<u-social-links />
 
@@ -52,13 +54,24 @@ query {
   transition: border-color var(--global-duration-3) ease-out;
 }
 
-.author__site-title-link {
-  text-decoration: none;
-}
-
 .author__site-title {
   font-size: var(--global-font-size-8);
   text-align: center;
+}
+.author__site-title-link {
+  color: var(--global-title-color);
+  opacity: 1;
+  text-decoration: none;
+
+  &:hover,
+  &:focus,
+  &:active {
+    opacity: .7;
+  }
+
+  &:visited {
+    color: var(--global-title-color);
+  }
 }
 
 .author__description {

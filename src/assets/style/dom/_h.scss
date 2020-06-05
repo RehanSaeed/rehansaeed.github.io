@@ -8,7 +8,7 @@ h1, h2, h3, h4, h5, h6 {
   max-width: var(--global-line-length-max);
   transition: color var(--global-duration-3);
 
-  a {
+  a[aria-hidden="true"] {
     color: var(--global-link-color);
     float: left;
     margin-left: -30px;
@@ -23,7 +23,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 
   &:hover {
-    a {
+    a[aria-hidden="true"] {
       color: var(--global-link-color);
       opacity: 1;
       text-decoration: none;
