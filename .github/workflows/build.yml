@@ -32,3 +32,5 @@ jobs:
       run: curl http://www.google.com/ping?sitemap=https://rehansaeed.com/sitemap.xml
     - name: 'Ping Sitemap to Bing'
       run: curl http://www.bing.com/ping?sitemap=https://rehansaeed.com/sitemap.xml
+    - name: 'Send Outgoing Webmentions'
+      run: npx webmention https://rehansaeed.com/rss.xml --limit 10 --send
