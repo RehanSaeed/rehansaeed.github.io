@@ -34,16 +34,26 @@
       "url": "https://github.com/RehanSaeed",
       "sponsorsUrl": "https://github.com/sponsors/RehanSaeed"
     },
+    "linkedIn": {
+      "url": "https://www.linkedin.com/in/muhammad-rehan-saeed/"
+    },
     "stackOverflow": {
       "user": "1212017",
       "url": "https://stackoverflow.com/users/1212017/muhammad-rehan-saeed",
       "storyUrl": "https://stackoverflow.com/story/muhammad-rehan-saeed"
     },
-    "linkedInUrl": "https://www.linkedin.com/in/muhammad-rehan-saeed/",
-    "twitter": "@RehanSaeedUK",
-    "twitterUrl": "https://twitter.com/RehanSaeedUK",
-    "youtubeUrl": "https://www.youtube.com/channel/UC6geox4JkY11093RqecELGA",
-    "buyMeACoffeeUrl": "https://www.buymeacoffee.com/rehan",
-    "paypalUrl": "https://www.paypal.me/MuhammadRehanSaeed"
+    "twitter": {
+      "user": "@RehanSaeedUK",
+      "url": "https://twitter.com/RehanSaeedUK"
+    },
+    "youtube": {
+      "url": "https://www.youtube.com/channel/UC6geox4JkY11093RqecELGA"
+    },
+    "buyMeACoffee": {
+      "url": "https://www.buymeacoffee.com/rehan"
+    },
+    "paypal": {
+      "url": "https://www.paypal.me/MuhammadRehanSaeed"
+    }
   }
 }

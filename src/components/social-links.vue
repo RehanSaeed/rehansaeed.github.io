@@ -1,6 +1,6 @@
 <template>
   <div class="social">
-    <u-link v-if="this.$static.metadata.author.twitterUrl" label="Twitter" :href="this.$static.metadata.author.twitterUrl" class="social__link" rel="me">
+    <u-link v-if="this.$static.metadata.author.twitter.url" label="Twitter" :href="this.$static.metadata.author.twitter.url" class="social__link" rel="me">
       <u-icon-twitter :size="30"/>
     </u-link>
     <u-link v-if="this.$static.metadata.author.gitHub.url" label="GitHub" :href="this.$static.metadata.author.gitHub.url" class="social__link" rel="me authn">
@@ -9,10 +9,10 @@
     <u-link v-if="this.$static.metadata.author.stackOverflow.url" label="Stack Overflow" :href="this.$static.metadata.author.stackOverflow.url" class="social__link" rel="me">
       <u-icon-stackoverflow :size="30"/>
     </u-link>
-    <u-link v-if="this.$static.metadata.author.linkedInUrl" label="LinkedIn" :href="this.$static.metadata.author.linkedInUrl" class="social__link" rel="me">
+    <u-link v-if="this.$static.metadata.author.linkedIn.url" label="LinkedIn" :href="this.$static.metadata.author.linkedIn.url" class="social__link" rel="me">
       <u-icon-linkedin :size="30"/>
     </u-link>
-    <u-link v-if="this.$static.metadata.author.youtubeUrl" label="Youtube" :href="this.$static.metadata.author.youtubeUrl" class="social__link" rel="me">
+    <u-link v-if="this.$static.metadata.author.youtube.url" label="Youtube" :href="this.$static.metadata.author.youtube.url" class="social__link" rel="me">
       <u-icon-youtube :size="30"/>
     </u-link>
     <u-link class="social__link" label="Email" :href="mailTo" rel="me">
@@ -65,12 +65,18 @@ query {
       gitHub {
         url
       }
-      linkedInUrl
+      linkedIn {
+        url
+      }
       stackOverflow {
         url
       }
-      twitterUrl
-      youtubeUrl
+      twitter {
+        url
+      }
+      youtube {
+        url
+      }
     }
   }
 }

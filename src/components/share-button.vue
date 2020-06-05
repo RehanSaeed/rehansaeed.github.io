@@ -105,7 +105,7 @@ export default {
     },
     twitterUrl: function() {
       // https://developer.twitter.com/en/docs/twitter-for-websites/tweet-button/overview
-      return `https://twitter.com/intent/tweet?text=${this.encodedTitle}&url=${this.encodedUrl}&hashtags=${this.encodedTags}&via=${this.$static.metadata.author.twitter.replace('@', '')}`;
+      return `https://twitter.com/intent/tweet?text=${this.encodedTitle}&url=${this.encodedUrl}&hashtags=${this.encodedTags}&via=${this.$static.metadata.author.twitter.user.replace('@', '')}`;
     },
     redditUrl: function() {
       return `http://www.reddit.com/submit?url=${this.encodedUrl}&title=${this.encodedTitle}`;
@@ -146,7 +146,9 @@ export default {
 query {
   metadata {
     author {
-      twitter
+      twitter {
+        user
+      }
     }
   }
 }

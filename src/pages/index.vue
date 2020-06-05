@@ -52,8 +52,8 @@ export default {
         { name: 'author', content: this.$static.metadata.author.name },
         // Twitter card
         { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:site', content: this.$static.metadata.author.twitter },
-        { name: 'twitter:creator', content: this.$static.metadata.author.twitter },
+        { name: 'twitter:site', content: this.$static.metadata.author.twitter.user },
+        { name: 'twitter:creator', content: this.$static.metadata.author.twitter.user },
         { name: 'twitter:title', content: this.title },
         { name: 'twitter:description', content: this.description },
         { name: 'twitter:image', content: this.image },
@@ -136,7 +136,9 @@ query {
       firstName
       lastName
       gender
-      twitter
+      twitter {
+        user
+      }
     }
   }
 }

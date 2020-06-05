@@ -67,8 +67,8 @@ export default {
         { name: 'keywords', content: this.tags.map(x => x.title).join(",") },
         // Twitter card
         { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:site', content: this.metadata.author.twitter },
-        { name: 'twitter:creator', content: this.metadata.author.twitter },
+        { name: 'twitter:site', content: this.metadata.author.twitter.user },
+        { name: 'twitter:creator', content: this.metadata.author.twitter.user },
         { name: 'twitter:title', content: this.title },
         { name: 'twitter:description', content: this.description },
         { name: 'twitter:image', content: this.image },
@@ -145,7 +145,9 @@ query {
     facebookAppId
     author {
       name
-      twitter
+      twitter {
+        user
+      }
     }
   }
 }
