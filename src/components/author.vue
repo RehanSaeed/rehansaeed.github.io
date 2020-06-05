@@ -1,9 +1,9 @@
 <template>
-	<section class="author">
+	<section class="author h-card">
 
-		<g-image :alt="$static.metadata.name" immediate class="author__image" src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png" width="120" height="120" />
+		<g-image :alt="$static.metadata.name" immediate class="author__image u-photo" src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png" width="120" height="120" />
 
-		<u-heading level="1" class="author__site-title">{{$static.metadata.name}}</u-heading>
+		<a class="author__site-title-link u-url" :href="$static.metadata.url"><u-heading level="1" class="author__site-title">{{$static.metadata.name}}</u-heading></a>
 
 		<p class="author__description">{{$static.metadata.description}}</p>
 
@@ -30,6 +30,7 @@ query {
   metadata {
     name
     description
+    url
   }
 }
 </static-query>
@@ -48,6 +49,10 @@ query {
   height: 6rem;
   margin-bottom: var(--global-space-fluid-3);
   transition: border-color var(--global-duration-3) ease-out;
+}
+
+.author__site-title-link {
+  text-decoration: none;
 }
 
 .author__site-title {
