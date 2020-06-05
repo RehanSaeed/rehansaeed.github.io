@@ -1,4 +1,5 @@
 <template>
+  <!-- Added webmention markup (See https://indiewebify.me/validate-h-card/?url=https%3A%2F%2Frehansaeed.com) -->
 	<section class="author h-card">
 
 		<g-image :alt="$static.metadata.name" immediate class="author__image u-photo" src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png" width="120" height="120" />
