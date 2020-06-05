@@ -81,38 +81,38 @@ console.log('%c ▄██▄▄▄▄███   ██▄▄▄██ █▄  �
     rel: 'pingback',
     href: site.webmention.pingbackUrl,
   });
-  head.link.push({
-    rel: 'authorization_endpoint',
-    href: 'https://indieauth.com/auth',
-  });
-  head.link.push({
-    rel: 'me',
-    href: site.author.twitter.url,
-  });
-  head.link.push({
-    rel: 'me',
-    href: site.author.gitHub.url,
-  });
-  head.link.push({
-    rel: 'me',
-    href: site.author.youtube.url,
-  });
-  head.link.push({
-    rel: 'me',
-    href: site.author.linkedIn.url,
-  });
-  head.link.push({
-    rel: 'me',
-    href: site.author.stackOverflow.url,
-  });
-  head.link.push({
-    rel: 'me',
-    href: site.author.buyMeACoffee.url,
-  });
-  head.link.push({
-    rel: 'me',
-    href: site.author.paypal.url,
-  });
+  // head.link.push({
+  //   rel: 'authorization_endpoint',
+  //   href: 'https://indieauth.com/auth',
+  // });
+  // head.link.push({
+  //   rel: 'me',
+  //   href: site.author.twitter.url,
+  // });
+  // head.link.push({
+  //   rel: 'me',
+  //   href: site.author.gitHub.url,
+  // });
+  // head.link.push({
+  //   rel: 'me',
+  //   href: site.author.youtube.url,
+  // });
+  // head.link.push({
+  //   rel: 'me',
+  //   href: site.author.linkedIn.url,
+  // });
+  // head.link.push({
+  //   rel: 'me',
+  //   href: site.author.stackOverflow.url,
+  // });
+  // head.link.push({
+  //   rel: 'me',
+  //   href: site.author.buyMeACoffee.url,
+  // });
+  // head.link.push({
+  //   rel: 'me',
+  //   href: site.author.paypal.url,
+  // });
 
   // Referrer
   head.meta.push({
