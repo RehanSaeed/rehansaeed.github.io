@@ -2,11 +2,9 @@
   <!-- Added webmention markup (See https://indiewebify.me/validate-h-card/?url=https%3A%2F%2Frehansaeed.com) -->
 	<section class="author h-card">
 
-		<g-image :alt="$static.metadata.name" immediate class="author__image u-photo" src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png" width="120" height="120" />
+		<g-image class="author__image u-photo" :alt="$static.metadata.name" immediate src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png" width="120" height="120" />
 
-		<u-heading level="1" class="author__site-title">
-      <a :href="$static.metadata.url" class="author__site-title-link u-url p-name">{{$static.metadata.name}}</a>
-    </u-heading>
+		<u-heading class="author__site-title u-url p-name" level="1" to="/" center>{{$static.metadata.name}}</u-heading>
 
 		<p class="author__description p-note">{{$static.metadata.description}}</p>
 
@@ -56,23 +54,6 @@ query {
 
 .author__site-title {
   font-size: var(--global-font-size-8);
-  text-align: center;
-}
-.author__site-title-link {
-  color: var(--global-title-color);
-  opacity: 1;
-  text-decoration: none;
-
-  &:hover,
-  &:focus,
-  &:active {
-    color: var(--global-title-color);
-    opacity: .7;
-  }
-
-  &:visited {
-    color: var(--global-title-color);
-  }
 }
 
 .author__description {

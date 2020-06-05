@@ -2,7 +2,7 @@
   <Layout>
     <div class="tag-page">
 
-      <u-heading level="1" center># {{title}}</u-heading>
+      <u-heading level="1" center :to="tag.path"># {{title}}</u-heading>
 
       <div class="tag-page__items">
         <u-post-card v-for="post in posts" :key="post.id" :post="post"/>
@@ -28,14 +28,14 @@ export default {
     'u-post-card': postCard,
   },
   computed: {
-    metadata: function() { return this.$static.metadata; },
-    tag: function() { return this.$page.tag; },
-    posts: function() { return this.tag.belongsTo.edges.map(x => x.node).filter(x => x.published); },
+    metadata() { return this.$static.metadata; },
+    tag() { return this.$page.tag; },
+    posts() { return this.tag.belongsTo.edges.map(x => x.node).filter(x => x.published); },
 
-    title: function() { return this.tag.title; },
-    description: function() { return `Blog posts authored by ${this.metadata.author.name} about ${this.title}.`; },
-    image: function() { return `${this.metadata.url}/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg`; },
-    url: function() { return this.metadata.url + this.tag.path; }
+    title() { return this.tag.title; },
+    description() { return `Blog posts authored by ${this.metadata.author.name} about ${this.title}.`; },
+    image() { return `${this.metadata.url}/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg`; },
+    url() { return this.metadata.url + this.tag.path; }
   },
   metaInfo() {
     return {

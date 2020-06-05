@@ -2,7 +2,7 @@
   <Layout>
     <div class="about">
 
-      <u-heading level="1">About</u-heading>
+      <u-heading level="1" center :href="relativeUrl">About</u-heading>
 
       <u-content-box class="about__container" tag="article">
         <g-image class="about__image" alt="Muhammad Rehan Saeed" height="480" width="320" src="~/assets/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg" quality="100"/>
@@ -41,16 +41,17 @@ export default {
     }
   },
   computed: {
-    title: function() { return 'About'; },
-    description: function() { return `About ${this.$static.metadata.author.name}. ${this.$static.metadata.description}.`; },
-    image: function() { return this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'; },
-    url: function() { return this.$static.metadata.url + '/about/'; },
-    stackOverflowUrl: function() { return this.$static.metadata.author.stackOverflow.url; },
-    stackOverflowStoryUrl: function() { return this.$static.metadata.author.stackOverflow.storyUrl; },
-    stackOverflowProfileUrl: function() { return `https://stackoverflow.com/users/flair/${this.$static.metadata.author.stackOverflow.user}.png?theme=${this.oppositeTheme}`; },
-    gitHubUrl: function() { return this.$static.metadata.author.gitHub.url; },
-    gitHubFollowersUrl: function() { return `https://img.shields.io/github/followers/${this.$static.metadata.author.gitHub.user}?style=social`; },
-    oppositeTheme: function() { return this.theme === 'light' ? 'dark' : 'light'; },
+    title() { return 'About'; },
+    description() { return `About ${this.$static.metadata.author.name}. ${this.$static.metadata.description}.`; },
+    image() { return this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'; },
+    relativeUrl() { return '/about/'; },
+    url() { return this.$static.metadata.url + this.relativeUrl; },
+    stackOverflowUrl() { return this.$static.metadata.author.stackOverflow.url; },
+    stackOverflowStoryUrl() { return this.$static.metadata.author.stackOverflow.storyUrl; },
+    stackOverflowProfileUrl() { return `https://stackoverflow.com/users/flair/${this.$static.metadata.author.stackOverflow.user}.png?theme=${this.oppositeTheme}`; },
+    gitHubUrl() { return this.$static.metadata.author.gitHub.url; },
+    gitHubFollowersUrl() { return `https://img.shields.io/github/followers/${this.$static.metadata.author.gitHub.user}?style=social`; },
+    oppositeTheme() { return this.theme === 'light' ? 'dark' : 'light'; },
   },
   metaInfo() {
     return {

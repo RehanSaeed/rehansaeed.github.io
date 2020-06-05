@@ -3,7 +3,7 @@
     <div class="portfolio">
 
       <div class="portfolio__title">
-        <u-heading level="1" center>Portfolio</u-heading>
+        <u-heading level="1" center :to="relativeUrl">Portfolio</u-heading>
         <p>These are some of the open source projects that I've started and maintained. There are many others I've contributed to which you can see in my GitHub profile and of course there are other commercial projects that I cannot disclose.</p>
       </div>
 
@@ -32,10 +32,11 @@ export default {
     'u-portfolio-card': portfolioCard,
   },
   computed: {
-    title: function() { return 'Portfolio'; },
-    description: function() { return `Portfolio of work by ${this.$static.metadata.author.name}.`; },
-    image: function() { return this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'; },
-    url: function() { return this.$static.metadata.url + '/portfolio/'; }
+    title() { return 'Portfolio'; },
+    description() { return `Portfolio of work by ${this.$static.metadata.author.name}.`; },
+    image() { return this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'; },
+    relativeUrl() { return '/portfolio/'; },
+    url() { return this.$static.metadata.url + this.relativeUrl; }
   },
   metaInfo() {
     return {

@@ -1,9 +1,14 @@
 <template>
   <Component
-    :is="tag || `h${level}`"
     class="heading"
+    :is="headingTag"
     :class="[sizeClass, { 'heading--center': center }]">
-    <slot/>
+    <Component :is="linkTag"
+      class="heading__link"
+      :href="href"
+      :to="to">
+      <slot/>
+    </Component>
   </Component>
 </template>
 
@@ -19,8 +24,10 @@ export default {
       default: null,
       type: String,
     },
-    tag: {
-      default: null,
+    href: {
+      type: String,
+    },
+    to: {
       type: String,
     },
     center: {
@@ -29,12 +36,37 @@ export default {
     },
   },
   computed: {
-    sizeClass() { return `heading--${this.size || this.level}`; }
+    headingTag() { return `h${this.level}`; },
+    sizeClass() { return `heading--${this.size || this.level}`; },
+    linkTag() {
+      if (this.to || this.href) {
+        return this.to ? 'g-link' : 'a';
+      } else {
+        return 'span';
+      }
+    }
   }
 };
 </script>
 
-<style>
+<style lang="scss">
+.heading__link {
+  color: var(--global-title-color);
+  opacity: 1;
+  text-decoration: none;
+
+  &:hover,
+  &:focus,
+  &:active {
+    color: var(--global-title-color);
+    opacity: .7;
+  }
+
+  &:visited {
+    color: var(--global-title-color);
+  }
+}
+
 .heading--1 {
   font-size: var(--global-font-size-7);
   margin-top: 0;

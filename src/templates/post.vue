@@ -3,7 +3,7 @@
     <div class="post-page h-entry">
 
       <div class="post-page__title-container">
-        <u-heading level="1" center><a class="post-page__link p-name u-url" :href="url">{{title}}</a></u-heading>
+        <u-heading class="p-name u-url" level="1" center :to="post.path">{{title}}</u-heading>
         <u-post-meta :meta="post" />
       </div>
 
@@ -42,18 +42,18 @@ export default {
     'u-webmentions': webmentions,
   },
   computed: {
-    metadata: function() { return this.$static.metadata; },
-    post: function() { return this.$page.post; },
+    metadata() { return this.$static.metadata; },
+    post() { return this.$page.post; },
 
-    title: function() { return this.post.title; },
-    description: function() { return this.post.description; },
-    author: function() { return this.post.author; },
-    date: function() { return this.post.date; },
-    dateModified: function() { return this.post.dateModified; },
-    image: function() { return this.metadata.url + this.post.heroImage; },
-    url: function() { return this.metadata.url + this.post.path; },
-    tags: function() { return this.post.tags ?? []; },
-    headings: function() { return this.post.headings ?? []; },
+    title() { return this.post.title; },
+    description() { return this.post.description; },
+    author() { return this.post.author; },
+    date() { return this.post.date; },
+    dateModified() { return this.post.dateModified; },
+    image() { return this.metadata.url + this.post.heroImage; },
+    url() { return this.metadata.url + this.post.path; },
+    tags() { return this.post.tags ?? []; },
+    headings() { return this.post.headings ?? []; },
   },
   metaInfo () {
     return {
@@ -191,22 +191,5 @@ query Post ($id: ID!) {
   margin: 0 auto;
   padding: var(--global-space-fluid-5) 0 var(--global-space-fluid-5);
   text-align: center;
-}
-
-.post-page__link {
-  color: var(--global-title-color);
-  opacity: 1;
-  text-decoration: none;
-
-  &:hover,
-  &:focus,
-  &:active {
-    color: var(--global-title-color);
-    opacity: .7;
-  }
-
-  &:visited {
-    color: var(--global-title-color);
-  }
 }
 </style>
