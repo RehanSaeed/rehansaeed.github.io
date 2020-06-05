@@ -63,8 +63,8 @@ export default {
   },
   computed: {
     likesDescription: function() { return `${this.likes?.length ?? 0} ${this.pluralise(this.likes?.length, 'Like', 'Likes')}`; },
-    repostsDescription: function() { return `${this.reposts?.length ?? 0} ${this.pluralise(this.likes?.length, 'Repost', 'Reposts')}`; },
-    repliesDescription: function() { return `${this.replies?.length ?? 0} ${this.pluralise(this.likes?.length, 'Reply', 'Replies')}`; },
+    repostsDescription: function() { return `${this.reposts?.length ?? 0} ${this.pluralise(this.reposts?.length, 'Repost', 'Reposts')}`; },
+    repliesDescription: function() { return `${this.replies?.length ?? 0} ${this.pluralise(this.replies?.length, 'Reply', 'Replies')}`; },
   },
   methods: {
     pluralise(count, one, many) { return count === 1 ? one : many; },
