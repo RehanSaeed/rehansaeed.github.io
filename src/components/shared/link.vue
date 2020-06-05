@@ -4,6 +4,7 @@
     :class="{ 'link--bordered': bordered, 'link--contrast': contrast, 'link--primary': primary }"
     :href="href"
     :to="to"
+    :rel="rel"
     :aria-label="label">
     <slot/>
   </Component>
@@ -29,6 +30,9 @@ export default {
       type: String,
     },
     href: {
+      type: String,
+    },
+    rel: {
       type: String,
     },
   },
