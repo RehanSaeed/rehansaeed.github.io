@@ -4,10 +4,11 @@
     <header class="post__header">
       <g-image v-if="post.heroImage"
         :alt="imageMeta.alt"
-        :src="post.heroImage"/>
+        :src="post.heroImage"
+        class="u-photo"/>
     </header>
 
-    <div class="post__content" v-html="post.content" />
+    <div class="post__content e-content" v-html="post.content" />
 
     <footer class="post__footer">
       <div class="post__footer__first-row">

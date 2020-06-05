@@ -1,9 +1,9 @@
 <template>
   <Layout>
-    <div class="post-page">
+    <div class="post-page h-entry">
 
       <div class="post-page__title">
-        <u-heading level="1" center>{{title}}</u-heading>
+        <u-heading class="p-name" level="1" center>{{title}}</u-heading>
         <u-post-meta :meta="post" />
       </div>
 
