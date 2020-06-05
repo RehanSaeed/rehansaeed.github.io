@@ -1,6 +1,6 @@
 <template>
   <u-content-box class="comments" tag="section">
-    <u-heading class="comments__title" center level="2">Comments</u-heading>
+    <u-heading id="comments" class="comments__title" center level="2" href="#comments">Comments</u-heading>
     <Vssue :title="title" />
   </u-content-box>
 </template>

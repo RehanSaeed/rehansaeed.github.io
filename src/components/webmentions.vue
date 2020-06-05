@@ -1,7 +1,7 @@
 <template>
   <u-intersect @enterFirstTime="onEnterFirstTime" root-margin="200px 200px 200px 200px">
     <u-content-box class="webmentions" :class="{ 'webmentions--empty': isEmpty, 'webmentions--loaded': isLoaded }" tag="section">
-      <u-heading class="webmentions__title" center level="2">Web Mentions</u-heading>
+      <u-heading class="webmentions__title" id="webmentions" center level="2" href="#webmentions">Web Mentions</u-heading>
       <a class="webmentions__help" href="https://en.wikipedia.org/wiki/Webmention"><u-icon-question class="webmentions__icon" :size="18"/> <span>What's this?</span></a>
       <div class="webmentions__container">
 
