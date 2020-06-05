@@ -82,6 +82,10 @@ console.log('%c ▄██▄▄▄▄███   ██▄▄▄██ █▄  �
     href: site.webmention.pingbackUrl,
   });
   head.link.push({
+    rel: 'authorization_endpoint',
+    href: site.author.gitHub.url,
+  });
+  head.link.push({
     rel: 'me',
     href: site.author.twitter.url,
   });

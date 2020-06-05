@@ -4,8 +4,7 @@
     :class="{ 'link--bordered': bordered, 'link--contrast': contrast, 'link--primary': primary }"
     :href="href"
     :to="to"
-    :aria-label="label"
-    :rel="rel">
+    :aria-label="label">
     <slot/>
   </Component>
 </template>
@@ -24,9 +23,6 @@ export default {
       type: Boolean
     },
     label: {
-      type: String,
-    },
-    rel: {
       type: String,
     },
     to: {
