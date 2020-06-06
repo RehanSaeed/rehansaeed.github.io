@@ -104,12 +104,18 @@ export default {
 }
 
 .webmentions__title {
+  grid-column: 1;
+  grid-row: 1;
+
   margin-top: 0;
 }
 
 .webmentions__help {
-  text-align: end;
-  margin-top: -3rem;
+  grid-column: 1;
+  grid-row: 1;
+  align-self: center;
+  justify-self: end;
+  margin-bottom: var(--global-space-fixed-4);
 }
 
 .webmentions__container {
