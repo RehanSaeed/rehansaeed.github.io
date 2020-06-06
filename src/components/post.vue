@@ -11,10 +11,10 @@
     <div class="post__content e-content" v-html="post.content" />
 
     <footer class="post__footer">
-      <div class="post__footer__first-row">
+      <div class="post__footer__actions">
         <u-share-button class="post__share" :title="post.title" :tags="post.tags.map(x => x.title)" />
         <u-edit-post-button class="post__edit" :post="post" />
-        <u-support-button/>
+        <u-support-button class="post__support"/>
       </div>
       <u-tags :tags="post.tags" class="post__tags" />
     </footer>
@@ -112,14 +112,19 @@ export default {
   margin-top: var(--global-space-fixed-6);
 }
 
-.post__footer__first-row {
-  display: grid;
-  grid-template-columns: auto auto 1fr;
-  grid-gap: var(--global-space-fixed-3);
+.post__footer__actions {
+  --gap: var(--global-space-fixed-3);
+
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: calc(-1 * var(--gap));
+  margin-bottom: calc(-1 * var(--gap) + var(--global-space-fixed-5));
 }
 
 .post__edit,
-.post__share {
-  margin-bottom: var(--global-space-fixed-5);
+.post__share,
+.post__support {
+  margin-right: var(--gap);
+  margin-bottom: var(--gap);
 }
 </style>
