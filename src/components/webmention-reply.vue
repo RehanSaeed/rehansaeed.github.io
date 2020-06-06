@@ -65,8 +65,15 @@ export default {
   display: block;
   border-radius: 50%;
   object-fit: cover;
+  transition: opacity ease-out var(--global-duration-2);
   height: var(--global-space-fixed-6);
   width: var(--global-space-fixed-6);
+
+  &:hover,
+  &:focus,
+  &:active {
+    opacity: .7;
+  }
 }
 
 .webmention-reply__author {
@@ -75,6 +82,17 @@ export default {
   color: var(--global-title-color);
   font-family: var(--global-font-family-heading);
   text-decoration: none;
+
+  &:hover,
+  &:focus,
+  &:active {
+    color: var(--global-title-color);
+    opacity: .7;
+  }
+
+  &:visited {
+    color: var(--global-title-color);
+  }
 }
 
 .webmention-reply__timestamp {
