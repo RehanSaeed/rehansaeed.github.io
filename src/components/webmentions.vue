@@ -118,6 +118,12 @@ export default {
   margin-bottom: var(--global-space-fixed-4);
 }
 
+@media screen and (max-width: 576px) { // $global-breakpoint-sm
+  .webmentions__help {
+    grid-row: 2;
+  }
+}
+
 .webmentions__container {
   display: none;
   grid-gap: var(--global-space-fixed-3);
