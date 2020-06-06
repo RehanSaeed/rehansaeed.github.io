@@ -12,10 +12,11 @@
         <u-webmention-faces class="webmentions__repost-faces" :mentions="reposts"/>
 
         <p class="webmentions__count webmentions__reply-count"><u-icon-comment class="webmentions__icon" :size="16" title="Replies"/><span>{{repliesDescription}}</span></p>
-        <div v-for="reply in replies"
-          :key="reply.id"
-          class="webmentions__replies">
-          <u-webmention-reply :reply="reply"/>
+        <div class="webmentions__replies">
+          <u-webmention-reply
+            v-for="reply in replies"
+            :key="reply.id"
+            :reply="reply"/>
         </div>
 
       </div>
@@ -68,7 +69,7 @@ export default {
   methods: {
     pluralise(count, one, many) { return count === 1 ? one : many; },
     async getMentions(page, perPage) {
-      const response = await fetch(`https://webmention.io/api/mentions?page=${page}&per-page=${perPage}&target=${this.url}`);
+      const response = await fetch(`https://webmention.io/api/mentions?page=${page}&per-page=${perPage}&target=${this.url}&sort-by=published`);
       const list = await response.json();
       return list.links;
     },
@@ -77,7 +78,7 @@ export default {
         const mentions = await this.getMentions(0, 999);
         this.likes = mentions.filter(x => x.activity.type === 'like');
         this.reposts = mentions.filter(x => x.activity.type === 'repost');
-        this.replies = mentions.filter(x => x.activity.type === 'reply');
+        this.replies = mentions.filter(x => x.activity.type === 'reply' || x.activity.type === 'link');
         this.isEmpty = mentions.length === 0;
         this.isLoaded = true;
       } catch (error) {
@@ -149,5 +150,8 @@ export default {
 }
 .webmentions__replies {
   grid-area: replies;
+
+  display: grid;
+  grid-gap: var(--global-space-fixed-3);
 }
 </style>
