@@ -84,5 +84,9 @@ export default {
 
 .webmention-reply__content {
   grid-area: content;
+
+  > p:last-of-type {
+    margin-bottom: 0;
+  }
 }
 </style>
