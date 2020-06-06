@@ -1,6 +1,6 @@
 <template>
   <u-intersect @enterFirstTime="onEnterFirstTime" root-margin="500px 500px 500px 500px">
-    <u-content-box class="webmentions" :class="{ 'webmentions--empty': isEmpty }" tag="section">
+    <u-content-box class="webmentions" tag="section">
       <u-heading class="webmentions__title" id="webmentions" center level="2" href="#webmentions">Web Mentions</u-heading>
       <a class="webmentions__help" href="https://en.wikipedia.org/wiki/Webmention"><u-icon-question class="webmentions__icon" :size="18"/> <span>What's this?</span></a>
       <div class="webmentions__container">
@@ -48,7 +48,6 @@ export default {
   },
   data() {
     return {
-      isEmpty: false,
       likes: [],
       reposts: [],
       replies: [],
@@ -78,7 +77,6 @@ export default {
         this.likes = mentions.filter(x => x.activity.type === 'like');
         this.reposts = mentions.filter(x => x.activity.type === 'repost');
         this.replies = mentions.filter(x => x.activity.type === 'reply' || x.activity.type === 'link');
-        this.isEmpty = mentions.length === 0;
       } catch (error) {
         console.log(error);
       }
@@ -90,10 +88,6 @@ export default {
 <style lang="scss">
 .webmentions {
   display: grid;
-}
-
-.webmentions--empty {
-  display: none;
 }
 
 .webmentions__title {
