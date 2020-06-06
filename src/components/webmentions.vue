@@ -1,6 +1,6 @@
 <template>
-  <u-intersect @enterFirstTime="onEnterFirstTime" root-margin="200px 200px 200px 200px">
-    <u-content-box class="webmentions" :class="{ 'webmentions--empty': isEmpty, 'webmentions--loaded': isLoaded }" tag="section">
+  <u-intersect @enterFirstTime="onEnterFirstTime" root-margin="400px 400px 400px 400px">
+    <u-content-box class="webmentions" :class="{ 'webmentions--empty': isEmpty }" tag="section">
       <u-heading class="webmentions__title" id="webmentions" center level="2" href="#webmentions">Web Mentions</u-heading>
       <a class="webmentions__help" href="https://en.wikipedia.org/wiki/Webmention"><u-icon-question class="webmentions__icon" :size="18"/> <span>What's this?</span></a>
       <div class="webmentions__container">
@@ -48,7 +48,6 @@ export default {
   },
   data() {
     return {
-      isLoaded: false,
       isEmpty: false,
       likes: [],
       reposts: [],
@@ -69,7 +68,7 @@ export default {
   methods: {
     pluralise(count, one, many) { return count === 1 ? one : many; },
     async getMentions(page, perPage) {
-      const response = await fetch(`https://webmention.io/api/mentions?page=${page}&per-page=${perPage}&target=${this.url}&sort-by=published`);
+      const response = await fetch(`https://webmention.io/api/mentions?page=${page}&per-page=${perPage}&target=${this.url}&sort-by=published&sort-dir=up`);
       const list = await response.json();
       return list.links;
     },
@@ -80,7 +79,6 @@ export default {
         this.reposts = mentions.filter(x => x.activity.type === 'repost');
         this.replies = mentions.filter(x => x.activity.type === 'reply' || x.activity.type === 'link');
         this.isEmpty = mentions.length === 0;
-        this.isLoaded = true;
       } catch (error) {
         console.log(error);
       }
@@ -96,11 +94,6 @@ export default {
 
 .webmentions--empty {
   display: none;
-}
-.webmentions--loaded {
-  .webmentions__container {
-    display: grid;
-  }
 }
 
 .webmentions__title {
@@ -126,7 +119,7 @@ export default {
 }
 
 .webmentions__container {
-  display: none;
+  display: grid;
   grid-gap: var(--global-space-fixed-3);
   grid-template-areas:
     "likeCount repostCount"
