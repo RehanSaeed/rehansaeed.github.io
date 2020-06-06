@@ -121,6 +121,7 @@ export default {
 @media screen and (max-width: 576px) { // $global-breakpoint-sm
   .webmentions__help {
     grid-row: 2;
+    justify-self: start;
   }
 }
 
