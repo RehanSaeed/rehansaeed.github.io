@@ -62,6 +62,7 @@ export default {
   grid-area: image;
 }
 .webmention-reply__image {
+  border: var(--global-border-width-2) solid var(--global-body-color);
   display: block;
   border-radius: 50%;
   object-fit: cover;

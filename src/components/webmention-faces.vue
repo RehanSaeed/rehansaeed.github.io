@@ -36,7 +36,7 @@ export default {
 
 .webmention-faces__face {
   display: inline-block;
-  border: 2px solid white;
+  border: var(--global-border-width-2) solid var(--global-body-color);
   border-radius: 50%;
   margin-left: -8px;
 
