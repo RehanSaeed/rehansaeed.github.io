@@ -29,6 +29,7 @@ export default {
 <style lang="scss">
 .webmention-faces {
   display: flex;
+  align-content: flex-start;
   flex-wrap: wrap;
   margin-left: 8px;
 }
