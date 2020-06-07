@@ -115,12 +115,6 @@ export default {
 .webmentions__container {
   display: grid;
   grid-gap: var(--global-space-fixed-3);
-  grid-template-areas:
-    "likeCount repostCount"
-    "likes reposts"
-    "replyCount ."
-    "replies replies";
-  grid-template-columns: 1fr 1fr;
 }
 
 .webmentions__count {
@@ -131,26 +125,7 @@ export default {
   margin-right: var(--global-space-fixed-2);
 }
 
-.webmentions__like-count {
-  grid-area: likeCount;
-}
-.webmentions__like-faces {
-  grid-area: likes;
-}
-
-.webmentions__repost-count {
-  grid-area: repostCount;
-}
-.webmentions__repost-faces {
-  grid-area: reposts;
-}
-
-.webmentions__reply-count {
-  grid-area: replyCount;
-}
 .webmentions__replies {
-  grid-area: replies;
-
   display: grid;
   grid-gap: var(--global-space-fixed-3);
 }
