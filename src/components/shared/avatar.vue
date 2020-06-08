@@ -1,12 +1,19 @@
 <template>
-  <a class="avatar" :class="{ 'avatar--medium': size === 'medium', 'avatar--large': size === 'large' }" :aria-label="label" :title="label" :href="href">
+  <Component
+    class="avatar"
+    :is="tag"
+    :class="{ 'avatar--medium': size === 'medium', 'avatar--large': size === 'large' }"
+    :aria-label="label"
+    :title="label"
+    :href="href"
+    :to="to">
     <g-image
       class="avatar__image"
       :alt="alt"
       :src="src"
       :width="sizeInPixels"
       :height="sizeInPixels"/>
-  </a>
+  </Component>
 </template>
 
 <script>
@@ -30,19 +37,26 @@ export default {
       required: true,
       type: String,
     },
+    to: {
+      required: false,
+      type: String,
+    },
     href: {
-      required: true,
+      required: false,
       type: String,
     },
   },
   computed: {
-    sizeInPixels() { return this.size === 'medium' ? 44 : 60; }
+    sizeInPixels() { return this.size === 'medium' ? "50" : "60"; },
+    tag() { return this.to ? 'g-link' : 'a'; }
   }
 }
 </script>
 
 <style lang="scss">
 .avatar {
+  background-color: var(--global-alternate-accent-color);
+  border-radius: 100%;
   display: inline-block;
   line-height: 0;
 }
@@ -56,6 +70,8 @@ export default {
 }
 
 .avatar--medium {
+  height: 2.5rem;
+  width: 2.5rem;
   .avatar__image {
     height: 2.5rem;
     width: 2.5rem;
@@ -63,6 +79,8 @@ export default {
 }
 
 .avatar--large {
+  height: 3rem;
+  width: 3rem;
   .avatar__image {
     height: 3rem;
     width: 3rem;
