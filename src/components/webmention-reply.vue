@@ -1,12 +1,12 @@
 <template>
   <article class="webmention-reply">
-    <a class="webmention-reply__image-link" :href="reply.data.url">
-      <g-image class="webmention-reply__image"
-        :alt="reply.data.author.name"
-        :src="reply.data.author.photo"
-        height="60"
-        width="60"/>
-    </a>
+    <u-avatar
+      class="webmention-reply__avatar"
+      :href="reply.data.url"
+      :label="reply.data.author.name"
+      :alt="reply.data.author.name"
+      :src="reply.data.author.photo"
+      size="large"/>
     <a class="webmention-reply__author" :href="reply.data.url">{{reply.data.author.name}}</a>
     <span class="webmention-reply__timestamp">{{timestamp}}</span>
     <div class="webmention-reply__content" v-html="reply.data.content"></div>
@@ -14,10 +14,14 @@
 </template>
 
 <script>
+import avatar from '~/components/shared/avatar.vue';
 import { getDisplayDateFromString } from '~/framework/date.js';
 
 export default {
   name: 'u-webmention-reply',
+  components: {
+    'u-avatar': avatar,
+  },
   props: {
     reply: {
       required: true,
@@ -35,28 +39,13 @@ export default {
   display: grid;
   grid-column-gap: var(--global-space-fixed-3);
   grid-template-areas:
-    "image author timestamp"
-    "image content content";
+    "avatar author timestamp"
+    "avatar content content";
   grid-template-columns: auto  auto 1fr;
 }
 
-.webmention-reply__image-link {
-  grid-area: image;
-}
-.webmention-reply__image {
-  border: var(--global-border-width-2) solid var(--global-body-color);
-  display: block;
-  border-radius: 50%;
-  object-fit: cover;
-  transition: opacity ease-out var(--global-duration-2);
-  height: var(--global-space-fixed-6);
-  width: var(--global-space-fixed-6);
-
-  &:hover,
-  &:focus,
-  &:active {
-    opacity: .7;
-  }
+.webmention-reply__avatar {
+  grid-area: avatar;
 }
 
 .webmention-reply__author {
