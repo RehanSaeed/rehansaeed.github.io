@@ -6,7 +6,7 @@ permalink: "/choosing-a-static-site-generator/"
 heroImage: "/images/hero/Static-Site-Generators-1600x900.png"
 date: "2020-06-09T19:19:49Z"
 dateModified: null
-published: false
+published: true
 categories:
   - "Web"
 tags:
