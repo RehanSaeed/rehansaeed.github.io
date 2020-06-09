@@ -1,6 +1,6 @@
 ---
 title: "Choosing a Static Site Generator"
-description: ""
+description: "I choose a static site generator from among a long list including Jekyll, Gatsby, Statiq, Hugo, VuePress, Next.js, Nuxt.js and Gridsome."
 author: "Muhammad Rehan Saeed"
 permalink: "/choosing-a-static-site-generator/"
 heroImage: "/images/hero/Static-Site-Generators-1600x900.png"
