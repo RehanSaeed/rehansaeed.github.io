@@ -23,7 +23,7 @@ tags:
   - "Gridsome"
 ---
 
-I recently rebuilt this blog using a static site generator called [Gridsome](https://gridsome.org/) which is based on [Vue.js](https://vuejs.org/) and [GraphQL](https://graphql.org/). This is the story of all the static site generators I tried, how I moved from WordPress to Gridsome and what I discovered along the way.
+I recently rebuilt this blog using a static site generator called [Gridsome](https://gridsome.org/) which is based on [Vue.js](https://vuejs.org/) and [GraphQL](https://graphql.org/). This is the story of all the static site generators I tried or read up on, how I moved from WordPress to Gridsome and what I discovered along the way.
 
 I want blogging to be as low friction as possible. Quite frankly if there is even a little friction, I'll stop writing posts which is what has kind of happened over the last couple of years where my output has definitely dropped.
 
