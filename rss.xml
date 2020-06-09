@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Tue, 09 Jun 2020 15:32:33 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 09 Jun 2020 15:35:52 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -20,7 +20,7 @@
             <guid>https://rehansaeed.com/choosing-a-static-site-generator/</guid>
             <pubDate>Tue, 09 Jun 2020 19:19:49 GMT</pubDate>
             <description><![CDATA[I choose a static site generator from among a long list including Jekyll, Gatsby, Statiq, Hugo, VuePress, Next.js, Nuxt.js and Gridsome.]]></description>
-            <content:encoded><![CDATA[<p>I recently rebuilt this blog using a static site generator called <a href="https://gridsome.org/">Gridsome</a> which is based on <a href="https://vuejs.org/">Vue.js</a> and <a href="https://graphql.org/">GraphQL</a>. This is the story of all the static site generators I tried, how I moved from WordPress to Gridsome and what I discovered along the way.</p>
+            <content:encoded><![CDATA[<p>I recently rebuilt this blog using a static site generator called <a href="https://gridsome.org/">Gridsome</a> which is based on <a href="https://vuejs.org/">Vue.js</a> and <a href="https://graphql.org/">GraphQL</a>. This is the story of all the static site generators I tried or read up on, how I moved from WordPress to Gridsome and what I discovered along the way.</p>
 <p>I want blogging to be as low friction as possible. Quite frankly if there is even a little friction, I&#39;ll stop writing posts which is what has kind of happened over the last couple of years where my output has definitely dropped.</p>
 <h1 id="wordpress-was-giving-me-a-bad-time">WordPress was Giving Me a Bad Time</h1>
 <p>I was using WordPress in the past which was achingly slow and a major barrier to writing posts. Thinking of writing a post in WordPress just put me off it altogether.</p>
