@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Tue, 09 Jun 2020 13:17:35 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 09 Jun 2020 15:32:33 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -14,6 +14,86 @@
             <link>https://rehansaeed.com</link>
         </image>
         <copyright>Copyright © 2020 Muhammad Rehan Saeed</copyright>
+        <item>
+            <title><![CDATA[Choosing a Static Site Generator]]></title>
+            <link>https://rehansaeed.com/choosing-a-static-site-generator/</link>
+            <guid>https://rehansaeed.com/choosing-a-static-site-generator/</guid>
+            <pubDate>Tue, 09 Jun 2020 19:19:49 GMT</pubDate>
+            <description><![CDATA[I choose a static site generator from among a long list including Jekyll, Gatsby, Statiq, Hugo, VuePress, Next.js, Nuxt.js and Gridsome.]]></description>
+            <content:encoded><![CDATA[<p>I recently rebuilt this blog using a static site generator called <a href="https://gridsome.org/">Gridsome</a> which is based on <a href="https://vuejs.org/">Vue.js</a> and <a href="https://graphql.org/">GraphQL</a>. This is the story of all the static site generators I tried, how I moved from WordPress to Gridsome and what I discovered along the way.</p>
+<p>I want blogging to be as low friction as possible. Quite frankly if there is even a little friction, I&#39;ll stop writing posts which is what has kind of happened over the last couple of years where my output has definitely dropped.</p>
+<h1 id="wordpress-was-giving-me-a-bad-time">WordPress was Giving Me a Bad Time</h1>
+<p>I was using WordPress in the past which was achingly slow and a major barrier to writing posts. Thinking of writing a post in WordPress just put me off it altogether.</p>
+<p>WordPress stores its posts in HTML. You can use markdown using the new Gutenberg plugin but if you want to edit the post after the fact, you&#39;re back to HTML.</p>
+<p>The other issue is that WordPress gets hacked all the time because people don&#39;t keep it and any installed plugins up to date. However, I found over the years that when I upgraded a plugin, there was a 50% chance that something was going to break and another 20% chance that I wouldn&#39;t find out about it until a week later.</p>
+<p>Plugins were the bane of my life. My code formatting plugin became unsupported without an easy alternative that I could migrate to. This meant I had to stick to an older version of PHP and wait for another plugin to add a migration path.</p>
+<p>Finally, I was paying for hosting on Azure Web apps which isn&#39;t the simplest or cheapest option I could have gone with. It was time to move...</p>
+<h1 id="static-vs-dynamic-sites">Static vs Dynamic Sites</h1>
+<p>So why switch from a dynamic site like WordPress, to a statically generated site? I found so many reasons, some of which I hadn&#39;t thought of before I made the switch.</p>
+<p>The obvious ones are that a static site is going to be faster and cheaper to run. A nice side effect of being faster is that search engines will also give you a little more link juice and rank you higher.</p>
+<p>The biggest win for me was that I can now finally own my own content. It&#39;s strange to say that hosting my own WordPress site was not owning my own content but the fact is, I was not fully in control of the content that WordPress was generating. I became painfully aware of this after I had exported my posts from WordPress to markdown.</p>
+<p>I had used certain plugins that formatted content strangely or I was using short codes which don&#39;t translate well. There were a myriad of issues. The amazing thing was that I could use VS Code to easily find and replace broken formatting with the help of some regular expression magic (I know enough to be dangerous!). The downside was that I had to manually go back, fix and check every blog post I&#39;d ever written.</p>
+<p>At the end of the day, my content is now simple markdown files formatted to my liking. There is nothing simpler than a text file and I am finally in control. If I ever need to pick up and switch to a different static file generator, I can pick-up my content which is in an open, easy to move format and move it easily. I&#39;m never going back.</p>
+<p>The other thing that I really loved was building the site itself. I have a folder of bookmarks containing cool little things you can do on the web that I have collected over the years. I put nearly all of it into practice, which was a lot of fun but did take me a couple of months to finish. It turns out, I love HTML, CSS and JavaScript but particularly CSS where visual feedback is instant and very satisfying.</p>
+<h1 id="picking-a-static-site-generator">Picking a Static Site Generator</h1>
+<p>Surveying the static site generator landscape was a dizzying experience. There didn&#39;t seem to be a clear winner at first, so this is what I found:</p>
+<p>::: warning
+I certainly didn&#39;t do an in-depth review of each static site generator. These are my personal views based on the limited knowledge, limited time looking at each project and in-built human biases I have.
+:::</p>
+<h2 id="jekyll">Jekyll</h2>
+<p>The one that started it all, <a href="https://jekyllrb.com/">Jekyll</a> is backed by GitHub and has been going for a long time, which means it has a large community and lots of plugins. Hosting with GitHub pages was easy, since there were some nice integrations.</p>
+<p>My only problem with it was that it was built on Ruby which in my experience a year ago, does not play well on Windows. I hope that has changed but I suppose you could use the Windows Subsystem for Linux (WSL) to run Ruby instead.</p>
+<p><a href="https://khalidabuhakmeh.com/">Khalid Abuhakmeh</a> uses Jekyll and his blog looks pretty amazing, so well worth a look.</p>
+<h2 id="gatsby">Gatsby</h2>
+<p><a href="https://www.gatsbyjs.org/">Gatsby</a> is built with <a href="https://reactjs.org/">React</a> and <a href="https://graphql.org/">GraphQL</a>. Plugins can be used used to hook up various data sources like markdown files and GraphQL makes querying extremely simple.</p>
+<p>I&#39;m not much of a React fan personally but if you are, it has a huge following, so community support and plugins are easy to find. Plus I cannot understate how much simpler the GraphQL plugins make it, to consume arbitrary content. Knowing GraphQL is important but it&#39;s not too difficult to learn.</p>
+<h2 id="statiq">Statiq</h2>
+<p><a href="https://statiq.dev/framework/">Statiq</a> is built on ASP.NET Core and uses Razor to write views. It&#39;s a very new static site generator and I believe is an evolution of another project called <a href="https://wyam.io/">Wyam</a>. If you&#39;re not too knowledgeable in web technologies and live in the C# and .NET space, this may be a really good choice for you.</p>
+<h2 id="hugo">Hugo</h2>
+<p>I&#39;ve heard a lot of good things about <a href="https://gohugo.io">Hugo</a>. It&#39;s built on Go. The community is pretty large and the project is pretty popular. If I hadn&#39;t gone with Gridsome, I would have liked to spend some more time with Hugo.</p>
+<p>My only issue with Hugo having used Kubernetes Helm templates, was that I found the Go templating quite difficult to read due to the liberal use of brackets everywhere. However, the system is fairly intuitive to use.</p>
+<pre><code class="language-html">{{ define &quot;main&quot; }}
+    &lt;main aria-role=&quot;main&quot;&gt;
+      &lt;header class=&quot;homepage-header&quot;&gt;
+        &lt;h1&gt;{{.Title}}&lt;/h1&gt;
+        {{ with .Params.subtitle }}
+        &lt;span class=&quot;subtitle&quot;&gt;{{.}}&lt;/span&gt;
+        {{ end }}
+      &lt;/header&gt;
+      &lt;div class=&quot;homepage-content&quot;&gt;&lt;/div&gt;
+      &lt;div&gt;
+        {{ range first 10 .Site.RegularPages }}
+            {{ .Render &quot;summary&quot;}}
+        {{ end }}
+      &lt;/div&gt;
+    &lt;/main&gt;
+{{ end }}</code></pre>
+<h2 id="vuepress">VuePress</h2>
+<p>I took a pretty deep dive into <a href="https://vuepress.vuejs.org/">Vuepress</a> which is built on <a href="https://vuejs.org/">Vue.js</a>. I&#39;m a huge fan of Vue.js due to its single file components which allow you to write HTML, JavaScript <strong>and</strong> CSS in a single file. React has a lot to say about the first two but leaves CSS up to you, which has led to the whole CSS-in-JS movement. Personally, I think writing simple CSS or SCSS is where it&#39;s at.</p>
+<p>In the end though, I found that VuePress is not really geared towards building blogs, it&#39;s more geared towards documentation sites for open source projects. It does a really good job in that space.</p>
+<h2 id="nuxtjsnextjs">Nuxt.js/Next.js</h2>
+<p><a href="https://nuxtjs.org/">Nuxt.js</a> is a well known framework which uses <a href="https://vuejs.org/">Vue.js</a> in combination with server side rendering. <a href="https://nextjs.org/">Next.js</a> is a similar project for React. What some don&#39;t know is that you can also create static sites using these tools.</p>
+<p>Nuxt.js recently released <a href="https://content.nuxtjs.org/">Nuxt Content</a> which allows you to drive content from Markdown files. This came too late for me to try but I&#39;d certainly take a deeper look the next time.</p>
+<h2 id="gridsome">Gridsome</h2>
+<p><a href="https://gridsome.org/">Gridsome</a> is the <a href="https://vuejs.org/">Vue.js</a> equivalent of Gatsby, in that it also uses the power of <a href="https://graphql.org/">GraphQL</a>.</p>
+<p>There are a lot of plugins that can connect your static site to various sources of data using GraphQL. Want a data driven site? Want to consume some markdown, JSON, random images, content from WordPress or Ghost? Just install a plugin and write a simple GraphQL query.</p>
+<p>In the end, I chose Gridsome for its simplicity. Its just HTML, SCSS and JavaScript at the end of the day (albeit in a single file component). It&#39;s the closest solution to the web and also why I really enjoy Vue.js.</p>
+<h1 id="hosting-your-static-site">Hosting Your Static Site</h1>
+<h2 id="netlify">Netlify</h2>
+<p>I realized that a <strong>lot</strong> of people are using Netlify in my reading. It has a lot of nice little extra features but I personally didn&#39;t need any of them but they&#39;re worth a look. Netlify has a free tier but does ramp up to being quite costly after that, so beware and make sure your site doesn&#39;t use a lot of bandwidth.</p>
+<h2 id="github-pages">GitHub Pages</h2>
+<p>I chose to host my site on GitHub pages. It&#39;s free until GitHub thinks you&#39;re abusing it and asks you to move. It doesn&#39;t have any bells or whistles but it works. There are two issues I wish they would fix:</p>
+<ol>
+<li>Your GitHub project has to end with <code>.github.io</code>.</li>
+<li>The branch containing the actual static files to be served has to be called <code>master</code>.</li>
+</ol>
+<p>With all that said, it&#39;s simple and there was one less thing I had to worry about, since my content was already on GitHub.</p>
+<h1 id="conclusions">Conclusions</h1>
+<p>I picked Gridsome and am pretty happy but you may have a different knowledge set and something else might suit you. Whatever makes you happy! The key is that writing blog posts needs to be low friction, so that you actually end up doing it.</p>
+<p>In my next post, I&#39;ll talk about the features I look to build in a blog and which of them I think are essential to a good blog site.</p>
+]]></content:encoded>
+            <enclosure url="/images/hero/Static-Site-Generators-1600x900.png"/>
+        </item>
         <item>
             <title><![CDATA[ASP.NET Core Integration Testing & Mocking using Moq]]></title>
             <link>https://rehansaeed.com/asp-net-core-integration-testing-mocking-using-moq/</link>
