@@ -143,4 +143,4 @@ With all that said, it's simple and there was one less thing I had to worry abou
 
 I picked Gridsome and am pretty happy but you may have a different knowledge set and something else might suit you. Whatever makes you happy! The key is that writing blog posts needs to be low friction, so that you actually end up doing it.
 
-In my next post, I'll talk about certain cool features that I added to my blog and what features I think are essential.
+In my next post, I'll talk about the features I look to build in a blog and which of them I think are essential to a good blog site.
