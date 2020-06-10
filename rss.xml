@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Wed, 10 Jun 2020 10:08:49 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 10 Jun 2020 15:05:36 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -14,6 +14,58 @@
             <link>https://rehansaeed.com</link>
         </image>
         <copyright>Copyright © 2020 Muhammad Rehan Saeed</copyright>
+        <item>
+            <title><![CDATA[Spicing up your Browser Console]]></title>
+            <link>https://rehansaeed.com/spicing-up-your-browser-console/</link>
+            <guid>https://rehansaeed.com/spicing-up-your-browser-console/</guid>
+            <pubDate>Wed, 10 Jun 2020 18:00:00 GMT</pubDate>
+            <description><![CDATA[Use figlet fonts, ASCII art and browser console themes to spice up your browser console.]]></description>
+            <content:encoded><![CDATA[<p>Wouldn&#39;t it be cool if when you opened the browser console up on a site, you saw a cool secret message? There are many sites that do this with quite a few business&#39;s advertising frontend development jobs in this way. I wanted to join in on the fun, so...I did. Here is my story of two hours I&#39;m not getting back.</p>
+<p>I&#39;ve done some work on <a href="https://rehansaeed.com/colorful-console/">Colorful.Console</a> which is an amazing C# console library that lets you write text in ASCII art using <a href="https://en.wikipedia.org/wiki/FIGlet">figlet fonts</a>. I wanted to do the same for my blog. I was too lazy to use Colorful.Console and used a random <a href="https://www.askapache.com/online-tools/figlet-ascii/">online generator</a> I found. I tried a couple of different fonts out and came up with this JavaScript code:</p>
+<pre><code class="language-js">const consoleOptions = &#39;background: #ffffff; color: #6b17e8&#39;;
+
+// Standard Figlet Font
+console.log(&#39;%c  ____      _                 &#39;, consoleOptions);
+console.log(&#39;%c |  _ \\ ___| |__   __ _ _ __  &#39;, consoleOptions);
+console.log(&#39;%c | |_) / _ \\ &#39;_ \\ / _` | &#39;_ \\ &#39;, consoleOptions);
+console.log(&#39;%c |  _ &lt;  __/ | | | (_| | | | |&#39;, consoleOptions);
+console.log(&#39;%c |_| \\_\\___|_| |_|\\__,_|_| |_|&#39;, consoleOptions);
+
+// o8 Figlet Font
+console.log(&#39;%c oooooooooo             oooo                              &#39;, consoleOptions);
+console.log(&#39;%c  888    888 ooooooooo8  888ooooo    ooooooo   oo oooooo  &#39;, consoleOptions);
+console.log(&#39;%c  888oooo88 888oooooo8   888   888   ooooo888   888   888 &#39;, consoleOptions);
+console.log(&#39;%c  888  88o  888          888   888 888    888   888   888 &#39;, consoleOptions);
+console.log(&#39;%c o888o  88o8  88oooo888 o888o o888o 88ooo88 8o o888o o888o&#39;, consoleOptions);</code></pre>
+<p>For the standard font, I had to escape quite a few characters using a back slash <code>\</code>, so watch out for that. The results in a browser console were pretty terrible and hard to read...</p>
+<p><img src="https://rehansaeed.com/spicing-up-your-browser-console/images/First-Try-723x427.png" alt="My name rendered in ASCII art using a figlet font"></p>
+<p>Notice that I passed options to the <code>console.log</code> API to set the background and foreground colour of the text. The Chrome browser adds a lot of space between lines and the font just looks a little anaemic and hard to read. I rooted around the Character Map app in Windows, to see if I could find a more substantial set of characters that would show up more brightly instead of using dashes, pipes and numbers. Then I found these: <code>▀ ▄ █ ▌ ▐ ▲ ► ▼ ◄</code>.</p>
+<h1 id="my-final-form">My Final Form</h1>
+<p>I took the o8 figlet font text above and simply did a find and replace on it. I replaced the <code>8</code> character with <code>█</code> and I also replaced the <code>o</code> character with <code>▄</code>:</p>
+<pre><code class="language-js">console.log(&#39;%c ▄▄▄▄     ▄▄▄▄            ▄▄▄▄                                                                ▄▄▄▄&#39;, consoleOptions);
+console.log(&#39;%c  ████▄   ███ ▄▄▄▄  ▄▄▄▄   ███▄▄▄▄▄    ▄▄▄▄▄▄▄   ▄▄ ▄▄▄ ▄▄▄▄   ▄▄ ▄▄▄ ▄▄▄▄    ▄▄▄▄▄▄▄    ▄▄▄▄▄███ &#39;, consoleOptions);
+console.log(&#39;%c  ██ ███▄█ ██  ███   ███   ███   ███   ▄▄▄▄▄███   ███ ███ ███   ███ ███ ███   ▄▄▄▄▄███ ███    ███ &#39;, consoleOptions);
+console.log(&#39;%c  ██  ███  ██  ███   ███   ███   ███ ███    ███   ███ ███ ███   ███ ███ ███ ███    ███ ███    ███ &#39;, consoleOptions);
+console.log(&#39;%c ▄██▄  █  ▄██▄  ███▄██ █▄ ▄███▄ ▄███▄ ██▄▄▄██ █▄ ▄███▄███▄███▄ ▄███▄███▄███▄ ██▄▄▄██ █▄  ██▄▄▄███▄&#39;, consoleOptions);
+
+console.log(&#39;%c ▄▄▄▄▄▄▄▄▄▄             ▄▄▄▄                              &#39;, consoleOptions);
+console.log(&#39;%c  ███    ███ ▄▄▄▄▄▄▄▄▄█  ███▄▄▄▄▄    ▄▄▄▄▄▄▄   ▄▄ ▄▄▄▄▄▄  &#39;, consoleOptions);
+console.log(&#39;%c  ███▄▄▄▄██ ███▄▄▄▄▄▄█   ███   ███   ▄▄▄▄▄███   ███   ███ &#39;, consoleOptions);
+console.log(&#39;%c  ███  ██▄  ███          ███   ███ ███    ███   ███   ███ &#39;, consoleOptions);
+console.log(&#39;%c ▄███▄  ██▄█  ██▄▄▄▄███ ▄███▄ ▄███▄ ██▄▄▄██ █▄ ▄███▄ ▄███▄&#39;, consoleOptions);
+
+console.log(&#39;%c ▄▄▄▄▄▄▄▄█                                          ▄▄▄▄ &#39;, consoleOptions);
+console.log(&#39;%c ███           ▄▄▄▄▄▄▄   ▄▄▄▄▄▄▄▄▄█ ▄▄▄▄▄▄▄▄▄█  ▄▄▄▄▄███ &#39;, consoleOptions);
+console.log(&#39;%c ███▄▄▄▄▄▄    ▄▄▄▄▄███  ███▄▄▄▄▄▄█ ███▄▄▄▄▄▄█ ███    ███ &#39;, consoleOptions);
+console.log(&#39;%c         ███ ███    ███ ███        ███        ███    ███ &#39;, consoleOptions);
+console.log(&#39;%c ▄██▄▄▄▄███   ██▄▄▄██ █▄  ██▄▄▄▄███  ██▄▄▄▄███  ██▄▄▄███▄&#39;, consoleOptions);</code></pre>
+<p>This seemed to work great and created a cool effect:</p>
+<p><img src="https://rehansaeed.com/spicing-up-your-browser-console/images/Second-Try-1125x569.png" alt="My name rendered in ASCII art using a figlet font"></p>
+<h1 id="conclusions">Conclusions</h1>
+<p>All you need to do now is copy and paste that text somewhere in the main part of your app. Now, when someone opens the browser console, they&#39;ll see your cool surprise. You can hit ||F12|| right now and take a look at mine.</p>
+]]></content:encoded>
+            <enclosure url="/images/hero/Figlet-Fonts-1600x900.png"/>
+        </item>
         <item>
             <title><![CDATA[Choosing a Static Site Generator]]></title>
             <link>https://rehansaeed.com/choosing-a-static-site-generator/</link>
