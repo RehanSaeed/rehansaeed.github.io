@@ -13,6 +13,8 @@
         <a :href="gitHubUrl"><img class="about__github-followers" alt="GitHub follower count" height="30" width="168" :src="gitHubFollowersUrl"/></a>
         <p class="about__description">You can see a timeline of my open source work and blog posts in my <a :href="stackOverflowStoryUrl">Stack Overflow Developer Story</a> or just view my <a :href="stackOverflowUrl">Stack Overflow profile</a>.</p>
         <a :href="stackOverflowUrl"><img class="about__stack-overflow-image" alt="Stack Overflow profile statistics" height="58" width="208" :src="stackOverflowProfileUrl"/></a>
+        <p class="about__description">Before I joined Microsoft, I was a <a :href="mvpUrl">Microsoft Most Valuable Professional (MVP)</a>. This gave me inside information into the work Microsoft was doing. Once I joined Microsoft, I had to give up this award.</p>
+        <a :href="mvpUrl"><g-image class="about__mvp-image" alt="Microsoft Most Valuable Professional (MVP)" height="84" width="208" src="~/assets/images/Microsoft-Most-Valuable-Professional-750x303.png" quality="100"/></a>
         <p class="about__description">Do you have questions or comments about my work? Please feel free to contact me using any of the links above.</p>
       </u-content-box>
 
@@ -51,6 +53,7 @@ export default {
     stackOverflowProfileUrl() { return `https://stackoverflow.com/users/flair/${this.$static.metadata.author.stackOverflow.user}.png?theme=${this.oppositeTheme}`; },
     gitHubUrl() { return this.$static.metadata.author.gitHub.url; },
     gitHubFollowersUrl() { return `https://img.shields.io/github/followers/${this.$static.metadata.author.gitHub.user}?style=social`; },
+    mvpUrl() {return 'https://mvp.microsoft.com/en-us/PublicProfile/5001654?fullName=Muhammad%20Rehan%20Saeed'; },
     oppositeTheme() { return this.theme === 'light' ? 'dark' : 'light'; },
   },
   metaInfo() {
@@ -173,6 +176,14 @@ query {
   display: block;
   margin-bottom: var(--global-space-fixed-5);
   height: 58px;
+  width: 208px;
+}
+
+.about__mvp-image {
+  border-radius: var(--global-border-radius);
+  display: block;
+  margin-bottom: var(--global-space-fixed-5);
+  height: 84px;
   width: 208px;
 }
 </style>
