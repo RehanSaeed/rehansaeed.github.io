@@ -48,7 +48,7 @@ Write-Output $content;
 
 $postDirectoryPath = Join-Path $PSScriptRoot "\content\posts\$($year)\$($slug)";
 $imagesDirectoryPath = Join-Path $postDirectoryPath "\images";
-$markdownFilePath = Join-Path $postDirectoryPath "$($slug).md";
+$markdownFilePath = Join-Path $postDirectoryPath "index.md";
 
 New-Item -ItemType Directory -Force -Path $imagesDirectoryPath;
 Set-Content -Path $markdownFilePath -Value $content;
