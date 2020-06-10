@@ -4,17 +4,17 @@ description: "Use figlet fonts, ASCII art and browser console themes to spice up
 author: "Muhammad Rehan Saeed"
 permalink: "/spicing-up-your-browser-console/"
 heroImage: "/images/hero/Figlet-Fonts-1600x900.png"
-date: "2020-05-15T17:00:00Z"
+date: "2020-06-10T18:00:00Z"
 dateModified: null
-published: false
+published: true
 categories:
   - "JavaScript"
 tags:
-  - "Browser"
-  - "JavaScript"
-  - "Console"
+  - "ASCII Art"
   - "Figlet Font"
-  - "ASCII"
+  - "Browser"
+  - "Console"
+  - "JavaScript"
 ---
 
 Wouldn't it be cool if when you opened the browser console up on a site, you saw a cool secret message? There are many sites that do this with quite a few business's advertising frontend development jobs in this way. I wanted to join in on the fun, so...I did. Here is my story of two hours I'm not getting back.
