@@ -39,9 +39,17 @@ export default {
   display: grid;
   grid-column-gap: var(--global-space-fixed-3);
   grid-template-areas:
-    "avatar author timestamp"
-    "avatar content content";
-  grid-template-columns: auto  auto 1fr;
+    "avatar author"
+    "avatar timestamp"
+    "avatar content";
+  grid-template-columns: auto 1fr;
+
+  @media screen and (min-width: 768px) { // $global-breakpoint-md
+    grid-template-areas:
+      "avatar author timestamp"
+      "avatar content content";
+    grid-template-columns: auto auto 1fr;
+  }
 }
 
 .webmention-reply__avatar {
