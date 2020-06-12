@@ -2,7 +2,7 @@
   <Layout>
     <div class="not-found">
 
-      <u-heading level="1" center>404 Not Found</u-heading>
+      <u-heading id="not-found" level="1" center>404 Not Found</u-heading>
 
       <u-content-box class="not-found__content">
         <p>Didn't find what you were looking for?</p>

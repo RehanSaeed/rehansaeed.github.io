@@ -4,7 +4,7 @@
       <g-image :alt="portfolio.title" v-if="portfolio.heroImage" class="portfolio-card__image" :src="portfolio.heroImage"/>
     </div>
     <div class="portfolio-card__content">
-      <u-heading level="2" class="portfolio-card__title">{{portfolio.title}}</u-heading>
+      <u-heading :id="portfolio.title" level="2" class="portfolio-card__title">{{portfolio.title}}</u-heading>
       <p class="portfolio-card__description">{{portfolio.description}}</p>
 
       <u-tags v-if="portfolio.tags" class="portfolio-card__tags" :tags="portfolio.tags" />
@@ -27,7 +27,10 @@ export default {
     'u-tags': tags,
   },
   props: {
-    portfolio: Object,
+    portfolio: {
+      required: true,
+      type: Object,
+    },
   }
 }
 </script>

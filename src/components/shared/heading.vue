@@ -2,6 +2,7 @@
   <Component
     class="heading"
     :is="headingTag"
+    :id="idInternal"
     :class="[sizeClass, { 'heading--center': center }]">
     <Component v-if="hasLink"
       :is="linkTag"
@@ -17,7 +18,12 @@
 
 <script>
 export default {
+  name: 'u-heading',
   props: {
+    id: {
+      required: true,
+      type: String,
+    },
     level: {
       default: '1',
       required: true,
@@ -42,6 +48,7 @@ export default {
     }
   },
   computed: {
+    idInternal() { return this.id.split(' ').join('-').toLowerCase(); },
     hasLink() { return this.to || this.href; },
     headingTag() { return `h${this.level}`; },
     sizeClass() { return `heading--${this.size || this.level}`; },

@@ -3,7 +3,7 @@
     <div class="post-page h-entry">
 
       <div class="post-page__title-container">
-        <u-heading class="p-name u-url" level="1" center :to="post.path">{{title}}</u-heading>
+        <u-heading :id="title" class="p-name u-url" level="1" center :to="post.path">{{title}}</u-heading>
         <u-post-meta :meta="post" />
       </div>
 

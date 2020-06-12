@@ -7,7 +7,7 @@
         :src="post.heroImage"/>
     </div>
     <div class="post-card__content">
-      <u-heading level="2" class="post-card__title">{{post.title}}</u-heading>
+      <u-heading :id="post.title" level="2" class="post-card__title">{{post.title}}</u-heading>
       <p class="post-card__description">{{post.description}}</p>
 
       <u-post-meta class="post-card__meta" :meta="post" />

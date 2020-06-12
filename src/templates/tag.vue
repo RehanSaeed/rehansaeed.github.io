@@ -2,7 +2,7 @@
   <Layout>
     <div class="tag-page">
 
-      <u-heading level="1" center :to="tag.path"># {{title}}</u-heading>
+      <u-heading :id="title" level="1" center :to="tag.path"># {{title}}</u-heading>
 
       <div class="tag-page__items">
         <u-post-card v-for="post in posts" :key="post.id" :post="post"/>

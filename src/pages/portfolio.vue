@@ -3,7 +3,7 @@
     <div class="portfolio">
 
       <div class="portfolio__title">
-        <u-heading level="1" center :to="relativeUrl">Portfolio</u-heading>
+        <u-heading id="portfolio" level="1" center :to="relativeUrl">Portfolio</u-heading>
         <p>These are some of the open source projects that I've started and maintained. There are many others I've contributed to which you can see in my GitHub profile and of course there are other commercial projects that I cannot disclose.</p>
       </div>
 

@@ -1,7 +1,7 @@
 <template>
   <u-content-box class="newsletter" tag="section">
     <form class="newsletter__form" method="post" :action="this.$static.metadata.mailchimpUrl">
-      <u-heading class="newsletter__title" id="newsletter" level="2" center href="#newsletter">Newsletter</u-heading>
+      <u-heading id="newsletter" class="newsletter__title" level="2" center href="#newsletter">Newsletter</u-heading>
       <label class="newsletter__content" for="email">Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox!</label>
       <input
         id="email"

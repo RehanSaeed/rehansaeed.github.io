@@ -2,11 +2,11 @@
   <Layout>
     <div class="about">
 
-      <u-heading level="1" center :href="relativeUrl">About</u-heading>
+      <u-heading id="about" level="1" center :href="relativeUrl">About</u-heading>
 
       <u-content-box class="about__container" tag="article">
         <g-image class="about__image" alt="Muhammad Rehan Saeed" height="480" width="320" src="~/assets/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg" quality="100"/>
-        <u-heading level="2" class="about__title">Muhammad Rehan Saeed</u-heading>
+        <u-heading :id="$static.metadata.author.name" level="2" class="about__title">{{$static.metadata.author.name}}</u-heading>
         <u-social-links class="about__social-links"/>
         <p class="about__description">Rehan is a professional Software Developer at Microsoft. Although he works for Microsoft his opinions are his own. If it’s written in C# or .NET, Rehan has probably written something using it in anger!</p>
         <p class="about__description">You can see some of the open source projects that I've started and maintained in my <g-link to="/portfolio/">portfolio</g-link>. There are many others I've contributed to which you can see in my <a :href="gitHubUrl">GitHub profile</a> and of course there are other commercial projects that I cannot disclose.</p>
