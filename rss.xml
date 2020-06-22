@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Mon, 22 Jun 2020 06:27:29 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 22 Jun 2020 06:27:33 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -15,16 +15,16 @@
         </image>
         <copyright>Copyright © 2020 Muhammad Rehan Saeed</copyright>
         <item>
-            <title><![CDATA[Racism in Software Development]]></title>
-            <link>https://rehansaeed.com/racism-in-software-development/</link>
-            <guid>https://rehansaeed.com/racism-in-software-development/</guid>
+            <title><![CDATA[Racism in Software Development & Beyond]]></title>
+            <link>https://rehansaeed.com/racism-in-software-development-and-beyond/</link>
+            <guid>https://rehansaeed.com/racism-in-software-development-and-beyond/</guid>
             <pubDate>Fri, 12 Jun 2020 16:36:29 GMT</pubDate>
             <description><![CDATA[If you're of North African, Middle Eastern or South Asian origin, you have to send send up to 90% more job applications than your white counterparts in the United Kingdom. This level of discrimination has been unchanged since the 1960's.]]></description>
             <content:encoded><![CDATA[<p>If you&#39;re of North African, Middle Eastern or South Asian origin, you have to send send up to <strong>90%</strong> more job applications than your white counterparts in the United Kingdom. This level of discrimination has been <strong>unchanged</strong> since the 1960&#39;s. Let that sink in for a moment.</p>
 <p>I read this statistic in a <a href="https://www.theguardian.com/world/2019/jan/17/minority-ethnic-britons-face-shocking-job-discrimination">Guardian article</a> last year and it&#39;s been on my mind ever since. The study was carried out by the Centre for Social Investigation at Nuffield College, University of Oxford. You can read their full report <a href="http://csi.nuff.ox.ac.uk/wp-content/uploads/2019/01/Are-employers-in-Britain-discriminating-against-ethnic-minorities_final.pdf">here</a>. </p>
 <p>Those carrying out the study applied to nearly 3200 jobs, randomly varying the minority background of fictitious job applicants while holding their skills, qualifications and work experience constant.</p>
 <p>They looked at high and low skill jobs. What I found particularly interesting was that the high skill jobs they looked at included <strong>software engineers</strong>. They found that there was no difference between applying for high or low skill jobs, you were going to be equally discriminated against.</p>
-<p><img src="https://rehansaeed.com/racism-in-software-development/images/Chart.png" alt="Chart showing Middle Eastern &amp; North African&#39;s need to send 90% more job applications"></p>
+<p><img src="https://rehansaeed.com/racism-in-software-development-and-beyond/images/Chart.png" alt="Chart showing Middle Eastern &amp; North African&#39;s need to send 90% more job applications"></p>
 <p>If you don&#39;t live in the UK, then as the study points out there is a similar situation in other countries. <strong>Spain</strong>, <strong>Germany</strong>, <strong>Netherlands</strong> and <strong>Norway</strong> are called out by name and <a href="https://www.nber.org/digest/sep03/w9873.html">here</a> is a similar study about the <strong>United States</strong>. Racism is a human condition, it affects everyone.</p>
 <p>If you are from a majority ethic group, the next time you&#39;re at work (I hope we defeat this virus soon and can get back), take a look around at your colleagues. If one of them is from a minority, they were either very lucky or perhaps had to work harder than you to get the same job. They may even have had to be more qualified than you.</p>
 <h1 id="economic-racism--physical-racism">Economic Racism &gt; Physical Racism</h1>
