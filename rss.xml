@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Thu, 18 Jun 2020 17:46:28 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 22 Jun 2020 06:27:29 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -14,6 +14,54 @@
             <link>https://rehansaeed.com</link>
         </image>
         <copyright>Copyright © 2020 Muhammad Rehan Saeed</copyright>
+        <item>
+            <title><![CDATA[Racism in Software Development]]></title>
+            <link>https://rehansaeed.com/racism-in-software-development/</link>
+            <guid>https://rehansaeed.com/racism-in-software-development/</guid>
+            <pubDate>Fri, 12 Jun 2020 16:36:29 GMT</pubDate>
+            <description><![CDATA[If you're of North African, Middle Eastern or South Asian origin, you have to send send up to 90% more job applications than your white counterparts in the United Kingdom. This level of discrimination has been unchanged since the 1960's.]]></description>
+            <content:encoded><![CDATA[<p>If you&#39;re of North African, Middle Eastern or South Asian origin, you have to send send up to <strong>90%</strong> more job applications than your white counterparts in the United Kingdom. This level of discrimination has been <strong>unchanged</strong> since the 1960&#39;s. Let that sink in for a moment.</p>
+<p>I read this statistic in a <a href="https://www.theguardian.com/world/2019/jan/17/minority-ethnic-britons-face-shocking-job-discrimination">Guardian article</a> last year and it&#39;s been on my mind ever since. The study was carried out by the Centre for Social Investigation at Nuffield College, University of Oxford. You can read their full report <a href="http://csi.nuff.ox.ac.uk/wp-content/uploads/2019/01/Are-employers-in-Britain-discriminating-against-ethnic-minorities_final.pdf">here</a>. </p>
+<p>Those carrying out the study applied to nearly 3200 jobs, randomly varying the minority background of fictitious job applicants while holding their skills, qualifications and work experience constant.</p>
+<p>They looked at high and low skill jobs. What I found particularly interesting was that the high skill jobs they looked at included <strong>software engineers</strong>. They found that there was no difference between applying for high or low skill jobs, you were going to be equally discriminated against.</p>
+<p><img src="https://rehansaeed.com/racism-in-software-development/images/Chart.png" alt="Chart showing Middle Eastern &amp; North African&#39;s need to send 90% more job applications"></p>
+<p>If you don&#39;t live in the UK, then as the study points out there is a similar situation in other countries. <strong>Spain</strong>, <strong>Germany</strong>, <strong>Netherlands</strong> and <strong>Norway</strong> are called out by name and <a href="https://www.nber.org/digest/sep03/w9873.html">here</a> is a similar study about the <strong>United States</strong>. Racism is a human condition, it affects everyone.</p>
+<p>If you are from a majority ethic group, the next time you&#39;re at work (I hope we defeat this virus soon and can get back), take a look around at your colleagues. If one of them is from a minority, they were either very lucky or perhaps had to work harder than you to get the same job. They may even have had to be more qualified than you.</p>
+<h1 id="economic-racism--physical-racism">Economic Racism &gt; Physical Racism</h1>
+<p>When physical or verbal racist abuse occurs, people know about it, they can deal with it and hopefully move on. When people are discriminated against economically by not being able to get a job or perhaps getting a lower paid job, there is no way for them to know that they&#39;ve been discriminated against.</p>
+<p>We <strong>know</strong> that if you&#39;re an ethnic minority in Britain, you&#39;re <a href="https://www.jrf.org.uk/report/poverty-rates-among-ethnic-groups-great-britain">more likely to live in poverty</a> and we <strong>know</strong> that that living in poverty means that you&#39;re more likely to have physical and mental health problems, you&#39;re less likely to do well in education, you&#39;re more likely to go to prison and you are liable to die sooner.</p>
+<p>COVID-19 has revealed the contrast even more starkly. People from black, asian and minority ethnic (BAME) backgrounds have suffered from higher rates of death than their white counterparts. If you&#39;re black, you&#39;re <a href="https://www.theguardian.com/world/2020/jun/02/covid-19-death-rate-in-england-higher-among-bame-people">3.9 times more likely to die</a>. In a report <a href="https://www.theguardian.com/world/2020/jun/13/bma-demands-answers-over-missing-bame-pages-of-covid-19-report">the government tried to hide</a>, it was revealed that <a href="https://www.theguardian.com/world/2020/jun/16/historical-racism-may-be-behind-englands-higher-bame-covid-19-rate">historical racism plays a part</a>.</p>
+<p>Hit me in the face and I&#39;ll bleed for a day, hit me in the pocket and I&#39;ll bleed for a lifetime.</p>
+<h1 id="this-is-personal">This is Personal</h1>
+<p>I was born and bred in East London but my parents are originally from Pakistan and I happen to be a Muslim too. As one of those people who has to send 40% more job applications according to the report above, this is kind of personal.</p>
+<p>I have experienced direct verbal racist abuse before (Most people of any ethnic minority have at least once) but it&#39;s rare for me at least. I have also received abuse online on Twitter and even GitHub but it&#39;s par for the course online.</p>
+<p>I do not know...I cannot know if I have ever been discriminated against when applying for jobs. If I had a different name, would I have been offered more chances? I don&#39;t think I would have but the statistics say differently. It did take me years of applying to get a job at Microsoft but so did one of my colleagues and in the end I did get one.</p>
+<p>With that said I&#39;m also one of the lucky ones. If I think back to the people that hired me and gave me a chance in my first few jobs, I&#39;d really like to thank them.</p>
+<h1 id="what-can-be-done">What Can be Done?</h1>
+<p>Clearly there are many problems but I would hate to leave things there without suggesting potential solutions, so here are three.</p>
+<h2 id="1-anonymous-job-applications">1. Anonymous Job Applications</h2>
+<p>Anonymous job applications, where names are stripped from job applications are not as far fetched as you might think. They were trialled by <a href="https://www.independent.co.uk/news/uk/would-muslims-get-better-jobs-if-bosses-didn-t-know-they-were-muslim-a6690621.html">100 British firms in 2012</a>, backed by the former deputy prime minister Nick Clegg. Some still use the special software that enables this system but there is resistance from some employers.</p>
+<p>Eventually, a candidate will have to meet someone in an in-person interview where there is no hiding their ethnicity but at least it will mean getting more ethnic minorities a foot in the door that they otherwise clearly are not getting according to the evidence.</p>
+<h2 id="ethnicity-pay-gap-reporting">Ethnicity Pay Gap Reporting</h2>
+<p>In the UK, if your company has more than 250 employees, you <a href="https://www.gov.uk/guidance/gender-pay-gap-reporting-overview">must report the gender pay gap</a> between your male and female employees. This has highlighted the disparity with <a href="https://www.theguardian.com/world/2019/apr/04/gender-pay-gap-figures-show-eight-in-10-uk-firms-pay-men-more-than-women">eight out of ten employers</a> paying men more than women.</p>
+<p>Employers should be required to do the same for ethnicity. There is reportedly, a <a href="https://www.theguardian.com/money/2018/dec/27/uk-black-and-ethnic-minorities-lose-32bn-a-year-in-pay-gap">£3.2bn pound gap</a> in wages between ethnic minorities and their white colleagues doing the same jobs.</p>
+<p><a href="https://www.writetothem.com/">Email your local member of parliament</a> and urge them to support the requirement for large firms to publish an ethnicity pay gap and perhaps anonymous job applications too.</p>
+<h2 id="stop-putting-racists-in-power">Stop Putting Racists in Power</h2>
+<p>My prime minister, Boris Johnson, once called black people <a href="https://www.telegraph.co.uk/comment/personal-view/3571742/If-Blairs-so-good-at-running-the-Congo-let-him-stay-there.html">&quot;piccaninnies&quot; with &quot;watermelon smiles&quot;</a>. When writing about the continent of Africa he said:</p>
+<blockquote>
+<p>The problem is not that we were once in charge, but that we are not in charge anymore.</p>
+<footer><cite><a href="https://www.independent.co.uk/voices/boris-johnson-foriegn-secretary-us-press-questions-no-laughing-matter-hold-to-account-a7147766.html">Boris Johnson</a></cite></footer>
+</blockquote>
+<p>He&#39;s been anti-semitic too, writing an <a href="https://www.independent.co.uk/news/uk/politics/boris-johnson-book-jews-control-media-general-election-a9239346.html">entire book</a> about powerful Jews controlling the media and influencing elections.</p>
+<p>He&#39;s made Islamophobic remarks about Muslim women looking like bank robbers and letterboxes that <a href="https://www.theguardian.com/politics/2019/sep/02/boris-johnsons-burqa-comments-led-to-surge-in-anti-muslim-attacks">caused an up-tick in violence</a> towards Muslim women with racists sometimes using Mr Johnson&#39;s exact words. This was apparently in an effort to help them he says. I hope he doesn&#39;t try helping anyone else.</p>
+<p>That&#39;s not even the half of it, he&#39;s also insulted or abused half a dozen other groups of people. It&#39;s been fun to watch right wing politicians and political commentators contort themselves into strange shapes trying to defend his blatant racism.</p>
+<p>The sad thing is, if you put a racist in power, many others follow them in their wake. The Conservative party is now <a href="https://twitter.com/miqdaad/status/1101781296639025152">riddled with racist members, councillors and even members of parliament</a>. The far right group Britain First has even said that <a href="https://www.theguardian.com/politics/2019/dec/28/britain-first-far-right-members-5000-have-joined-tories">5,000 of their members have even joined the Conservative party</a>.</p>
+<p>The solution for me is clear. If you put a racist in charge, they build a whole pyramid of racists underneath them.</p>
+<h1 id="conclusions">Conclusions</h1>
+<p>As many others have said, it&#39;s not enough to be a passive non-racist in society. Over the last half a century, structural and institutional racism still pervades our society. It is necessary for us all to be actively working against racism. We also need to recognise that a lot of the inequalities we see come from implicit biases that <strong>all</strong> human beings have, including our own selves. If we recognise that we ourselves are deficient, perhaps we can do something about it.</p>
+]]></content:encoded>
+            <enclosure url="/images/hero/Black-Glowing-Fist-1600x900.png"/>
+        </item>
         <item>
             <title><![CDATA[Spicing up your Browser Console]]></title>
             <link>https://rehansaeed.com/spicing-up-your-browser-console/</link>
