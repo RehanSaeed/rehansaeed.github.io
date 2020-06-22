@@ -1,8 +1,8 @@
 ---
-title: "Racism in Software Development"
+title: "Racism in Software Development & Beyond"
 description: "If you're of North African, Middle Eastern or South Asian origin, you have to send send up to 90% more job applications than your white counterparts in the United Kingdom. This level of discrimination has been unchanged since the 1960's."
 author: "Muhammad Rehan Saeed"
-permalink: "/racism-in-software-development/"
+permalink: "/racism-in-software-development-and-beyond/"
 heroImage: "/images/hero/Black-Glowing-Fist-1600x900.png"
 date: "2020-06-12T16:36:29Z"
 dateModified: null
