@@ -59,7 +59,7 @@ Anonymous job applications, where names are stripped from job applications are n
 
 Eventually, a candidate will have to meet someone in an in-person interview where there is no hiding their ethnicity but at least it will mean getting more ethnic minorities a foot in the door that they otherwise clearly are not getting according to the evidence.
 
-## Ethnicity Pay Gap Reporting
+## 2. Ethnicity Pay Gap Reporting
 
 In the UK, if your company has more than 250 employees, you [must report the gender pay gap](https://www.gov.uk/guidance/gender-pay-gap-reporting-overview) between your male and female employees. This has highlighted the disparity with [eight out of ten employers](https://www.theguardian.com/world/2019/apr/04/gender-pay-gap-figures-show-eight-in-10-uk-firms-pay-men-more-than-women) paying men more than women.
 
@@ -67,7 +67,7 @@ Employers should be required to do the same for ethnicity. There is reportedly, 
 
 [Email your local member of parliament](https://www.writetothem.com/) and urge them to support the requirement for large firms to publish an ethnicity pay gap and perhaps anonymous job applications too.
 
-## Stop Putting Racists in Power
+## 3. Stop Putting Racists in Power
 
 My prime minister, Boris Johnson, once called black people ["piccaninnies" with "watermelon smiles"](https://www.telegraph.co.uk/comment/personal-view/3571742/If-Blairs-so-good-at-running-the-Congo-let-him-stay-there.html). When writing about the continent of Africa he said:
 
