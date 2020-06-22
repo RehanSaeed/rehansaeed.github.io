@@ -37,7 +37,7 @@ We **know** that if you're an ethnic minority in Britain, you're [more likely to
 
 COVID-19 has revealed the contrast even more starkly. People from black, asian and minority ethnic (BAME) backgrounds have suffered from higher rates of death than their white counterparts. If you're black, you're [3.9 times more likely to die](https://www.theguardian.com/world/2020/jun/02/covid-19-death-rate-in-england-higher-among-bame-people). In a report [the government tried to hide](https://www.theguardian.com/world/2020/jun/13/bma-demands-answers-over-missing-bame-pages-of-covid-19-report), it was revealed that [historical racism plays a part](https://www.theguardian.com/world/2020/jun/16/historical-racism-may-be-behind-englands-higher-bame-covid-19-rate).
 
-Hit me in the face and I'll bleed for a day, hit me in the pocket and I'll bleed for a lifetime.
+Hit a man in the face and he'll bleed for a day, hit a man in the pocket and he'll bleed for a lifetime.
 
 # This is Personal
 
