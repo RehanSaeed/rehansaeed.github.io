@@ -22,7 +22,9 @@ jobs:
     - name: 'NPM Build'
       run: npm run build
     - name: 'Copy RSS Feed'
-      run: cp dist/rss.xml dist/feed
+      run: |
+        mkdir dist/feed
+        cp dist/rss.xml dist/feed/index.xml
     - name: 'Deploy'
       if: github.event_name != 'pull_request'
       run: |
