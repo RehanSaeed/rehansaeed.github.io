@@ -1,5 +1,5 @@
 .fade-enter-active, .fade-leave-active {
-  transition: opacity var(--global-duration-3) ease-in-out;
+  transition: opacity var(--global-duration-1) ease-in;
 }
 .fade-enter, .fade-leave-to {
   opacity: 0;
