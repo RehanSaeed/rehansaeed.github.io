@@ -5,9 +5,11 @@
 
     <u-navigation class="navigation" />
 
-    <main id="main" class="main">
-      <slot/>
-    </main>
+    <transition name="fade" appear>
+      <main id="main" class="main">
+        <slot/>
+      </main>
+    </transition>
 
     <u-footer class="footer"/>
 
