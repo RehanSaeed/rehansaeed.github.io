@@ -15,7 +15,10 @@ export default {
     'u-link': link,
   },
   props: {
-    tags: Array,
+    tags: {
+      isRequired: true,
+      type: Array,
+    },
   }
 }
 </script>
