@@ -81,12 +81,15 @@ dialog {
   display: block;
   margin: auto;
   overflow-y: auto;
-  transition: all .3s ease-in-out;
 
   // Workaround to force the polyfill to always show the dialog in the center of the screen.
   position: fixed;
   top: 50%;
   transform: translateY(-50%);
+
+  @media screen and (prefers-reduced-motion: no-preference) {
+    transition: all .3s ease-in-out;
+  }
 }
 
 dialog:not([open]) {
