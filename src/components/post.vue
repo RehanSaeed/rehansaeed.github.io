@@ -5,7 +5,7 @@
       <g-image v-if="post.heroImage"
         :alt="imageMeta.alt"
         :src="post.heroImage"
-        class="u-photo"/>
+        class="post__photo"/>
     </header>
 
     <div class="post__content e-content" v-html="post.content" />
