@@ -1,19 +1,21 @@
 <template>
-  <Component
-    class="heading"
-    :is="headingTag"
-    :id="idInternal"
-    :class="[sizeClass, { 'heading--center': center }]">
-    <Component v-if="hasLink"
-      :is="linkTag"
-      class="heading__link"
-      :class="linkClass"
-      :href="href"
-      :to="to">
-      <slot/>
+  <transition appear name="fade">
+    <Component
+      class="heading"
+      :is="headingTag"
+      :id="idInternal"
+      :class="[sizeClass, { 'heading--center': center }]">
+      <Component v-if="hasLink"
+        :is="linkTag"
+        class="heading__link"
+        :class="linkClass"
+        :href="href"
+        :to="to">
+        <slot/>
+      </Component>
+      <slot v-else/>
     </Component>
-    <slot v-else/>
-  </Component>
+  </transition>
 </template>
 
 <script>
