@@ -16,7 +16,7 @@
         <u-edit-post-button class="post__edit" :post="post" />
         <u-support-button class="post__support"/>
       </div>
-      <u-tags :tags="post.tags" class="post__tags" />
+      <u-tags class="post__tags" :tags="post.tags" />
     </footer>
 
   </u-content-box>
