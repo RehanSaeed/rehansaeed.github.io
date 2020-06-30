@@ -3,7 +3,9 @@
 
     <u-skip-link />
 
-    <u-navigation class="navigation" />
+    <u-scroll-indicator/>
+
+    <u-navigation class="navigation"/>
 
     <transition name="fade" appear>
       <main id="main" class="main">
@@ -17,12 +19,14 @@
 </template>
 
 <script>
+import scrollIndicator from '~/components/shared/scroll-indicator.vue';
 import skipLink from '~/components/shared/skip-link.vue';
 import footer from '~/components/footer.vue';
 import navigation from '~/components/navigation.vue';
 
 export default {
   components: {
+    'u-scroll-indicator': scrollIndicator,
     'u-skip-link': skipLink,
     'u-footer': footer,
     'u-navigation': navigation,
