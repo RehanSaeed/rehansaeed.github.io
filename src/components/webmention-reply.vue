@@ -2,14 +2,14 @@
   <article class="webmention-reply">
     <u-avatar
       class="webmention-reply__avatar"
-      :href="reply.data.url"
-      :label="reply.data.author.name"
-      :alt="reply.data.author.name"
-      :src="reply.data.author.photo"
+      :href="url"
+      :label="name"
+      :alt="name"
+      :src="photo"
       size="large"/>
-    <a class="webmention-reply__author" :href="reply.data.url">{{reply.data.author.name}}</a>
+    <a class="webmention-reply__author" :href="url">{{name}}</a>
     <span class="webmention-reply__timestamp">{{timestamp}}</span>
-    <div class="webmention-reply__content" v-html="reply.data.content"></div>
+    <div class="webmention-reply__content" v-html="content"></div>
   </article>
 </template>
 
@@ -29,6 +29,10 @@ export default {
     }
   },
   computed: {
+    url() { return this.reply.data.url; },
+    content() { return this.reply.data.content; },
+    name() { return this.reply.data.author.name; },
+    photo() { return this.reply.data.author.photo; },
     timestamp() { return getDisplayDateFromString(this.reply.data.published); }
   }
 }
