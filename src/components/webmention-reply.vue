@@ -81,6 +81,7 @@ export default {
 
 .webmention-reply__timestamp {
   grid-area: timestamp;
+  align-self: center;
   font-size: var(--global-font-size-1);
 }
 
