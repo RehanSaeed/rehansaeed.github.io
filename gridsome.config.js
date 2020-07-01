@@ -179,43 +179,43 @@ module.exports = {
       }
     },
     // https://gridsome.org/plugins/gridsome-plugin-pwa
-    // {
-    //   use: 'gridsome-plugin-pwa',
-    //   options: {
-    //     // Service Worker
-    //     disableServiceWorker: false,
-    //     serviceWorkerPath: 'service-worker.js',
-    //     cachedFileTypes: 'js,json,css,html,png,jpg,jpeg,svg,gif',
-    //     disableTemplatedUrls: true,
+    {
+      use: 'gridsome-plugin-pwa',
+      options: {
+        // Service Worker
+        disableServiceWorker: false,
+        serviceWorkerPath: 'service-worker.js',
+        cachedFileTypes: 'js,json,css,html,png,jpg,jpeg,svg,gif',
+        disableTemplatedUrls: true,
 
-    //     // Manifest
-    //     manifestPath: 'manifest.webmanifest',
-    //     title: site.name,
-    //     shortName: site.shortName,
-    //     description: site.description,
-    //     categories: ['education'],
-    //     lang: 'en-GB',
-    //     dir: 'ltr',
-    //     startUrl: '/',
-    //     display: 'standalone',
-    //     statusBarStyle: 'default',
-    //     backgroundColor: '#f2f4f7',
-    //     themeColor: '#6b17e8',
-    //     icon: 'src/favicon.png',
-    //     maskableIcon: true,
+        // Manifest
+        manifestPath: 'manifest.webmanifest',
+        title: site.name,
+        shortName: site.shortName,
+        description: site.description,
+        categories: ['education'],
+        lang: 'en-GB',
+        dir: 'ltr',
+        startUrl: '/',
+        display: 'standalone',
+        statusBarStyle: 'default',
+        backgroundColor: '#f2f4f7',
+        themeColor: '#6b17e8',
+        icon: 'src/favicon.png',
+        maskableIcon: true,
 
-    //     // Windows Meta Tags
-    //     msTileImage: 'src/favicon.png',
-    //     msTileColor: '#6b17e8',
+        // Windows Meta Tags
+        msTileImage: 'src/favicon.png',
+        msTileColor: '#6b17e8',
 
-    //     // Standard Meta Tags
-    //     svgFavicon: 'favicon.svg',
+        // Standard Meta Tags
+        svgFavicon: 'favicon.svg',
 
-    //     // Apple MacOS Meta Tags
-    //     appleMaskIcon: 'favicon.svg',
-    //     appleMaskIconColor: '#6b17e8',
-    //   }
-    // },
+        // Apple MacOS Meta Tags
+        appleMaskIcon: 'favicon.svg',
+        appleMaskIconColor: '#6b17e8',
+      }
+    },
     // https://gridsome.org/plugins/gridsome-plugin-robots
     {
       use: 'gridsome-plugin-robots',
