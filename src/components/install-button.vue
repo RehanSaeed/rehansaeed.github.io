@@ -1,5 +1,5 @@
 <template>
-  <u-button v-show="true" class="install-button" aria-label="Install the app" @click.native.prevent="install">
+  <u-button v-show="isVisible" class="install-button" aria-label="Install the app" @click.native.prevent="install">
     <u-icon-add-home :size="24"/>
   </u-button>
 </template>
