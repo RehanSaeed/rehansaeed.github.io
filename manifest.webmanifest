@@ -1,0 +1,88 @@
+{
+  "name": "Muhammad Rehan Saeed",
+  "short_name": "Rehan",
+  "description": "Software Developer at Microsoft, Open Source Contributor and Blogger",
+  "lang": "en-GB",
+  "dir": "ltr",
+  "categories": [
+    "education"
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#6b17e8",
+  "background_color": "#f2f4f7",
+  "icons": [
+    {
+      "src": "assets/static/favicon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/static/favicon-384x384.png",
+      "type": "image/png",
+      "sizes": "384x384",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/static/favicon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/static/favicon-180x180.png",
+      "type": "image/png",
+      "sizes": "180x180",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/static/favicon-152x152.png",
+      "type": "image/png",
+      "sizes": "152x152",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/static/favicon-144x144.png",
+      "type": "image/png",
+      "sizes": "144x144",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/static/favicon-128x128.png",
+      "type": "image/png",
+      "sizes": "128x128",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/static/favicon-120x120.png",
+      "type": "image/png",
+      "sizes": "120x120",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/static/favicon-96x96.png",
+      "type": "image/png",
+      "sizes": "96x96",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/static/favicon-72x72.png",
+      "type": "image/png",
+      "sizes": "72x72",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/static/favicon-48x48.png",
+      "type": "image/png",
+      "sizes": "48x48",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/static/favicon-16x16.png",
+      "type": "image/png",
+      "sizes": "16x16",
+      "purpose": "maskable any"
+    }
+  ]
+}
