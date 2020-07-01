@@ -11,18 +11,21 @@
     <div class="navigation__items-right">
       <u-search-button class="navigation__search" />
       <u-theme-button class="navigation__toggle-theme" />
+      <u-install-button class="navigation__install" />
     </div>
   </nav>
 </template>
 
 <script>
 import link from '~/components/shared/link.vue';
+import installButton from '~/components/install-button.vue';
 import searchButton from '~/components/search-button.vue';
 import themeButton from '~/components/theme-button.vue';
 
 export default {
   components: {
     'u-link': link,
+    'u-install-button': installButton,
     'u-search-button': searchButton,
     'u-theme-button': themeButton,
   }
@@ -73,8 +76,15 @@ query {
 }
 
 .navigation__items-right {
+  align-self: start;
   grid-column-start: 3;
+  grid-row-start: 1;
+  grid-row-end: 3;
+
   display: grid;
+  grid-template-areas:
+    "search theme"
+    ". install";
   grid-template-columns: repeat(2, auto);
   grid-gap: var(--global-space-fluid-5);
 }
@@ -84,11 +94,17 @@ query {
 }
 
 .navigation__search {
+  grid-area: search;
   visibility: visible;
 }
 
 .navigation__toggle-theme {
-  margin-bottom: .2rem;
+  grid-area: theme;
+  visibility: visible;
+}
+
+.navigation__install {
+  grid-area: install;
   visibility: visible;
 }
 

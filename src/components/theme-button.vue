@@ -1,5 +1,5 @@
 <template>
-  <u-button aria-label="Toggle dark/light" @click.native.prevent="toggleTheme">
+  <u-button class="theme-button" aria-label="Toggle dark/light" @click.native.prevent="toggleTheme">
     <u-icon-sun v-if="darkTheme" title="Enable light theme" :size="24"/>
     <u-icon-moon v-else title="Enable dark theme" :size="24"/>
   </u-button>
@@ -37,3 +37,9 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.theme-button {
+  line-height: 0;
+}
+</style>
