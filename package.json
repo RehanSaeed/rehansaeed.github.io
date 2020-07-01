@@ -21,6 +21,13 @@
     "url": "git+https://github.com/RehanSaeed/rehansaeed.github.io.git"
   },
   "dependencies": {
+    "@vssue/api-github-v3": "^1.4.4",
+    "date-fns": "^2.14.0",
+    "dialog-polyfill": "^0.5.1",
+    "typeface-audiowide": "^0.0.72",
+    "vssue": "^1.4.6"
+  },
+  "devDependencies": {
     "@gridsome/plugin-critical": "^0.1.6",
     "@gridsome/plugin-google-analytics": "^0.1.1",
     "@gridsome/plugin-sitemap": "^0.3.0",
@@ -28,9 +35,6 @@
     "@gridsome/transformer-remark": "^0.6.0",
     "@noxify/gridsome-plugin-remark-embed": "^1.2.1",
     "@remy/webmention": "^1.4.5",
-    "@vssue/api-github-v3": "^1.4.4",
-    "date-fns": "^2.14.0",
-    "dialog-polyfill": "^0.5.1",
     "gh-pages": "^3.1.0",
     "gridsome": "^0.7.17",
     "gridsome-plugin-brotli": "^0.1.3",
@@ -42,20 +46,16 @@
     "gridsome-remark-embed-snippet": "^1.0.2",
     "gridsome-source-static-meta": "^1.0.1",
     "marked": "^1.1.0",
+    "node-sass": "^4.14.1",
     "remark-containers": "^1.1.2",
     "remark-kbd": "^1.0.21",
     "remark-toc": "^7.0.0",
     "remark-validate-links": "^10.0.2",
-    "typeface-audiowide": "^0.0.72",
-    "vssue": "^1.4.6"
-  },
-  "devDependencies": {
-    "node-sass": "^4.14.1",
     "sass-loader": "^8.0.2"
   },
   "scripts": {
     "build": "gridsome build",
-    "develop": "gridsome develop",
+    "start": "gridsome develop",
     "explore": "gridsome explore"
   }
 }
