@@ -6,7 +6,7 @@ permalink: "/the-fastest-way-to-publish-a-nuget-package/"
 heroImage: "/images/hero/NuGet-1366x768.png"
 date: "2020-06-30"
 dateModified: null
-published: true
+published: false
 categories:
   - ".NET"
 tags:
