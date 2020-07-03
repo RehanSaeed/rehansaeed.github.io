@@ -1,6 +1,6 @@
 <template>
   <u-content-box class="comments" tag="section">
-    <u-heading id="comments" class="comments__title" center level="2" href="#comments">Comments</u-heading>
+    <u-heading id="comments" class="comments__title" center level="2" href="#comments">Comment</u-heading>
     <Vssue :title="title" />
   </u-content-box>
 </template>
@@ -36,6 +36,17 @@ export default {
 
   p {
     min-width: 0;
+  }
+}
+
+
+.vssue-header-comments-count {
+  span::before {
+    content: 'View'
+  }
+
+  span::after {
+    content: 'Directly on GitHub.com'
   }
 }
 
