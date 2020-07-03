@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Thu, 02 Jul 2020 08:19:28 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 03 Jul 2020 08:55:45 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -96,6 +96,32 @@ dotnet build</code></pre>
 dotnet new nuget --name &quot;MyProject&quot;</code></pre>
 ]]></content:encoded>
             <enclosure url="/images/hero/Semantic-Versioning-1600x900.png"/>
+        </item>
+        <item>
+            <title><![CDATA[The Fastest Way to Publish a NuGet Package]]></title>
+            <link>https://rehansaeed.com/the-fastest-way-to-publish-a-nuget-package/</link>
+            <guid>https://rehansaeed.com/the-fastest-way-to-publish-a-nuget-package/</guid>
+            <pubDate>Tue, 30 Jun 2020 00:00:00 GMT</pubDate>
+            <content:encoded><![CDATA[<pre><code class="language-powershell">gh repo create RehanSaeed/FastestNuGet --public
+cd FastestNuGet
+dotnet new --install Boxed.Templates
+dotnet new nuget --github-username RehanSaeed --github-project FastestNuGet
+git add .
+git commit -m &quot;Initial&quot;
+git push --set-upstream origin master
+
+# Published to GitHub Packages
+start https://github.com/RehanSaeed/FastestNuGet/packages
+
+# Add NUGET_API_KEY to GitHub secrets
+git tag -a 0.0.1 -m &quot;Initial&quot;
+git push --tags
+
+# Published to NuGet
+start https://www.nuget.org/packages/FastestNuGet/</code></pre>
+<p><img src="GitHub-Secrets-2256x1010.jpg" alt="GitHub-Secrets-2256x1010.jpg"></p>
+]]></content:encoded>
+            <enclosure url="/images/hero/NuGet-1366x768.png"/>
         </item>
         <item>
             <title><![CDATA[Racism in Software Development & Beyond]]></title>
