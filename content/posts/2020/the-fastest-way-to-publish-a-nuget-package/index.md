@@ -88,7 +88,7 @@ Now bask in the glory of seeing your NuGet package on nuget.org.
 
 ![NuGet](./images/NuGet-1064x848.png)
 
-That's not all! The NuGet package we just pushed is signed and has [source link](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink) support, so developers can debug code in your NuGet package. If you look at the main ReadMe of your project, you'll see a badge showing you the status of the latest GitHub Action run on the master branch and finally you also see a graph showing you how long each GitHub Action run took and it's status over time.
+That's not all! We didn't just push one NuGet package, we also pushed it's symbols to the nuget.org symbol server. The NuGet package is also signed and has [source link](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink) support, so developers can debug code in your NuGet package. If you look at the main ReadMe of your project, you'll see a badge showing you the status of the latest GitHub Action run on the master branch and finally you also see a graph showing you how long each GitHub Action run took and it's status over time.
 
 ![Main ReadMe](./images/Main-ReadMe-1065x652.png)
 
