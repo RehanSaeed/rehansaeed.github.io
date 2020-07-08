@@ -8,7 +8,7 @@
       :src="photo"
       size="large"/>
     <a class="webmention-reply__author" :href="url">{{name}}</a>
-    <span class="webmention-reply__timestamp">{{timestamp}}</span>
+    <time class="webmention-reply__timestamp" :datetime="timestamp" :title="timestamp">{{timestampDisplay}}</time>
     <div class="webmention-reply__content" v-html="content"></div>
   </article>
 </template>
@@ -33,7 +33,8 @@ export default {
     content() { return this.reply.data.content; },
     name() { return this.reply.data.author.name; },
     photo() { return this.reply.data.author.photo; },
-    timestamp() { return getDisplayDateFromString(this.reply.data.published); }
+    timestamp() { return this.reply.data.published; },
+    timestampDisplay() { return getDisplayDateFromString(this.timestamp); }
   }
 }
 </script>

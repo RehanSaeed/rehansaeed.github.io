@@ -1,7 +1,7 @@
 <template>
   <article class="webmention-link">
     <a class="webmention-link__author" :href="url">{{name}}</a>
-    <span class="webmention-link__timestamp">{{timestamp}}</span>
+    <time :datetime="timestamp" :title="timestamp" class="webmention-link__timestamp">{{displayTimestamp}}</time>
   </article>
 </template>
 
@@ -19,7 +19,8 @@ export default {
   computed: {
     url() { return this.link.source; },
     name() { return (new URL(this.url)).hostname; },
-    timestamp() { return getDisplayDateFromString(this.link.verified_date); }
+    timestamp() { return this.link.data.published ?? this.link.verified_date; },
+    displayTimestamp() { return getDisplayDateFromString(this.timestamp); }
   }
 }
 </script>
