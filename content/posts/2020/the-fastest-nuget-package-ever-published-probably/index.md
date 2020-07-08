@@ -35,7 +35,7 @@ The next step is to install the [Dotnet Boxed](https://github.com/Dotnet-Boxed/T
 ```powershell
 dotnet new --install Boxed.Templates
 dotnet new nuget --help
-dotnet new nuget --github-username RehanSaeed --github-project FastestNuGet
+dotnet new nuget --name FastestNuGet --title "Project Title" --description "Project Description" --github-username RehanSaeed --github-project FastestNuGet
 ```
 
 Next we'll commit and push our newly created project to the `master` branch.
@@ -114,7 +114,7 @@ gh repo create RehanSaeed/FastestNuGet --public
 cd FastestNuGet
 
 dotnet new --install Boxed.Templates
-dotnet new nuget --github-username RehanSaeed --github-project FastestNuGet
+dotnet new nuget --name FastestNuGet --title "Project Title" --description "Project Description" --github-username RehanSaeed --github-project FastestNuGet
 
 git add .
 git commit -m "Initial"
