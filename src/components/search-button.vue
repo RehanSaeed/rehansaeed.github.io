@@ -1,5 +1,5 @@
 <template>
-  <div class="search-button__container">
+  <div>
 
     <u-button class="search-button" aria-label="Open search" @click.native.prevent="open">
       <u-icon-search v-if="!isOpen" :size="24"/>
@@ -48,11 +48,8 @@ export default {
 </script>
 
 <style lang="scss">
-.search-button__container {
-  line-height: 0;
-}
-
 .search-button {
+  display: block;
   line-height: 0;
 }
 </style>
