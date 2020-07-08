@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Wed, 08 Jul 2020 11:32:23 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 08 Jul 2020 12:50:21 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -31,7 +31,7 @@ cd FastestNuGet</code></pre>
 <p>The next step is to install the <a href="https://github.com/Dotnet-Boxed/Templates">Dotnet Boxed</a> project templates and then create a new project using the <a href="https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/NuGet.md">NuGet template</a>. There is a <strong>lot</strong> of optional features you can toggle in this project template which you can review by looking at the output for the <code>dotnet new nuget --help</code> command.</p>
 <pre><code class="language-powershell">dotnet new --install Boxed.Templates
 dotnet new nuget --help
-dotnet new nuget --github-username RehanSaeed --github-project FastestNuGet</code></pre>
+dotnet new nuget --name FastestNuGet --title &quot;Project Title&quot; --description &quot;Project Description&quot; --github-username RehanSaeed --github-project FastestNuGet</code></pre>
 <p>Next we&#39;ll commit and push our newly created project to the <code>master</code> branch.</p>
 <pre><code class="language-powershell">git add .
 git commit -m &quot;Initial&quot;
@@ -73,7 +73,7 @@ gh pr create --fill --label major --label enhancement</code></pre>
 cd FastestNuGet
 
 dotnet new --install Boxed.Templates
-dotnet new nuget --github-username RehanSaeed --github-project FastestNuGet
+dotnet new nuget --name FastestNuGet --title &quot;Project Title&quot; --description &quot;Project Description&quot; --github-username RehanSaeed --github-project FastestNuGet
 
 git add .
 git commit -m &quot;Initial&quot;
