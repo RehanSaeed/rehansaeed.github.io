@@ -209,9 +209,7 @@ pre[class*="language-"].line-numbers > code {
   }
 
   pre[class*="language-"]::selection,
-  pre[class*="language-"] ::selection,
-  code[class*="language-"]::selection,
-  code[class*="language-"] ::selection {
+  pre[class*="language-"] ::selection {
     background: hsl(200, 1%, 42%);
     color: unset;
   }
@@ -349,7 +347,8 @@ pre[class*="language-powershell"],
 }
 pre[class*="language-powershell"]::selection,
 pre[class*="language-powershell"] ::selection,
-code[class*="language-powershell"]::selection,
-code[class*="language-powershell"] ::selection {
+[data-theme="dark"] pre[class*="language-powershell"]::selection,
+[data-theme="dark"] pre[class*="language-powershell"] ::selection {
   background: hsl(35, 98%, 83%);
+  color: unset;
 }
