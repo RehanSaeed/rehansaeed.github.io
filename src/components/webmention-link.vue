@@ -17,7 +17,7 @@ export default {
     }
   },
   computed: {
-    url() { return this.link.data.url; },
+    url() { return this.link.source; },
     name() { return (new URL(this.url)).hostname; },
     timestamp() { return getDisplayDateFromString(this.link.verified_date); }
   }

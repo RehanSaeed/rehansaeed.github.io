@@ -92,8 +92,8 @@ export default {
         const mentions = await this.getMentions(0, 999);
         this.likes = mentions.filter(x => x.activity.type === 'like');
         this.reposts = mentions.filter(x => x.activity.type === 'repost');
-        this.links = mentions.filter(x => x.activity.type === 'link' && !x.data.author);
-        this.replies = mentions.filter(x => x.activity.type === 'reply' || (x.activity.type === 'link' && x.data.author));
+        this.links = mentions.filter(x => x.activity.type === 'link' && !(x.data.author && x.data.author.photo));
+        this.replies = mentions.filter(x => x.activity.type === 'reply' || (x.activity.type === 'link' && x.data.author && x.data.author.photo));
       } catch (error) {
         console.log(error);
       }
