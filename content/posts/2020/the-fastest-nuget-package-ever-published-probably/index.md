@@ -62,7 +62,7 @@ The other `Release Drafter` GitHub action created a draft release for us in GitH
 
 ![GitHub Releases](./images/GitHub-Releases-1062x600.png)
 
-Next we need to create some default labels that we can apply to pull requests. This will help us create automatic release notes for any NuGet packages we release. The `bug`, `enhancement` and `maintenance` labels will categorise changes in our release notes. The `major`, `minor` and `patch` labels will automatically generate a semantic versioning 2.0 compliant version number for us.
+Next we need to create some default labels that we can apply to pull requests. This will help us create automatic release notes for any NuGet packages we release. The `bug`, `enhancement` and `maintenance` labels will categorise changes in our release notes. The `major`, `minor` and `patch` labels will automatically generate a semantic versioning 2.0 compliant version number for us. Unfortunately, we can't use the GitHub CLI to create these for us at this time, so we'll have to do it manually.
 
 ![GitHub Labels](./images/GitHub-Labels-1106x756.png)
 
