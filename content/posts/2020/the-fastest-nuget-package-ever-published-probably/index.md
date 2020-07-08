@@ -102,6 +102,8 @@ That's not all! We didn't just push one NuGet package, we also pushed it's symbo
 
 ![Main ReadMe](./images/Main-ReadMe-1065x652.png)
 
+You can take a look at the repository at [RehanSaeed/FastestNuGet](https://github.com/RehanSaeed/FastestNuGet) to see all of the above in action.
+
 # The Complete Script
 
 Here is the complete script we ran to get from starting a new project to publishing on NuGet. I took lots of screenshots along the way but overall, you can do all this in about two minutes assuming you have everything installed.
