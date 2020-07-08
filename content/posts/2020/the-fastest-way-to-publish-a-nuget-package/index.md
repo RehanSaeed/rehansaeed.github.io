@@ -1,12 +1,12 @@
 ---
-title: "The Fastest Way to Publish a NuGet Package"
-description: "The fastest way to create a new NuGet package project and get it published with all the bells and whistles."
+title: "The Fastest NuGet Package Ever Published (Probably)"
+description: "The fastest way to create a new NuGet package project and get it published with all the bells and whistles like continuous integration (CI) builds and drafted release notes."
 author: "Muhammad Rehan Saeed"
-permalink: "/the-fastest-way-to-publish-a-nuget-package/"
+permalink: "/the-fastest-nuget-package-ever-published-probably/"
 heroImage: "/images/hero/NuGet-1366x768.png"
-date: "2020-06-30"
+date: "2020-07-08T08:34:00Z"
 dateModified: null
-published: false
+published: true
 categories:
   - ".NET"
 tags:
@@ -16,9 +16,9 @@ tags:
   - ".NET Boxed"
 ---
 
-So, you want to publish a new NuGet package? You just want to get your code up into nuget.org as quickly as possible but there is so much that you have to setup to get there. Not any more! I'll show you how you can publish a NuGet package to GitHub with all the bells and whistles in a couple of minutes.
+So, you want to publish a new NuGet package? You just want to get your code up into nuget.org as quickly as possible but there is so much that you have to setup to get there. Not any more! I'll show you how you can create a new project and publish a NuGet package with all the bells and whistles in a **couple of minutes**.
 
-We'll start off by creating a new GitHub repository using the new [GitHub CLI](https://github.com/cli/cli). I'm new to the GitHub CLI but creating a new repo seems pretty simple. Unfortunately however, the CLI is interactive, so after executing a command, you do have to answer some questions. In this case, we enter `Y` to tell it to clone the repository.
+We'll start off by creating a new GitHub repository using the new [GitHub CLI](https://github.com/cli/cli). Unfortunately however, the CLI is interactive, so after executing a command, you do have to answer some questions instead of being able to pass some flags. In this case, we enter `Y` to tell it to clone the repository.
 
 ```powershell
 gh repo create RehanSaeed/FastestNuGet --public
@@ -50,11 +50,11 @@ The `Build` GitHub Action has completed several actions you can see below. Note 
 
 ![Build GitHub Action](./images/Build-GitHub-Action-1062x700.png)
 
-This resulted in a NuGet package being packaged up and pushed to GitHub packages.
+This resulted in a NuGet package being packaged up and pushed to GitHub packages. This is a nice place to store pre-release packages that you can use for testing.
 
 ![GitHub Packages](./images/GitHub-Packages-1062x551.png)
 
-The other `Release Drafter` GitHub action created a draft release for us.
+The other `Release Drafter` GitHub action created a draft release for us in GitHub releases.
 
 ![GitHub Releases](./images/GitHub-Releases-1062x600.png)
 
@@ -74,17 +74,17 @@ Next, I'll check that the pull request passed all eight of it's continuous integ
 
 If we go back to GitHub Releases, we'll see that our draft GitHub release was automatically updated with details of our pull request!
 
-![GitHub Releases](./images/GitHub-Releases-1062x600.png)
+![GitHub Releases](./images/Pull-Request-GitHub-Releases-1062x600.png)
 
 Next, we'll want to publish an official release of our NuGet package to [nuget.org](https://www.nuget.org) but first, we need to get hold of a NuGet API key from nuget.org and add it as a secret named `NUGET_API_KEY` in GitHub secrets.
 
 ![GitHub Secrets](./images/GitHub-Secrets-1062x600.png)
 
-Finally I'll edit the release and change the tag name and display name for the release to `1.0.0`. In my last post '[https://rehansaeed.com/the-easiest-way-to-version-nuget-packages/](The Easiest Way to Version NuGet Packages)' I talked more about why I do this.
+Finally I'll edit the release and change the tag name and display name for the release to `1.0.0`. In my last post '[The Easiest Way to Version NuGet Packages](https://rehansaeed.com/the-easiest-way-to-version-nuget-packages/)' I talked more about why I do this.
 
 ![Published GitHub Release](./images/Published-GitHub-Release-1062x700.png)
 
-Now bask in the glory of seeing your NuGet package on nuget.org.
+Now bask in the glory of seeing your NuGet package on nuget.org. I also just noticed there is a Black Lives Matter (BLM) banner on the site! Those lives certainly do matter, check out my recent post on [Racism in Software Development and Beyond](https://rehansaeed.com/racism-in-software-development-and-beyond/) for my take on the subject.
 
 ![NuGet](./images/NuGet-1064x848.png)
 
