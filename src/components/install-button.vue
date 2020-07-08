@@ -33,20 +33,18 @@ export default {
         console.log('PWA Install Declined');
       }
     },
-  },
-  mounted() {
-    window.addEventListener('appinstalled', (e) => {
+    onAppInstalled(e) {
       this.isVisible = false;
       console.log('PWA Installed');
-    });
-    window.addEventListener('beforeinstallprompt', (e) => {
+    },
+    onBeforeInstallPrompt(e) {
       // Prevent the mini-infobar from appearing on mobile
       // e.preventDefault();
       this.deferredPrompt = e;
       this.isVisible = true;
       console.log('PWA Installable');
-    });
-    window.addEventListener('DOMContentLoaded', () => {
+    },
+    onDomContentLoaded() {
       let displayMode = 'browser tab';
       if (navigator.standalone) {
         displayMode = 'standalone-ios';
@@ -63,8 +61,22 @@ export default {
         }
         console.log('PWA display mode changed:', displayMode);
       });
-    });
-  }
+    },
+  },
+  mounted() {
+    if (window) {
+      window.addEventListener('appinstalled', this.onAppInstalled, false);
+      window.addEventListener('beforeinstallprompt', this.onBeforeInstallPrompt, false);
+      window.addEventListener('DOMContentLoaded', this.onDomContentLoaded, false);
+    }
+  },
+  unmounted() {
+    if (window) {
+      window.removeEventListener('appinstalled', this.onAppInstalled, false);
+      window.removeEventListener('beforeinstallprompt', this.onBeforeInstallPrompt, false);
+      window.removeEventListener('DOMContentLoaded', this.onDomContentLoaded, false);
+    }
+  },
 }
 </script>
 

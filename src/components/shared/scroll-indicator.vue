@@ -5,14 +5,22 @@
 <script>
 export default {
   name: 'u-scroll-indicator',
+  methods: {
+    onScroll() {
+      requestAnimationFrame(() => {
+        const scroll = window.pageYOffset / (document.body.offsetHeight - window.innerHeight);
+        document.body.style.setProperty('--scroll', scroll);
+      });
+    },
+  },
   mounted() {
     if (window) {
-      window.addEventListener('scroll', () => {
-        requestAnimationFrame(() => {
-          const scroll = window.pageYOffset / (document.body.offsetHeight - window.innerHeight);
-          document.body.style.setProperty('--scroll', scroll);
-        });
-      }, false);
+      window.addEventListener('scroll', this.onScroll, false);
+    }
+  },
+  unmounted() {
+    if (window) {
+      window.removeEventListener('scroll', this.onScroll, false);
     }
   }
 }
