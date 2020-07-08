@@ -5,7 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/the-fastest-nuget-package-ever-published-probably/"
 heroImage: "/images/hero/NuGet-1366x768.png"
 date: "2020-07-08T08:34:00Z"
-dateModified: null
+dateModified: "2020-07-08T12:16:00Z"
 published: true
 categories:
   - ".NET"
@@ -15,6 +15,10 @@ tags:
   - "GitHub Actions"
   - ".NET Boxed"
 ---
+
+::: tip Updated 2020-07-08 12:16
+I forgot to mention how we can use labels to help automatically draft release notes, so I've updated the post with a few extra screenshots and descriptions.
+:::
 
 So, you want to publish a new NuGet package? You just want to get your code up into nuget.org as quickly as possible but there is so much that you have to setup to get there. Not any more! I'll show you how you can create a new project and publish a NuGet package with all the bells and whistles in a **couple of minutes**.
 
@@ -58,31 +62,37 @@ The other `Release Drafter` GitHub action created a draft release for us in GitH
 
 ![GitHub Releases](./images/GitHub-Releases-1062x600.png)
 
-Now it's time to make a change and submit a new pull request (PR) to our repository.
+Next we need to create some default labels that we can apply to pull requests. This will help us create automatic release notes for any NuGet packages we release. The `bug`, `enhancement` and `maintenance` labels will categorise changes in our release notes. The `major`, `minor` and `patch` labels will automatically generate a semantic versioning 2.0 compliant version number for us.
+
+![GitHub Labels](./images/GitHub-Labels-1106x756.png)
+
+Now it's time to make a change and submit a new pull request (PR) to our repository. Notice I'm adding a `major` and `enhancement` label to the pull request.
 
 ```powershell
 git switch --create some-change
 git add .
 git commit -m "Some change"
 git push --set-upstream origin some-change
-gh pr create --fill
+gh pr create --fill --label major --label enhancement
 ```
 
 Next, I'll check that the pull request passed all eight of it's continuous integration build checks and merge the pull request.
 
-![Completed Pull Request](./images/Completed-Pull-Request-1062x700.png)
+![Completed Pull Request](./images/Completed-Pull-Request-1106x756.png)
 
-If we go back to GitHub Releases, we'll see that our draft GitHub release was automatically updated with details of our pull request!
+If we go back to GitHub Releases, we'll see that our draft GitHub release was automatically updated with details of our pull request! Notice that the `enhancement` label also caused our pull request to be categorised under 'New Features'.
 
-![GitHub Releases](./images/Pull-Request-GitHub-Releases-1062x600.png)
+![GitHub Releases](./images/Pull-Request-GitHub-Releases-1106x756.png)
 
 Next, we'll want to publish an official release of our NuGet package to [nuget.org](https://www.nuget.org) but first, we need to get hold of a NuGet API key from nuget.org and add it as a secret named `NUGET_API_KEY` in GitHub secrets.
 
 ![GitHub Secrets](./images/GitHub-Secrets-1062x600.png)
 
-Finally I'll edit the release and change the tag name and display name for the release to `1.0.0`. In my last post '[The Easiest Way to Version NuGet Packages](https://rehansaeed.com/the-easiest-way-to-version-nuget-packages/)' I talked more about why I do this.
+Finally I'll edit the release and change the tag name and display name for the release to `1.0.0`. Normally, the `major`, `minor` and `patch` labels we applied earlier would generate this version for us but this is the first ever Git tag, so we'll need to do it ourselves.
 
-![Published GitHub Release](./images/Published-GitHub-Release-1062x700.png)
+In my last post '[The Easiest Way to Version NuGet Packages](https://rehansaeed.com/the-easiest-way-to-version-nuget-packages/)' I talked more about how we are using MinVer for taking the Git tags and versioning our DLL's and NuGet packages.
+
+![Published GitHub Release](./images/Published-GitHub-Release-1106x756.png)
 
 Now bask in the glory of seeing your NuGet package on nuget.org. I also just noticed there is a Black Lives Matter (BLM) banner on the site! Those lives certainly do matter, check out my recent post on [Racism in Software Development and Beyond](https://rehansaeed.com/racism-in-software-development-and-beyond/) for my take on the subject.
 
@@ -114,11 +124,14 @@ start https://github.com/RehanSaeed/FastestNuGet/actions
 # View NuGet Package Published to GitHub Packages
 start https://github.com/RehanSaeed/FastestNuGet/packages
 
+# Create major, minor, patch, bug, enhancement, maintenance labels
+start https://github.com/RehanSaeed/FastestNuGet/labels
+
 git switch --create some-change
 git add .
 git commit -m "Some change"
 git push --set-upstream origin some-change
-gh pr create --fill
+gh pr create --fill --label major --label enhancement
 
 # View and Complete Pull Request
 start https://github.com/RehanSaeed/FastestNuGet/pull/1
