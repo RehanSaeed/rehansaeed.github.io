@@ -6,7 +6,7 @@
     </u-button>
 
     <u-dialogue fullscreen title="Search" :is-open="isOpen" @close="close" class="search-dialogue">
-      <u-search :search="this.$route.query.search" @selected="close"/>
+      <u-search :is-open="isOpen" :search="this.$route.query.search" @selected="close"/>
     </u-dialogue>
 
   </div>

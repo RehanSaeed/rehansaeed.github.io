@@ -1,6 +1,7 @@
 <template>
   <div class="search">
     <input
+      ref="search"
       id="search"
       autofocus
       v-model="searchTerm"
@@ -31,6 +32,9 @@ export default {
   name: 'u-search',
   mixins: [Search],
   props: {
+    isOpen: {
+      type: Boolean
+    },
     search: {
       type: String,
     }
@@ -38,6 +42,15 @@ export default {
   methods: {
     onSelected() {
       this.$emit('selected');
+    },
+  },
+  watch: {
+    isOpen() {
+      if (this.isOpen) {
+        setTimeout(() => {
+          this.$refs.search.focus();
+        }, 100);
+      }
     }
   },
   mounted() {
