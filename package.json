@@ -45,7 +45,7 @@
     "gridsome-plugin-robots": "^0.2.1",
     "gridsome-remark-embed-snippet": "^1.0.2",
     "gridsome-source-static-meta": "^1.0.1",
-    "marked": "^1.1.0",
+    "marked": "^1.1.1",
     "node-sass": "^4.14.1",
     "remark-containers": "^1.2.0",
     "remark-kbd": "^1.0.21",
