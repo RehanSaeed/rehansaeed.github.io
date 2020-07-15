@@ -4,11 +4,11 @@
 <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="326.6666667" height="326.6666667" viewBox="0 0 245 245">
   <style>
     .favicon-container {
-      fill: #000000;
+      fill: #6b17e8;
     }
     @media (prefers-color-scheme: dark) {
       .favicon-container {
-        container:  #ffffff;
+        container:  #ccbdff;
       }
     }
   </style>
