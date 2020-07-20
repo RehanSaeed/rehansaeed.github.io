@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@vssue/api-github-v3": "^1.4.4",
-    "date-fns": "^2.14.0",
+    "date-fns": "^2.15.0",
     "dialog-polyfill": "^0.5.1",
     "typeface-audiowide": "^0.0.72",
     "vssue": "^1.4.6"
