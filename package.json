@@ -43,7 +43,7 @@
     "gridsome-plugin-pwa": "^0.0.18",
     "gridsome-plugin-remark-prismjs-all": "^0.3.5",
     "gridsome-plugin-robots": "^0.2.1",
-    "gridsome-remark-embed-snippet": "^1.0.2",
+    "gridsome-remark-embed-snippet": "^1.0.3",
     "gridsome-source-static-meta": "^1.0.1",
     "marked": "^1.1.1",
     "node-sass": "^4.14.1",
