@@ -1,36 +1,40 @@
 <template>
-  <button class="button" :class="{ 'button--bordered': bordered, 'button--contrast': contrast, 'button--primary': primary }" :type="type">
-    <slot/>
+  <button
+    class="button"
+    :class="{ 'button--bordered': bordered, 'button--contrast': contrast, 'button--primary': primary }"
+    :type="type"
+  >
+    <slot />
   </button>
 </template>
 
 <script>
 export default {
-  name: 'u-button',
+  name: "u-button",
   props: {
     bordered: {
-      type: Boolean
+      type: Boolean,
     },
     contrast: {
-      type: Boolean
+      type: Boolean,
     },
     primary: {
-      type: Boolean
+      type: Boolean,
     },
     submit: {
-      type: Boolean
+      type: Boolean,
     },
   },
   computed: {
     type() {
       if (this.submit) {
-        return 'submit';
+        return "submit";
       } else {
-        return 'button';
+        return "button";
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss">
@@ -43,7 +47,9 @@ export default {
   font-family: var(--global-font-family-heading);
   line-height: var(--global-line-height-1);
   padding: 0;
-  transition: all var(--global-duration-1) ease-out;
+  transition: color var(--global-duration-1) ease-out,
+    opacity var(--global-duration-1) ease-out,
+    transform var(--global-duration-1) ease-out;
 
   &:hover {
     transform: scale(1.07);
@@ -71,18 +77,44 @@ export default {
 
   &:hover,
   &:focus {
-    box-shadow: 0 3px 5px hsl(0, 0%, 70%);
     transform: translateY(-2px);
   }
 
   &:active {
-    box-shadow: 0 0 0 hsl(0, 0%, 70%);
     transform: translateY(0);
   }
 
   &:disabled {
     transform: none;
   }
+}
+
+.button--bordered::before,
+.vssue-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+
+  box-shadow: 0 3px 5px hsl(0, 0%, 70%);
+  opacity: 0;
+  transition: opacity var(--global-duration-1) ease-out;
+}
+
+.button--bordered:hover::before,
+.button--bordered:focus::before,
+.vssue-button:hover::before,
+.vssue-button:focus::before {
+  opacity: 1;
+}
+
+.button--bordered:active::before,
+.vssue-button:active::before {
+  box-shadow: 0 0 0 hsl(0, 0%, 70%);
+  opacity: 1;
 }
 
 .button--contrast {

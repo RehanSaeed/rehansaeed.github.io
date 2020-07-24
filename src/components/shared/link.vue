@@ -1,27 +1,29 @@
 <template>
-  <Component :is="tag"
+  <Component
+    :is="tag"
     class="link"
     :class="{ 'link--bordered': bordered, 'link--contrast': contrast, 'link--primary': primary }"
     :href="href"
     :to="to"
     :rel="rel"
-    :aria-label="label">
-    <slot/>
+    :aria-label="label"
+  >
+    <slot />
   </Component>
 </template>
 
 <script>
 export default {
-  name: 'u-link',
+  name: "u-link",
   props: {
     bordered: {
       type: Boolean,
     },
     contrast: {
-      type: Boolean
+      type: Boolean,
     },
     primary: {
-      type: Boolean
+      type: Boolean,
     },
     label: {
       type: String,
@@ -37,9 +39,11 @@ export default {
     },
   },
   computed: {
-    tag() { return this.to ? 'g-link' : 'a'; }
-  }
-}
+    tag() {
+      return this.to ? "g-link" : "a";
+    },
+  },
+};
 </script>
 
 <style lang="scss">
@@ -49,7 +53,9 @@ export default {
   font-family: var(--global-font-family-heading);
   line-height: var(--global-line-height-1);
   text-decoration: none;
-  transition: all var(--global-duration-1) ease-out;
+  transition: color var(--global-duration-1) ease-out,
+    opacity var(--global-duration-1) ease-out,
+    transform var(--global-duration-1) ease-out;
 
   &:visited,
   &:focus,
@@ -74,20 +80,50 @@ export default {
 
   &:hover,
   &:focus {
-    box-shadow: 0 3px 5px hsl(0, 0%, 70%);
     opacity: 1;
     transform: translateY(-2px);
   }
 
+  &:focus {
+    outline: none;
+  }
+
   &:active {
-    box-shadow: 0 0 0 hsl(0, 0%, 70%);
     transform: translateY(0);
   }
 
   &:not([href]),
-  &[href=''] {
+  &[href=""] {
     color: var(--global-body-color);
   }
+}
+
+.link--bordered::before,
+.vssue-logout::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+
+  box-shadow: 0 3px 5px hsl(0, 0%, 70%);
+  opacity: 0;
+  transition: opacity var(--global-duration-2) ease-out;
+}
+
+.link--bordered:hover::before,
+.link--bordered:focus::before,
+.vssue-logout:hover::before,
+.vssue-logout:focus::before {
+  opacity: 1;
+}
+
+.link--bordered:active::before,
+.vssue-logout:active::before {
+  box-shadow: 0 0 0 hsl(0, 0%, 70%);
+  opacity: 1;
 }
 
 .link--contrast {
@@ -109,7 +145,7 @@ export default {
   }
 
   &:not([href]),
-  &[href=''] {
+  &[href=""] {
     color: var(--global-accent-color);
   }
 }
