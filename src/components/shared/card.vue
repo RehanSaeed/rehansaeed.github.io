@@ -26,8 +26,8 @@ export default {
   box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.02),
     1px 1px 15px 0 rgba(0, 0, 0, 0.03);
   padding: var(--global-space-fluid-6);
-  transition: transform var(--global-duration-2) ease-out,
-    background-color var(--global-duration-2) ease-out;
+  transition: background-color var(--global-duration-2) ease-out,
+    transform var(--global-duration-2) ease-out;
 
   // @mixin word-wrap()
   overflow-wrap: break-word;
@@ -51,11 +51,12 @@ export default {
   right: 0;
   bottom: 0;
   left: 0;
+  z-index: -1;
 
   box-shadow: 1px 10px 30px 0 rgba(0, 0, 0, 0.2);
   opacity: 0;
-  transition: transform var(--global-duration-2) ease-out,
-    opacity var(--global-duration-2) ease-out;
+  transition: opacity var(--global-duration-2) ease-out,
+    transform var(--global-duration-2) ease-out;
 }
 
 .card--hoverable:hover::before {
