@@ -1,26 +1,32 @@
 <template>
-   <div class="tags">
-   		<u-link class="tags__link" bordered v-for="tag in tags" :key="tag.id" :to="tag.path">
-   			{{tag.title}}
-   		</u-link>
-    </div>
+  <div class="tags">
+    <u-link
+      class="tags__link"
+      bordered
+      v-for="tag in tags"
+      :key="tag.id"
+      :to="tag.path"
+    >
+      {{ tag.title }}
+    </u-link>
+  </div>
 </template>
 
 <script>
-import link from '~/components/shared/link.vue'
+import link from "~/components/shared/link.vue";
 
 export default {
-  name: 'u-tags',
+  name: "u-tags",
   components: {
-    'u-link': link,
+    "u-link": link
   },
   props: {
     tags: {
       isRequired: true,
-      type: Array,
-    },
+      type: Array
+    }
   }
-}
+};
 </script>
 
 <style lang="scss">

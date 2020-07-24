@@ -8,41 +8,46 @@
       class="search__input"
       placeholder="Search"
       inputmode="search"
-      type="search">
+      type="search"
+    />
     <div class="search__results">
-      <g-link v-for="result in searchResults"
+      <g-link
+        v-for="result in searchResults"
         @click.native="onSelected"
         :key="result.id"
         :to="result.permalink || result.path"
-        class="search__result">
-        <g-image v-if="result.node.heroImage"
+        class="search__result"
+      >
+        <g-image
+          v-if="result.node.heroImage"
           class="search__result__image"
-          :src="result.node.heroImage"/>
-        <p class="search__result__title">{{result.node.title}}</p>
-        <p class="search__result__description">{{result.node.description}}</p>
+          :src="result.node.heroImage"
+        />
+        <p class="search__result__title">{{ result.node.title }}</p>
+        <p class="search__result__description">{{ result.node.description }}</p>
       </g-link>
     </div>
   </div>
 </template>
 
 <script>
-import Search from 'gridsome-plugin-flexsearch/SearchMixin';
+import Search from "gridsome-plugin-flexsearch/SearchMixin";
 
 export default {
-  name: 'u-search',
+  name: "u-search",
   mixins: [Search],
   props: {
     isOpen: {
       type: Boolean
     },
     search: {
-      type: String,
+      type: String
     }
   },
   methods: {
     onSelected() {
-      this.$emit('selected');
-    },
+      this.$emit("selected");
+    }
   },
   watch: {
     isOpen() {
@@ -58,7 +63,7 @@ export default {
       this.searchTerm = this.search;
     }
   }
-}
+};
 </script>
 
 <style lang="scss">

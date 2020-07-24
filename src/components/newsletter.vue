@@ -1,17 +1,22 @@
 <template>
   <u-card class="newsletter" tag="section">
-    <form class="newsletter__form" method="post" :action="this.$static.metadata.mailchimpUrl">
+    <form
+      class="newsletter__form"
+      method="post"
+      :action="this.$static.metadata.mailchimpUrl"
+    >
       <u-heading
         id="newsletter"
         class="newsletter__title"
         level="2"
         center
         href="#newsletter"
-      >Newsletter</u-heading>
-      <label
-        class="newsletter__content"
-        for="email"
-      >Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox!</label>
+        >Newsletter</u-heading
+      >
+      <label class="newsletter__content" for="email"
+        >Stay up to date! Get all the latest &amp; greatest posts delivered
+        straight to your inbox!</label
+      >
       <input
         id="email"
         class="newsletter__input"
@@ -48,8 +53,8 @@ export default {
   components: {
     "u-button": button,
     "u-card": card,
-    "u-heading": heading,
-  },
+    "u-heading": heading
+  }
 };
 </script>
 

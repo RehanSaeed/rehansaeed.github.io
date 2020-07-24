@@ -41,18 +41,18 @@ export default {
     "u-edit-post-button": editPostButton,
     "u-share-button": shareButton,
     "u-support-button": supportButton,
-    "u-tags": tags,
+    "u-tags": tags
   },
   props: {
     post: {
-      type: Object,
-    },
+      type: Object
+    }
   },
   computed: {
     imageMeta() {
       return getImageMetadata(this.post.heroImage);
-    },
-  },
+    }
+  }
 };
 </script>
 

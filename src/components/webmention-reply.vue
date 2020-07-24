@@ -6,37 +6,55 @@
       :label="name"
       :alt="name"
       :src="photo"
-      size="large"/>
-    <a class="webmention-reply__author" :href="url">{{name}}</a>
-    <time class="webmention-reply__timestamp" :datetime="timestamp" :title="timestamp">{{timestampDisplay}}</time>
+      size="large"
+    />
+    <a class="webmention-reply__author" :href="url">{{ name }}</a>
+    <time
+      class="webmention-reply__timestamp"
+      :datetime="timestamp"
+      :title="timestamp"
+      >{{ timestampDisplay }}</time
+    >
     <div class="webmention-reply__content" v-html="content"></div>
   </article>
 </template>
 
 <script>
-import avatar from '~/components/shared/avatar.vue';
-import { getDisplayDateFromString } from '~/framework/date.js';
+import avatar from "~/components/shared/avatar.vue";
+import { getDisplayDateFromString } from "~/framework/date.js";
 
 export default {
-  name: 'u-webmention-reply',
+  name: "u-webmention-reply",
   components: {
-    'u-avatar': avatar,
+    "u-avatar": avatar
   },
   props: {
     reply: {
       required: true,
-      type: Object,
+      type: Object
     }
   },
   computed: {
-    url() { return this.reply.data.url; },
-    content() { return this.reply.data.content; },
-    name() { return this.reply.data.author.name; },
-    photo() { return this.reply.data.author.photo; },
-    timestamp() { return this.reply.data.published; },
-    timestampDisplay() { return getDisplayDateFromString(this.timestamp); }
+    url() {
+      return this.reply.data.url;
+    },
+    content() {
+      return this.reply.data.content;
+    },
+    name() {
+      return this.reply.data.author.name;
+    },
+    photo() {
+      return this.reply.data.author.photo;
+    },
+    timestamp() {
+      return this.reply.data.published;
+    },
+    timestampDisplay() {
+      return getDisplayDateFromString(this.timestamp);
+    }
   }
-}
+};
 </script>
 
 <style lang="scss">
@@ -49,7 +67,8 @@ export default {
     "avatar content";
   grid-template-columns: auto 1fr;
 
-  @media screen and (min-width: 768px) { // $global-breakpoint-md
+  @media screen and (min-width: 768px) {
+    // $global-breakpoint-md
     grid-template-areas:
       "avatar author timestamp"
       "avatar content content";
@@ -72,7 +91,7 @@ export default {
   &:focus,
   &:active {
     color: var(--global-title-color);
-    opacity: .7;
+    opacity: 0.7;
   }
 
   &:visited {

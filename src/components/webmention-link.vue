@@ -1,28 +1,41 @@
 <template>
   <article class="webmention-link">
-    <a class="webmention-link__author" :href="url">{{name}}</a>
-    <time :datetime="timestamp" :title="timestamp" class="webmention-link__timestamp">{{displayTimestamp}}</time>
+    <a class="webmention-link__author" :href="url">{{ name }}</a>
+    <time
+      :datetime="timestamp"
+      :title="timestamp"
+      class="webmention-link__timestamp"
+      >{{ displayTimestamp }}</time
+    >
   </article>
 </template>
 
 <script>
-import { getDisplayDateFromString } from '~/framework/date.js';
+import { getDisplayDateFromString } from "~/framework/date.js";
 
 export default {
-  name: 'u-webmention-link',
+  name: "u-webmention-link",
   props: {
     link: {
       required: true,
-      type: Object,
+      type: Object
     }
   },
   computed: {
-    url() { return this.link.source; },
-    name() { return (new URL(this.url)).hostname; },
-    timestamp() { return this.link.data.published ?? this.link.verified_date; },
-    displayTimestamp() { return getDisplayDateFromString(this.timestamp); }
+    url() {
+      return this.link.source;
+    },
+    name() {
+      return new URL(this.url).hostname;
+    },
+    timestamp() {
+      return this.link.data.published ?? this.link.verified_date;
+    },
+    displayTimestamp() {
+      return getDisplayDateFromString(this.timestamp);
+    }
   }
-}
+};
 </script>
 
 <style lang="scss">
@@ -34,9 +47,9 @@ export default {
     "timestamp";
   grid-template-columns: 1fr;
 
-  @media screen and (min-width: 768px) { // $global-breakpoint-md
-    grid-template-areas:
-      "author timestamp";
+  @media screen and (min-width: 768px) {
+    // $global-breakpoint-md
+    grid-template-areas: "author timestamp";
     grid-template-columns: auto 1fr;
   }
 }
@@ -52,7 +65,7 @@ export default {
   &:focus,
   &:active {
     color: var(--global-title-color);
-    opacity: .7;
+    opacity: 0.7;
   }
 
   &:visited {

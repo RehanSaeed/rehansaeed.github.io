@@ -9,12 +9,23 @@
       />
     </div>
     <div class="portfolio-card__content">
-      <u-heading :id="portfolio.title" level="2" class="portfolio-card__title">{{portfolio.title}}</u-heading>
-      <p class="portfolio-card__description">{{portfolio.description}}</p>
+      <u-heading
+        :id="portfolio.title"
+        level="2"
+        class="portfolio-card__title"
+        >{{ portfolio.title }}</u-heading
+      >
+      <p class="portfolio-card__description">{{ portfolio.description }}</p>
 
-      <u-tags v-if="portfolio.tags" class="portfolio-card__tags" :tags="portfolio.tags" />
+      <u-tags
+        v-if="portfolio.tags"
+        class="portfolio-card__tags"
+        :tags="portfolio.tags"
+      />
 
-      <g-link class="portfolio-card__link" :to="portfolio.permalink">Link</g-link>
+      <g-link class="portfolio-card__link" :to="portfolio.permalink"
+        >Link</g-link
+      >
     </div>
   </u-card>
 </template>
@@ -29,14 +40,14 @@ export default {
   components: {
     "u-card": card,
     "u-heading": heading,
-    "u-tags": tags,
+    "u-tags": tags
   },
   props: {
     portfolio: {
       required: true,
-      type: Object,
-    },
-  },
+      type: Object
+    }
+  }
 };
 </script>
 

@@ -6,29 +6,33 @@
 </template>
 
 <script>
-import link from '~/components/shared/link.vue';
-import iconGitHub from '~/components/shared/icons/icon-github.vue';
+import link from "~/components/shared/link.vue";
+import iconGitHub from "~/components/shared/icons/icon-github.vue";
 
 export default {
-  name: 'u-edit-post-button',
+  name: "u-edit-post-button",
   components: {
-    'u-link': link,
-    'u-icon-github': iconGitHub,
+    "u-link": link,
+    "u-icon-github": iconGitHub
   },
   props: {
     post: {
-      type: Object,
-    },
+      type: Object
+    }
   },
   computed: {
     url() {
-      return `${this.$static.metadata.repository.url}/tree/${this.$static.metadata.repository.branch}/content/posts/` +
+      return (
+        `${this.$static.metadata.repository.url}/tree/${
+          this.$static.metadata.repository.branch
+        }/content/posts/` +
         new Date(this.post.date).getFullYear() +
         this.post.path +
-        'index.md';
+        "index.md"
+      );
     }
   }
-}
+};
 </script>
 
 <static-query>

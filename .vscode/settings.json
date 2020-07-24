@@ -1,0 +1,5 @@
+{
+  "prettier.endOfLine": "crlf",
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true
+}

@@ -2,7 +2,11 @@
   <Component
     :is="tag"
     class="link"
-    :class="{ 'link--bordered': bordered, 'link--contrast': contrast, 'link--primary': primary }"
+    :class="{
+      'link--bordered': bordered,
+      'link--contrast': contrast,
+      'link--primary': primary
+    }"
     :href="href"
     :to="to"
     :rel="rel"
@@ -17,32 +21,32 @@ export default {
   name: "u-link",
   props: {
     bordered: {
-      type: Boolean,
+      type: Boolean
     },
     contrast: {
-      type: Boolean,
+      type: Boolean
     },
     primary: {
-      type: Boolean,
+      type: Boolean
     },
     label: {
-      type: String,
+      type: String
     },
     to: {
-      type: String,
+      type: String
     },
     href: {
-      type: String,
+      type: String
     },
     rel: {
-      type: String,
-    },
+      type: String
+    }
   },
   computed: {
     tag() {
       return this.to ? "g-link" : "a";
-    },
-  },
+    }
+  }
 };
 </script>
 

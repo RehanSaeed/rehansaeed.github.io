@@ -1,18 +1,23 @@
 <template>
-  <svg xmlns="http://www.w3.org/2000/svg"
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"
     focusable="false"
     role="img"
     viewBox="0 0 384 512"
     :height="height"
-    :width="width">
-    <title>{{title}}</title>
-    <path fill="currentColor" d="M290.7 311L95 269.7 86.8 309l195.7 41zm51-87L188.2 95.7l-25.5 30.8 153.5 128.3zm-31.2 39.7L129.2 179l-16.7 36.5L293.7 300zM262 32l-32 24 119.3 160.3 32-24zm20.5 328h-200v39.7h200zm39.7 80H42.7V320h-40v160h359.5V320h-40z"></path>
+    :width="width"
+    fill="currentColor"
+  >
+    <title>{{ title }}</title>
+    <path
+      d="M290.7 311L95 269.7 86.8 309l195.7 41zm51-87L188.2 95.7l-25.5 30.8 153.5 128.3zm-31.2 39.7L129.2 179l-16.7 36.5L293.7 300zM262 32l-32 24 119.3 160.3 32-24zm20.5 328h-200v39.7h200zm39.7 80H42.7V320h-40v160h359.5V320h-40z"
+    ></path>
   </svg>
 </template>
 
 <script>
-import createIcon from '~/components/shared/icons/icon.js';
+import createIcon from "~/components/shared/icons/icon.js";
 
-export default createIcon('StackOverflow', 512 / 384);
+export default createIcon("StackOverflow", 512 / 384);
 </script>

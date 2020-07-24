@@ -1,6 +1,13 @@
 <template>
   <u-card class="comments" tag="section">
-    <u-heading id="comments" class="comments__title" center level="2" href="#comments">Comment</u-heading>
+    <u-heading
+      id="comments"
+      class="comments__title"
+      center
+      level="2"
+      href="#comments"
+      >Comment</u-heading
+    >
     <Vssue :title="title" />
   </u-card>
 </template>
@@ -13,13 +20,13 @@ export default {
   name: "u-comments",
   components: {
     "u-card": card,
-    "u-heading": heading,
+    "u-heading": heading
   },
   props: {
     title: {
-      type: String,
-    },
-  },
+      type: String
+    }
+  }
 };
 </script>
 

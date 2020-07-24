@@ -3,7 +3,7 @@
     class="post-card"
     tag="article"
     hoverable
-    :class="{'post-card--has-poster' : post.poster}"
+    :class="{ 'post-card--has-poster': post.poster }"
   >
     <div class="post-card__header">
       <g-image
@@ -14,8 +14,10 @@
       />
     </div>
     <div class="post-card__content">
-      <u-heading :id="post.title" level="2" class="post-card__title">{{post.title}}</u-heading>
-      <p class="post-card__description">{{post.description}}</p>
+      <u-heading :id="post.title" level="2" class="post-card__title">{{
+        post.title
+      }}</u-heading>
+      <p class="post-card__description">{{ post.description }}</p>
 
       <u-post-meta class="post-card__meta" :meta="post" />
       <u-tags v-if="post.tags" class="post-card__tags" :tags="post.tags" />
@@ -38,18 +40,18 @@ export default {
     "u-card": card,
     "u-heading": heading,
     "u-post-meta": postMeta,
-    "u-tags": tags,
+    "u-tags": tags
   },
   props: {
     post: {
-      type: Object,
-    },
+      type: Object
+    }
   },
   computed: {
     imageMeta() {
       return getImageMetadata(this.post.heroImage);
-    },
-  },
+    }
+  }
 };
 </script>
 

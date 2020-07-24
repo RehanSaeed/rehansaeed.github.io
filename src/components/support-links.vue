@@ -1,38 +1,57 @@
 <template>
   <div>
-
-    <p>If you like my content, please consider buying me a coffee. Thank you for your support!</p>
+    <p>
+      If you like my content, please consider buying me a coffee. Thank you for
+      your support!
+    </p>
 
     <div class="support-links">
-      <u-link v-if="this.$static.metadata.author.buyMeACoffee.url" bordered label="Buy me a Coffee" :href="this.$static.metadata.author.buyMeACoffee.url" class="support-links__link">
-        <u-icon-coffee/> Buy me a Coffee
+      <u-link
+        v-if="this.$static.metadata.author.buyMeACoffee.url"
+        bordered
+        label="Buy me a Coffee"
+        :href="this.$static.metadata.author.buyMeACoffee.url"
+        class="support-links__link"
+      >
+        <u-icon-coffee /> Buy me a Coffee
       </u-link>
-      <u-link v-if="this.$static.metadata.author.gitHub.sponsorsUrl" bordered label="GitHub Sponsors" :href="this.$static.metadata.author.gitHub.sponsorsUrl" class="support-links__link">
-        <u-icon-github/> GitHub Sponsors
+      <u-link
+        v-if="this.$static.metadata.author.gitHub.sponsorsUrl"
+        bordered
+        label="GitHub Sponsors"
+        :href="this.$static.metadata.author.gitHub.sponsorsUrl"
+        class="support-links__link"
+      >
+        <u-icon-github /> GitHub Sponsors
       </u-link>
-      <u-link v-if="this.$static.metadata.author.paypal.url" bordered label="Paypal" :href="this.$static.metadata.author.paypal.url" class="support-links__link">
-        <u-icon-paypal/> Paypal
+      <u-link
+        v-if="this.$static.metadata.author.paypal.url"
+        bordered
+        label="Paypal"
+        :href="this.$static.metadata.author.paypal.url"
+        class="support-links__link"
+      >
+        <u-icon-paypal /> Paypal
       </u-link>
     </div>
-
   </div>
 </template>
 
 <script>
-import link from '~/components/shared/link.vue';
-import iconCoffee from '~/components/shared/icons/icon-coffee.vue';
-import iconGitHub from '~/components/shared/icons/icon-github.vue';
-import iconPaypal from '~/components/shared/icons/icon-paypal.vue';
+import link from "~/components/shared/link.vue";
+import iconCoffee from "~/components/shared/icons/icon-coffee.vue";
+import iconGitHub from "~/components/shared/icons/icon-github.vue";
+import iconPaypal from "~/components/shared/icons/icon-paypal.vue";
 
 export default {
-  name: 'u-support-links',
+  name: "u-support-links",
   components: {
-    'u-link': link,
-    'u-icon-coffee': iconCoffee,
-    'u-icon-github': iconGitHub,
-    'u-icon-paypal': iconPaypal,
-  },
-}
+    "u-link": link,
+    "u-icon-coffee": iconCoffee,
+    "u-icon-github": iconGitHub,
+    "u-icon-paypal": iconPaypal
+  }
+};
 </script>
 
 <static-query>

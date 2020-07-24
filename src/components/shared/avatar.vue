@@ -2,55 +2,64 @@
   <Component
     class="avatar"
     :is="tag"
-    :class="{ 'avatar--medium': size === 'medium', 'avatar--large': size === 'large' }"
+    :class="{
+      'avatar--medium': size === 'medium',
+      'avatar--large': size === 'large'
+    }"
     :aria-label="label"
     :title="label"
     :href="href"
-    :to="to">
+    :to="to"
+  >
     <g-image
       class="avatar__image"
       :alt="alt"
       :src="src"
       :width="sizeInPixels"
-      :height="sizeInPixels"/>
+      :height="sizeInPixels"
+    />
   </Component>
 </template>
 
 <script>
 export default {
-  name: 'u-avatar',
+  name: "u-avatar",
   props: {
     label: {
       required: true,
-      type: String,
+      type: String
     },
     alt: {
       required: true,
-      type: String,
+      type: String
     },
     size: {
       default: "medium",
       required: false,
-      type: String,
+      type: String
     },
     src: {
       required: true,
-      type: String,
+      type: String
     },
     to: {
       required: false,
-      type: String,
+      type: String
     },
     href: {
       required: false,
-      type: String,
-    },
+      type: String
+    }
   },
   computed: {
-    sizeInPixels() { return this.size === 'medium' ? "50" : "60"; },
-    tag() { return this.to ? 'g-link' : 'a'; }
+    sizeInPixels() {
+      return this.size === "medium" ? "50" : "60";
+    },
+    tag() {
+      return this.to ? "g-link" : "a";
+    }
   }
-}
+};
 </script>
 
 <style lang="scss">

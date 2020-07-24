@@ -1,7 +1,14 @@
 <template>
-  <dialog class="dialog" ref="dialog" @close="close" :class="{ 'dialog--fullscreen': fullscreen }">
+  <dialog
+    class="dialog"
+    ref="dialog"
+    @close="close"
+    :class="{ 'dialog--fullscreen': fullscreen }"
+  >
     <div class="dialog__container">
-      <u-heading id="title" level="2" class="dialog__title">{{title}}</u-heading>
+      <u-heading id="title" level="2" class="dialog__title">{{
+        title
+      }}</u-heading>
       <form class="dialog__form" method="dialog">
         <u-button aria-label="Close search" class="dialog__close" submit>
           <u-icon-close :size="24" />
@@ -24,25 +31,25 @@ export default {
   components: {
     "u-button": button,
     "u-heading": heading,
-    "u-icon-close": iconClose,
+    "u-icon-close": iconClose
   },
   props: {
     fullscreen: {
       default: false,
-      type: Boolean,
+      type: Boolean
     },
     isOpen: {
       default: false,
-      type: Boolean,
+      type: Boolean
     },
     title: {
-      type: String,
-    },
+      type: String
+    }
   },
   computed: {
     dialog() {
       return this.$refs.dialog;
-    },
+    }
   },
   watch: {
     isOpen() {
@@ -51,14 +58,14 @@ export default {
       } else {
         this.dialog.close();
       }
-    },
+    }
   },
   methods: {
     close() {
       if (this.isOpen) {
         this.$emit("close");
       }
-    },
+    }
   },
   mounted() {
     if (!process.isClient) {
@@ -67,7 +74,7 @@ export default {
 
     const dialogPolyfill = require("dialog-polyfill").default;
     dialogPolyfill.registerDialog(this.dialog);
-  },
+  }
 };
 </script>
 

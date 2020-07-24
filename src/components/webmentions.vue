@@ -1,5 +1,8 @@
 <template>
-  <u-intersect @enterFirstTime="onEnterFirstTime" root-margin="1200px 1200px 1200px 1200px">
+  <u-intersect
+    @enterFirstTime="onEnterFirstTime"
+    root-margin="1200px 1200px 1200px 1200px"
+  >
     <u-card class="webmentions" tag="section">
       <u-heading
         id="webmentions"
@@ -7,38 +10,69 @@
         center
         level="2"
         href="#webmentions"
-      >Web Mentions</u-heading>
-      <a class="webmentions__help" href="https://en.wikipedia.org/wiki/Webmention">
+        >Web Mentions</u-heading
+      >
+      <a
+        class="webmentions__help"
+        href="https://en.wikipedia.org/wiki/Webmention"
+      >
         <u-icon-question class="webmentions__icon" :size="18" />
         <span>What's this?</span>
       </a>
       <div class="webmentions__container">
         <p class="webmentions__count webmentions__like-count">
-          <u-icon-heart class="webmentions__icon" :size="16" :title="likesDescription" />
-          <span>{{likesDescription}}</span>
+          <u-icon-heart
+            class="webmentions__icon"
+            :size="16"
+            :title="likesDescription"
+          />
+          <span>{{ likesDescription }}</span>
         </p>
         <u-webmention-faces class="webmentions__like-faces" :mentions="likes" />
 
         <p class="webmentions__count webmentions__repost-count">
-          <u-icon-repost class="webmentions__icon" :size="16" :title="repostsDescription" />
-          <span>{{repostsDescription}}</span>
+          <u-icon-repost
+            class="webmentions__icon"
+            :size="16"
+            :title="repostsDescription"
+          />
+          <span>{{ repostsDescription }}</span>
         </p>
-        <u-webmention-faces class="webmentions__repost-faces" :mentions="reposts" />
+        <u-webmention-faces
+          class="webmentions__repost-faces"
+          :mentions="reposts"
+        />
 
         <p class="webmentions__count webmentions__link-count">
-          <u-icon-link class="webmentions__icon" :size="16" :title="linksDescription" />
-          <span>{{linksDescription}}</span>
+          <u-icon-link
+            class="webmentions__icon"
+            :size="16"
+            :title="linksDescription"
+          />
+          <span>{{ linksDescription }}</span>
         </p>
         <div class="webmentions__links">
-          <u-webmention-link v-for="link in links" :key="link.id" :link="link" />
+          <u-webmention-link
+            v-for="link in links"
+            :key="link.id"
+            :link="link"
+          />
         </div>
 
         <p class="webmentions__count webmentions__reply-count">
-          <u-icon-comment class="webmentions__icon" :size="16" :title="repliesDescription" />
-          <span>{{repliesDescription}}</span>
+          <u-icon-comment
+            class="webmentions__icon"
+            :size="16"
+            :title="repliesDescription"
+          />
+          <span>{{ repliesDescription }}</span>
         </p>
         <div class="webmentions__replies">
-          <u-webmention-reply v-for="reply in replies" :key="reply.id" :reply="reply" />
+          <u-webmention-reply
+            v-for="reply in replies"
+            :key="reply.id"
+            :reply="reply"
+          />
         </div>
       </div>
     </u-card>
@@ -71,21 +105,21 @@ export default {
     "u-icon-repost": iconRepost,
     "u-webmention-faces": webmentionFaces,
     "u-webmention-link": webmentionLink,
-    "u-webmention-reply": webmentionReply,
+    "u-webmention-reply": webmentionReply
   },
   data() {
     return {
       likes: [],
       reposts: [],
       links: [],
-      replies: [],
+      replies: []
     };
   },
   props: {
     url: {
       required: true,
-      type: String,
-    },
+      type: String
+    }
   },
   computed: {
     likesDescription() {
@@ -111,7 +145,7 @@ export default {
         "Reply",
         "Replies"
       )}`;
-    },
+    }
   },
   methods: {
     pluralise(count, one, many) {
@@ -119,7 +153,9 @@ export default {
     },
     async getMentions(page, perPage) {
       const response = await fetch(
-        `https://webmention.io/api/mentions?page=${page}&per-page=${perPage}&target=${this.url}&sort-by=published&sort-dir=up`
+        `https://webmention.io/api/mentions?page=${page}&per-page=${perPage}&target=${
+          this.url
+        }&sort-by=published&sort-dir=up`
       );
       const list = await response.json();
       return list.links;
@@ -127,23 +163,23 @@ export default {
     async onEnterFirstTime() {
       try {
         const mentions = await this.getMentions(0, 999);
-        this.likes = mentions.filter((x) => x.activity.type === "like");
-        this.reposts = mentions.filter((x) => x.activity.type === "repost");
+        this.likes = mentions.filter(x => x.activity.type === "like");
+        this.reposts = mentions.filter(x => x.activity.type === "repost");
         this.links = mentions.filter(
-          (x) =>
+          x =>
             x.activity.type === "link" &&
             !(x.data.author && x.data.author.photo)
         );
         this.replies = mentions.filter(
-          (x) =>
+          x =>
             x.activity.type === "reply" ||
             (x.activity.type === "link" && x.data.author && x.data.author.photo)
         );
       } catch (error) {
         console.log(error);
       }
-    },
-  },
+    }
+  }
 };
 </script>
 

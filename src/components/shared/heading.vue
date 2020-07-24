@@ -3,60 +3,74 @@
     class="heading"
     :is="headingTag"
     :id="idInternal"
-    :class="[sizeClass, { 'heading--center': center }]">
-    <Component v-if="hasLink"
+    :class="[sizeClass, { 'heading--center': center }]"
+  >
+    <Component
+      v-if="hasLink"
       :is="linkTag"
       class="heading__link"
       :class="linkClass"
       :href="href"
-      :to="to">
-      <slot/>
+      :to="to"
+    >
+      <slot />
     </Component>
-    <slot v-else/>
+    <slot v-else />
   </Component>
 </template>
 
 <script>
 export default {
-  name: 'u-heading',
+  name: "u-heading",
   props: {
     id: {
       required: true,
-      type: String,
+      type: String
     },
     level: {
-      default: '1',
+      default: "1",
       required: true,
-      type: String,
+      type: String
     },
     size: {
       default: null,
-      type: String,
+      type: String
     },
     href: {
-      type: String,
+      type: String
     },
     to: {
-      type: String,
+      type: String
     },
     center: {
       default: false,
-      type: Boolean,
+      type: Boolean
     },
     linkClass: {
       type: String
     }
   },
   computed: {
-    idInternal() { return this.id.split(' ').join('-').toLowerCase(); },
-    hasLink() { return this.to || this.href; },
-    headingTag() { return `h${this.level}`; },
-    sizeClass() { return `heading--${this.size || this.level}`; },
+    idInternal() {
+      return this.id
+        .split(" ")
+        .join("-")
+        .toLowerCase();
+    },
+    hasLink() {
+      return this.to || this.href;
+    },
+    headingTag() {
+      return `h${this.level}`;
+    },
+    sizeClass() {
+      return `heading--${this.size || this.level}`;
+    },
     linkTag() {
       if (this.hasLink) {
-        return this.to ? 'g-link' : 'a';
+        return this.to ? "g-link" : "a";
       } else {
-        return 'span';
+        return "span";
       }
     }
   }
@@ -71,9 +85,15 @@ export default {
   animation-direction: linear;
 
   @keyframes target {
-    from { background:transparent; }
-    50% { background:var(--global-alternate-accent-color); }
-    to { background:transparent; }
+    from {
+      background: transparent;
+    }
+    50% {
+      background: var(--global-alternate-accent-color);
+    }
+    to {
+      background: transparent;
+    }
   }
 }
 
@@ -86,7 +106,7 @@ export default {
   &:focus,
   &:active {
     color: var(--global-title-color);
-    opacity: .7;
+    opacity: 0.7;
   }
 
   &:visited {

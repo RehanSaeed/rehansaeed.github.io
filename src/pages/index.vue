@@ -1,127 +1,177 @@
 <template>
   <Layout>
     <div class="posts">
-
-      <u-author/>
+      <u-author />
 
       <div class="posts__items">
-        <u-post-card v-for="edge in $page.posts.edges" :key="edge.node.id" :post="edge.node"/>
+        <u-post-card
+          v-for="edge in $page.posts.edges"
+          :key="edge.node.id"
+          :post="edge.node"
+        />
       </div>
 
-      <u-pager class="posts__pager" :page-info="$page.posts.pageInfo"/>
+      <u-pager class="posts__pager" :page-info="$page.posts.pageInfo" />
 
-      <u-newsletter class="posts__newsletter"/>
-
+      <u-newsletter class="posts__newsletter" />
     </div>
   </Layout>
 </template>
 
 <script>
-import author from '~/components/author.vue';
-import newsletter from '~/components/newsletter.vue';
-import pager from '~/components/pager.vue';
-import postCard from '~/components/post-card.vue';
-import { previousUrl, nextUrl } from '~/framework/paging.js';
+import author from "~/components/author.vue";
+import newsletter from "~/components/newsletter.vue";
+import pager from "~/components/pager.vue";
+import postCard from "~/components/post-card.vue";
+import { previousUrl, nextUrl } from "~/framework/paging.js";
 
 export default {
   components: {
-    'u-author': author,
-    'u-newsletter': newsletter,
-    'u-pager': pager,
-    'u-post-card': postCard,
+    "u-author": author,
+    "u-newsletter": newsletter,
+    "u-pager": pager,
+    "u-post-card": postCard
   },
   computed: {
-    title() { return 'Blog'; },
-    description() { return `Blog posts and more authored by ${this.$static.metadata.author.name}.`; },
-    image() { return this.$static.metadata.url + '/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg'; },
-    imageHeight() { return this.image.match(/(\d*)x(\d*)/)[2]; },
-    imageWidth() { return this.image.match(/(\d*)x(\d*)/)[1]; },
-    nextUrl() { return nextUrl(this.$page.posts.pageInfo, this.$static.metadata.url); },
-    previousUrl() { return previousUrl(this.$page.posts.pageInfo, this.$static.metadata.url); }
+    title() {
+      return "Blog";
+    },
+    description() {
+      return `Blog posts and more authored by ${
+        this.$static.metadata.author.name
+      }.`;
+    },
+    image() {
+      return (
+        this.$static.metadata.url +
+        "/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg"
+      );
+    },
+    imageHeight() {
+      return this.image.match(/(\d*)x(\d*)/)[2];
+    },
+    imageWidth() {
+      return this.image.match(/(\d*)x(\d*)/)[1];
+    },
+    nextUrl() {
+      return nextUrl(this.$page.posts.pageInfo, this.$static.metadata.url);
+    },
+    previousUrl() {
+      return previousUrl(this.$page.posts.pageInfo, this.$static.metadata.url);
+    }
   },
   metaInfo() {
     return {
       title: this.title,
       link: [
-        { rel: 'canonical', href: this.$static.metadata.url },
-        ...[{ rel: 'next', href: this.nextUrl }].filter(x => x.href),
-        ...[{ rel: 'prev', href: this.previousUrl }].filter(x => x.href),
+        { rel: "canonical", href: this.$static.metadata.url },
+        ...[{ rel: "next", href: this.nextUrl }].filter(x => x.href),
+        ...[{ rel: "prev", href: this.previousUrl }].filter(x => x.href)
       ],
       meta: [
-        { name: 'description', content: this.description },
-        { name: 'author', content: this.$static.metadata.author.name },
+        { name: "description", content: this.description },
+        { name: "author", content: this.$static.metadata.author.name },
         // Twitter card
-        { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:site', content: this.$static.metadata.author.twitter.user },
-        { name: 'twitter:creator', content: this.$static.metadata.author.twitter.user },
-        { name: 'twitter:title', content: this.title },
-        { name: 'twitter:description', content: this.description },
-        { name: 'twitter:image', content: this.image },
+        { name: "twitter:card", content: "summary_large_image" },
+        {
+          name: "twitter:site",
+          content: this.$static.metadata.author.twitter.user
+        },
+        {
+          name: "twitter:creator",
+          content: this.$static.metadata.author.twitter.user
+        },
+        { name: "twitter:title", content: this.title },
+        { name: "twitter:description", content: this.description },
+        { name: "twitter:image", content: this.image },
         // Open Graph
-        { property: 'og:title', content: this.title },
-        { property: 'og:url', content: this.$static.metadata.url },
-        { property: 'og:image', content: this.image },
-        { property: 'og:image:height', content: this.imageHeight },
-        { property: 'og:image:width', content: this.imageWidth },
-        { property: 'og:description', content: this.description },
-        { property: 'og:locale', content: this.$static.metadata.language.replace('-', '_') },
-        { property: 'og:site_name', content: this.$static.metadata.name },
-        { property: 'og:type', content: 'profile' },
-        { property: 'profile:first_name', content: this.$static.metadata.author.firstName },
-        { property: 'profile:last_name', content: this.$static.metadata.author.lastName },
-        { property: 'profile:username', content: this.$static.metadata.author.name },
-        { property: 'profile:gender', content: this.$static.metadata.author.gender },
-        { property: 'fb:app_id', content: this.$static.metadata.facebookAppId },
+        { property: "og:title", content: this.title },
+        { property: "og:url", content: this.$static.metadata.url },
+        { property: "og:image", content: this.image },
+        { property: "og:image:height", content: this.imageHeight },
+        { property: "og:image:width", content: this.imageWidth },
+        { property: "og:description", content: this.description },
+        {
+          property: "og:locale",
+          content: this.$static.metadata.language.replace("-", "_")
+        },
+        { property: "og:site_name", content: this.$static.metadata.name },
+        { property: "og:type", content: "profile" },
+        {
+          property: "profile:first_name",
+          content: this.$static.metadata.author.firstName
+        },
+        {
+          property: "profile:last_name",
+          content: this.$static.metadata.author.lastName
+        },
+        {
+          property: "profile:username",
+          content: this.$static.metadata.author.name
+        },
+        {
+          property: "profile:gender",
+          content: this.$static.metadata.author.gender
+        },
+        { property: "fb:app_id", content: this.$static.metadata.facebookAppId }
       ],
       script: [
         {
-          type: 'application/ld+json',
+          type: "application/ld+json",
           json: {
-            '@context': 'https://schema.org',
-            '@type': 'WebSite',
+            "@context": "https://schema.org",
+            "@type": "WebSite",
             description: this.description,
             url: this.$static.metadata.url,
             image: [
               {
-                '@type': 'ImageObject',
+                "@type": "ImageObject",
                 url: this.image,
                 width: this.imageWidth,
-                height: this.imageHeight,
+                height: this.imageHeight
               }
             ],
             potentialAction: {
-              '@type': 'SearchAction',
-              target: `${this.$static.metadata.url}?search={search_term_string}`,
-              'query-input': "required name=search_term_string"
+              "@type": "SearchAction",
+              target: `${
+                this.$static.metadata.url
+              }?search={search_term_string}`,
+              "query-input": "required name=search_term_string"
             },
             author: {
-              '@type': 'Person',
+              "@type": "Person",
               name: this.$static.metadata.author.name,
               logo: {
-                '@type': 'ImageObject',
-                url: `${this.$static.metadata.url}/images/author/${this.$static.metadata.author.name.split(' ').join('-')}/Logo-260x260.png`,
+                "@type": "ImageObject",
+                url: `${
+                  this.$static.metadata.url
+                }/images/author/${this.$static.metadata.author.name
+                  .split(" ")
+                  .join("-")}/Logo-260x260.png`,
                 width: 260,
-                height: 260,
+                height: 260
               },
-              url: this.$static.metadata.url + '/about/',
+              url: this.$static.metadata.url + "/about/"
             },
             publisher: {
-              '@type': 'Organization',
+              "@type": "Organization",
               name: this.$static.metadata.name,
               logo: {
-                '@type': 'ImageObject',
-                url: this.$static.metadata.url + '/images/schema/Publisher-600x60.png',
+                "@type": "ImageObject",
+                url:
+                  this.$static.metadata.url +
+                  "/images/schema/Publisher-600x60.png",
                 width: 600,
-                height: 60,
+                height: 60
               },
-              url: this.$static.metadata.url,
-            },
+              url: this.$static.metadata.url
+            }
           }
         }
       ]
-    }
+    };
   }
-}
+};
 </script>
 
 <static-query>
@@ -188,7 +238,13 @@ query($page: Int) {
 .posts__items {
   display: grid;
   grid-gap: var(--global-space-fluid-5);
-  grid-template-columns: repeat(auto-fit, minmax(var(--global-space-content-min-width), var(--global-space-content-max-width)));
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(
+      var(--global-space-content-min-width),
+      var(--global-space-content-max-width)
+    )
+  );
   justify-content: center;
 }
 

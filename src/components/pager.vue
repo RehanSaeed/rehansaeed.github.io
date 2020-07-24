@@ -6,10 +6,13 @@
       bordered
       contrast
       :to="previousUrl"
-    >Previous</u-link>
+      >Previous</u-link
+    >
 
     <p class="pager__info">
-      <strong>Page {{pageInfo.currentPage}} of {{pageInfo.totalPages}}</strong>
+      <strong
+        >Page {{ pageInfo.currentPage }} of {{ pageInfo.totalPages }}</strong
+      >
     </p>
 
     <u-link
@@ -18,7 +21,8 @@
       bordered
       contrast
       :to="nextUrl"
-    >Next</u-link>
+      >Next</u-link
+    >
   </div>
 </template>
 
@@ -30,13 +34,13 @@ import { previousUrl, nextUrl } from "~/framework/paging.js";
 export default {
   components: {
     "u-card": card,
-    "u-link": link,
+    "u-link": link
   },
   props: {
     pageInfo: {
       required: true,
-      type: Object,
-    },
+      type: Object
+    }
   },
   computed: {
     previousUrl() {
@@ -44,8 +48,8 @@ export default {
     },
     nextUrl() {
       return nextUrl(this.pageInfo);
-    },
-  },
+    }
+  }
 };
 </script>
 

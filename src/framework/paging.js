@@ -1,4 +1,4 @@
-export function previousUrl(pageInfo, host = '') {
+export function previousUrl(pageInfo, host = "") {
   if (!pageInfo.hasPreviousPage) {
     return undefined;
   }
@@ -10,7 +10,7 @@ export function previousUrl(pageInfo, host = '') {
   return `${host}/${pageInfo.currentPage - 1}/`;
 }
 
-export function nextUrl(pageInfo, host = '') {
+export function nextUrl(pageInfo, host = "") {
   if (!pageInfo.hasNextPage) {
     return undefined;
   }

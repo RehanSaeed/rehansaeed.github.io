@@ -1,13 +1,19 @@
 <template>
-  <svg xmlns="http://www.w3.org/2000/svg"
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"
     focusable="false"
     role="img"
     viewBox="0 0 24 24"
     :height="height"
     :width="width"
-    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <title>{{title}}</title>
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <title>{{ title }}</title>
     <circle cx="12" cy="12" r="5"></circle>
     <line x1="12" y1="1" x2="12" y2="3"></line>
     <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -21,8 +27,7 @@
 </template>
 
 <script>
-import createIcon from '~/components/shared/icons/icon.js';
+import createIcon from "~/components/shared/icons/icon.js";
 
-export default createIcon('Sun');
+export default createIcon("Sun");
 </script>
-

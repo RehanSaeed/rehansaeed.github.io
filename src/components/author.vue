@@ -1,29 +1,42 @@
 <template>
   <!-- Added webmention markup (See https://indiewebify.me/validate-h-card/?url=https%3A%2F%2Frehansaeed.com) -->
-	<section class="author h-card">
+  <section class="author h-card">
+    <g-image
+      class="author__image u-photo"
+      :alt="$static.metadata.name"
+      immediate
+      src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png"
+      width="120"
+      height="120"
+    />
 
-		<g-image class="author__image u-photo" :alt="$static.metadata.name" immediate src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png" width="120" height="120" />
+    <u-heading
+      :id="$static.metadata.name"
+      class="author__site-title"
+      link-class="u-url u-uid p-name"
+      level="1"
+      :href="$static.metadata.url"
+      center
+      >{{ $static.metadata.name }}</u-heading
+    >
 
-		<u-heading :id="$static.metadata.name" class="author__site-title" link-class="u-url u-uid p-name" level="1" :href="$static.metadata.url" center>{{$static.metadata.name}}</u-heading>
+    <p class="author__description p-note">{{ $static.metadata.description }}</p>
 
-		<p class="author__description p-note">{{$static.metadata.description}}</p>
-
-		<u-social-links />
-
-	</section>
+    <u-social-links />
+  </section>
 </template>
 
 <script>
-import heading from '~/components/shared/heading.vue';
-import socialLinks from '~/components/social-links.vue';
+import heading from "~/components/shared/heading.vue";
+import socialLinks from "~/components/social-links.vue";
 
 export default {
-  name: 'u-author',
+  name: "u-author",
   components: {
-    'u-heading': heading,
-    'u-social-links': socialLinks,
-  },
-}
+    "u-heading": heading,
+    "u-social-links": socialLinks
+  }
+};
 </script>
 
 <static-query>
@@ -57,7 +70,7 @@ query {
 }
 
 .author__description {
-  opacity: .8;
+  opacity: 0.8;
   text-align: center;
 }
 

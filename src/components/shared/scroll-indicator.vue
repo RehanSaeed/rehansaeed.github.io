@@ -4,31 +4,38 @@
 
 <script>
 export default {
-  name: 'u-scroll-indicator',
+  name: "u-scroll-indicator",
   methods: {
     onScroll() {
       requestAnimationFrame(() => {
-        const scroll = window.pageYOffset / (document.body.offsetHeight - window.innerHeight);
-        document.body.style.setProperty('--scroll', scroll);
+        const scroll =
+          window.pageYOffset /
+          (document.body.offsetHeight - window.innerHeight);
+        document.body.style.setProperty("--scroll", scroll);
       });
-    },
+    }
   },
   mounted() {
     if (window) {
-      window.addEventListener('scroll', this.onScroll, false);
+      window.addEventListener("scroll", this.onScroll, false);
     }
   },
   unmounted() {
     if (window) {
-      window.removeEventListener('scroll', this.onScroll, false);
+      window.removeEventListener("scroll", this.onScroll, false);
     }
   }
-}
+};
 </script>
 
 <style lang="scss">
 .scroll-indicator {
-  background: linear-gradient(to right, var(--global-alternate-accent-color) 0%, var(--global-alternate-accent-color) 30%, var(--global-accent-color) 100%);
+  background: linear-gradient(
+    to right,
+    var(--global-alternate-accent-color) 0%,
+    var(--global-alternate-accent-color) 30%,
+    var(--global-accent-color) 100%
+  );
 
   height: 3px;
   width: 0%;

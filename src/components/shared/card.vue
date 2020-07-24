@@ -9,13 +9,13 @@ export default {
   name: "u-card",
   props: {
     hoverable: {
-      type: Boolean,
+      type: Boolean
     },
     tag: {
       default: "div",
-      type: String,
-    },
-  },
+      type: String
+    }
+  }
 };
 </script>
 

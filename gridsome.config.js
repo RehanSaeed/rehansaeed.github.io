@@ -1,8 +1,8 @@
 // Changes here requires a server restart.
 // To restart press CTRL + C in terminal and run `gridsome develop`
 
-const site = require('./site.json');
-const marked = require('marked');
+const site = require("./site.json");
+const marked = require("marked");
 
 module.exports = {
   siteName: site.name,
@@ -17,9 +17,9 @@ module.exports = {
 
   plugins: [
     {
-      use: '@gridsome/plugin-critical',
+      use: "@gridsome/plugin-critical",
       options: {
-        paths: ['/*'],
+        paths: ["/*"],
         width: 1300,
         height: 900
       }
@@ -28,7 +28,7 @@ module.exports = {
     {
       use: "@gridsome/plugin-google-analytics",
       options: {
-        id: site.googleAnalyticsId,
+        id: site.googleAnalyticsId
       }
     },
     // https://gridsome.org/plugins/@gridsome/plugin-sitemap
@@ -88,10 +88,10 @@ module.exports = {
     },
     // https://github.com/onecrayon/gridsome-plugin-feed
     {
-      use: 'gridsome-plugin-feed',
+      use: "gridsome-plugin-feed",
       options: {
         // Required: array of `GraphQL` type names you wish to include
-        contentTypes: ['post'],
+        contentTypes: ["post"],
         // Optional: any properties you wish to set for `Feed()` constructor
         // See https://www.npmjs.com/package/feed#example for available properties
         feedOptions: {
@@ -102,44 +102,48 @@ module.exports = {
           language: site.language,
           image: site.url + "/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg",
           favicon: site.url + "/favicon.ico",
-          copyright: `Copyright © ${new Date().getFullYear()} ${site.author.name}`,
+          copyright: `Copyright © ${new Date().getFullYear()} ${
+            site.author.name
+          }`,
           feedLinks: {
             atom: site.url + "/atom.xml",
             json: site.url + "/feed.json",
-            rss: site.url + "/rss.xml",
+            rss: site.url + "/rss.xml"
           },
           author: {
             name: site.author.name,
-            link: site.url,
+            link: site.url
           }
         },
         atom: {
           enabled: false,
-          output: '/atom.xml'
+          output: "/atom.xml"
         },
         json: {
           enabled: false,
-          output: '/feed.json'
+          output: "/feed.json"
         },
         rss: {
           enabled: true,
-          output: '/rss.xml'
+          output: "/rss.xml"
         },
         // Optional: the maximum number of items to include in your feed
         maxItems: 300,
         // Optional: an array of properties passed to `Feed.addItem()` that will be parsed for
         // URLs in HTML (ensures that URLs are full `http` URLs rather than site-relative).
         // To disable this functionality, set to `null`.
-        htmlFields: ['description', 'content'],
+        htmlFields: ["description", "content"],
         // Optional: if you wish to enforce trailing slashes for site URLs
         enforceTrailingSlashes: false,
         // Optional: a method that accepts a node and returns true (include) or false (exclude)
         // Example: only past-dated nodes: `filterNodes: (node) => node.date <= new Date()`
-        filterNodes: (node) => { return node.published; },
+        filterNodes: node => {
+          return node.published;
+        },
         // Optional: a method that accepts a node and returns an object for `Feed.addItem()`
         // See https://www.npmjs.com/package/feed#example for available properties
         // NOTE: `date` field MUST be a Javascript `Date` object
-        nodeToFeedItem: (node) => {
+        nodeToFeedItem: node => {
           return {
             title: node.title,
             id: site.url + node.permalink,
@@ -149,12 +153,12 @@ module.exports = {
             author: [
               {
                 name: node.author.name,
-                link: site.url,
+                link: site.url
               }
             ],
             date: new Date(node.date),
             categories: node.tags,
-            image: node.heroImage,
+            image: node.heroImage
           };
         }
       }
@@ -180,28 +184,28 @@ module.exports = {
     },
     // https://gridsome.org/plugins/gridsome-plugin-pwa
     {
-      use: 'gridsome-plugin-pwa',
+      use: "gridsome-plugin-pwa",
       options: {
         // Service Worker
         disableServiceWorker: false,
-        serviceWorkerPath: 'service-worker.js',
-        cachedFileTypes: 'js,json,css,html,png,jpg,jpeg,svg,gif',
+        serviceWorkerPath: "service-worker.js",
+        cachedFileTypes: "js,json,css,html,png,jpg,jpeg,svg,gif",
         disableTemplatedUrls: true,
 
         // Manifest
-        manifestPath: 'manifest.webmanifest',
+        manifestPath: "manifest.webmanifest",
         title: site.name,
         shortName: site.shortName,
         description: site.description,
-        categories: ['education'],
-        lang: 'en-GB',
-        dir: 'ltr',
-        startUrl: '/',
-        display: 'standalone',
-        statusBarStyle: 'default',
-        backgroundColor: '#f2f4f7',
-        themeColor: '#6b17e8',
-        icon: 'src/favicon.png',
+        categories: ["education"],
+        lang: "en-GB",
+        dir: "ltr",
+        startUrl: "/",
+        display: "standalone",
+        statusBarStyle: "default",
+        backgroundColor: "#f2f4f7",
+        themeColor: "#6b17e8",
+        icon: "src/favicon.png",
         maskableIcon: true,
         shortcuts: [
           {
@@ -209,49 +213,49 @@ module.exports = {
             short_name: "Blog",
             description: "Read the latest blog posts.",
             url: "/",
-            icons: [{ "src": "/images/icons/blog.png", "sizes": "192x192" }]
+            icons: [{ src: "/images/icons/blog.png", sizes: "192x192" }]
           },
           {
             name: "Portfolio",
             short_name: "Portfolio",
             description: "View the portfolio of my projects.",
             url: "/portfolio/",
-            icons: [{ "src": "/images/icons/portfolio.png", "sizes": "192x192" }]
+            icons: [{ src: "/images/icons/portfolio.png", sizes: "192x192" }]
           },
           {
             name: "About",
             short_name: "About",
             description: "About Muhammad Rehan Saeed.",
             url: "/about/",
-            icons: [{ "src": "/images/icons/about.png", "sizes": "192x192" }]
-          },
+            icons: [{ src: "/images/icons/about.png", sizes: "192x192" }]
+          }
         ],
 
         // Windows Meta Tags
-        msTileImage: 'src/favicon.png',
-        msTileColor: '#6b17e8',
+        msTileImage: "src/favicon.png",
+        msTileColor: "#6b17e8",
 
         // Standard Meta Tags
-        svgFavicon: 'favicon.svg',
+        svgFavicon: "favicon.svg",
 
         // Apple MacOS Meta Tags
-        appleMaskIcon: 'favicon.svg',
-        appleMaskIconColor: '#6b17e8',
+        appleMaskIcon: "favicon.svg",
+        appleMaskIconColor: "#6b17e8"
       }
     },
     // https://gridsome.org/plugins/gridsome-plugin-robots
     {
-      use: 'gridsome-plugin-robots',
+      use: "gridsome-plugin-robots",
       options: {
         host: site.url,
         sitemap: `${site.url}/sitemap.xml`,
-        policy: [{ userAgent: '*', allow: '/' }]
+        policy: [{ userAgent: "*", allow: "/" }]
       }
     },
     {
-      use: 'gridsome-source-static-meta',
+      use: "gridsome-source-static-meta",
       options: {
-        path: 'site.json'
+        path: "site.json"
       }
     }
   ],
@@ -262,79 +266,94 @@ module.exports = {
       externalLinksRel: ["nofollow", "noopener", "noreferrer"],
       anchorClassName: "icon icon-link",
       plugins: [
-        [
-          'gridsome-remark-embed-snippet',
-          {
-          }
-        ],
+        ["gridsome-remark-embed-snippet", {}],
         // https://github.com/remarkjs/remark-autolink-headings
         [
-          'remark-autolink-headings',
+          "remark-autolink-headings",
           {
             content: {
-              type: 'element',
-              tagName: 'svg',
+              type: "element",
+              tagName: "svg",
               properties: {
-                xmlns: 'http://www.w3.org/2000/svg',
-                'xmlns:xlink': 'http://www.w3.org/1999/xlink',
-                viewBox: '0 0 16 16',
-                version: '1.1',
+                xmlns: "http://www.w3.org/2000/svg",
+                "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                viewBox: "0 0 16 16",
+                version: "1.1",
                 width: 22,
                 height: 22,
-                'aria-hidden': "true",
+                "aria-hidden": "true"
               },
               children: [
                 {
-                  type: 'element',
-                  tagName: 'path',
+                  type: "element",
+                  tagName: "path",
                   properties: {
-                    'fill': 'currentColor',
-                    'fill-rule': 'evenodd',
-                    d: 'M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z'
-                  },
-                },
-              ],
-            },
+                    fill: "currentColor",
+                    "fill-rule": "evenodd",
+                    d:
+                      "M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
+                  }
+                }
+              ]
+            }
           }
         ],
         [
-          'remark-containers',
+          "remark-containers",
           {
             default: false,
             custom: [
               {
-                type: 'tip',
-                element: 'div',
+                type: "tip",
+                element: "div",
                 transform: function(node, config, tokenize) {
-                  return transformContainer(node, config, 'tip', 'p', "Tip");
+                  return transformContainer(node, config, "tip", "p", "Tip");
                 }
               },
               {
-                type: 'warning',
-                element: 'div',
+                type: "warning",
+                element: "div",
                 transform: function(node, config, tokenize) {
-                  return transformContainer(node, config, 'warning', 'p', "Warning");
+                  return transformContainer(
+                    node,
+                    config,
+                    "warning",
+                    "p",
+                    "Warning"
+                  );
                 }
               },
               {
-                type: 'danger',
-                element: 'div',
+                type: "danger",
+                element: "div",
                 transform: function(node, config, tokenize) {
-                  return transformContainer(node, config, 'danger', 'p', "Warning");
+                  return transformContainer(
+                    node,
+                    config,
+                    "danger",
+                    "p",
+                    "Warning"
+                  );
                 }
               },
               {
-                type: 'details',
-                element: 'details',
+                type: "details",
+                element: "details",
                 transform: function(node, config, tokenize) {
-                  return transformContainer(node, config, 'details', 'summary', "Details");
+                  return transformContainer(
+                    node,
+                    config,
+                    "details",
+                    "summary",
+                    "Details"
+                  );
                 }
               }
             ]
           }
         ],
-        'remark-kbd',
-        'remark-toc',
+        "remark-kbd",
+        "remark-toc",
         [
           "gridsome-plugin-remark-prismjs-all",
           {
@@ -363,7 +382,7 @@ module.exports = {
             showLineNumbers: false,
             // If setting this to true, the parser won't handle and highlight inline
             // code used in markdown i.e. single backtick code like `this`.
-            noInlineHighlight: false,
+            noInlineHighlight: false
             // This adds a new language definition to Prism or extend an already
             // existing language definition. More details on this option can be
             // found under the header "Add new language definition or extend an
@@ -380,12 +399,12 @@ module.exports = {
         ],
         // https://github.com/noxify/gridsome-plugin-remark-embed
         [
-          '@noxify/gridsome-plugin-remark-embed',
+          "@noxify/gridsome-plugin-remark-embed",
           {
-            enabledProviders: ['Youtube'], // 'Twitter', 'Codepen'
+            enabledProviders: ["Youtube"], // 'Twitter', 'Codepen'
             Youtube: {
               margin: "25px 0 25px 0"
-            },
+            }
             // Twitter: {
             //   hideMedia: false
             // },
@@ -394,11 +413,7 @@ module.exports = {
             // }
           }
         ],
-        [
-          'remark-validate-links',
-          {
-          }
-        ]
+        ["remark-validate-links", {}]
       ]
     }
   }
@@ -409,15 +424,13 @@ function transformContainer(node, config, type, element, defaultTitle) {
     className: `custom-block ${type}`
   };
   node.children.splice(0, 0, {
-    type: 'paragraph',
+    type: "paragraph",
     data: {
       hName: element,
       hProperties: {
-        className: 'custom-block-title',
-      },
+        className: "custom-block-title"
+      }
     },
-    children: [
-      { type: 'text', value: config || defaultTitle }
-    ]
+    children: [{ type: "text", value: config || defaultTitle }]
   });
 }

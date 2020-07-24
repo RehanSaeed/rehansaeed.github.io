@@ -1,7 +1,14 @@
 <template>
   <nav class="navigation">
     <u-link class="navigation__image-container" label="Home" to="/">
-		  <g-image :alt="this.$static.metadata.author.name" class="navigation__image" src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png" width="50" height="50" blur="0" />
+      <g-image
+        :alt="this.$static.metadata.author.name"
+        class="navigation__image"
+        src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png"
+        width="50"
+        height="50"
+        blur="0"
+      />
     </u-link>
     <div class="navigation__items-left">
       <u-link class="navigation__item" to="/">Blog</u-link>
@@ -17,19 +24,19 @@
 </template>
 
 <script>
-import link from '~/components/shared/link.vue';
-import installButton from '~/components/install-button.vue';
-import searchButton from '~/components/search-button.vue';
-import themeButton from '~/components/theme-button.vue';
+import link from "~/components/shared/link.vue";
+import installButton from "~/components/install-button.vue";
+import searchButton from "~/components/search-button.vue";
+import themeButton from "~/components/theme-button.vue";
 
 export default {
   components: {
-    'u-link': link,
-    'u-install-button': installButton,
-    'u-search-button': searchButton,
-    'u-theme-button': themeButton,
+    "u-link": link,
+    "u-install-button": installButton,
+    "u-search-button": searchButton,
+    "u-theme-button": themeButton
   }
-}
+};
 </script>
 
 <static-query>
@@ -108,7 +115,8 @@ query {
   visibility: visible;
 }
 
-@media screen and (min-width: 1200px) { // $global-breakpoint-xl
+@media screen and (min-width: 1200px) {
+  // $global-breakpoint-xl
   .navigation {
     grid-gap: var(--global-space-fluid-3);
     grid-template-rows: auto auto;

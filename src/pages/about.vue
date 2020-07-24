@@ -1,7 +1,9 @@
 <template>
   <Layout>
     <div class="about">
-      <u-heading id="about" level="1" center :href="relativeUrl">About</u-heading>
+      <u-heading id="about" level="1" center :href="relativeUrl"
+        >About</u-heading
+      >
 
       <u-card class="about__container" tag="article">
         <g-image
@@ -16,17 +18,21 @@
           :id="$static.metadata.author.name"
           level="2"
           class="about__title"
-        >{{$static.metadata.author.name}}</u-heading>
+          >{{ $static.metadata.author.name }}</u-heading
+        >
         <u-social-links class="about__social-links" />
-        <p
-          class="about__description"
-        >Rehan is a professional Software Developer at Microsoft. Although he works for Microsoft his opinions are his own. If it’s written in C# or .NET, Rehan has probably written something using it in anger!</p>
         <p class="about__description">
-          You can see some of the open source projects that I've started and maintained in my
-          <g-link to="/portfolio/">portfolio</g-link>. There are many others I've contributed to which you can see in my
-          <a
-            :href="gitHubUrl"
-          >GitHub profile</a> and of course there are other commercial projects that I cannot disclose.
+          Rehan is a professional Software Developer at Microsoft. Although he
+          works for Microsoft his opinions are his own. If it’s written in C# or
+          .NET, Rehan has probably written something using it in anger!
+        </p>
+        <p class="about__description">
+          You can see some of the open source projects that I've started and
+          maintained in my
+          <g-link to="/portfolio/">portfolio</g-link>. There are many others
+          I've contributed to which you can see in my
+          <a :href="gitHubUrl">GitHub profile</a> and of course there are other
+          commercial projects that I cannot disclose.
         </p>
         <a :href="gitHubUrl">
           <img
@@ -39,10 +45,8 @@
         </a>
         <p class="about__description">
           You can see a timeline of my open source work and blog posts in my
-          <a
-            :href="stackOverflowStoryUrl"
-          >Stack Overflow Developer Story</a> or just view my
-          <a :href="stackOverflowUrl">Stack Overflow profile</a>.
+          <a :href="stackOverflowStoryUrl">Stack Overflow Developer Story</a> or
+          just view my <a :href="stackOverflowUrl">Stack Overflow profile</a>.
         </p>
         <a :href="stackOverflowUrl">
           <img
@@ -55,9 +59,9 @@
         </a>
         <p class="about__description">
           Before I joined Microsoft, I was a
-          <a
-            :href="mvpUrl"
-          >Microsoft Most Valuable Professional (MVP)</a>. This gave me inside information into the work Microsoft was doing. Once I joined Microsoft, I had to give up this award.
+          <a :href="mvpUrl">Microsoft Most Valuable Professional (MVP)</a>. This
+          gave me inside information into the work Microsoft was doing. Once I
+          joined Microsoft, I had to give up this award.
         </p>
         <a :href="mvpUrl">
           <g-image
@@ -69,9 +73,10 @@
             quality="100"
           />
         </a>
-        <p
-          class="about__description"
-        >Do you have questions or comments about my work? Please feel free to contact me using any of the links above.</p>
+        <p class="about__description">
+          Do you have questions or comments about my work? Please feel free to
+          contact me using any of the links above.
+        </p>
       </u-card>
 
       <u-newsletter />
@@ -90,11 +95,11 @@ export default {
     "u-card": card,
     "u-heading": heading,
     "u-newsletter": newsletter,
-    "u-social-links": socialLinks,
+    "u-social-links": socialLinks
   },
   data() {
     return {
-      theme: "light",
+      theme: "light"
     };
   },
   computed: {
@@ -102,7 +107,9 @@ export default {
       return "About";
     },
     description() {
-      return `About ${this.$static.metadata.author.name}. ${this.$static.metadata.description}.`;
+      return `About ${this.$static.metadata.author.name}. ${
+        this.$static.metadata.description
+      }.`;
     },
     image() {
       return (
@@ -123,20 +130,24 @@ export default {
       return this.$static.metadata.author.stackOverflow.storyUrl;
     },
     stackOverflowProfileUrl() {
-      return `https://stackoverflow.com/users/flair/${this.$static.metadata.author.stackOverflow.user}.png?theme=${this.oppositeTheme}`;
+      return `https://stackoverflow.com/users/flair/${
+        this.$static.metadata.author.stackOverflow.user
+      }.png?theme=${this.oppositeTheme}`;
     },
     gitHubUrl() {
       return this.$static.metadata.author.gitHub.url;
     },
     gitHubFollowersUrl() {
-      return `https://img.shields.io/github/followers/${this.$static.metadata.author.gitHub.user}?style=social`;
+      return `https://img.shields.io/github/followers/${
+        this.$static.metadata.author.gitHub.user
+      }?style=social`;
     },
     mvpUrl() {
       return "https://mvp.microsoft.com/en-us/PublicProfile/5001654?fullName=Muhammad%20Rehan%20Saeed";
     },
     oppositeTheme() {
       return this.theme === "light" ? "dark" : "light";
-    },
+    }
   },
   metaInfo() {
     return {
@@ -149,11 +160,11 @@ export default {
         { name: "twitter:card", content: "summary_large_image" },
         {
           name: "twitter:site",
-          content: this.$static.metadata.author.twitter.user,
+          content: this.$static.metadata.author.twitter.user
         },
         {
           name: "twitter:creator",
-          content: this.$static.metadata.author.twitter.user,
+          content: this.$static.metadata.author.twitter.user
         },
         { name: "twitter:title", content: this.title },
         { name: "twitter:description", content: this.description },
@@ -164,43 +175,43 @@ export default {
         { property: "og:image", content: this.image },
         {
           property: "og:image:height",
-          content: this.image.match(/(\d*)x(\d*)/)[2],
+          content: this.image.match(/(\d*)x(\d*)/)[2]
         },
         {
           property: "og:image:width",
-          content: this.image.match(/(\d*)x(\d*)/)[1],
+          content: this.image.match(/(\d*)x(\d*)/)[1]
         },
         { property: "og:description", content: this.description },
         {
           property: "og:locale",
-          content: this.$static.metadata.language.replace("-", "_"),
+          content: this.$static.metadata.language.replace("-", "_")
         },
         { property: "og:site_name", content: this.$static.metadata.name },
         { property: "og:type", content: "profile" },
         {
           property: "profile:first_name",
-          content: this.$static.metadata.author.firstName,
+          content: this.$static.metadata.author.firstName
         },
         {
           property: "profile:last_name",
-          content: this.$static.metadata.author.lastName,
+          content: this.$static.metadata.author.lastName
         },
         {
           property: "profile:username",
-          content: this.$static.metadata.author.name,
+          content: this.$static.metadata.author.name
         },
         {
           property: "profile:gender",
-          content: this.$static.metadata.author.gender,
+          content: this.$static.metadata.author.gender
         },
-        { property: "fb:app_id", content: this.$static.metadata.facebookAppId },
-      ],
+        { property: "fb:app_id", content: this.$static.metadata.facebookAppId }
+      ]
     };
   },
   methods: {
     setTheme(e) {
       this.theme = e.detail;
-    },
+    }
   },
   mounted() {
     if (window) {
@@ -212,7 +223,7 @@ export default {
     if (window) {
       window.removeEventListener("__themeChanged", this.setTheme, false);
     }
-  },
+  }
 };
 </script>
 
