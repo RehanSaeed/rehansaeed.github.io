@@ -1,33 +1,32 @@
 <template>
-  <u-content-box class="comments" tag="section">
+  <u-card class="comments" tag="section">
     <u-heading id="comments" class="comments__title" center level="2" href="#comments">Comment</u-heading>
     <Vssue :title="title" />
-  </u-content-box>
+  </u-card>
 </template>
 
 <script>
-import contentBox from '~/components/shared/content-box.vue';
-import heading from '~/components/shared/heading.vue';
+import card from "~/components/shared/card.vue";
+import heading from "~/components/shared/heading.vue";
 
 export default {
-  name: 'u-comments',
+  name: "u-comments",
   components: {
-    'u-content-box': contentBox,
-    'u-heading': heading,
+    "u-card": card,
+    "u-heading": heading,
   },
   props: {
     title: {
       type: String,
     },
   },
-}
+};
 </script>
 
 <style lang="scss">
 .comments__title {
   margin-top: 0;
 }
-
 
 .vssue {
   display: grid;
@@ -39,23 +38,20 @@ export default {
   }
 }
 
-
 .vssue-header-comments-count {
   span::before {
-    content: 'View'
+    content: "View";
   }
 
   span::after {
-    content: 'Directly on GitHub.com'
+    content: "Directly on GitHub.com";
   }
 }
-
 
 // Comment Count, Powered By
 .vssue-header-powered-by {
   display: none;
 }
-
 
 // Icon
 .vssue .vssue-icon {
@@ -85,7 +81,6 @@ export default {
   }
 }
 
-
 // Transitions
 .vssue .fade-enter-active,
 .vssue .fade-appear-active {
@@ -99,8 +94,6 @@ export default {
 .vssue .fade-appear {
   opacity: 0;
 }
-
-
 
 // Notice
 .vssue .vssue-notice {
@@ -138,14 +131,12 @@ export default {
   margin-bottom: var(--global-space-fixed-3);
 }
 
-
 // Body
 .vssue-body {
   display: grid;
   grid-template-columns: 1fr;
   grid-gap: var(--global-space-fixed-4);
 }
-
 
 // New Comment
 .vssue-new-comment {
@@ -199,13 +190,11 @@ export default {
   grid-area: operations;
 }
 
-
 // Comment Input
 .vssue-new-comment-input {
   resize: none;
   width: 100%;
 }
-
 
 // Comment
 .vssue-comments > div {
@@ -226,7 +215,6 @@ export default {
   hyphens: auto;
 }
 
-
 // Comment Avatar
 .vssue-comment-avatar {
   grid-area: avatar;
@@ -239,9 +227,11 @@ export default {
   }
 }
 
-
 // Comment Edit
-.vssue .vssue-comments .vssue-comment.vssue-comment-edit-mode .vssue-comment-main {
+.vssue
+  .vssue-comments
+  .vssue-comment.vssue-comment-edit-mode
+  .vssue-comment-main {
   border-color: var(--global-accent-color);
   box-shadow: 0 0 3px 1px var(--global-accent-color);
 
@@ -254,7 +244,6 @@ export default {
   pointer-events: none;
 }
 
-
 // Comment Body
 .vssue-comment-body {
   grid-area: body;
@@ -262,7 +251,6 @@ export default {
 .vssue-comment-body .vssue-comment.vssue-comment-disabled {
   background-color: var(--global-disabled-color);
 }
-
 
 // Comment Header
 .vssue-comment-header {
@@ -282,7 +270,6 @@ export default {
   float: right;
 }
 
-
 // Comment Main
 .vssue-comment-main {
   border: var(--global-border-width-1) solid var(--global-border-color);
@@ -294,9 +281,8 @@ export default {
   resize: none;
   outline: none;
   width: 100%;
-  padding: var(--global-space-fixed--4)
+  padding: var(--global-space-fixed--4);
 }
-
 
 // Comment Footer
 .vssue-comment-footer {
@@ -323,17 +309,32 @@ export default {
   color: var(--global-accent-color);
   justify-self: end;
 }
-.vssue .vssue-comments .vssue-comment .vssue-comment-footer .vssue-comment-operations .vssue-comment-operation {
+.vssue
+  .vssue-comments
+  .vssue-comment
+  .vssue-comment-footer
+  .vssue-comment-operations
+  .vssue-comment-operation {
   cursor: pointer;
   margin-left: var(--global-space-fixed-4);
 }
-.vssue .vssue-comments .vssue-comment .vssue-comment-footer .vssue-comment-operations .vssue-comment-operation.vssue-comment-operation-muted {
+.vssue
+  .vssue-comments
+  .vssue-comment
+  .vssue-comment-footer
+  .vssue-comment-operations
+  .vssue-comment-operation.vssue-comment-operation-muted {
   color: var(--global-placeholder-color);
 }
-.vssue .vssue-comments .vssue-comment .vssue-comment-footer .vssue-comment-operations .vssue-comment-operation.vssue-comment-operation-muted .vssue-icon {
+.vssue
+  .vssue-comments
+  .vssue-comment
+  .vssue-comment-footer
+  .vssue-comment-operations
+  .vssue-comment-operation.vssue-comment-operation-muted
+  .vssue-icon {
   fill: var(--global-placeholder-color);
 }
-
 
 // Pagination
 .vssue .vssue-pagination {

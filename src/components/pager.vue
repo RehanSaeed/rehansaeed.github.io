@@ -1,34 +1,52 @@
 <template>
   <div class="pager">
-    <u-link class="pager__previous-button" :class="{ 'pager__button--none': !pageInfo.hasPreviousPage }" bordered contrast :to="previousUrl">Previous</u-link>
+    <u-link
+      class="pager__previous-button"
+      :class="{ 'pager__button--none': !pageInfo.hasPreviousPage }"
+      bordered
+      contrast
+      :to="previousUrl"
+    >Previous</u-link>
 
-    <p class="pager__info"><strong>Page {{pageInfo.currentPage}} of {{pageInfo.totalPages}}</strong></p>
+    <p class="pager__info">
+      <strong>Page {{pageInfo.currentPage}} of {{pageInfo.totalPages}}</strong>
+    </p>
 
-    <u-link class="pager__next-button" :class="{ 'pager__button--none': !pageInfo.hasNextPage }" bordered contrast :to="nextUrl">Next</u-link>
+    <u-link
+      class="pager__next-button"
+      :class="{ 'pager__button--none': !pageInfo.hasNextPage }"
+      bordered
+      contrast
+      :to="nextUrl"
+    >Next</u-link>
   </div>
 </template>
 
 <script>
-import contentBox from '~/components/shared/content-box.vue';
-import link from '~/components/shared/link.vue';
-import { previousUrl, nextUrl } from '~/framework/paging.js';
+import card from "~/components/shared/card.vue";
+import link from "~/components/shared/link.vue";
+import { previousUrl, nextUrl } from "~/framework/paging.js";
 
 export default {
   components: {
-    'u-content-box': contentBox,
-    'u-link': link,
+    "u-card": card,
+    "u-link": link,
   },
   props: {
     pageInfo: {
       required: true,
-      type: Object
-    }
+      type: Object,
+    },
   },
   computed: {
-    previousUrl() { return previousUrl(this.pageInfo); },
-    nextUrl() { return nextUrl(this.pageInfo); }
-  }
-}
+    previousUrl() {
+      return previousUrl(this.pageInfo);
+    },
+    nextUrl() {
+      return nextUrl(this.pageInfo);
+    },
+  },
+};
 </script>
 
 <style lang="scss">

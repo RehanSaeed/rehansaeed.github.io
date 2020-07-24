@@ -1,7 +1,12 @@
 <template>
-  <u-content-box class="portfolio-card" tag="article" hoverable>
+  <u-card class="portfolio-card" tag="article" hoverable>
     <div class="portfolio-card__header">
-      <g-image :alt="portfolio.title" v-if="portfolio.heroImage" class="portfolio-card__image" :src="portfolio.heroImage"/>
+      <g-image
+        :alt="portfolio.title"
+        v-if="portfolio.heroImage"
+        class="portfolio-card__image"
+        :src="portfolio.heroImage"
+      />
     </div>
     <div class="portfolio-card__content">
       <u-heading :id="portfolio.title" level="2" class="portfolio-card__title">{{portfolio.title}}</u-heading>
@@ -11,28 +16,28 @@
 
       <g-link class="portfolio-card__link" :to="portfolio.permalink">Link</g-link>
     </div>
-  </u-content-box>
+  </u-card>
 </template>
 
 <script>
-import contentBox from '~/components/shared/content-box.vue';
-import heading from '~/components/shared/heading.vue';
-import tags from '~/components/tags.vue';
+import card from "~/components/shared/card.vue";
+import heading from "~/components/shared/heading.vue";
+import tags from "~/components/tags.vue";
 
 export default {
-  name: 'u-portfolio-card',
+  name: "u-portfolio-card",
   components: {
-    'u-content-box': contentBox,
-    'u-heading': heading,
-    'u-tags': tags,
+    "u-card": card,
+    "u-heading": heading,
+    "u-tags": tags,
   },
   props: {
     portfolio: {
       required: true,
       type: Object,
     },
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss">
@@ -73,7 +78,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  opacity: 0.0;
+  opacity: 0;
   overflow: hidden;
   text-indent: -9999px;
   z-index: 0;

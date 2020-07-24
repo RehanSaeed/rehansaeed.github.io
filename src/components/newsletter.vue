@@ -1,8 +1,17 @@
 <template>
-  <u-content-box class="newsletter" tag="section">
+  <u-card class="newsletter" tag="section">
     <form class="newsletter__form" method="post" :action="this.$static.metadata.mailchimpUrl">
-      <u-heading id="newsletter" class="newsletter__title" level="2" center href="#newsletter">Newsletter</u-heading>
-      <label class="newsletter__content" for="email">Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox!</label>
+      <u-heading
+        id="newsletter"
+        class="newsletter__title"
+        level="2"
+        center
+        href="#newsletter"
+      >Newsletter</u-heading>
+      <label
+        class="newsletter__content"
+        for="email"
+      >Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox!</label>
       <input
         id="email"
         class="newsletter__input"
@@ -11,7 +20,8 @@
         required
         type="email"
         autocapitalize="off"
-        autocorrect="off"/>
+        autocorrect="off"
+      />
       <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
       <input
         aria-hidden="true"
@@ -19,29 +29,28 @@
         name="b_0d1d7c30db26dd0a4aa1b5b40_07ce865066"
         style="position: absolute; left: -5000px;"
         tabindex="-1"
-        value="">
-      <u-button bordered submit class="newsletter__button">
-        Subscribe
-      </u-button>
+        value
+      />
+      <u-button bordered submit class="newsletter__button">Subscribe</u-button>
     </form>
-  </u-content-box>
+  </u-card>
 </template>
 
 mailchimpUrl
 
 <script>
-import button from '~/components/shared/button.vue';
-import contentBox from '~/components/shared/content-box.vue';
-import heading from '~/components/shared/heading.vue';
+import button from "~/components/shared/button.vue";
+import card from "~/components/shared/card.vue";
+import heading from "~/components/shared/heading.vue";
 
 export default {
-  name: 'u-newsletter',
+  name: "u-newsletter",
   components: {
-    'u-button': button,
-    'u-content-box': contentBox,
-    'u-heading': heading,
+    "u-button": button,
+    "u-card": card,
+    "u-heading": heading,
   },
-}
+};
 </script>
 
 <static-query>
@@ -77,7 +86,7 @@ query {
 
 .newsletter__input {
   grid-area: input;
-  margin-right: var(--global-space-fluid-3)
+  margin-right: var(--global-space-fluid-3);
 }
 
 .newsletter__button {

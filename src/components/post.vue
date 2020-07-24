@@ -1,43 +1,47 @@
 <template>
-  <u-content-box class="post" tag="article">
-
+  <u-card class="post" tag="article">
     <header class="post__header">
-      <g-image v-if="post.heroImage"
+      <g-image
+        v-if="post.heroImage"
         :alt="imageMeta.alt"
         :src="post.heroImage"
-        class="post__photo"/>
+        class="post__photo"
+      />
     </header>
 
     <div class="post__content e-content" v-html="post.content" />
 
     <footer class="post__footer">
       <div class="post__footer__actions">
-        <u-share-button class="post__share" :title="post.title" :tags="post.tags.map(x => x.title)" />
+        <u-share-button
+          class="post__share"
+          :title="post.title"
+          :tags="post.tags.map(x => x.title)"
+        />
         <u-edit-post-button class="post__edit" :post="post" />
-        <u-support-button class="post__support"/>
+        <u-support-button class="post__support" />
       </div>
       <u-tags class="post__tags" :tags="post.tags" />
     </footer>
-
-  </u-content-box>
+  </u-card>
 </template>
 
 <script>
-import contentBox from '~/components/shared/content-box.vue';
-import editPostButton from '~/components/edit-post-button.vue';
-import shareButton from '~/components/share-button.vue';
-import supportButton from '~/components/support-button.vue';
-import tags from '~/components/tags.vue';
-import { getImageMetadata } from '~/framework/images.js';
+import card from "~/components/shared/card.vue";
+import editPostButton from "~/components/edit-post-button.vue";
+import shareButton from "~/components/share-button.vue";
+import supportButton from "~/components/support-button.vue";
+import tags from "~/components/tags.vue";
+import { getImageMetadata } from "~/framework/images.js";
 
 export default {
-  name: 'u-post',
+  name: "u-post",
   components: {
-    'u-content-box': contentBox,
-    'u-edit-post-button': editPostButton,
-    'u-share-button': shareButton,
-    'u-support-button': supportButton,
-    'u-tags': tags,
+    "u-card": card,
+    "u-edit-post-button": editPostButton,
+    "u-share-button": shareButton,
+    "u-support-button": supportButton,
+    "u-tags": tags,
   },
   props: {
     post: {
@@ -45,9 +49,11 @@ export default {
     },
   },
   computed: {
-    imageMeta() { return getImageMetadata(this.post.heroImage); },
+    imageMeta() {
+      return getImageMetadata(this.post.heroImage);
+    },
   },
-}
+};
 </script>
 
 <style lang="scss">
@@ -84,9 +90,15 @@ export default {
     animation-direction: linear;
 
     @keyframes target {
-      from { background: transparent; }
-      50% { background: var(--global-alternate-accent-color); }
-      to { background: transparent; }
+      from {
+        background: transparent;
+      }
+      50% {
+        background: var(--global-alternate-accent-color);
+      }
+      to {
+        background: transparent;
+      }
     }
   }
 
@@ -103,9 +115,9 @@ export default {
       // OR
       float: left;
       font-size: calc(var(--global-font-size-4) * 2.6);
-      line-height: calc(var(--global-line-height-1) * .44);
+      line-height: calc(var(--global-line-height-1) * 0.44);
       padding-right: var(--global-space-fixed-2);
-      margin-top: .65rem;
+      margin-top: 0.65rem;
     }
   }
 

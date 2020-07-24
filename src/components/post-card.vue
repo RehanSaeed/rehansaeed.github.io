@@ -1,10 +1,17 @@
 <template>
-  <u-content-box class="post-card" tag="article" hoverable :class="{'post-card--has-poster' : post.poster}">
+  <u-card
+    class="post-card"
+    tag="article"
+    hoverable
+    :class="{'post-card--has-poster' : post.poster}"
+  >
     <div class="post-card__header">
-      <g-image v-if="post.heroImage"
+      <g-image
+        v-if="post.heroImage"
         class="post-card__image"
         :alt="imageMeta.alt"
-        :src="post.heroImage"/>
+        :src="post.heroImage"
+      />
     </div>
     <div class="post-card__content">
       <u-heading :id="post.title" level="2" class="post-card__title">{{post.title}}</u-heading>
@@ -15,23 +22,23 @@
 
       <g-link class="post-card__link" :to="post.path">Link</g-link>
     </div>
-  </u-content-box>
+  </u-card>
 </template>
 
 <script>
-import contentBox from '~/components/shared/content-box.vue';
-import heading from '~/components/shared/heading.vue';
-import postMeta from '~/components/post-meta.vue';
-import tags from '~/components/tags.vue';
-import { getImageMetadata } from '~/framework/images.js';
+import card from "~/components/shared/card.vue";
+import heading from "~/components/shared/heading.vue";
+import postMeta from "~/components/post-meta.vue";
+import tags from "~/components/tags.vue";
+import { getImageMetadata } from "~/framework/images.js";
 
 export default {
-  name: 'u-post-card',
+  name: "u-post-card",
   components: {
-    'u-content-box': contentBox,
-    'u-heading': heading,
-    'u-post-meta': postMeta,
-    'u-tags': tags,
+    "u-card": card,
+    "u-heading": heading,
+    "u-post-meta": postMeta,
+    "u-tags": tags,
   },
   props: {
     post: {
@@ -39,9 +46,11 @@ export default {
     },
   },
   computed: {
-    imageMeta() { return getImageMetadata(this.post.heroImage); },
+    imageMeta() {
+      return getImageMetadata(this.post.heroImage);
+    },
   },
-}
+};
 </script>
 
 <style lang="scss">
@@ -82,7 +91,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  opacity: 0.0;
+  opacity: 0;
   overflow: hidden;
   text-indent: -9999px;
   z-index: 0;

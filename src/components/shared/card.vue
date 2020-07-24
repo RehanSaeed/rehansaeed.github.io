@@ -1,12 +1,12 @@
 <template>
-  <div class="content-box" :is="tag" :class="{ 'content-box--hoverable': hoverable }">
+  <div class="card" :is="tag" :class="{ 'card--hoverable': hoverable }">
     <slot />
   </div>
 </template>
 
 <script>
 export default {
-  name: "u-content-box",
+  name: "u-card",
   props: {
     hoverable: {
       type: Boolean,
@@ -20,7 +20,7 @@ export default {
 </script>
 
 <style lang="scss">
-.content-box {
+.card {
   background-color: var(--global-content-background-color);
   border-radius: var(--global-border-radius);
   box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.02),
@@ -36,15 +36,15 @@ export default {
   hyphens: auto;
 }
 
-.content-box--hoverable {
+.card--hoverable {
   position: relative;
 }
 
-.content-box--hoverable:hover {
+.card--hoverable:hover {
   transform: translateY(-5px);
 }
 
-.content-box--hoverable::before {
+.card--hoverable::before {
   content: "";
   position: absolute;
   top: 0;
@@ -58,7 +58,7 @@ export default {
     opacity var(--global-duration-2) ease-out;
 }
 
-.content-box--hoverable:hover::before {
+.card--hoverable:hover::before {
   opacity: 1;
 }
 </style>
