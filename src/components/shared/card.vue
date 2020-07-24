@@ -2,7 +2,7 @@
   <div
     class="card"
     :is="tag"
-    :class="{ 'card--hoverable': hoverable }"
+    :class="{ 'card--hoverable': hoverable, 'card--focusable': focusable }"
     @mousedown="onMouseDown"
     @mouseup="onMouseUp"
   >
@@ -12,6 +12,7 @@
 
 <script>
 const ClickTimeoutMilliseconds = 200;
+const RightClickButton = 2;
 
 export default {
   name: "u-card",
@@ -21,6 +22,9 @@ export default {
     };
   },
   props: {
+    focusable: {
+      type: Boolean,
+    },
     hoverable: {
       type: Boolean,
     },
@@ -34,9 +38,11 @@ export default {
       this.downTimestamp = new Date().getTime();
     },
     onMouseUp(mouseEvent) {
-      const upTimestamp = new Date().getTime();
-      if (upTimestamp - this.downTimestamp < ClickTimeoutMilliseconds) {
-        this.$emit("fastclick", mouseEvent);
+      if (mouseEvent.button !== RightClickButton) {
+        const upTimestamp = new Date().getTime();
+        if (upTimestamp - this.downTimestamp < ClickTimeoutMilliseconds) {
+          this.$emit("fastclick", mouseEvent);
+        }
       }
     },
   },
@@ -59,15 +65,18 @@ export default {
   hyphens: auto;
 }
 
-.card--hoverable {
+.card--hoverable,
+.card--focusable {
   position: relative;
 }
 
-.card--hoverable:hover {
+.card--hoverable:hover,
+.card--focusable:focus-within {
   transform: translateY(-5px);
 }
 
-.card--hoverable::before {
+.card--hoverable::before,
+.card--focusable::before {
   content: "";
   position: absolute;
   top: 0;
@@ -82,7 +91,8 @@ export default {
   transition: opacity var(--global-duration-2) ease-out;
 }
 
-.card--hoverable:hover::before {
+.card--hoverable:hover::before,
+.card--focusable:focus-within::before {
   opacity: 1;
 }
 </style>
