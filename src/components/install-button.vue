@@ -3,7 +3,7 @@
     v-show="isVisible"
     class="install-button"
     aria-label="Install the app"
-    @click.native.prevent="install"
+    @click.native.prevent="onInstall"
   >
     <u-icon-add-home :size="24" />
   </u-button>
@@ -28,7 +28,7 @@ export default {
     };
   },
   methods: {
-    async install() {
+    async onInstall() {
       this.isVisible = false;
       this.deferredPrompt.prompt();
       const choiceResult = await this.deferredPrompt.userChoice;

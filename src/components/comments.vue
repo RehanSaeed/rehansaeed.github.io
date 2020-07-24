@@ -1,5 +1,5 @@
 <template>
-  <u-card class="comments" tag="section">
+  <u-card class="comments">
     <u-heading
       id="comments"
       class="comments__title"

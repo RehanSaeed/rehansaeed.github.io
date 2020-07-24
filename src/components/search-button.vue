@@ -3,7 +3,7 @@
     <u-button
       class="search-button"
       aria-label="Open search"
-      @click.native.prevent="open"
+      @click.native.prevent="onOpen"
     >
       <u-icon-search v-if="!isOpen" :size="24" />
     </u-button>
@@ -12,13 +12,13 @@
       fullscreen
       title="Search"
       :is-open="isOpen"
-      @close="close"
+      @close="onClose"
       class="search-dialogue"
     >
       <u-search
         :is-open="isOpen"
         :search="this.$route.query.search"
-        @selected="close"
+        @selected="onClose"
       />
     </u-dialogue>
   </div>
@@ -44,16 +44,16 @@ export default {
     };
   },
   methods: {
-    open() {
+    onOpen() {
       this.isOpen = true;
     },
-    close() {
+    onClose() {
       this.isOpen = false;
     },
   },
   mounted() {
     if (this.$route.query.search) {
-      this.open();
+      this.onOpen();
     }
   },
 };

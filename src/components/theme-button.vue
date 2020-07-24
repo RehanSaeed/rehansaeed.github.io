@@ -2,7 +2,7 @@
   <u-button
     class="theme-button"
     aria-label="Toggle dark/light"
-    @click.native.prevent="toggleTheme"
+    @click.native.prevent="onToggleTheme"
   >
     <u-icon-sun v-if="darkTheme" title="Enable light theme" :size="24" />
     <u-icon-moon v-else title="Enable dark theme" :size="24" />
@@ -27,7 +27,7 @@ export default {
     };
   },
   methods: {
-    toggleTheme() {
+    onToggleTheme() {
       this.darkTheme = !this.darkTheme;
 
       // This is using a script that is added in index.html

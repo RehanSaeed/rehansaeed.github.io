@@ -1,5 +1,5 @@
 <template>
-  <u-card class="newsletter" tag="section">
+  <u-card class="newsletter">
     <form
       class="newsletter__form"
       method="post"

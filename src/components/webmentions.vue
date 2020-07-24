@@ -3,7 +3,7 @@
     @enterFirstTime="onEnterFirstTime"
     root-margin="1200px 1200px 1200px 1200px"
   >
-    <u-card class="webmentions" tag="section">
+    <u-card class="webmentions">
       <u-heading
         id="webmentions"
         class="webmentions__title"

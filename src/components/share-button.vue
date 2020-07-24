@@ -8,14 +8,14 @@
     <u-dialogue
       title="Share"
       :is-open="isDialogueOpen"
-      @close="close"
+      @close="onClose"
       class="share-dialogue"
     >
       <div class="share-dialogue__links">
         <u-link
           bordered
           :href="facebookUrl"
-          @click.native="close"
+          @click.native="onClose"
           class="share-dialogue__link"
         >
           <u-icon-facebook />
@@ -24,7 +24,7 @@
         <u-link
           bordered
           :href="twitterUrl"
-          @click.native="close"
+          @click.native="onClose"
           class="share-dialogue__link"
         >
           <u-icon-twitter />
@@ -33,7 +33,7 @@
         <u-link
           bordered
           :href="redditUrl"
-          @click.native="close"
+          @click.native="onClose"
           class="share-dialogue__link"
         >
           <u-icon-reddit />
@@ -42,7 +42,7 @@
         <u-link
           bordered
           :href="linkedinUrl"
-          @click.native="close"
+          @click.native="onClose"
           class="share-dialogue__link"
         >
           <u-icon-linkedin />
@@ -51,7 +51,7 @@
         <u-link
           bordered
           :href="mailUrl"
-          @click.native="close"
+          @click.native="onClose"
           class="share-dialogue__link"
         >
           <u-icon-email />
@@ -160,14 +160,14 @@ export default {
     open() {
       this.isDialogueOpen = true;
     },
-    close() {
-      this.isDialogueOpen = false;
-    },
     share() {
       navigator.share({
         title: this.internalTitle,
         url: this.internalUrl,
       });
+    },
+    onClose() {
+      this.isDialogueOpen = false;
     },
     onClick() {
       if (this.isSupported) {

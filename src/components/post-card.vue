@@ -4,6 +4,7 @@
     tag="article"
     hoverable
     :class="{ 'post-card--has-poster': post.poster }"
+    @fastclick="onFastClick"
   >
     <div class="post-card__header">
       <g-image
@@ -14,15 +15,17 @@
       />
     </div>
     <div class="post-card__content">
-      <u-heading :id="post.title" level="2" class="post-card__title">{{
-        post.title
-      }}</u-heading>
+      <u-heading
+        class="post-card__title"
+        :id="post.title"
+        :to="post.path"
+        level="2"
+        >{{ post.title }}</u-heading
+      >
       <p class="post-card__description">{{ post.description }}</p>
 
       <u-post-meta class="post-card__meta" :meta="post" />
       <u-tags v-if="post.tags" class="post-card__tags" :tags="post.tags" />
-
-      <g-link class="post-card__link" :to="post.path">Link</g-link>
     </div>
   </u-card>
 </template>
@@ -52,11 +55,17 @@ export default {
       return getImageMetadata(this.post.heroImage);
     },
   },
+  methods: {
+    onFastClick() {
+      window.location.assign(this.post.path);
+    },
+  },
 };
 </script>
 
 <style lang="scss">
 .post-card {
+  cursor: pointer;
   position: relative;
 }
 
@@ -85,17 +94,5 @@ export default {
   margin-top: var(--global-space-fixed-4);
   z-index: 1;
   position: relative;
-}
-
-.post-card__link {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  overflow: hidden;
-  text-indent: -9999px;
-  z-index: 0;
 }
 </style>

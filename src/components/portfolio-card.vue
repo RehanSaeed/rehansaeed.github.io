@@ -1,5 +1,10 @@
 <template>
-  <u-card class="portfolio-card" tag="article" hoverable>
+  <u-card
+    class="portfolio-card"
+    tag="article"
+    hoverable
+    @fastclick="onFastClick"
+  >
     <div class="portfolio-card__header">
       <g-image
         :alt="portfolio.title"
@@ -11,6 +16,7 @@
     <div class="portfolio-card__content">
       <u-heading
         :id="portfolio.title"
+        :to="portfolio.permalink"
         level="2"
         class="portfolio-card__title"
         >{{ portfolio.title }}</u-heading
@@ -22,10 +28,6 @@
         class="portfolio-card__tags"
         :tags="portfolio.tags"
       />
-
-      <g-link class="portfolio-card__link" :to="portfolio.permalink"
-        >Link</g-link
-      >
     </div>
   </u-card>
 </template>
@@ -48,11 +50,17 @@ export default {
       type: Object,
     },
   },
+  methods: {
+    onFastClick() {
+      window.location.assign(this.portfolio.permalink);
+    },
+  },
 };
 </script>
 
 <style lang="scss">
 .portfolio-card {
+  cursor: pointer;
   position: relative;
 }
 
@@ -81,17 +89,5 @@ export default {
   margin-top: var(--global-space-fixed-4);
   z-index: 1;
   position: relative;
-}
-
-.portfolio-card__link {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  overflow: hidden;
-  text-indent: -9999px;
-  z-index: 0;
 }
 </style>

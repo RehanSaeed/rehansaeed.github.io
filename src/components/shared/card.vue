@@ -1,19 +1,43 @@
 <template>
-  <div class="card" :is="tag" :class="{ 'card--hoverable': hoverable }">
+  <div
+    class="card"
+    :is="tag"
+    :class="{ 'card--hoverable': hoverable }"
+    @mousedown="onMouseDown"
+    @mouseup="onMouseUp"
+  >
     <slot />
   </div>
 </template>
 
 <script>
+const ClickTimeoutMilliseconds = 200;
+
 export default {
   name: "u-card",
+  data() {
+    return {
+      downTimestamp: undefined,
+    };
+  },
   props: {
     hoverable: {
       type: Boolean,
     },
     tag: {
-      default: "div",
+      default: "section",
       type: String,
+    },
+  },
+  methods: {
+    onMouseDown() {
+      this.downTimestamp = new Date().getTime();
+    },
+    onMouseUp(mouseEvent) {
+      const upTimestamp = new Date().getTime();
+      if (upTimestamp - this.downTimestamp < ClickTimeoutMilliseconds) {
+        this.$emit("fastclick", mouseEvent);
+      }
     },
   },
 };
