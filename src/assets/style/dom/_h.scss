@@ -1,4 +1,9 @@
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: var(--global-title-color);
   font-family: var(--global-font-family-heading);
   font-weight: var(--global-font-weight-normal);
@@ -6,6 +11,7 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: var(--global-space-fixed-5);
   margin-bottom: var(--global-space-fixed-4);
   max-width: var(--global-line-length-max);
+  text-shadow: 0.02em 0.02em rgba(0, 0, 0, 0.2);
   transition: color var(--global-duration-3);
 
   a[aria-hidden="true"] {
