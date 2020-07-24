@@ -112,6 +112,7 @@ export default {
   left: 0;
   z-index: -1;
 
+  border-radius: inherit;
   box-shadow: 0 3px 5px hsl(0, 0%, 70%);
   opacity: 0;
   transition: opacity var(--global-duration-2) ease-out;
