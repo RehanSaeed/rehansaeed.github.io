@@ -3,6 +3,7 @@
     class="post-card"
     tag="article"
     hoverable
+    focusable
     :class="{ 'post-card--has-poster': post.poster }"
     @fastclick="onFastClick"
   >
@@ -56,8 +57,10 @@ export default {
     },
   },
   methods: {
-    onFastClick() {
-      window.location.assign(this.post.path);
+    onFastClick(e) {
+      if (e.target.nodeName !== "A") {
+        window.location.assign(this.post.path);
+      }
     },
   },
 };
@@ -66,7 +69,6 @@ export default {
 <style lang="scss">
 .post-card {
   cursor: pointer;
-  position: relative;
 }
 
 .post-card__header {
@@ -92,7 +94,7 @@ export default {
 
 .post-card__tags {
   margin-top: var(--global-space-fixed-4);
-  z-index: 1;
   position: relative;
+  z-index: 1;
 }
 </style>

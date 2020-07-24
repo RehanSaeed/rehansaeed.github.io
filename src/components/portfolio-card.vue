@@ -3,6 +3,7 @@
     class="portfolio-card"
     tag="article"
     hoverable
+    focusable
     @fastclick="onFastClick"
   >
     <div class="portfolio-card__header">
@@ -51,8 +52,10 @@ export default {
     },
   },
   methods: {
-    onFastClick() {
-      window.location.assign(this.portfolio.permalink);
+    onFastClick(e) {
+      if (e.target.nodeName !== "A") {
+        window.location.assign(this.portfolio.permalink);
+      }
     },
   },
 };
@@ -61,7 +64,6 @@ export default {
 <style lang="scss">
 .portfolio-card {
   cursor: pointer;
-  position: relative;
 }
 
 .portfolio-card__header {
@@ -87,7 +89,7 @@ export default {
 
 .portfolio-card__tags {
   margin-top: var(--global-space-fixed-4);
-  z-index: 1;
   position: relative;
+  z-index: 1;
 }
 </style>
