@@ -4,27 +4,27 @@
       <u-heading id="title" level="2" class="dialog__title">{{title}}</u-heading>
       <form class="dialog__form" method="dialog">
         <u-button aria-label="Close search" class="dialog__close" submit>
-          <u-icon-close :size="24"/>
+          <u-icon-close :size="24" />
         </u-button>
       </form>
       <div class="dialog__content">
-        <slot/>
+        <slot />
       </div>
     </div>
   </dialog>
 </template>
 
 <script>
-import button from '~/components/shared/button.vue';
-import heading from '~/components/shared/heading.vue';
-import iconClose from '~/components/shared/icons/icon-close.vue';
+import button from "~/components/shared/button.vue";
+import heading from "~/components/shared/heading.vue";
+import iconClose from "~/components/shared/icons/icon-close.vue";
 
 export default {
-  name: 'u-dialogue',
+  name: "u-dialogue",
   components: {
-    'u-button': button,
-    'u-heading': heading,
-    'u-icon-close': iconClose,
+    "u-button": button,
+    "u-heading": heading,
+    "u-icon-close": iconClose,
   },
   props: {
     fullscreen: {
@@ -37,12 +37,12 @@ export default {
     },
     title: {
       type: String,
-    }
+    },
   },
   computed: {
     dialog() {
       return this.$refs.dialog;
-    }
+    },
   },
   watch: {
     isOpen() {
@@ -56,19 +56,19 @@ export default {
   methods: {
     close() {
       if (this.isOpen) {
-        this.$emit('close');
+        this.$emit("close");
       }
-    }
+    },
   },
   mounted() {
     if (!process.isClient) {
       return;
     }
 
-    const dialogPolyfill = require('dialog-polyfill').default;
+    const dialogPolyfill = require("dialog-polyfill").default;
     dialogPolyfill.registerDialog(this.dialog);
   },
-}
+};
 </script>
 
 <style lang="scss">
@@ -88,14 +88,14 @@ dialog {
   transform: translateY(-50%);
 
   @media screen and (prefers-reduced-motion: no-preference) {
-    transition: all .3s ease-in-out;
+    transition: all var(--global-duration-1) ease-in-out;
   }
 }
 
 dialog:not([open]) {
   opacity: 0;
   visibility: hidden;
-  transform: translateY(calc(-50% + .5rem));
+  transform: translateY(calc(-50% + 0.5rem));
 }
 
 dialog:not([open]).dialog--fullscreen {
@@ -105,14 +105,20 @@ dialog:not([open]).dialog--fullscreen {
 dialog::backdrop,
 dialog + .backdrop {
   position: fixed;
-  top: 0; right: 0; bottom: 0; left: 0;
-  background: hsla(0, 0%, 0%, .2);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: hsla(0, 0%, 0%, 0.2);
   backdrop-filter: blur(3px);
 }
 
 ._dialog_overlay {
   position: fixed;
-  top: 0; right: 0; bottom: 0; left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
 dialog.fixed {
@@ -129,10 +135,14 @@ dialog.fixed {
   color: var(--global-title-color);
 
   &:before {
-    content: '';
-    background: linear-gradient(to right, var(--global-accent-color) 0%,var(--global-alternate-accent-color) 100%);
+    content: "";
+    background: linear-gradient(
+      to right,
+      var(--global-accent-color) 0%,
+      var(--global-alternate-accent-color) 100%
+    );
     display: block;
-    height: .5rem;
+    height: 0.5rem;
     position: absolute;
     top: 0;
     left: 0;
