@@ -299,95 +299,95 @@
   // }
 
   .border {
-    border: 1px solid #e1e4e8!important;
+    border: 1px solid #e1e4e8 !important;
   }
 
   .border-0 {
-    border: 0!important;
+    border: 0 !important;
   }
 
   .border-bottom {
-    border-bottom: 1px solid #e1e4e8!important;
+    border-bottom: 1px solid #e1e4e8 !important;
   }
 
   .rounded-1 {
-    border-radius: 3px!important;
+    border-radius: 3px !important;
   }
 
   .bg-white {
-    background-color: #fff!important;
+    background-color: #fff !important;
   }
 
   .bg-gray-light {
-    background-color: #fafbfc!important;
+    background-color: #fafbfc !important;
   }
 
   .text-gray-light {
-    color: #6a737d!important;
+    color: #6a737d !important;
   }
 
   .mb-0 {
-    margin-bottom: 0!important;
+    margin-bottom: 0 !important;
   }
 
   .my-2 {
-    margin-top: 8px!important;
-    margin-bottom: 8px!important;
+    margin-top: 8px !important;
+    margin-bottom: 8px !important;
   }
 
   .pl-0 {
-    padding-left: 0!important;
+    padding-left: 0 !important;
   }
 
   .py-0 {
-    padding-top: 0!important;
-    padding-bottom: 0!important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
   }
 
   .pl-1 {
-    padding-left: 4px!important;
+    padding-left: 4px !important;
   }
 
   .pl-2 {
-    padding-left: 8px!important;
+    padding-left: 8px !important;
   }
 
   .py-2 {
-    padding-top: 8px!important;
-    padding-bottom: 8px!important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
   }
 
   .pl-3,
   .px-3 {
-    padding-left: 16px!important;
+    padding-left: 16px !important;
   }
 
   .px-3 {
-    padding-right: 16px!important;
+    padding-right: 16px !important;
   }
 
   .pl-4 {
-    padding-left: 24px!important;
+    padding-left: 24px !important;
   }
 
   .pl-5 {
-    padding-left: 32px!important;
+    padding-left: 32px !important;
   }
 
   .pl-6 {
-    padding-left: 40px!important;
+    padding-left: 40px !important;
   }
 
   .f6 {
-    font-size: 12px!important;
+    font-size: 12px !important;
   }
 
   .lh-condensed {
-    line-height: 1.25!important;
+    line-height: 1.25 !important;
   }
 
   .text-bold {
-    font-weight: 600!important;
+    font-weight: 600 !important;
   }
 
   .pl-c {
@@ -515,77 +515,77 @@
   }
 
   .mb-0 {
-    margin-bottom: 0!important;
+    margin-bottom: 0 !important;
   }
 
   .my-2 {
-    margin-bottom: 8px!important;
+    margin-bottom: 8px !important;
   }
 
   .my-2 {
-    margin-top: 8px!important;
+    margin-top: 8px !important;
   }
 
   .pl-0 {
-    padding-left: 0!important;
+    padding-left: 0 !important;
   }
 
   .py-0 {
-    padding-top: 0!important;
-    padding-bottom: 0!important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
   }
 
   .pl-1 {
-    padding-left: 4px!important;
+    padding-left: 4px !important;
   }
 
   .pl-2 {
-    padding-left: 8px!important;
+    padding-left: 8px !important;
   }
 
   .py-2 {
-    padding-top: 8px!important;
-    padding-bottom: 8px!important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
   }
 
   .pl-3 {
-    padding-left: 16px!important;
+    padding-left: 16px !important;
   }
 
   .pl-4 {
-    padding-left: 24px!important;
+    padding-left: 24px !important;
   }
 
   .pl-5 {
-    padding-left: 32px!important;
+    padding-left: 32px !important;
   }
 
   .pl-6 {
-    padding-left: 40px!important;
+    padding-left: 40px !important;
   }
 
   .pl-7 {
-    padding-left: 48px!important;
+    padding-left: 48px !important;
   }
 
   .pl-8 {
-    padding-left: 64px!important;
+    padding-left: 64px !important;
   }
 
   .pl-9 {
-    padding-left: 80px!important;
+    padding-left: 80px !important;
   }
 
   .pl-10 {
-    padding-left: 96px!important;
+    padding-left: 96px !important;
   }
 
   .pl-11 {
-    padding-left: 112px!important;
+    padding-left: 112px !important;
   }
 
   .pl-12 {
-    padding-left: 128px!important;
+    padding-left: 128px !important;
   }
 
   // hr {
@@ -615,11 +615,11 @@
   //   clear: both;
   // }
 
-  >:first-child {
+  > :first-child {
     margin-top: 0 !important;
   }
 
-  >:last-child {
+  > :last-child {
     margin-bottom: 0 !important;
   }
 
@@ -827,7 +827,7 @@
 
   .highlight pre {
     display: block;
-    padding: .85rem;
+    padding: 0.85rem;
   }
 
   pre {
@@ -849,13 +849,13 @@
     word-spacing: normal;
     word-break: normal;
     word-wrap: normal;
-    tab-size:4;
+    tab-size: 4;
     hyphens: none;
   }
 
   pre code {
     display: block;
-    padding: .85rem;
+    padding: 0.85rem;
     overflow-x: auto;
     overflow-y: hidden;
   }
@@ -887,10 +887,10 @@
     min-width: 50px;
     padding-right: 10px;
     padding-left: 10px;
-    font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
+    font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
     font-size: 12px;
     line-height: 20px;
-    color: rgba(27,31,35,.3);
+    color: rgba(27, 31, 35, 0.3);
     text-align: right;
     white-space: nowrap;
     vertical-align: top;
@@ -899,7 +899,7 @@
   }
 
   .blob-num:hover {
-    color: rgba(27,31,35,.6);
+    color: rgba(27, 31, 35, 0.6);
   }
 
   .blob-num:before {
@@ -916,7 +916,7 @@
 
   .blob-code-inner {
     overflow: visible;
-    font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
+    font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
     font-size: 12px;
     color: #24292e;
     word-wrap: normal;
@@ -981,12 +981,12 @@
     list-style-type: none;
   }
 
-  .task-list-item+.task-list-item {
+  .task-list-item + .task-list-item {
     margin-top: 3px;
   }
 
   .task-list-item input {
-    margin: 0 .2em .25em -1.6em;
+    margin: 0 0.2em 0.25em -1.6em;
     vertical-align: middle;
   }
 }

@@ -5,5 +5,7 @@ body {
   font-weight: var(--global-font-weight-normal);
   line-height: var(--global-line-height-1);
   overflow-x: hidden;
-  transition: background-color var(--global-duration-3) ease-out, border-color var(--global-duration-3) ease-out, color var(--global-duration-3) ease-out;
+  transition: background-color var(--global-duration-3) ease-out,
+    border-color var(--global-duration-3) ease-out,
+    color var(--global-duration-3) ease-out;
 }

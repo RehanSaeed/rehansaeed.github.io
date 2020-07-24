@@ -8,7 +8,10 @@
     & {
       #{$variable}: $min-font-size;
       @media screen and (min-width: $min-vw) {
-        #{$variable}: calc(#{$min-font-size} + #{strip-unit($max-font-size - $min-font-size)} * ((100vw - #{$min-vw}) / #{strip-unit($max-vw - $min-vw)}));
+        #{$variable}: calc(
+          #{$min-font-size} + #{strip-unit($max-font-size - $min-font-size)} *
+            ((100vw - #{$min-vw}) / #{strip-unit($max-vw - $min-vw)})
+        );
       }
       @media screen and (min-width: $max-vw) {
         #{$variable}: $max-font-size;

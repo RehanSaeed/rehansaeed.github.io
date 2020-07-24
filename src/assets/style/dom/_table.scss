@@ -5,11 +5,14 @@ table {
   border-color: var(--global-title-color);
   border-style: solid;
   border-radius: var(--global-border-radius);
-  border-width: 0 var(--global-border-width-1) var(--global-border-width-1) var(--global-border-width-1);
+  border-width: 0 var(--global-border-width-1) var(--global-border-width-1)
+    var(--global-border-width-1);
   border-spacing: 0;
   margin-bottom: var(--global-space-fixed-5);
   overflow: auto;
-  transition: background-color var(--global-duration-3) ease-out, border-color var(--global-duration-3) ease-out, color var(--global-duration-3) ease-out;
+  transition: background-color var(--global-duration-3) ease-out,
+    border-color var(--global-duration-3) ease-out,
+    color var(--global-duration-3) ease-out;
   width: 100%;
 
   thead {
@@ -19,7 +22,8 @@ table {
       font-weight: var(--global-font-weight-bold);
       font-size: var(--global-font-size-1);
       padding: var(--global-space-fixed-2) var(--global-space-fixed-3);
-      transition: background-color var(--global-duration-3) ease-out, color var(--global-duration-3) ease-out;
+      transition: background-color var(--global-duration-3) ease-out,
+        color var(--global-duration-3) ease-out;
       vertical-align: bottom;
     }
 

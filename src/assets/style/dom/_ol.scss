@@ -3,7 +3,10 @@ ol {
   margin-left: var(--global-space-fixed-5);
   margin-bottom: var(--global-space-fixed-5);
 
-  li, p, ul, ol {
+  li,
+  p,
+  ul,
+  ol {
     margin-bottom: var(--global-space-fixed-3);
     margin-top: var(--global-space-fixed-3);
   }

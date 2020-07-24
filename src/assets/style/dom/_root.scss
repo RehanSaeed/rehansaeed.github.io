@@ -2,7 +2,8 @@
   color-scheme: light dark;
   font-size: var(--global-font-size-default);
   // line-sizing: normal; ?? What does this do? It's in a draft spec
-  scrollbar-color: var(--global-scroll-thumb-color) var(--global-scroll-track-color);
+  scrollbar-color: var(--global-scroll-thumb-color)
+    var(--global-scroll-track-color);
 
   @media screen and (prefers-reduced-motion: no-preference) {
     scroll-behavior: smooth;

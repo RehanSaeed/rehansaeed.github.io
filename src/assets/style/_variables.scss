@@ -8,15 +8,15 @@
   $global-breakpoint-xxl: 100rem; // 1600px
 
   // Border Radius
-  --global-border-radius: .25rem;
+  --global-border-radius: 0.25rem;
 
   // Border Width
   --global-border-width-0: 0;
-  --global-border-width-1: .05rem; // 1px
-  --global-border-width-2: .1rem; // 2px
-  --global-border-width-3: .2rem; // 4px
-  --global-border-width-4: .3rem; // 6px
-  --global-border-width-5: .4rem; // 8px
+  --global-border-width-1: 0.05rem; // 1px
+  --global-border-width-2: 0.1rem; // 2px
+  --global-border-width-3: 0.2rem; // 4px
+  --global-border-width-4: 0.3rem; // 6px
+  --global-border-width-5: 0.4rem; // 8px
 
   // Box Shadows
   --global-shadow-1: 0px 2px 4px rgba(37, 37, 37, 0.1);
@@ -26,10 +26,14 @@
   --global-shadow-5: 0px 24px 32px rgba(37, 37, 37, 0.1);
 
   // Font Family
-  --global-font-family-sans-serif: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  --global-font-family-serif: 'Georgia', serif;
-  --global-font-family-monospace: 'Cascadia Code', 'Cascadia Code PL', 'Fira Code', Consolas, SFMono-Regular, Menlo, Monaco, 'Liberation Mono', 'Courier New', monospace;
-  --global-font-family-heading: 'Audiowide', sans-serif;
+  --global-font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --global-font-family-serif: "Georgia", serif;
+  --global-font-family-monospace: "Cascadia Code", "Cascadia Code PL",
+    "Fira Code", Consolas, SFMono-Regular, Menlo, Monaco, "Liberation Mono",
+    "Courier New", monospace;
+  --global-font-family-heading: "Audiowide", sans-serif;
 
   // Fluid Font Size
   $global-font-size-minimum: 1em; // 16px
@@ -38,10 +42,13 @@
   --global-font-size-maximum: #{$global-font-size-maximum};
   @include fluid-type(
     --global-font-size-default,
-    36em, // $global-breakpoint-sm,
-    100em, // $global-breakpoint-xxl,
-    $global-font-size-minimum,
-    $global-font-size-maximum);
+    36em,
+    // $global-breakpoint-sm,
+      100em,
+    // $global-breakpoint-xxl,
+      $global-font-size-minimum,
+    $global-font-size-maximum
+  );
 
   // Font Size
   --global-font-size-0: 0.65em;
@@ -81,7 +88,8 @@
     $global-breakpoint-sm,
     $global-breakpoint-xxl,
     1.5rem,
-    4.5rem);
+    4.5rem
+  );
   --global-space-fluid--7: calc(var(--global-space-fluid-7) * -1);
   --global-space-fluid--6: calc(var(--global-space-fluid-6) * -1);
   --global-space-fluid--5: calc(var(--global-space-fluid-5) * -1);
@@ -112,13 +120,19 @@
   --global-space-fixed-7: calc(var(--global-space-fixed-6) * 2);
 
   --global-space-main: calc(var(--global-space-fluid-6) * 2.7);
-  @media screen and (max-width: 576px) { // $global-breakpoint-sm
+  @media screen and (max-width: 576px) {
+    // $global-breakpoint-sm
     --global-space-main: 0;
   }
 
-  --global-space-content-max-width: calc(var(--global-space-fluid-6) * 2 + var(--global-line-length-max));
-  --global-space-content-min-width: calc(var(--global-space-fluid-6) * 2 + var(--global-line-length-min));
-  @media screen and (max-width: 576px) { // $global-breakpoint-sm
+  --global-space-content-max-width: calc(
+    var(--global-space-fluid-6) * 2 + var(--global-line-length-max)
+  );
+  --global-space-content-min-width: calc(
+    var(--global-space-fluid-6) * 2 + var(--global-line-length-min)
+  );
+  @media screen and (max-width: 576px) {
+    // $global-breakpoint-sm
     --global-space-content-min-width: calc(var(--global-space-fluid-6) * 2);
   }
 
@@ -129,7 +143,7 @@
 }
 
 // Light theme
-[data-theme='light'] {
+[data-theme="light"] {
   --global-accent-color: hsl(264, 82%, 50%);
   --global-alternate-accent-color: hsl(254, 100%, 87%);
   --global-background-color: hsl(216, 24%, 98%);
@@ -172,7 +186,7 @@
 }
 
 // Dark theme
-[data-theme='dark'] {
+[data-theme="dark"] {
   --global-accent-color: hsl(254, 100%, 87%);
   --global-alternate-accent-color: hsl(264, 82%, 50%);
   --global-background-color: hsl(207, 62%, 14%);

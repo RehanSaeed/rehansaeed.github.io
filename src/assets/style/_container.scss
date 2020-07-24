@@ -10,7 +10,9 @@
     margin-bottom: 0;
   }
 
-  &.tip, &.warning, &.danger {
+  &.tip,
+  &.warning,
+  &.danger {
     padding: var(--global-space-fixed-4) var(--global-space-fixed-5);
     border-left-width: var(--global-border-width-5);
     border-left-style: solid;

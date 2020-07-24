@@ -2,12 +2,16 @@ a {
   cursor: pointer;
   color: var(--global-link-color);
   text-decoration-color: var(--global-link-color);
-  transition: text-decoration-thickness var(--global-duration-1) ease-out, text-underline-offset var(--global-duration-1) ease-out, text-decoration-color var(--global-duration-1) ease-out, color var(--global-duration-1) ease-out, opacity var(--global-duration-1) ease-out;
+  transition: text-decoration-thickness var(--global-duration-1) ease-out,
+    text-underline-offset var(--global-duration-1) ease-out,
+    text-decoration-color var(--global-duration-1) ease-out,
+    color var(--global-duration-1) ease-out,
+    opacity var(--global-duration-1) ease-out;
 
   &:hover,
   &:focus,
   &:active {
-    opacity: .7;
+    opacity: 0.7;
     text-decoration-color: var(--global-link-color);
   }
 
@@ -17,7 +21,7 @@ a {
   }
 
   &:not([href]),
-  &[href=''] {
+  &[href=""] {
     text-decoration: none;
   }
 
@@ -41,7 +45,7 @@ a {
     }
 
     &:not([href]),
-    &[href=''] {
+    &[href=""] {
       color: var(--global-link-color);
     }
   }
