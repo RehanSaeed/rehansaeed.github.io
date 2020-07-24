@@ -34,8 +34,8 @@ export default {
   name: "u-author",
   components: {
     "u-heading": heading,
-    "u-social-links": socialLinks
-  }
+    "u-social-links": socialLinks,
+  },
 };
 </script>
 

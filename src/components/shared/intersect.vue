@@ -4,29 +4,29 @@ export default {
   abstract: true,
   data() {
     return {
-      hasIntersected: false
+      hasIntersected: false,
     };
   },
   props: {
     threshold: {
       type: Array,
       required: false,
-      default: () => [0, 0.2]
+      default: () => [0, 0.2],
     },
     root: {
       type: typeof HTMLElement !== "undefined" ? HTMLElement : Object,
       required: false,
-      default: () => null
+      default: () => null,
     },
     rootMargin: {
       type: String,
       required: false,
-      default: () => "0px 0px 0px 0px"
-    }
+      default: () => "0px 0px 0px 0px",
+    },
   },
   mounted() {
     this.observer = new IntersectionObserver(
-      entries => {
+      (entries) => {
         if (!entries[0].isIntersecting) {
           this.$emit("leave", [entries[0]]);
         } else {
@@ -42,7 +42,7 @@ export default {
       {
         threshold: this.threshold,
         root: this.root,
-        rootMargin: this.rootMargin
+        rootMargin: this.rootMargin,
       }
     );
 
@@ -63,6 +63,6 @@ export default {
   },
   render() {
     return this.$slots.default ? this.$slots.default[0] : null;
-  }
+  },
 };
 </script>

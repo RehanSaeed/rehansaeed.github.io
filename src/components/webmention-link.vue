@@ -18,8 +18,8 @@ export default {
   props: {
     link: {
       required: true,
-      type: Object
-    }
+      type: Object,
+    },
   },
   computed: {
     url() {
@@ -33,8 +33,8 @@ export default {
     },
     displayTimestamp() {
       return getDisplayDateFromString(this.timestamp);
-    }
-  }
+    },
+  },
 };
 </script>
 

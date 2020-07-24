@@ -31,25 +31,25 @@ export default {
   components: {
     "u-button": button,
     "u-heading": heading,
-    "u-icon-close": iconClose
+    "u-icon-close": iconClose,
   },
   props: {
     fullscreen: {
       default: false,
-      type: Boolean
+      type: Boolean,
     },
     isOpen: {
       default: false,
-      type: Boolean
+      type: Boolean,
     },
     title: {
-      type: String
-    }
+      type: String,
+    },
   },
   computed: {
     dialog() {
       return this.$refs.dialog;
-    }
+    },
   },
   watch: {
     isOpen() {
@@ -58,14 +58,14 @@ export default {
       } else {
         this.dialog.close();
       }
-    }
+    },
   },
   methods: {
     close() {
       if (this.isOpen) {
         this.$emit("close");
       }
-    }
+    },
   },
   mounted() {
     if (!process.isClient) {
@@ -74,7 +74,7 @@ export default {
 
     const dialogPolyfill = require("dialog-polyfill").default;
     dialogPolyfill.registerDialog(this.dialog);
-  }
+  },
 };
 </script>
 

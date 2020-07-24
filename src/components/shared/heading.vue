@@ -25,37 +25,34 @@ export default {
   props: {
     id: {
       required: true,
-      type: String
+      type: String,
     },
     level: {
       default: "1",
       required: true,
-      type: String
+      type: String,
     },
     size: {
       default: null,
-      type: String
+      type: String,
     },
     href: {
-      type: String
+      type: String,
     },
     to: {
-      type: String
+      type: String,
     },
     center: {
       default: false,
-      type: Boolean
+      type: Boolean,
     },
     linkClass: {
-      type: String
-    }
+      type: String,
+    },
   },
   computed: {
     idInternal() {
-      return this.id
-        .split(" ")
-        .join("-")
-        .toLowerCase();
+      return this.id.split(" ").join("-").toLowerCase();
     },
     hasLink() {
       return this.to || this.href;
@@ -72,8 +69,8 @@ export default {
       } else {
         return "span";
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -13,25 +13,23 @@ export default {
   name: "u-edit-post-button",
   components: {
     "u-link": link,
-    "u-icon-github": iconGitHub
+    "u-icon-github": iconGitHub,
   },
   props: {
     post: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   computed: {
     url() {
       return (
-        `${this.$static.metadata.repository.url}/tree/${
-          this.$static.metadata.repository.branch
-        }/content/posts/` +
+        `${this.$static.metadata.repository.url}/tree/${this.$static.metadata.repository.branch}/content/posts/` +
         new Date(this.post.date).getFullYear() +
         this.post.path +
         "index.md"
       );
-    }
-  }
+    },
+  },
 };
 </script>
 

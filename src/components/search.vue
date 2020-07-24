@@ -38,16 +38,16 @@ export default {
   mixins: [Search],
   props: {
     isOpen: {
-      type: Boolean
+      type: Boolean,
     },
     search: {
-      type: String
-    }
+      type: String,
+    },
   },
   methods: {
     onSelected() {
       this.$emit("selected");
-    }
+    },
   },
   watch: {
     isOpen() {
@@ -56,13 +56,13 @@ export default {
           this.$refs.search.focus();
         }, 100);
       }
-    }
+    },
   },
   mounted() {
     if (this.search) {
       this.searchTerm = this.search;
     }
-  }
+  },
 };
 </script>
 

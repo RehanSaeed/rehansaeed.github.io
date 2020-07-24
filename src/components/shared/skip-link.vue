@@ -9,8 +9,8 @@ import link from "~/components/shared/link.vue";
 
 export default {
   components: {
-    "u-link": link
-  }
+    "u-link": link,
+  },
 };
 </script>
 

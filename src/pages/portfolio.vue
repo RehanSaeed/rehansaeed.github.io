@@ -35,7 +35,7 @@ export default {
   components: {
     "u-heading": heading,
     "u-newsletter": newsletter,
-    "u-portfolio-card": portfolioCard
+    "u-portfolio-card": portfolioCard,
   },
   computed: {
     title() {
@@ -55,7 +55,7 @@ export default {
     },
     url() {
       return this.$static.metadata.url + this.relativeUrl;
-    }
+    },
   },
   metaInfo() {
     return {
@@ -68,11 +68,11 @@ export default {
         { name: "twitter:card", content: "summary_large_image" },
         {
           name: "twitter:site",
-          content: this.$static.metadata.author.twitter.user
+          content: this.$static.metadata.author.twitter.user,
         },
         {
           name: "twitter:creator",
-          content: this.$static.metadata.author.twitter.user
+          content: this.$static.metadata.author.twitter.user,
         },
         { name: "twitter:title", content: this.title },
         { name: "twitter:description", content: this.description },
@@ -83,23 +83,23 @@ export default {
         { property: "og:image", content: this.image },
         {
           property: "og:image:height",
-          content: this.image.match(/(\d*)x(\d*)/)[2]
+          content: this.image.match(/(\d*)x(\d*)/)[2],
         },
         {
           property: "og:image:width",
-          content: this.image.match(/(\d*)x(\d*)/)[1]
+          content: this.image.match(/(\d*)x(\d*)/)[1],
         },
         { property: "og:description", content: this.description },
         {
           property: "og:locale",
-          content: this.$static.metadata.language.replace("-", "_")
+          content: this.$static.metadata.language.replace("-", "_"),
         },
         { property: "og:site_name", content: this.$static.metadata.name },
         { property: "og:type", content: "website" },
-        { property: "fb:app_id", content: this.$static.metadata.facebookAppId }
-      ]
+        { property: "fb:app_id", content: this.$static.metadata.facebookAppId },
+      ],
     };
-  }
+  },
 };
 </script>
 

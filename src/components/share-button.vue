@@ -84,24 +84,24 @@ export default {
     "u-icon-linkedin": iconLinkedIn,
     "u-icon-reddit": iconReddit,
     "u-icon-share": iconShare,
-    "u-icon-twitter": iconTwitter
+    "u-icon-twitter": iconTwitter,
   },
   data() {
     return {
       isDialogueOpen: false,
-      isSupported: process.isClient && navigator.share
+      isSupported: process.isClient && navigator.share,
     };
   },
   props: {
     title: {
-      type: String
+      type: String,
     },
     url: {
-      type: String
+      type: String,
     },
     tags: {
-      type: Array
-    }
+      type: Array,
+    },
   },
   computed: {
     internalTitle() {
@@ -128,16 +128,14 @@ export default {
     encodedTags() {
       if (this.tags) {
         return encodeURIComponent(
-          this.tags.map(x => x.replace(/[\W_]+/g, "")).join(",")
+          this.tags.map((x) => x.replace(/[\W_]+/g, "")).join(",")
         );
       }
       return "";
     },
     facebookUrl() {
       // https://developers.facebook.com/docs/sharing/reference/share-dialog
-      return `https://www.facebook.com/sharer/sharer.php?u=${
-        this.encodedUrl
-      }&quote=${this.encodedTitle}`;
+      return `https://www.facebook.com/sharer/sharer.php?u=${this.encodedUrl}&quote=${this.encodedTitle}`;
     },
     twitterUrl() {
       // https://developer.twitter.com/en/docs/twitter-for-websites/tweet-button/overview
@@ -148,19 +146,15 @@ export default {
       }&via=${this.$static.metadata.author.twitter.user.replace("@", "")}`;
     },
     redditUrl() {
-      return `http://www.reddit.com/submit?url=${this.encodedUrl}&title=${
-        this.encodedTitle
-      }`;
+      return `http://www.reddit.com/submit?url=${this.encodedUrl}&title=${this.encodedTitle}`;
     },
     linkedinUrl() {
       // https://docs.microsoft.com/en-us/linkedin/consumer/integrations/self-serve/share-on-linkedin
-      return `http://www.linkedin.com/shareArticle?mini=true&url=${
-        this.encodedUrl
-      }&title=${this.encodedTitle}`;
+      return `http://www.linkedin.com/shareArticle?mini=true&url=${this.encodedUrl}&title=${this.encodedTitle}`;
     },
     mailUrl() {
       return `mailto:?subject=${this.encodedTitle}&body=${this.encodedUrl}`;
-    }
+    },
   },
   methods: {
     open() {
@@ -172,7 +166,7 @@ export default {
     share() {
       navigator.share({
         title: this.internalTitle,
-        url: this.internalUrl
+        url: this.internalUrl,
       });
     },
     onClick() {
@@ -181,8 +175,8 @@ export default {
       } else {
         this.open();
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

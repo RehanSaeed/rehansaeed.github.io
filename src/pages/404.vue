@@ -24,15 +24,15 @@ export default {
     "u-card": card,
     "u-link": link,
     "u-heading": heading,
-    "u-newsletter": newsletter
+    "u-newsletter": newsletter,
   },
   metaInfo() {
     return {
       title: "Not Found",
       link: [],
-      meta: []
+      meta: [],
     };
-  }
+  },
 };
 </script>
 

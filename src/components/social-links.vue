@@ -75,7 +75,7 @@ export default {
     "u-icon-rss": iconRss,
     "u-icon-stackoverflow": iconStackOverflow,
     "u-icon-twitter": iconTwitter,
-    "u-icon-youtube": iconYoutube
+    "u-icon-youtube": iconYoutube,
   },
   computed: {
     email() {
@@ -86,8 +86,8 @@ export default {
         "If you have an issue with one of my GitHub projects, please raise a GitHub issue. If you need help answering a coding problem, post your question on StackOverflow where you will get quicker and better answers. Otherwise, please do feel free to contact me!"
       );
       return `mailto:${this.email}?body=${body}`;
-    }
-  }
+    },
+  },
 };
 </script>
 

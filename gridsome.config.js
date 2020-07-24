@@ -12,7 +12,7 @@ module.exports = {
   templates: {
     post: "/:permalink",
     tag: "/tag/:title",
-    portfolio: "/:permalink"
+    portfolio: "/:permalink",
   },
 
   plugins: [
@@ -21,15 +21,15 @@ module.exports = {
       options: {
         paths: ["/*"],
         width: 1300,
-        height: 900
-      }
+        height: 900,
+      },
     },
     // https://gridsome.org/plugins/@gridsome/plugin-google-analytics
     {
       use: "@gridsome/plugin-google-analytics",
       options: {
-        id: site.googleAnalyticsId
-      }
+        id: site.googleAnalyticsId,
+      },
     },
     // https://gridsome.org/plugins/@gridsome/plugin-sitemap
     {
@@ -46,8 +46,8 @@ module.exports = {
           //   changefreq: 'monthly',
           //   priority: 0.7
           // }
-        }
-      }
+        },
+      },
     },
     {
       // Create posts from markdown files
@@ -59,10 +59,10 @@ module.exports = {
           // Creates a GraphQL collection from 'tags' in front-matter and adds a reference.
           tags: {
             typeName: "tag",
-            create: true
-          }
-        }
-      }
+            create: true,
+          },
+        },
+      },
     },
     {
       // Create posts from markdown files
@@ -74,17 +74,17 @@ module.exports = {
           // Creates a GraphQL collection from 'tags' in front-matter and adds a reference.
           tags: {
             typeName: "tag",
-            create: true
-          }
-        }
-      }
+            create: true,
+          },
+        },
+      },
     },
     // https://gridsome.org/plugins/gridsome-plugin-brotli
     {
       use: "gridsome-plugin-brotli",
       options: {
-        extensions: ["css", "html", "js", "svg", "json"]
-      }
+        extensions: ["css", "html", "js", "svg", "json"],
+      },
     },
     // https://github.com/onecrayon/gridsome-plugin-feed
     {
@@ -108,24 +108,24 @@ module.exports = {
           feedLinks: {
             atom: site.url + "/atom.xml",
             json: site.url + "/feed.json",
-            rss: site.url + "/rss.xml"
+            rss: site.url + "/rss.xml",
           },
           author: {
             name: site.author.name,
-            link: site.url
-          }
+            link: site.url,
+          },
         },
         atom: {
           enabled: false,
-          output: "/atom.xml"
+          output: "/atom.xml",
         },
         json: {
           enabled: false,
-          output: "/feed.json"
+          output: "/feed.json",
         },
         rss: {
           enabled: true,
-          output: "/rss.xml"
+          output: "/rss.xml",
         },
         // Optional: the maximum number of items to include in your feed
         maxItems: 300,
@@ -137,13 +137,13 @@ module.exports = {
         enforceTrailingSlashes: false,
         // Optional: a method that accepts a node and returns true (include) or false (exclude)
         // Example: only past-dated nodes: `filterNodes: (node) => node.date <= new Date()`
-        filterNodes: node => {
+        filterNodes: (node) => {
           return node.published;
         },
         // Optional: a method that accepts a node and returns an object for `Feed.addItem()`
         // See https://www.npmjs.com/package/feed#example for available properties
         // NOTE: `date` field MUST be a Javascript `Date` object
-        nodeToFeedItem: node => {
+        nodeToFeedItem: (node) => {
           return {
             title: node.title,
             id: site.url + node.permalink,
@@ -153,15 +153,15 @@ module.exports = {
             author: [
               {
                 name: node.author.name,
-                link: site.url
-              }
+                link: site.url,
+              },
             ],
             date: new Date(node.date),
             categories: node.tags,
-            image: node.heroImage
+            image: node.heroImage,
           };
-        }
-      }
+        },
+      },
     },
     // https://gridsome.org/plugins/gridsome-plugin-flexsearch
     {
@@ -171,16 +171,16 @@ module.exports = {
           {
             typeName: "post",
             indexName: "post",
-            fields: ["title", "description", "heroImage"]
+            fields: ["title", "description", "heroImage"],
           },
           {
             typeName: "portfolio",
             indexName: "portfolio",
-            fields: ["title", "description", "heroImage", "permalink"]
-          }
+            fields: ["title", "description", "heroImage", "permalink"],
+          },
         ],
-        searchFields: ["title", "description"]
-      }
+        searchFields: ["title", "description"],
+      },
     },
     // https://gridsome.org/plugins/gridsome-plugin-pwa
     {
@@ -213,22 +213,22 @@ module.exports = {
             short_name: "Blog",
             description: "Read the latest blog posts.",
             url: "/",
-            icons: [{ src: "/images/icons/blog.png", sizes: "192x192" }]
+            icons: [{ src: "/images/icons/blog.png", sizes: "192x192" }],
           },
           {
             name: "Portfolio",
             short_name: "Portfolio",
             description: "View the portfolio of my projects.",
             url: "/portfolio/",
-            icons: [{ src: "/images/icons/portfolio.png", sizes: "192x192" }]
+            icons: [{ src: "/images/icons/portfolio.png", sizes: "192x192" }],
           },
           {
             name: "About",
             short_name: "About",
             description: "About Muhammad Rehan Saeed.",
             url: "/about/",
-            icons: [{ src: "/images/icons/about.png", sizes: "192x192" }]
-          }
+            icons: [{ src: "/images/icons/about.png", sizes: "192x192" }],
+          },
         ],
 
         // Windows Meta Tags
@@ -240,8 +240,8 @@ module.exports = {
 
         // Apple MacOS Meta Tags
         appleMaskIcon: "favicon.svg",
-        appleMaskIconColor: "#6b17e8"
-      }
+        appleMaskIconColor: "#6b17e8",
+      },
     },
     // https://gridsome.org/plugins/gridsome-plugin-robots
     {
@@ -249,15 +249,15 @@ module.exports = {
       options: {
         host: site.url,
         sitemap: `${site.url}/sitemap.xml`,
-        policy: [{ userAgent: "*", allow: "/" }]
-      }
+        policy: [{ userAgent: "*", allow: "/" }],
+      },
     },
     {
       use: "gridsome-source-static-meta",
       options: {
-        path: "site.json"
-      }
-    }
+        path: "site.json",
+      },
+    },
   ],
 
   transformers: {
@@ -281,7 +281,7 @@ module.exports = {
                 version: "1.1",
                 width: 22,
                 height: 22,
-                "aria-hidden": "true"
+                "aria-hidden": "true",
               },
               children: [
                 {
@@ -291,12 +291,12 @@ module.exports = {
                     fill: "currentColor",
                     "fill-rule": "evenodd",
                     d:
-                      "M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
-                  }
-                }
-              ]
-            }
-          }
+                      "M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z",
+                  },
+                },
+              ],
+            },
+          },
         ],
         [
           "remark-containers",
@@ -306,14 +306,14 @@ module.exports = {
               {
                 type: "tip",
                 element: "div",
-                transform: function(node, config, tokenize) {
+                transform: function (node, config, tokenize) {
                   return transformContainer(node, config, "tip", "p", "Tip");
-                }
+                },
               },
               {
                 type: "warning",
                 element: "div",
-                transform: function(node, config, tokenize) {
+                transform: function (node, config, tokenize) {
                   return transformContainer(
                     node,
                     config,
@@ -321,12 +321,12 @@ module.exports = {
                     "p",
                     "Warning"
                   );
-                }
+                },
               },
               {
                 type: "danger",
                 element: "div",
-                transform: function(node, config, tokenize) {
+                transform: function (node, config, tokenize) {
                   return transformContainer(
                     node,
                     config,
@@ -334,12 +334,12 @@ module.exports = {
                     "p",
                     "Warning"
                   );
-                }
+                },
               },
               {
                 type: "details",
                 element: "details",
-                transform: function(node, config, tokenize) {
+                transform: function (node, config, tokenize) {
                   return transformContainer(
                     node,
                     config,
@@ -347,10 +347,10 @@ module.exports = {
                     "summary",
                     "Details"
                   );
-                }
-              }
-            ]
-          }
+                },
+              },
+            ],
+          },
         ],
         "remark-kbd",
         "remark-toc",
@@ -382,7 +382,7 @@ module.exports = {
             showLineNumbers: false,
             // If setting this to true, the parser won't handle and highlight inline
             // code used in markdown i.e. single backtick code like `this`.
-            noInlineHighlight: false
+            noInlineHighlight: false,
             // This adds a new language definition to Prism or extend an already
             // existing language definition. More details on this option can be
             // found under the header "Add new language definition or extend an
@@ -395,7 +395,7 @@ module.exports = {
             //   host: "localhost",
             //   global: false
             // }
-          }
+          },
         ],
         // https://github.com/noxify/gridsome-plugin-remark-embed
         [
@@ -403,34 +403,34 @@ module.exports = {
           {
             enabledProviders: ["Youtube"], // 'Twitter', 'Codepen'
             Youtube: {
-              margin: "25px 0 25px 0"
-            }
+              margin: "25px 0 25px 0",
+            },
             // Twitter: {
             //   hideMedia: false
             // },
             // Codepen: {
             //   // iframe: true
             // }
-          }
+          },
         ],
-        ["remark-validate-links", {}]
-      ]
-    }
-  }
+        ["remark-validate-links", {}],
+      ],
+    },
+  },
 };
 
 function transformContainer(node, config, type, element, defaultTitle) {
   node.data.hProperties = {
-    className: `custom-block ${type}`
+    className: `custom-block ${type}`,
   };
   node.children.splice(0, 0, {
     type: "paragraph",
     data: {
       hName: element,
       hProperties: {
-        className: "custom-block-title"
-      }
+        className: "custom-block-title",
+      },
     },
-    children: [{ type: "text", value: config || defaultTitle }]
+    children: [{ type: "text", value: config || defaultTitle }],
   });
 }

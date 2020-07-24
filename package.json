@@ -45,8 +45,11 @@
     "gridsome-plugin-robots": "^0.2.1",
     "gridsome-remark-embed-snippet": "^1.0.3",
     "gridsome-source-static-meta": "^1.0.1",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
     "marked": "^1.1.1",
     "node-sass": "^4.14.1",
+    "prettier": "^2.0.5",
     "remark-containers": "^1.2.0",
     "remark-kbd": "^1.0.21",
     "remark-toc": "^7.0.0",
@@ -57,5 +60,13 @@
     "build": "gridsome build",
     "start": "gridsome develop",
     "explore": "gridsome explore"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,css,md}": "prettier --write"
   }
 }

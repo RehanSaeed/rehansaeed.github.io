@@ -44,7 +44,7 @@ export default {
     "u-newsletter": newsletter,
     "u-post": post,
     "u-post-meta": postMeta,
-    "u-webmentions": webmentions
+    "u-webmentions": webmentions,
   },
   computed: {
     metadata() {
@@ -80,7 +80,7 @@ export default {
     },
     headings() {
       return this.post.headings ?? [];
-    }
+    },
   },
   metaInfo() {
     return {
@@ -89,7 +89,7 @@ export default {
       meta: [
         { name: "description", content: this.description },
         { name: "author", content: this.author },
-        { name: "keywords", content: this.tags.map(x => x.title).join(",") },
+        { name: "keywords", content: this.tags.map((x) => x.title).join(",") },
         // Twitter card
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:site", content: this.metadata.author.twitter.user },
@@ -104,21 +104,24 @@ export default {
         { property: "og:description", content: this.description },
         {
           property: "og:locale",
-          content: this.metadata.language.replace("-", "_")
+          content: this.metadata.language.replace("-", "_"),
         },
         { property: "og:site_name", content: this.metadata.name },
         { property: "og:type", content: "article" },
         { property: "article:published_time", content: this.date },
         ...[this.dateModified]
-          .filter(x => x)
-          .map(x => ({ property: "article:modified_time", content: x })),
+          .filter((x) => x)
+          .map((x) => ({ property: "article:modified_time", content: x })),
         { property: "article:author", content: this.author },
-        ...this.headings.map(x => ({
+        ...this.headings.map((x) => ({
           property: "article:section",
-          content: x.value
+          content: x.value,
         })),
-        ...this.tags.map(x => ({ property: "article:tag", content: x.title })),
-        { property: "fb:app_id", content: this.metadata.facebookAppId }
+        ...this.tags.map((x) => ({
+          property: "article:tag",
+          content: x.title,
+        })),
+        { property: "fb:app_id", content: this.metadata.facebookAppId },
       ],
       script: [
         {
@@ -128,11 +131,11 @@ export default {
             "@type": "Article",
             mainEntityOfPage: {
               "@type": "WebPage",
-              "@id": this.metadata.url
+              "@id": this.metadata.url,
             },
             headline: this.title,
             description: this.description,
-            keywords: this.tags.map(x => x.title).join(),
+            keywords: this.tags.map((x) => x.title).join(),
             url: this.url,
             image: [getSchemaImageObject(this.image)],
             datePublished: this.date,
@@ -146,9 +149,9 @@ export default {
                   .split(" ")
                   .join("-")}/Logo-260x260.png`, //
                 width: 260,
-                height: 260
+                height: 260,
               },
-              url: this.metadata.url + "/about/"
+              url: this.metadata.url + "/about/",
             },
             publisher: {
               "@type": "Organization",
@@ -157,15 +160,15 @@ export default {
                 "@type": "ImageObject",
                 url: this.metadata.url + "/images/schema/Publisher-600x60.png",
                 width: 600,
-                height: 60
+                height: 60,
               },
-              url: this.metadata.url
-            }
-          }
-        }
-      ]
+              url: this.metadata.url,
+            },
+          },
+        },
+      ],
     };
-  }
+  },
 };
 </script>
 

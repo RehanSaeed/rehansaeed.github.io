@@ -3,12 +3,12 @@ function createIcon(title, widthMultiplier = 1, heightMultiplier = 1) {
     props: {
       size: {
         default: 14,
-        type: Number
+        type: Number,
       },
       title: {
         default: title,
-        type: String
-      }
+        type: String,
+      },
     },
     computed: {
       height() {
@@ -16,8 +16,8 @@ function createIcon(title, widthMultiplier = 1, heightMultiplier = 1) {
       },
       width() {
         return this.size * widthMultiplier;
-      }
-    }
+      },
+    },
   };
 }
 

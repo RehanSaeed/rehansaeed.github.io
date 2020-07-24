@@ -53,8 +53,8 @@ export default {
   components: {
     "u-button": button,
     "u-card": card,
-    "u-heading": heading
-  }
+    "u-heading": heading,
+  },
 };
 </script>
 

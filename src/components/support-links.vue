@@ -49,8 +49,8 @@ export default {
     "u-link": link,
     "u-icon-coffee": iconCoffee,
     "u-icon-github": iconGitHub,
-    "u-icon-paypal": iconPaypal
-  }
+    "u-icon-paypal": iconPaypal,
+  },
 };
 </script>
 

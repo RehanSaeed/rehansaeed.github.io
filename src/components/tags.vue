@@ -18,14 +18,14 @@ import link from "~/components/shared/link.vue";
 export default {
   name: "u-tags",
   components: {
-    "u-link": link
+    "u-link": link,
   },
   props: {
     tags: {
       isRequired: true,
-      type: Array
-    }
-  }
+      type: Array,
+    },
+  },
 };
 </script>
 

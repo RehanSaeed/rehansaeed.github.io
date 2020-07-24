@@ -25,7 +25,7 @@ export default {
     "u-heading": heading,
     "u-author": author,
     "u-newsletter": newsletter,
-    "u-post-card": postCard
+    "u-post-card": postCard,
   },
   computed: {
     metadata() {
@@ -35,25 +35,23 @@ export default {
       return this.$page.tag;
     },
     posts() {
-      return this.tag.belongsTo.edges.map(x => x.node).filter(x => x.published);
+      return this.tag.belongsTo.edges
+        .map((x) => x.node)
+        .filter((x) => x.published);
     },
 
     title() {
       return this.tag.title;
     },
     description() {
-      return `Blog posts authored by ${this.metadata.author.name} about ${
-        this.title
-      }.`;
+      return `Blog posts authored by ${this.metadata.author.name} about ${this.title}.`;
     },
     image() {
-      return `${
-        this.metadata.url
-      }/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg`;
+      return `${this.metadata.url}/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg`;
     },
     url() {
       return this.metadata.url + this.tag.path;
-    }
+    },
   },
   metaInfo() {
     return {
@@ -75,23 +73,23 @@ export default {
         { property: "og:image", content: this.image },
         {
           property: "og:image:height",
-          content: this.image.match(/(\d*)x(\d*)/)[2]
+          content: this.image.match(/(\d*)x(\d*)/)[2],
         },
         {
           property: "og:image:width",
-          content: this.image.match(/(\d*)x(\d*)/)[1]
+          content: this.image.match(/(\d*)x(\d*)/)[1],
         },
         { property: "og:description", content: this.description },
         {
           property: "og:locale",
-          content: this.metadata.language.replace("-", "_")
+          content: this.metadata.language.replace("-", "_"),
         },
         { property: "og:site_name", content: this.metadata.name },
         { property: "og:type", content: "website" },
-        { property: "fb:app_id", content: this.metadata.facebookAppId }
-      ]
+        { property: "fb:app_id", content: this.metadata.facebookAppId },
+      ],
     };
-  }
+  },
 };
 </script>
 

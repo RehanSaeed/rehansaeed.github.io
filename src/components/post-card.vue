@@ -40,18 +40,18 @@ export default {
     "u-card": card,
     "u-heading": heading,
     "u-post-meta": postMeta,
-    "u-tags": tags
+    "u-tags": tags,
   },
   props: {
     post: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   computed: {
     imageMeta() {
       return getImageMetadata(this.post.heroImage);
-    }
-  }
+    },
+  },
 };
 </script>
 

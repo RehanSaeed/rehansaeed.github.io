@@ -40,14 +40,14 @@ export default {
   components: {
     "u-card": card,
     "u-heading": heading,
-    "u-tags": tags
+    "u-tags": tags,
   },
   props: {
     portfolio: {
       required: true,
-      type: Object
-    }
-  }
+      type: Object,
+    },
+  },
 };
 </script>
 

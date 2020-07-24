@@ -13,7 +13,7 @@ export default {
           (document.body.offsetHeight - window.innerHeight);
         document.body.style.setProperty("--scroll", scroll);
       });
-    }
+    },
   },
   mounted() {
     if (window) {
@@ -24,7 +24,7 @@ export default {
     if (window) {
       window.removeEventListener("scroll", this.onScroll, false);
     }
-  }
+  },
 };
 </script>
 

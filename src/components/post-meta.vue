@@ -28,8 +28,8 @@ export default {
   name: "u-post-meta",
   props: {
     meta: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   computed: {
     postedDisplayDate() {
@@ -37,8 +37,8 @@ export default {
     },
     updatedDisplayDate() {
       return getDisplayDateFromString(this.meta.dateModified);
-    }
-  }
+    },
+  },
 };
 </script>
 

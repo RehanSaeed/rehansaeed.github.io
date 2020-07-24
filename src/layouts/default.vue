@@ -27,8 +27,8 @@ export default {
     "u-scroll-indicator": scrollIndicator,
     "u-skip-link": skipLink,
     "u-footer": footer,
-    "u-navigation": navigation
-  }
+    "u-navigation": navigation,
+  },
 };
 </script>
 

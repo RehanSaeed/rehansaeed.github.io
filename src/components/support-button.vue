@@ -26,11 +26,11 @@ export default {
     "u-button": button,
     "u-dialogue": dialogue,
     "u-icon-coffee": iconCoffee,
-    "u-support-links": supportLinks
+    "u-support-links": supportLinks,
   },
   data() {
     return {
-      isDialogueOpen: false
+      isDialogueOpen: false,
     };
   },
   methods: {
@@ -42,7 +42,7 @@ export default {
     },
     onClick() {
       this.open();
-    }
-  }
+    },
+  },
 };
 </script>

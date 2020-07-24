@@ -95,11 +95,11 @@ export default {
     "u-card": card,
     "u-heading": heading,
     "u-newsletter": newsletter,
-    "u-social-links": socialLinks
+    "u-social-links": socialLinks,
   },
   data() {
     return {
-      theme: "light"
+      theme: "light",
     };
   },
   computed: {
@@ -107,9 +107,7 @@ export default {
       return "About";
     },
     description() {
-      return `About ${this.$static.metadata.author.name}. ${
-        this.$static.metadata.description
-      }.`;
+      return `About ${this.$static.metadata.author.name}. ${this.$static.metadata.description}.`;
     },
     image() {
       return (
@@ -130,24 +128,20 @@ export default {
       return this.$static.metadata.author.stackOverflow.storyUrl;
     },
     stackOverflowProfileUrl() {
-      return `https://stackoverflow.com/users/flair/${
-        this.$static.metadata.author.stackOverflow.user
-      }.png?theme=${this.oppositeTheme}`;
+      return `https://stackoverflow.com/users/flair/${this.$static.metadata.author.stackOverflow.user}.png?theme=${this.oppositeTheme}`;
     },
     gitHubUrl() {
       return this.$static.metadata.author.gitHub.url;
     },
     gitHubFollowersUrl() {
-      return `https://img.shields.io/github/followers/${
-        this.$static.metadata.author.gitHub.user
-      }?style=social`;
+      return `https://img.shields.io/github/followers/${this.$static.metadata.author.gitHub.user}?style=social`;
     },
     mvpUrl() {
       return "https://mvp.microsoft.com/en-us/PublicProfile/5001654?fullName=Muhammad%20Rehan%20Saeed";
     },
     oppositeTheme() {
       return this.theme === "light" ? "dark" : "light";
-    }
+    },
   },
   metaInfo() {
     return {
@@ -160,11 +154,11 @@ export default {
         { name: "twitter:card", content: "summary_large_image" },
         {
           name: "twitter:site",
-          content: this.$static.metadata.author.twitter.user
+          content: this.$static.metadata.author.twitter.user,
         },
         {
           name: "twitter:creator",
-          content: this.$static.metadata.author.twitter.user
+          content: this.$static.metadata.author.twitter.user,
         },
         { name: "twitter:title", content: this.title },
         { name: "twitter:description", content: this.description },
@@ -175,43 +169,43 @@ export default {
         { property: "og:image", content: this.image },
         {
           property: "og:image:height",
-          content: this.image.match(/(\d*)x(\d*)/)[2]
+          content: this.image.match(/(\d*)x(\d*)/)[2],
         },
         {
           property: "og:image:width",
-          content: this.image.match(/(\d*)x(\d*)/)[1]
+          content: this.image.match(/(\d*)x(\d*)/)[1],
         },
         { property: "og:description", content: this.description },
         {
           property: "og:locale",
-          content: this.$static.metadata.language.replace("-", "_")
+          content: this.$static.metadata.language.replace("-", "_"),
         },
         { property: "og:site_name", content: this.$static.metadata.name },
         { property: "og:type", content: "profile" },
         {
           property: "profile:first_name",
-          content: this.$static.metadata.author.firstName
+          content: this.$static.metadata.author.firstName,
         },
         {
           property: "profile:last_name",
-          content: this.$static.metadata.author.lastName
+          content: this.$static.metadata.author.lastName,
         },
         {
           property: "profile:username",
-          content: this.$static.metadata.author.name
+          content: this.$static.metadata.author.name,
         },
         {
           property: "profile:gender",
-          content: this.$static.metadata.author.gender
+          content: this.$static.metadata.author.gender,
         },
-        { property: "fb:app_id", content: this.$static.metadata.facebookAppId }
-      ]
+        { property: "fb:app_id", content: this.$static.metadata.facebookAppId },
+      ],
     };
   },
   methods: {
     setTheme(e) {
       this.theme = e.detail;
-    }
+    },
   },
   mounted() {
     if (window) {
@@ -223,7 +217,7 @@ export default {
     if (window) {
       window.removeEventListener("__themeChanged", this.setTheme, false);
     }
-  }
+  },
 };
 </script>
 

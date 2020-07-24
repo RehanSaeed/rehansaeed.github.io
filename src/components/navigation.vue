@@ -34,8 +34,8 @@ export default {
     "u-link": link,
     "u-install-button": installButton,
     "u-search-button": searchButton,
-    "u-theme-button": themeButton
-  }
+    "u-theme-button": themeButton,
+  },
 };
 </script>
 

@@ -30,16 +30,14 @@ export default {
     "u-author": author,
     "u-newsletter": newsletter,
     "u-pager": pager,
-    "u-post-card": postCard
+    "u-post-card": postCard,
   },
   computed: {
     title() {
       return "Blog";
     },
     description() {
-      return `Blog posts and more authored by ${
-        this.$static.metadata.author.name
-      }.`;
+      return `Blog posts and more authored by ${this.$static.metadata.author.name}.`;
     },
     image() {
       return (
@@ -58,15 +56,15 @@ export default {
     },
     previousUrl() {
       return previousUrl(this.$page.posts.pageInfo, this.$static.metadata.url);
-    }
+    },
   },
   metaInfo() {
     return {
       title: this.title,
       link: [
         { rel: "canonical", href: this.$static.metadata.url },
-        ...[{ rel: "next", href: this.nextUrl }].filter(x => x.href),
-        ...[{ rel: "prev", href: this.previousUrl }].filter(x => x.href)
+        ...[{ rel: "next", href: this.nextUrl }].filter((x) => x.href),
+        ...[{ rel: "prev", href: this.previousUrl }].filter((x) => x.href),
       ],
       meta: [
         { name: "description", content: this.description },
@@ -75,11 +73,11 @@ export default {
         { name: "twitter:card", content: "summary_large_image" },
         {
           name: "twitter:site",
-          content: this.$static.metadata.author.twitter.user
+          content: this.$static.metadata.author.twitter.user,
         },
         {
           name: "twitter:creator",
-          content: this.$static.metadata.author.twitter.user
+          content: this.$static.metadata.author.twitter.user,
         },
         { name: "twitter:title", content: this.title },
         { name: "twitter:description", content: this.description },
@@ -93,27 +91,27 @@ export default {
         { property: "og:description", content: this.description },
         {
           property: "og:locale",
-          content: this.$static.metadata.language.replace("-", "_")
+          content: this.$static.metadata.language.replace("-", "_"),
         },
         { property: "og:site_name", content: this.$static.metadata.name },
         { property: "og:type", content: "profile" },
         {
           property: "profile:first_name",
-          content: this.$static.metadata.author.firstName
+          content: this.$static.metadata.author.firstName,
         },
         {
           property: "profile:last_name",
-          content: this.$static.metadata.author.lastName
+          content: this.$static.metadata.author.lastName,
         },
         {
           property: "profile:username",
-          content: this.$static.metadata.author.name
+          content: this.$static.metadata.author.name,
         },
         {
           property: "profile:gender",
-          content: this.$static.metadata.author.gender
+          content: this.$static.metadata.author.gender,
         },
-        { property: "fb:app_id", content: this.$static.metadata.facebookAppId }
+        { property: "fb:app_id", content: this.$static.metadata.facebookAppId },
       ],
       script: [
         {
@@ -128,15 +126,13 @@ export default {
                 "@type": "ImageObject",
                 url: this.image,
                 width: this.imageWidth,
-                height: this.imageHeight
-              }
+                height: this.imageHeight,
+              },
             ],
             potentialAction: {
               "@type": "SearchAction",
-              target: `${
-                this.$static.metadata.url
-              }?search={search_term_string}`,
-              "query-input": "required name=search_term_string"
+              target: `${this.$static.metadata.url}?search={search_term_string}`,
+              "query-input": "required name=search_term_string",
             },
             author: {
               "@type": "Person",
@@ -149,9 +145,9 @@ export default {
                   .split(" ")
                   .join("-")}/Logo-260x260.png`,
                 width: 260,
-                height: 260
+                height: 260,
               },
-              url: this.$static.metadata.url + "/about/"
+              url: this.$static.metadata.url + "/about/",
             },
             publisher: {
               "@type": "Organization",
@@ -162,15 +158,15 @@ export default {
                   this.$static.metadata.url +
                   "/images/schema/Publisher-600x60.png",
                 width: 600,
-                height: 60
+                height: 60,
               },
-              url: this.$static.metadata.url
-            }
-          }
-        }
-      ]
+              url: this.$static.metadata.url,
+            },
+          },
+        },
+      ],
     };
-  }
+  },
 };
 </script>
 

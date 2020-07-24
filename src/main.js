@@ -14,7 +14,7 @@ import { decode } from "~/framework/obfuscate.js";
 const site = require("./../site.json");
 
 // The Client API can be used here. Learn more: gridsome.org/docs/client-api
-export default function(Vue, { router, head, isClient }) {
+export default function (Vue, { router, head, isClient }) {
   const consoleOptions = "background: #ffffff; color: #6b17e8";
 
   console.log(
@@ -85,7 +85,7 @@ export default function(Vue, { router, head, isClient }) {
     href: audiowide,
     as: "font",
     type: "font/woff2",
-    crossorigin: ""
+    crossorigin: "",
   });
 
   // Search
@@ -93,7 +93,7 @@ export default function(Vue, { router, head, isClient }) {
     rel: "search",
     type: "application/opensearchdescription+xml",
     href: "/opensearch.xml",
-    title: "Muhammad Rehan Saeed"
+    title: "Muhammad Rehan Saeed",
   });
 
   // Feeds
@@ -101,29 +101,29 @@ export default function(Vue, { router, head, isClient }) {
     rel: "alternate",
     type: "application/atom+xml",
     href: "/atom.xml",
-    title: "Muhammad Rehan Saeed"
+    title: "Muhammad Rehan Saeed",
   });
   head.link.push({
     rel: "alternate",
     type: "application/json",
     href: "/feed.json",
-    title: "Muhammad Rehan Saeed"
+    title: "Muhammad Rehan Saeed",
   });
   head.link.push({
     rel: "alternate",
     type: "application/rss+xml",
     href: "/rss.xml",
-    title: "Muhammad Rehan Saeed"
+    title: "Muhammad Rehan Saeed",
   });
 
   // Webmention
   head.link.push({
     rel: "webmention",
-    href: site.webmention.webmentionUrl
+    href: site.webmention.webmentionUrl,
   });
   head.link.push({
     rel: "pingback",
-    href: site.webmention.pingbackUrl
+    href: site.webmention.pingbackUrl,
   });
   // head.link.push({
   //   rel: 'authorization_endpoint',
@@ -161,7 +161,7 @@ export default function(Vue, { router, head, isClient }) {
   // Referrer
   head.meta.push({
     name: "referrer",
-    content: "no-referrer-when-downgrade"
+    content: "no-referrer-when-downgrade",
   });
 
   // Set default layout as a global component
@@ -178,6 +178,6 @@ export default function(Vue, { router, head, isClient }) {
     admins: [site.repository.owner],
     perPage: 9999,
     locale: "en",
-    autoCreateIssue: true
+    autoCreateIssue: true,
   });
 }

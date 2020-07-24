@@ -34,13 +34,13 @@ import { previousUrl, nextUrl } from "~/framework/paging.js";
 export default {
   components: {
     "u-card": card,
-    "u-link": link
+    "u-link": link,
   },
   props: {
     pageInfo: {
       required: true,
-      type: Object
-    }
+      type: Object,
+    },
   },
   computed: {
     previousUrl() {
@@ -48,8 +48,8 @@ export default {
     },
     nextUrl() {
       return nextUrl(this.pageInfo);
-    }
-  }
+    },
+  },
 };
 </script>
 

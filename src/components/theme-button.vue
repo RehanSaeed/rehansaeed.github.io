@@ -19,11 +19,11 @@ export default {
   components: {
     "u-button": button,
     "u-icon-moon": iconMoon,
-    "u-icon-sun": iconSun
+    "u-icon-sun": iconSun,
   },
   data() {
     return {
-      darkTheme: false
+      darkTheme: false,
     };
   },
   methods: {
@@ -32,13 +32,13 @@ export default {
 
       // This is using a script that is added in index.html
       window.__setPreferredTheme(this.darkTheme ? "dark" : "light");
-    }
+    },
   },
   mounted() {
     if (window.__theme == "dark") {
       this.darkTheme = true;
     }
-  }
+  },
 };
 </script>
 

@@ -26,13 +26,13 @@ import { getDisplayDateFromString } from "~/framework/date.js";
 export default {
   name: "u-webmention-reply",
   components: {
-    "u-avatar": avatar
+    "u-avatar": avatar,
   },
   props: {
     reply: {
       required: true,
-      type: Object
-    }
+      type: Object,
+    },
   },
   computed: {
     url() {
@@ -52,8 +52,8 @@ export default {
     },
     timestampDisplay() {
       return getDisplayDateFromString(this.timestamp);
-    }
-  }
+    },
+  },
 };
 </script>
 

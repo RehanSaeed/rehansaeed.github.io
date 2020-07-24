@@ -19,12 +19,12 @@ export default {
   name: "u-install-button",
   components: {
     "u-button": button,
-    "u-icon-add-home": iconAddHome
+    "u-icon-add-home": iconAddHome,
   },
   data() {
     return {
       deferredPrompt: undefined,
-      isVisible: false
+      isVisible: false,
     };
   },
   methods: {
@@ -59,14 +59,14 @@ export default {
       }
       console.log("PWA launched with display mode:", displayMode);
 
-      window.matchMedia("(display-mode: standalone)").addListener(evt => {
+      window.matchMedia("(display-mode: standalone)").addListener((evt) => {
         let displayMode = "browser tab";
         if (evt.matches) {
           displayMode = "standalone";
         }
         console.log("PWA display mode changed:", displayMode);
       });
-    }
+    },
   },
   mounted() {
     if (window) {
@@ -97,7 +97,7 @@ export default {
         false
       );
     }
-  }
+  },
 };
 </script>
 

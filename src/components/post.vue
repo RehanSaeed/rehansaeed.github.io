@@ -16,7 +16,7 @@
         <u-share-button
           class="post__share"
           :title="post.title"
-          :tags="post.tags.map(x => x.title)"
+          :tags="post.tags.map((x) => x.title)"
         />
         <u-edit-post-button class="post__edit" :post="post" />
         <u-support-button class="post__support" />
@@ -41,18 +41,18 @@ export default {
     "u-edit-post-button": editPostButton,
     "u-share-button": shareButton,
     "u-support-button": supportButton,
-    "u-tags": tags
+    "u-tags": tags,
   },
   props: {
     post: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   computed: {
     imageMeta() {
       return getImageMetadata(this.post.heroImage);
-    }
-  }
+    },
+  },
 };
 </script>
 

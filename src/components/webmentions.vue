@@ -105,21 +105,21 @@ export default {
     "u-icon-repost": iconRepost,
     "u-webmention-faces": webmentionFaces,
     "u-webmention-link": webmentionLink,
-    "u-webmention-reply": webmentionReply
+    "u-webmention-reply": webmentionReply,
   },
   data() {
     return {
       likes: [],
       reposts: [],
       links: [],
-      replies: []
+      replies: [],
     };
   },
   props: {
     url: {
       required: true,
-      type: String
-    }
+      type: String,
+    },
   },
   computed: {
     likesDescription() {
@@ -145,7 +145,7 @@ export default {
         "Reply",
         "Replies"
       )}`;
-    }
+    },
   },
   methods: {
     pluralise(count, one, many) {
@@ -153,9 +153,7 @@ export default {
     },
     async getMentions(page, perPage) {
       const response = await fetch(
-        `https://webmention.io/api/mentions?page=${page}&per-page=${perPage}&target=${
-          this.url
-        }&sort-by=published&sort-dir=up`
+        `https://webmention.io/api/mentions?page=${page}&per-page=${perPage}&target=${this.url}&sort-by=published&sort-dir=up`
       );
       const list = await response.json();
       return list.links;
@@ -163,23 +161,23 @@ export default {
     async onEnterFirstTime() {
       try {
         const mentions = await this.getMentions(0, 999);
-        this.likes = mentions.filter(x => x.activity.type === "like");
-        this.reposts = mentions.filter(x => x.activity.type === "repost");
+        this.likes = mentions.filter((x) => x.activity.type === "like");
+        this.reposts = mentions.filter((x) => x.activity.type === "repost");
         this.links = mentions.filter(
-          x =>
+          (x) =>
             x.activity.type === "link" &&
             !(x.data.author && x.data.author.photo)
         );
         this.replies = mentions.filter(
-          x =>
+          (x) =>
             x.activity.type === "reply" ||
             (x.activity.type === "link" && x.data.author && x.data.author.photo)
         );
       } catch (error) {
         console.log(error);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

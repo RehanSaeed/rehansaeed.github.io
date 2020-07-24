@@ -20,13 +20,13 @@ export default {
   name: "u-comments",
   components: {
     "u-card": card,
-    "u-heading": heading
+    "u-heading": heading,
   },
   props: {
     title: {
-      type: String
-    }
-  }
+      type: String,
+    },
+  },
 };
 </script>
 

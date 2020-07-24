@@ -36,11 +36,11 @@ export default {
     "u-button": button,
     "u-dialogue": dialogue,
     "u-icon-search": iconSearch,
-    "u-search": search
+    "u-search": search,
   },
   data() {
     return {
-      isOpen: false
+      isOpen: false,
     };
   },
   methods: {
@@ -49,13 +49,13 @@ export default {
     },
     close() {
       this.isOpen = false;
-    }
+    },
   },
   mounted() {
     if (this.$route.query.search) {
       this.open();
     }
-  }
+  },
 };
 </script>
 

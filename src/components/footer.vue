@@ -19,7 +19,7 @@
 
 <script>
 export default {
-  name: "u-footer"
+  name: "u-footer",
 };
 </script>
 

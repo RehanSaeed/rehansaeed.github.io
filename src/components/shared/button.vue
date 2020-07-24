@@ -4,7 +4,7 @@
     :class="{
       'button--bordered': bordered,
       'button--contrast': contrast,
-      'button--primary': primary
+      'button--primary': primary,
     }"
     :type="type"
   >
@@ -17,17 +17,17 @@ export default {
   name: "u-button",
   props: {
     bordered: {
-      type: Boolean
+      type: Boolean,
     },
     contrast: {
-      type: Boolean
+      type: Boolean,
     },
     primary: {
-      type: Boolean
+      type: Boolean,
     },
     submit: {
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   computed: {
     type() {
@@ -36,8 +36,8 @@ export default {
       } else {
         return "button";
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

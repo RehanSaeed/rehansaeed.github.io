@@ -19,13 +19,13 @@ import { getDisplayDateFromString } from "~/framework/date.js";
 export default {
   name: "u-webmention-faces",
   components: {
-    "u-avatar": avatar
+    "u-avatar": avatar,
   },
   props: {
     mentions: {
       required: true,
-      type: Array
-    }
+      type: Array,
+    },
   },
   methods: {
     getLabel(mention) {
@@ -35,16 +35,16 @@ export default {
         )}`;
       }
       return mention.data.author.name;
-    }
+    },
   },
   computed: {
     mentionsDisplay() {
-      return this.mentions.map(mention => ({
+      return this.mentions.map((mention) => ({
         mention,
-        label: this.getLabel(mention)
+        label: this.getLabel(mention),
       }));
-    }
-  }
+    },
+  },
 };
 </script>
 

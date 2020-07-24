@@ -4,7 +4,7 @@
     :is="tag"
     :class="{
       'avatar--medium': size === 'medium',
-      'avatar--large': size === 'large'
+      'avatar--large': size === 'large',
     }"
     :aria-label="label"
     :title="label"
@@ -27,29 +27,29 @@ export default {
   props: {
     label: {
       required: true,
-      type: String
+      type: String,
     },
     alt: {
       required: true,
-      type: String
+      type: String,
     },
     size: {
       default: "medium",
       required: false,
-      type: String
+      type: String,
     },
     src: {
       required: true,
-      type: String
+      type: String,
     },
     to: {
       required: false,
-      type: String
+      type: String,
     },
     href: {
       required: false,
-      type: String
-    }
+      type: String,
+    },
   },
   computed: {
     sizeInPixels() {
@@ -57,8 +57,8 @@ export default {
     },
     tag() {
       return this.to ? "g-link" : "a";
-    }
-  }
+    },
+  },
 };
 </script>
 
