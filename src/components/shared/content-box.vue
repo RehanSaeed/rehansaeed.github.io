@@ -27,8 +27,7 @@ export default {
     1px 1px 15px 0 rgba(0, 0, 0, 0.03);
   padding: var(--global-space-fluid-6);
   transition: transform var(--global-duration-2) ease-out,
-    background-color var(--global-duration-2) ease-out,
-    box-shadow var(--global-duration-3) ease-out;
+    background-color var(--global-duration-2) ease-out;
 
   // @mixin word-wrap()
   overflow-wrap: break-word;
@@ -41,6 +40,10 @@ export default {
   position: relative;
 }
 
+.content-box--hoverable:hover {
+  transform: translateY(-5px);
+}
+
 .content-box--hoverable::before {
   content: "";
   position: absolute;
@@ -51,7 +54,8 @@ export default {
 
   box-shadow: 1px 10px 30px 0 rgba(0, 0, 0, 0.2);
   opacity: 0;
-  transition: opacity 500ms;
+  transition: transform var(--global-duration-2) ease-out,
+    opacity var(--global-duration-2) ease-out;
 }
 
 .content-box--hoverable:hover::before {
