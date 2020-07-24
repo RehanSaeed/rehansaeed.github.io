@@ -52,7 +52,8 @@ export default {
   left: 0;
   z-index: -1;
 
-  box-shadow: 1px 10px 30px 0 rgba(0, 0, 0, 0.2);
+  border-radius: inherit;
+  box-shadow: 1px 10px 30px 0 hsl(0, 0%, 70%);
   opacity: 0;
   transition: opacity var(--global-duration-2) ease-out;
 }
