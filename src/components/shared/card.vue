@@ -3,17 +3,12 @@
     class="card"
     :is="tag"
     :class="{ 'card--hoverable': hoverable, 'card--focusable': focusable }"
-    @mousedown="onMouseDown"
-    @mouseup="onMouseUp"
   >
     <slot />
   </div>
 </template>
 
 <script>
-const ClickTimeoutMilliseconds = 200;
-const RightClickButton = 2;
-
 export default {
   name: "u-card",
   data() {
@@ -31,19 +26,6 @@ export default {
     tag: {
       default: "section",
       type: String,
-    },
-  },
-  methods: {
-    onMouseDown() {
-      this.downTimestamp = new Date().getTime();
-    },
-    onMouseUp(mouseEvent) {
-      if (mouseEvent.button !== RightClickButton) {
-        const upTimestamp = new Date().getTime();
-        if (upTimestamp - this.downTimestamp < ClickTimeoutMilliseconds) {
-          this.$emit("fastclick", mouseEvent);
-        }
-      }
     },
   },
 };

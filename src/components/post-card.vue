@@ -5,7 +5,6 @@
     hoverable
     focusable
     :class="{ 'post-card--has-poster': post.poster }"
-    @fastclick="onFastClick"
   >
     <div class="post-card__header">
       <g-image
@@ -54,13 +53,6 @@ export default {
   computed: {
     imageMeta() {
       return getImageMetadata(this.post.heroImage);
-    },
-  },
-  methods: {
-    onFastClick(e) {
-      if (e.target.nodeName !== "A") {
-        window.location.assign(this.post.path);
-      }
     },
   },
 };

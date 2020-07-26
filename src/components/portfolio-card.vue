@@ -1,11 +1,5 @@
 <template>
-  <u-card
-    class="portfolio-card"
-    tag="article"
-    hoverable
-    focusable
-    @fastclick="onFastClick"
-  >
+  <u-card class="portfolio-card" tag="article" hoverable focusable>
     <div class="portfolio-card__header">
       <g-image
         :alt="portfolio.title"
@@ -49,13 +43,6 @@ export default {
     portfolio: {
       required: true,
       type: Object,
-    },
-  },
-  methods: {
-    onFastClick(e) {
-      if (e.target.nodeName !== "A") {
-        window.location.assign(this.portfolio.permalink);
-      }
     },
   },
 };
