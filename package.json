@@ -61,6 +61,10 @@
     "start": "gridsome develop",
     "explore": "gridsome explore"
   },
+  "prettier": {
+    "htmlWhitespaceSensitivity": "strict",
+    "endOfLine": "crlf"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
