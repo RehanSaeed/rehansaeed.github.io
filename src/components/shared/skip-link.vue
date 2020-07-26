@@ -1,15 +1,15 @@
 <template>
-  <u-link class="skip-link" bordered contrast href="#main"
-    >Skip to content</u-link
+  <u-link-button class="skip-link" bordered contrast href="#main"
+    >Skip to content</u-link-button
   >
 </template>
 
 <script>
-import link from "~/components/shared/link.vue";
+import linkButton from "~/components/shared/link-button.vue";
 
 export default {
   components: {
-    "u-link": link,
+    "u-link-button": linkButton,
   },
 };
 </script>

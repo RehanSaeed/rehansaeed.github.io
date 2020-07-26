@@ -1,6 +1,6 @@
 <template>
   <div class="social">
-    <u-link
+    <u-link-button
       v-if="this.$static.metadata.author.twitter.url"
       label="Twitter"
       :href="this.$static.metadata.author.twitter.url"
@@ -8,8 +8,8 @@
       rel="me"
     >
       <u-icon-twitter :size="30" />
-    </u-link>
-    <u-link
+    </u-link-button>
+    <u-link-button
       v-if="this.$static.metadata.author.gitHub.url"
       label="GitHub"
       :href="this.$static.metadata.author.gitHub.url"
@@ -17,8 +17,8 @@
       rel="me authn"
     >
       <u-icon-github :size="30" />
-    </u-link>
-    <u-link
+    </u-link-button>
+    <u-link-button
       v-if="this.$static.metadata.author.stackOverflow.url"
       label="Stack Overflow"
       :href="this.$static.metadata.author.stackOverflow.url"
@@ -26,8 +26,8 @@
       rel="me"
     >
       <u-icon-stackoverflow :size="30" />
-    </u-link>
-    <u-link
+    </u-link-button>
+    <u-link-button
       v-if="this.$static.metadata.author.linkedIn.url"
       label="LinkedIn"
       :href="this.$static.metadata.author.linkedIn.url"
@@ -35,8 +35,8 @@
       rel="me"
     >
       <u-icon-linkedin :size="30" />
-    </u-link>
-    <u-link
+    </u-link-button>
+    <u-link-button
       v-if="this.$static.metadata.author.youtube.url"
       label="Youtube"
       :href="this.$static.metadata.author.youtube.url"
@@ -44,18 +44,18 @@
       rel="me"
     >
       <u-icon-youtube :size="30" />
-    </u-link>
-    <u-link class="social__link" label="Email" :href="mailTo">
+    </u-link-button>
+    <u-link-button class="social__link" label="Email" :href="mailTo">
       <u-icon-email :size="30" />
-    </u-link>
-    <u-link href="/rss.xml" label="RSS" class="social__link">
+    </u-link-button>
+    <u-link-button href="/rss.xml" label="RSS" class="social__link">
       <u-icon-rss :size="30" />
-    </u-link>
+    </u-link-button>
   </div>
 </template>
 
 <script>
-import link from "~/components/shared/link.vue";
+import linkButton from "~/components/shared/link-button.vue";
 import iconEmail from "~/components/shared/icons/icon-email.vue";
 import iconGitHub from "~/components/shared/icons/icon-github.vue";
 import iconLinkedIn from "~/components/shared/icons/icon-linkedin.vue";
@@ -68,7 +68,7 @@ import { decode } from "~/framework/obfuscate.js";
 export default {
   name: "u-social-links",
   components: {
-    "u-link": link,
+    "u-link-button": linkButton,
     "u-icon-email": iconEmail,
     "u-icon-github": iconGitHub,
     "u-icon-linkedin": iconLinkedIn,

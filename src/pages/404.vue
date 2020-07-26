@@ -5,7 +5,7 @@
 
       <u-card class="not-found__content">
         <p>Didn't find what you were looking for?</p>
-        <u-link bordered to="/">Go Home</u-link>
+        <u-link-button bordered to="/">Go Home</u-link-button>
       </u-card>
 
       <u-newsletter />
@@ -15,14 +15,14 @@
 
 <script>
 import card from "~/components/shared/card.vue";
-import link from "~/components/shared/link.vue";
+import linkButton from "~/components/shared/link-button.vue";
 import heading from "~/components/shared/heading.vue";
 import newsletter from "~/components/newsletter.vue";
 
 export default {
   components: {
     "u-card": card,
-    "u-link": link,
+    "u-link-button": linkButton,
     "u-heading": heading,
     "u-newsletter": newsletter,
   },

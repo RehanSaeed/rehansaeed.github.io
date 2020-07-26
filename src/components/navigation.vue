@@ -1,6 +1,6 @@
 <template>
   <nav class="navigation">
-    <u-link class="navigation__image-container" label="Home" to="/">
+    <u-link-button class="navigation__image-container" label="Home" to="/">
       <g-image
         :alt="this.$static.metadata.author.name"
         class="navigation__image"
@@ -9,11 +9,13 @@
         height="50"
         blur="0"
       />
-    </u-link>
+    </u-link-button>
     <div class="navigation__items-left">
-      <u-link class="navigation__item" to="/">Blog</u-link>
-      <u-link class="navigation__item" to="/portfolio/">Portfolio</u-link>
-      <u-link class="navigation__item" to="/about/">About</u-link>
+      <u-link-button class="navigation__item" to="/">Blog</u-link-button>
+      <u-link-button class="navigation__item" to="/portfolio/"
+        >Portfolio</u-link-button
+      >
+      <u-link-button class="navigation__item" to="/about/">About</u-link-button>
     </div>
     <div class="navigation__items-right">
       <u-search-button class="navigation__search" />
@@ -24,14 +26,14 @@
 </template>
 
 <script>
-import link from "~/components/shared/link.vue";
+import linkButton from "~/components/shared/link-button.vue";
 import installButton from "~/components/install-button.vue";
 import searchButton from "~/components/search-button.vue";
 import themeButton from "~/components/theme-button.vue";
 
 export default {
   components: {
-    "u-link": link,
+    "u-link-button": linkButton,
     "u-install-button": installButton,
     "u-search-button": searchButton,
     "u-theme-button": themeButton,

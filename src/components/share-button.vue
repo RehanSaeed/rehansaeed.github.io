@@ -1,8 +1,7 @@
 <template>
   <div>
     <u-button bordered @click.native="onClick">
-      <u-icon-share />
-      Share
+      <u-icon-share />Share
     </u-button>
 
     <u-dialogue
@@ -12,51 +11,46 @@
       class="share-dialogue"
     >
       <div class="share-dialogue__links">
-        <u-link
+        <u-link-button
           bordered
           :href="facebookUrl"
           @click.native="onClose"
           class="share-dialogue__link"
         >
-          <u-icon-facebook />
-          Facebook
-        </u-link>
-        <u-link
+          <u-icon-facebook />Facebook
+        </u-link-button>
+        <u-link-button
           bordered
           :href="twitterUrl"
           @click.native="onClose"
           class="share-dialogue__link"
         >
-          <u-icon-twitter />
-          Twitter
-        </u-link>
-        <u-link
+          <u-icon-twitter />Twitter
+        </u-link-button>
+        <u-link-button
           bordered
           :href="redditUrl"
           @click.native="onClose"
           class="share-dialogue__link"
         >
-          <u-icon-reddit />
-          Reddit
-        </u-link>
-        <u-link
+          <u-icon-reddit />Reddit
+        </u-link-button>
+        <u-link-button
           bordered
           :href="linkedinUrl"
           @click.native="onClose"
           class="share-dialogue__link"
         >
-          <u-icon-linkedin />
-          LinkedIn
-        </u-link>
-        <u-link
+          <u-icon-linkedin />LinkedIn
+        </u-link-button>
+        <u-link-button
           bordered
           :href="mailUrl"
           @click.native="onClose"
           class="share-dialogue__link"
         >
-          <u-icon-email />
-          Email
-        </u-link>
+          <u-icon-email />Email
+        </u-link-button>
       </div>
     </u-dialogue>
   </div>
@@ -65,7 +59,7 @@
 <script>
 import button from "~/components/shared/button.vue";
 import dialogue from "~/components/shared/dialogue.vue";
-import link from "~/components/shared/link.vue";
+import linkButton from "~/components/shared/link-button.vue";
 import iconEmail from "~/components/shared/icons/icon-email.vue";
 import iconFacebook from "~/components/shared/icons/icon-facebook.vue";
 import iconLinkedIn from "~/components/shared/icons/icon-linkedin.vue";
@@ -78,7 +72,7 @@ export default {
   components: {
     "u-button": button,
     "u-dialogue": dialogue,
-    "u-link": link,
+    "u-link-button": linkButton,
     "u-icon-email": iconEmail,
     "u-icon-facebook": iconFacebook,
     "u-icon-linkedin": iconLinkedIn,

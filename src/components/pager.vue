@@ -1,12 +1,12 @@
 <template>
   <div class="pager">
-    <u-link
+    <u-link-button
       class="pager__previous-button"
       :class="{ 'pager__button--none': !pageInfo.hasPreviousPage }"
       bordered
       contrast
       :to="previousUrl"
-      >Previous</u-link
+      >Previous</u-link-button
     >
 
     <p class="pager__info">
@@ -15,26 +15,26 @@
       >
     </p>
 
-    <u-link
+    <u-link-button
       class="pager__next-button"
       :class="{ 'pager__button--none': !pageInfo.hasNextPage }"
       bordered
       contrast
       :to="nextUrl"
-      >Next</u-link
+      >Next</u-link-button
     >
   </div>
 </template>
 
 <script>
 import card from "~/components/shared/card.vue";
-import link from "~/components/shared/link.vue";
+import linkButton from "~/components/shared/link-button.vue";
 import { previousUrl, nextUrl } from "~/framework/paging.js";
 
 export default {
   components: {
     "u-card": card,
-    "u-link": link,
+    "u-link-button": linkButton,
   },
   props: {
     pageInfo: {

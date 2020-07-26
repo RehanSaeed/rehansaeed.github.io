@@ -1,24 +1,23 @@
 <template>
   <div class="tags">
-    <u-link
+    <u-link-button
       class="tags__link"
       bordered
       v-for="tag in tags"
       :key="tag.id"
       :to="tag.path"
+      >{{ tag.title }}</u-link-button
     >
-      {{ tag.title }}
-    </u-link>
   </div>
 </template>
 
 <script>
-import link from "~/components/shared/link.vue";
+import linkButton from "~/components/shared/link-button.vue";
 
 export default {
   name: "u-tags",
   components: {
-    "u-link": link,
+    "u-link-button": linkButton,
   },
   props: {
     tags: {

@@ -3,9 +3,9 @@
     :is="tag"
     class="link"
     :class="{
-      'link--bordered': bordered,
-      'link--contrast': contrast,
-      'link--primary': primary,
+      'link-button--bordered': bordered,
+      'link-button--contrast': contrast,
+      'link-button--primary': primary,
     }"
     :href="href"
     :to="to"
@@ -18,7 +18,7 @@
 
 <script>
 export default {
-  name: "u-link",
+  name: "u-link-button",
   props: {
     bordered: {
       type: Boolean,
@@ -51,7 +51,7 @@ export default {
 </script>
 
 <style lang="scss">
-.link,
+.link-button,
 .vssue-logout {
   color: var(--global-title-color);
   font-family: var(--global-font-family-heading);
@@ -73,7 +73,7 @@ export default {
   }
 }
 
-.link--bordered,
+.link-button--bordered,
 .vssue-logout {
   background-color: var(--global-background-color);
   border: var(--global-border-width-1) solid var(--global-border-color);
@@ -102,7 +102,7 @@ export default {
   }
 }
 
-.link--bordered::before,
+.link-button--bordered::before,
 .vssue-logout::before {
   content: "";
   position: absolute;
@@ -118,24 +118,24 @@ export default {
   transition: opacity var(--global-duration-2) ease-out;
 }
 
-.link--bordered:hover::before,
-.link--bordered:focus::before,
+.link-button--bordered:hover::before,
+.link-button--bordered:focus::before,
 .vssue-logout:hover::before,
 .vssue-logout:focus::before {
   opacity: 1;
 }
 
-.link--bordered:active::before,
+.link-button--bordered:active::before,
 .vssue-logout:active::before {
   box-shadow: 0 0 0 hsl(0, 0%, 70%);
   opacity: 1;
 }
 
-.link--contrast {
+.link-button--contrast {
   background-color: var(--global-content-background-color);
 }
 
-.link--primary {
+.link-button--primary {
   color: var(--global-accent-color);
   border-color: var(--global-accent-color);
 
