@@ -1,7 +1,7 @@
 <template>
   <Component
     :is="tag"
-    class="link"
+    class="link-button"
     :class="{
       'link-button--bordered': bordered,
       'link-button--contrast': contrast,
