@@ -51,6 +51,7 @@ export default {
   font-family: var(--global-font-family-heading);
   line-height: var(--global-line-height-1);
   padding: 0;
+  position: relative;
   transition: color var(--global-duration-1) ease-out,
     opacity var(--global-duration-1) ease-out,
     transform var(--global-duration-1) ease-out;

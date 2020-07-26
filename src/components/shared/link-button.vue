@@ -56,6 +56,7 @@ export default {
   color: var(--global-title-color);
   font-family: var(--global-font-family-heading);
   line-height: var(--global-line-height-1);
+  position: relative;
   text-decoration: none;
   transition: color var(--global-duration-1) ease-out,
     opacity var(--global-duration-1) ease-out,
