@@ -60,7 +60,7 @@ export default {
 
 <style lang="scss">
 .post-card {
-  cursor: pointer;
+  position: relative;
 }
 
 .post-card__header {
@@ -82,6 +82,15 @@ export default {
 
 .post-card__title {
   margin-top: 0;
+}
+
+.post-card__title a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .post-card__tags {

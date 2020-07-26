@@ -50,7 +50,7 @@ export default {
 
 <style lang="scss">
 .portfolio-card {
-  cursor: pointer;
+  position: relative;
 }
 
 .portfolio-card__header {
@@ -72,6 +72,15 @@ export default {
 
 .portfolio-card__title {
   margin-top: 0;
+}
+
+.portfolio-card__title a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .portfolio-card__tags {
