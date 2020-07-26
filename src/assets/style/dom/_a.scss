@@ -43,11 +43,6 @@ a {
     &:visited {
       text-decoration-color: var(--global-link-visited-color);
     }
-
-    &:not([href]),
-    &[href=""] {
-      color: var(--global-link-color);
-    }
   }
 }
 
