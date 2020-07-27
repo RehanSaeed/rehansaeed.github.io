@@ -22,9 +22,9 @@ tags:
 - [Reactive Extensions (Rx) - Part 2 - Wrapping C# Events](/reactive-extensions-part2-wrapping-events/)
 - [Reactive Extensions (Rx) - Part 3 - Naming Conventions](/reactive-extensions-part3-naming-conventions/)
 - [Reactive Extensions (Rx) - Part 4 - Replacing Timers](/reactive-extensions-part4-replacing-timers/)
-- [Reactive Extensions (Rx) - Part 5 - Awaiting Observables](/reactive-extensions-part4-awaiting-observables/)
-- [Reactive Extensions (Rx) - Part 6 - Task ToObservable](/reactive-extensions-part6-task-toobservable/)
-- [Reactive Extensions (Rx) - Part 7 - Sample Events](/reactive-extensions-part7-sample-events/)
+- [Reactive Extensions (Rx) - Part 5 - Awaiting Observables](/reactive-extensions-part5-awaiting-observables/)
+- [Reactive Extensions (Rx) - Part 6 - Task ToObservable](/reactive-extensions-part6-task-toobservable/)
+- [Reactive Extensions (Rx) - Part 7 - Sample Events](/reactive-extensions-part7-sample-events/)
 - [Reactive Extensions (Rx) - Part 8 - Timeouts](/reactive-extensions-rx-part-8-timeouts/)
 
 Its been a while since I've done another Rx post. They've been pretty popular and thanks to the community for all the positive feedback. I was talking to a colleague yesterday who had been using standard C# events in WPF (The principals learned in this post can apply anywhere). He had subscribed to the `TextChanged` event in C# and was updating the user interface on the fly, whenever the user typed in a character of text. He was getting way too many events being fired and his user interface couldn't keep up with all the work it was being asked to do.
