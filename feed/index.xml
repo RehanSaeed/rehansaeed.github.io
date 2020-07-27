@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Mon, 27 Jul 2020 15:44:42 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 27 Jul 2020 17:03:39 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -3352,9 +3352,9 @@ script:
 <li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Part 2 - Wrapping C# Events</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Part 3 - Naming Conventions</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Part 4 - Replacing Timers</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part4-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Part 8 - Timeouts</a></li>
 </ul>
 <p>In <a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">part six</a> of this series of blog posts I talked about using Reactive Extensions for adding timeout logic to asynchronous tasks. Something like this:</p>
@@ -6483,9 +6483,9 @@ filters.Add(
 <li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Part 2 - Wrapping C# Events</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Part 3 - Naming Conventions</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Part 4 - Replacing Timers</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part4-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Part 8 - Timeouts</a></li>
 </ul>
 <p>Its been a while since I&#39;ve done another Rx post. They&#39;ve been pretty popular and thanks to the community for all the positive feedback. I was talking to a colleague yesterday who had been using standard C# events in WPF (The principals learned in this post can apply anywhere). He had subscribed to the <code>TextChanged</code> event in C# and was updating the user interface on the fly, whenever the user typed in a character of text. He was getting way too many events being fired and his user interface couldn&#39;t keep up with all the work it was being asked to do.</p>
@@ -8299,9 +8299,9 @@ Console.WriteLine(disposable.IsDisposed);</code></pre>
 <li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Part 2 - Wrapping C# Events</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Part 3 - Naming Conventions</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Part 4 - Replacing Timers</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part4-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Part 8 - Timeouts</a></li>
 </ul>
 <h1 id="a-quick-recap">A Quick Recap</h1>
@@ -8678,9 +8678,9 @@ public struct HashCode : IEquatable&lt;HashCode&gt;
 <li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Part 2 - Wrapping C# Events</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Part 3 - Naming Conventions</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Part 4 - Replacing Timers</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part4-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Part 8 - Timeouts</a></li>
 </ul>
 <p>So I&#39;ve just finished extolling the wonderful virtues of <code>TaskCompletionSource</code> with a colleague and thought I&#39;d share the joy more widely. Eventually this will turn into a post about how great Reactive Extensions (Rx) is, I promise.</p>
@@ -8947,9 +8947,9 @@ I am the developer of Elysium Extra. It was developed at the company where I wor
 <li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Part 2 - Wrapping C# Events</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Part 3 - Naming Conventions</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Part 4 - Replacing Timers</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part4-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Part 8 - Timeouts</a></li>
 </ul>
 <p>Reactive Extensions (Rx) is a huge library. In this series of blog posts I&#39;ve tried to illustrate real world applications where using Rx can significantly improve and/or simplify your code. So far I&#39;ve talked about using Rx to replace standard C# events and also wrapping C# events with observables.</p>
@@ -9194,9 +9194,9 @@ private void OnTimerElapsed(object sender, ElapsedEventArgs e)
 <li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Part 2 - Wrapping C# Events</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Part 3 - Naming Conventions</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Part 4 - Replacing Timers</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part4-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Part 8 - Timeouts</a></li>
 </ul>
 <p>Standard C# events do not have any real naming convention, except using the English language to suggest that something has happened e.g. <code>PropertyChanged</code>. Should a property returning an <code>IObservable&lt;T&gt;</code> have a naming convention? I&#39;m not entirely certain but I&#39;ll explain why I have used one and why.</p>
@@ -9223,9 +9223,9 @@ private void OnTimerElapsed(object sender, ElapsedEventArgs e)
 <li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Part 2 - Wrapping C# Events</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Part 3 - Naming Conventions</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Part 4 - Replacing Timers</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part4-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Part 8 - Timeouts</a></li>
 </ul>
 <p>Sometimes it is not possible to replace a C# event with a Reactive Extensions (Rx) event entirely. This is usually because we are implementing an interface which has a C# event and we don&#39;t own the interface.</p>
@@ -9320,7 +9320,7 @@ public IObservable&lt;BunnyRabbits&gt; WhenBunnyRabbitsAttack
 <li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Part 2 - Wrapping C# Events</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Part 3 - Naming Conventions</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Part 4 - Replacing Timers</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part4-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
 <li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Part 8 - Timeouts</a></li>
