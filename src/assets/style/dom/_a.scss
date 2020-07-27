@@ -24,15 +24,16 @@ a {
   }
 
   @supports (text-decoration-thickness: 1em) {
-    --thickness: 0.07rem;
-    --offset: 0.1rem;
-    --thickness--hover: 1.125rem;
-    --offset--hover: -0.825rem;
+    --thickness: 0.07em;
+    --offset: 0.1em;
+    --thickness--hover: 1.125em;
+    --offset--hover: -0.825em;
 
     animation-name: text-decoration-out;
     animation-timing-function: ease-in-out;
     animation-duration: var(--global-duration-1);
     animation-fill-mode: forwards;
+    transition: none;
 
     text-decoration-skip-ink: auto;
     text-decoration-thickness: var(--thickness);
@@ -43,9 +44,7 @@ a {
     &:active {
       animation-name: text-decoration-in;
 
-      color: var(--global-background-color);
       opacity: 1;
-      text-decoration-color: var(--global-link-color);
     }
 
     &:visited {
@@ -58,10 +57,14 @@ a {
       }
       0.1% {
         text-decoration-skip-ink: none;
+        color: var(--global-link-color);
+        text-decoration-color: var(--global-link-color);
         text-decoration-thickness: var(--thickness);
         text-underline-offset: var(--offset);
       }
       100% {
+        color: var(--global-background-color);
+        text-decoration-color: var(--global-link-color);
         text-decoration-skip-ink: none;
         text-decoration-thickness: var(--thickness--hover);
         text-underline-offset: var(--offset--hover);
@@ -70,11 +73,15 @@ a {
 
     @keyframes text-decoration-out {
       0% {
+        color: var(--global-background-color);
+        text-decoration-color: var(--global-link-color);
         text-decoration-skip-ink: none;
         text-decoration-thickness: var(--thickness--hover);
         text-underline-offset: var(--offset--hover);
       }
       99.9% {
+        color: var(--global-link-color);
+        text-decoration-color: var(--global-link-color);
         text-decoration-skip-ink: none;
         text-decoration-thickness: var(--thickness);
         text-underline-offset: var(--offset);

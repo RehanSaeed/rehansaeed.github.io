@@ -53,6 +53,7 @@ export default {
 <style lang="scss">
 .link-button,
 .vssue-logout {
+  animation: none;
   color: var(--global-title-color);
   font-family: var(--global-font-family-heading);
   line-height: var(--global-line-height-1);

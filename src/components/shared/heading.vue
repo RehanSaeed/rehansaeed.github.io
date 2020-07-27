@@ -95,6 +95,7 @@ export default {
 }
 
 .heading__link {
+  animation: none;
   color: var(--global-title-color);
   opacity: 1;
   text-decoration: none;
