@@ -8,12 +8,12 @@ date: "2020-07-08T08:34:00Z"
 dateModified: "2020-07-08T12:16:00Z"
 published: true
 categories:
-  - ".NET"
+    - ".NET"
 tags:
-  - "NuGet"
-  - "GitHub"
-  - "GitHub Actions"
-  - ".NET Boxed"
+    - "NuGet"
+    - "GitHub"
+    - "GitHub Actions"
+    - ".NET Boxed"
 ---
 
 ::: tip Updated 2020-07-08 12:16
@@ -121,13 +121,13 @@ git commit -m "Initial"
 git push --set-upstream origin master
 
 # View GitHub Actions Continuous Integration Build
-start https://github.com/RehanSaeed/FastestNuGet/actions
+start "https://github.com/RehanSaeed/FastestNuGet/actions"
 
 # View NuGet Package Published to GitHub Packages
-start https://github.com/RehanSaeed/FastestNuGet/packages
+start "https://github.com/RehanSaeed/FastestNuGet/packages"
 
 # Create major, minor, patch, bug, enhancement, maintenance labels
-start https://github.com/RehanSaeed/FastestNuGet/labels
+start "https://github.com/RehanSaeed/FastestNuGet/labels"
 
 git switch --create some-change
 git add .
@@ -136,16 +136,16 @@ git push --set-upstream origin some-change
 gh pr create --fill --label major --label enhancement
 
 # View and Complete Pull Request
-start https://github.com/RehanSaeed/FastestNuGet/pull/1
+start "https://github.com/RehanSaeed/FastestNuGet/pull/1"
 
 # Add NUGET_API_KEY to GitHub Secrets
-start https://github.com/RehanSaeed/FastestNuGet/settings/secrets
+start "https://github.com/RehanSaeed/FastestNuGet/settings/secrets"
 
 # View and Publish Updated Draft Release
-start https://github.com/RehanSaeed/FastestNuGet/releases
+start "https://github.com/RehanSaeed/FastestNuGet/releases"
 
 # View NuGet Package Published to NuGet
-start https://www.nuget.org/packages/FastestNuGet/
+start "https://www.nuget.org/packages/FastestNuGet/"
 ```
 
 # Conclusions
