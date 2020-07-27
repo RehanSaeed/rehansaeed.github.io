@@ -26,9 +26,9 @@ a {
   }
 
   @supports (text-decoration-thickness: 1em) {
-    text-decoration-thickness: 0.1rem;
-    text-underline-offset: 0.125rem;
     text-decoration-skip-ink: none;
+    text-decoration-thickness: 0.07rem;
+    text-underline-offset: 0.1rem;
 
     &:hover,
     &:focus,
@@ -37,7 +37,7 @@ a {
       opacity: 1;
       text-decoration-color: var(--global-link-color);
       text-decoration-thickness: 1.125rem;
-      text-underline-offset: -0.875rem;
+      text-underline-offset: -0.825rem;
     }
 
     &:visited {
