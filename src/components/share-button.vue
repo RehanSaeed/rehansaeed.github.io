@@ -17,7 +17,7 @@
           @click.native="onClose"
           class="share-dialogue__link"
         >
-          <u-icon-facebook />Facebook
+          <u-icon-facebook /> Facebook
         </u-link-button>
         <u-link-button
           bordered
@@ -25,7 +25,7 @@
           @click.native="onClose"
           class="share-dialogue__link"
         >
-          <u-icon-twitter />Twitter
+          <u-icon-twitter /> Twitter
         </u-link-button>
         <u-link-button
           bordered
@@ -33,7 +33,7 @@
           @click.native="onClose"
           class="share-dialogue__link"
         >
-          <u-icon-reddit />Reddit
+          <u-icon-reddit /> Reddit
         </u-link-button>
         <u-link-button
           bordered
@@ -41,7 +41,7 @@
           @click.native="onClose"
           class="share-dialogue__link"
         >
-          <u-icon-linkedin />LinkedIn
+          <u-icon-linkedin /> LinkedIn
         </u-link-button>
         <u-link-button
           bordered
@@ -49,7 +49,7 @@
           @click.native="onClose"
           class="share-dialogue__link"
         >
-          <u-icon-email />Email
+          <u-icon-email /> Email
         </u-link-button>
       </div>
     </u-dialogue>

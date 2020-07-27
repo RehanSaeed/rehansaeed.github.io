@@ -13,7 +13,7 @@
         :href="this.$static.metadata.author.buyMeACoffee.url"
         class="support-links__link"
       >
-        <u-icon-coffee />Buy me a Coffee
+        <u-icon-coffee /> Buy me a Coffee
       </u-link-button>
       <u-link-button
         v-if="this.$static.metadata.author.gitHub.sponsorsUrl"
@@ -22,7 +22,7 @@
         :href="this.$static.metadata.author.gitHub.sponsorsUrl"
         class="support-links__link"
       >
-        <u-icon-github />GitHub Sponsors
+        <u-icon-github /> GitHub Sponsors
       </u-link-button>
       <u-link-button
         v-if="this.$static.metadata.author.paypal.url"
@@ -31,7 +31,7 @@
         :href="this.$static.metadata.author.paypal.url"
         class="support-links__link"
       >
-        <u-icon-paypal />Paypal
+        <u-icon-paypal /> Paypal
       </u-link-button>
     </div>
   </div>
