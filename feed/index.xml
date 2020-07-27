@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Sun, 26 Jul 2020 18:16:14 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 27 Jul 2020 15:44:42 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -80,13 +80,13 @@ git commit -m &quot;Initial&quot;
 git push --set-upstream origin master
 
 # View GitHub Actions Continuous Integration Build
-start https://github.com/RehanSaeed/FastestNuGet/actions
+start &quot;https://github.com/RehanSaeed/FastestNuGet/actions&quot;
 
 # View NuGet Package Published to GitHub Packages
-start https://github.com/RehanSaeed/FastestNuGet/packages
+start &quot;https://github.com/RehanSaeed/FastestNuGet/packages&quot;
 
 # Create major, minor, patch, bug, enhancement, maintenance labels
-start https://github.com/RehanSaeed/FastestNuGet/labels
+start &quot;https://github.com/RehanSaeed/FastestNuGet/labels&quot;
 
 git switch --create some-change
 git add .
@@ -95,16 +95,16 @@ git push --set-upstream origin some-change
 gh pr create --fill --label major --label enhancement
 
 # View and Complete Pull Request
-start https://github.com/RehanSaeed/FastestNuGet/pull/1
+start &quot;https://github.com/RehanSaeed/FastestNuGet/pull/1&quot;
 
 # Add NUGET_API_KEY to GitHub Secrets
-start https://github.com/RehanSaeed/FastestNuGet/settings/secrets
+start &quot;https://github.com/RehanSaeed/FastestNuGet/settings/secrets&quot;
 
 # View and Publish Updated Draft Release
-start https://github.com/RehanSaeed/FastestNuGet/releases
+start &quot;https://github.com/RehanSaeed/FastestNuGet/releases&quot;
 
 # View NuGet Package Published to NuGet
-start https://www.nuget.org/packages/FastestNuGet/</code></pre>
+start &quot;https://www.nuget.org/packages/FastestNuGet/&quot;</code></pre>
 <h1 id="conclusions">Conclusions</h1>
 <p>I hope this <a href="https://github.com/Dotnet-Boxed/Templates">Dotnet Boxed</a> project template accelerates development of your next NuGet package. There are lots of optional features of the <a href="https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/NuGet.md">NuGet project template</a> I haven&#39;t even shown like support for Azure Pipelines and Appveyor continuous integration builds and more, so please do go and take a look.</p>
 ]]></content:encoded>
