@@ -2,11 +2,9 @@ a {
   cursor: pointer;
   color: var(--global-link-color);
   text-decoration-color: var(--global-link-color);
-  transition: text-decoration-thickness var(--global-duration-1) ease-out,
-    text-underline-offset var(--global-duration-1) ease-out,
-    text-decoration-color var(--global-duration-1) ease-out,
-    color var(--global-duration-1) ease-out,
-    opacity var(--global-duration-1) ease-out;
+  transition: color var(--global-duration-1) ease-out,
+    opacity var(--global-duration-1) ease-out,
+    text-decoration-color var(--global-duration-1) ease-out;
 
   &:hover,
   &:focus,
@@ -29,6 +27,11 @@ a {
     text-decoration-skip-ink: none;
     text-decoration-thickness: 0.07rem;
     text-underline-offset: 0.1rem;
+    transition: color var(--global-duration-1) ease-out,
+      opacity var(--global-duration-1) ease-out,
+      text-decoration-thickness var(--global-duration-1) ease-out,
+      text-underline-offset var(--global-duration-1) ease-out,
+      text-decoration-color var(--global-duration-1) ease-out;
 
     &:hover,
     &:focus,
