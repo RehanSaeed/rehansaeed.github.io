@@ -5,7 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/gitattributes-best-practices/"
 heroImage: "/images/hero/Git-1366x768.png"
 date: "2019-07-22"
-dateModified: null
+dateModified: "2020-08-04"
 published: true
 categories:
 tags:
@@ -15,6 +15,10 @@ tags:
   - "GitHub"
   - "gitignore"
 ---
+
+::: tip Update (2020-08-04)
+Added some more information about CRLF line endings for `.cmd` and `.bat` files. Also added a section about Git LFS support on GitHub.
+:::
 
 ## .gitignore
 
@@ -35,15 +39,20 @@ Git can actually be configured to automatically handle line endings using a sett
 The solution to this is to add a `.gitattributes` file at the root of your repository and set the line endings to be automatically normalised like so:
 
 ```git
-# Set default behaviour to automatically normalize line endings.
+# Set default behavior to automatically normalize line endings.
 * text=auto
 
-# Force bash scripts to always use lf line endings so that if a repo is accessed
+# Force batch scripts to always use CRLF line endings so that if a repo is accessed
+# in Windows via a file share from Linux, the scripts will work.
+*.{cmd,[cC][mM][dD]} text eol=crlf
+*.{bat,[bB][aA][tT]} text eol=crlf
+
+# Force bash scripts to always use LF line endings so that if a repo is accessed
 # in Unix via a file share from Windows, the scripts will work.
 *.sh text eol=lf
 ```
 
-The second line is not strictly necessary. It hard codes the line endings for bash scripts to be LF, so that they can be executed via a file share. It's a practice I picked up from the [corefx repository](https://github.com/dotnet/corefx/blob/master/.gitattributes).
+Only the first line is strictly necessary. It hard codes the line endings for Windows cmd and batch scripts to CRLF and bash scripts to be LF, so that they can be executed via a file share. It's a practice I picked up from the [corefx repository](https://github.com/dotnet/corefx/blob/master/.gitattributes).
 
 ### Git Large File System (LFS)
 
@@ -82,6 +91,12 @@ So here I've added a whole list of file extensions for various file types I want
 
 A quick warning about adding LFS to an existing repository with existing binary files checked into it. The existing binary files will be checked into Git and not LFS without rewriting Git history which would be bad and you shouldn't do unless you are the only developer. You will have to add a one off commit to take the latest versions of all binary files and add them to LFS. Everyone who uses the repository will also have to re-clone the repository (I found this out the hard way in a team of 15 people. Many apologies were made over the course of a week). Ideally you add this from day one and educate developers about Git's treatment of binary files, so people don't check-in any binary files not controlled by LFS.
 
+### GitHub
+
+GitHub does technically provide Git LFS for free but they limit the bandwidth to 1GB. If your repository is public and you have any traffic going to your site whatsoever, you will get through that very quickly. GitHub charges $5 per month for a data pack which gives you 50GB of bandwidth per month which I've found is enough for a moderately popular GitHub repository.
+
+I really don't understand why GitHub charges for Git LFS because people who don't want to pay are just going to check in binary files in Git instead which presumably would cost them more bandwidth. Surely they should be encouraging it's use by making it free?
+
 ### Binary Files
 
 When talking about the `.gitattributes` file, you will quite often hear some people talk about explicitly listing all binary files instead of relying on Git to auto-detect binary files (yes Git is clever enough to do that) like this:
@@ -111,7 +126,12 @@ This is what the final `.gitattributes` file I copy to most repositories looks l
 # Set default behaviour to automatically normalize line endings.
 * text=auto
 
-# Force bash scripts to always use lf line endings so that if a repo is accessed
+# Force batch scripts to always use CRLF line endings so that if a repo is accessed
+# in Windows via a file share from Linux, the scripts will work.
+*.{cmd,[cC][mM][dD]} text eol=crlf
+*.{bat,[bB][aA][tT]} text eol=crlf
+
+# Force bash scripts to always use LF line endings so that if a repo is accessed
 # in Unix via a file share from Windows, the scripts will work.
 *.sh text eol=lf
 

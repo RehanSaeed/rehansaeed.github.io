@@ -20,13 +20,13 @@ tags:
   - "Web.config"
 ---
 
-# Update 1
-
+::: tip Update 1
 I should point out that configuration file transforms have been available for some time for web projects **only**. I believe the feature was developed by the web team within Microsoft. This fact just makes it more strange, that this feature was not rolled out to the masses.
+:::
 
-# Update 2
-
+::: tip Update 2
 Microsoft has just announced on their [UserVoice](http://visualstudio.uservoice.com/forums/121579-visual-studio/suggestions/2043217-support-web-config-style-transforms-on-any-file-in) site that SlowCheetah will be updated for Visual Studio 2015 and future versions will indeed have configuration file transforms built in! That's great news and shows another example of Microsoft listening to its developers.
+:::
 
 # Introduction
 
