@@ -3,10 +3,10 @@ name: Build
 on:
   push:
     branches:
-      - develop
+      - main
   pull_request:
     branches:
-      - develop
+      - main
 
 jobs:
   build:
@@ -29,7 +29,7 @@ jobs:
       if: github.event_name != 'pull_request'
       run: |
         git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/RehanSaeed/rehansaeed.github.io.git
-        npx gh-pages --branch master --dist dist --user "github-actions-bot <support+actions@github.com>"
+        npx gh-pages --branch release --dist dist --user "github-actions-bot <support+actions@github.com>"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: 'Ping Sitemap to Google'
