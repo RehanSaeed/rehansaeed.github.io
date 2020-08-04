@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Tue, 04 Aug 2020 08:59:41 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 04 Aug 2020 09:19:13 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -623,7 +623,10 @@ I certainly didn&#39;t do an in-depth review of each static site generator. Thes
             <guid>https://rehansaeed.com/gitattributes-best-practices/</guid>
             <pubDate>Mon, 22 Jul 2019 00:00:00 GMT</pubDate>
             <description><![CDATA[Best practices for configuring Git in the .gitattributes file. Configuring CRLF and LF line endings. Configuring Git Large File System (LFS) for binary files.]]></description>
-            <content:encoded><![CDATA[<h2 id="gitignore">.gitignore</h2>
+            <content:encoded><![CDATA[<p>::: tip Update (2020-08-04)
+Added some more information about CRLF line endings for <code>.cmd</code> and <code>.bat</code> files. Also added a section about Git LFS support on GitHub.
+:::</p>
+<h2 id="gitignore">.gitignore</h2>
 <p>If you&#39;ve messed with Git for long enough, you&#39;re aware that you can use the .gitignore file to exclude files from being checked into your repository. There is even a whole <a href="https://github.com/github/gitignore">GitHub repository</a> with nothing but pre-made <code>.gitignore</code> files you can download. If you work with anything vaguely in the Microsoft space with Visual Studio, you probably want the <a href="https://github.com/github/gitignore/blob/master/VisualStudio.gitignore">&#39;Visual Studio&#39; .gitignore file</a>.</p>
 <h2 id="gitattributes">.gitattributes</h2>
 <p>There is a lesser know <a href="https://www.git-scm.com/docs/gitattributes">.gitattributes</a> file that can control a bunch of Git settings that you should consider adding to almost <strong>every</strong> repository as a matter of course.</p>
@@ -632,13 +635,18 @@ I certainly didn&#39;t do an in-depth review of each static site generator. Thes
 <p>Newline characters often cause problems in Git when you have developers working on different operating systems (Windows, Mac and Linux). If you&#39;ve ever seen a phantom file change where there are no visible changes, that could be because the line endings in the file have been changed from CRLF to LF or vice versa.</p>
 <p>Git can actually be configured to automatically handle line endings using a setting called <a href="https://help.github.com/en/articles/configuring-git-to-handle-line-endings">autocrlf</a>. This automatically changes the line endings in files depending on the operating system. However, you shouldn&#39;t rely on people having correctly configured Git installations. If someone with an incorrect configuration checked in a file, it would not be easily visible in a pull request and you&#39;d end up with a repository with inconsistent line endings.</p>
 <p>The solution to this is to add a <code>.gitattributes</code> file at the root of your repository and set the line endings to be automatically normalised like so:</p>
-<pre><code class="language-git"># Set default behaviour to automatically normalize line endings.
+<pre><code class="language-git"># Set default behavior to automatically normalize line endings.
 * text=auto
 
-# Force bash scripts to always use lf line endings so that if a repo is accessed
+# Force batch scripts to always use CRLF line endings so that if a repo is accessed
+# in Windows via a file share from Linux, the scripts will work.
+*.{cmd,[cC][mM][dD]} text eol=crlf
+*.{bat,[bB][aA][tT]} text eol=crlf
+
+# Force bash scripts to always use LF line endings so that if a repo is accessed
 # in Unix via a file share from Windows, the scripts will work.
 *.sh text eol=lf</code></pre>
-<p>The second line is not strictly necessary. It hard codes the line endings for bash scripts to be LF, so that they can be executed via a file share. It&#39;s a practice I picked up from the <a href="https://github.com/dotnet/corefx/blob/master/.gitattributes">corefx repository</a>.</p>
+<p>Only the first line is strictly necessary. It hard codes the line endings for Windows cmd and batch scripts to CRLF and bash scripts to be LF, so that they can be executed via a file share. It&#39;s a practice I picked up from the <a href="https://github.com/dotnet/corefx/blob/master/.gitattributes">corefx repository</a>.</p>
 <h3 id="git-large-file-system-lfs">Git Large File System (LFS)</h3>
 <p>It&#39;s pretty common to want to checking binary files into your Git repository. Building a website for example, involves images, fonts, maybe some compressed archives too. The problem with these binary files is that they bloat the repository a fair bit. Every time you check-in a change to a binary file, you&#39;ve now got both files saved in Git&#39;s history. Over time this bloats the repository and makes cloning it slow. A much better solution is to use <a href="https://git-lfs.github.com/">Git Large File System (LFS)</a>. LFS stores binary files in a separate file system. When you clone a repository, you only download the latest copies of the binary files and not every single changed version of them.</p>
 <p>LFS is supported by most source control providers like GitHub, Bitbucket and Azure DevOps. It a plugin to Git that has to be separately installed (It&#39;s a checkbox in the Git installer) and it even has it&#39;s own CLI command &#39;git lfs&#39; so you can run queries and operations against the files in LFS. You can control which files fall under LFS&#39;s remit in the <code>.gitattributes</code> file like so:</p>
@@ -668,6 +676,9 @@ I certainly didn&#39;t do an in-depth review of each static site generator. Thes
 *.exe filter=lfs diff=lfs merge=lfs -text </code></pre>
 <p>So here I&#39;ve added a whole list of file extensions for various file types I want to be controlled by Git LFS. I tell Git that I want to filter, diff and merge using the LFS tool and finally the <code>-text</code> argument tells Git that this is not a text file, which is a strange way to tell it that it&#39;s a binary file.</p>
 <p>A quick warning about adding LFS to an existing repository with existing binary files checked into it. The existing binary files will be checked into Git and not LFS without rewriting Git history which would be bad and you shouldn&#39;t do unless you are the only developer. You will have to add a one off commit to take the latest versions of all binary files and add them to LFS. Everyone who uses the repository will also have to re-clone the repository (I found this out the hard way in a team of 15 people. Many apologies were made over the course of a week). Ideally you add this from day one and educate developers about Git&#39;s treatment of binary files, so people don&#39;t check-in any binary files not controlled by LFS.</p>
+<h3 id="github">GitHub</h3>
+<p>GitHub does technically provide Git LFS for free but they limit the bandwidth to 1GB. If your repository is public and you have any traffic going to your site whatsoever, you will get through that very quickly. GitHub charges $5 per month for a data pack which gives you 50GB of bandwidth per month which I&#39;ve found is enough for a moderately popular GitHub repository.</p>
+<p>I really don&#39;t understand why GitHub charges for Git LFS because people who don&#39;t want to pay are just going to check in binary files in Git instead which presumably would cost them more bandwidth. Surely they should be encouraging it&#39;s use by making it free?</p>
 <h3 id="binary-files">Binary Files</h3>
 <p>When talking about the <code>.gitattributes</code> file, you will quite often hear some people talk about explicitly listing all binary files instead of relying on Git to auto-detect binary files (yes Git is clever enough to do that) like this:</p>
 <pre><code class="language-git"># Denote all files that are truly binary and should not be modified.
@@ -688,7 +699,12 @@ I certainly didn&#39;t do an in-depth review of each static site generator. Thes
 # Set default behaviour to automatically normalize line endings.
 * text=auto
 
-# Force bash scripts to always use lf line endings so that if a repo is accessed
+# Force batch scripts to always use CRLF line endings so that if a repo is accessed
+# in Windows via a file share from Linux, the scripts will work.
+*.{cmd,[cC][mM][dD]} text eol=crlf
+*.{bat,[bB][aA][tT]} text eol=crlf
+
+# Force bash scripts to always use LF line endings so that if a repo is accessed
 # in Unix via a file share from Windows, the scripts will work.
 *.sh text eol=lf
 
@@ -6672,10 +6688,12 @@ this.WhenTextChanged
             <guid>https://rehansaeed.com/configuration-file-transforms-in-visual-studio-should-be-built-in/</guid>
             <pubDate>Mon, 15 Dec 2014 00:00:00 GMT</pubDate>
             <description><![CDATA[Configuration File Transforms can be done with the Slow Cheetah Visual Studio extension by Sayed Hashimi. This feature should be built into Visual Studio.]]></description>
-            <content:encoded><![CDATA[<h1 id="update-1">Update 1</h1>
-<p>I should point out that configuration file transforms have been available for some time for web projects <strong>only</strong>. I believe the feature was developed by the web team within Microsoft. This fact just makes it more strange, that this feature was not rolled out to the masses.</p>
-<h1 id="update-2">Update 2</h1>
-<p>Microsoft has just announced on their <a href="http://visualstudio.uservoice.com/forums/121579-visual-studio/suggestions/2043217-support-web-config-style-transforms-on-any-file-in">UserVoice</a> site that SlowCheetah will be updated for Visual Studio 2015 and future versions will indeed have configuration file transforms built in! That&#39;s great news and shows another example of Microsoft listening to its developers.</p>
+            <content:encoded><![CDATA[<p>::: tip Update 1
+I should point out that configuration file transforms have been available for some time for web projects <strong>only</strong>. I believe the feature was developed by the web team within Microsoft. This fact just makes it more strange, that this feature was not rolled out to the masses.
+:::</p>
+<p>::: tip Update 2
+Microsoft has just announced on their <a href="http://visualstudio.uservoice.com/forums/121579-visual-studio/suggestions/2043217-support-web-config-style-transforms-on-any-file-in">UserVoice</a> site that SlowCheetah will be updated for Visual Studio 2015 and future versions will indeed have configuration file transforms built in! That&#39;s great news and shows another example of Microsoft listening to its developers.
+:::</p>
 <h1 id="introduction">Introduction</h1>
 <p>I have used a number of IDE&#39;s in my time as a developer, from bare bones text editors like <a href="http://www.sublimetext.com/">Sublime</a> (Which you should seriously consider purchasing. It beats the pants off of notepad and most notepad competitors) to fully fledged development environments like <a href="https://netbeans.org/">Netbeans</a> and Visual Studio. It has to be said though that Microsoft does a much better job than most and packs a lot of power into their punch.</p>
 <p>It is with puzzlement and confusion then that something as useful and common as transforms for configuration files (.config) are still not supported by Microsoft. You may be wondering what I&#39;m babbling about. Well, every developer at some point has had to release their application on more than one environment, even if it&#39;s just your own development machine and wherever your application is released. In the past I&#39;ve worked with as many as four distinct environments. Each with it&#39;s own application settings, database connection strings and other settings stored in .config files. In the past, this has been a nightmare.</p>
