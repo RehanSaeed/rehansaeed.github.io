@@ -70,32 +70,22 @@ export default {
   },
   mounted() {
     if (window) {
-      window.addEventListener("appinstalled", this.onAppInstalled, false);
+      window.addEventListener("appinstalled", this.onAppInstalled);
       window.addEventListener(
         "beforeinstallprompt",
-        this.onBeforeInstallPrompt,
-        false
+        this.onBeforeInstallPrompt
       );
-      window.addEventListener(
-        "DOMContentLoaded",
-        this.onDomContentLoaded,
-        false
-      );
+      window.addEventListener("DOMContentLoaded", this.onDomContentLoaded);
     }
   },
   unmounted() {
     if (window) {
-      window.removeEventListener("appinstalled", this.onAppInstalled, false);
+      window.removeEventListener("appinstalled", this.onAppInstalled);
       window.removeEventListener(
         "beforeinstallprompt",
-        this.onBeforeInstallPrompt,
-        false
+        this.onBeforeInstallPrompt
       );
-      window.removeEventListener(
-        "DOMContentLoaded",
-        this.onDomContentLoaded,
-        false
-      );
+      window.removeEventListener("DOMContentLoaded", this.onDomContentLoaded);
     }
   },
 };

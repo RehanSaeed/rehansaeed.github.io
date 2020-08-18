@@ -210,12 +210,12 @@ export default {
   mounted() {
     if (window) {
       this.theme = window.__theme;
-      window.addEventListener("__themeChanged", this.setTheme, false);
+      window.addEventListener("__themeChanged", this.setTheme);
     }
   },
   unmounted() {
     if (window) {
-      window.removeEventListener("__themeChanged", this.setTheme, false);
+      window.removeEventListener("__themeChanged", this.setTheme);
     }
   },
 };
