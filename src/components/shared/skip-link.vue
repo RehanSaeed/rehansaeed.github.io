@@ -8,6 +8,7 @@
 import linkButton from "~/components/shared/link-button.vue";
 
 export default {
+  name: "u-skip-link",
   components: {
     "u-link-button": linkButton,
   },
