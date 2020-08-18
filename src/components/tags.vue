@@ -3,7 +3,7 @@
     <u-link-button
       class="tags__link"
       bordered
-      v-for="tag in tags"
+      v-for="tag of tags"
       :key="tag.id"
       :to="tag.path"
       >{{ tag.title }}</u-link-button

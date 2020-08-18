@@ -2,7 +2,7 @@
   <div class="webmention-faces">
     <u-avatar
       class="webmention-faces__face"
-      v-for="{ mention, label } in mentionsDisplay"
+      v-for="{ mention, label } of mentionsDisplay"
       :key="mention.id"
       :href="mention.data.url"
       :label="label"

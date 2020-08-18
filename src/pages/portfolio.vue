@@ -15,7 +15,7 @@
 
       <div class="portfolio__items">
         <u-portfolio-card
-          v-for="edge in $page.portfolio.edges"
+          v-for="edge of $page.portfolio.edges"
           :key="edge.node.id"
           :portfolio="edge.node"
         />

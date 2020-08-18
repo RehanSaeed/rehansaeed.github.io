@@ -6,7 +6,7 @@
       >
 
       <div class="tag-page__items">
-        <u-post-card v-for="post in posts" :key="post.id" :post="post" />
+        <u-post-card v-for="post of posts" :key="post.id" :post="post" />
       </div>
 
       <u-newsletter class="tag-page__newsletter" />

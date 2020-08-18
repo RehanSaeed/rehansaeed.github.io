@@ -5,7 +5,7 @@
 
       <div class="posts__items">
         <u-post-card
-          v-for="edge in $page.posts.edges"
+          v-for="edge of $page.posts.edges"
           :key="edge.node.id"
           :post="edge.node"
         />

@@ -12,7 +12,7 @@
     />
     <div class="search__results">
       <g-link
-        v-for="result in searchResults"
+        v-for="result of searchResults"
         @click.native="onSelected"
         :key="result.id"
         :to="result.permalink || result.path"

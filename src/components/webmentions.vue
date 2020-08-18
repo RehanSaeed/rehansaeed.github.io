@@ -53,7 +53,7 @@
         </p>
         <div class="webmentions__links">
           <u-webmention-link
-            v-for="link in links"
+            v-for="link of links"
             :key="link.id"
             :link="link"
           />
@@ -69,7 +69,7 @@
         </p>
         <div class="webmentions__replies">
           <u-webmention-reply
-            v-for="reply in replies"
+            v-for="reply of replies"
             :key="reply.id"
             :reply="reply"
           />
