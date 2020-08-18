@@ -11,11 +11,6 @@
 <script>
 export default {
   name: "u-card",
-  data() {
-    return {
-      downTimestamp: undefined,
-    };
-  },
   props: {
     focusable: {
       type: Boolean,
