@@ -1,3 +1,5 @@
+import VueCompositionAPI from "@vue/composition-api";
+
 // Import main css
 import "typeface-audiowide";
 import audiowide from "typeface-audiowide/files/audiowide-latin-400.woff2";
@@ -136,6 +138,8 @@ export default function (Vue, { router, head, isClient }) {
 
   // Set default layout as a global component
   Vue.component("Layout", defaultLayout);
+
+  Vue.use(VueCompositionAPI);
 
   Vue.use(Vssue, {
     api: GithubV3,
