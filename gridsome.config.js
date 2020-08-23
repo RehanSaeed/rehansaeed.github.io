@@ -86,9 +86,9 @@ module.exports = {
         extensions: ["css", "html", "js", "svg", "json"],
       },
     },
-    // https://github.com/onecrayon/gridsome-plugin-feed
+    // https://github.com/Microflash/gridsome-plugin-feed
     {
-      use: "gridsome-plugin-feed",
+      use: "@microflash/gridsome-plugin-feed",
       options: {
         // Required: array of `GraphQL` type names you wish to include
         contentTypes: ["post"],
