@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Tue, 11 Aug 2020 08:48:53 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 23 Aug 2020 13:59:43 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -14,6 +14,7 @@
             <link>https://rehansaeed.com</link>
         </image>
         <copyright>Copyright © 2020 Muhammad Rehan Saeed</copyright>
+        <atom:link href="https://rehansaeed.com/rss.xml" rel="self" type="application/rss+xml"/>
         <item>
             <title><![CDATA[The Fastest NuGet Package Ever Published (Probably)]]></title>
             <link>https://rehansaeed.com/the-fastest-nuget-package-ever-published-probably/</link>
@@ -108,7 +109,7 @@ start &quot;https://www.nuget.org/packages/FastestNuGet/&quot;</code></pre>
 <h1 id="conclusions">Conclusions</h1>
 <p>I hope this <a href="https://github.com/Dotnet-Boxed/Templates">Dotnet Boxed</a> project template accelerates development of your next NuGet package. There are lots of optional features of the <a href="https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/NuGet.md">NuGet project template</a> I haven&#39;t even shown like support for Azure Pipelines and Appveyor continuous integration builds and more, so please do go and take a look.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/NuGet-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/NuGet-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[The Easiest Way to Version NuGet Packages]]></title>
@@ -191,7 +192,7 @@ dotnet build</code></pre>
 <pre><code class="language-powershell">dotnet new --install Boxed.Templates
 dotnet new nuget --name &quot;MyProject&quot;</code></pre>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Semantic-Versioning-1600x900.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Semantic-Versioning-1600x900.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Racism in Software Development & Beyond]]></title>
@@ -239,7 +240,7 @@ dotnet new nuget --name &quot;MyProject&quot;</code></pre>
 <h1 id="conclusions">Conclusions</h1>
 <p>As many others have said, it&#39;s not enough to be a passive non-racist in society. Over the last half a century, structural and institutional racism still pervades our society. It is necessary for us all to be actively working against racism. We also need to recognise that a lot of the inequalities we see come from implicit biases that <strong>all</strong> human beings have, including our own selves. If we recognise that we ourselves are deficient, perhaps we can do something about it.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Black-Glowing-Fist-1600x900.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Black-Glowing-Fist-1600x900.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Spicing up your Browser Console]]></title>
@@ -291,7 +292,7 @@ console.log(&#39;%c ▄██▄▄▄▄███   ██▄▄▄██ █�
 <h1 id="conclusions">Conclusions</h1>
 <p>All you need to do now is copy and paste that text somewhere in the main part of your app. Now, when someone opens the browser console, they&#39;ll see your cool surprise. You can hit ||F12|| right now and take a look at mine.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Figlet-Fonts-1600x900.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Figlet-Fonts-1600x900.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Choosing a Static Site Generator]]></title>
@@ -371,7 +372,7 @@ I certainly didn&#39;t do an in-depth review of each static site generator. Thes
 <p>I picked Gridsome and am pretty happy but you may have a different knowledge set and something else might suit you. Whatever makes you happy! The key is that writing blog posts needs to be low friction, so that you actually end up doing it.</p>
 <p>In my next post, I&#39;ll talk about the features I look to build in a blog and which of them I think are essential to a good blog site.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Static-Site-Generators-1600x900.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Static-Site-Generators-1600x900.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[ASP.NET Core Integration Testing & Mocking using Moq]]></title>
@@ -511,7 +512,7 @@ I certainly didn&#39;t do an in-depth review of each static site generator. Thes
 <h2 id="conclusions">Conclusions</h2>
 <p>I wrote this because there is little to no information on how to combine ASP.NET Core with Moq in integration tests. I&#39;ve messed about with using <code>IClassFixture</code> as the ASP.NET Core documentation tells you to do and it&#39;s just not a good idea with Moq which needs a clean slate before each test. I hope this stops others going through much pain.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Microsoft-.NET-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[What dotnet new Could Be]]></title>
@@ -553,7 +554,7 @@ I certainly didn&#39;t do an in-depth review of each static site generator. Thes
 <h2 id="conclusions">Conclusions</h2>
 <p>The Vue CLI has really shown how great a new project creation experience can be. With a bit of work, the <code>dotnet new</code> experience could be just as great.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Dotnet-Boxed-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Dotnet-Boxed-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Unit Testing dotnet new Templates]]></title>
@@ -615,7 +616,7 @@ I certainly didn&#39;t do an in-depth review of each static site generator. Thes
 <h2 id="where-to-get-it">Where To Get It?</h2>
 <p>You can download the <a href="https://www.nuget.org/packages/Boxed.DotnetNewTest/">Boxed.DotnetNewTest</a> NuGet package or see the <a href="https://github.com/Dotnet-Boxed/Framework#boxeddotnetnewtest">source code</a> on GitHub.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Microsoft-.NET-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[.gitattributes Best Practices]]></title>
@@ -739,7 +740,7 @@ Added some more information about CRLF line endings for <code>.cmd</code> and <c
 <h2 id="conclusions">Conclusions</h2>
 <p>All of the above are bits and pieces I&#39;ve put together over time. Are there any other settings that should be considered best practice and added to any <code>.gitattributes</code> file?</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Git-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Git-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Git Cloning the Windows OS Repo]]></title>
@@ -772,7 +773,7 @@ fatal: protocol error: bad pack header</code></pre>
 <p>The Azure Pipelines build only took 25 minutes to complete. A quick look shows a bunch of builds with five hours or more. I&#39;m guessing that my changes had only gone through a cursory initial build to make sure nothing was completely broken.</p>
 <p>A few days later I got a notification telling me my pull request had been merged. All I did was change a few config files and upload a package or two, but it was an interesting experience none the less.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Windows-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Windows-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Securing ASP.NET Core in Docker]]></title>
@@ -803,7 +804,7 @@ ENTRYPOINT [&quot;dotnet&quot;, &quot;ReadOnlyTest.dll&quot;]</code></pre>
 <pre><code class="language-powershell">docker run --rm --read-only -it -p 8000:80 -e COMPlus_EnableDiagnostics=0 read-only-test</code></pre>
 <p>The app now starts! The <code>COMPlus_EnableDiagnostics</code> environment variable (which is <a href="https://github.com/dotnet/docs/issues/10217">undocumented</a>) turns off debugging and profiling support, so I would not bake this environment variable into the <code>Dockerfile</code>. For some reason these features need a read/write file system to work properly. If you&#39;d like to try this yourself, you can checkout all the code in <a href="https://github.com/RehanSaeed/ReadOnlyDockerTest">this repo</a>.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Docker-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Docker-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[A Simple and Fast Object Mapper]]></title>
@@ -1021,7 +1022,7 @@ public class MapTo
 <h1 id="conclusions">Conclusions</h1>
 <p>What I&#39;ve tried to do with the .NET Boxed Mapper is fill a niche which I thought that Automapper was not quite filling. A super simple and fast object mapper that&#39;s just a couple of interfaces and extension methods to help you along the way and provide a skeleton on which to hang your code. If Automapper fits your app better, go ahead and use that. If you think it&#39;s useful, you can use the <a href="https://www.nuget.org/packages/Boxed.Mapping/">Boxed.Mapping</a> NuGet package or look at the code at on GitHub in the <a href="https://github.com/Dotnet-Boxed/Framework">Dotnet-Boxed/Framework</a> project.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Dotnet-Boxed-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Dotnet-Boxed-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Is ASP.NET Core now a Mature Platform?]]></title>
@@ -1075,7 +1076,7 @@ It seems that Damian Edwards (The ASP.NET Core Project Manager) likes this post 
 <p>There seems to be a trend at the moment where people are jumping ship from long standing platforms and languages to brand new ones. Android developers have jumped from Java to Kotlin (and have managed to delete half their code in the process, Java is so verbose!). The poor souls who wrote Objective C, have jumped to Swift. Where once applications would be written in C++, they are now written in Go or Rust. Where once people wrote JavaScript, they are still writing JavaScript (TypeScript has taken off but not completely)...ok that has not changed. .NET Core seems to be the only one that seems to have bucked the trend and tried to reinvent itself completely while not changing things too much and still succeeding in the process.</p>
 <p>So yes, yes it is, is my answer.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Rocket-1366x768.jpg"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Rocket-1366x768.jpg" length="0" type="image/jpg"/>
         </item>
         <item>
             <title><![CDATA[PluralSight vs LinkedIn Learning vs FrontendMasters vs Egghead.io vs YouTube]]></title>
@@ -1126,7 +1127,7 @@ It seems that Damian Edwards (The ASP.NET Core Project Manager) likes this post 
 <h1 id="grab-a-bargain">Grab a Bargain</h1>
 <p>With the Christmas period approaching, most of the paid for services will offer some kind of sale. Now is the time to keep an eye out for that and grab a bargain.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Online-Learning-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Online-Learning-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Optimally Configuring ASP.NET Core HttpClientFactory]]></title>
@@ -1428,7 +1429,7 @@ public class HttpClientOptions
 <p>I realize that was a lot of boilerplate code to write. It was difficult to write this as more than one blog post. To aid in digestion, I&#39;ve created a <a href="https://github.com/RehanSaeed/HttpClientSample">GitHub sample project</a> with the full working code.</p>
 <p>The sample project contains two API&#39;s. One makes a HTTP request to the other. You can pass a query argument to decide whether the callee API will fail or not and try out the retry and circuit breaker logic. Feel free to play with the configuration in <code>appsettings.json</code> and see what options work best for your application.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Microsoft-.NET-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[ASP.NET Core Hidden Gem - QueryHelpers]]></title>
@@ -1452,7 +1453,7 @@ string url = QueryHelpers.AddQueryString(&quot;/example/path&quot;, queryArgumen
 <p>It&#39;s also worth noting that the values of the query arguments are URL encoded for you too. The type also has a <code>ParseQuery</code> method to parse query strings but that&#39;s less useful to us as ASP.NET Core controllers do that for you.</p>
 <p>Finally, .NET also has a type called <code>UriBuilder</code> that you should know about. It&#39;s more geared towards building up a full URL, rather than a relative URL as I&#39;m doing above. It has a <code>Query</code> property that you can use to set the query string but it&#39;s only of type string, so much less useful than <code>QueryHelpers.AddQueryString</code>.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Microsoft-.NET-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Optimally Configuring Entity Framework Core]]></title>
@@ -1491,7 +1492,7 @@ string url = QueryHelpers.AddQueryString(&quot;/example/path&quot;, queryArgumen
 <h1 id="the-end">The End...</h1>
 <p>It took me a while to craft this setup, I hope you find it useful. You can find out more by reading the excellent Entity Framework Core <a href="https://docs.microsoft.com/en-us/ef/core/miscellaneous/configuring-dbcontext">docs</a>.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Microsoft-.NET-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Migrating to Entity Framework Core Seed Data]]></title>
@@ -1576,7 +1577,7 @@ public class ApplicationDbContext : DbContext
 </ol>
 <p>That&#39;s it, hope that helps someone.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Microsoft-.NET-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[.NET Boxed]]></title>
@@ -1607,7 +1608,7 @@ public class ApplicationDbContext : DbContext
 <h1 id="boxed-updates">Boxed Updates</h1>
 <p>There are new features and improvements planned on the GitHub <a href="https://github.com/Dotnet-Boxed/Templates/projects">projects</a> tab. ASP.NET Core 2.1 is coming out soon, so look out for updates which you can see in the GitHub <a href="https://github.com/Dotnet-Boxed/Templates/releases">releases</a> tab when they go live.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Dotnet-Boxed-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Dotnet-Boxed-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[The Dotnet Watch Tool Revisited]]></title>
@@ -1675,7 +1676,7 @@ In both cases you have to be careful to start the application by clicking <code>
 <h1 id="net-boxed-templates">.NET Boxed Templates</h1>
 <p>I have updated the <a href="https://github.com/Dotnet-Boxed/Templates">.NET Boxed</a> family of project templates with this feature built in. Happy coding!</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Microsoft-.NET-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Writing Code while Asleep]]></title>
@@ -1704,7 +1705,7 @@ In both cases you have to be careful to start the application by clicking <code>
 <h1 id="conclusions">Conclusions</h1>
 <p>This post sounds silly but developers don&#39;t generally ask for help for some reason. I used to work with a great junior developer who started only with a little VB script knowledge and would ask for help whenever he needed it, which was a dozen or more times a day sometimes. It was hard sometimes to get work done but it was great because after a while he started to get really good and now we had two minds to get work done and come up with ideas instead of one. Ask for help when you need it!</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/While-Alive-Eat-Sleep-Code-Repeat-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/While-Alive-Eat-Sleep-Code-Repeat-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Writing your Webpack configuration in TypeScript]]></title>
@@ -1804,7 +1805,7 @@ export default configurationBuilder;</code></pre>
 <h1 id="conclusion">Conclusion</h1>
 <p>I think most people have huge trouble getting to grips with Webpack, once you understand that there are so many ways to supply the same config and how to translate between them, the learning curve gets shallower. You will be able to translate all of the examples you see online that inevitably are using a different syntax to you, so you can &#39;borrow&#39; (It&#39;s what us software developers do for much of the day) their code and get stuff done.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/TypeScript-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/TypeScript-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Useful Docker Images - Part 2]]></title>
@@ -1919,7 +1920,7 @@ networks:
 <h1 id="conclusions">Conclusions</h1>
 <p>I have discovered that I have enough material for a third and final part to this series of blog posts. In the next part, you can expect to learn more about Redis and Metabase Docker images.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Docker-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Docker-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Useful Docker Images - Part 1]]></title>
@@ -2021,7 +2022,7 @@ networks:
 <h1 id="conclusions">Conclusions</h1>
 <p>This blog post is getting a bit long, so I&#39;ll split it into two pieces. In the next part, expect to hear about how you can use the ELK-B stack which is made up of a few bits of software: ElasticSearch, Kibana, Filebeat, Metricbeat and Heartbeat. Also, be sure to read Andrew Lock&#39;s piece on <a href="https://andrewlock.net/home-home-on-the-range-installing-kubernetes-using-rancher-2-0/">Rancher</a>, which is a bit like Portainer. I&#39;d never heard of Rancher, it&#39;ll be interesting to do a comparison.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Docker-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Docker-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Docker Labels in Depth]]></title>
@@ -2075,7 +2076,7 @@ ENTRYPOINT [&quot;dotnet&quot;, &quot;Bridge.Turtle.dll&quot;]</code></pre>
 </ul>
 <p>For any other images, you can just use simple single word labels or at least, that&#39;s what I&#39;m doing.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Docker-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Docker-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Docker Read-Only File Systems]]></title>
@@ -2105,7 +2106,7 @@ networks:
 <p>Not all images support having them started with a read-only file system. Some require access to write temp files and the like. You can usually get away with using a volume in this case because volumes are still writeable even if you enable the read-only file system. In my research, I found it hard to determine if an image supported the feature, so I simply tried it out and found that most failed.</p>
 <p>I discovered that Redis was the only image that I was running that had <a href="https://github.com/docker-library/redis/issues/109">full support</a>, several Elastic Stack containers failed to start and even my ASP.NET Core images failed to start. I since raised a GitHub issue <a href="https://github.com/Microsoft/aspnet-docker/issues/66">here</a>, trying to find out why the container fails to start and seeing if there is any workaround.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Docker-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Docker-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[ASP.NET Core Caching in Practice]]></title>
@@ -2228,7 +2229,7 @@ public class CatsController : ControllerBase
 <h1 id="conclusions">Conclusions</h1>
 <p>Which caching HTTP headers you pick, depends on your data but at a minimum, I would add <code>E-Tag</code>&#39;s or <code>Last-Modified</code>. Add <code>Cache-Control</code> where possible, usually for static assets.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/ASP.NET-Core-Caching-in-Practice-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/ASP.NET-Core-Caching-in-Practice-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[A Very Generic .editorconfig File (Updated)]]></title>
@@ -2266,7 +2267,7 @@ public class CatsController : ControllerBase
 <p>In addition, while I was working on this, I added support for a few more file extensions, including <code>yaml</code> (<code>yml</code> was already there), <code>json5</code> (If you haven&#39;t heard of <code>json5</code>, <a href="https://json5.org/">check it out</a>), <code>cmd</code> and <code>bat</code> (If you haven&#39;t switched to PowerShell yet, what are you waiting for).</p>
 <p>Finally, Microsoft <a href="https://blogs.msdn.microsoft.com/visualstudio/2018/06/26/visual-studio-2017-version-15-8-preview-3/">announced last week</a> that the Visual Studio 15.8 update which is currently being released as preview 3 will automatically fix errors when you format the document using the ||CTRL+K|| followed by ||CTRL+D|| shortcut. This is huge! It means that you can drop a <code>.editorconfig</code> file in an existing codebase and with a few clicks or keyboard shortcuts (if that&#39;s how you roll) you can clean up your code base to use the latest C# 7.3 features and a code style that suits you.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/A-Very-Generic-Editorconfig-File-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/A-Very-Generic-Editorconfig-File-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Keeping Up With Software Development]]></title>
@@ -2359,7 +2360,7 @@ public class CatsController : ControllerBase
 <li><a href="https://s.ch9.ms/Shows/Azure-Friday">Azure Friday</a> (<a href="https://channel9.msdn.com/Shows/Azure-Friday/feed/mp4high">RSS</a>) - Find out about new features of Azure in these brief introductory videos.</li>
 </ul>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Keeping-up-with-Software-Development-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Keeping-up-with-Software-Development-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Structured Data using Schema.NET]]></title>
@@ -2457,7 +2458,7 @@ var organization = new Organization()
 <h1 id="where-to-get-it">Where to Get It?</h1>
 <p>Download the Schema.NET <a href="https://www.nuget.org/packages/Schema.NET">NuGet package</a> or take a look at the code on <a href="https://github.com/RehanSaeed/Schema.NET">GitHub</a>. At some point I&#39;ll find the time to write a quick ASP.NET Core tag helper that wraps Schema.NET.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Schema.NET-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Schema.NET-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[ASP.NET Core Lazy Command Pattern]]></title>
@@ -2613,7 +2614,7 @@ public interface IAsyncCommand&lt;T1, T2, T3&gt;
 <h1 id="conclusions">Conclusions</h1>
 <p>For a full working example, take a look at the <a href="https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/API.md">.NET Boxed API</a> project template which makes full use of the Lazy Command Pattern.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/ASP.NET-Core-Lazy-Command-Pattern-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/ASP.NET-Core-Lazy-Command-Pattern-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[dotnet new Feature Selection]]></title>
@@ -2881,7 +2882,7 @@ Swagger feature was not selected
 <h1 id="whats-next">What&#39;s Next?</h1>
 <p>There are several other useful features of the templating engine which I&#39;ll cover in a follow up post as this is starting to get quite long. Feel free to take a look at the <a href="https://github.com/Dotnet-Boxed/Templates">source code</a> for my API template to see a full example.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Who-Wants-To-Be-A-Millionaire-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Who-Wants-To-Be-A-Millionaire-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Cleaning Up CSPROJ]]></title>
@@ -3058,7 +3059,7 @@ I show how to make <code>csproj</code> XML concise and pretty for hand editing.
 
 &lt;/Project&gt;</code></pre>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Cleaning-Up-CSPROJ-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Cleaning-Up-CSPROJ-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Cross-Platform DevOps for .NET Core]]></title>
@@ -3287,7 +3288,7 @@ script:
 <li><a href="https://github.com/Dotnet-Boxed/Templates">.NET Boxed Templates</a> - Builds, tests and deploys a <code>dotnet new</code> NuGet package.</li>
 </ul>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Dotnet-Cake-AppVeyor-Travis-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Dotnet-Cake-AppVeyor-Travis-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Custom Project Templates Using dotnet new]]></title>
@@ -3355,7 +3356,7 @@ script:
 <h1 id="conclusions">Conclusions</h1>
 <p>Overall I&#39;m really impressed with where the new project templating system is headed. It&#39;s very easy to do something simple but also very powerful should you need to do something complicated. There is a few blog posts worth of material here, so expect a few more posts in the coming weeks.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Microsoft-.NET-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Reactive Extensions (Rx) - Part 8 - Timeouts]]></title>
@@ -3398,7 +3399,7 @@ script:
 <p>I&#39;m using an overload on <code>CancellationTokenSource</code> which takes a timeout value. Then passing the <code>CancellationToken</code> to <code>DownloadTheInternet</code>. This method should be periodically checking the <code>CancellationToken</code> to see if it has been cancelled and if so, throw an <code>OperationCanceledException</code>. In this example you&#39;d probably use <code>HttpClient</code> which handles this for you if you give it the CancellationToken.</p>
 <p>The main reason why this method is better is that the task is actually being cancelled and stopped from doing any more work. In my above reactive extensions example, the task continues doing work but it&#39;s result is just ignored.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Reactive-Extensions-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Reactive-Extensions-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[SEO Friendly URL's for ASP.NET Core]]></title>
@@ -3665,7 +3666,7 @@ public static class FriendlyUrlHelper
 <h1 id="where-can-i-get-it">Where Can I Get It?</h1>
 <p>This is a great little snippet of code to make your URL&#39;s a human readable, while giving your site an SEO boost. It doesn&#39;t take much effort to use either. This helper class is available in the <a href="https://www.nuget.org/packages/Boxed.AspNetCore">Boxed.AspNetCore</a> NuGet package or you can look at the source code in the <a href="https://github.com/Dotnet-Boxed/Framework">.NET Boxed Framework</a> GitHub page.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Search-Engine-Optimization-SEO-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Search-Engine-Optimization-SEO-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Making Application Insights Fast & Secure]]></title>
@@ -3752,7 +3753,7 @@ gulp.task(&#39;build-app-insights-js&#39;,
 <h1 id="conclusion">Conclusion</h1>
 <p>As usual, all of the above is built in to the <a href="https://github.com/ASP-NET-MVC-Boilerplate/Templates">ASP.NET Core Boilerplate</a> project template, available as a <a href="https://visualstudiogallery.msdn.microsoft.com/6cf50a48-fc1e-4eaf-9e82-0b2a6705ca7d">Visual Studio extension</a> if you select the optional Application Insights feature.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Application-Insights-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Application-Insights-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[The Dotnet Watch Tool]]></title>
@@ -3829,7 +3830,7 @@ In both cases you have to be careful to start the application by clicking <code>
 <h1 id="net-boxed">.NET Boxed</h1>
 <p>If you read my blog posts, you&#39;ll be seeing a trend by now. I built the above feature into the <a href="https://github.com/Dotnet-Boxed/Templates">.NET Boxed</a> project templates by default so you can create a new project with this feature built-in, right out of the box. Happy coding!</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Microsoft-.NET-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[NGINX for ASP.NET Core In-Depth]]></title>
@@ -4170,7 +4171,7 @@ types {
 <p>There are some interesting overlaps between ASP.NET Core and NGINX. Both can be used to serve static files, HTTP headers, GZIP files etc. I think ASP.NET Core is slowly going to take on more of the role that traditionally was the preserve of the web server.</p>
 <p>The cool thing is that because ASP.NET Core is just C#, we&#39;ll have a lot of power to configure things using code. NGINX lets you do more advanced configuration using the Lua language and soon even in JavaScript but putting that logic in the app where it belongs and where you can do powerful things makes sense to me.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/NGINX-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/NGINX-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[ASP.NET Core Fluent Interface Extensions]]></title>
@@ -4275,7 +4276,7 @@ public Startup(IHostingEnvironment hostingEnvironment)
 <h1 id="fluent-me-up">Fluent me up!</h1>
 <p>You can get these extension methods and much more by installing the <a href="https://www.nuget.org/packages/Boxed.AspNetCore">Boxed.AspNetCore</a> NuGet package or create a project using the <a href="https://github.com/Dotnet-Boxed/Templates">.NET Boxed</a> project templates. Finally, if you are so inclined, you can also take a look at the code for these extension methods in the <a href="https://github.com/Dotnet-Boxed/Framework">.NET Boxed Framework</a> project.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Fluent-Interface-All-The-Things-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Fluent-Interface-All-The-Things-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Azure Active Directory Versus Identity Server]]></title>
@@ -4357,7 +4358,7 @@ I looked into this subject for use by the company I work for, who had existing i
 <p>What you decide to choose depends entirely on the problem you have. Which should you choose? Well, it depends on the number of developers, time, money and effort you can expend setting everything up. There is no one size fits all solution. Really, the differences in the two products above are the differences between a SaaS and PaaS solution.</p>
 <p>Which did I choose? While I was doing this research, I discovered to my surprise that the company I work for already had an Azure Active Directory linked to an on-premises Active Directory server because we were using Office 365. That made the choice much easier for us.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Azure-Active-Directory-Versus-Identity-Server-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Azure-Active-Directory-Versus-Identity-Server-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Social TagHelpers for ASP.NET Core]]></title>
@@ -4518,7 +4519,7 @@ I looked into this subject for use by the company I work for, who had existing i
 <li>Check out source code in the <a href="https://github.com/Dotnet-Boxed/Framework">.NET Boxed Framework</a> GitHub repository.</li>
 </ol>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Social-Media-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Social-Media-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Subresource Integrity TagHelper Using ASP.NET Core - Part 2]]></title>
@@ -4572,7 +4573,7 @@ I looked into this subject for use by the company I work for, who had existing i
 <li>Check out source code in the <a href="https://github.com/Dotnet-Boxed/Framework">.NET Boxed Framework</a> GitHub repository.</li>
 </ol>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Make-Security-Easy-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Make-Security-Easy-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Subresource Integrity TagHelper Using ASP.NET Core - Part 1]]></title>
@@ -4619,7 +4620,7 @@ I looked into this subject for use by the company I work for, who had existing i
 <li>Check out source code in the <a href="https://github.com/Dotnet-Boxed/Framework">.NET Boxed Framework</a> GitHub repository.</li>
 </ol>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Make-Security-Easy-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Make-Security-Easy-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Colorful.Console]]></title>
@@ -4644,7 +4645,7 @@ I looked into this subject for use by the company I work for, who had existing i
 <p>At some point, I&#39;d like to make another contribution to Colorful.Console, so that it offers command line parsing too but take inspiration from several command line parsing libraries to make something that&#39;s fully customizable and of course very colourful.</p>
 <p>Command line tools have been around for decades, it&#39;s a wonder that a NuGet package that does all of these things does not exist yet.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Colorful.Console-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Colorful.Console-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Make Certificate]]></title>
@@ -4662,7 +4663,7 @@ I looked into this subject for use by the company I work for, who had existing i
 </ul>
 <p>It also outputs the command you need to execute using <code>makecert.exe</code> and <code>pvk2pfx.exe</code> to recreate the certificate.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Make-Certificate-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Make-Certificate-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Logging with Serilog.Exceptions]]></title>
@@ -4763,7 +4764,7 @@ ILogger logger = new LoggerConfiguration()
     .CreateLogger();</code></pre>
 <p>That&#39;s it, it&#39;s one line of code!</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Serilog.Exceptions-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Serilog.Exceptions-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[.NET Big-O Algorithm Complexity Cheat Sheet]]></title>
@@ -4786,7 +4787,7 @@ ILogger logger = new LoggerConfiguration()
 <li><a href="https://github.com/RehanSaeed/.NET-Big-O-Algorithm-Complexity-Cheat-Sheet/blob/master/Cheat%20Sheet.png">PNG</a></li>
 </ul>
 ]]></content:encoded>
-            <enclosure url="/images/hero/NET-Big-O-Algorithm-Complexity-Cheat-Sheet-1366x768.jpg"/>
+            <enclosure url="https://rehansaeed.com/images/hero/NET-Big-O-Algorithm-Complexity-Cheat-Sheet-1366x768.jpg" length="0" type="image/jpg"/>
         </item>
         <item>
             <title><![CDATA[So I've Been Awarded Microsoft MVP Status!]]></title>
@@ -4807,7 +4808,7 @@ ILogger logger = new LoggerConfiguration()
 <p>I hadn&#39;t realized but you have to reapply to become an MVP every year. I&#39;m not sure how that works but I guess I&#39;ll find out a year later.</p>
 <p>Thanks to Lucian for suggesting I apply, my wife who has had to put up with me messing around with code all the time and all the people who downloaded some of my code and found it useful. I get a warm fuzzy feeling every time I see a new website pop-up using my project template or the download numbers for my various projects grow.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Microsoft-MVP-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Microsoft-MVP-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Dynamically Generating Sitemap.xml for ASP.NET MVC]]></title>
@@ -4986,7 +4987,7 @@ public class HomeController : Controller
 <h1 id="conclusions">Conclusions</h1>
 <p>Adding a sitemap is a great Search Engine Optimization (SEO) technique to improve your sites search rankings. With my NuGet package, it makes it a really simple feature to add to your site. In my next blog post, I&#39;ll talk about sitemap pinging which can be used to pro-actively notify search engines of a change in your sitemap.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Sitemaps-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Sitemaps-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Whats New in ASP.NET Core Boilerplate]]></title>
@@ -5019,7 +5020,7 @@ public class HomeController : Controller
 <h1 id="conclusions">Conclusions</h1>
 <p>ASP.NET Core is still in beta but hopefully this project will give an understanding of what can be done with it. There are still missing features but it&#39;s surprisingly usable at the moment.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/ASP.NET-Core-Boilerplate-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/ASP.NET-Core-Boilerplate-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Minifying HTML for ASP.NET MVC]]></title>
@@ -5058,7 +5059,7 @@ public class HomeController : Controller
 <h1 id="conclusions">Conclusions</h1>
 <p>This post contains huge leaps of guess work and estimation. I hope my maths is up to scratch but I would not be surprised if I was off by a decimal point or two. Still, we are talking huge numbers here and I hope I&#39;ve convinced you that minifying HTML is worth the effort.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/The-Internet-Is-A-Series-Of-Tubes-1366x768.jpg"/>
+            <enclosure url="https://rehansaeed.com/images/hero/The-Internet-Is-A-Series-Of-Tubes-1366x768.jpg" length="0" type="image/jpg"/>
         </item>
         <item>
             <title><![CDATA[Dynamically Generating Robots.txt Using ASP.NET MVC]]></title>
@@ -5145,7 +5146,7 @@ sitemap: http://example.com/sitemap.xml</code></pre>
 <p>You could argue that performance is an issue when compared to a static <code>robots.txt</code> text file but its a matter of a few bytes and if you cache the response with a sufficient time limit then I think that even that problem goes away.</p>
 <p>Once again, you can find a working example of this and much more using the <a href="https://visualstudiogallery.msdn.microsoft.com/6cf50a48-fc1e-4eaf-9e82-0b2a6705ca7d">ASP.NET Core Boilerplate</a> project template.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Robots.txt-1366x768.jpg"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Robots.txt-1366x768.jpg" length="0" type="image/jpg"/>
         </item>
         <item>
             <title><![CDATA[Canonical URL's for ASP.NET MVC]]></title>
@@ -5520,7 +5521,7 @@ public void Action(string mixedCaseParameter)
 <h1 id="conclusions">Conclusions</h1>
 <p>Once again, you can find a working example of this and much more using the <a href="https://visualstudiogallery.msdn.microsoft.com/6cf50a48-fc1e-4eaf-9e82-0b2a6705ca7d">ASP.NET Core Boilerplate</a> project template or view the source code directly on <a href="https://github.com/Dotnet-Boxed/Framework">GitHub</a>.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Link-Juice-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Link-Juice-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Building RSS/Atom Feeds for ASP.NET MVC]]></title>
@@ -5983,7 +5984,7 @@ if (hasNextPage)
 <h1 id="conclusion">Conclusion</h1>
 <p>As always, you can look at a full working example of all of this code on the <a href="https://visualstudiogallery.msdn.microsoft.com/6cf50a48-fc1e-4eaf-9e82-0b2a6705ca7d">ASP.NET Core Boilerplate</a> <a href="https://github.com/Dotnet-Boxed/Templates">GitHub page</a>.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/RSS-And-Atom-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/RSS-And-Atom-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[C# 6.0 - Saving Developers From Themselves]]></title>
@@ -6092,7 +6093,7 @@ string nameAndAge = $&quot;Name:{name}, Age:{age}&quot;;</code></pre>
 <p>As you can see there is a common theme with two of the three C# 6.0 features I&#39;ve picked above. They give us tools to better deal with strings which have terrible IDE and language support. Making a typo in a string gives us no compile time errors and Visual Studio doesn&#39;t help either. Each of these features has allowed us to deal with strongly typed objects instead, which have full language and IDE support.</p>
 <p>The Null-Conditional operator is another great tool to help mitigate really common but minor bugs that catch even the most experienced developers out. These are great features, and should help stop silly mistakes that all of us developers make. We are after all, human.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Microsoft-.NET-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Content Security Policy (CSP) for ASP.NET MVC]]></title>
@@ -6398,7 +6399,7 @@ alert(&quot;Allowed because nonce is valid.&quot;)
 <h1 id="conclusions">Conclusions</h1>
 <p>Wow, that was a long blog post. I wanted it to be as comprehensive as possible. I hope I&#39;ve shown that now is the time to invest in implementing CSP and if you are developing a new site, then integrating CSP into it at an early stage will mean that you reap the benefits of a much greater level of security. The <a href="https://visualstudiogallery.msdn.microsoft.com/6cf50a48-fc1e-4eaf-9e82-0b2a6705ca7d">ASP.NET Core Boilerplate</a> project template is a great place to start and will give you a working code example which tells a thousand words on its own.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Content-Security-Policy-CSP-for-ASP.NET-MVC-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Content-Security-Policy-CSP-for-ASP.NET-MVC-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[NWebSec ASP.NET MVC Security Through HTTP Headers]]></title>
@@ -6486,7 +6487,7 @@ filters.Add(
 <p><img src="https://rehansaeed.com/nwebsec-asp-net-mvc-security-through-http-headers/images/ASP.NET-MVC-Boilerplate-HTTP-Response-Headers.png" alt="ASP.NET Core Boilerplate HTTP Response Headers"></p>
 <p>Using HTTP headers for security is just one extra tool in your arsenal to secure your site. As you will see in my next post about the new <a href="https://developer.mozilla.org/en-US/docs/Web/Security/CSP">Content-Security-Policy (CSP)</a> HTTP header, it can be a very powerful tool but not one to be used in isolation. You need to think about security across the whole spectrum of your site to catch all the glaring holes you may have missed.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/NWebSec-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/NWebSec-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Reactive Extensions (Rx) - Part 7 - Sample Events]]></title>
@@ -6530,7 +6531,7 @@ this.WhenTextChanged
     .Subscribe(x =&gt; Debug.WriteLine(DateTime.Now + &quot; Text Changed&quot;));</code></pre>
 <p>The final and most succinct step is to use the Sample method to only pick out the latest text changed event every three seconds and pass that on to the <code>Subscribe</code> delegate. It really is that easy and this blog post really is this short because of that!</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Reactive-Extensions-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Reactive-Extensions-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Securing the ASP.NET MVC Web.config]]></title>
@@ -6680,7 +6681,7 @@ this.WhenTextChanged
 <h1 id="conclusions">Conclusions</h1>
 <p>IIS seems to have a lot of strange behaviours that have a detrimental effect on security. If you use the above settings however, you can cut out IIS&#39;s extra features that you don&#39;t need or want. Look out for the next post when I&#39;ll be discussing the very cool <a href="https://github.com/NWebsec/NWebsec">NWebSec</a> NuGet package, which provides a whole host of comprehensive ASP.NET MVC security related filters which you can apply to your site.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/ASP.NET-Core-Boilerplate-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/ASP.NET-Core-Boilerplate-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Configuration File Transforms In Visual Studio Should Be Built In]]></title>
@@ -6705,7 +6706,7 @@ Microsoft has just announced on their <a href="http://visualstudio.uservoice.com
 <p>Don&#39;t despair, there is hope. On the <a href="http://visualstudio.uservoice.com/forums/121579-visual-studio/suggestions/2043217-support-web-config-style-transforms-on-any-file-in?page=17&amp;per_page=20">Visual Studio User Voice</a> site, there is a suggestion to support configuration file transforms out of the box. What&#39;s more, is that the suggestion is currently number seven in the list of &#39;hot&#39; ideas and number three if you remove the ideas that Microsoft have already commented on. Please do go and vote for this suggestion, Microsoft does read and more importantly act on them.</p>
 <p>I spent some time a year ago teaching a junior developer the new C# async and await feature, as well as the Task Parallel Library (TPL). Not only did it blow his mind but I realized that so much that I had learned had now become obsolete and that this new developer would never have to struggle with asynchronous code as I had. In my opinion, this feature is another one of those moments when we can consign another series of old method to the dustbin of history. We just need to help Microsoft know about it.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Visual-Studio-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Visual-Studio-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Custom Visual Studio Project Templates]]></title>
@@ -6809,7 +6810,7 @@ Microsoft has just announced on their <a href="http://visualstudio.uservoice.com
 <h1 id="conclusions">Conclusions</h1>
 <p>Creating a simple <code>.zip</code> project template is super simple and something everyone should know and use for larger projects. Creating VSIX project templates is a lot more involved but to be honest, there is no reason why it should be. I hope Microsoft makes this process a lot easier.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Visual-Studio-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Visual-Studio-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Internet Favicon Madness (Updated)]]></title>
@@ -7004,7 +7005,7 @@ Microsoft has just announced on their <a href="http://visualstudio.uservoice.com
 <pre><code class="language-xml">&lt;link rel=&quot;icon&quot; type=&quot;image/svg+xml&quot; href=&quot;favicon.svg&quot;/&gt;</code></pre>
 <p>Lets all hope more browsers support this simple approach but don&#39;t hold your breath.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Favicons-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Favicons-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[ASP.NET Core Boilerplate]]></title>
@@ -7102,7 +7103,7 @@ Microsoft has just announced on their <a href="http://visualstudio.uservoice.com
 <p>At some point, I will try to create a <a href="https://msdn.microsoft.com/en-us/library/ff363239.aspx">Visual Studio Deployment package (VSIX)</a> and list this project template on the <a href="https://visualstudiogallery.msdn.microsoft.com/site/search?f%5B0%5D.Type=RootCategory&amp;f%5B0%5D.Value=templates&amp;f%5B0%5D.Text=Templates&amp;f%5B1%5D.Type=SubCategory&amp;f%5B1%5D.Value=aspnet&amp;f%5B1%5D.Text=ASP.NET">Visual Studio extensions</a> site. To use the template, it will be as easy as choosing ASP.NET Core Boilerplate from the online templates in the <code>File -&gt; New Project -&gt; Online Template</code> menu. Unbelievably, it&#39;s actually pretty complicated to create one of these. I found the <a href="https://visualstudiogallery.msdn.microsoft.com/57320b20-34a2-42e4-b97e-e615c71aca24">Export Template Wizard</a> Visual Studio extension which can do this easily but it&#39;s not been updated since Visual Studio 2010.</p>
 <p>I am also taking a look at creating separate Visual Studio templates which include ASP.NET Web API and OAuth authentication. This is of course an open source project, I fully expect contributions and suggestions from the community.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/ASP.NET-Core-Boilerplate-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/ASP.NET-Core-Boilerplate-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Elysium Extra 1.1 Released]]></title>
@@ -7184,7 +7185,7 @@ Microsoft has just announced on their <a href="http://visualstudio.uservoice.com
 <p>So far, there are two contributing developers working on Elysium Extra (Myself and zsKengren who has contributed new controls which are still to be added to the library) and 22 people following the project <a href="https://github.com/RehanSaeed/Elysium-Extra">according to GitHub</a>. That is not nearly enough and I would like to see more community activity.</p>
 <p>Elysium Extra is a totally open source project. You can <a href="https://github.com/RehanSaeed/Elysium-Extra">look at the source code</a> and even use bits of it in your own projects freely. I occasionally get people contacting me telling me that they want to use the project or even how it has really helped them. That&#39;s great feedback and long may it continue!</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Elysium-Extra-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Elysium-Extra-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Model-View-ViewModel (MVVM) - Part 4 - INotifyDataErrorInfo]]></title>
@@ -7652,7 +7653,7 @@ namespace Framework.ComponentModel.Rules
 <h1 id="conclusions">Conclusions</h1>
 <p>I have been tweaking this base class for the last few years and feel I&#39;ve got a fairly good balance. I&#39;ve not seen too many implementations of this interface, most blogs seem to cover <code>INotifyPropertyChanged</code> pretty well though. I&#39;d be very interested if anyone has any comments or thoughts on improvements. Feel free to sound-off in the comments.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/MVVM-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/MVVM-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Naming Conventions]]></title>
@@ -7683,7 +7684,7 @@ where s.Name = &#39;Death Star&#39;</code></pre>
 <p>Coding style is a deeply personal subject and a pretty important one too that is often overlooked. In my opinion, it&#39;s always worth spending a little time looking up the preferred methods (There will usually be more than one) of writing in any particular language and picking one of the most popular approaches.</p>
 <p>If you&#39;re working in a team, you&#39;ll reap the benefits pretty quickly. Code written by others will look just like yours, saving you precious seconds. Even if your a solo developer, you&#39;ll benefit. Developers are inherently plagiarists, copying snippets of code found on-line written by others. Using a common coding style will mean that your style is more likely to be the same as the next snippet of code you or I shamelessly copy from the internet.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Naming-Conventions-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Naming-Conventions-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Model-View-ViewModel (MVVM) - Part 3 - INotifyPropertyChanged]]></title>
@@ -8035,7 +8036,7 @@ where s.Name = &#39;Death Star&#39;</code></pre>
 <h1 id="conclusions">Conclusions</h1>
 <p>I have gone through many iterations to get to this base class. As I&#39;ve shown, I&#39;ve had very particular goals in mind. Your mileage may vary but I believe with the tools Microsoft have given us, this is a good compromise and covers all the scenarios I can think of. I&#39;d be very interested if anyone has any comments or thoughts on improvements. Feel free to sound-off in the comments.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/MVVM-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/MVVM-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Model-View-ViewModel (MVVM) - Part 2 - IDisposable]]></title>
@@ -8213,7 +8214,7 @@ disposable.Dispose();
 Console.WriteLine(disposable.IsDisposed);</code></pre>
 <p>As you can see, it looks a whole lot simpler and has some pretty cool helper functions and features. No more need to remember how to implement this complicated pattern.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/MVVM-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/MVVM-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Model-View-ViewModel (MVVM) - Part 1 - Overview]]></title>
@@ -8271,7 +8272,7 @@ Console.WriteLine(disposable.IsDisposed);</code></pre>
 <p>Whats your opinion? I&#39;ve looked at a lot of frameworks MVVM Light, PRISM, etc. In my opinion, the seven top items are the most important but also the most neglected bits of MVVM. Is there some framework out there that does all this and more?</p>
 <p>I&#39;ll discuss this and a lot more in the coming posts.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/MVVM-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/MVVM-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Portable Class Library (PCL) version of NotificationsExtensions NuGet package]]></title>
@@ -8304,7 +8305,7 @@ Console.WriteLine(disposable.IsDisposed);</code></pre>
 <h1 id="attribution-and-changes-made">Attribution and Changes Made</h1>
 <p>All praise goes to the above two projects and the Microsoft developers who built them. The only changes I made to the code was to switch from <code>XmlDocument</code> to <code>XDocument</code>, remove a few WinRT specific references and stick it into a Portable Class Library (PCL).</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/NuGet-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/NuGet-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Reactive Extensions (Rx) - Part 6 - Task ToObservable]]></title>
@@ -8433,7 +8434,7 @@ public async Task&lt;string&gt; WaitForFirstResultAndReturnResultWithTimeOut()
 <h1 id="conclusions">Conclusions</h1>
 <p>One definite reason to convert <code>Task</code>&#39;s to Observables is to use the <code>Timeout</code> method. There may be other reasons but I&#39;m having a hard time thinking of any right now. In fact, I&#39;m having a hard time thinking of any other posts to make about Reactive Extensions (Rx). It&#39;s an interesting chunk of code and I&#39;ve learned a lot writing this series of posts as I hope you have too.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Reactive-Extensions-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Reactive-Extensions-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[GetHashCode Made Easy]]></title>
@@ -8683,7 +8684,7 @@ public struct HashCode : IEquatable&lt;HashCode&gt;
 <h1 id="license">License</h1>
 <p>I have been asked repeatedly for licensing of my code above. Developers have been asking permission to use it in a Kerbal Space program plugin and even in the excellent <a href="https://chocolatey.org">Chocolatey</a> project which has been totally unexpected for me because this is code I wrote years ago. It just goes to show how fundamental <code>GetHashCode</code> is. Please consider the code as MIT licensed, do good with it and be excellent to each other!</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Microsoft-.NET-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Reactive Extensions (Rx) - Part 5 - Awaiting Observables]]></title>
@@ -8775,7 +8776,7 @@ await observable.ForEachAsync(x =&gt; Console.WriteLine(x));</code></pre>
 <p>So we&#39;ve learned how to await observables in different ways and how it can be another way of doing the same thing that <code>TaskCompletionSource</code> does but in a cleaner more elegant way.</p>
 <p>We&#39;ve also learned that there are some caveats that you need to be aware of when awaiting an observable i.e. that observables return multiple results and you have to pick one to return in your task.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Reactive-Extensions-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Reactive-Extensions-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[WPF Metro Part 4 - Elysium Extra]]></title>
@@ -8906,7 +8907,7 @@ I am the developer of Elysium Extra. It was developed at the company where I wor
 <h1 id="conclusions">Conclusions</h1>
 <p>This is a very young project with currently only one developer but I do intend to keep it working. Your mileage with this SDK may vary but any contributions or bug fixes are welcome.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Elysium-Extra-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Elysium-Extra-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[WPF Metro Part 3 - Elysium]]></title>
@@ -8952,7 +8953,7 @@ I am the developer of Elysium Extra. It was developed at the company where I wor
 <p><img src="https://rehansaeed.com/wpf-metro-part3-elysium/images/Elysium_Screenshot_Light_TextAndMenus.png" alt="Elysium Screenshot Light Text And Menus Showcase"></p>
 <p><img src="https://rehansaeed.com/wpf-metro-part3-elysium/images/Elysium_Screenshot_Dark_TextAndMenus.png" alt="Elysium Screenshot Dark Text And Menus Schowcase"></p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Elysium-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Elysium-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Reactive Extensions (Rx) - Part 4 - Replacing Timers]]></title>
@@ -9054,7 +9055,7 @@ private void OnTimerElapsed(object sender, ElapsedEventArgs e)
 <h1 id="conclusions">Conclusions</h1>
 <p>If you haven&#39;t started using Reactive Extensions yet, then here is yet another reason to get going. What I have not shown in this post is the shear superhuman power you get when you use the Linq methods to modify your observable just before you make the call to <code>Subscribe</code>.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Reactive-Extensions-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Reactive-Extensions-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Windows 8.1 TouchScreen Gaming Laptops]]></title>
@@ -9079,7 +9080,7 @@ private void OnTimerElapsed(object sender, ElapsedEventArgs e)
 <p><img src="https://rehansaeed.com/windows-8-touchscreen-gaming-laptops/images/MSI-GS70-Stealth-Laptop.png" alt="MSI GS70 Stealth Laptop"></p>
 <p>So if MSI is listening, the demand is here for touchscreen gaming laptops, surprise us.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Fry-Shutup-And-Take-My-Money-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Fry-Shutup-And-Take-My-Money-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[WPF Metro Part 2 - MahApps Metro]]></title>
@@ -9142,7 +9143,7 @@ private void OnTimerElapsed(object sender, ElapsedEventArgs e)
 <p><img src="https://rehansaeed.com/wpf-metro-part2-mahapps-metro/images/MahApps-Metro-7.png" alt="MahApps Metro screenshot of the DataGrid control"></p>
 <p><img src="https://rehansaeed.com/wpf-metro-part2-mahapps-metro/images/MahApps-Metro-6.png" alt="MahApps Metro screenshot of the DataGrid control"></p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/MahApps-Metro-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/MahApps-Metro-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[WPF Metro Part 1 - Modern UI for WPF]]></title>
@@ -9199,7 +9200,7 @@ private void OnTimerElapsed(object sender, ElapsedEventArgs e)
 <p>If the developer is reading, I would suggest adding a tab in his sample showing the colours and brushes available to the developers and expanding his validation to other input controls.</p>
 <p>This is a great project and it would be a pleasure to use any application developed using this SDK.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Modern-UI-for-WPF-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Modern-UI-for-WPF-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Reactive Extensions (Rx) - Part 3 - Naming Conventions]]></title>
@@ -9228,7 +9229,7 @@ private void OnTimerElapsed(object sender, ElapsedEventArgs e)
 <p>I have read in a few places people suggesting that so called &#39;Hot&#39; and &#39;Cold&#39; (See <a href="http://stackoverflow.com/questions/2521277/what-are-the-hot-and-cold-observables">here</a> for an explanation) observables should have different naming conventions. I personally feel that this is an implementation detail and I can&#39;t see why the subscriber to an event would need to know that an event was &#39;Hot&#39; or &#39;Cold&#39; (Prove me wrong). Also, trying to teach this concept to other developers and get them to implement it would mean constantly looking up the meanings (I keep forgetting myself), whereas using &#39;When&#39; is a nice simple concept which anyone can understand.</p>
 <p>This is a pretty open question at the moment. What are your thoughts on the subject?</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Reactive-Extensions-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Reactive-Extensions-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Reactive Extensions (Rx) - Part 2 - Wrapping C# Events]]></title>
@@ -9325,7 +9326,7 @@ public IObservable&lt;BunnyRabbits&gt; WhenBunnyRabbitsAttack
 <h1 id="summing-up">Summing Up</h1>
 <p>So it may not always be possible to get rid of, dare I say it legacy C# events but we can certainly wrap them with Reactive Extension observables and even hide them altogether.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Reactive-Extensions-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Reactive-Extensions-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Reactive Extensions (Rx) - Part 1 - Replacing C# Events]]></title>
@@ -9453,7 +9454,7 @@ public IObservable&lt;BunnyRabbits&gt; WhenBunnyRabbitsAttack
 <h1 id="conclusions">Conclusions</h1>
 <p>Reactive Extensions (Rx) is a pretty large library which does a lot of stuff which overlaps with other libraries like the Task Parallel Library (TPL). It brings no new capabilities but does bring new ways to do things (much like Linq), while writing less code and with more elegance. It can be confusing coming to it as a newcomer, as to where exactly it can be used effectively. Replacing basic events with <code>IObservable&lt;T&gt;</code> is definitely one area where we can leverage its power.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Reactive-Extensions-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Reactive-Extensions-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Stop The Brace Wars, Use StyleCop]]></title>
@@ -9497,7 +9498,7 @@ public int Property
 <p>There need be no lengthy discussion or arguing over it. Keep the default rules (turn off the comment rules if you choose) and you quickly have a set of standards that can be universally applied and tested not just in your team but universally by all C# developers around the world.</p>
 <p>Download some sample code from <a href="https://github.com">GitHub</a> and be at ease at the familiar look to the hopefully well designed code. I paint a rosy picture but I see more and more developers using StyleCop. It takes a week to get used to the change in your writing style, I myself switched from underscores to <code>this</code> and have never looked back. You can too.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/StyleCop-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/StyleCop-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[ConfigureAwait in Task Parallel Library (TPL)]]></title>
@@ -9566,7 +9567,7 @@ public async Task UpdateUserInterface()
 <p>So now all our XML manipulation is done on the <code>ThreadPool</code> thread along with the HTTP GET we are doing using the <code>HttpClient</code>. Notice however, that when we return the blog titles to the calling method we are back on the UI thread. Each time you do an <code>await</code>, the default behaviour is to continue on the thread we started with. By adding <code>ConfigureAwait(false)</code>, we are overriding this behaviour to continue on whatever thread the Task was running on.</p>
 <p>For more on the Task Parallel Library (TPL) I highly recommend reading <a href="http://blogs.msdn.com/b/toub/" title="Stephen Toub&#39;s">Stephen Toub&#39;s</a> blog.</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Microsoft-.NET-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Microsoft-.NET-1366x768.png" length="0" type="image/png"/>
         </item>
         <item>
             <title><![CDATA[Just Start - The First Blog Post]]></title>
@@ -9577,7 +9578,7 @@ public async Task UpdateUserInterface()
             <content:encoded><![CDATA[<p>I thought I should begin this first blog post with a few words on what I hope to achieve. I started creating this website because I wanted to create a space where I could post interesting things I found or learned whilst working as a software developer or just generally in life. I hope to not just blog about software development, best practices or cool code snippets, but also look into some of the other “soft skills” a developer might need, such as software design and aesthetics which I have a particular interest in.</p>
 <p>I have reached a point where I&#39;ve helped build some pretty cool stuff in my career so far. I now want to share some of these things with the wider community. Hopefully, I&#39;ll have written some code which is of use to someone. Feel free to drop a comment now and again…</p>
 ]]></content:encoded>
-            <enclosure url="/images/hero/Just-Start-1366x768.png"/>
+            <enclosure url="https://rehansaeed.com/images/hero/Just-Start-1366x768.png" length="0" type="image/png"/>
         </item>
     </channel>
 </rss>
