@@ -30,6 +30,8 @@ import dialogue from "~/components/shared/dialogue.vue";
 import iconSearch from "~/components/shared/icons/icon-search.vue";
 import search from "~/components/search.vue";
 
+// TODO find and / keyup event handlers
+
 export default {
   name: "u-search-button",
   components: {

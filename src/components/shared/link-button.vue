@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import { computed } from "@vue/composition-api";
+
 export default {
   name: "u-link-button",
   props: {
@@ -42,10 +44,9 @@ export default {
       type: String,
     },
   },
-  computed: {
-    tag() {
-      return this.to ? "g-link" : "a";
-    },
+  setup({ to }) {
+    const tag = computed(() => (to ? "g-link" : "a"));
+    return { tag };
   },
 };
 </script>

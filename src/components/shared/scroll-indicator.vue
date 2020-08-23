@@ -1,29 +1,37 @@
 <template>
-  <div class="scroll-indicator"></div>
+  <div class="scroll-indicator" :style="{ '--scroll': scroll }"></div>
 </template>
 
 <script>
+import { ref, onMounted, onUnmounted } from "@vue/composition-api";
+
 export default {
   name: "u-scroll-indicator",
-  methods: {
-    onScroll() {
+  setup() {
+    const scroll = ref(0);
+
+    function onScroll() {
       requestAnimationFrame(() => {
-        const scroll =
+        scroll.value =
           window.pageYOffset /
           (document.body.offsetHeight - window.innerHeight);
-        document.body.style.setProperty("--scroll", scroll);
       });
-    },
-  },
-  mounted() {
-    if (window) {
-      window.addEventListener("scroll", this.onScroll, false);
     }
-  },
-  unmounted() {
-    if (window) {
-      window.removeEventListener("scroll", this.onScroll, false);
-    }
+
+    onMounted(() => {
+      if (window) {
+        window.addEventListener("scroll", onScroll);
+      }
+    });
+    onUnmounted(() => {
+      if (window) {
+        window.removeEventListener("scroll", onScroll);
+      }
+    });
+
+    return {
+      scroll,
+    };
   },
 };
 </script>
