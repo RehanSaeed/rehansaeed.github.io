@@ -116,11 +116,11 @@ module.exports = {
           },
         },
         atom: {
-          enabled: false,
+          enabled: true,
           output: "/atom.xml",
         },
         json: {
-          enabled: false,
+          enabled: true,
           output: "/feed.json",
         },
         rss: {
@@ -158,7 +158,7 @@ module.exports = {
             ],
             date: new Date(node.date),
             categories: node.tags,
-            image: node.heroImage,
+            image: site.url + node.heroImage,
           };
         },
       },
