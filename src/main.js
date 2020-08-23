@@ -17,68 +17,38 @@ const site = require("./../site.json");
 export default function (Vue, { router, head, isClient }) {
   const consoleOptions = "background: #ffffff; color: #6b17e8";
 
-  console.log(
-    "%c ▄▄▄▄     ▄▄▄▄            ▄▄▄▄                                                                ▄▄▄▄",
-    consoleOptions
-  );
-  console.log(
-    "%c  ████▄   ███ ▄▄▄▄  ▄▄▄▄   ███▄▄▄▄▄    ▄▄▄▄▄▄▄   ▄▄ ▄▄▄ ▄▄▄▄   ▄▄ ▄▄▄ ▄▄▄▄    ▄▄▄▄▄▄▄    ▄▄▄▄▄███ ",
-    consoleOptions
-  );
-  console.log(
-    "%c  ██ ███▄█ ██  ███   ███   ███   ███   ▄▄▄▄▄███   ███ ███ ███   ███ ███ ███   ▄▄▄▄▄███ ███    ███ ",
-    consoleOptions
-  );
-  console.log(
-    "%c  ██  ███  ██  ███   ███   ███   ███ ███    ███   ███ ███ ███   ███ ███ ███ ███    ███ ███    ███ ",
-    consoleOptions
-  );
-  console.log(
-    "%c ▄██▄  █  ▄██▄  ███▄██ █▄ ▄███▄ ▄███▄ ██▄▄▄██ █▄ ▄███▄███▄███▄ ▄███▄███▄███▄ ██▄▄▄██ █▄  ██▄▄▄███▄",
-    consoleOptions
-  );
+  // prettier-ignore
+  console.log("%c ▄▄▄▄     ▄▄▄▄            ▄▄▄▄                                                                ▄▄▄▄", consoleOptions);
+  // prettier-ignore
+  console.log("%c  ████▄   ███ ▄▄▄▄  ▄▄▄▄   ███▄▄▄▄▄    ▄▄▄▄▄▄▄   ▄▄ ▄▄▄ ▄▄▄▄   ▄▄ ▄▄▄ ▄▄▄▄    ▄▄▄▄▄▄▄    ▄▄▄▄▄███ ", consoleOptions);
+  // prettier-ignore
+  console.log("%c  ██ ███▄█ ██  ███   ███   ███   ███   ▄▄▄▄▄███   ███ ███ ███   ███ ███ ███   ▄▄▄▄▄███ ███    ███ ", consoleOptions);
+  // prettier-ignore
+  console.log("%c  ██  ███  ██  ███   ███   ███   ███ ███    ███   ███ ███ ███   ███ ███ ███ ███    ███ ███    ███ ", consoleOptions);
+  // prettier-ignore
+  console.log("%c ▄██▄  █  ▄██▄  ███▄██ █▄ ▄███▄ ▄███▄ ██▄▄▄██ █▄ ▄███▄███▄███▄ ▄███▄███▄███▄ ██▄▄▄██ █▄  ██▄▄▄███▄", consoleOptions);
 
-  console.log(
-    "%c ▄▄▄▄▄▄▄▄▄▄             ▄▄▄▄                              ",
-    consoleOptions
-  );
-  console.log(
-    "%c  ███    ███ ▄▄▄▄▄▄▄▄▄█  ███▄▄▄▄▄    ▄▄▄▄▄▄▄   ▄▄ ▄▄▄▄▄▄  ",
-    consoleOptions
-  );
-  console.log(
-    "%c  ███▄▄▄▄██ ███▄▄▄▄▄▄█   ███   ███   ▄▄▄▄▄███   ███   ███ ",
-    consoleOptions
-  );
-  console.log(
-    "%c  ███  ██▄  ███          ███   ███ ███    ███   ███   ███ ",
-    consoleOptions
-  );
-  console.log(
-    "%c ▄███▄  ██▄█  ██▄▄▄▄███ ▄███▄ ▄███▄ ██▄▄▄██ █▄ ▄███▄ ▄███▄",
-    consoleOptions
-  );
+  // prettier-ignore
+  console.log("%c ▄▄▄▄▄▄▄▄▄▄             ▄▄▄▄                              ", consoleOptions);
+  // prettier-ignore
+  console.log("%c  ███    ███ ▄▄▄▄▄▄▄▄▄█  ███▄▄▄▄▄    ▄▄▄▄▄▄▄   ▄▄ ▄▄▄▄▄▄  ", consoleOptions);
+  // prettier-ignore
+  console.log("%c  ███▄▄▄▄██ ███▄▄▄▄▄▄█   ███   ███   ▄▄▄▄▄███   ███   ███ ", consoleOptions);
+  // prettier-ignore
+  console.log("%c  ███  ██▄  ███          ███   ███ ███    ███   ███   ███ ", consoleOptions);
+  // prettier-ignore
+  console.log("%c ▄███▄  ██▄█  ██▄▄▄▄███ ▄███▄ ▄███▄ ██▄▄▄██ █▄ ▄███▄ ▄███▄", consoleOptions);
 
-  console.log(
-    "%c ▄▄▄▄▄▄▄▄█                                          ▄▄▄▄ ",
-    consoleOptions
-  );
-  console.log(
-    "%c ███           ▄▄▄▄▄▄▄   ▄▄▄▄▄▄▄▄▄█ ▄▄▄▄▄▄▄▄▄█  ▄▄▄▄▄███ ",
-    consoleOptions
-  );
-  console.log(
-    "%c ███▄▄▄▄▄▄    ▄▄▄▄▄███  ███▄▄▄▄▄▄█ ███▄▄▄▄▄▄█ ███    ███ ",
-    consoleOptions
-  );
-  console.log(
-    "%c         ███ ███    ███ ███        ███        ███    ███ ",
-    consoleOptions
-  );
-  console.log(
-    "%c ▄██▄▄▄▄███   ██▄▄▄██ █▄  ██▄▄▄▄███  ██▄▄▄▄███  ██▄▄▄███▄",
-    consoleOptions
-  );
+  // prettier-ignore
+  console.log("%c ▄▄▄▄▄▄▄▄█                                          ▄▄▄▄ ", consoleOptions);
+  // prettier-ignore
+  console.log("%c ███           ▄▄▄▄▄▄▄   ▄▄▄▄▄▄▄▄▄█ ▄▄▄▄▄▄▄▄▄█  ▄▄▄▄▄███ ", consoleOptions);
+  // prettier-ignore
+  console.log("%c ███▄▄▄▄▄▄    ▄▄▄▄▄███  ███▄▄▄▄▄▄█ ███▄▄▄▄▄▄█ ███    ███ ", consoleOptions);
+  // prettier-ignore
+  console.log("%c         ███ ███    ███ ███        ███        ███    ███ ", consoleOptions);
+  // prettier-ignore
+  console.log("%c ▄██▄▄▄▄███   ██▄▄▄██ █▄  ██▄▄▄▄███  ██▄▄▄▄███  ██▄▄▄███▄", consoleOptions);
 
   head.link.push({
     rel: "preload",
