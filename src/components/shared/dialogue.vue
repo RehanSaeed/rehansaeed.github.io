@@ -6,9 +6,9 @@
     :class="{ 'dialog--fullscreen': fullscreen }"
   >
     <div class="dialog__container">
-      <u-heading id="title" level="2" class="dialog__title">{{
-        title
-      }}</u-heading>
+      <u-heading id="title" level="2" class="dialog__title">
+        {{ title }}
+      </u-heading>
       <form class="dialog__form" method="dialog">
         <u-button aria-label="Close search" class="dialog__close" submit>
           <u-icon-close :size="24" />

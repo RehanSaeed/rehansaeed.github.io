@@ -1,20 +1,18 @@
 <template>
   <article class="webmention-link">
     <a class="webmention-link__author" :href="url">{{ name }}</a>
-    <time
-      :datetime="timestamp"
-      :title="timestamp"
-      class="webmention-link__timestamp"
-      >{{ displayTimestamp }}</time
-    >
+    <u-time class="webmention-link__timestamp" :datetime="timestamp" />
   </article>
 </template>
 
 <script>
-import { getDisplayDateFromString } from "~/framework/date.js";
+import time from "~/components/shared/time.vue";
 
 export default {
   name: "u-webmention-link",
+  components: {
+    "u-time": time,
+  },
   props: {
     link: {
       required: true,
@@ -30,9 +28,6 @@ export default {
     },
     timestamp() {
       return this.link.data.published ?? this.link.verified_date;
-    },
-    displayTimestamp() {
-      return getDisplayDateFromString(this.timestamp);
     },
   },
 };
