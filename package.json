@@ -63,7 +63,6 @@
     "explore": "gridsome explore"
   },
   "prettier": {
-    "htmlWhitespaceSensitivity": "strict",
     "endOfLine": "crlf"
   },
   "husky": {
