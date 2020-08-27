@@ -53,6 +53,8 @@ export default {
     isOpen() {
       if (this.isOpen) {
         setTimeout(() => {
+          // TODO: Implement v-focus directive in Vue 3
+          // https://v3.vuejs.org/guide/custom-directive.html
           this.$refs.search.focus();
         }, 100);
       }
