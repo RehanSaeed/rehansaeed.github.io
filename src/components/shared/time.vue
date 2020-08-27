@@ -12,7 +12,7 @@ export default {
   name: "u-time",
   props: {
     datetime: {
-      type: Date,
+      type: String,
       required: true,
     },
   },
