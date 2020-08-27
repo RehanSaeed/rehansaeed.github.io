@@ -8,6 +8,7 @@ export default {
     if (this.$parent.$el) {
       this.$parent.$el.style = "--scroll: " + scroll;
     }
+    // TODO: Rename to $slots in Vue 3.
     return this.$scopedSlots.default();
   },
   setup() {
