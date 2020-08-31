@@ -5,10 +5,10 @@
 </template>
 
 <script>
-import { computed } from "@vue/composition-api";
+import { defineComponent, computed } from "@vue/composition-api";
 import { getDisplayDateFromString } from "~/framework/date.js";
 
-export default {
+export default defineComponent({
   name: "u-time",
   props: {
     datetime: {
@@ -20,5 +20,5 @@ export default {
     const datetimeDisplay = computed(() => getDisplayDateFromString(datetime));
     return { datetimeDisplay };
   },
-};
+});
 </script>

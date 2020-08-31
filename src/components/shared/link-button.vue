@@ -17,9 +17,9 @@
 </template>
 
 <script>
-import { computed } from "@vue/composition-api";
+import { defineComponent, computed } from "@vue/composition-api";
 
-export default {
+export default defineComponent({
   name: "u-link-button",
   props: {
     bordered: {
@@ -48,7 +48,7 @@ export default {
     const tag = computed(() => (to ? "g-link" : "a"));
     return { tag };
   },
-};
+});
 </script>
 
 <style lang="scss">

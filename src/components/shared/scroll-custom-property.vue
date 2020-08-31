@@ -1,7 +1,12 @@
 <script>
-import { ref, onMounted, onUnmounted } from "@vue/composition-api";
+import {
+  defineComponent,
+  ref,
+  onMounted,
+  onUnmounted,
+} from "@vue/composition-api";
 
-export default {
+export default defineComponent({
   name: "u-scroll-custom-property",
   render() {
     const scroll = this.scroll;
@@ -37,5 +42,5 @@ export default {
       scroll,
     };
   },
-};
+});
 </script>
