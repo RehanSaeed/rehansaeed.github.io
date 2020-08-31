@@ -46,7 +46,7 @@
     "gridsome-remark-embed-snippet": "^1.0.3",
     "gridsome-source-static-meta": "^1.0.1",
     "husky": "^4.2.5",
-    "lint-staged": "^10.2.11",
+    "lint-staged": "^10.2.13",
     "marked": "^1.1.1",
     "node-sass": "^4.14.1",
     "prettier": "^2.1.1",
