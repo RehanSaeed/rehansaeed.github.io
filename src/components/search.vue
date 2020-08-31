@@ -1,5 +1,5 @@
 <template>
-  <div class="search">
+  <div class="search" role="search" aria-label="site">
     <input
       ref="search"
       id="search"
