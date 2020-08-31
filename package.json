@@ -28,7 +28,7 @@
     "vssue": "^1.4.6"
   },
   "devDependencies": {
-    "@gridsome/plugin-critical": "^0.1.6",
+    "@gridsome/plugin-critical": "^0.2.0",
     "@gridsome/plugin-google-analytics": "^0.1.1",
     "@gridsome/plugin-sitemap": "^0.4.0",
     "@gridsome/source-filesystem": "^0.6.2",
