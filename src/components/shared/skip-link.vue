@@ -23,12 +23,12 @@ export default {
   left: 0;
   right: 0;
   text-align: center;
-  transform: translateY(-100%);
-  transition: transform var(--global-duration-2) ease-out;
+  transform: translateY(-110%);
+  transition: transform var(--global-duration-2) var(--ease-in-out-cubic);
   width: 10rem;
 }
 
 .skip-link:focus {
-  transform: translateY(0%);
+  transform: translateY(10%);
 }
 </style>

@@ -33,7 +33,7 @@ export default {
   box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.02),
     1px 1px 15px 0 rgba(0, 0, 0, 0.03);
   padding: var(--global-space-fluid-6);
-  transition: transform var(--global-duration-2) ease-out;
+  transition: transform var(--global-duration-2) var(--ease-in-out-cubic);
 
   // @mixin word-wrap()
   overflow-wrap: break-word;
@@ -65,7 +65,7 @@ export default {
   border-radius: inherit;
   box-shadow: 1px 10px 30px 0 hsl(0, 0%, 70%);
   opacity: 0;
-  transition: opacity var(--global-duration-2) ease-out;
+  transition: opacity var(--global-duration-2) var(--ease-in-out-cubic);
 }
 
 .card--hoverable:hover::before,

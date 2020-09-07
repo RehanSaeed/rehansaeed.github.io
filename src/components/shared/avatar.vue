@@ -71,11 +71,11 @@ export default {
 }
 
 .avatar__image {
-  border: var(--global-border-width-2) solid var(--global-title-color);
+  border: 2px solid var(--global-title-color);
   border-radius: 100%;
   display: block;
   object-fit: cover;
-  transition: border-color var(--global-duration-3) ease-out;
+  transition: border-color var(--global-duration-3) var(--ease-out-cubic);
 }
 
 .avatar--medium {
