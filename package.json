@@ -45,7 +45,7 @@
     "gridsome-plugin-robots": "^0.2.1",
     "gridsome-remark-embed-snippet": "^1.0.3",
     "gridsome-source-static-meta": "^1.0.1",
-    "husky": "^4.2.5",
+    "husky": "^4.3.0",
     "lint-staged": "^10.3.0",
     "marked": "^1.1.1",
     "node-sass": "^4.14.1",
