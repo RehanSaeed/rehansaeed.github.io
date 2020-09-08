@@ -5,7 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/the-fastest-nuget-package-ever-published-probably/"
 heroImage: "/images/hero/NuGet-1366x768.png"
 date: "2020-07-08T08:34:00Z"
-dateModified: "2020-07-08T12:16:00Z"
+dateModified: "2020-09-08T09:46:00Z"
 published: true
 categories:
     - ".NET"
@@ -16,17 +16,20 @@ tags:
     - ".NET Boxed"
 ---
 
+::: tip Updated 2020-09-08 09:46
+The GitHub CLI simplified some commands, so I've updated the post to make use of those simpler commands.
+:::
+
 ::: tip Updated 2020-07-08 12:16
 I forgot to mention how we can use labels to help automatically draft release notes, so I've updated the post with a few extra screenshots and descriptions.
 :::
 
 So, you want to publish a new NuGet package? You just want to get your code up into nuget.org as quickly as possible but there is so much that you have to setup to get there. Not any more! I'll show you how you can create a new project and publish a NuGet package with all the bells and whistles in a **couple of minutes**.
 
-We'll start off by creating a new GitHub repository using the new [GitHub CLI](https://github.com/cli/cli). Unfortunately however, the CLI is interactive, so after executing a command, you do have to answer some questions instead of being able to pass some flags. In this case, we enter `Y` to tell it to clone the repository.
+We'll start off by creating a new GitHub repository using the new [GitHub CLI](https://github.com/cli/cli).
 
 ```powershell
-gh repo create RehanSaeed/FastestNuGet --public
-# Select 'Y' to create a local directory
+gh repo create RehanSaeed/FastestNuGet --public --confirm
 cd FastestNuGet
 ```
 
@@ -109,8 +112,7 @@ You can take a look at the repository at [RehanSaeed/FastestNuGet](https://githu
 Here is the complete script we ran to get from starting a new project to publishing on NuGet. I took lots of screenshots along the way but overall, you can do all this in about two minutes assuming you have everything installed.
 
 ```powershell
-gh repo create RehanSaeed/FastestNuGet --public
-# Select 'Y' to create a local directory
+gh repo create RehanSaeed/FastestNuGet --public --confirm
 cd FastestNuGet
 
 dotnet new --install Boxed.Templates
