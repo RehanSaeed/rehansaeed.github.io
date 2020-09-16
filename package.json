@@ -49,7 +49,7 @@
     "lint-staged": "^10.3.0",
     "marked": "^1.1.1",
     "node-sass": "^4.14.1",
-    "prettier": "^2.1.1",
+    "prettier": "^2.1.2",
     "remark-containers": "^1.2.0",
     "remark-kbd": "^1.0.21",
     "remark-toc": "^7.0.0",
