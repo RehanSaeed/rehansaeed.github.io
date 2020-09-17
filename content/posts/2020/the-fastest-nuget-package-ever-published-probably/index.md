@@ -5,7 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/the-fastest-nuget-package-ever-published-probably/"
 heroImage: "/images/hero/NuGet-1366x768.png"
 date: "2020-07-08T08:34:00Z"
-dateModified: "2020-09-08T09:46:00Z"
+dateModified: "2020-09-17T09:29:00Z"
 published: true
 categories:
     - ".NET"
@@ -15,6 +15,10 @@ tags:
     - "GitHub Actions"
     - ".NET Boxed"
 ---
+
+::: tip Updated 2020-09-17 09:29
+Added GitHub CLI commands to create labels instead of doing it manually.
+:::
 
 ::: tip Updated 2020-09-08 09:46
 The GitHub CLI simplified some commands, so I've updated the post to make use of those simpler commands.
@@ -65,9 +69,20 @@ The other `Release Drafter` GitHub action created a draft release for us in GitH
 
 ![GitHub Releases](./images/GitHub-Releases-1062x600.png)
 
-Next we need to create some default labels that we can apply to pull requests. This will help us create automatic release notes for any NuGet packages we release. The `bug`, `enhancement` and `maintenance` labels will categorise changes in our release notes. The `major`, `minor` and `patch` labels will automatically generate a semantic versioning 2.0 compliant version number for us. Unfortunately, we can't use the GitHub CLI to create these for us at this time, so we'll have to do it manually.
+Next we need to create some default labels that we can apply to pull requests. This will help us create automatic release notes for any NuGet packages we release. The `bug`, `enhancement` and `maintenance` labels will categorise changes in our release notes. The `major`, `minor` and `patch` labels will automatically generate a semantic versioning 2.0 compliant version number for us.
 
 ![GitHub Labels](./images/GitHub-Labels-1106x756.png)
+
+I've gone in to GitHub and deleted all the existing labels and then run a few GitHub CLI commands to create just the ones I want:
+
+```powershell
+gh api --silent repos/:owner/:repo/labels -f name="bug" -f description="Issues describing a bug or pull requests fixing a bug." -f color="ee0701"
+gh api --silent repos/:owner/:repo/labels -f name="enhancement" -f description="Issues describing an enhancement or pull requests adding an enhancement." -f color="a2eeef"
+gh api --silent repos/:owner/:repo/labels -f name="maintenance" -f description="Pull requests that perform maintenance on the project but add no features or bug fixes." -f color="fff89b"
+gh api --silent repos/:owner/:repo/labels -f name="major" -f description="Pull requests requiring a major version update according to semantic versioning." -f color="b23021"
+gh api --silent repos/:owner/:repo/labels -f name="minor" -f description="Pull requests requiring a minor version update according to semantic versioning." -f color="f99248"
+gh api --silent repos/:owner/:repo/labels -f name="patch" -f description="Pull requests requiring a patch version update according to semantic versioning." -f color="eaf42c"
+```
 
 Now it's time to make a change and submit a new pull request (PR) to our repository. Notice I'm adding a `major` and `enhancement` label to the pull request.
 
