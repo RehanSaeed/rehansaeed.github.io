@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Wed, 23 Sep 2020 16:43:05 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 25 Sep 2020 15:27:13 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -727,7 +727,7 @@ Added some more information about CRLF line endings for <code>.cmd</code> and <c
 *.sh text eol=lf</code></pre>
 <p>Only the first line is strictly necessary. It hard codes the line endings for Windows cmd and batch scripts to CRLF and bash scripts to be LF, so that they can be executed via a file share. It&#39;s a practice I picked up from the <a href="https://github.com/dotnet/corefx/blob/master/.gitattributes">corefx repository</a>.</p>
 <h3 id="git-large-file-system-lfs">Git Large File System (LFS)</h3>
-<p>It&#39;s pretty common to want to checking binary files into your Git repository. Building a website for example, involves images, fonts, maybe some compressed archives too. The problem with these binary files is that they bloat the repository a fair bit. Every time you check-in a change to a binary file, you&#39;ve now got both files saved in Git&#39;s history. Over time this bloats the repository and makes cloning it slow. A much better solution is to use <a href="https://git-lfs.github.com/">Git Large File System (LFS)</a>. LFS stores binary files in a separate file system. When you clone a repository, you only download the latest copies of the binary files and not every single changed version of them.</p>
+<p>It&#39;s pretty common to want to check binary files into your Git repository. Building a website for example, involves images, fonts, maybe some compressed archives too. The problem with these binary files is that they bloat the repository a fair bit. Every time you check-in a change to a binary file, you&#39;ve now got both files saved in Git&#39;s history. Over time this bloats the repository and makes cloning it slow. A much better solution is to use <a href="https://git-lfs.github.com/">Git Large File System (LFS)</a>. LFS stores binary files in a separate file system. When you clone a repository, you only download the latest copies of the binary files and not every single changed version of them.</p>
 <p>LFS is supported by most source control providers like GitHub, Bitbucket and Azure DevOps. It a plugin to Git that has to be separately installed (It&#39;s a checkbox in the Git installer) and it even has it&#39;s own CLI command &#39;git lfs&#39; so you can run queries and operations against the files in LFS. You can control which files fall under LFS&#39;s remit in the <code>.gitattributes</code> file like so:</p>
 <pre><code class="language-git"> # Archives
 *.7z filter=lfs diff=lfs merge=lfs -text
