@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2020-09-25T15:27:13.687Z</updated>
+    <updated>2020-09-28T11:03:04.316Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -769,7 +769,6 @@ Added some more information about CRLF line endings for <code>.cmd</code> and <c
 *.gif filter=lfs diff=lfs merge=lfs -text
 *.ico filter=lfs diff=lfs merge=lfs -text
 *.jpg filter=lfs diff=lfs merge=lfs -text
-*.pdf filter=lfs diff=lfs merge=lfs -text
 *.png filter=lfs diff=lfs merge=lfs -text
 *.psd filter=lfs diff=lfs merge=lfs -text
 *.webp filter=lfs diff=lfs merge=lfs -text

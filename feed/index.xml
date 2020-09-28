@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Fri, 25 Sep 2020 15:27:13 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 28 Sep 2020 11:03:04 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -743,7 +743,6 @@ Added some more information about CRLF line endings for <code>.cmd</code> and <c
 *.gif filter=lfs diff=lfs merge=lfs -text
 *.ico filter=lfs diff=lfs merge=lfs -text
 *.jpg filter=lfs diff=lfs merge=lfs -text
-*.pdf filter=lfs diff=lfs merge=lfs -text
 *.png filter=lfs diff=lfs merge=lfs -text
 *.psd filter=lfs diff=lfs merge=lfs -text
 *.webp filter=lfs diff=lfs merge=lfs -text
