@@ -137,6 +137,10 @@ export default {
   font-size: var(--global-font-size-2);
 }
 
+.heading--7 {
+  font-size: var(--global-font-size-1);
+}
+
 .heading--center {
   margin-left: auto;
   margin-right: auto;
