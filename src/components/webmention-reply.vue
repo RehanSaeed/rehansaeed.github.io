@@ -8,7 +8,14 @@
       :src="photo"
       size="large"
     />
-    <a class="webmention-reply__author" :href="url">{{ name }}</a>
+    <u-heading
+      class="webmention-reply__author"
+      :id="id"
+      :href="url"
+      level="3"
+      size="6"
+      >{{ name }}</u-heading
+    >
     <time
       class="webmention-reply__timestamp"
       :datetime="timestamp"
@@ -21,12 +28,14 @@
 
 <script>
 import avatar from "~/components/shared/avatar.vue";
+import heading from "~/components/shared/heading.vue";
 import { getDisplayDateFromString } from "~/framework/date.js";
 
 export default {
   name: "u-webmention-reply",
   components: {
     "u-avatar": avatar,
+    "u-heading": heading,
   },
   props: {
     reply: {
@@ -35,6 +44,9 @@ export default {
     },
   },
   computed: {
+    id() {
+      return `webmention-reply-${this.reply.id}`;
+    },
     url() {
       return this.reply.data.url;
     },
@@ -82,21 +94,7 @@ export default {
 
 .webmention-reply__author {
   grid-area: author;
-
-  color: var(--global-title-color);
-  font-family: var(--global-font-family-heading);
-  text-decoration: none;
-
-  &:hover,
-  &:focus,
-  &:active {
-    color: var(--global-title-color);
-    opacity: 0.7;
-  }
-
-  &:visited {
-    color: var(--global-title-color);
-  }
+  margin: 0;
 }
 
 .webmention-reply__timestamp {

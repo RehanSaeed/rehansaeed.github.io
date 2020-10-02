@@ -1,6 +1,13 @@
 <template>
   <article class="webmention-link">
-    <a class="webmention-link__author" :href="url">{{ name }}</a>
+    <u-heading
+      class="webmention-link__author"
+      :id="id"
+      :href="url"
+      level="3"
+      size="6"
+      >{{ name }}</u-heading
+    >
     <time
       :datetime="timestamp"
       :title="timestamp"
@@ -11,10 +18,14 @@
 </template>
 
 <script>
+import heading from "~/components/shared/heading.vue";
 import { getDisplayDateFromString } from "~/framework/date.js";
 
 export default {
   name: "u-webmention-link",
+  components: {
+    "u-heading": heading,
+  },
   props: {
     link: {
       required: true,
@@ -22,6 +33,9 @@ export default {
     },
   },
   computed: {
+    id() {
+      return `webmention-link-${this.link.id}`;
+    },
     url() {
       return this.link.source;
     },
@@ -56,21 +70,7 @@ export default {
 
 .webmention-link__author {
   grid-area: author;
-
-  color: var(--global-title-color);
-  font-family: var(--global-font-family-heading);
-  text-decoration: none;
-
-  &:hover,
-  &:focus,
-  &:active {
-    color: var(--global-title-color);
-    opacity: 0.7;
-  }
-
-  &:visited {
-    color: var(--global-title-color);
-  }
+  margin: 0;
 }
 
 .webmention-link__timestamp {
