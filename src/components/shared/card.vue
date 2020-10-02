@@ -30,7 +30,8 @@ export default {
 .card {
   background-color: var(--global-content-background-color);
   border-radius: var(--global-border-radius);
-  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.02), 0 1px 15px 0 rgba(0, 0, 0, 0.03);
+  box-shadow: 0 1px 5px 0 hsla(0, 0%, 0%, 0.02),
+    0 1px 15px 0 hsla(0, 0%, 0%, 0.03);
   padding: var(--global-space-fluid-6);
   transition: transform var(--global-duration-2) ease-out;
 
