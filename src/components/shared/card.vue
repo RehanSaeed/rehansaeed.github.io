@@ -30,8 +30,7 @@ export default {
 .card {
   background-color: var(--global-content-background-color);
   border-radius: var(--global-border-radius);
-  box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.02),
-    1px 1px 15px 0 rgba(0, 0, 0, 0.03);
+  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.02), 0 1px 15px 0 rgba(0, 0, 0, 0.03);
   padding: var(--global-space-fluid-6);
   transition: transform var(--global-duration-2) ease-out;
 
@@ -63,7 +62,7 @@ export default {
   z-index: -1;
 
   border-radius: inherit;
-  box-shadow: 1px 10px 30px 0 hsl(0, 0%, 70%);
+  box-shadow: 0 10px 30px 0 hsl(0, 0%, 70%);
   opacity: 0;
   transition: opacity var(--global-duration-2) ease-out;
 }
