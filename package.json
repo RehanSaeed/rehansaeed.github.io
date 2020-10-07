@@ -24,7 +24,7 @@
     "@vssue/api-github-v3": "^1.4.4",
     "date-fns": "^2.16.1",
     "dialog-polyfill": "^0.5.3",
-    "typeface-audiowide": "^0.0.72",
+    "typeface-audiowide": "^1.1.13",
     "vssue": "^1.4.6"
   },
   "devDependencies": {
