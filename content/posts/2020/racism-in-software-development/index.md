@@ -1,6 +1,6 @@
 ---
 title: "Racism in Software Development & Beyond"
-description: "If you're of North African, Middle Eastern or South Asian origin, you have to send send up to 90% more job applications than your white counterparts in the United Kingdom. This level of discrimination has been unchanged since the 1960's."
+description: "If you're of North African, Middle Eastern or South Asian origin, you have to send up to 90% more job applications than your white counterparts in the United Kingdom. This level of discrimination has been unchanged since the 1960's."
 author: "Muhammad Rehan Saeed"
 permalink: "/racism-in-software-development-and-beyond/"
 heroImage: "/images/hero/Black-Glowing-Fist-1600x900.png"
@@ -15,7 +15,7 @@ tags:
   - "Curriculum Vitae (CV)"
 ---
 
-If you're of North African, Middle Eastern or South Asian origin, you have to send send up to **90%** more job applications than your white counterparts in the United Kingdom. This level of discrimination has been **unchanged** since the 1960's. Let that sink in for a moment.
+If you're of North African, Middle Eastern or South Asian origin, you have to send up to **90%** more job applications than your white counterparts in the United Kingdom. This level of discrimination has been **unchanged** since the 1960's. Let that sink in for a moment.
 
 I read this statistic in a [Guardian article](https://www.theguardian.com/world/2019/jan/17/minority-ethnic-britons-face-shocking-job-discrimination) last year and it's been on my mind ever since. The study was carried out by the Centre for Social Investigation at Nuffield College, University of Oxford. You can read their full report [here](http://csi.nuff.ox.ac.uk/wp-content/uploads/2019/01/Are-employers-in-Britain-discriminating-against-ethnic-minorities_final.pdf). 
 
