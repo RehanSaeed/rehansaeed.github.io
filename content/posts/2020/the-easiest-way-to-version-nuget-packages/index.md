@@ -18,7 +18,7 @@ tags:
 
 The **easiest** way to version NuGet packages using [semantic versioning](https://semver.org/) in my opinion is to use [MinVer](https://github.com/adamralph/minver). Getting started is literally as easy as adding the `MinVer` NuGet package. Getting finished is not too much more than that.
 
-In this post I'll discuss the semantic versioning 2.0 standard and show you how you can semantically version your NuGet packages and the DLL's within them MinVer and Git tags.
+In this post I'll discuss the semantic versioning 2.0 standard and show you how you can semantically version your NuGet packages and the DLL's within them using MinVer and Git tags.
 
 # What is Semantic Versioning?
 
