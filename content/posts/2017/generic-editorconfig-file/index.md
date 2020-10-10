@@ -1,6 +1,6 @@
 ---
 title: "A Very Generic .editorconfig File (Updated)"
-description: "A .editorconfig file define and maintain consistent coding styles between different editors and IDEs for file with different file extensions."
+description: "A .editorconfig file helps define and maintain consistent coding styles between different editors and IDEs for file with different file extensions."
 author: "Muhammad Rehan Saeed"
 permalink: "/generic-editorconfig-file/"
 heroImage: "/images/hero/A-Very-Generic-Editorconfig-File-1366x768.png"
