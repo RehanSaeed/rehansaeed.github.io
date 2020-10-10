@@ -144,7 +144,7 @@ Having a version number in a file, also means lots of commits just to edit the v
 
 # Conclusions
 
-MinVer is an easy way to version you NuGet packages and DLL's. It also comes with a CLI tool that you can use to version other things like Docker images which I'll cover in another post. If you'd like to see an example of MinVer in action, you can try my [Dotnet Boxed](https://github.com/Dotnet-Boxed/Templates) NuGet package project template by running a few simple commands to create a new project:
+MinVer is an easy way to version your NuGet packages and DLL's. It also comes with a CLI tool that you can use to version other things like Docker images which I'll cover in another post. If you'd like to see an example of MinVer in action, you can try my [Dotnet Boxed](https://github.com/Dotnet-Boxed/Templates) NuGet package project template by running a few simple commands to create a new project:
 
 ```powershell
 dotnet new --install Boxed.Templates
