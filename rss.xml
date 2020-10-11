@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Sun, 11 Oct 2020 07:03:24 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 11 Oct 2020 07:04:01 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -266,7 +266,7 @@ dotnet build</code></pre>
 <pre><code class="language-powershell">git checkout 0.0.1</code></pre>
 <p>Having a version number in a file, also means lots of commits just to edit the version number.</p>
 <h1 id="conclusions">Conclusions</h1>
-<p>MinVer is an easy way to version you NuGet packages and DLL&#39;s. It also comes with a CLI tool that you can use to version other things like Docker images which I&#39;ll cover in another post. If you&#39;d like to see an example of MinVer in action, you can try my <a href="https://github.com/Dotnet-Boxed/Templates">Dotnet Boxed</a> NuGet package project template by running a few simple commands to create a new project:</p>
+<p>MinVer is an easy way to version your NuGet packages and DLL&#39;s. It also comes with a CLI tool that you can use to version other things like Docker images which I&#39;ll cover in another post. If you&#39;d like to see an example of MinVer in action, you can try my <a href="https://github.com/Dotnet-Boxed/Templates">Dotnet Boxed</a> NuGet package project template by running a few simple commands to create a new project:</p>
 <pre><code class="language-powershell">dotnet new --install Boxed.Templates
 dotnet new nuget --name &quot;MyProject&quot;</code></pre>
 ]]></content:encoded>
