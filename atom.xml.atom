@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2020-10-11T06:55:14.338Z</updated>
+    <updated>2020-10-11T07:02:04.430Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -285,8 +285,8 @@ dotnet new nuget --name &quot;MyProject&quot;</code></pre>
         <id>https://rehansaeed.com/racism-in-software-development-and-beyond/</id>
         <link href="https://rehansaeed.com/racism-in-software-development-and-beyond/"/>
         <updated>2020-06-12T16:36:29.000Z</updated>
-        <summary type="html"><![CDATA[If you're of North African, Middle Eastern or South Asian origin, you have to send send up to 90% more job applications than your white counterparts in the United Kingdom. This level of discrimination has been unchanged since the 1960's.]]></summary>
-        <content type="html"><![CDATA[<p>If you&#39;re of North African, Middle Eastern or South Asian origin, you have to send send up to <strong>90%</strong> more job applications than your white counterparts in the United Kingdom. This level of discrimination has been <strong>unchanged</strong> since the 1960&#39;s. Let that sink in for a moment.</p>
+        <summary type="html"><![CDATA[If you're of North African, Middle Eastern or South Asian origin, you have to send up to 90% more job applications than your white counterparts in the United Kingdom. This level of discrimination has been unchanged since the 1960's.]]></summary>
+        <content type="html"><![CDATA[<p>If you&#39;re of North African, Middle Eastern or South Asian origin, you have to send up to <strong>90%</strong> more job applications than your white counterparts in the United Kingdom. This level of discrimination has been <strong>unchanged</strong> since the 1960&#39;s. Let that sink in for a moment.</p>
 <p>I read this statistic in a <a href="https://www.theguardian.com/world/2019/jan/17/minority-ethnic-britons-face-shocking-job-discrimination">Guardian article</a> last year and it&#39;s been on my mind ever since. The study was carried out by the Centre for Social Investigation at Nuffield College, University of Oxford. You can read their full report <a href="http://csi.nuff.ox.ac.uk/wp-content/uploads/2019/01/Are-employers-in-Britain-discriminating-against-ethnic-minorities_final.pdf">here</a>. </p>
 <p>Those carrying out the study applied to nearly 3200 jobs, randomly varying the minority background of fictitious job applicants while holding their skills, qualifications and work experience constant.</p>
 <p>They looked at high and low skill jobs. What I found particularly interesting was that the high skill jobs they looked at included <strong>software engineers</strong>. They found that there was no difference between applying for high or low skill jobs, you were going to be equally discriminated against.</p>
