@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Sun, 11 Oct 2020 07:40:00 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 11 Oct 2020 13:09:22 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -2313,9 +2313,9 @@ public class CatsController : ControllerBase
             <link>https://rehansaeed.com/generic-editorconfig-file/</link>
             <guid>https://rehansaeed.com/generic-editorconfig-file/</guid>
             <pubDate>Sun, 01 Oct 2017 00:00:00 GMT</pubDate>
-            <description><![CDATA[A .editorconfig file helps define and maintain consistent coding styles between different editors and IDEs for file with different file extensions.]]></description>
+            <description><![CDATA[An .editorconfig file helps define and maintain consistent coding styles between different editors and IDEs for files with different file extensions.]]></description>
             <content:encoded><![CDATA[<h1 id="what-is-a-editorconfig-file">What is a .editorconfig File?</h1>
-<p>A <code>.editorconfig</code> file helps developers define and maintain consistent coding styles between different editors and IDEs for file with different file extensions. These configuration files are easily readable and they work nicely with version control systems. An <code>.editorconfig</code> file defines various settings per file extension such as charsets and tabs vs spaces.</p>
+<p>An <code>.editorconfig</code> file helps developers define and maintain consistent coding styles between different editors and IDEs for files with different file extensions. These configuration files are easily readable and they work nicely with version control systems. An <code>.editorconfig</code> file defines various settings per file extension such as charsets and tabs vs spaces.</p>
 <p><a href="https://www.hanselman.com/blog/TabsVsSpacesAPeacefulResolutionWithEditorConfigInVisualStudioPlusNETExtensions.aspx">Scott Hanselman</a> recently wrote a blog post about this file. You can also find out more from the official docs at <a href="http://editorconfig.org/">editorconfig.org</a> and the <a href="https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-code-style-settings-reference">Visual Studio Docs</a> which I recommend you read.</p>
 <h1 id="a-very-generic-editorconfig">A Very Generic .editorconfig</h1>
 <p>I wrote a generic <a href="https://github.com/RehanSaeed/EditorConfig/blob/master/.editorconfig">.editorconfig</a> file supporting the following file types:</p>
