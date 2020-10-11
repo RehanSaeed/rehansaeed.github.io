@@ -1,6 +1,6 @@
 // Import main css
-import "typeface-audiowide";
-import audiowide from "typeface-audiowide/files/audiowide-latin-400.woff2";
+import "fontsource-audiowide/latin-400-normal.css";
+import audiowide from "fontsource-audiowide/files/audiowide-latin-400-normal.woff2";
 import "~/assets/style/index.scss";
 
 // Import default layout so we don't need to import it to every page
