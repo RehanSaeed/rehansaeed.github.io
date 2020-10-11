@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Sun, 11 Oct 2020 07:02:54 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 11 Oct 2020 07:03:24 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -196,7 +196,7 @@ start &quot;https://www.nuget.org/packages/FastestNuGet/&quot;</code></pre>
             <pubDate>Wed, 01 Jul 2020 16:36:29 GMT</pubDate>
             <description><![CDATA[Using MinVer is the easiest way to version your NuGet packages and DLL's using semantic versioning (SemVer).]]></description>
             <content:encoded><![CDATA[<p>The <strong>easiest</strong> way to version NuGet packages using <a href="https://semver.org/">semantic versioning</a> in my opinion is to use <a href="https://github.com/adamralph/minver">MinVer</a>. Getting started is literally as easy as adding the <code>MinVer</code> NuGet package. Getting finished is not too much more than that.</p>
-<p>In this post I&#39;ll discuss the semantic versioning 2.0 standard and show you how you can semantically version your NuGet packages and the DLL&#39;s within them MinVer and Git tags.</p>
+<p>In this post I&#39;ll discuss the semantic versioning 2.0 standard and show you how you can semantically version your NuGet packages and the DLL&#39;s within them using MinVer and Git tags.</p>
 <h1 id="what-is-semantic-versioning">What is Semantic Versioning?</h1>
 <p><a href="https://semver.org/">Semantic versioning</a> is the idea that each part of a version number has some intrinsic meaning. Lets break down an example of a full version number into it&#39;s constituent parts:</p>
 <pre><code>1.2.3-preview.0.4+b34215d3d2539837ac3e20fc3111ba7d46670064</code></pre>
