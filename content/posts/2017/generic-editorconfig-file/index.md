@@ -1,6 +1,6 @@
 ---
 title: "A Very Generic .editorconfig File (Updated)"
-description: "A .editorconfig file helps define and maintain consistent coding styles between different editors and IDEs for file with different file extensions."
+description: "An .editorconfig file helps define and maintain consistent coding styles between different editors and IDEs for files with different file extensions."
 author: "Muhammad Rehan Saeed"
 permalink: "/generic-editorconfig-file/"
 heroImage: "/images/hero/A-Very-Generic-Editorconfig-File-1366x768.png"
@@ -20,7 +20,7 @@ tags:
 
 # What is a .editorconfig File?
 
-A `.editorconfig` file helps developers define and maintain consistent coding styles between different editors and IDEs for file with different file extensions. These configuration files are easily readable and they work nicely with version control systems. An `.editorconfig` file defines various settings per file extension such as charsets and tabs vs spaces.
+An `.editorconfig` file helps developers define and maintain consistent coding styles between different editors and IDEs for files with different file extensions. These configuration files are easily readable and they work nicely with version control systems. An `.editorconfig` file defines various settings per file extension such as charsets and tabs vs spaces.
 
 [Scott Hanselman](https://www.hanselman.com/blog/TabsVsSpacesAPeacefulResolutionWithEditorConfigInVisualStudioPlusNETExtensions.aspx) recently wrote a blog post about this file. You can also find out more from the official docs at [editorconfig.org](http://editorconfig.org/) and the [Visual Studio Docs](https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-code-style-settings-reference) which I recommend you read.
 
