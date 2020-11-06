@@ -145,6 +145,12 @@ start "https://github.com/RehanSaeed/FastestNuGet/packages"
 
 # Create major, minor, patch, bug, enhancement, maintenance labels
 start "https://github.com/RehanSaeed/FastestNuGet/labels"
+gh api --silent repos/:owner/:repo/labels -f name="bug" -f description="Issues describing a bug or pull requests fixing a bug." -f color="ee0701"
+gh api --silent repos/:owner/:repo/labels -f name="enhancement" -f description="Issues describing an enhancement or pull requests adding an enhancement." -f color="a2eeef"
+gh api --silent repos/:owner/:repo/labels -f name="maintenance" -f description="Pull requests that perform maintenance on the project but add no features or bug fixes." -f color="fff89b"
+gh api --silent repos/:owner/:repo/labels -f name="major" -f description="Pull requests requiring a major version update according to semantic versioning." -f color="b23021"
+gh api --silent repos/:owner/:repo/labels -f name="minor" -f description="Pull requests requiring a minor version update according to semantic versioning." -f color="f99248"
+gh api --silent repos/:owner/:repo/labels -f name="patch" -f description="Pull requests requiring a patch version update according to semantic versioning." -f color="eaf42c"
 
 git switch --create some-change
 git add .
