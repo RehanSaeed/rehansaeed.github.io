@@ -149,7 +149,7 @@ That's easy, just choose one of the following options:
 
 ## Release Notes and To-Do List
 
-You can find release notes for each version [here](https://github.com/Dotnet-Boxed/Templates/blob/master/Source/Boilerplate.Vsix/Release%20Notes.txt) and a To-Do list of new features and enhancements coming soon [here](https://github.com/Dotnet-Boxed/Templates/blob/master/TODO.md).
+You can find release notes for each version [here](https://github.com/Dotnet-Boxed/Templates/releases) and a To-Do list of new features and enhancements coming soon [here](https://github.com/Dotnet-Boxed/Templates/projects).
 
 ## Bugs and Issues
 

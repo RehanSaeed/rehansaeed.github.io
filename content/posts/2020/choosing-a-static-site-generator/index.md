@@ -135,7 +135,7 @@ I realized that a **lot** of people are using Netlify in my reading. It has a lo
 I chose to host my site on GitHub pages. It's free until GitHub thinks you're abusing it and asks you to move. It doesn't have any bells or whistles but it works. There are two issues I wish they would fix:
 
 1. Your GitHub project has to end with `.github.io`.
-2. The branch containing the actual static files to be served has to be called `master`.
+2. The branch containing the actual static files to be served has to be called `master` or `main`.
 
 With all that said, it's simple and there was one less thing I had to worry about, since my content was already on GitHub.
 

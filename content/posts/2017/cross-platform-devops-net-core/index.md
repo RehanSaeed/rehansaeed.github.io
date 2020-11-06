@@ -198,8 +198,8 @@ deploy:
   api_key:
     secure: 73eFUWSfho6pxCy1VRP1H0AYh/SFiyEREV+/ATcoj0I+sSH9dec/WXs6H2Jy5vlS
   on:
-    # Only publish from the master branch
-    branch: master
+    # Only publish from the main branch
+    branch: main
     # Only publish if the trigger was a Git tag
     # git tag v0.1.0-beta
     # git push origin --tags

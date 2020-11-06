@@ -35,6 +35,6 @@ This is also useful for those studying Computer Science in University or for tec
 
 You can download the cheat sheet in three different formats:
 
-- [HTML](https://rawgit.com/RehanSaeed/.NET-Big-O-Algorithm-Complexity-Cheat-Sheet/master/Cheat%20Sheet.html)
-- [PDF](https://github.com/RehanSaeed/.NET-Big-O-Algorithm-Complexity-Cheat-Sheet/blob/master/Cheat%20Sheet.pdf)
-- [PNG](https://github.com/RehanSaeed/.NET-Big-O-Algorithm-Complexity-Cheat-Sheet/blob/master/Cheat%20Sheet.png)
+- [HTML](https://rawgit.com/RehanSaeed/.NET-Big-O-Algorithm-Complexity-Cheat-Sheet/main/Cheat%20Sheet.html)
+- [PDF](https://github.com/RehanSaeed/.NET-Big-O-Algorithm-Complexity-Cheat-Sheet/blob/main/Cheat%20Sheet.pdf)
+- [PNG](https://github.com/RehanSaeed/.NET-Big-O-Algorithm-Complexity-Cheat-Sheet/blob/main/Cheat%20Sheet.png)

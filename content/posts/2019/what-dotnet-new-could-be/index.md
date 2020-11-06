@@ -24,7 +24,7 @@ The '[dotnet new](https://docs.microsoft.com/en-us/dotnet/core/tools/custom-temp
 
 ## Why do I Care?
 
-I author a [Swagger API](https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/API.md), [GraphQL API](https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/GraphQL.md), [Microsoft Orleans](https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/Orleans.md) and [NuGet](https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/NuGet.md) project templates in my [Dotnet Boxed](https://github.com/Dotnet-Boxed/Templates) project. The project currently has 1,900 stars on GitHub and the [Boxed.Templates](https://www.nuget.org/packages/Boxed.Templates/) NuGet package has around 12,149 downloads at the time of writing. The Dotnet Boxed templates are also some of the more complex templates using `dotnet new`. They all have a dozen or more optional features.
+I author a [Swagger API](https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/API.md), [GraphQL API](https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/GraphQL.md), [Microsoft Orleans](https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/Orleans.md) and [NuGet](https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/NuGet.md) project templates in my [Dotnet Boxed](https://github.com/Dotnet-Boxed/Templates) project. The project currently has 1,900 stars on GitHub and the [Boxed.Templates](https://www.nuget.org/packages/Boxed.Templates/) NuGet package has around 12,149 downloads at the time of writing. The Dotnet Boxed templates are also some of the more complex templates using `dotnet new`. They all have a dozen or more optional features.
 
 ## Visual Studio Integration
 

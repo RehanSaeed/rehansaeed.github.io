@@ -199,4 +199,4 @@ Another upside to the command pattern is that testing each command becomes super
 
 # Conclusions
 
-For a full working example, take a look at the [.NET Boxed API](https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/API.md) project template which makes full use of the Lazy Command Pattern.
+For a full working example, take a look at the [.NET Boxed API](https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/API.md) project template which makes full use of the Lazy Command Pattern.

@@ -114,7 +114,7 @@ I told you it was simple! Just a few convenience extension methods bundled toget
 
 # Performance
 
-Keeping things simple makes the .NET Boxed Mapper fast. I put together some benchmarks using [Benchmark.NET](https://github.com/dotnet/BenchmarkDotNet) which you can find [here](https://github.com/Dotnet-Boxed/Framework/tree/master/Benchmarks/Boxed.Mapping.Benchmark). The baseline is hand written mapping code and I compare that to Automapper and the .NET Boxed Mapper.
+Keeping things simple makes the .NET Boxed Mapper fast. I put together some benchmarks using [Benchmark.NET](https://github.com/dotnet/BenchmarkDotNet) which you can find [here](https://github.com/Dotnet-Boxed/Framework/tree/main/Benchmarks/Boxed.Mapping.Benchmark). The baseline is hand written mapping code and I compare that to Automapper and the .NET Boxed Mapper.
 
 I even got [a bit of help from the great Jon Skeet himself](https://stackoverflow.com/questions/46500630/how-to-improve-performance-of-c-sharp-object-mapping-code) on how to improve the performance of instantiating an instance when using the generic `new()` constraint which it turns out is pretty slow because it uses `Activator.CreateInstance` under the hood.
 

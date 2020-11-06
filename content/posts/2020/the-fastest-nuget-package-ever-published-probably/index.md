@@ -37,7 +37,7 @@ gh repo create RehanSaeed/FastestNuGet --public --confirm
 cd FastestNuGet
 ```
 
-The next step is to install the [Dotnet Boxed](https://github.com/Dotnet-Boxed/Templates) project templates and then create a new project using the [NuGet template](https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/NuGet.md). There is a **lot** of optional features you can toggle in this project template which you can review by looking at the output for the `dotnet new nuget --help` command.
+The next step is to install the [Dotnet Boxed](https://github.com/Dotnet-Boxed/Templates) project templates and then create a new project using the [NuGet template](https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/NuGet.md). There is a **lot** of optional features you can toggle in this project template which you can review by looking at the output for the `dotnet new nuget --help` command.
 
 ```powershell
 dotnet new --install Boxed.Templates
@@ -45,12 +45,12 @@ dotnet new nuget --help
 dotnet new nuget --title "Project Title" --description "Project Description" --github-username RehanSaeed --github-project FastestNuGet
 ```
 
-Next we'll commit and push our newly created project to the `master` branch.
+Next we'll commit and push our newly created project to the `main` branch.
 
 ```powershell
 git add .
 git commit -m "Initial"
-git push --set-upstream origin master
+git push --set-upstream origin main
 ```
 
 As soon as we do this, we'll see two GitHub Actions have started.
@@ -116,7 +116,7 @@ Now bask in the glory of seeing your NuGet package on nuget.org. I also just not
 
 ![NuGet](./images/NuGet-1064x848.png)
 
-That's not all! We didn't just push one NuGet package, we also pushed it's symbols to the nuget.org symbol server. The NuGet package is also signed and has [source link](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink) support, so developers can debug code in your NuGet package. If you look at the main ReadMe of your project, you'll see a badge showing you the status of the latest GitHub Action run on the master branch and finally you also see a graph showing you how long each GitHub Action run took and it's status over time.
+That's not all! We didn't just push one NuGet package, we also pushed it's symbols to the nuget.org symbol server. The NuGet package is also signed and has [source link](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink) support, so developers can debug code in your NuGet package. If you look at the main ReadMe of your project, you'll see a badge showing you the status of the latest GitHub Action run on the main branch and finally you also see a graph showing you how long each GitHub Action run took and it's status over time.
 
 ![Main ReadMe](./images/Main-ReadMe-1065x652.png)
 
@@ -135,7 +135,7 @@ dotnet new nuget --title "Project Title" --description "Project Description" --g
 
 git add .
 git commit -m "Initial"
-git push --set-upstream origin master
+git push --set-upstream origin main
 
 # View GitHub Actions Continuous Integration Build
 start "https://github.com/RehanSaeed/FastestNuGet/actions"
@@ -173,4 +173,4 @@ start "https://www.nuget.org/packages/FastestNuGet/"
 
 # Conclusions
 
-I hope this [Dotnet Boxed](https://github.com/Dotnet-Boxed/Templates) project template accelerates development of your next NuGet package. There are lots of optional features of the [NuGet project template](https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/NuGet.md) I haven't even shown like support for Azure Pipelines and Appveyor continuous integration builds and more, so please do go and take a look.
+I hope this [Dotnet Boxed](https://github.com/Dotnet-Boxed/Templates) project template accelerates development of your next NuGet package. There are lots of optional features of the [NuGet project template](https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/NuGet.md) I haven't even shown like support for Azure Pipelines and Appveyor continuous integration builds and more, so please do go and take a look.

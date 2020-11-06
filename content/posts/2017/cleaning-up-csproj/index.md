@@ -55,9 +55,9 @@ After migrating my `project.json` projects to `csproj` using Visual Studio 2017 
     <PackageId>Boxed.AspNetCore</PackageId>
     <PackageTags>ASP.NET;ASP.NET Core;MVC;Boxed;Muhammad Rehan Saeed;Framework</PackageTags>
     <PackageReleaseNotes>Updated to ASP.NET Core 1.1.2.</PackageReleaseNotes>
-    <PackageIconUrl>https://raw.githubusercontent.com/Dotnet-Boxed/Framework/master/Images/Icon.png</PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/Dotnet-Boxed/Framework/main/Images/Icon.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/Dotnet-Boxed/Framework</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/Dotnet-Boxed/Framework/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseUrl>https://github.com/Dotnet-Boxed/Framework/blob/main/LICENSE</PackageLicenseUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/Dotnet-Boxed/Framework.git</RepositoryUrl>
@@ -201,9 +201,9 @@ This is what my `csproj` looks like at the end of all that. I've removed all the
     <Description>...</Description>
     <Copyright>Copyright © Muhammad Rehan Saeed. All rights Reserved</Copyright>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageLicenseUrl>https://github.com/Dotnet-Boxed/Framework/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseUrl>https://github.com/Dotnet-Boxed/Framework/blob/main/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/Dotnet-Boxed/Framework</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/Dotnet-Boxed/Framework/master/Images/Icon.png</PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/Dotnet-Boxed/Framework/main/Images/Icon.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/Dotnet-Boxed/Framework.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>ASP.NET;ASP.NET Core;MVC;Boxed;Muhammad Rehan Saeed;Framework</PackageTags>

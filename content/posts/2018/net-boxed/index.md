@@ -23,7 +23,7 @@ tags:
 
 # ASP.NET Core API Boxed
 
-The default [ASP.NET Core API Boxed](https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/API.md) options will give you an API with [Swagger](https://swagger.io/), ASP.NET Core versioning, HTTPS and much more enabled right out of the box. You can totally turn any of that off if you want to, the point is that it's up to you.
+The default [ASP.NET Core API Boxed](https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/API.md) options will give you an API with [Swagger](https://swagger.io/), ASP.NET Core versioning, HTTPS and much more enabled right out of the box. You can totally turn any of that off if you want to, the point is that it's up to you.
 
 ![ASP.NET Core API Boxed Preview](./images/API-Preview.png)
 
@@ -31,7 +31,7 @@ The default [ASP.NET Core API Boxed](https://github.com/Dotnet-Boxed/Templates/b
 
 If you haven't read about or learned [GraphQL](http://graphql.org/) yet, I really suggest you go and follow their short online tutorial. It's got some distinct advantages over standard REST'ful API's (and some disadvantages but in my opinion the advantages carry more weight).
 
-Once you've done that, the next thing I suggest you do is to create a project from the [ASP.NET Core GraphQL Boxed](https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/GraphQL.md) project template. It implements the GraphQL specification using [GraphQL.NET](https://github.com/graphql-dotnet/graphql-dotnet) and a few other NuGet packages. It also comes with a really cool GraphQL playground, so you can practice writing queries, mutations and subscriptions.
+Once you've done that, the next thing I suggest you do is to create a project from the [ASP.NET Core GraphQL Boxed](https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/GraphQL.md) project template. It implements the GraphQL specification using [GraphQL.NET](https://github.com/graphql-dotnet/graphql-dotnet) and a few other NuGet packages. It also comes with a really cool GraphQL playground, so you can practice writing queries, mutations and subscriptions.
 
 ![ASP.NET Core GraphQL Boxed Preview](./images/GraphQL-Preview.png)
 

@@ -26,7 +26,7 @@ An `.editorconfig` file helps developers define and maintain consistent coding s
 
 # A Very Generic .editorconfig
 
-I wrote a generic [.editorconfig](https://github.com/RehanSaeed/EditorConfig/blob/master/.editorconfig) file supporting the following file types:
+I wrote a generic [.editorconfig](https://github.com/RehanSaeed/EditorConfig/blob/main/.editorconfig) file supporting the following file types:
 
 - C# - .cs, .csx, .cake
 - Visual Basic - .vb

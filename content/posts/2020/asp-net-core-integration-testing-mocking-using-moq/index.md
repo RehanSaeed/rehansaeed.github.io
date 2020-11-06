@@ -178,7 +178,7 @@ Should you have configuration that you want to change just for your integration 
 
 ## Working Examples
 
-If you'd like to see an end to end working example of how this all works. You can create a project using the [Dotnet Boxed](https://github.com/Dotnet-Boxed/Templates) [API project template](https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/API.md) or the [GraphQL project template](https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/GraphQL.md).
+If you'd like to see an end to end working example of how this all works. You can create a project using the [Dotnet Boxed](https://github.com/Dotnet-Boxed/Templates) [API project template](https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/API.md) or the [GraphQL project template](https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/GraphQL.md).
 
 ## Conclusions
 
