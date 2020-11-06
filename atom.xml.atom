@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2020-11-05T09:44:42.875Z</updated>
+    <updated>2020-11-06T09:48:26.452Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -168,6 +168,12 @@ start &quot;https://github.com/RehanSaeed/FastestNuGet/packages&quot;
 
 # Create major, minor, patch, bug, enhancement, maintenance labels
 start &quot;https://github.com/RehanSaeed/FastestNuGet/labels&quot;
+gh api --silent repos/:owner/:repo/labels -f name=&quot;bug&quot; -f description=&quot;Issues describing a bug or pull requests fixing a bug.&quot; -f color=&quot;ee0701&quot;
+gh api --silent repos/:owner/:repo/labels -f name=&quot;enhancement&quot; -f description=&quot;Issues describing an enhancement or pull requests adding an enhancement.&quot; -f color=&quot;a2eeef&quot;
+gh api --silent repos/:owner/:repo/labels -f name=&quot;maintenance&quot; -f description=&quot;Pull requests that perform maintenance on the project but add no features or bug fixes.&quot; -f color=&quot;fff89b&quot;
+gh api --silent repos/:owner/:repo/labels -f name=&quot;major&quot; -f description=&quot;Pull requests requiring a major version update according to semantic versioning.&quot; -f color=&quot;b23021&quot;
+gh api --silent repos/:owner/:repo/labels -f name=&quot;minor&quot; -f description=&quot;Pull requests requiring a minor version update according to semantic versioning.&quot; -f color=&quot;f99248&quot;
+gh api --silent repos/:owner/:repo/labels -f name=&quot;patch&quot; -f description=&quot;Pull requests requiring a patch version update according to semantic versioning.&quot; -f color=&quot;eaf42c&quot;
 
 git switch --create some-change
 git add .
