@@ -1,6 +1,8 @@
+![Muhammad Rehan Saeed](./static/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg)
+
 [![Website Status](https://img.shields.io/website?url=https%3A%2F%2Frehansaeed.com)](https://rehansaeed.com) [![GitHub Actions Status](https://github.com/RehanSaeed/rehansaeed.github.io/workflows/Build/badge.svg?branch=main)](https://github.com/RehanSaeed/rehansaeed.github.io/actions)
 
-![Muhammad Rehan Saeed](./static/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg)
+[![GitHub Actions Build History](https://buildstats.info/github/chart/RehanSaeed/rehansaeed.github.io?branch=main&includeBuildsFromPullRequest=false)](https://github.com/RehanSaeed/rehansaeed.github.io/actions)
 
 # 🚨 Forking this Repository (Please Read!)
 
