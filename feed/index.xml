@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Fri, 06 Nov 2020 09:48:26 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 06 Nov 2020 17:57:06 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -101,14 +101,14 @@ I forgot to mention how we can use labels to help automatically draft release no
 <p>We&#39;ll start off by creating a new GitHub repository using the new <a href="https://github.com/cli/cli">GitHub CLI</a>.</p>
 <pre><code class="language-powershell">gh repo create RehanSaeed/FastestNuGet --public --confirm
 cd FastestNuGet</code></pre>
-<p>The next step is to install the <a href="https://github.com/Dotnet-Boxed/Templates">Dotnet Boxed</a> project templates and then create a new project using the <a href="https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/NuGet.md">NuGet template</a>. There is a <strong>lot</strong> of optional features you can toggle in this project template which you can review by looking at the output for the <code>dotnet new nuget --help</code> command.</p>
+<p>The next step is to install the <a href="https://github.com/Dotnet-Boxed/Templates">Dotnet Boxed</a> project templates and then create a new project using the <a href="https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/NuGet.md">NuGet template</a>. There is a <strong>lot</strong> of optional features you can toggle in this project template which you can review by looking at the output for the <code>dotnet new nuget --help</code> command.</p>
 <pre><code class="language-powershell">dotnet new --install Boxed.Templates
 dotnet new nuget --help
-dotnet new nuget --name FastestNuGet --title &quot;Project Title&quot; --description &quot;Project Description&quot; --github-username RehanSaeed --github-project FastestNuGet</code></pre>
-<p>Next we&#39;ll commit and push our newly created project to the <code>master</code> branch.</p>
+dotnet new nuget --title &quot;Project Title&quot; --description &quot;Project Description&quot; --github-username RehanSaeed --github-project FastestNuGet</code></pre>
+<p>Next we&#39;ll commit and push our newly created project to the <code>main</code> branch.</p>
 <pre><code class="language-powershell">git add .
 git commit -m &quot;Initial&quot;
-git push --set-upstream origin master</code></pre>
+git push --set-upstream origin main</code></pre>
 <p>As soon as we do this, we&#39;ll see two GitHub Actions have started.</p>
 <p><img src="https://rehansaeed.com/the-fastest-nuget-package-ever-published-probably/images/GitHub-Actions-1062x551.png" alt="GitHub Actions"></p>
 <p>The <code>Build</code> GitHub Action has completed several actions you can see below. Note that these actions were completed on Windows, MacOS and Ubuntu Linux. This ensures that your code builds and passes tests on all platforms.</p>
@@ -143,7 +143,7 @@ gh pr create --fill --label major --label enhancement</code></pre>
 <p><img src="https://rehansaeed.com/the-fastest-nuget-package-ever-published-probably/images/Published-GitHub-Release-1106x756.png" alt="Published GitHub Release"></p>
 <p>Now bask in the glory of seeing your NuGet package on nuget.org. I also just noticed there is a Black Lives Matter (BLM) banner on the site! Those lives certainly do matter, check out my recent post on <a href="https://rehansaeed.com/racism-in-software-development-and-beyond/">Racism in Software Development and Beyond</a> for my take on the subject.</p>
 <p><img src="https://rehansaeed.com/the-fastest-nuget-package-ever-published-probably/images/NuGet-1064x848.png" alt="NuGet"></p>
-<p>That&#39;s not all! We didn&#39;t just push one NuGet package, we also pushed it&#39;s symbols to the nuget.org symbol server. The NuGet package is also signed and has <a href="https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink">source link</a> support, so developers can debug code in your NuGet package. If you look at the main ReadMe of your project, you&#39;ll see a badge showing you the status of the latest GitHub Action run on the master branch and finally you also see a graph showing you how long each GitHub Action run took and it&#39;s status over time.</p>
+<p>That&#39;s not all! We didn&#39;t just push one NuGet package, we also pushed it&#39;s symbols to the nuget.org symbol server. The NuGet package is also signed and has <a href="https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink">source link</a> support, so developers can debug code in your NuGet package. If you look at the main ReadMe of your project, you&#39;ll see a badge showing you the status of the latest GitHub Action run on the main branch and finally you also see a graph showing you how long each GitHub Action run took and it&#39;s status over time.</p>
 <p><img src="https://rehansaeed.com/the-fastest-nuget-package-ever-published-probably/images/Main-ReadMe-1065x652.png" alt="Main ReadMe"></p>
 <p>You can take a look at the repository at <a href="https://github.com/RehanSaeed/FastestNuGet">RehanSaeed/FastestNuGet</a> to see all of the above in action.</p>
 <h1 id="the-complete-script">The Complete Script</h1>
@@ -152,11 +152,11 @@ gh pr create --fill --label major --label enhancement</code></pre>
 cd FastestNuGet
 
 dotnet new --install Boxed.Templates
-dotnet new nuget --name FastestNuGet --title &quot;Project Title&quot; --description &quot;Project Description&quot; --github-username RehanSaeed --github-project FastestNuGet
+dotnet new nuget --title &quot;Project Title&quot; --description &quot;Project Description&quot; --github-username RehanSaeed --github-project FastestNuGet
 
 git add .
 git commit -m &quot;Initial&quot;
-git push --set-upstream origin master
+git push --set-upstream origin main
 
 # View GitHub Actions Continuous Integration Build
 start &quot;https://github.com/RehanSaeed/FastestNuGet/actions&quot;
@@ -191,7 +191,7 @@ start &quot;https://github.com/RehanSaeed/FastestNuGet/releases&quot;
 # View NuGet Package Published to NuGet
 start &quot;https://www.nuget.org/packages/FastestNuGet/&quot;</code></pre>
 <h1 id="conclusions">Conclusions</h1>
-<p>I hope this <a href="https://github.com/Dotnet-Boxed/Templates">Dotnet Boxed</a> project template accelerates development of your next NuGet package. There are lots of optional features of the <a href="https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/NuGet.md">NuGet project template</a> I haven&#39;t even shown like support for Azure Pipelines and Appveyor continuous integration builds and more, so please do go and take a look.</p>
+<p>I hope this <a href="https://github.com/Dotnet-Boxed/Templates">Dotnet Boxed</a> project template accelerates development of your next NuGet package. There are lots of optional features of the <a href="https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/NuGet.md">NuGet project template</a> I haven&#39;t even shown like support for Azure Pipelines and Appveyor continuous integration builds and more, so please do go and take a look.</p>
 ]]></content:encoded>
             <enclosure url="https://rehansaeed.com/images/hero/NuGet-1366x768.png" length="0" type="image/png"/>
         </item>
@@ -449,7 +449,7 @@ I certainly didn&#39;t do an in-depth review of each static site generator. Thes
 <p>I chose to host my site on GitHub pages. It&#39;s free until GitHub thinks you&#39;re abusing it and asks you to move. It doesn&#39;t have any bells or whistles but it works. There are two issues I wish they would fix:</p>
 <ol>
 <li>Your GitHub project has to end with <code>.github.io</code>.</li>
-<li>The branch containing the actual static files to be served has to be called <code>master</code>.</li>
+<li>The branch containing the actual static files to be served has to be called <code>master</code> or <code>main</code>.</li>
 </ol>
 <p>With all that said, it&#39;s simple and there was one less thing I had to worry about, since my content was already on GitHub.</p>
 <h1 id="conclusions">Conclusions</h1>
@@ -592,7 +592,7 @@ I certainly didn&#39;t do an in-depth review of each static site generator. Thes
 <h1 id="appsettingstestingjson">appsettings.Testing.json</h1>
 <p>Should you have configuration that you want to change just for your integration tests, you can add a <code>appsettings.Testing.json</code> file into your application. This configuration file will only be read in our integration tests because we set the environment name to &#39;Testing&#39;.</p>
 <h2 id="working-examples">Working Examples</h2>
-<p>If you&#39;d like to see an end to end working example of how this all works. You can create a project using the <a href="https://github.com/Dotnet-Boxed/Templates">Dotnet Boxed</a> <a href="https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/API.md">API project template</a> or the <a href="https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/GraphQL.md">GraphQL project template</a>.</p>
+<p>If you&#39;d like to see an end to end working example of how this all works. You can create a project using the <a href="https://github.com/Dotnet-Boxed/Templates">Dotnet Boxed</a> <a href="https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/API.md">API project template</a> or the <a href="https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/GraphQL.md">GraphQL project template</a>.</p>
 <h2 id="conclusions">Conclusions</h2>
 <p>I wrote this because there is little to no information on how to combine ASP.NET Core with Moq in integration tests. I&#39;ve messed about with using <code>IClassFixture</code> as the ASP.NET Core documentation tells you to do and it&#39;s just not a good idea with Moq which needs a clean slate before each test. I hope this stops others going through much pain.</p>
 ]]></content:encoded>
@@ -607,7 +607,7 @@ I certainly didn&#39;t do an in-depth review of each static site generator. Thes
             <content:encoded><![CDATA[<p>The &#39;<a href="https://docs.microsoft.com/en-us/dotnet/core/tools/custom-templates">dotnet new</a>&#39; CLI command is a great way to create projects from templates in dotnet. However, I think it could provide a much better experience than it currently does. I also suspect it isn&#39;t used much, mostly because templates authored for the <code>dotnet new</code> experience are not included in the <code>Visual Studio File -&gt; New Project</code> experience. For template authors, the experience of developing templates could do with some improvements. I tweeted about it this morning and got asked to write a short gist about what could be improved, so this is that list.</p>
 <p><a href="https://twitter.com/RehanSaeedUK/status/1211663043840684036?s=20"><img src="https://rehansaeed.com/what-dotnet-new-could-be/images/Twitter.png" alt="Any plans to improve the dotnet new templating engine? Lots of unfixed bugs. Lots of rough edges needing smoothing. A &#39;dotnet new ui&#39; command to create projects using a visual editor would be cool"></a></p>
 <h2 id="why-do-i-care">Why do I Care?</h2>
-<p>I author a <a href="https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/API.md">Swagger API</a>, <a href="https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/GraphQL.md">GraphQL API</a>, <a href="https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/Orleans.md">Microsoft Orleans</a> and <a href="https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/NuGet.md">NuGet</a> project templates in my <a href="https://github.com/Dotnet-Boxed/Templates">Dotnet Boxed</a> project. The project currently has 1,900 stars on GitHub and the <a href="https://www.nuget.org/packages/Boxed.Templates/">Boxed.Templates</a> NuGet package has around 12,149 downloads at the time of writing. The Dotnet Boxed templates are also some of the more complex templates using <code>dotnet new</code>. They all have a dozen or more optional features.</p>
+<p>I author a <a href="https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/API.md">Swagger API</a>, <a href="https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/GraphQL.md">GraphQL API</a>, <a href="https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/Orleans.md">Microsoft Orleans</a> and <a href="https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/NuGet.md">NuGet</a> project templates in my <a href="https://github.com/Dotnet-Boxed/Templates">Dotnet Boxed</a> project. The project currently has 1,900 stars on GitHub and the <a href="https://www.nuget.org/packages/Boxed.Templates/">Boxed.Templates</a> NuGet package has around 12,149 downloads at the time of writing. The Dotnet Boxed templates are also some of the more complex templates using <code>dotnet new</code>. They all have a dozen or more optional features.</p>
 <h2 id="visual-studio-integration">Visual Studio Integration</h2>
 <p>In the past, I also authored the <a href="https://marketplace.visualstudio.com/items?itemName=RehanSaeed.ASPNETMVCBoilerplate">ASP.NET Core Boilerplate</a> project templates which are published as a Visual Studio extension. This extension currently has 159,307 installs which is an order of magnitude more than the 12,149 installs of my <code>dotnet new</code> based <code>Boxed.Templates</code> NuGet package.</p>
 <p>I have read in the <a href="https://github.com/dotnet/templating">dotnet/templating</a> GitHub issues that there is eventually going to be Visual Studio integration in which you&#39;d be able to search and install <code>dotnet new</code> based templates on NuGet, and then create projects from those templates much as you would with Visual Studio today. Given the download counts of my two projects, this would be the number one feature I&#39;d like to see implemented.</p>
@@ -970,7 +970,7 @@ public class MapTo
 }</code></pre>
 <p>I told you it was simple! Just a few convenience extension methods bundled together with an interface that makes it just ever so slightly quicker to write object mapping than rolling your own implementation. If you have more complex mappings, you can compose your mappers in the same way that your models are composed.</p>
 <h1 id="performance">Performance</h1>
-<p>Keeping things simple makes the .NET Boxed Mapper fast. I put together some benchmarks using <a href="https://github.com/dotnet/BenchmarkDotNet">Benchmark.NET</a> which you can find <a href="https://github.com/Dotnet-Boxed/Framework/tree/master/Benchmarks/Boxed.Mapping.Benchmark">here</a>. The baseline is hand written mapping code and I compare that to Automapper and the .NET Boxed Mapper.</p>
+<p>Keeping things simple makes the .NET Boxed Mapper fast. I put together some benchmarks using <a href="https://github.com/dotnet/BenchmarkDotNet">Benchmark.NET</a> which you can find <a href="https://github.com/Dotnet-Boxed/Framework/tree/main/Benchmarks/Boxed.Mapping.Benchmark">here</a>. The baseline is hand written mapping code and I compare that to Automapper and the .NET Boxed Mapper.</p>
 <p>I even got <a href="https://stackoverflow.com/questions/46500630/how-to-improve-performance-of-c-sharp-object-mapping-code">a bit of help from the great Jon Skeet himself</a> on how to improve the performance of instantiating an instance when using the generic <code>new()</code> constraint which it turns out is pretty slow because it uses <code>Activator.CreateInstance</code> under the hood.</p>
 <h2 id="object-to-object-mapping-benchmark">Object to Object Mapping Benchmark</h2>
 <p>This benchmark measures the time taken to map from a <code>MapFrom</code> object to the <code>MapTo</code> object which I show above.</p>
@@ -1670,11 +1670,11 @@ public class ApplicationDbContext : DbContext
             <description><![CDATA[.NET Boxed is a set of project templates with batteries included, providing the minimum amount of code required to get you going faster.]]></description>
             <content:encoded><![CDATA[<p><a href="https://github.com/Dotnet-Boxed/Templates">.NET Boxed</a> is a set of project templates with batteries included, providing the minimum amount of code required to get you going faster. Right now it includes API and GraphQL project templates.</p>
 <h1 id="aspnet-core-api-boxed">ASP.NET Core API Boxed</h1>
-<p>The default <a href="https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/API.md">ASP.NET Core API Boxed</a> options will give you an API with <a href="https://swagger.io/">Swagger</a>, ASP.NET Core versioning, HTTPS and much more enabled right out of the box. You can totally turn any of that off if you want to, the point is that it&#39;s up to you.</p>
+<p>The default <a href="https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/API.md">ASP.NET Core API Boxed</a> options will give you an API with <a href="https://swagger.io/">Swagger</a>, ASP.NET Core versioning, HTTPS and much more enabled right out of the box. You can totally turn any of that off if you want to, the point is that it&#39;s up to you.</p>
 <p><img src="https://rehansaeed.com/net-boxed/images/API-Preview.png" alt="ASP.NET Core API Boxed Preview"></p>
 <h1 id="aspnet-core-graphql-boxed">ASP.NET Core GraphQL Boxed</h1>
 <p>If you haven&#39;t read about or learned <a href="http://graphql.org/">GraphQL</a> yet, I really suggest you go and follow their short online tutorial. It&#39;s got some distinct advantages over standard REST&#39;ful API&#39;s (and some disadvantages but in my opinion the advantages carry more weight).</p>
-<p>Once you&#39;ve done that, the next thing I suggest you do is to create a project from the <a href="https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/GraphQL.md">ASP.NET Core GraphQL Boxed</a> project template. It implements the GraphQL specification using <a href="https://github.com/graphql-dotnet/graphql-dotnet">GraphQL.NET</a> and a few other NuGet packages. It also comes with a really cool GraphQL playground, so you can practice writing queries, mutations and subscriptions.</p>
+<p>Once you&#39;ve done that, the next thing I suggest you do is to create a project from the <a href="https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/GraphQL.md">ASP.NET Core GraphQL Boxed</a> project template. It implements the GraphQL specification using <a href="https://github.com/graphql-dotnet/graphql-dotnet">GraphQL.NET</a> and a few other NuGet packages. It also comes with a really cool GraphQL playground, so you can practice writing queries, mutations and subscriptions.</p>
 <p><img src="https://rehansaeed.com/net-boxed/images/GraphQL-Preview.png" alt="ASP.NET Core GraphQL Boxed Preview"></p>
 <p>This is the only GraphQL project template that I&#39;m aware of at the time of writing and it&#39;s pretty fully featured with sample queries, mutations and subscriptions.</p>
 <h1 id="aspnet-core-boilerplate">ASP.NET Core Boilerplate</h1>
@@ -2324,7 +2324,7 @@ public class CatsController : ControllerBase
 <p>An <code>.editorconfig</code> file helps developers define and maintain consistent coding styles between different editors and IDEs for files with different file extensions. These configuration files are easily readable and they work nicely with version control systems. An <code>.editorconfig</code> file defines various settings per file extension such as charsets and tabs vs spaces.</p>
 <p><a href="https://www.hanselman.com/blog/TabsVsSpacesAPeacefulResolutionWithEditorConfigInVisualStudioPlusNETExtensions.aspx">Scott Hanselman</a> recently wrote a blog post about this file. You can also find out more from the official docs at <a href="http://editorconfig.org/">editorconfig.org</a> and the <a href="https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-code-style-settings-reference">Visual Studio Docs</a> which I recommend you read.</p>
 <h1 id="a-very-generic-editorconfig">A Very Generic .editorconfig</h1>
-<p>I wrote a generic <a href="https://github.com/RehanSaeed/EditorConfig/blob/master/.editorconfig">.editorconfig</a> file supporting the following file types:</p>
+<p>I wrote a generic <a href="https://github.com/RehanSaeed/EditorConfig/blob/main/.editorconfig">.editorconfig</a> file supporting the following file types:</p>
 <ul>
 <li>C# - .cs, .csx, .cake</li>
 <li>Visual Basic - .vb</li>
@@ -2695,7 +2695,7 @@ public interface IAsyncCommand&lt;T1, T2, T3&gt;
 <h1 id="unit-testing">Unit Testing</h1>
 <p>Another upside to the command pattern is that testing each command becomes super simple. You don&#39;t need to setup a controller with lots of dependencies that you don&#39;t care about. You only need to write test code for that single feature.</p>
 <h1 id="conclusions">Conclusions</h1>
-<p>For a full working example, take a look at the <a href="https://github.com/Dotnet-Boxed/Templates/blob/master/Docs/API.md">.NET Boxed API</a> project template which makes full use of the Lazy Command Pattern.</p>
+<p>For a full working example, take a look at the <a href="https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/API.md">.NET Boxed API</a> project template which makes full use of the Lazy Command Pattern.</p>
 ]]></content:encoded>
             <enclosure url="https://rehansaeed.com/images/hero/ASP.NET-Core-Lazy-Command-Pattern-1366x768.png" length="0" type="image/png"/>
         </item>
@@ -3000,9 +3000,9 @@ I show how to make <code>csproj</code> XML concise and pretty for hand editing.
     &lt;PackageId&gt;Boxed.AspNetCore&lt;/PackageId&gt;
     &lt;PackageTags&gt;ASP.NET;ASP.NET Core;MVC;Boxed;Muhammad Rehan Saeed;Framework&lt;/PackageTags&gt;
     &lt;PackageReleaseNotes&gt;Updated to ASP.NET Core 1.1.2.&lt;/PackageReleaseNotes&gt;
-    &lt;PackageIconUrl&gt;https://raw.githubusercontent.com/Dotnet-Boxed/Framework/master/Images/Icon.png&lt;/PackageIconUrl&gt;
+    &lt;PackageIconUrl&gt;https://raw.githubusercontent.com/Dotnet-Boxed/Framework/main/Images/Icon.png&lt;/PackageIconUrl&gt;
     &lt;PackageProjectUrl&gt;https://github.com/Dotnet-Boxed/Framework&lt;/PackageProjectUrl&gt;
-    &lt;PackageLicenseUrl&gt;https://github.com/Dotnet-Boxed/Framework/blob/master/LICENSE&lt;/PackageLicenseUrl&gt;
+    &lt;PackageLicenseUrl&gt;https://github.com/Dotnet-Boxed/Framework/blob/main/LICENSE&lt;/PackageLicenseUrl&gt;
     &lt;PackageRequireLicenseAcceptance&gt;true&lt;/PackageRequireLicenseAcceptance&gt;
     &lt;RepositoryType&gt;git&lt;/RepositoryType&gt;
     &lt;RepositoryUrl&gt;https://github.com/Dotnet-Boxed/Framework.git&lt;/RepositoryUrl&gt;
@@ -3108,9 +3108,9 @@ I show how to make <code>csproj</code> XML concise and pretty for hand editing.
     &lt;Description&gt;...&lt;/Description&gt;
     &lt;Copyright&gt;Copyright © Muhammad Rehan Saeed. All rights Reserved&lt;/Copyright&gt;
     &lt;PackageRequireLicenseAcceptance&gt;true&lt;/PackageRequireLicenseAcceptance&gt;
-    &lt;PackageLicenseUrl&gt;https://github.com/Dotnet-Boxed/Framework/blob/master/LICENSE&lt;/PackageLicenseUrl&gt;
+    &lt;PackageLicenseUrl&gt;https://github.com/Dotnet-Boxed/Framework/blob/main/LICENSE&lt;/PackageLicenseUrl&gt;
     &lt;PackageProjectUrl&gt;https://github.com/Dotnet-Boxed/Framework&lt;/PackageProjectUrl&gt;
-    &lt;PackageIconUrl&gt;https://raw.githubusercontent.com/Dotnet-Boxed/Framework/master/Images/Icon.png&lt;/PackageIconUrl&gt;
+    &lt;PackageIconUrl&gt;https://raw.githubusercontent.com/Dotnet-Boxed/Framework/main/Images/Icon.png&lt;/PackageIconUrl&gt;
     &lt;RepositoryUrl&gt;https://github.com/Dotnet-Boxed/Framework.git&lt;/RepositoryUrl&gt;
     &lt;RepositoryType&gt;git&lt;/RepositoryType&gt;
     &lt;PackageTags&gt;ASP.NET;ASP.NET Core;MVC;Boxed;Muhammad Rehan Saeed;Framework&lt;/PackageTags&gt;
@@ -3311,8 +3311,8 @@ deploy:
   api_key:
     secure: 73eFUWSfho6pxCy1VRP1H0AYh/SFiyEREV+/ATcoj0I+sSH9dec/WXs6H2Jy5vlS
   on:
-    # Only publish from the master branch
-    branch: master
+    # Only publish from the main branch
+    branch: main
     # Only publish if the trigger was a Git tag
     # git tag v0.1.0-beta
     # git push origin --tags
@@ -4865,9 +4865,9 @@ ILogger logger = new LoggerConfiguration()
 <h1 id="let-me-have-it">Let me have it!</h1>
 <p>You can download the cheat sheet in three different formats:</p>
 <ul>
-<li><a href="https://rawgit.com/RehanSaeed/.NET-Big-O-Algorithm-Complexity-Cheat-Sheet/master/Cheat%20Sheet.html">HTML</a></li>
-<li><a href="https://github.com/RehanSaeed/.NET-Big-O-Algorithm-Complexity-Cheat-Sheet/blob/master/Cheat%20Sheet.pdf">PDF</a></li>
-<li><a href="https://github.com/RehanSaeed/.NET-Big-O-Algorithm-Complexity-Cheat-Sheet/blob/master/Cheat%20Sheet.png">PNG</a></li>
+<li><a href="https://rawgit.com/RehanSaeed/.NET-Big-O-Algorithm-Complexity-Cheat-Sheet/main/Cheat%20Sheet.html">HTML</a></li>
+<li><a href="https://github.com/RehanSaeed/.NET-Big-O-Algorithm-Complexity-Cheat-Sheet/blob/main/Cheat%20Sheet.pdf">PDF</a></li>
+<li><a href="https://github.com/RehanSaeed/.NET-Big-O-Algorithm-Complexity-Cheat-Sheet/blob/main/Cheat%20Sheet.png">PNG</a></li>
 </ul>
 ]]></content:encoded>
             <enclosure url="https://rehansaeed.com/images/hero/NET-Big-O-Algorithm-Complexity-Cheat-Sheet-1366x768.jpg" length="0" type="image/jpg"/>
@@ -7179,7 +7179,7 @@ Microsoft has just announced on their <a href="http://visualstudio.uservoice.com
 </li>
 </ol>
 <h2 id="release-notes-and-to-do-list">Release Notes and To-Do List</h2>
-<p>You can find release notes for each version <a href="https://github.com/Dotnet-Boxed/Templates/blob/master/Source/Boilerplate.Vsix/Release%20Notes.txt">here</a> and a To-Do list of new features and enhancements coming soon <a href="https://github.com/Dotnet-Boxed/Templates/blob/master/TODO.md">here</a>.</p>
+<p>You can find release notes for each version <a href="https://github.com/Dotnet-Boxed/Templates/releases">here</a> and a To-Do list of new features and enhancements coming soon <a href="https://github.com/Dotnet-Boxed/Templates/projects">here</a>.</p>
 <h2 id="bugs-and-issues">Bugs and Issues</h2>
 <p>Please report any bugs or issues on the GitHub issues page <a href="https://github.com/Dotnet-Boxed/Templates/issues">here</a>.</p>
 <h2 id="future-of-the-project">Future of the project</h2>
