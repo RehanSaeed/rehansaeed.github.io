@@ -15,7 +15,7 @@
         v-for="result of searchResults"
         @click.native="onSelected"
         :key="result.id"
-        :to="result.permalink || result.path"
+        :to="result.node.permalink || result.path"
         class="search__result"
       >
         <g-image
