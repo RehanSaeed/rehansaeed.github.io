@@ -21,6 +21,24 @@ jobs:
       run: npm install
     - name: 'NPM Build'
       run: npm run build
+    - name: 'Cypress Run'
+      uses: cypress-io/github-action@v2
+      with:
+        start: npm start
+        wait-on: 'http://localhost:8080'
+        wait-on-timeout: 120
+    - name: 'Upload Cypress Screenshots'
+      uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: cypress-screenshots
+        path: cypress/screenshots
+    - name: 'Upload Cypress Videos'
+      uses: actions/upload-artifact@v1
+      if: always()
+      with:
+        name: cypress-videos
+        path: cypress/videos
     - name: 'Copy RSS Feed'
       run: |
         mkdir dist/feed
