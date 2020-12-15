@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-context("Smoke", () => {
+describe("Smoke", () => {
   it("Open search", () => {
     cy.visit("/");
     cy.get("nav").contains("Search").click();

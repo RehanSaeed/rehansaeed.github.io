@@ -8,7 +8,7 @@ const disableSmoothScroll = () => {
   });
 };
 
-context("Smoke", () => {
+describe("Smoke", () => {
   it("Visit all pages", () => {
     cy.get("html").invoke("attr", "style", "scroll-behavior: inherit");
 
