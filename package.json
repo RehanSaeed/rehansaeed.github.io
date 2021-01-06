@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@fontsource/audiowide": "^4.1.0",
-    "@vssue/api-github-v3": "^1.4.4",
+    "@vssue/api-github-v3": "^1.4.7",
     "date-fns": "^2.16.1",
     "dialog-polyfill": "^0.5.4",
     "vssue": "^1.4.6"
