@@ -7,6 +7,10 @@
   }
 
   p {
+    margin-bottom: var(--global-space-fixed-3);
+  }
+
+  p:last-child {
     margin-bottom: 0;
   }
 
