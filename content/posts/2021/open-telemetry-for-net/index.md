@@ -7,6 +7,8 @@ heroImage: "/images/hero/Open-Telemetry-1600x900.png"
 date: "2021-01-19"
 dateModified: null
 published: true
+series: "Open Telemetry"
+seriesOrder: 1
 categories:
   - ".NET"
 tags:
@@ -22,6 +24,9 @@ tags:
   - "Activity"
   - "Cloud Native Computing Foundation (CNCF)"
 ---
+
+1. [Open Telemetry - Part 1 - Deep Dive into Open Telemetry for .NET](/deep-dive-into-open-telemetry-for-net/)
+2. Open Telemetry - Part 2 - Optimally Configuring Open Telemetry for ASP.NET Core
 
 Open Telemetry is an open source specification, tools and SDK's used to instrument, generate, collect, and export telemetry data (metrics, logs, and traces). [Open Telemetry](https://opentelemetry.io/) is backed by the [Cloud Native Computing Foundation (CNCF)](https://www.cncf.io/webinars/fundamentals-of-opentelemetry/) which backs a mind boggling array of popular open source projects. It's worth looking at the [CNCF Landscape](https://landscape.cncf.io/) to see what I really mean. The SDK's support all the major programming languages including C# and ASP.NET Core.
 
