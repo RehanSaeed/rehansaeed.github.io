@@ -6,7 +6,7 @@ permalink: "/deep-dive-into-open-telemetry-for-net/"
 heroImage: "/images/hero/Open-Telemetry-1600x900.png"
 date: "2021-01-19"
 dateModified: null
-published: false
+published: true
 categories:
   - ".NET"
 tags:
@@ -20,18 +20,29 @@ tags:
   - "Distributed Tracing"
   - "Span"
   - "Activity"
+  - "Cloud Native Computing Foundation (CNCF)"
 ---
 
-Open Telemetry is an open source specification, tools and SDK's used to instrument, generate, collect, and export telemetry data (metrics, logs, and traces). [Open Telemetry](https://opentelemetry.io/) is backed by the [Cloud Native Computing Foundation](https://www.cncf.io/webinars/fundamentals-of-opentelemetry/) which backs a mind boggling array of popular open source projects. The SDK's support all the major programming languages including C# and ASP.NET.
+Open Telemetry is an open source specification, tools and SDK's used to instrument, generate, collect, and export telemetry data (metrics, logs, and traces). [Open Telemetry](https://opentelemetry.io/) is backed by the [Cloud Native Computing Foundation (CNCF)](https://www.cncf.io/webinars/fundamentals-of-opentelemetry/) which backs a mind boggling array of popular open source projects. It's worth looking at the [CNCF Landscape](https://landscape.cncf.io/) to see what I really mean. The SDK's support all the major programming languages including C# and ASP.NET Core.
 
-In this post, I'm going to discuss what Open Telemetry is all about, why you'd want to use it and how to use it with .NET specifically. With a typical application there are three sets of data that you usually want to record: metrics, logs and traces.
+In this post, I'm going to discuss what Open Telemetry is all about, why you'd want to use it and how to use it with .NET specifically. With a typical application there are three sets of data that you usually want to record: metrics, logs and traces. Lets start by discussing what they are.
 
-- **Logging** - Provides insight into application-specific messages emitted by processes. In a .NET application, Open Telemetry support can easily be added if you use `ILogger` for logging which lives in the `Microsoft.Extensions.Logging` NuGet package. You'd typically already use this if you're building an ASP.NET Core application.
-- **Metrics** - Provide quantitative information about processes running inside the system, including counters, gauges, and histograms. Support for metrics in Open Telemetry is still under development and being finalised at the time of writing. Examples of metrics are:
-  - Percentage CPU usage.
-  - Bytes of memory used.
-  - Number of HTTP requests.
-- **Tracing** - Also known as distributed tracing, this records the start and end times for individual operations alongside any ancillary data relevant to the operation. An example of this is recording a trace of a HTTP request in ASP.NET. You might record the start and end time of the request and response and the ancillary data would be the HTTP method, scheme, URL etc. If your ASP.NET application makes any database calls or HTTP requests to external API's these could also be recorded. If these external databases and API's which are in totally separate processes also record Open Telemetry tracing, then it's possible to follow a trace of a HTTP request from a client, down to your API, down to a database and all the way back again. This allows you to get a deep understanding of where the time is being spent or if there is an exception, where the error is occurring.
+## Logging
+
+Provides insight into application-specific messages emitted by processes. In a .NET application, Open Telemetry support can easily be added if you use `ILogger` for logging which lives in the `Microsoft.Extensions.Logging` NuGet package. You'd typically already use this if you're building an ASP.NET Core application.
+
+## Metrics
+
+Provide quantitative information about processes running inside the system, including counters, gauges, and histograms. Support for metrics in Open Telemetry is still under development and being finalised at the time of writing. Examples of metrics are:
+- Percentage CPU usage.
+- Bytes of memory used.
+- Number of HTTP requests.
+
+## Tracing
+
+Also known as distributed tracing, this records the start and end times for individual operations alongside any ancillary data relevant to the operation. An example of this is recording a trace of a HTTP request in ASP.NET Core. You might record the start and end time of a request/response and the ancillary data would be the HTTP method, scheme, URL etc.
+
+If an ASP.NET Core application makes database calls and HTTP requests to external API's these could also be recorded if the database and API's which are in totally separate processes also support recording Open Telemetry tracing. It's possible to follow the trace of a HTTP request from a client, down to your API, down to a database and all the way back again. This allows you to get a deep understanding of where the time is being spent or if there is an exception, where it is occurring.
 
 # Jaeger
 
@@ -41,11 +52,11 @@ The two main applications that can collect and display Open Telemetry compatible
 
 ![Jaeger Trace Detail](./images/Jaeger-Trace-Detail-3360x1859.png)
 
-The above image shows the trace from a 'frontend' application. You can see how it makes calls to MySQL, Redis and external API's using HTTP requests. The length of each line shows how long it took to execute. You can easily see all of the major operations executed in a trace from end to end. You can also drill into each individual line and see extra information relevant to that part of the trace.
+The above image shows the trace from a 'frontend' application. You can see how it makes calls to MySQL, Redis and external API's using HTTP requests. The length of each line shows how long it took to execute. You can easily see all of the major operations executed in a trace from end to end. You can also drill into each individual line and see extra information relevant to that part of the trace. I'll show you how you can run Jaeger and collect Open Telemetry data in my next blog post.
 
-# Recording Spans
+# Spans
 
-Each line in the Jaeger screenshot above is called a Span or in .NET is represented by the `System.Activities.Activity` type.
+Each line in the Jaeger screenshot above is called a Span or in .NET is represented by the `System.Activities.Activity` type. It has a unique identifier, start and end time along with a parent span unique identifier too, so it can be connected to other spans in a tree structure representing an overall trace. Finally, a span can also contain other ancillary data that I will discuss further on.
 
 ::: tip
 Unfortunately, .NET's naming has significantly deviated from the official Open Telemetry specification, resulting in quite a lot of confusion on my part. Happily, I've been through that confusion, so you don't have to!
@@ -73,7 +84,7 @@ using (var activity = activitySource.StartActivity("ActivityName")
 
 ## Events
 
-Along with our span we can record 'events'. These are timestamped events that occur at a single point in time within your span.
+Along with our span we can record events. These are timestamped events that occur at a single point in time within your span.
 
 ```cs
 using (var activity = activitySource.StartActivity("ActivityName")
@@ -164,7 +175,9 @@ Standardised attribute names use a `lower_kebab_case` syntax with `.` separator 
 
 # Exporting Telemetry
 
-There are many plugins for exporting data collected using Open Telemetry which I'll discuss in my next blog post about using Open Telemetry in ASP.NET. Therefore, it's highly unlikely that you'd need to manually write your own code to consume data collected using Open Telemetry. However, if you're interested then [Jimmy Bogard](https://jimmybogard.com) has a very well written a [blog post](https://jimmybogard.com/activitysource-and-listener-in-net-5/) about using `ActivitySource` and `ActivityListener` to listen to any incoming telemetry. In short, you can easily subscribe to consume Open Telemetry data like so:
+There are many plugins for exporting data collected using Open Telemetry which I'll discuss in my next blog post about using Open Telemetry in ASP.NET Core. Therefore, it's highly unlikely that you'd need to manually write your own code to consume data collected using Open Telemetry.
+
+However, if you're interested then [Jimmy Bogard](https://jimmybogard.com) has a very well written [blog post](https://jimmybogard.com/activitysource-and-listener-in-net-5/) about using `ActivitySource` and `ActivityListener` to listen to any incoming telemetry. In short, you can easily subscribe to consume Open Telemetry data like so:
 
 ```cs
 using var subscriber = DiagnosticListener.AllListeners.Subscribe(
@@ -176,10 +189,65 @@ using var subscriber = DiagnosticListener.AllListeners.Subscribe(
     });
 ```
 
+# Crossing the Process Boundary
+
+Earlier on I spoke about how it's possible to record a trace across process boundaries. For example collecting a trace from a client application through to a database and API both running in separate processes. Given what you now know about recording spans above, how is this possible?
+
+This is where the [W3C Trace Context](https://www.w3.org/TR/trace-context/) standard comes in. It defines a series of HTTP headers that pass information from one process to another about any trace that is currently being recorded. There are two HTTP headers defined in the specification:
+
+- `traceparent` - Contains the `version`, `trace-id`, `parent-id` and `trace-flags` in an encoded form separated by dashes.
+  - `version` - The version of Open Telemetry being used which is always `00` at the time of writing.
+  - `trace-id` - The unique identifier of the trace.
+  - `parent-id` - The unique identifier of the span which is acting as the current parent span.
+  - `trace-flags` - A set of flags for the current trace which determines whether the current trace is being sampled and the trace level.
+- `tracestate` - Vendor-specific data represented by a set of name/value pairs.
+
+I'm not sure why but the HTTP headers are defined in lower-case. Here is an example of what these headers look like in a HTTP request:
+
+```http
+traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
+tracestate: asp=00f067aa0ba902b7,redis=t61rcWkgMzE
+```
+
+If you're interested in what it looks like to actually implement the W3C Trace Context, [Jimmy Bogard](https://jimmybogard.com) has been implementing [Open Telemetry for NServiceBus](https://jimmybogard.com/building-end-to-end-diagnostics-and-tracing-a-primer-trace-context/) and shows how it can be done.
+
+# Baggage
+
+Similar to attributes, baggage is another way we can add data as name value pairs to a trace. The difference is that baggage travels across process boundaries using a `baggage` HTTP header as defined in the [W3C Baggage](https://www.w3.org/TR/baggage/) specification. It is also added to all spans in a trace.
+
+```http
+baggage: userId=alice,serverNode=DF:28,isProduction=false
+```
+
+Similar to the way attributes can be recorded using the `AddTag` and `SetTag` methods, with baggage we can use the `AddBaggage` method. For some reason a `SetBaggage` method that would also update baggage does not exist.
+
+```cs
+using (var activity = activitySource.StartActivity("ActivityName")
+{
+    await LongRunningOperation().ConfigureAwait(false);
+}
+
+public async Task LongRunningOperationAsync()
+{
+    await Task.Delay(1000).ConfigureAwait(false);
+
+    // Log an attribute containing arbitrary data.
+    Activity.Current?.AddBaggage("http.method", "GET");
+}
+```
+
+So why would you use baggage over attributes? Well, if you have a global unique identifier for a particular trace like a user ID, order ID or some session ID it might be useful to add it as baggage because it's relevant to all spans in your trace. However, you must be careful not to add too much baggage because it will add overhead when making HTTP requests.
+
 # You're Already Using It
 
-The .NET team in their wisdom decided to take quite a large gamble on Open Telemetry. They not only repurposed their `Activity` type to represent a span but they also instrumented several libraries, so you don't have to. For example, if you were to use `HttpClient` or use the latest versions of ASP.NET, then they are already collecting trace data using Open Telemetry. In fact, the `ILogger` interface used by ASP.NET is also able to collect logs compatible with Open Telemetry too. Since the .NET team has made it so easy to collect telemetry and integrated the `Activity` type into the base class libraries, I expect a lot of other libraries and applications to follow this example.
+The .NET team in their wisdom decided to take quite a large gamble on Open Telemetry. They not only repurposed their `Activity` type to represent a span but they also instrumented several libraries, so you don't have to.
+
+The `HttpClient` already adds the W3C Trace Context HTTP headers from the current span automatically if a trace is being recorded. Also an ASP.NET Core application already reads W3C Trace Context HTTP headers from incoming requests and populates the current span with that information.
+
+Since the .NET team has made it so easy to collect telemetry and integrated the `Activity` type into the base class libraries, I expect a lot of other libraries and applications to follow this example.
+
+The `ILogger` interface from the `Microsoft.Extensions.Logging` NuGet package used commonly in an ASP.NET Core application is also able to collect logs compatible with Open Telemetry too.
 
 # Up Next
 
-I've discussed that Open Telemetry is all about collecting Logs, Metrics and Trace data and gone fairly deep into collecting Trace data. In my next post, I'll cover how you can optimally configure ASP.NET and Open Telemetry traces and logs. I'll also fire up Jaeger and show how you can get an ASP.NET app to export Open Telemetry data to it.
+I've discussed that Open Telemetry is all about collecting Logs, Metrics and Trace data and gone fairly deep into collecting Trace data. In my next post, I'll cover how you can optimally configure ASP.NET Core and Open Telemetry traces and logs. I'll also fire up Jaeger and show how you can get an ASP.NET Core app to export Open Telemetry data to it.
