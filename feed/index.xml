@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Wed, 20 Jan 2021 09:42:45 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 21 Jan 2021 10:07:57 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -21,7 +21,11 @@
             <guid>https://rehansaeed.com/deep-dive-into-open-telemetry-for-net/</guid>
             <pubDate>Tue, 19 Jan 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[How to use the Open Telemetry specification, tools and SDK's used to instrument, generate, collect, and export telemetry data (metrics, logs, and traces) using .NET and ASP.NET.]]></description>
-            <content:encoded><![CDATA[<p>Open Telemetry is an open source specification, tools and SDK&#39;s used to instrument, generate, collect, and export telemetry data (metrics, logs, and traces). <a href="https://opentelemetry.io/">Open Telemetry</a> is backed by the <a href="https://www.cncf.io/webinars/fundamentals-of-opentelemetry/">Cloud Native Computing Foundation (CNCF)</a> which backs a mind boggling array of popular open source projects. It&#39;s worth looking at the <a href="https://landscape.cncf.io/">CNCF Landscape</a> to see what I really mean. The SDK&#39;s support all the major programming languages including C# and ASP.NET Core.</p>
+            <content:encoded><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/deep-dive-into-open-telemetry-for-net/">Open Telemetry - Deep Dive into Open Telemetry for .NET</a></li>
+<li>Open Telemetry - Optimally Configuring Open Telemetry for ASP.NET Core</li>
+</ol>
+<p>Open Telemetry is an open source specification, tools and SDK&#39;s used to instrument, generate, collect, and export telemetry data (metrics, logs, and traces). <a href="https://opentelemetry.io/">Open Telemetry</a> is backed by the <a href="https://www.cncf.io/webinars/fundamentals-of-opentelemetry/">Cloud Native Computing Foundation (CNCF)</a> which backs a mind boggling array of popular open source projects. It&#39;s worth looking at the <a href="https://landscape.cncf.io/">CNCF Landscape</a> to see what I really mean. The SDK&#39;s support all the major programming languages including C# and ASP.NET Core.</p>
 <p>In this post, I&#39;m going to discuss what Open Telemetry is all about, why you&#39;d want to use it and how to use it with .NET specifically. With a typical application there are three sets of data that you usually want to record: metrics, logs and traces. Lets start by discussing what they are.</p>
 <h2 id="logging">Logging</h2>
 <p>Provides insight into application-specific messages emitted by processes. In a .NET application, Open Telemetry support can easily be added if you use <code>ILogger</code> for logging which lives in the <code>Microsoft.Extensions.Logging</code> NuGet package. You&#39;d typically already use this if you&#39;re building an ASP.NET Core application.</p>
@@ -823,11 +827,11 @@ I certainly didn&#39;t do an in-depth review of each static site generator. Thes
             <guid>https://rehansaeed.com/unit-testing-dotnet-new-templates/</guid>
             <pubDate>Wed, 21 Aug 2019 00:00:00 GMT</pubDate>
             <description><![CDATA[It's difficult to know if your 'dotnet new' based project will work if they have lots of options, in this post I show how to unit test them.]]></description>
-            <content:encoded><![CDATA[<ul>
-<li><a href="https://rehansaeed.com/custom-project-templates-using-dotnet-new/">Part 1 - Custom Project Templates Using dotnet new</a></li>
-<li><a href="https://rehansaeed.com/dotnet-new-feature-selection/">Part 2 - dotnet new Feature Selection</a></li>
-<li><a href="https://rehansaeed.com/unit-testing-dotnet-new-templates/">Part 3 - Unit Testing dotnet new Templates</a></li>
-</ul>
+            <content:encoded><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/custom-project-templates-using-dotnet-new/">dotnet new - Custom Project Templates Using dotnet new</a></li>
+<li><a href="https://rehansaeed.com/dotnet-new-feature-selection/">dotnet new - dotnet new Feature Selection</a></li>
+<li><a href="https://rehansaeed.com/unit-testing-dotnet-new-templates/">dotnet new - Unit Testing dotnet new Templates</a></li>
+</ol>
 <p>As I talked about in my previous post some time ago about <code>dotnet new</code> project templates, it&#39;s possible to enable feature selection, so that developers can toggle certain features of a project template on or off. This is not a feature that many templates in the wild use a lot. Quite often I&#39;ve seen templates have no optional features or only a few. One reason is that it gets very complicated to test that toggling your optional features doesn&#39;t break the generated project in some way by stopping it from building for example. This is why I decided to write a small unit test helper library for <code>dotnet new</code> project templates. It is unit test framework agnostic and can work with xUnit, NUnit, MSTest or any other unit test framework.</p>
 <h2 id="example-usage">Example Usage</h2>
 <p>Below is an example showing how you can use it inside an xUnit test project.</p>
@@ -2073,10 +2077,10 @@ export default configurationBuilder;</code></pre>
             <guid>https://rehansaeed.com/useful-docker-images-part2/</guid>
             <pubDate>Mon, 11 Dec 2017 00:00:00 GMT</pubDate>
             <description><![CDATA[How to run the ELK-B Stack, made up of ElasticSearch, Kibana, Filebeat, Metricbeat and Heartbeat using Docker and Docker Swarm.]]></description>
-            <content:encoded><![CDATA[<ol>
+            <content:encoded><![CDATA[<ul>
 <li><a href="https://rehansaeed.com/useful-docker-images-part1/">Useful Docker Images - Part 1 - Administering Docker</a></li>
 <li><a href="https://rehansaeed.com/useful-docker-images-part2/">Useful Docker Images - Part 2 - The EKL-B Stack</a></li>
-</ol>
+</ul>
 <h1 id="filebeat-metricbeat--hearbeat">Filebeat, Metricbeat &amp; Hearbeat</h1>
 <p>Knowing what is happening in Docker and in your applications running on Docker is critical. To collect logs from my Swarm and monitor the health of it, I use the ELK-B stack which is made up of four pieces of software called <a href="https://www.elastic.co/products/elasticsearch">ElasticSearch</a>, <a href="https://www.elastic.co/products/logstash">LogStash</a> (I recommend that you use Beats instead of LogStash), <a href="https://www.elastic.co/products/kibana">Kibana</a> and various <a href="https://www.elastic.co/products/beats">Beats</a>.</p>
 <p>ElasticSearch is basically a No-SQL database that is geared towards storing JSON documents and searching across them. Kibana is a visualization took that gives you a nice UI to view all of your data and produce nice visualizations and dashboards. There are several Beats which are used to ship data into ElasticSearch from various sources.</p>
@@ -2188,10 +2192,10 @@ networks:
             <guid>https://rehansaeed.com/useful-docker-images-part1/</guid>
             <pubDate>Thu, 30 Nov 2017 00:00:00 GMT</pubDate>
             <description><![CDATA[A guide to using the Docker Visualizer, Portainer and Sonatype Nexus Docker images to help manage a Docker Swarm.]]></description>
-            <content:encoded><![CDATA[<ol>
+            <content:encoded><![CDATA[<ul>
 <li><a href="https://rehansaeed.com/useful-docker-images-part1/">Useful Docker Images - Part 1 - Administering Docker</a></li>
 <li><a href="https://rehansaeed.com/useful-docker-images-part2/">Useful Docker Images - Part 2 - The EKL-B Stack</a></li>
-</ol>
+</ul>
 <p>I have been running Docker Swarm in production for a few API&#39;s and single page applications for a couple of months now. Here are some Docker images I&#39;ve found generally useful. Most of these images are not specific to Docker Swarm. For each image, I&#39;m also going to show a <code>docker-stack.yml</code> file that you can use to deploy the image and the settings I use for them. To deploy a Docker stack file, just run the following commands:</p>
 <pre><code class="language-powershell"># To enable Docker Swarm mode on your local machine if you haven&#39;t already.
 docker swarm init
@@ -2883,9 +2887,9 @@ public interface IAsyncCommand&lt;T1, T2, T3&gt;
             <pubDate>Sun, 26 Mar 2017 00:00:00 GMT</pubDate>
             <description><![CDATA[How to add feature selection to your dotnet new template using symbols (bool, string, choice, computed) and pre-processor directives.]]></description>
             <content:encoded><![CDATA[<ul>
-<li><a href="https://rehansaeed.com/custom-project-templates-using-dotnet-new/">Part 1 - Custom Project Templates Using dotnet new</a></li>
-<li><a href="https://rehansaeed.com/dotnet-new-feature-selection/">Part 2 - dotnet new Feature Selection</a></li>
-<li><a href="https://rehansaeed.com/unit-testing-dotnet-new-templates/">Part 3 - Unit Testing dotnet new Templates</a></li>
+<li><a href="https://rehansaeed.com/custom-project-templates-using-dotnet-new/">dotnet new - Part 1 - Custom Project Templates Using dotnet new</a></li>
+<li><a href="https://rehansaeed.com/dotnet-new-feature-selection/">dotnet new - Part 2 - dotnet new Feature Selection</a></li>
+<li><a href="https://rehansaeed.com/unit-testing-dotnet-new-templates/">dotnet new - Part 3 - Unit Testing dotnet new Templates</a></li>
 </ul>
 <p>In my last post I showed how to <a href="https://rehansaeed.com/custom-project-templates-using-dotnet-new/">get started</a> with using <code>dotnet new</code> to build project templates. In this post, I&#39;m going to build on that knowledge and show how to add feature selection to your project template so developers can choose to add or remove bits of your template. If you check out my <a href="https://github.com/Dotnet-Boxed/Templates">.NET Boxed API</a> project template, you&#39;ll see that I have 17 features for you to set. If you run the help command against my template you&#39;ll see a description of each and instructions on how you can set them (I&#39;ve cleaned up the CLI output, the current help commands output is pretty awful but this is being <a href="https://github.com/dotnet/templating/issues/348">addressed</a> in the next version of <code>dotnet new</code>).</p>
 <pre><code>PS C:\Users\rehan.saeed&gt; dotnet new api --help
@@ -3556,11 +3560,11 @@ script:
             <guid>https://rehansaeed.com/custom-project-templates-using-dotnet-new/</guid>
             <pubDate>Wed, 18 Jan 2017 00:00:00 GMT</pubDate>
             <description><![CDATA[How to create project templates using dotnet new and the template.json file. How to share project templates by creating NuGet packages.]]></description>
-            <content:encoded><![CDATA[<ul>
-<li><a href="https://rehansaeed.com/custom-project-templates-using-dotnet-new/">Part 1 - Custom Project Templates Using dotnet new</a></li>
-<li><a href="https://rehansaeed.com/dotnet-new-feature-selection/">Part 2 - dotnet new Feature Selection</a></li>
-<li><a href="https://rehansaeed.com/unit-testing-dotnet-new-templates/">Part 3 - Unit Testing dotnet new Templates</a></li>
-</ul>
+            <content:encoded><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/custom-project-templates-using-dotnet-new/">dotnet new - Custom Project Templates Using dotnet new</a></li>
+<li><a href="https://rehansaeed.com/dotnet-new-feature-selection/">dotnet new - dotnet new Feature Selection</a></li>
+<li><a href="https://rehansaeed.com/unit-testing-dotnet-new-templates/">dotnet new - Unit Testing dotnet new Templates</a></li>
+</ol>
 <h1 id="current-dotnet-new">Current dotnet new</h1>
 <p>If you run <code>dotnet new</code> today, you can create a simple console app. The command has very few options, including selecting the language you want to use (C#, VB or F#). However, this is all about to change. <a href="https://twitter.com/sayedihashimi">Sayed I. Hashimi</a> and <a href="https://twitter.com/mlorbetske">Mike Lorbetske</a> who work at Microsoft in the .NET tooling team have been kind enough to show me what they&#39;ve been working on with the intention of getting some feedback.</p>
 <p><img src="https://rehansaeed.com/custom-project-templates-using-dotnet-new/images/first-dotnet-new.png" alt="old dotnet new"></p>
@@ -3624,16 +3628,16 @@ script:
             <guid>https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/</guid>
             <pubDate>Mon, 02 Jan 2017 00:00:00 GMT</pubDate>
             <description><![CDATA[Should you use Reactive Extensions (Rx) to do timeouts in .NET? It turns out it's better to use CancellationTokenSource in the Task Parallel Library (TPL).]]></description>
-            <content:encoded><![CDATA[<ul>
-<li><a href="https://rehansaeed.com/reactive-extensions-part1-replacing-events/">Reactive Extensions (Rx) - Part 1 - Replacing C# Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Part 2 - Wrapping C# Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Part 3 - Naming Conventions</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Part 4 - Replacing Timers</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Part 8 - Timeouts</a></li>
-</ul>
+            <content:encoded><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/reactive-extensions-part1-replacing-events/">Reactive Extensions (Rx) - Replacing C# Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Wrapping C# Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Naming Conventions</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Replacing Timers</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Awaiting Observables</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Task ToObservable</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Sample Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Timeouts</a></li>
+</ol>
 <p>In <a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">part six</a> of this series of blog posts I talked about using Reactive Extensions for adding timeout logic to asynchronous tasks. Something like this:</p>
 <pre><code class="language-cs">public async Task&lt;string&gt; WaitForFirstResultWithTimeOut()
 {
@@ -4787,10 +4791,10 @@ I looked into this subject for use by the company I work for, who had existing i
             <guid>https://rehansaeed.com/subresource-integrity-taghelper-using-asp-net-core-part-2/</guid>
             <pubDate>Sat, 12 Mar 2016 00:00:00 GMT</pubDate>
             <description><![CDATA[Use an ASP.NET Core TagHelper to implement Subresource Integrity (SRI) to ensure that external resources have not been tampered with. With is part 2.]]></description>
-            <content:encoded><![CDATA[<ul>
+            <content:encoded><![CDATA[<ol>
 <li><a href="https://rehansaeed.com/subresource-integrity-taghelper-using-asp-net-core/">Subresource Integrity TagHelper Using ASP.NET Core - Part 1</a></li>
 <li><a href="https://rehansaeed.com/subresource-integrity-taghelper-using-asp-net-core-part-2/">Subresource Integrity TagHelper Using ASP.NET Core - Part 2</a></li>
-</ul>
+</ol>
 <p>Last week I wrote part one of a blog post discussing a Subresource Integrity (SRI) tag helper I wrote for ASP.NET Core. It turns out the post was featured on the ASP.NET Community Standup and discussed at length by <a href="http://twitter.com/shanselman">Scott Hanselman</a>, <a href="http://twitter.com/damianedwards">Damian Edwards</a> and <a href="http://twitter.com/jongalloway">Jon Galloway</a>. Here is the discussion:</p>
 <p><a href="https://www.youtube.com/watch?v=Mu2jol8EmVo">https://www.youtube.com/watch?v=Mu2jol8EmVo</a></p>
 <p>The overall impression from the standup was that the SRI tag helper I wrote was a good first step but there was more work to be done. It was however, still more secure than &quot;the rest of the internet&quot; according to Jon Galloway. The main issue raised during the standup was that the first call made to get the resource could retrieve a version of it that was compromised.</p>
@@ -4841,10 +4845,10 @@ I looked into this subject for use by the company I work for, who had existing i
             <guid>https://rehansaeed.com/subresource-integrity-taghelper-using-asp-net-core/</guid>
             <pubDate>Sun, 06 Mar 2016 00:00:00 GMT</pubDate>
             <description><![CDATA[Use an ASP.NET Core TagHelper to implement Subresource Integrity (SRI) to ensure that external resources have not been tampered with.]]></description>
-            <content:encoded><![CDATA[<ul>
+            <content:encoded><![CDATA[<ol>
 <li><a href="https://rehansaeed.com/subresource-integrity-taghelper-using-asp-net-core/">Subresource Integrity TagHelper Using ASP.NET Core - Part 1</a></li>
 <li><a href="https://rehansaeed.com/subresource-integrity-taghelper-using-asp-net-core-part-2/">Subresource Integrity TagHelper Using ASP.NET Core - Part 2</a></li>
-</ul>
+</ol>
 <h1 id="what-is-subresource-integrity-sri">What is Subresource Integrity (SRI)</h1>
 <p>Can you trust your CDN provider? What if they get hacked and the copy of jQuery you are using hosted by them has some malicious script added to it? You would have no idea this was happening! This is where Subresource Integrity (SRI) comes in.</p>
 <p>It works by taking a cryptographic hash of the file hosted on the CDN and adding that to your script or link tags. So in our case if we are using jQuery, we would add an integrity and <code>crossorigin</code> attribute to our script tag like so:</p>
@@ -6755,16 +6759,16 @@ filters.Add(
             <guid>https://rehansaeed.com/reactive-extensions-part7-sample-events/</guid>
             <pubDate>Wed, 24 Dec 2014 00:00:00 GMT</pubDate>
             <description><![CDATA[Shows how to use the Reactive Extensions (Rx) Sample method to reduce the number of subscribed events by taking a sample from them over a given time period.]]></description>
-            <content:encoded><![CDATA[<ul>
-<li><a href="https://rehansaeed.com/reactive-extensions-part1-replacing-events/">Reactive Extensions (Rx) - Part 1 - Replacing C# Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Part 2 - Wrapping C# Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Part 3 - Naming Conventions</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Part 4 - Replacing Timers</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Part 8 - Timeouts</a></li>
-</ul>
+            <content:encoded><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/reactive-extensions-part1-replacing-events/">Reactive Extensions (Rx) - Replacing C# Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Wrapping C# Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Naming Conventions</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Replacing Timers</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Awaiting Observables</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Task ToObservable</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Sample Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Timeouts</a></li>
+</ol>
 <p>Its been a while since I&#39;ve done another Rx post. They&#39;ve been pretty popular and thanks to the community for all the positive feedback. I was talking to a colleague yesterday who had been using standard C# events in WPF (The principals learned in this post can apply anywhere). He had subscribed to the <code>TextChanged</code> event in C# and was updating the user interface on the fly, whenever the user typed in a character of text. He was getting way too many events being fired and his user interface couldn&#39;t keep up with all the work it was being asked to do.</p>
 <pre><code class="language-cs">this.TextBox.TextChanged += this.OnTextBoxTextChanged;
 
@@ -7453,12 +7457,12 @@ Microsoft has just announced on their <a href="http://visualstudio.uservoice.com
             <guid>https://rehansaeed.com/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/</guid>
             <pubDate>Tue, 09 Sep 2014 00:00:00 GMT</pubDate>
             <description><![CDATA[An base class implementation for the INotifyDataErrorInfo interface. Used in the Model-View-ViewModel (MVVM) pattern. Targeted for best performance.]]></description>
-            <content:encoded><![CDATA[<ul>
-<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part1-overview/">Model-View-ViewModel (MVVM) - Part 1 - Overview</a></li>
-<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part2-idisposable/">Model-View-ViewModel (MVVM) - Part 2 - IDisposable</a></li>
-<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part3-inotifypropertychanged/">Model-View-ViewModel (MVVM) - Part 3 - INotifyPropertyChanged</a></li>
-<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/">Model-View-ViewModel (MVVM) - Part 4 - INotifyDataErrorInfo</a></li>
-</ul>
+            <content:encoded><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part1-overview/">Model-View-ViewModel (MVVM) - Overview</a></li>
+<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part2-idisposable/">Model-View-ViewModel (MVVM) - IDisposable</a></li>
+<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part3-inotifypropertychanged/">Model-View-ViewModel (MVVM) - INotifyPropertyChanged</a></li>
+<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/">Model-View-ViewModel (MVVM) - INotifyDataErrorInfo</a></li>
+</ol>
 <p>In this next part, I&#39;m going to discuss validation of your view models using the <a href="http://msdn.microsoft.com/en-us/library/system.componentmodel.inotifydataerrorinfo%28v=vs.110%29.aspx">INotifyDataErrorInfo</a> interface. Validation is an often ignored part of the Model-View-ViewModel (MVVM) story. If you need to create a form for your users to fill in (which is probably most applications, I would have thought), then you probably need to validate user input in some way and the <a href="http://msdn.microsoft.com/en-us/library/system.componentmodel.inotifydataerrorinfo%28v=vs.110%29.aspx">INotifyDataErrorInfo</a> interface can get you there.</p>
 <p><img src="https://rehansaeed.com/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/images/Valid.png" alt="INotifyDataErrorInfo Valid TextBox"></p>
 <p>That was a <strong>valid</strong> <code>TextBox</code> using <code>INotifyDataErrorInfo</code>.</p>
@@ -7952,12 +7956,12 @@ where s.Name = &#39;Death Star&#39;</code></pre>
             <guid>https://rehansaeed.com/model-view-viewmodel-mvvm-part3-inotifypropertychanged/</guid>
             <pubDate>Wed, 18 Jun 2014 00:00:00 GMT</pubDate>
             <description><![CDATA[An base class implementation for the INotifyPropertyChanged interface. Used in the Model-View-ViewModel (MVVM) pattern. Targeted for best performance.]]></description>
-            <content:encoded><![CDATA[<ul>
-<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part1-overview/">Model-View-ViewModel (MVVM) - Part 1 - Overview</a></li>
-<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part2-idisposable/">Model-View-ViewModel (MVVM) - Part 2 - IDisposable</a></li>
-<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part3-inotifypropertychanged/">Model-View-ViewModel (MVVM) - Part 3 - INotifyPropertyChanged</a></li>
-<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/">Model-View-ViewModel (MVVM) - Part 4 - INotifyDataErrorInfo</a></li>
-</ul>
+            <content:encoded><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part1-overview/">Model-View-ViewModel (MVVM) - Overview</a></li>
+<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part2-idisposable/">Model-View-ViewModel (MVVM) - IDisposable</a></li>
+<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part3-inotifypropertychanged/">Model-View-ViewModel (MVVM) - INotifyPropertyChanged</a></li>
+<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/">Model-View-ViewModel (MVVM) - INotifyDataErrorInfo</a></li>
+</ol>
 <p>I know there have been lots of Model-View-ViewModel (MVVM) articles talking about <a href="http://msdn.microsoft.com/en-GB/library/system.componentmodel.inotifypropertychanged.aspx">INotifyPropertyChanged</a>. I&#39;ve read <strong>lots</strong> of them and this is the aggregation of all the knowledge I&#39;ve learned plus some cool new stuff (I&#39;ve not seen it done anywhere else but I could be wrong) which I&#39;ve also covered in my <a href="https://rehansaeed.com/reactive-extensions-part1-replacing-events/">Reactive Extensions (Rx) posts</a>.</p>
 <p>So what are the main aims of a base class implementing <a href="http://msdn.microsoft.com/en-GB/library/system.componentmodel.inotifypropertychanged.aspx">INotifyPropertyChanged</a>? Well, I think there are a few:</p>
 <ul>
@@ -8304,12 +8308,12 @@ where s.Name = &#39;Death Star&#39;</code></pre>
             <guid>https://rehansaeed.com/model-view-viewmodel-mvvm-part2-idisposable/</guid>
             <pubDate>Fri, 13 Jun 2014 00:00:00 GMT</pubDate>
             <description><![CDATA[Implementing IDisposable correctly is ridiculously hard. A Disposable base class can make it easier. Using IDisposable in Model-View-ViewModel (MVVM) really helps.]]></description>
-            <content:encoded><![CDATA[<ul>
-<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part1-overview/">Model-View-ViewModel (MVVM) - Part 1 - Overview</a></li>
-<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part2-idisposable/">Model-View-ViewModel (MVVM) - Part 2 - IDisposable</a></li>
-<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part3-inotifypropertychanged/">Model-View-ViewModel (MVVM) - Part 3 - INotifyPropertyChanged</a></li>
-<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/">Model-View-ViewModel (MVVM) - Part 4 - INotifyDataErrorInfo</a></li>
-</ul>
+            <content:encoded><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part1-overview/">Model-View-ViewModel (MVVM) - Overview</a></li>
+<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part2-idisposable/">Model-View-ViewModel (MVVM) - IDisposable</a></li>
+<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part3-inotifypropertychanged/">Model-View-ViewModel (MVVM) - INotifyPropertyChanged</a></li>
+<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/">Model-View-ViewModel (MVVM) - INotifyDataErrorInfo</a></li>
+</ol>
 <p>View models these days interact with all kinds of precious resources like Compasses and the GPS. Implementing <code>IDisposable</code> is an important pattern you can follow to dispose of these resources cleanly. Freeing them up to be used elsewhere and saving the users battery (Particularly important on mobile devices). Using the <code>IDisposable</code> interface in the Model-View-ViewModel (MVVM) pattern is a wise decision.</p>
 <p>Implementing <code>IDisposable</code> <strong>correctly</strong> is ridiculously hard. If you don&#39;t know how hard it really is, I recommend reading the top comment on <a href="http://stackoverflow.com/questions/538060/proper-use-of-the-idisposable-interface">this</a> Stack Overflow article.</p>
 <p>Implementing <a href="http://msdn.microsoft.com/en-GB/library/system.idisposable.aspx">IDisposable</a> is one of the rare times in C# where a developer has to use <a href="http://msdn.microsoft.com/en-us/library/66x5fx1b.aspx">C# Destructors</a> and also one of the few times when we have to tickle the garbage collector to stop it from trying to release the unmanaged resources twice by calling <a href="http://msdn.microsoft.com/en-us/library/system.gc.suppressfinalize%28v=vs.110%29.aspx">SuppressFinalize</a> on <a href="http://msdn.microsoft.com/en-us/library/system.gc%28v=vs.110%29.aspx">GC</a>.</p>
@@ -8482,12 +8486,12 @@ Console.WriteLine(disposable.IsDisposed);</code></pre>
             <guid>https://rehansaeed.com/model-view-viewmodel-mvvm-part1-overview/</guid>
             <pubDate>Wed, 14 May 2014 00:00:00 GMT</pubDate>
             <description><![CDATA[What really goes into using Model-View-ViewModel (MVVM) in .NET. Base classes for INotifyPropertyChanged, INotifyDataErrorInfo, IDisposable and a lot more.]]></description>
-            <content:encoded><![CDATA[<ul>
-<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part1-overview/">Model-View-ViewModel (MVVM) - Part 1 - Overview</a></li>
-<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part2-idisposable/">Model-View-ViewModel (MVVM) - Part 2 - IDisposable</a></li>
-<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part3-inotifypropertychanged/">Model-View-ViewModel (MVVM) - Part 3 - INotifyPropertyChanged</a></li>
-<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/">Model-View-ViewModel (MVVM) - Part 4 - INotifyDataErrorInfo</a></li>
-</ul>
+            <content:encoded><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part1-overview/">Model-View-ViewModel (MVVM) - Overview</a></li>
+<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part2-idisposable/">Model-View-ViewModel (MVVM) - IDisposable</a></li>
+<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part3-inotifypropertychanged/">Model-View-ViewModel (MVVM) - INotifyPropertyChanged</a></li>
+<li><a href="https://rehansaeed.com/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/">Model-View-ViewModel (MVVM) - INotifyDataErrorInfo</a></li>
+</ol>
 <p>I have been meaning for some time to do a series of posts about Model-View-ViewModel (MVVM) and its potential base classes. Then I read <a href="http://mtaulty.com/CommunityServer/blogs/mike_taultys_blog/archive/2014/05/09/windows-phone-8-1-and-xaml-apps-making-it-easier-for-mvvm-developers.aspx">Mike Taulty&#39;s post</a> about why MVVM &#39;bits&#39; not built in to .NET.</p>
 <p>My aim in these posts will be to either, pick off the shelf components which are best of breed where there is no point reinventing the wheel or build my own components where necessary.</p>
 <p>Assuming you already know about the basic Model-View-ViewModel (MVVM) pattern described in the title image of this post, when we talk about MVVM, what do we really mean?</p>
@@ -8573,16 +8577,16 @@ Console.WriteLine(disposable.IsDisposed);</code></pre>
             <guid>https://rehansaeed.com/reactive-extensions-part6-task-toobservable/</guid>
             <pubDate>Fri, 25 Apr 2014 00:00:00 GMT</pubDate>
             <description><![CDATA[How and where to use the Reactive Extensions (Rx) ToObservable Extension method to turn a Task Parallel Library (TPL) Task into an IObservable.]]></description>
-            <content:encoded><![CDATA[<ul>
-<li><a href="https://rehansaeed.com/reactive-extensions-part1-replacing-events/">Reactive Extensions (Rx) - Part 1 - Replacing C# Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Part 2 - Wrapping C# Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Part 3 - Naming Conventions</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Part 4 - Replacing Timers</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Part 8 - Timeouts</a></li>
-</ul>
+            <content:encoded><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/reactive-extensions-part1-replacing-events/">Reactive Extensions (Rx) - Replacing C# Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Wrapping C# Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Naming Conventions</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Replacing Timers</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Awaiting Observables</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Task ToObservable</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Sample Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Timeouts</a></li>
+</ol>
 <h1 id="a-quick-recap">A Quick Recap</h1>
 <p>In my previous posts on Reactive Extensions (Rx) I&#39;ve outlined a few clear areas where Reactive Extensions can be used in the real world. I&#39;ve uncovered areas where it provides a cleaner and improved API surface as compared to older .NET code. Namely, replacing C# events, wrapping existing C# events and replacing <code>System.Threading.Timers</code> (Or other <code>Timer</code> classes, of which there are a few in .NET).</p>
 <p>Once you have your observables, you need to do something with them. In my last post on the subject I showed how and when you can await an observable.</p>
@@ -8952,16 +8956,16 @@ public struct HashCode : IEquatable&lt;HashCode&gt;
             <guid>https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/</guid>
             <pubDate>Thu, 27 Mar 2014 00:00:00 GMT</pubDate>
             <description><![CDATA[How and where to use Task Parallel Library (TPL) async and await with Reactive Extensions (Rx). Also, how to use TPL for awaiting observables.]]></description>
-            <content:encoded><![CDATA[<ul>
-<li><a href="https://rehansaeed.com/reactive-extensions-part1-replacing-events/">Reactive Extensions (Rx) - Part 1 - Replacing C# Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Part 2 - Wrapping C# Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Part 3 - Naming Conventions</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Part 4 - Replacing Timers</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Part 8 - Timeouts</a></li>
-</ul>
+            <content:encoded><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/reactive-extensions-part1-replacing-events/">Reactive Extensions (Rx) - Replacing C# Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Wrapping C# Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Naming Conventions</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Replacing Timers</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Awaiting Observables</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Task ToObservable</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Sample Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Timeouts</a></li>
+</ol>
 <p>So I&#39;ve just finished extolling the wonderful virtues of <code>TaskCompletionSource</code> with a colleague and thought I&#39;d share the joy more widely. Eventually this will turn into a post about how great Reactive Extensions (Rx) is, I promise.</p>
 <h1 id="taskcompletionsource">TaskCompletionSource</h1>
 <p><a href="http://msdn.microsoft.com/en-us/library/dd449174%28v=vs.110%29.aspx">TaskCompletionSource</a> is a great tool to turn any asynchronous operation which does not follow the Task Parallel Library (TPL) pattern into a Task. The example below is something I&#39;ve started to do in a few places.</p>
@@ -9044,12 +9048,12 @@ await observable.ForEachAsync(x =&gt; Console.WriteLine(x));</code></pre>
             <guid>https://rehansaeed.com/wpf-metro-part4-elysium-extra/</guid>
             <pubDate>Wed, 19 Mar 2014 00:00:00 GMT</pubDate>
             <description><![CDATA[Elysium Extra is an excellent Windows Presentation Foundation (WPF) SDK providing Metro styles for built in WPF controls and some custom controls.]]></description>
-            <content:encoded><![CDATA[<ul>
-<li><a href="https://rehansaeed.com/wpf-metro-part1-modern-ui-for-wpf/">WPF Metro Part 1 - Modern UI for WPF</a></li>
-<li><a href="https://rehansaeed.com/wpf-metro-part2-mahapps-metro/">WPF Metro Part 2 - MahApps Metro</a></li>
-<li><a href="https://rehansaeed.com/wpf-metro-part3-elysium/">WPF Metro Part 3 - Elysium</a></li>
-<li><a href="https://rehansaeed.com/wpf-metro-part4-elysium-extra/">WPF Metro Part 4 - Elysium Extra</a></li>
-</ul>
+            <content:encoded><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/wpf-metro-part1-modern-ui-for-wpf/">WPF Metro - Modern UI for WPF</a></li>
+<li><a href="https://rehansaeed.com/wpf-metro-part2-mahapps-metro/">WPF Metro - MahApps Metro</a></li>
+<li><a href="https://rehansaeed.com/wpf-metro-part3-elysium/">WPF Metro - Elysium</a></li>
+<li><a href="https://rehansaeed.com/wpf-metro-part4-elysium-extra/">WPF Metro - Elysium Extra</a></li>
+</ol>
 <p><a href="https://www.youtube.com/watch?v=PGM_uBy99GA">https://www.youtube.com/watch?v=PGM_uBy99GA</a></p>
 <p>In these series of posts I&#39;m going to do a quick review of a few different open source WPF Metro (Or Modern if you prefer) style SDK&#39;s. Each of them provides styles and new controls to build your WPF application from scratch. Here are the home pages for the open source projects in question where you can download the source code and the binaries to play with them yourself:</p>
 <ul>
@@ -9175,12 +9179,12 @@ I am the developer of Elysium Extra. It was developed at the company where I wor
             <guid>https://rehansaeed.com/wpf-metro-part3-elysium/</guid>
             <pubDate>Mon, 17 Mar 2014 00:00:00 GMT</pubDate>
             <description><![CDATA[Elysium is an excellent Windows Presentation Foundation (WPF) SDK (On CodePlex) providing Metro styles for built in WPF controls and some custom controls.]]></description>
-            <content:encoded><![CDATA[<ul>
-<li><a href="https://rehansaeed.com/wpf-metro-part1-modern-ui-for-wpf/">WPF Metro Part 1 - Modern UI for WPF</a></li>
-<li><a href="https://rehansaeed.com/wpf-metro-part2-mahapps-metro/">WPF Metro Part 2 - MahApps Metro</a></li>
-<li><a href="https://rehansaeed.com/wpf-metro-part3-elysium/">WPF Metro Part 3 - Elysium</a></li>
-<li><a href="https://rehansaeed.com/wpf-metro-part4-elysium-extra/">WPF Metro Part 4 - Elysium Extra</a></li>
-</ul>
+            <content:encoded><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/wpf-metro-part1-modern-ui-for-wpf/">WPF Metro - Modern UI for WPF</a></li>
+<li><a href="https://rehansaeed.com/wpf-metro-part2-mahapps-metro/">WPF Metro - MahApps Metro</a></li>
+<li><a href="https://rehansaeed.com/wpf-metro-part3-elysium/">WPF Metro - Elysium</a></li>
+<li><a href="https://rehansaeed.com/wpf-metro-part4-elysium-extra/">WPF Metro - Elysium Extra</a></li>
+</ol>
 <p><a href="https://www.youtube.com/watch?v=YChJguA6ai8">https://www.youtube.com/watch?v=YChJguA6ai8</a></p>
 <p>In these series of posts I&#39;m going to do a quick review of a few different open source WPF Metro (Or Modern if you prefer) style SDK&#39;s. Each of them provides styles and new controls to build your WPF application from scratch. Here are the home pages for the open source projects in question where you can download the source code and the binaries to play with them yourself:</p>
 <ul>
@@ -9221,16 +9225,16 @@ I am the developer of Elysium Extra. It was developed at the company where I wor
             <guid>https://rehansaeed.com/reactive-extensions-part4-replacing-timers/</guid>
             <pubDate>Tue, 11 Mar 2014 00:00:00 GMT</pubDate>
             <description><![CDATA[You should definitely consider using Reactive Extensions (Rx) is as a direct replacement for .NET Timers. This post will explain how.]]></description>
-            <content:encoded><![CDATA[<ul>
-<li><a href="https://rehansaeed.com/reactive-extensions-part1-replacing-events/">Reactive Extensions (Rx) - Part 1 - Replacing C# Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Part 2 - Wrapping C# Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Part 3 - Naming Conventions</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Part 4 - Replacing Timers</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Part 8 - Timeouts</a></li>
-</ul>
+            <content:encoded><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/reactive-extensions-part1-replacing-events/">Reactive Extensions (Rx) - Replacing C# Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Wrapping C# Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Naming Conventions</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Replacing Timers</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Awaiting Observables</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Task ToObservable</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Sample Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Timeouts</a></li>
+</ol>
 <p>Reactive Extensions (Rx) is a huge library. In this series of blog posts I&#39;ve tried to illustrate real world applications where using Rx can significantly improve and/or simplify your code. So far I&#39;ve talked about using Rx to replace standard C# events and also wrapping C# events with observables.</p>
 <p>In this post I&#39;m going to talk about another area where Rx provides a nicer API surface, as compared to an existing .NET API. In particular, I&#39;m talking about the .NET Timers. There are a few different timers available in the .NET framework. The main ones being <a href="http://msdn.microsoft.com/en-us/library/system.threading.timer%28v=vs.110%29.aspx">System.Threading.Timer</a> and <a href="http://msdn.microsoft.com/en-us/library/system.timers.timer%28v=vs.110%29.aspx">System.Timers.Timer</a>. Each one has their pros and cons but I&#39;m not going to go into which ones are better as that&#39;s a whole <a href="http://stackoverflow.com/questions/1416803/system-timers-timer-vs-system-threading-timer">other conversation</a>.</p>
 <h1 id="existing-net-timers">Existing .NET Timers</h1>
@@ -9348,12 +9352,12 @@ private void OnTimerElapsed(object sender, ElapsedEventArgs e)
             <guid>https://rehansaeed.com/wpf-metro-part2-mahapps-metro/</guid>
             <pubDate>Sun, 02 Mar 2014 00:00:00 GMT</pubDate>
             <description><![CDATA[MahApps Metro is an excellent Windows Presentation Foundation (WPF) SDK providing Metro styles for built in WPF controls and several custom controls.]]></description>
-            <content:encoded><![CDATA[<ul>
-<li><a href="https://rehansaeed.com/wpf-metro-part1-modern-ui-for-wpf/">WPF Metro Part 1 - Modern UI for WPF</a></li>
-<li><a href="https://rehansaeed.com/wpf-metro-part2-mahapps-metro/">WPF Metro Part 2 - MahApps Metro</a></li>
-<li><a href="https://rehansaeed.com/wpf-metro-part3-elysium/">WPF Metro Part 3 - Elysium</a></li>
-<li><a href="https://rehansaeed.com/wpf-metro-part4-elysium-extra/">WPF Metro Part 4 - Elysium Extra</a></li>
-</ul>
+            <content:encoded><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/wpf-metro-part1-modern-ui-for-wpf/">WPF Metro - Modern UI for WPF</a></li>
+<li><a href="https://rehansaeed.com/wpf-metro-part2-mahapps-metro/">WPF Metro - MahApps Metro</a></li>
+<li><a href="https://rehansaeed.com/wpf-metro-part3-elysium/">WPF Metro - Elysium</a></li>
+<li><a href="https://rehansaeed.com/wpf-metro-part4-elysium-extra/">WPF Metro - Elysium Extra</a></li>
+</ol>
 <p><a href="https://www.youtube.com/watch?v=FLmCkKfIp84">https://www.youtube.com/watch?v=FLmCkKfIp84</a></p>
 <p>In these series of posts I&#39;m going to do a quick review of a few different open source WPF Metro (Or Modern if you prefer) style SDK&#39;s. Each of them provides styles and new controls to build your WPF application from scratch. Here are the home pages for the open source projects in question where you can download the source code and the binaries to play with them yourself:</p>
 <ul>
@@ -9411,12 +9415,12 @@ private void OnTimerElapsed(object sender, ElapsedEventArgs e)
             <guid>https://rehansaeed.com/wpf-metro-part1-modern-ui-for-wpf/</guid>
             <pubDate>Wed, 19 Feb 2014 00:00:00 GMT</pubDate>
             <description><![CDATA[Modern UI for WPF is an excellent Windows Presentation Foundation (WPF) SDK providing Metro styles for built in WPF controls and several custom controls.]]></description>
-            <content:encoded><![CDATA[<ul>
-<li><a href="https://rehansaeed.com/wpf-metro-part1-modern-ui-for-wpf/">WPF Metro Part 1 - Modern UI for WPF</a></li>
-<li><a href="https://rehansaeed.com/wpf-metro-part2-mahapps-metro/">WPF Metro Part 2 - MahApps Metro</a></li>
-<li><a href="https://rehansaeed.com/wpf-metro-part3-elysium/">WPF Metro Part 3 - Elysium</a></li>
-<li><a href="https://rehansaeed.com/wpf-metro-part4-elysium-extra/">WPF Metro Part 4 - Elysium Extra</a></li>
-</ul>
+            <content:encoded><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/wpf-metro-part1-modern-ui-for-wpf/">WPF Metro - Modern UI for WPF</a></li>
+<li><a href="https://rehansaeed.com/wpf-metro-part2-mahapps-metro/">WPF Metro - MahApps Metro</a></li>
+<li><a href="https://rehansaeed.com/wpf-metro-part3-elysium/">WPF Metro - Elysium</a></li>
+<li><a href="https://rehansaeed.com/wpf-metro-part4-elysium-extra/">WPF Metro - Elysium Extra</a></li>
+</ol>
 <p><a href="https://www.youtube.com/watch?v=Bk7mlEQI2rk">https://www.youtube.com/watch?v=Bk7mlEQI2rk</a></p>
 <p>In these series of posts I&#39;m going to do a quick review of a few different open source WPF Metro (Or Modern if you prefer) style SDK&#39;s. Each of them provides styles and new controls to build your WPF application from scratch. Here are the home pages for the open source projects in question where you can download the source code and the binaries to play with them yourself:</p>
 <ul>
@@ -9468,16 +9472,16 @@ private void OnTimerElapsed(object sender, ElapsedEventArgs e)
             <guid>https://rehansaeed.com/reactive-extensions-part3-naming-conventions/</guid>
             <pubDate>Fri, 14 Feb 2014 00:00:00 GMT</pubDate>
             <description><![CDATA[Reactive Extensions (Rx) Advantages of using IObservable property naming conventions and comparison between C# events.]]></description>
-            <content:encoded><![CDATA[<ul>
-<li><a href="https://rehansaeed.com/reactive-extensions-part1-replacing-events/">Reactive Extensions (Rx) - Part 1 - Replacing C# Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Part 2 - Wrapping C# Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Part 3 - Naming Conventions</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Part 4 - Replacing Timers</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Part 8 - Timeouts</a></li>
-</ul>
+            <content:encoded><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/reactive-extensions-part1-replacing-events/">Reactive Extensions (Rx) - Replacing C# Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Wrapping C# Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Naming Conventions</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Replacing Timers</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Awaiting Observables</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Task ToObservable</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Sample Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Timeouts</a></li>
+</ol>
 <p>Standard C# events do not have any real naming convention, except using the English language to suggest that something has happened e.g. <code>PropertyChanged</code>. Should a property returning an <code>IObservable&lt;T&gt;</code> have a naming convention? I&#39;m not entirely certain but I&#39;ll explain why I have used one and why.</p>
 <p>C# events are easily differentiated in a class from properties and methods because they have a different icon in the Visual Studio Intelli-Sense. Visual Studio does not provide <code>IObservable&lt;T&gt;</code> properties any differentiation. This may change in the future if Microsoft decides to integrate Reactive Extensions (Rx) more deeply into Visual Studio.</p>
 <p>The second reason for using a naming convention is that I often wrap existing C# events with a Reactive Extensions event. It&#39;s not possible to have the same name for a C# event and an <code>IObservable&lt;T&gt;</code> property.</p>
@@ -9497,16 +9501,16 @@ private void OnTimerElapsed(object sender, ElapsedEventArgs e)
             <guid>https://rehansaeed.com/reactive-extensions-part2-wrapping-events/</guid>
             <pubDate>Thu, 13 Feb 2014 00:00:00 GMT</pubDate>
             <description><![CDATA[Reactive Extensions IObservable wrappers for C# events and hiding the C# events entirely from subscribers using explicit interface implementations.]]></description>
-            <content:encoded><![CDATA[<ul>
-<li><a href="https://rehansaeed.com/reactive-extensions-part1-replacing-events/">Reactive Extensions (Rx) - Part 1 - Replacing C# Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Part 2 - Wrapping C# Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Part 3 - Naming Conventions</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Part 4 - Replacing Timers</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Part 8 - Timeouts</a></li>
-</ul>
+            <content:encoded><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/reactive-extensions-part1-replacing-events/">Reactive Extensions (Rx) - Replacing C# Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Wrapping C# Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Naming Conventions</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Replacing Timers</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Awaiting Observables</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Task ToObservable</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Sample Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Timeouts</a></li>
+</ol>
 <p>Sometimes it is not possible to replace a C# event with a Reactive Extensions (Rx) event entirely. This is usually because we are implementing an interface which has a C# event and we don&#39;t own the interface.</p>
 <p>However, as I&#39;ll show in this post, its possible to create <code>IObservable&lt;T&gt;</code> wrappers for C# events and even to hide the C# events entirely from consumers of the class.</p>
 <p>The method of wrapping C# events depends on the type of event handler used. Below are the three type of event handler and the method of wrapping them with an observable event.</p>
@@ -9594,16 +9598,16 @@ public IObservable&lt;BunnyRabbits&gt; WhenBunnyRabbitsAttack
             <guid>https://rehansaeed.com/reactive-extensions-part1-replacing-events/</guid>
             <pubDate>Tue, 11 Feb 2014 00:00:00 GMT</pubDate>
             <description><![CDATA[You should definitely consider using Reactive Extensions (Rx) is as a direct replacement for C# events. This post will explain how.]]></description>
-            <content:encoded><![CDATA[<ul>
-<li><a href="https://rehansaeed.com/reactive-extensions-part1-replacing-events/">Reactive Extensions (Rx) - Part 1 - Replacing C# Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Part 2 - Wrapping C# Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Part 3 - Naming Conventions</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Part 4 - Replacing Timers</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Part 5 - Awaiting Observables</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Part 6 - Task ToObservable</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Part 7 - Sample Events</a></li>
-<li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Part 8 - Timeouts</a></li>
-</ul>
+            <content:encoded><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/reactive-extensions-part1-replacing-events/">Reactive Extensions (Rx) - Replacing C# Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part2-wrapping-events/">Reactive Extensions (Rx) - Wrapping C# Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part3-naming-conventions/">Reactive Extensions (Rx) - Naming Conventions</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part4-replacing-timers/">Reactive Extensions (Rx) - Replacing Timers</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part5-awaiting-observables/">Reactive Extensions (Rx) - Awaiting Observables</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part6-task-toobservable/">Reactive Extensions (Rx) - Task ToObservable</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-part7-sample-events/">Reactive Extensions (Rx) - Sample Events</a></li>
+<li><a href="https://rehansaeed.com/reactive-extensions-rx-part-8-timeouts/">Reactive Extensions (Rx) - Timeouts</a></li>
+</ol>
 <p>For those who have not tried Reactive Extensions (Rx) yet, I highly recommend it. If I had to describe it in a few words it would be &#39;Linq to events&#39;. If you have not already learned about it, <a href="http://www.introtorx.com/uat/content/v1.0.10621.0/00_Foreword.html">this</a> is by far the best resource on learning its intricacies.</p>
 <p>I have spent a lot of time reading about Reactive Extensions but what I have not found in my research is examples or pointers on how or even where it should be used in preference to other code. One area where you should definitely consider using Reactive Extensions is as a direct replacement for bog standard C# events, which have been around since C# 1.0. This post will explain how.</p>
 <h1 id="exposing-an-event">Exposing an Event</h1>
