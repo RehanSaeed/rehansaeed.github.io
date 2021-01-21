@@ -20,9 +20,9 @@ tags:
   - "dotnet new"
 ---
 
-- [Part 1 - Custom Project Templates Using dotnet new](/custom-project-templates-using-dotnet-new/)
-- [Part 2 - dotnet new Feature Selection](/dotnet-new-feature-selection/)
-- [Part 3 - Unit Testing dotnet new Templates](/unit-testing-dotnet-new-templates/)
+- [dotnet new - Part 1 - Custom Project Templates Using dotnet new](/custom-project-templates-using-dotnet-new/)
+- [dotnet new - Part 2 - dotnet new Feature Selection](/dotnet-new-feature-selection/)
+- [dotnet new - Part 3 - Unit Testing dotnet new Templates](/unit-testing-dotnet-new-templates/)
 
 In my last post I showed how to [get started](/custom-project-templates-using-dotnet-new/) with using `dotnet new` to build project templates. In this post, I'm going to build on that knowledge and show how to add feature selection to your project template so developers can choose to add or remove bits of your template. If you check out my [.NET Boxed API](https://github.com/Dotnet-Boxed/Templates) project template, you'll see that I have 17 features for you to set. If you run the help command against my template you'll see a description of each and instructions on how you can set them (I've cleaned up the CLI output, the current help commands output is pretty awful but this is being [addressed](https://github.com/dotnet/templating/issues/348) in the next version of `dotnet new`).
 

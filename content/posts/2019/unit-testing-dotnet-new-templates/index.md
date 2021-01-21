@@ -19,9 +19,9 @@ tags:
   - "Project Template"
 ---
 
-- [Part 1 - Custom Project Templates Using dotnet new](/custom-project-templates-using-dotnet-new/)
-- [Part 2 - dotnet new Feature Selection](/dotnet-new-feature-selection/)
-- [Part 3 - Unit Testing dotnet new Templates](/unit-testing-dotnet-new-templates/)
+- [dotnet new - Part 1 - Custom Project Templates Using dotnet new](/custom-project-templates-using-dotnet-new/)
+- [dotnet new - Part 2 - dotnet new Feature Selection](/dotnet-new-feature-selection/)
+- [dotnet new - Part 3 - Unit Testing dotnet new Templates](/unit-testing-dotnet-new-templates/)
 
 As I talked about in my previous post some time ago about `dotnet new` project templates, it's possible to enable feature selection, so that developers can toggle certain features of a project template on or off. This is not a feature that many templates in the wild use a lot. Quite often I've seen templates have no optional features or only a few. One reason is that it gets very complicated to test that toggling your optional features doesn't break the generated project in some way by stopping it from building for example. This is why I decided to write a small unit test helper library for `dotnet new` project templates. It is unit test framework agnostic and can work with xUnit, NUnit, MSTest or any other unit test framework.
 

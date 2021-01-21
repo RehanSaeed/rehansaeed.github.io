@@ -23,8 +23,8 @@ tags:
   - "Metricbeat"
 ---
 
-1. [Useful Docker Images - Part 1 - Administering Docker](/useful-docker-images-part1/)
-2. [Useful Docker Images - Part 2 - The EKL-B Stack](/useful-docker-images-part2/)
+- [Useful Docker Images - Part 1 - Administering Docker](/useful-docker-images-part1/)
+- [Useful Docker Images - Part 2 - The EKL-B Stack](/useful-docker-images-part2/)
 
 # Filebeat, Metricbeat & Hearbeat
 
