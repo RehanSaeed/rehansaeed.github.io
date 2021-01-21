@@ -23,74 +23,74 @@ a {
     text-decoration: none;
   }
 
-  @supports (text-decoration-thickness: 1em) {
-    --thickness: 0.07em;
-    --offset: 0.1em;
-    --thickness--hover: 1.125em;
-    --offset--hover: -0.825em;
+  // @supports (text-decoration-skip-ink: auto) {
+  //   --thickness: 0.07em;
+  //   --offset: 0.1em;
+  //   --thickness--hover: 1.125em;
+  //   --offset--hover: -0.825em;
 
-    animation-name: text-decoration-out;
-    animation-timing-function: ease-in-out;
-    animation-duration: var(--global-duration-1);
-    animation-fill-mode: forwards;
-    transition: none;
+  //   animation-name: text-decoration-out;
+  //   animation-timing-function: ease-in-out;
+  //   animation-duration: var(--global-duration-1);
+  //   animation-fill-mode: forwards;
+  //   transition: none;
 
-    text-decoration-skip-ink: auto;
-    text-decoration-thickness: var(--thickness);
-    text-underline-offset: var(--offset);
+  //   text-decoration-skip-ink: auto;
+  //   text-decoration-thickness: var(--thickness);
+  //   text-underline-offset: var(--offset);
 
-    &:hover,
-    &:focus,
-    &:active {
-      animation-name: text-decoration-in;
+  //   &:hover,
+  //   &:focus,
+  //   &:active {
+  //     animation-name: text-decoration-in;
 
-      opacity: 1;
-    }
+  //     opacity: 1;
+  //   }
 
-    &:visited {
-      text-decoration-color: var(--global-link-visited-color);
-    }
+  //   &:visited {
+  //     text-decoration-color: var(--global-link-visited-color);
+  //   }
 
-    @keyframes text-decoration-in {
-      0% {
-        text-decoration-skip-ink: auto;
-      }
-      0.1% {
-        text-decoration-skip-ink: none;
-        color: var(--global-link-color);
-        text-decoration-color: var(--global-link-color);
-        text-decoration-thickness: var(--thickness);
-        text-underline-offset: var(--offset);
-      }
-      100% {
-        color: var(--global-background-color);
-        text-decoration-color: var(--global-link-color);
-        text-decoration-skip-ink: none;
-        text-decoration-thickness: var(--thickness--hover);
-        text-underline-offset: var(--offset--hover);
-      }
-    }
+  //   @keyframes text-decoration-in {
+  //     0% {
+  //       text-decoration-skip-ink: auto;
+  //     }
+  //     0.1% {
+  //       text-decoration-skip-ink: none;
+  //       color: var(--global-link-color);
+  //       text-decoration-color: var(--global-link-color);
+  //       text-decoration-thickness: var(--thickness);
+  //       text-underline-offset: var(--offset);
+  //     }
+  //     100% {
+  //       color: var(--global-background-color);
+  //       text-decoration-color: var(--global-link-color);
+  //       text-decoration-skip-ink: none;
+  //       text-decoration-thickness: var(--thickness--hover);
+  //       text-underline-offset: var(--offset--hover);
+  //     }
+  //   }
 
-    @keyframes text-decoration-out {
-      0% {
-        color: var(--global-background-color);
-        text-decoration-color: var(--global-link-color);
-        text-decoration-skip-ink: none;
-        text-decoration-thickness: var(--thickness--hover);
-        text-underline-offset: var(--offset--hover);
-      }
-      99.9% {
-        color: var(--global-link-color);
-        text-decoration-color: var(--global-link-color);
-        text-decoration-skip-ink: none;
-        text-decoration-thickness: var(--thickness);
-        text-underline-offset: var(--offset);
-      }
-      100% {
-        text-decoration-skip-ink: auto;
-      }
-    }
-  }
+  //   @keyframes text-decoration-out {
+  //     0% {
+  //       color: var(--global-background-color);
+  //       text-decoration-color: var(--global-link-color);
+  //       text-decoration-skip-ink: none;
+  //       text-decoration-thickness: var(--thickness--hover);
+  //       text-underline-offset: var(--offset--hover);
+  //     }
+  //     99.9% {
+  //       color: var(--global-link-color);
+  //       text-decoration-color: var(--global-link-color);
+  //       text-decoration-skip-ink: none;
+  //       text-decoration-thickness: var(--thickness);
+  //       text-underline-offset: var(--offset);
+  //     }
+  //     100% {
+  //       text-decoration-skip-ink: auto;
+  //     }
+  //   }
+  // }
 }
 
 @media print {
