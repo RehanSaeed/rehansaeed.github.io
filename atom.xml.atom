@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2021-01-21T10:07:57.951Z</updated>
+    <updated>2021-01-21T10:23:43.776Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -2151,10 +2151,10 @@ export default configurationBuilder;</code></pre>
         <link href="https://rehansaeed.com/useful-docker-images-part2/"/>
         <updated>2017-12-11T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[How to run the ELK-B Stack, made up of ElasticSearch, Kibana, Filebeat, Metricbeat and Heartbeat using Docker and Docker Swarm.]]></summary>
-        <content type="html"><![CDATA[<ul>
-<li><a href="https://rehansaeed.com/useful-docker-images-part1/">Useful Docker Images - Part 1 - Administering Docker</a></li>
-<li><a href="https://rehansaeed.com/useful-docker-images-part2/">Useful Docker Images - Part 2 - The EKL-B Stack</a></li>
-</ul>
+        <content type="html"><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/useful-docker-images-part1/">Useful Docker Images - Administering Docker</a></li>
+<li><a href="https://rehansaeed.com/useful-docker-images-part2/">Useful Docker Images - The EKL-B Stack</a></li>
+</ol>
 <h1 id="filebeat-metricbeat--hearbeat">Filebeat, Metricbeat &amp; Hearbeat</h1>
 <p>Knowing what is happening in Docker and in your applications running on Docker is critical. To collect logs from my Swarm and monitor the health of it, I use the ELK-B stack which is made up of four pieces of software called <a href="https://www.elastic.co/products/elasticsearch">ElasticSearch</a>, <a href="https://www.elastic.co/products/logstash">LogStash</a> (I recommend that you use Beats instead of LogStash), <a href="https://www.elastic.co/products/kibana">Kibana</a> and various <a href="https://www.elastic.co/products/beats">Beats</a>.</p>
 <p>ElasticSearch is basically a No-SQL database that is geared towards storing JSON documents and searching across them. Kibana is a visualization took that gives you a nice UI to view all of your data and produce nice visualizations and dashboards. There are several Beats which are used to ship data into ElasticSearch from various sources.</p>
@@ -2269,10 +2269,10 @@ networks:
         <link href="https://rehansaeed.com/useful-docker-images-part1/"/>
         <updated>2017-11-30T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[A guide to using the Docker Visualizer, Portainer and Sonatype Nexus Docker images to help manage a Docker Swarm.]]></summary>
-        <content type="html"><![CDATA[<ul>
-<li><a href="https://rehansaeed.com/useful-docker-images-part1/">Useful Docker Images - Part 1 - Administering Docker</a></li>
-<li><a href="https://rehansaeed.com/useful-docker-images-part2/">Useful Docker Images - Part 2 - The EKL-B Stack</a></li>
-</ul>
+        <content type="html"><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/useful-docker-images-part1/">Useful Docker Images - Administering Docker</a></li>
+<li><a href="https://rehansaeed.com/useful-docker-images-part2/">Useful Docker Images - The EKL-B Stack</a></li>
+</ol>
 <p>I have been running Docker Swarm in production for a few API&#39;s and single page applications for a couple of months now. Here are some Docker images I&#39;ve found generally useful. Most of these images are not specific to Docker Swarm. For each image, I&#39;m also going to show a <code>docker-stack.yml</code> file that you can use to deploy the image and the settings I use for them. To deploy a Docker stack file, just run the following commands:</p>
 <pre><code class="language-powershell"># To enable Docker Swarm mode on your local machine if you haven&#39;t already.
 docker swarm init
@@ -2987,11 +2987,11 @@ public interface IAsyncCommand&lt;T1, T2, T3&gt;
         <link href="https://rehansaeed.com/dotnet-new-feature-selection/"/>
         <updated>2017-03-26T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[How to add feature selection to your dotnet new template using symbols (bool, string, choice, computed) and pre-processor directives.]]></summary>
-        <content type="html"><![CDATA[<ul>
-<li><a href="https://rehansaeed.com/custom-project-templates-using-dotnet-new/">dotnet new - Part 1 - Custom Project Templates Using dotnet new</a></li>
-<li><a href="https://rehansaeed.com/dotnet-new-feature-selection/">dotnet new - Part 2 - dotnet new Feature Selection</a></li>
-<li><a href="https://rehansaeed.com/unit-testing-dotnet-new-templates/">dotnet new - Part 3 - Unit Testing dotnet new Templates</a></li>
-</ul>
+        <content type="html"><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/custom-project-templates-using-dotnet-new/">dotnet new - Custom Project Templates Using dotnet new</a></li>
+<li><a href="https://rehansaeed.com/dotnet-new-feature-selection/">dotnet new - dotnet new Feature Selection</a></li>
+<li><a href="https://rehansaeed.com/unit-testing-dotnet-new-templates/">dotnet new - Unit Testing dotnet new Templates</a></li>
+</ol>
 <p>In my last post I showed how to <a href="https://rehansaeed.com/custom-project-templates-using-dotnet-new/">get started</a> with using <code>dotnet new</code> to build project templates. In this post, I&#39;m going to build on that knowledge and show how to add feature selection to your project template so developers can choose to add or remove bits of your template. If you check out my <a href="https://github.com/Dotnet-Boxed/Templates">.NET Boxed API</a> project template, you&#39;ll see that I have 17 features for you to set. If you run the help command against my template you&#39;ll see a description of each and instructions on how you can set them (I&#39;ve cleaned up the CLI output, the current help commands output is pretty awful but this is being <a href="https://github.com/dotnet/templating/issues/348">addressed</a> in the next version of <code>dotnet new</code>).</p>
 <pre><code>PS C:\Users\rehan.saeed&gt; dotnet new api --help
 Template Instantiation Commands for .NET Core CLI.
