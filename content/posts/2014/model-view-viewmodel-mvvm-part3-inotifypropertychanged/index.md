@@ -25,10 +25,10 @@ tags:
   - "Model-View-ViewModel (MVVM)"
 ---
 
-- [Model-View-ViewModel (MVVM) - Part 1 - Overview](/model-view-viewmodel-mvvm-part1-overview/)
-- [Model-View-ViewModel (MVVM) - Part 2 - IDisposable](/model-view-viewmodel-mvvm-part2-idisposable/)
-- [Model-View-ViewModel (MVVM) - Part 3 - INotifyPropertyChanged](/model-view-viewmodel-mvvm-part3-inotifypropertychanged/)
-- [Model-View-ViewModel (MVVM) - Part 4 - INotifyDataErrorInfo](/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/)
+1. [Model-View-ViewModel (MVVM) - Overview](/model-view-viewmodel-mvvm-part1-overview/)
+2. [Model-View-ViewModel (MVVM) - IDisposable](/model-view-viewmodel-mvvm-part2-idisposable/)
+3. [Model-View-ViewModel (MVVM) - INotifyPropertyChanged](/model-view-viewmodel-mvvm-part3-inotifypropertychanged/)
+4. [Model-View-ViewModel (MVVM) - INotifyDataErrorInfo](/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/)
 
 I know there have been lots of Model-View-ViewModel (MVVM) articles talking about [INotifyPropertyChanged](http://msdn.microsoft.com/en-GB/library/system.componentmodel.inotifypropertychanged.aspx). I've read **lots** of them and this is the aggregation of all the knowledge I've learned plus some cool new stuff (I've not seen it done anywhere else but I could be wrong) which I've also covered in my [Reactive Extensions (Rx) posts](/reactive-extensions-part1-replacing-events/).
 

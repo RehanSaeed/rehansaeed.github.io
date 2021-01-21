@@ -25,10 +25,10 @@ tags:
   - "Model-View-ViewModel (MVVM)"
 ---
 
-- [Model-View-ViewModel (MVVM) - Part 1 - Overview](/model-view-viewmodel-mvvm-part1-overview/)
-- [Model-View-ViewModel (MVVM) - Part 2 - IDisposable](/model-view-viewmodel-mvvm-part2-idisposable/)
-- [Model-View-ViewModel (MVVM) - Part 3 - INotifyPropertyChanged](/model-view-viewmodel-mvvm-part3-inotifypropertychanged/)
-- [Model-View-ViewModel (MVVM) - Part 4 - INotifyDataErrorInfo](/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/)
+1. [Model-View-ViewModel (MVVM) - Overview](/model-view-viewmodel-mvvm-part1-overview/)
+2. [Model-View-ViewModel (MVVM) - IDisposable](/model-view-viewmodel-mvvm-part2-idisposable/)
+3. [Model-View-ViewModel (MVVM) - INotifyPropertyChanged](/model-view-viewmodel-mvvm-part3-inotifypropertychanged/)
+4. [Model-View-ViewModel (MVVM) - INotifyDataErrorInfo](/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/)
 
 In this next part, I'm going to discuss validation of your view models using the [INotifyDataErrorInfo](http://msdn.microsoft.com/en-us/library/system.componentmodel.inotifydataerrorinfo%28v=vs.110%29.aspx) interface. Validation is an often ignored part of the Model-View-ViewModel (MVVM) story. If you need to create a form for your users to fill in (which is probably most applications, I would have thought), then you probably need to validate user input in some way and the [INotifyDataErrorInfo](http://msdn.microsoft.com/en-us/library/system.componentmodel.inotifydataerrorinfo%28v=vs.110%29.aspx) interface can get you there.
 

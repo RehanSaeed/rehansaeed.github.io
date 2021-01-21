@@ -21,14 +21,14 @@ tags:
   - "standards"
 ---
 
-- [Reactive Extensions (Rx) - Part 1 - Replacing C# Events](/reactive-extensions-part1-replacing-events/)
-- [Reactive Extensions (Rx) - Part 2 - Wrapping C# Events](/reactive-extensions-part2-wrapping-events/)
-- [Reactive Extensions (Rx) - Part 3 - Naming Conventions](/reactive-extensions-part3-naming-conventions/)
-- [Reactive Extensions (Rx) - Part 4 - Replacing Timers](/reactive-extensions-part4-replacing-timers/)
-- [Reactive Extensions (Rx) - Part 5 - Awaiting Observables](/reactive-extensions-part5-awaiting-observables/)
-- [Reactive Extensions (Rx) - Part 6 - Task ToObservable](/reactive-extensions-part6-task-toobservable/)
-- [Reactive Extensions (Rx) - Part 7 - Sample Events](/reactive-extensions-part7-sample-events/)
-- [Reactive Extensions (Rx) - Part 8 - Timeouts](/reactive-extensions-rx-part-8-timeouts/)
+1. [Reactive Extensions (Rx) - Replacing C# Events](/reactive-extensions-part1-replacing-events/)
+2. [Reactive Extensions (Rx) - Wrapping C# Events](/reactive-extensions-part2-wrapping-events/)
+3. [Reactive Extensions (Rx) - Naming Conventions](/reactive-extensions-part3-naming-conventions/)
+4. [Reactive Extensions (Rx) - Replacing Timers](/reactive-extensions-part4-replacing-timers/)
+5. [Reactive Extensions (Rx) - Awaiting Observables](/reactive-extensions-part5-awaiting-observables/)
+6. [Reactive Extensions (Rx) - Task ToObservable](/reactive-extensions-part6-task-toobservable/)
+7. [Reactive Extensions (Rx) - Sample Events](/reactive-extensions-part7-sample-events/)
+8. [Reactive Extensions (Rx) - Timeouts](/reactive-extensions-rx-part-8-timeouts/)
 
 Standard C# events do not have any real naming convention, except using the English language to suggest that something has happened e.g. `PropertyChanged`. Should a property returning an `IObservable<T>` have a naming convention? I'm not entirely certain but I'll explain why I have used one and why.
 

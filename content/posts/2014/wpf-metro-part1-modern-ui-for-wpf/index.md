@@ -24,10 +24,10 @@ tags:
   - "XAML"
 ---
 
-- [WPF Metro Part 1 - Modern UI for WPF](/wpf-metro-part1-modern-ui-for-wpf/)
-- [WPF Metro Part 2 - MahApps Metro](/wpf-metro-part2-mahapps-metro/)
-- [WPF Metro Part 3 - Elysium](/wpf-metro-part3-elysium/)
-- [WPF Metro Part 4 - Elysium Extra](/wpf-metro-part4-elysium-extra/)
+1. [WPF Metro - Modern UI for WPF](/wpf-metro-part1-modern-ui-for-wpf/)
+2. [WPF Metro - MahApps Metro](/wpf-metro-part2-mahapps-metro/)
+3. [WPF Metro - Elysium](/wpf-metro-part3-elysium/)
+4. [WPF Metro - Elysium Extra](/wpf-metro-part4-elysium-extra/)
 
 https://www.youtube.com/watch?v=Bk7mlEQI2rk
 

@@ -25,10 +25,10 @@ tags:
   - "Rx"
 ---
 
-- [Model-View-ViewModel (MVVM) - Part 1 - Overview](/model-view-viewmodel-mvvm-part1-overview/)
-- [Model-View-ViewModel (MVVM) - Part 2 - IDisposable](/model-view-viewmodel-mvvm-part2-idisposable/)
-- [Model-View-ViewModel (MVVM) - Part 3 - INotifyPropertyChanged](/model-view-viewmodel-mvvm-part3-inotifypropertychanged/)
-- [Model-View-ViewModel (MVVM) - Part 4 - INotifyDataErrorInfo](/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/)
+1. [Model-View-ViewModel (MVVM) - Overview](/model-view-viewmodel-mvvm-part1-overview/)
+2. [Model-View-ViewModel (MVVM) - IDisposable](/model-view-viewmodel-mvvm-part2-idisposable/)
+3. [Model-View-ViewModel (MVVM) - INotifyPropertyChanged](/model-view-viewmodel-mvvm-part3-inotifypropertychanged/)
+4. [Model-View-ViewModel (MVVM) - INotifyDataErrorInfo](/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/)
 
 View models these days interact with all kinds of precious resources like Compasses and the GPS. Implementing `IDisposable` is an important pattern you can follow to dispose of these resources cleanly. Freeing them up to be used elsewhere and saving the users battery (Particularly important on mobile devices). Using the `IDisposable` interface in the Model-View-ViewModel (MVVM) pattern is a wise decision.
 

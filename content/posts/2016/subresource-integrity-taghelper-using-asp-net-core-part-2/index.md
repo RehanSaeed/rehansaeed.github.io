@@ -24,8 +24,8 @@ tags:
   - "Jon Galloway"
 ---
 
-- [Subresource Integrity TagHelper Using ASP.NET Core - Part 1](/subresource-integrity-taghelper-using-asp-net-core/)
-- [Subresource Integrity TagHelper Using ASP.NET Core - Part 2](/subresource-integrity-taghelper-using-asp-net-core-part-2/)
+1. [Subresource Integrity TagHelper Using ASP.NET Core - Part 1](/subresource-integrity-taghelper-using-asp-net-core/)
+2. [Subresource Integrity TagHelper Using ASP.NET Core - Part 2](/subresource-integrity-taghelper-using-asp-net-core-part-2/)
 
 Last week I wrote part one of a blog post discussing a Subresource Integrity (SRI) tag helper I wrote for ASP.NET Core. It turns out the post was featured on the ASP.NET Community Standup and discussed at length by [Scott Hanselman](http://twitter.com/shanselman), [Damian Edwards](http://twitter.com/damianedwards) and [Jon Galloway](http://twitter.com/jongalloway). Here is the discussion:
 
