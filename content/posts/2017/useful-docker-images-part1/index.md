@@ -20,8 +20,8 @@ tags:
   - "Sonatype Nexus"
 ---
 
-- [Useful Docker Images - Part 1 - Administering Docker](/useful-docker-images-part1/)
-- [Useful Docker Images - Part 2 - The EKL-B Stack](/useful-docker-images-part2/)
+1. [Useful Docker Images - Administering Docker](/useful-docker-images-part1/)
+2. [Useful Docker Images - The EKL-B Stack](/useful-docker-images-part2/)
 
 I have been running Docker Swarm in production for a few API's and single page applications for a couple of months now. Here are some Docker images I've found generally useful. Most of these images are not specific to Docker Swarm. For each image, I'm also going to show a `docker-stack.yml` file that you can use to deploy the image and the settings I use for them. To deploy a Docker stack file, just run the following commands:
 
