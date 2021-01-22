@@ -1,6 +1,5 @@
 {
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
-  "prettier.disableLanguages": ["markdown"],
-  "prettier.htmlWhitespaceSensitivity": "strict"
+  "prettier.disableLanguages": ["markdown"]
 }

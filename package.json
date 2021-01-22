@@ -64,7 +64,6 @@
     "test": "cypress open"
   },
   "prettier": {
-    "htmlWhitespaceSensitivity": "strict",
     "endOfLine": "crlf"
   },
   "husky": {
