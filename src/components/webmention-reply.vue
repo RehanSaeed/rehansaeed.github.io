@@ -16,12 +16,7 @@
       size="6"
       >{{ name }}</u-heading
     >
-    <time
-      class="webmention-reply__timestamp"
-      :datetime="timestamp"
-      :title="timestamp"
-      >{{ timestampDisplay }}</time
-    >
+    <u-time class="webmention-reply__timestamp" :datetime="timestamp" />
     <div class="webmention-reply__content" v-html="content"></div>
   </article>
 </template>
@@ -29,13 +24,14 @@
 <script>
 import avatar from "~/components/shared/avatar.vue";
 import heading from "~/components/shared/heading.vue";
-import { getDisplayDateFromString } from "~/framework/date.js";
+import time from "~/components/shared/time.vue";
 
 export default {
   name: "u-webmention-reply",
   components: {
     "u-avatar": avatar,
     "u-heading": heading,
+    "u-time": time,
   },
   props: {
     reply: {
@@ -61,9 +57,6 @@ export default {
     },
     timestamp() {
       return this.reply.data.published;
-    },
-    timestampDisplay() {
-      return getDisplayDateFromString(this.timestamp);
     },
   },
 };

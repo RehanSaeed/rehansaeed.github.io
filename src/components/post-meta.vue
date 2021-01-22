@@ -2,41 +2,30 @@
   <div>
     <p v-if="meta.dateModified" class="post-meta">
       Posted
-      <time class="dt-published" :datetime="meta.date" :title="meta.date">{{
-        postedDisplayDate
-      }}</time>
-      and updated
-      <time :datetime="meta.dateModified" :title="meta.dateModified">{{
-        updatedDisplayDate
-      }}</time>
-      - <strong>{{ meta.timeToRead }} min read</strong>
+      <u-time class="dt-published" :datetime="meta.date" /> and updated
+      <u-time class="dt-updated" :datetime="meta.dateModified" /> -
+      <strong>{{ meta.timeToRead }} min read</strong>
     </p>
     <p v-else class="post-meta">
       Posted
-      <time class="dt-updated" :datetime="meta.date" :title="meta.date">{{
-        postedDisplayDate
-      }}</time>
-      - <strong>{{ meta.timeToRead }} min read</strong>
+      <u-time class="dt-published" :datetime="meta.date" /> -
+      <strong>{{ meta.timeToRead }} min read</strong>
     </p>
   </div>
 </template>
 
 <script>
-import { getDisplayDateFromString } from "~/framework/date.js";
+import time from "~/components/shared/time.vue";
 
 export default {
   name: "u-post-meta",
+  components: {
+    "u-time": time,
+  },
   props: {
     meta: {
       type: Object,
-    },
-  },
-  computed: {
-    postedDisplayDate() {
-      return getDisplayDateFromString(this.meta.date);
-    },
-    updatedDisplayDate() {
-      return getDisplayDateFromString(this.meta.dateModified);
+      required: true,
     },
   },
 };

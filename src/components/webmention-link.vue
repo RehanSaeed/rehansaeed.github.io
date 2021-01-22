@@ -8,23 +8,19 @@
       size="6"
       >{{ name }}</u-heading
     >
-    <time
-      :datetime="timestamp"
-      :title="timestamp"
-      class="webmention-link__timestamp"
-      >{{ displayTimestamp }}</time
-    >
+    <u-time class="webmention-link__timestamp" :datetime="timestamp" />
   </article>
 </template>
 
 <script>
 import heading from "~/components/shared/heading.vue";
-import { getDisplayDateFromString } from "~/framework/date.js";
+import time from "~/components/shared/time.vue";
 
 export default {
   name: "u-webmention-link",
   components: {
     "u-heading": heading,
+    "u-time": time,
   },
   props: {
     link: {
@@ -44,9 +40,6 @@ export default {
     },
     timestamp() {
       return this.link.data.published ?? this.link.verified_date;
-    },
-    displayTimestamp() {
-      return getDisplayDateFromString(this.timestamp);
     },
   },
 };
