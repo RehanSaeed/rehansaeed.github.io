@@ -36,6 +36,26 @@ h6 {
       transition-delay: 0;
     }
   }
+
+  &:target {
+    animation-name: target;
+    animation-duration: 3s;
+    animation-iteration-count: 1;
+    animation-direction: linear;
+    scroll-margin-top: var(--global-space-fluid-3);
+
+    @keyframes target {
+      from {
+        background: transparent;
+      }
+      50% {
+        background: var(--global-alternate-accent-color);
+      }
+      to {
+        background: transparent;
+      }
+    }
+  }
 }
 
 h1 {

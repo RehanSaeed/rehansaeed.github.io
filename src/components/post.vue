@@ -79,29 +79,6 @@ export default {
     margin-top: 0;
   }
 
-  > h2:target,
-  > h3:target,
-  > h4:target,
-  > h5:target,
-  > h6:target {
-    animation-name: target;
-    animation-duration: 3s;
-    animation-iteration-count: 1;
-    animation-direction: linear;
-
-    @keyframes target {
-      from {
-        background: transparent;
-      }
-      50% {
-        background: var(--global-alternate-accent-color);
-      }
-      to {
-        background: transparent;
-      }
-    }
-  }
-
   > p:first-of-type {
     color: var(--global-title-color);
     font-size: var(--global-font-size-4);

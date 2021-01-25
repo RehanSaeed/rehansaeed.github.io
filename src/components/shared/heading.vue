@@ -75,25 +75,6 @@ export default {
 </script>
 
 <style lang="scss">
-.heading:target {
-  animation-name: target;
-  animation-duration: 3s;
-  animation-iteration-count: 1;
-  animation-direction: linear;
-
-  @keyframes target {
-    from {
-      background: transparent;
-    }
-    50% {
-      background: var(--global-alternate-accent-color);
-    }
-    to {
-      background: transparent;
-    }
-  }
-}
-
 .heading__link {
   animation: none;
   color: var(--global-title-color);
