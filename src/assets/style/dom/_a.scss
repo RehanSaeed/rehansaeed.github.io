@@ -2,9 +2,9 @@ a {
   cursor: pointer;
   color: var(--global-link-color);
   text-decoration-color: var(--global-link-color);
-  transition: color var(--global-duration-1) ease-in-out,
-    opacity var(--global-duration-1) ease-in-out,
-    text-decoration-color var(--global-duration-1) ease-in-out;
+  transition: color var(--global-duration-1) var(--ease-in-out-cubic),
+    opacity var(--global-duration-1) var(--ease-in-out-cubic),
+    text-decoration-color var(--global-duration-1) var(--ease-in-out-cubic);
 
   &:hover,
   &:focus,
@@ -29,8 +29,8 @@ a {
   //   --thickness--hover: 1.125em;
   //   --offset--hover: -0.825em;
 
-  //   animation-name: text-decoration-out;
-  //   animation-timing-function: ease-in-out;
+  //   animation-name: text-decoration-in;
+  //   animation-timing-function: var(--ease-out-quart);
   //   animation-duration: var(--global-duration-1);
   //   animation-fill-mode: forwards;
   //   transition: none;
@@ -42,7 +42,7 @@ a {
   //   &:hover,
   //   &:focus,
   //   &:active {
-  //     animation-name: text-decoration-in;
+  //     animation-name: text-decoration-out;
 
   //     opacity: 1;
   //   }
@@ -51,7 +51,7 @@ a {
   //     text-decoration-color: var(--global-link-visited-color);
   //   }
 
-  //   @keyframes text-decoration-in {
+  //   @keyframes text-decoration-out {
   //     0% {
   //       text-decoration-skip-ink: auto;
   //     }
@@ -71,7 +71,7 @@ a {
   //     }
   //   }
 
-  //   @keyframes text-decoration-out {
+  //   @keyframes text-decoration-in {
   //     0% {
   //       color: var(--global-background-color);
   //       text-decoration-color: var(--global-link-color);

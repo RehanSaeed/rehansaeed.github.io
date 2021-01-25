@@ -75,7 +75,7 @@ export default {
   border-radius: 100%;
   display: block;
   object-fit: cover;
-  transition: border-color var(--global-duration-3) ease-out;
+  transition: border-color var(--global-duration-3) var(--ease-out-cubic);
 }
 
 .avatar--medium {

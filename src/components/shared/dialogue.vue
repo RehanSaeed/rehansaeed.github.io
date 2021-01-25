@@ -95,7 +95,7 @@ dialog {
   transform: translateY(-50%);
 
   @media screen and (prefers-reduced-motion: no-preference) {
-    transition: all var(--global-duration-1) ease-in-out;
+    transition: all var(--global-duration-1) var(--ease-in-out-quad);
   }
 }
 

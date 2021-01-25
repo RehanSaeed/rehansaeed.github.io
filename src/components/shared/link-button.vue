@@ -59,9 +59,9 @@ export default {
   line-height: var(--global-line-height-1);
   position: relative;
   text-decoration: none;
-  transition: color var(--global-duration-1) ease-out,
-    opacity var(--global-duration-1) ease-out,
-    transform var(--global-duration-1) ease-out;
+  transition: color var(--global-duration-1) var(--ease-in-out-cubic),
+    opacity var(--global-duration-1) var(--ease-in-out-cubic),
+    transform var(--global-duration-1) var(--ease-in-out-cubic);
 
   &:visited,
   &:focus,
@@ -117,7 +117,7 @@ export default {
   border-radius: inherit;
   box-shadow: 0 3px 5px hsl(0, 0%, 70%);
   opacity: 0;
-  transition: opacity var(--global-duration-2) ease-out;
+  transition: opacity var(--global-duration-2) var(--ease-in-out-cubic);
 }
 
 .link-button--bordered:hover::before,
