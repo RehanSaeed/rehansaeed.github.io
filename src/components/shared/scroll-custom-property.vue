@@ -22,7 +22,6 @@ export default {
         this.scroll =
           window.pageYOffset /
           (document.body.offsetHeight - window.innerHeight);
-        console.log(this.scroll);
       });
     },
   },
