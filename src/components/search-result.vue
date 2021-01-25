@@ -1,8 +1,10 @@
 <template>
   <article class="search-result">
-    <g-link
+    <Component
+      :is="tag"
       @click.native="onSelected"
-      :to="searchResult.permalink || searchResult.path"
+      :href="searchResult.node.permalink"
+      :to="searchResult.path"
       class="search-result__link"
     >
       <g-image
@@ -19,7 +21,7 @@
       <p class="search-result__description">
         {{ searchResult.node.description }}
       </p>
-    </g-link>
+    </Component>
   </article>
 </template>
 
@@ -35,6 +37,11 @@ export default {
     searchResult: {
       type: Object,
       required: true,
+    },
+  },
+  computed: {
+    tag() {
+      return this.searchResult.node.permalink ? "a" : "g-link";
     },
   },
   methods: {

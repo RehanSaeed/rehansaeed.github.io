@@ -21,7 +21,7 @@ describe("Smoke", () => {
     cy.get("nav").contains("Search").click();
     cy.get("input#search").type("Schema.NET");
 
-    cy.get(".search__result")
+    cy.get(".search-result__link")
       .first()
       .should("have.attr", "href", "https://github.com/RehanSaeed/Schema.NET");
   });
@@ -30,7 +30,7 @@ describe("Smoke", () => {
     cy.visit("/");
     cy.get("nav").contains("Search").click();
     cy.get("input#search").type("ASP.NET");
-    cy.get(".search__result").first().click();
+    cy.get(".search-result__link").first().click();
 
     cy.get("input#search").should("not.be.visible");
   });
