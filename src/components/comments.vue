@@ -47,7 +47,7 @@ export default {
 
 .vssue-header-comments-count {
   span::before {
-    content: "View";
+    content: "Leave and View";
   }
 
   span::after {
@@ -156,6 +156,9 @@ export default {
   grid-template-areas:
     "avatar body"
     "avatar footer";
+
+  // Disable New Comment Functionality - Hide new comment text box.
+  display: none;
 
   .vssue-comment-avatar {
     grid-area: avatar;
@@ -311,10 +314,17 @@ export default {
   cursor: pointer;
   display: inline-block;
   margin-right: var(--global-space-fixed-4);
+
+  // Disable New Comment Functionality - Disable click on buttons.
+  cursor: default;
+  pointer-events: none;
 }
 .vssue-comment-operations {
   color: var(--global-accent-color);
   justify-self: end;
+
+  // Disable New Comment Functionality - Hide reply button.
+  display: none;
 }
 .vssue
   .vssue-comments
