@@ -89,6 +89,8 @@ The `AddAspNetCoreInstrumentation` method is where we enable collection of attri
 
 Finally, we use `AddConsoleExporter` to export the trace data to the debug output. You could also output to the console but there is a lot of trace data and the console is already outputting log information which results in duplication, so I prefer not to do that. Note that we only do this if we are running in the development environment.
 
+# The Trace Output
+
 If we now start the application and execute a request/response cycle, we can see the following in our IDE's debug output window:
 
 ```
