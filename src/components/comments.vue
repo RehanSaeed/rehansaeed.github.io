@@ -222,7 +222,7 @@ export default {
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
-  hyphens: auto;
+  // hyphens: auto;
 }
 
 // Comment Avatar
