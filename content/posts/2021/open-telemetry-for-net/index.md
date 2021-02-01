@@ -26,7 +26,8 @@ tags:
 ---
 
 1. [Open Telemetry - Deep Dive into Open Telemetry for .NET](/deep-dive-into-open-telemetry-for-net/)
-2. Open Telemetry - Optimally Configuring Open Telemetry for ASP.NET Core
+2. [Open Telemetry - Configuring Open Telemetry for ASP.NET Core](/open-telemetry-for-asp-net-core/)
+3. Open Telemetry - Optimally Configuring Open Telemetry for ASP.NET Core
 
 Open Telemetry is an open source specification, tools and SDK's used to instrument, generate, collect, and export telemetry data (metrics, logs, and traces). [Open Telemetry](https://opentelemetry.io/) is backed by the [Cloud Native Computing Foundation (CNCF)](https://www.cncf.io/webinars/fundamentals-of-opentelemetry/) which backs a mind boggling array of popular open source projects. It's worth looking at the [CNCF Landscape](https://landscape.cncf.io/) to see what I really mean. The SDK's support all the major programming languages including C# and ASP.NET Core.
 
@@ -255,4 +256,4 @@ The `ILogger` interface from the `Microsoft.Extensions.Logging` NuGet package us
 
 # Up Next
 
-I've discussed that Open Telemetry is all about collecting Logs, Metrics and Trace data and gone fairly deep into collecting Trace data. In my next post, I'll cover how you can optimally configure ASP.NET Core and Open Telemetry traces and logs. I'll also fire up Jaeger and show how you can get an ASP.NET Core app to export Open Telemetry data to it.
+I've discussed that Open Telemetry is all about collecting Logs, Metrics and Trace data and gone fairly deep into collecting Trace data. In my next post, I'll cover how you can configure ASP.NET Core and Open Telemetry traces and logs.
