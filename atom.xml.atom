@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2021-02-01T13:44:08.883Z</updated>
+    <updated>2021-02-01T14:00:13.201Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -72,6 +72,7 @@
 <p>The <code>SetResourceBuilder</code> method is your opportunity to add a set of common attributes to all spans created in the application. In the above case, we&#39;ve added an application name.</p>
 <p>The <code>AddAspNetCoreInstrumentation</code> method is where we enable collection of attributes relating to ASP.NET Core requests and responses.</p>
 <p>Finally, we use <code>AddConsoleExporter</code> to export the trace data to the debug output. You could also output to the console but there is a lot of trace data and the console is already outputting log information which results in duplication, so I prefer not to do that. Note that we only do this if we are running in the development environment.</p>
+<h1 id="the-trace-output">The Trace Output</h1>
 <p>If we now start the application and execute a request/response cycle, we can see the following in our IDE&#39;s debug output window:</p>
 <pre><code>[10:28:25 INF] HTTP GET /favicon-32x32.png responded 200 in 0.7371 ms
 Activity.Id:          00-dde96d459fee4144a83818e054e221b1-cac69896c1bcd14f-01
