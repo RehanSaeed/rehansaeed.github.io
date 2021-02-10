@@ -101,8 +101,8 @@ dialog {
   @media screen and (prefers-reduced-motion: no-preference) {
     will-change: transform;
 
-    transition: opacity var(--global-duration-1) var(--ease-out-quad),
-      transform var(--global-duration-1) var(--ease-out-quad);
+    transition: opacity var(--global-duration-1) var(--ease-out-cubic),
+      transform var(--global-duration-1) var(--ease-out-cubic);
   }
 }
 
@@ -112,9 +112,10 @@ dialog {
 }
 
 dialog:not([open]) {
+  display: block;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-50%);
+  transform: translateY(30%);
 }
 
 dialog::backdrop,
