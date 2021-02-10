@@ -33,6 +33,7 @@
     "@gridsome/plugin-sitemap": "^0.4.0",
     "@gridsome/source-filesystem": "^0.6.2",
     "@gridsome/transformer-remark": "^0.6.4",
+    "@lhci/cli": "^0.6.1",
     "@microflash/gridsome-plugin-feed": "^1.2.1",
     "@noxify/gridsome-plugin-remark-embed": "^1.3.1",
     "@remy/webmention": "^1.4.5",
@@ -61,7 +62,8 @@
     "build": "gridsome build",
     "start": "gridsome develop",
     "explore": "gridsome explore",
-    "test": "cypress open"
+    "test": "cypress open",
+    "lighthouse": "lhci autorun"
   },
   "prettier": {
     "endOfLine": "crlf"

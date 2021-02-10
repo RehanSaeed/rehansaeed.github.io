@@ -356,3 +356,5 @@ src/.temp
 dist
 .env
 .env.*
+
+.lighthouseci/
