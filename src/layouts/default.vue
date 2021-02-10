@@ -14,6 +14,8 @@
       </transition>
 
       <u-footer class="footer" />
+
+      <portal-target name="body" multiple></portal-target>
     </div>
   </u-scroll-custom-property>
 </template>

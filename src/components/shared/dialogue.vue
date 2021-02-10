@@ -1,24 +1,26 @@
 <template>
-  <dialog
-    class="dialog"
-    ref="dialog"
-    @close="close"
-    :class="{ 'dialog--fullscreen': fullscreen }"
-  >
-    <div class="dialog__container">
-      <u-heading id="title" level="2" class="dialog__title">{{
-        title
-      }}</u-heading>
-      <form class="dialog__form" method="dialog">
-        <u-button aria-label="Close search" class="dialog__close" submit>
-          <u-icon-close :size="24" />
-        </u-button>
-      </form>
-      <div class="dialog__content">
-        <slot />
+  <portal to="body">
+    <dialog
+      class="dialog"
+      ref="dialog"
+      @close="close"
+      :class="{ 'dialog--fullscreen': fullscreen }"
+    >
+      <div class="dialog__container">
+        <u-heading id="title" level="2" class="dialog__title">{{
+          title
+        }}</u-heading>
+        <form class="dialog__form" method="dialog">
+          <u-button aria-label="Close search" class="dialog__close" submit>
+            <u-icon-close :size="24" />
+          </u-button>
+        </form>
+        <div class="dialog__content">
+          <slot />
+        </div>
       </div>
-    </div>
-  </dialog>
+    </dialog>
+  </portal>
 </template>
 
 <script>
@@ -53,10 +55,12 @@ export default {
   },
   watch: {
     isOpen() {
-      if (this.isOpen) {
-        this.dialog.showModal();
-      } else {
-        this.dialog.close();
+      if (this.dialog) {
+        if (this.isOpen) {
+          this.dialog.showModal();
+        } else {
+          this.dialog.close();
+        }
       }
     },
   },
@@ -72,63 +76,51 @@ export default {
       return;
     }
 
-    const dialogPolyfill = require("dialog-polyfill").default;
-    dialogPolyfill.registerDialog(this.dialog);
+    this.$nextTick().then(
+      this.$nextTick(() => {
+        console.log("mounted", this.dialog);
+        const dialogPolyfill = require("dialog-polyfill").default;
+        dialogPolyfill.registerDialog(this.dialog);
+      })
+    );
   },
 };
 </script>
 
 <style lang="scss">
-dialog {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: fit-content;
-  width: fit-content;
-  margin: auto;
-  display: block;
-  overflow-y: auto;
+@import "~dialog-polyfill/dist/dialog-polyfill.css";
 
-  // Workaround to force the polyfill to always show the dialog in the center of the screen.
+dialog {
+  overflow: hidden;
+
+  // Fix the position of the dialog in the middle of the screen.
   position: fixed;
+  top: 0;
+  margin-top: 35vh;
 
   @media screen and (prefers-reduced-motion: no-preference) {
     will-change: transform;
 
-    transition: opacity var(--global-duration-1) var(--ease-out-quart),
-      transform var(--global-duration-1) var(--ease-out-cubic);
+    transition: opacity var(--global-duration-1) var(--ease-out-quad),
+      transform var(--global-duration-1) var(--ease-out-quad);
   }
+}
+
+.dialog--fullscreen {
+  // Fix the position of the dialog in the middle of the screen.
+  margin-top: 5vh;
 }
 
 dialog:not([open]) {
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-30%);
+  transform: translateY(-50%);
 }
 
 dialog::backdrop,
 dialog + .backdrop {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
   background: hsla(0, 0%, 0%, 0.2);
   backdrop-filter: blur(3px);
-}
-
-._dialog_overlay {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
-
-dialog.fixed {
-  position: fixed;
-  top: 30%;
-  transform: translate(0, -30%);
 }
 
 .dialog {
@@ -156,9 +148,9 @@ dialog.fixed {
 
 .dialog--fullscreen {
   border: none;
-  border-radius: 0;
-  height: 100vh;
-  width: 100vw;
+  border-radius: var(--global-border-radius);
+  height: 90vh;
+  width: 90vw;
 }
 
 .dialog__container {
@@ -169,6 +161,9 @@ dialog.fixed {
     "title close"
     "content content";
   padding: var(--global-space-fluid-5);
+
+  height: 100%;
+  overflow-y: auto;
 }
 
 .dialog__title {
