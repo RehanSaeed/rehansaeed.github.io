@@ -85,28 +85,25 @@ dialog {
   right: 0;
   height: fit-content;
   width: fit-content;
-  display: block;
   margin: auto;
+  display: block;
   overflow-y: auto;
 
   // Workaround to force the polyfill to always show the dialog in the center of the screen.
   position: fixed;
-  top: 50%;
-  transform: translateY(-50%);
 
   @media screen and (prefers-reduced-motion: no-preference) {
-    transition: all var(--global-duration-1) var(--ease-in-out-quad);
+    will-change: transform;
+
+    transition: opacity var(--global-duration-1) var(--ease-out-quart),
+      transform var(--global-duration-1) var(--ease-out-quart);
   }
 }
 
 dialog:not([open]) {
   opacity: 0;
   visibility: hidden;
-  transform: translateY(calc(-50% + 0.5rem));
-}
-
-dialog:not([open]).dialog--fullscreen {
-  transform: translateY(-50%);
+  transform: translateY(-20%);
 }
 
 dialog::backdrop,
@@ -130,8 +127,8 @@ dialog + .backdrop {
 
 dialog.fixed {
   position: fixed;
-  top: 50%;
-  transform: translate(0, -50%);
+  top: 20%;
+  transform: translate(0, -20%);
 }
 
 .dialog {

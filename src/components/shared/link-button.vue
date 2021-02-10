@@ -62,6 +62,7 @@ export default {
   transition: color var(--global-duration-1) var(--ease-in-out-cubic),
     opacity var(--global-duration-1) var(--ease-in-out-cubic),
     transform var(--global-duration-1) var(--ease-in-out-cubic);
+  will-change: transform;
 
   &:visited,
   &:focus,

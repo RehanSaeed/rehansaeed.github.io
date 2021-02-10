@@ -34,6 +34,7 @@ export default {
     0 1px 15px 0 hsla(0, 0%, 0%, 0.03);
   padding: var(--global-space-fluid-6);
   transition: transform var(--global-duration-2) var(--ease-in-out-cubic);
+  will-change: transform;
 
   // @mixin word-wrap()
   overflow-wrap: break-word;
