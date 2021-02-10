@@ -96,14 +96,14 @@ dialog {
     will-change: transform;
 
     transition: opacity var(--global-duration-1) var(--ease-out-quart),
-      transform var(--global-duration-1) var(--ease-out-quart);
+      transform var(--global-duration-1) var(--ease-out-cubic);
   }
 }
 
 dialog:not([open]) {
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-20%);
+  transform: translateY(-30%);
 }
 
 dialog::backdrop,
@@ -127,8 +127,8 @@ dialog + .backdrop {
 
 dialog.fixed {
   position: fixed;
-  top: 20%;
-  transform: translate(0, -20%);
+  top: 30%;
+  transform: translate(0, -30%);
 }
 
 .dialog {
