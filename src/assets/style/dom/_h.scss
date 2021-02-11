@@ -28,13 +28,21 @@ h6 {
     vertical-align: middle;
   }
 
-  &:hover {
+  &:hover,
+  &:focus {
     a[aria-hidden="true"] {
       color: var(--global-link-color);
       opacity: 1;
       text-decoration: none;
       transition-delay: 0;
     }
+  }
+
+  a[aria-hidden="true"]:focus {
+    color: var(--global-link-color);
+    opacity: 1;
+    text-decoration: none;
+    transition-delay: 0;
   }
 
   &:target {
