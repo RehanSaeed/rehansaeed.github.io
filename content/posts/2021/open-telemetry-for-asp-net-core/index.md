@@ -26,7 +26,8 @@ tags:
 
 1. [Open Telemetry - Deep Dive into Open Telemetry for .NET](/deep-dive-into-open-telemetry-for-net/)
 2. [Open Telemetry - Configuring Open Telemetry for ASP.NET Core](/open-telemetry-for-asp-net-core/)
-3. Open Telemetry - Optimally Configuring Open Telemetry for ASP.NET Core
+3. [Open Telemetry - Exporting Open Telemetry Data to Jaeger](/exporting-open-telemetry-data-to-jaeger/)
+4. Open Telemetry - Optimally Configuring Open Telemetry for ASP.NET Core
 
 Configuring Open Telemetry for ASP.NET Core is a fairly simple process. In this post, I'll show you the simplest setup for tracing Open Telemetry in ASP.NET Core and then move to a more fully featured example.
 
@@ -119,4 +120,4 @@ What I personally found surprising is the last section. In the last section we g
 
 # Up Next
 
-I've shown a basic example of setting up Open Telemetry and discussed the defaults of what trace data is collected in ASP.NET Core. In my next post, I'll cover how you can optimally configure ASP.NET Core and Open Telemetry traces and logs. I'll also fire up Jaeger and show how you can get an ASP.NET Core app to export Open Telemetry data to it.
+I've shown a basic example of setting up Open Telemetry and discussed the defaults of what trace data is collected in ASP.NET Core. In my next post, I'll cover how you can fire up Jaeger and show how you can get an ASP.NET Core app to export Open Telemetry data to it.
