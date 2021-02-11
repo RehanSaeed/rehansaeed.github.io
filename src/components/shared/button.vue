@@ -57,12 +57,9 @@ export default {
     transform var(--global-duration-1) var(--ease-in-out-cubic);
   will-change: transform;
 
-  &:hover {
-    transform: scale(1.07);
-  }
-
+  &:hover,
   &:focus {
-    outline: none;
+    transform: scale(1.07);
   }
 
   &:disabled {
@@ -83,6 +80,7 @@ export default {
 
   &:hover,
   &:focus {
+    outline: none;
     transform: translateY(-2px);
   }
 
