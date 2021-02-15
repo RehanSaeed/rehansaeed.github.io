@@ -54,7 +54,7 @@
     "node-sass": "^5.0.0",
     "prettier": "^2.2.1",
     "remark-containers": "^1.2.0",
-    "remark-kbd": "^1.0.21",
+    "remark-kbd": "^1.1.0",
     "remark-toc": "^7.1.0",
     "remark-validate-links": "^10.0.2",
     "sass-loader": "^10.1.1"
