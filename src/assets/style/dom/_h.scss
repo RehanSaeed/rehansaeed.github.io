@@ -50,7 +50,7 @@ h6 {
     animation-duration: 3s;
     animation-iteration-count: 1;
     animation-direction: linear;
-    scroll-margin-top: var(--global-space-fluid-3);
+    scroll-margin-top: 1ex;
 
     @keyframes target {
       from {
