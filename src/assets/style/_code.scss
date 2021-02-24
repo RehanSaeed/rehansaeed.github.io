@@ -44,7 +44,7 @@ pre[class*="language-"] {
 /* Inline code */
 :not(pre) > code {
   padding: 0.05rem 0.25rem;
-  background: hsla(210, 13, 12, 0.05);
+  background: hsla(210, 13%, 12%, 0.05);
   border-radius: var(--global-border-radius);
   transition: background-color var(--global-duration-3) ease-out,
     color var(--global-duration-3) ease-out;
@@ -231,7 +231,7 @@ pre[class*="language-"].line-numbers > code {
 
   /* Inline code */
   :not(pre) > code {
-    background: hsla(210, 13, 80, 0.1);
+    background: hsla(210, 13%, 80%, 0.1);
   }
   .token.cdata,
   .token.comment,
