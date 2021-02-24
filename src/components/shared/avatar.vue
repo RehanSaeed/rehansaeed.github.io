@@ -68,6 +68,19 @@ export default {
   border-radius: 100%;
   display: inline-block;
   line-height: 0;
+
+  &:hover,
+  &:focus {
+    opacity: 1;
+    outline: none;
+    z-index: 1;
+
+    .avatar__image {
+      border: var(--global-border-width-2) solid
+        var(--global-alternate-accent-color);
+      transform: scale(1.3);
+    }
+  }
 }
 
 .avatar__image {
@@ -75,7 +88,8 @@ export default {
   border-radius: 100%;
   display: block;
   object-fit: cover;
-  transition: border-color var(--global-duration-3) var(--ease-out-cubic);
+  transition: border-color var(--global-duration-3) var(--ease-out-cubic),
+    transform var(--global-duration-3) var(--ease-out-cubic);
 }
 
 .avatar--medium {
