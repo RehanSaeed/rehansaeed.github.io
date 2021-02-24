@@ -1,3 +1,5 @@
+@use "mixins";
+
 :root {
   // Breakpoints
   $global-breakpoint-xs: 0;
@@ -71,7 +73,7 @@
   $global-font-size-maximum: 1.25em; // 20px
   --global-font-size-minimum: #{$global-font-size-minimum};
   --global-font-size-maximum: #{$global-font-size-maximum};
-  @include fluid-type(
+  @include mixins.fluid-type(
     --global-font-size-default,
     36em,
     // $global-breakpoint-sm,
@@ -114,7 +116,7 @@
   --global-content-width-maximum: 45rem;
 
   // Space
-  @include fluid-type(
+  @include mixins.fluid-type(
     --global-space-fluid-6,
     $global-breakpoint-sm,
     $global-breakpoint-xxl,
