@@ -64,7 +64,7 @@ export default {
 
 <style lang="scss">
 .avatar {
-  background-color: var(--global-alternate-accent-color);
+  background-color: var(--global-accent-color);
   border-radius: 100%;
   display: inline-block;
   line-height: 0;
