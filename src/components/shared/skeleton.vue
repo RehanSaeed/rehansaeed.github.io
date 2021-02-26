@@ -42,8 +42,8 @@ export default {
   },
   render(createElement) {
     return createElement("div", {
+      class: "skeleton",
       attrs: {
-        class: "skeleton",
         "aria-busy": this.isBusy,
         style: `-webkit-mask-image: ${this.maskImage}; mask-image: ${this.maskImage}; -webkit-mask-repeat: ${this.maskRepeat}; mask-repeat: ${this.maskRepeat};`,
       },
