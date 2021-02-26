@@ -78,7 +78,6 @@ export default {
 
     this.$nextTick().then(
       this.$nextTick(() => {
-        console.log("mounted", this.dialog);
         const dialogPolyfill = require("dialog-polyfill").default;
         dialogPolyfill.registerDialog(this.dialog);
       })
