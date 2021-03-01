@@ -48,7 +48,7 @@
     "gridsome-plugin-robots": "^0.2.1",
     "gridsome-remark-embed-snippet": "^1.0.3",
     "gridsome-source-static-meta": "^1.0.1",
-    "husky": "^5.1.1",
+    "husky": "^5.1.2",
     "lint-staged": "^10.5.4",
     "marked": "^2.0.1",
     "prettier": "^2.2.1",
