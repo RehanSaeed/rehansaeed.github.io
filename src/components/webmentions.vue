@@ -1,8 +1,5 @@
 <template>
-  <u-intersect
-    @enterFirstTime="onEnterFirstTime"
-    root-margin="1200px 1200px 1200px 1200px"
-  >
+  <u-intersect @enterFirstTime="onEnterFirstTime">
     <u-card class="webmentions">
       <u-heading
         id="webmentions"
@@ -28,7 +25,12 @@
           />
           <span>{{ likesDescription }}</span>
         </p>
-        <u-webmention-faces class="webmentions__like-faces" :mentions="likes" />
+        <u-webmention-faces
+          v-if="!isLoading"
+          class="webmentions__like-faces"
+          :mentions="likes"
+        />
+        <u-webmention-faces-skeleton v-else />
 
         <p class="webmentions__count webmentions__repost-count">
           <u-icon-repost
@@ -39,9 +41,11 @@
           <span>{{ repostsDescription }}</span>
         </p>
         <u-webmention-faces
+          v-if="!isLoading"
           class="webmentions__repost-faces"
           :mentions="reposts"
         />
+        <u-webmention-faces-skeleton v-else />
 
         <p class="webmentions__count webmentions__link-count">
           <u-icon-link
@@ -51,13 +55,14 @@
           />
           <span>{{ linksDescription }}</span>
         </p>
-        <div class="webmentions__links">
+        <div v-if="!isLoading" class="webmentions__links">
           <u-webmention-link
             v-for="link of links"
             :key="link.id"
             :link="link"
           />
         </div>
+        <u-webmention-links-skeleton v-else />
 
         <p class="webmentions__count webmentions__reply-count">
           <u-icon-comment
@@ -67,13 +72,14 @@
           />
           <span>{{ repliesDescription }}</span>
         </p>
-        <div class="webmentions__replies">
+        <div v-if="!isLoading" class="webmentions__replies">
           <u-webmention-reply
             v-for="reply of replies"
             :key="reply.id"
             :reply="reply"
           />
         </div>
+        <u-webmention-replies-skeleton v-else />
       </div>
     </u-card>
   </u-intersect>
@@ -89,8 +95,11 @@ import iconLink from "~/components/shared/icons/icon-link.vue";
 import iconQuestion from "~/components/shared/icons/icon-question.vue";
 import iconRepost from "~/components/shared/icons/icon-repost.vue";
 import webmentionFaces from "~/components/webmention-faces.vue";
+import webmentionFacesSkeleton from "~/components/webmention-faces-skeleton.vue";
 import webmentionLink from "~/components/webmention-link.vue";
+import webmentionLinksSkeleton from "~/components/webmention-links-skeleton.vue";
 import webmentionReply from "~/components/webmention-reply.vue";
+import webmentionRepliesSkeleton from "~/components/webmention-replies-skeleton.vue";
 
 export default {
   name: "u-webmentions",
@@ -104,11 +113,15 @@ export default {
     "u-icon-question": iconQuestion,
     "u-icon-repost": iconRepost,
     "u-webmention-faces": webmentionFaces,
+    "u-webmention-faces-skeleton": webmentionFacesSkeleton,
     "u-webmention-link": webmentionLink,
+    "u-webmention-links-skeleton": webmentionLinksSkeleton,
     "u-webmention-reply": webmentionReply,
+    "u-webmention-replies-skeleton": webmentionRepliesSkeleton,
   },
   data() {
     return {
+      isLoading: true,
       likes: [],
       reposts: [],
       links: [],
@@ -160,6 +173,7 @@ export default {
     },
     async onEnterFirstTime() {
       try {
+        this.isLoading = true;
         const mentions = await this.getMentions(0, 999);
         this.likes = mentions.filter((x) => x.activity.type === "like");
         this.reposts = mentions.filter((x) => x.activity.type === "repost");
@@ -175,6 +189,8 @@ export default {
         );
       } catch (error) {
         console.log(error);
+      } finally {
+        this.isLoading = false;
       }
     },
   },

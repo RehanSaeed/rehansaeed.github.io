@@ -3,6 +3,11 @@ import Vue from "vue";
 
 export default {
   name: "u-skeleton",
+  data() {
+    return {
+      svg: "",
+    };
+  },
   props: {
     isBusy: {
       default: true,
@@ -15,30 +20,27 @@ export default {
   },
   computed: {
     maskImage() {
-      const svg = this.toSvg(this.$slots.default);
-      const encodedSvg = btoa(svg);
+      const encodedSvg = btoa(this.svg);
       return `url('data:image/svg+xml;base64,${encodedSvg}')`;
     },
   },
   methods: {
     toSvg(vnodes) {
       const svgRenderer = Vue.extend({
-        render: function (h, context) {
-          return h(
-            "svg",
-            {
-              attrs: {
-                xmlns: "http://www.w3.org/2000/svg",
-              },
-            },
-            vnodes
-          );
+        render: function () {
+          return vnodes;
         },
       });
       const instance = new svgRenderer();
       instance.$mount();
       return instance.$el.outerHTML;
     },
+  },
+  mounted() {
+    this.svg = this.toSvg(this.$slots.default);
+  },
+  beforeUpdate() {
+    this.svg = this.toSvg(this.$slots.default);
   },
   render(createElement) {
     return createElement("div", {
