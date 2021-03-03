@@ -43,11 +43,14 @@ export default {
     this.svg = this.toSvg(this.$slots.default);
   },
   render(createElement) {
+    const style = process.isClient
+      ? `-webkit-mask-image: ${this.maskImage}; mask-image: ${this.maskImage}; -webkit-mask-repeat: ${this.maskRepeat}; mask-repeat: ${this.maskRepeat};`
+      : undefined;
     return createElement("div", {
       class: "skeleton",
       attrs: {
         "aria-busy": this.isBusy,
-        style: `-webkit-mask-image: ${this.maskImage}; mask-image: ${this.maskImage}; -webkit-mask-repeat: ${this.maskRepeat}; mask-repeat: ${this.maskRepeat};`,
+        style,
       },
     });
   },
@@ -59,12 +62,12 @@ export default {
   animation: skeleton-animation 2s infinite linear;
   background: linear-gradient(
       to right,
-      hsl(30, 1, 99) 0%,
-      hsl(30, 2, 95) 30%,
-      hsl(30, 2, 95) 70%,
-      hsl(30, 1, 99) 100%
+      hsl(30, 1%, 99%) 0%,
+      hsl(30, 2%, 95%) 30%,
+      hsl(30, 2%, 95%) 70%,
+      hsl(30, 1%, 99%) 100%
     )
-    0 0 / 200% 100% hsl(30, 2, 95);
+    0 0 / 200% 100% hsl(30, 2%, 95%);
   overflow: hidden;
   position: relative;
 
