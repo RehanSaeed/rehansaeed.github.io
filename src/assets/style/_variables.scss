@@ -194,6 +194,10 @@
   --global-scroll-thumb-color: hsl(0, 0%, 100%);
   --global-scroll-track-color: hsl(0, 0%, 87%);
 
+  // Skeleton
+  --global-skeleton-light-color: hsl(30, 1%, 99%);
+  --global-skeleton-dark-color: hsl(30, 2%, 95%);
+
   // Info
   --global-info-background-color: var(--global-background-color);
   --global-info-border-color: hsl(153, 47%, 49%);
@@ -229,13 +233,17 @@
   --global-link-color: hsl(254, 100%, 87%);
   --global-link-visited-color: hsl(254, 46%, 69%);
 
+  // Selection
+  --global-selection-background-color: hsl(254, 100%, 87%);
+  --global-selection-body-color: hsl(216, 24%, 96%);
+
   // Scroll
   --global-scroll-thumb-color: hsl(70, 8%, 15%);
   --global-scroll-track-color: hsl(0, 0%, 30%);
 
-  // Selection
-  --global-selection-background-color: hsl(254, 100%, 87%);
-  --global-selection-body-color: hsl(216, 24%, 96%);
+  // Skeleton
+  --global-skeleton-light-color: hsl(206, 64%, 25%);
+  --global-skeleton-dark-color: hsl(206, 64%, 20%);
 
   // Info
   --global-info-background-color: var(--global-background-color);

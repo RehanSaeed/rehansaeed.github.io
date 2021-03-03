@@ -62,12 +62,12 @@ export default {
   animation: skeleton-animation 2s infinite linear;
   background: linear-gradient(
       to right,
-      hsl(30, 1%, 99%) 0%,
-      hsl(30, 2%, 95%) 30%,
-      hsl(30, 2%, 95%) 70%,
-      hsl(30, 1%, 99%) 100%
+      var(--global-skeleton-light-color) 0%,
+      var(--global-skeleton-dark-color) 30%,
+      var(--global-skeleton-dark-color) 70%,
+      var(--global-skeleton-light-color) 100%
     )
-    0 0 / 200% 100% hsl(30, 2%, 95%);
+    0 0 / 200% 100% var(--global-skeleton-dark-color);
   overflow: hidden;
   position: relative;
 
