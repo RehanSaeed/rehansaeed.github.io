@@ -19,6 +19,10 @@ jobs:
         uses: calibreapp/image-actions@main
         with:
           compressOnly: true
+          jpegQuality: '90'
+          jpegProgressive: false
+          pngQuality: '90'
+          webpQuality: '90'
           githubToken: ${{ secrets.GITHUB_TOKEN }}
       - name: Create New Pull Request If Needed
         if: steps.calibre.outputs.markdown != ''
