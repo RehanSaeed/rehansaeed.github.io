@@ -117,7 +117,7 @@ query {
   visibility: visible;
 }
 
-@media screen and (min-width: 1200px) {
+@media screen and (min-width: 75em) {
   // $global-breakpoint-xl
   .navigation {
     grid-gap: var(--global-space-fluid-3);

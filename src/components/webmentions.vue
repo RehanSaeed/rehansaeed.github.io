@@ -217,8 +217,8 @@ export default {
   margin-bottom: var(--global-space-fixed-4);
 }
 
-@media screen and (max-width: 576px) {
-  // $global-breakpoint-sm
+@media screen and (max-width: 48em) {
+  // $global-breakpoint-md
   .webmentions__help {
     grid-row: 2;
     justify-self: start;

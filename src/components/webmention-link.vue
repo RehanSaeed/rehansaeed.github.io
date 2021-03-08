@@ -54,7 +54,7 @@ export default {
     "timestamp";
   grid-template-columns: 1fr;
 
-  @media screen and (min-width: 768px) {
+  @media screen and (min-width: 48em) {
     // $global-breakpoint-md
     grid-template-areas: "author timestamp";
     grid-template-columns: auto 1fr;

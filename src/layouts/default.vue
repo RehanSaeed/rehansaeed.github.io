@@ -39,7 +39,7 @@ export default {
 </script>
 
 <style lang="scss">
-@media screen and (min-width: 1200px) {
+@media screen and (min-width: 75em) {
   // $global-breakpoint-xl
   .navigation {
     position: sticky;
@@ -53,7 +53,7 @@ export default {
   padding-left: var(--global-space-main);
   padding-right: var(--global-space-main);
 
-  @media screen and (max-width: 576px) {
+  @media screen and (max-width: 36em) {
     // $global-breakpoint-sm
     padding-left: 0;
     padding-right: 0;
