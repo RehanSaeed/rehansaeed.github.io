@@ -66,6 +66,9 @@
     "test": "cypress open",
     "lighthouse": "lhci autorun"
   },
+  "browserslist": [
+    "defaults"
+  ],
   "prettier": {
     "endOfLine": "crlf"
   },
