@@ -27,6 +27,8 @@ export default {
 </script>
 
 <style lang="scss">
+@use "~/assets/style/abstracts/type";
+
 .card {
   background-color: var(--global-content-background-color);
   border-radius: var(--global-border-radius);
@@ -36,11 +38,7 @@ export default {
   transition: transform var(--global-duration-2) var(--ease-in-out-cubic);
   will-change: transform;
 
-  // @mixin word-wrap()
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-word;
-  // hyphens: auto;
+  @include type.word-wrap();
 }
 
 .card--hoverable,

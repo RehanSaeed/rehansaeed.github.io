@@ -1,4 +1,4 @@
-@media screen and (prefers-reduced-motion: no-preference) {
+@media (prefers-reduced-motion: no-preference) {
   .fade-enter-active,
   .fade-leave-active {
     transition: opacity var(--global-duration-1) ease-in;

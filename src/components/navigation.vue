@@ -53,6 +53,8 @@ query {
 </static-query>
 
 <style lang="scss">
+@use "~/assets/style/abstracts/breakpoints";
+
 .navigation {
   align-items: center;
   display: grid;
@@ -117,8 +119,7 @@ query {
   visibility: visible;
 }
 
-@media screen and (min-width: 75em) {
-  // $global-breakpoint-xl
+@include breakpoints.respond-above(xl) {
   .navigation {
     grid-gap: var(--global-space-fluid-3);
     grid-template-rows: auto auto;

@@ -1,14 +1,8 @@
-@use "mixins";
+@use "sass:map";
+@use "abstracts/breakpoints";
+@use "abstracts/type";
 
 :root {
-  // Breakpoints
-  $global-breakpoint-xs: 0;
-  $global-breakpoint-sm: 36em; // 576px
-  $global-breakpoint-md: 48em; // 768px
-  $global-breakpoint-lg: 62em; // 992px
-  $global-breakpoint-xl: 75em; // 1200px
-  $global-breakpoint-xxl: 100em; // 1600px
-
   // Border Radius
   --global-border-radius: 0.25rem;
 
@@ -69,16 +63,14 @@
   --global-font-family-heading: "Audiowide", sans-serif;
 
   // Fluid Font Size
-  $global-font-size-minimum: 1em; // 16px
-  $global-font-size-maximum: 1.25em; // 20px
-  --global-font-size-minimum: #{$global-font-size-minimum};
-  --global-font-size-maximum: #{$global-font-size-maximum};
-  @include mixins.fluid-type(
+  --global-font-size-minimum: type.$font-size-minimum;
+  --global-font-size-maximum: type.$font-size-maximum;
+  @include type.fluid-type(
     --global-font-size-default,
-    $global-breakpoint-sm,
-    $global-breakpoint-xxl,
-    $global-font-size-minimum,
-    $global-font-size-maximum
+    map-get(breakpoints.$breakpoints, sm),
+    map-get(breakpoints.$breakpoints, xxl),
+    type.$font-size-minimum,
+    type.$font-size-maximum
   );
 
   // Font Size
@@ -106,7 +98,7 @@
   --global-line-length-min: 45ch;
   --global-line-length-ideal: 66ch;
   --global-line-length-max: 75ch;
-  @media screen and (max-width: $global-breakpoint-sm) {
+  @include breakpoints.respond-below(sm) {
     --global-line-length-min: 0;
   }
 
@@ -114,12 +106,12 @@
   --global-content-width-maximum: 45rem;
 
   // Space
-  @include mixins.fluid-type(
+  @include type.fluid-type(
     --global-space-fluid-6,
     36rem,
-    // $global-breakpoint-sm,
+    // map-get(breakpoints.$breakpoints, sm),
     100rem,
-    // $global-breakpoint-xxl,
+    // map-get(breakpoints.$breakpoints, xxl),
     1.5rem,
     4.5rem
   );
@@ -153,7 +145,7 @@
   --global-space-fixed-7: calc(var(--global-space-fixed-6) * 2);
 
   --global-space-main: calc(var(--global-space-fluid-6) * 2.7);
-  @media screen and (max-width: $global-breakpoint-sm) {
+  @include breakpoints.respond-below(sm) {
     --global-space-main: 0;
   }
 
@@ -163,7 +155,7 @@
   --global-space-content-min-width: calc(
     var(--global-space-fluid-6) * 2 + var(--global-line-length-min)
   );
-  @media screen and (max-width: $global-breakpoint-sm) {
+  @include breakpoints.respond-below(sm) {
     --global-space-content-min-width: calc(var(--global-space-fluid-6) * 2);
   }
 }

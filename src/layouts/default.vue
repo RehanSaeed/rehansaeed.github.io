@@ -39,8 +39,9 @@ export default {
 </script>
 
 <style lang="scss">
-@media screen and (min-width: 75em) {
-  // $global-breakpoint-xl
+@use "~/assets/style/abstracts/breakpoints";
+
+@include breakpoints.respond-above(xl) {
   .navigation {
     position: sticky;
     top: 0;
@@ -53,8 +54,7 @@ export default {
   padding-left: var(--global-space-main);
   padding-right: var(--global-space-main);
 
-  @media screen and (max-width: 36em) {
-    // $global-breakpoint-sm
+  @include breakpoints.respond-below(sm) {
     padding-left: 0;
     padding-right: 0;
   }

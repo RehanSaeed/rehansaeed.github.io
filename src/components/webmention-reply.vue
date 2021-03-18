@@ -63,6 +63,8 @@ export default {
 </script>
 
 <style lang="scss">
+@use "~/assets/style/abstracts/breakpoints";
+
 .webmention-reply {
   display: grid;
   grid-column-gap: var(--global-space-fixed-3);
@@ -72,8 +74,7 @@ export default {
     "avatar content";
   grid-template-columns: auto 1fr;
 
-  @media screen and (min-width: 48em) {
-    // $global-breakpoint-md
+  @include breakpoints.respond-above(md) {
     grid-template-areas:
       "avatar author timestamp"
       "avatar content content";

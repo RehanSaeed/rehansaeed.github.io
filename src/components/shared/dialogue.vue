@@ -97,7 +97,7 @@ dialog {
   top: 0;
   margin-top: 35vh;
 
-  @media screen and (prefers-reduced-motion: no-preference) {
+  @media (prefers-reduced-motion: no-preference) {
     will-change: transform;
 
     transition: opacity var(--global-duration-1) var(--ease-out-cubic),

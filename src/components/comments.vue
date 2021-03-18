@@ -31,6 +31,8 @@ export default {
 </script>
 
 <style lang="scss">
+@use "~/assets/style/abstracts/type";
+
 .comments__title {
   margin-top: 0;
 }
@@ -218,11 +220,7 @@ export default {
   grid-template-columns: auto 1fr;
   grid-template-areas: "avatar body";
 
-  // @mixin word-wrap()
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-word;
-  // hyphens: auto;
+  @include type.word-wrap();
 }
 
 // Comment Avatar

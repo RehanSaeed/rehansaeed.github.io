@@ -46,6 +46,8 @@ export default {
 </script>
 
 <style lang="scss">
+@use "~/assets/style/abstracts/breakpoints";
+
 .webmention-link {
   display: grid;
   grid-column-gap: var(--global-space-fixed-3);
@@ -54,8 +56,7 @@ export default {
     "timestamp";
   grid-template-columns: 1fr;
 
-  @media screen and (min-width: 48em) {
-    // $global-breakpoint-md
+  @include breakpoints.respond-above(md) {
     grid-template-areas: "author timestamp";
     grid-template-columns: auto 1fr;
   }

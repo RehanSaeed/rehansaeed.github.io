@@ -198,6 +198,8 @@ export default {
 </script>
 
 <style lang="scss">
+@use "~/assets/style/abstracts/breakpoints";
+
 .webmentions {
   display: grid;
 }
@@ -217,8 +219,7 @@ export default {
   margin-bottom: var(--global-space-fixed-4);
 }
 
-@media screen and (max-width: 48em) {
-  // $global-breakpoint-md
+@include breakpoints.respond-below(md) {
   .webmentions__help {
     grid-row: 2;
     justify-self: start;

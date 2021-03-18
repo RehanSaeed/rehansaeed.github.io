@@ -1,6 +1,9 @@
 @use "sass:math";
 @use "functions";
 
+$font-size-minimum: 1em; // 16px
+$font-size-maximum: 1.25em; // 20px
+
 @mixin fluid-type($variable, $min-vw, $max-vw, $min-font-size, $max-font-size) {
   $u1: math.unit($min-vw);
   $u2: math.unit($max-vw);
@@ -10,13 +13,15 @@
   @if $u1 == $u2 and $u1 == $u3 and $u1 == $u4 {
     & {
       #{$variable}: $min-font-size;
-      @media screen and (min-width: $min-vw) {
+      @media (min-width: $min-vw) {
         #{$variable}: calc(
-          #{$min-font-size} + #{functions.strip-unit($max-font-size - $min-font-size)} *
+          #{$min-font-size} + #{functions.strip-unit(
+              $max-font-size - $min-font-size
+            )} *
             ((100vw - #{$min-vw}) / #{functions.strip-unit($max-vw - $min-vw)})
         );
       }
-      @media screen and (min-width: $max-vw) {
+      @media (min-width: $max-vw) {
         #{$variable}: $max-font-size;
       }
     }
@@ -24,11 +29,13 @@
 }
 
 // Word wrap text
-@mixin word-wrap() {
+@mixin word-wrap($hyphens: false) {
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
-  // hyphens: auto;
+  @if ($hyphens) {
+    hyphens: auto;
+  }
 }
 
 // Don't wrap text and show an ellipses instead
