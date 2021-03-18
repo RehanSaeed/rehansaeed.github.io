@@ -90,6 +90,7 @@ export default {
   object-fit: cover;
   transition: border-color var(--global-duration-3) var(--ease-out-cubic),
     transform var(--global-duration-3) var(--ease-out-cubic);
+  will-change: border-color, transform;
 }
 
 .avatar--medium {
