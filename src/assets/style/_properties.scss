@@ -63,8 +63,8 @@
   --global-font-family-heading: "Audiowide", sans-serif;
 
   // Fluid Font Size
-  --global-font-size-minimum: type.$font-size-minimum;
-  --global-font-size-maximum: type.$font-size-maximum;
+  --global-font-size-minimum: #{type.$font-size-minimum};
+  --global-font-size-maximum: #{type.$font-size-maximum};
   @include type.fluid-type(
     --global-font-size-default,
     map-get(breakpoints.$breakpoints, sm),
@@ -205,6 +205,11 @@
   --global-danger-border-color: hsl(0, 100%, 30%);
   --global-danger-body-color: hsl(0, 0%, 0%);
   --global-danger-title-color: hsl(0, 100%, 10%);
+
+  @media (prefers-contrast: more) {
+    --global-body-color: hsl(0, 0%, 0%);
+    --global-title-color: hsl(0, 0%, 0%);
+  }
 }
 
 // Dark theme
@@ -252,4 +257,9 @@
   --global-danger-border-color: hsl(0, 100%, 30%);
   --global-danger-body-color: var(--global-title-color);
   --global-danger-title-color: var(--global-title-color);
+
+  @media (prefers-contrast: more) {
+    --global-body-color: hsl(203, 20%, 100%);
+    --global-title-color: hsl(0, 0%, 100%);
+  }
 }
