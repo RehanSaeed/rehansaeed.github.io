@@ -47,7 +47,14 @@ export default {
       return this.reply.data.url;
     },
     content() {
-      return this.reply.data.content;
+      if (
+        this.reply.activity.type === "link" &&
+        !this.reply.data.url.startsWith("https://twitter.com")
+      ) {
+        return this.reply.activity.sentence_html;
+      } else {
+        return this.reply.data.content;
+      }
     },
     name() {
       return this.reply.data.author.name;
