@@ -191,17 +191,17 @@ public static class ServiceCollectionExtensions
         where TClientOptions : HttpClientOptions, new() =>
         services
             .Configure<TClientOptions>(configuration.GetSection(configurationSectionName))
-            .AddTransient<CorrelationIdDelegatingHandler>()
-            .AddTransient<UserAgentDelegatingHandler>()
+            .AddSingleton<CorrelationIdDelegatingHandler>()
+            .AddSingleton<UserAgentDelegatingHandler>()
             .AddHttpClient<TClient, TImplementation>()
             .ConfigureHttpClient(
-                (sp, options) =>
+                (serviceProvider, httpClient) =>
                 {
-                    var httpClientOptions = sp
+                    var httpClientOptions = serviceProvider
                         .GetRequiredService<IOptions<TClientOptions>>()
                         .Value;
-                    options.BaseAddress = httpClientOptions.BaseAddress;
-                    options.Timeout = httpClientOptions.Timeout;
+                    httpClient.BaseAddress = httpClientOptions.BaseAddress;
+                    httpClient.Timeout = httpClientOptions.Timeout;
                 })
             .ConfigurePrimaryHttpMessageHandler(x => new DefaultHttpClientHandler())
             .AddPolicyHandlerFromRegistry(PolicyName.HttpRetry)
@@ -214,7 +214,9 @@ public static class ServiceCollectionExtensions
 public class DefaultHttpClientHandler : HttpClientHandler
 {
     public DefaultHttpClientHandler() => this.AutomaticDecompression =
-        DecompressionMethods.Deflate | DecompressionMethods.GZip | DecompressionMethods.Brotli;
+        DecompressionMethods.Brotli |
+        DecompressionMethods.Deflate |
+        DecompressionMethods.GZip;
 }
 
 public class HttpClientOptions
@@ -324,30 +326,10 @@ public class UserAgentDelegatingHandler : DelegatingHandler
     }
 
     private static string GetProduct(Assembly assembly) =>
-        GetAttributeValue<AssemblyProductAttribute>(assembly);
+        assembly.GetCustomAttribute<AssemblyProductAttribute>().Product;
 
-    private static string GetVersion(Assembly assembly)
-    {
-        var infoVersion = GetAttributeValue<AssemblyInformationalVersionAttribute>(assembly);
-        if (infoVersion != null)
-        {
-            return infoVersion;
-        }
-
-        return GetAttributeValue<AssemblyFileVersionAttribute>(assembly);
-    }
-
-    private static string GetAttributeValue<T>(Assembly assembly)
-        where T : Attribute
-    {
-        var type = typeof(T);
-        var attribute = assembly
-            .CustomAttributes
-            .Where(x => x.AttributeType == type)
-            .Select(x => x.ConstructorArguments.FirstOrDefault())
-            .FirstOrDefault();
-        return attribute == null ? string.Empty : attribute.Value.ToString();
-    }
+    private static string GetVersion(Assembly assembly) =>
+        assembly.GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
 }
 ```
 
