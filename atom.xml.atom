@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2021-03-30T08:57:55.929Z</updated>
+    <updated>2021-04-04T12:08:53.531Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -1659,8 +1659,11 @@ It seems that Damian Edwards (The ASP.NET Core Project Manager) likes this post 
         <link href="https://rehansaeed.com/optimally-configuring-asp-net-core-httpclientfactory/"/>
         <updated>2018-08-20T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[How to optimally configure a HttpClient using the new HttpClientFactory API in ASP.NET Core 2.1 for best performance, usability, resiliency and easy of use.]]></summary>
-        <content type="html"><![CDATA[<p>::: warning Update (20 August 2018)
-Steve Gordon kindly suggested a <a href="https://github.com/RehanSaeed/HttpClientSample/pull/1">further optimisation</a> to use <code>ConfigureHttpClient</code>. I&#39;ve updated the code below to reflect this.
+        <content type="html"><![CDATA[<p>::: warning Update (04 April 2021)
+Updated all code for .NET 5 and mentioned Open Telemetry.
+:::</p>
+<p>::: warning Update (20 August 2018)
+<a href="https://www.stevejgordon.co.uk/">Steve Gordon</a> kindly suggested a <a href="https://github.com/RehanSaeed/HttpClientSample/pull/1">further optimisation</a> to use <code>ConfigureHttpClient</code>. I&#39;ve updated the code below to reflect this.
 :::</p>
 <p>In this post, I&#39;m going to show how to optimally configure a <code>HttpClient</code> using the new <a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-2.1">HttpClientFactory</a> API in ASP.NET Core 2.1. If you haven&#39;t already I recommend reading Steve Gordon&#39;s <a href="https://www.stevejgordon.co.uk/introduction-to-httpclientfactory-aspnetcore">series of blog posts</a> on the subject since this post builds on that knowledge. You should also read his post about <a href="https://www.stevejgordon.co.uk/asp-net-core-correlation-ids">Correlation ID&#39;s</a> as I&#39;m making use of that library in this post. The main aims of the code in this post are to:</p>
 <ol>
@@ -1690,14 +1693,16 @@ public class RocketClient : IRocketClient
     {
         var response = await this.httpClient.GetAsync(working ? &quot;status-working&quot; : &quot;status-failing&quot;);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadAsAsync&lt;TakeoffStatus&gt;();
+        return await response.Content.ReadFromJsonAsync&lt;TakeoffStatus&gt;();
     }
 }
 </code></pre>
 <p>Here is how we register the typed client above with our dependency injection container. All of the meat lives in these three methods. <code>AddCorrelationId</code> adds a middleware written by Steve Gordon to handle <a href="https://www.stevejgordon.co.uk/asp-net-core-correlation-ids">Correlation ID&#39;s</a>. <code>AddPolicies</code> registers a policy registry and the policies themselves (A policy is <a href="https://github.com/App-vNext/Polly">Polly&#39;s</a> way of specifying how you want to deal with errors e.g. using retries, circuit breaker pattern etc.). Finally, we add the typed <code>HttpClient</code> but with configuration options, so we can configure it&#39;s settings from <code>appsettings.json</code>.</p>
 <pre><code class="language-cs">public virtual void ConfigureServices(IServiceCollection services) =&gt;
     services
-        .AddCorrelationId() // Add Correlation ID support to ASP.NET Core
+        .AddDefaultCorrelationId() // Add Correlation ID support to ASP.NET Core
+        .AddControllers()
+        .Services
         .AddPolicies(this.configuration) // Setup Polly policies.
         .AddHttpClient&lt;IRocketClient, RocketClient, RocketClientOptions&gt;(this.configuration, &quot;RocketClient&quot;)
         ...;
@@ -1705,23 +1710,24 @@ public class RocketClient : IRocketClient
 <p>The <code>appsettings.json</code> file below contains the base address for the endpoint we want to connect to, a time-out value of thirty seconds is used if the server is taking too long to respond and policy settings for retries and the circuit breaker.</p>
 <p>The retry settings state that after a first failed request, another three attempts will be made (this means you can get up to four requests). There will be an exponentially longer back-off or delay between each request. The first retry request will occur after two seconds, the second after another four seconds and the third occurs after another eight seconds.</p>
 <p>The circuit breaker states that it will allow 12 consecutive failed requests before breaking the circuit and throwing <code>CircuitBrokenException</code> for every attempted request. The circuit will be broken for thirty seconds.</p>
-<p>Generally, my advice is when allowing a high number of exceptions before breaking, use a longer duration of break. When allowing a lower number of exceptions before breaking, keep the duration of break small. Another possibility I&#39;ve not tried is to combine these two scenarios, so you have two circuit breakers. The circuit breaker with the lower limit would kick in first but only break the circuit for a short time, if exceptions are no longer thrown, then things go back to normal quickly. If exceptions continue to be thrown, then the other circuit breaker with a longer duration of break would kick in and the circuit would be broken for a longer period of time.</p>
+<p>Generally, my advice is when allowing a high number of exceptions before breaking, use a longer duration of break. When allowing a lower number of exceptions before breaking, keep the duration of break small.</p>
+<p>Another possibility I&#39;ve not tried is to combine these two scenarios, so you have two circuit breakers. The circuit breaker with the lower limit would kick in first but only break the circuit for a short time, if exceptions are no longer thrown, then things go back to normal quickly. If exceptions continue to be thrown, then the other circuit breaker with a longer duration of break would kick in and the circuit would be broken for a longer period of time. I leave implementing this particular scenario to the reader.</p>
 <p>You can of course play with these numbers, what you set them to will depend on your application.</p>
 <pre><code class="language-json">{
-  &quot;RocketClient&quot;: {
-    &quot;BaseAddress&quot;: &quot;http://example.com&quot;,
-    &quot;Timeout&quot;: &quot;00:00:30&quot;
-  },
-  &quot;Policies&quot;: {
-    &quot;HttpCircuitBreaker&quot;: {
-      &quot;DurationOfBreak&quot;: &quot;00:00:30&quot;,
-      &quot;ExceptionsAllowedBeforeBreaking&quot;: 12
+    &quot;RocketClient&quot;: {
+        &quot;BaseAddress&quot;: &quot;http://example.com&quot;,
+        &quot;Timeout&quot;: &quot;00:00:30&quot;
     },
-    &quot;HttpRetry&quot;: {
-      &quot;BackoffPower&quot;: 2,
-      &quot;Count&quot;: 3
+    &quot;Policies&quot;: {
+        &quot;HttpCircuitBreaker&quot;: {
+            &quot;DurationOfBreak&quot;: &quot;00:00:30&quot;,
+            &quot;ExceptionsAllowedBeforeBreaking&quot;: 12
+        },
+        &quot;HttpRetry&quot;: {
+            &quot;BackoffPower&quot;: 2,
+            &quot;Count&quot;: 3
+        }
     }
-  }
 }
 </code></pre>
 <h1 id="configuring-polly-policies">Configuring Polly Policies</h1>
@@ -1735,9 +1741,8 @@ public class RocketClient : IRocketClient
         IConfiguration configuration,
         string configurationSectionName = PoliciesConfigurationSectionName)
     {
-        var section = configuration.GetSection(configurationSectionName);
         services.Configure&lt;PolicyOptions&gt;(configuration);
-        var policyOptions = section.Get&lt;PolicyOptions&gt;();
+        var policyOptions = configuration.GetSection(configurationSectionName).Get&lt;PolicyOptions&gt;();
 
         var policyRegistry = services.AddPolicyRegistry();
         policyRegistry.Add(
@@ -1791,7 +1796,7 @@ public class RetryPolicyOptions
 </ol>
 <h1 id="configuring-httpclient">Configuring HttpClient</h1>
 <p>Finally, we can get down to configuring our <code>HttpClient</code> itself. The <code>AddHttpClient</code> method starts by binding the <code>TClientOptions</code> type to a configuration section in <code>appsettings.json</code>. <code>TClientOptions</code> is a derived type of <code>HttpClientOptions</code> which just contains a base address and time-out value. I&#39;ll come back to <code>CorrelationIdDelegatingHandler</code> and <code>UserAgentDelegatingHandler</code> in a moment.</p>
-<p>We set the <code>HttpClientHandler</code> to be <code>DefaultHttpClientHandler</code>. This type just enables GZIP and Deflate compression. <a href="https://github.com/dotnet/corefx/pull/29729">Brotli support</a> is being added soon, so watch out for that. Finally, we add the retry and circuit breaker policies to the <code>HttpClient</code>.</p>
+<p>We set the <code>HttpClientHandler</code> to be <code>DefaultHttpClientHandler</code>. This type just enables Brotli, GZIP and Deflate compression. Finally, we add the retry and circuit breaker policies to the <code>HttpClient</code>.</p>
 <pre><code class="language-cs">public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddHttpClient&lt;TClient, TImplementation, TClientOptions&gt;(
@@ -1825,14 +1830,14 @@ public class RetryPolicyOptions
 
 public class DefaultHttpClientHandler : HttpClientHandler
 {
-    public DefaultHttpClientHandler() =&gt; this.AutomaticDecompression = 
-        DecompressionMethods.Deflate | DecompressionMethods.GZip;
+    public DefaultHttpClientHandler() =&gt; this.AutomaticDecompression =
+        DecompressionMethods.Deflate | DecompressionMethods.GZip | DecompressionMethods.Brotli;
 }
 
 public class HttpClientOptions
 {
     public Uri BaseAddress { get; set; }
-    
+
     public TimeSpan Timeout { get; set; }
 }
 </code></pre>
@@ -1856,9 +1861,9 @@ public class HttpClientOptions
         HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
-        if (!request.Headers.Contains(this.options.Value.Header))
+        if (!request.Headers.Contains(this.options.Value.RequestHeader))
         {
-            request.Headers.Add(this.options.Value.Header, correlationContextAccessor.CorrelationContext.CorrelationId);
+            request.Headers.Add(this.options.Value.RequestHeader, this.correlationContextAccessor.CorrelationContext.CorrelationId);
         }
 
         // Else the header has already been added due to a retry.
@@ -1924,7 +1929,7 @@ public class HttpClientOptions
         return base.SendAsync(request, cancellationToken);
     }
 
-    private static string GetProduct(Assembly assembly) =&gt; 
+    private static string GetProduct(Assembly assembly) =&gt;
         GetAttributeValue&lt;AssemblyProductAttribute&gt;(assembly);
 
     private static string GetVersion(Assembly assembly)
@@ -1957,6 +1962,8 @@ public class HttpClientOptions
   &lt;!-- ... --&gt;
 &lt;/PropertyGroup&gt;
 </code></pre>
+<h1 id="open-telemetry">Open Telemetry</h1>
+<p>Setting the <code>X-Correlation-ID</code> and <code>User-Agent</code> HTTP headers are useful things to do but there is a new set of HTTP headers which come under the Open Telemetry standard which not only replace them but also add additional functionality. You can read more about <a href="https://rehansaeed.com/deep-dive-into-open-telemetry-for-net/">Open Telemetry</a> in my <a href="https://rehansaeed.com/deep-dive-into-open-telemetry-for-net/">series of blog posts</a> on the subject.</p>
 <h1 id="sample-github-project">Sample GitHub Project</h1>
 <p>I realize that was a lot of boilerplate code to write. It was difficult to write this as more than one blog post. To aid in digestion, I&#39;ve created a <a href="https://github.com/RehanSaeed/HttpClientSample">GitHub sample project</a> with the full working code.</p>
 <p>The sample project contains two API&#39;s. One makes a HTTP request to the other. You can pass a query argument to decide whether the callee API will fail or not and try out the retry and circuit breaker logic. Feel free to play with the configuration in <code>appsettings.json</code> and see what options work best for your application.</p>
