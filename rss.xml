@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Sun, 04 Apr 2021 12:08:53 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 04 Apr 2021 12:33:19 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -1752,17 +1752,17 @@ public class RetryPolicyOptions
         where TClientOptions : HttpClientOptions, new() =&gt;
         services
             .Configure&lt;TClientOptions&gt;(configuration.GetSection(configurationSectionName))
-            .AddTransient&lt;CorrelationIdDelegatingHandler&gt;()
-            .AddTransient&lt;UserAgentDelegatingHandler&gt;()
+            .AddSingleton&lt;CorrelationIdDelegatingHandler&gt;()
+            .AddSingleton&lt;UserAgentDelegatingHandler&gt;()
             .AddHttpClient&lt;TClient, TImplementation&gt;()
             .ConfigureHttpClient(
-                (sp, options) =&gt;
+                (serviceProvider, httpClient) =&gt;
                 {
-                    var httpClientOptions = sp
+                    var httpClientOptions = serviceProvider
                         .GetRequiredService&lt;IOptions&lt;TClientOptions&gt;&gt;()
                         .Value;
-                    options.BaseAddress = httpClientOptions.BaseAddress;
-                    options.Timeout = httpClientOptions.Timeout;
+                    httpClient.BaseAddress = httpClientOptions.BaseAddress;
+                    httpClient.Timeout = httpClientOptions.Timeout;
                 })
             .ConfigurePrimaryHttpMessageHandler(x =&gt; new DefaultHttpClientHandler())
             .AddPolicyHandlerFromRegistry(PolicyName.HttpRetry)
@@ -1775,7 +1775,9 @@ public class RetryPolicyOptions
 public class DefaultHttpClientHandler : HttpClientHandler
 {
     public DefaultHttpClientHandler() =&gt; this.AutomaticDecompression =
-        DecompressionMethods.Deflate | DecompressionMethods.GZip | DecompressionMethods.Brotli;
+        DecompressionMethods.Brotli |
+        DecompressionMethods.Deflate |
+        DecompressionMethods.GZip;
 }
 
 public class HttpClientOptions
@@ -1874,30 +1876,10 @@ public class HttpClientOptions
     }
 
     private static string GetProduct(Assembly assembly) =&gt;
-        GetAttributeValue&lt;AssemblyProductAttribute&gt;(assembly);
+        assembly.GetCustomAttribute&lt;AssemblyProductAttribute&gt;().Product;
 
-    private static string GetVersion(Assembly assembly)
-    {
-        var infoVersion = GetAttributeValue&lt;AssemblyInformationalVersionAttribute&gt;(assembly);
-        if (infoVersion != null)
-        {
-            return infoVersion;
-        }
-
-        return GetAttributeValue&lt;AssemblyFileVersionAttribute&gt;(assembly);
-    }
-
-    private static string GetAttributeValue&lt;T&gt;(Assembly assembly)
-        where T : Attribute
-    {
-        var type = typeof(T);
-        var attribute = assembly
-            .CustomAttributes
-            .Where(x =&gt; x.AttributeType == type)
-            .Select(x =&gt; x.ConstructorArguments.FirstOrDefault())
-            .FirstOrDefault();
-        return attribute == null ? string.Empty : attribute.Value.ToString();
-    }
+    private static string GetVersion(Assembly assembly) =&gt;
+        assembly.GetCustomAttribute&lt;AssemblyFileVersionAttribute&gt;().Version;
 }
 </code></pre>
 <pre><code class="language-xml">&lt;PropertyGroup Label=&quot;Package&quot;&gt;
