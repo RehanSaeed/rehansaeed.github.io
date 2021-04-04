@@ -5,20 +5,24 @@ author: "Muhammad Rehan Saeed"
 permalink: "/optimally-configuring-asp-net-core-httpclientfactory/"
 heroImage: "/images/hero/Microsoft-.NET-1366x768.png"
 date: "2018-08-20"
-dateModified: "2018-08-20"
+dateModified: "2021-04-04"
 published: true
 categories:
-  - "ASP.NET"
+    - "ASP.NET"
 tags:
-  - "ASP.NET Core"
-  - "CorrelationId"
-  - "HttpClient"
-  - "HttpClientFactory"
-  - "Polly"
+    - "ASP.NET Core"
+    - "CorrelationId"
+    - "HttpClient"
+    - "HttpClientFactory"
+    - "Polly"
 ---
 
+::: warning Update (04 April 2021)
+Updated all code for .NET 5 and mentioned Open Telemetry.
+:::
+
 ::: warning Update (20 August 2018)
-Steve Gordon kindly suggested a [further optimisation](https://github.com/RehanSaeed/HttpClientSample/pull/1) to use `ConfigureHttpClient`. I've updated the code below to reflect this.
+[Steve Gordon](https://www.stevejgordon.co.uk/) kindly suggested a [further optimisation](https://github.com/RehanSaeed/HttpClientSample/pull/1) to use `ConfigureHttpClient`. I've updated the code below to reflect this.
 :::
 
 In this post, I'm going to show how to optimally configure a `HttpClient` using the new [HttpClientFactory](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-2.1) API in ASP.NET Core 2.1. If you haven't already I recommend reading Steve Gordon's [series of blog posts](https://www.stevejgordon.co.uk/introduction-to-httpclientfactory-aspnetcore) on the subject since this post builds on that knowledge. You should also read his post about [Correlation ID's](https://www.stevejgordon.co.uk/asp-net-core-correlation-ids) as I'm making use of that library in this post. The main aims of the code in this post are to:
@@ -52,7 +56,7 @@ public class RocketClient : IRocketClient
     {
         var response = await this.httpClient.GetAsync(working ? "status-working" : "status-failing");
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadAsAsync<TakeoffStatus>();
+        return await response.Content.ReadFromJsonAsync<TakeoffStatus>();
     }
 }
 ```
@@ -62,7 +66,9 @@ Here is how we register the typed client above with our dependency injection con
 ```cs
 public virtual void ConfigureServices(IServiceCollection services) =>
     services
-        .AddCorrelationId() // Add Correlation ID support to ASP.NET Core
+        .AddDefaultCorrelationId() // Add Correlation ID support to ASP.NET Core
+        .AddControllers()
+        .Services
         .AddPolicies(this.configuration) // Setup Polly policies.
         .AddHttpClient<IRocketClient, RocketClient, RocketClientOptions>(this.configuration, "RocketClient")
         ...;
@@ -74,26 +80,28 @@ The retry settings state that after a first failed request, another three attemp
 
 The circuit breaker states that it will allow 12 consecutive failed requests before breaking the circuit and throwing `CircuitBrokenException` for every attempted request. The circuit will be broken for thirty seconds.
 
-Generally, my advice is when allowing a high number of exceptions before breaking, use a longer duration of break. When allowing a lower number of exceptions before breaking, keep the duration of break small. Another possibility I've not tried is to combine these two scenarios, so you have two circuit breakers. The circuit breaker with the lower limit would kick in first but only break the circuit for a short time, if exceptions are no longer thrown, then things go back to normal quickly. If exceptions continue to be thrown, then the other circuit breaker with a longer duration of break would kick in and the circuit would be broken for a longer period of time.
+Generally, my advice is when allowing a high number of exceptions before breaking, use a longer duration of break. When allowing a lower number of exceptions before breaking, keep the duration of break small.
+
+Another possibility I've not tried is to combine these two scenarios, so you have two circuit breakers. The circuit breaker with the lower limit would kick in first but only break the circuit for a short time, if exceptions are no longer thrown, then things go back to normal quickly. If exceptions continue to be thrown, then the other circuit breaker with a longer duration of break would kick in and the circuit would be broken for a longer period of time. I leave implementing this particular scenario to the reader.
 
 You can of course play with these numbers, what you set them to will depend on your application.
 
 ```json
 {
-  "RocketClient": {
-    "BaseAddress": "http://example.com",
-    "Timeout": "00:00:30"
-  },
-  "Policies": {
-    "HttpCircuitBreaker": {
-      "DurationOfBreak": "00:00:30",
-      "ExceptionsAllowedBeforeBreaking": 12
+    "RocketClient": {
+        "BaseAddress": "http://example.com",
+        "Timeout": "00:00:30"
     },
-    "HttpRetry": {
-      "BackoffPower": 2,
-      "Count": 3
+    "Policies": {
+        "HttpCircuitBreaker": {
+            "DurationOfBreak": "00:00:30",
+            "ExceptionsAllowedBeforeBreaking": 12
+        },
+        "HttpRetry": {
+            "BackoffPower": 2,
+            "Count": 3
+        }
     }
-  }
 }
 ```
 
@@ -111,9 +119,8 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration,
         string configurationSectionName = PoliciesConfigurationSectionName)
     {
-        var section = configuration.GetSection(configurationSectionName);
         services.Configure<PolicyOptions>(configuration);
-        var policyOptions = section.Get<PolicyOptions>();
+        var policyOptions = configuration.GetSection(configurationSectionName).Get<PolicyOptions>();
 
         var policyRegistry = services.AddPolicyRegistry();
         policyRegistry.Add(
@@ -170,7 +177,7 @@ Notice that each policy is using the `HandleTransientHttpError` method which tel
 
 Finally, we can get down to configuring our `HttpClient` itself. The `AddHttpClient` method starts by binding the `TClientOptions` type to a configuration section in `appsettings.json`. `TClientOptions` is a derived type of `HttpClientOptions` which just contains a base address and time-out value. I'll come back to `CorrelationIdDelegatingHandler` and `UserAgentDelegatingHandler` in a moment.
 
-We set the `HttpClientHandler` to be `DefaultHttpClientHandler`. This type just enables GZIP and Deflate compression. [Brotli support](https://github.com/dotnet/corefx/pull/29729) is being added soon, so watch out for that. Finally, we add the retry and circuit breaker policies to the `HttpClient`.
+We set the `HttpClientHandler` to be `DefaultHttpClientHandler`. This type just enables Brotli, GZIP and Deflate compression. Finally, we add the retry and circuit breaker policies to the `HttpClient`.
 
 ```cs
 public static class ServiceCollectionExtensions
@@ -206,14 +213,14 @@ public static class ServiceCollectionExtensions
 
 public class DefaultHttpClientHandler : HttpClientHandler
 {
-    public DefaultHttpClientHandler() => this.AutomaticDecompression = 
-        DecompressionMethods.Deflate | DecompressionMethods.GZip;
+    public DefaultHttpClientHandler() => this.AutomaticDecompression =
+        DecompressionMethods.Deflate | DecompressionMethods.GZip | DecompressionMethods.Brotli;
 }
 
 public class HttpClientOptions
 {
     public Uri BaseAddress { get; set; }
-    
+
     public TimeSpan Timeout { get; set; }
 }
 ```
@@ -242,9 +249,9 @@ public class CorrelationIdDelegatingHandler : DelegatingHandler
         HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
-        if (!request.Headers.Contains(this.options.Value.Header))
+        if (!request.Headers.Contains(this.options.Value.RequestHeader))
         {
-            request.Headers.Add(this.options.Value.Header, correlationContextAccessor.CorrelationContext.CorrelationId);
+            request.Headers.Add(this.options.Value.RequestHeader, this.correlationContextAccessor.CorrelationContext.CorrelationId);
         }
 
         // Else the header has already been added due to a retry.
@@ -316,7 +323,7 @@ public class UserAgentDelegatingHandler : DelegatingHandler
         return base.SendAsync(request, cancellationToken);
     }
 
-    private static string GetProduct(Assembly assembly) => 
+    private static string GetProduct(Assembly assembly) =>
         GetAttributeValue<AssemblyProductAttribute>(assembly);
 
     private static string GetVersion(Assembly assembly)
@@ -351,6 +358,10 @@ public class UserAgentDelegatingHandler : DelegatingHandler
   <!-- ... -->
 </PropertyGroup>
 ```
+
+# Open Telemetry
+
+Setting the `X-Correlation-ID` and `User-Agent` HTTP headers are useful things to do but there is a new set of HTTP headers which come under the Open Telemetry standard which not only replace them but also add additional functionality. You can read more about [Open Telemetry](https://rehansaeed.com/deep-dive-into-open-telemetry-for-net/) in my [series of blog posts](https://rehansaeed.com/deep-dive-into-open-telemetry-for-net/) on the subject.
 
 # Sample GitHub Project
 
