@@ -170,8 +170,8 @@ public class RetryPolicyOptions
 Notice that each policy is using the `HandleTransientHttpError` method which tells Polly when to apply the retry and circuit breakers. One important question is, what is a transient HTTP error according to Polly? Well, looking at the [source code](https://github.com/App-vNext/Polly.Extensions.Http/blob/808665304882fb921b1c38cbbd38fcc102229f84/src/Polly.Extensions.Http.Shared/HttpPolicyExtensions.cs) in the `Polly.Extensions.Http` GitHub repository, it looks like they consider any of the below as transient errors:
 
 1. Any `HttpRequestException` thrown. This can happen when the server is down.
-2. A response with a status code of 408 Request Timeout.
-3. A response with a status code of 500 or above.
+2. A response with a status code of `408 Request Timeout`.
+3. A response with a status code of `500 Internal Server Error` or above.
 
 # Configuring HttpClient
 
