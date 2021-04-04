@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2021-04-04T12:33:19.515Z</updated>
+    <updated>2021-04-04T12:52:34.878Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -1791,8 +1791,8 @@ public class RetryPolicyOptions
 <p>Notice that each policy is using the <code>HandleTransientHttpError</code> method which tells Polly when to apply the retry and circuit breakers. One important question is, what is a transient HTTP error according to Polly? Well, looking at the <a href="https://github.com/App-vNext/Polly.Extensions.Http/blob/808665304882fb921b1c38cbbd38fcc102229f84/src/Polly.Extensions.Http.Shared/HttpPolicyExtensions.cs">source code</a> in the <code>Polly.Extensions.Http</code> GitHub repository, it looks like they consider any of the below as transient errors:</p>
 <ol>
 <li>Any <code>HttpRequestException</code> thrown. This can happen when the server is down.</li>
-<li>A response with a status code of 408 Request Timeout.</li>
-<li>A response with a status code of 500 or above.</li>
+<li>A response with a status code of <code>408 Request Timeout</code>.</li>
+<li>A response with a status code of <code>500 Internal Server Error</code> or above.</li>
 </ol>
 <h1 id="configuring-httpclient">Configuring HttpClient</h1>
 <p>Finally, we can get down to configuring our <code>HttpClient</code> itself. The <code>AddHttpClient</code> method starts by binding the <code>TClientOptions</code> type to a configuration section in <code>appsettings.json</code>. <code>TClientOptions</code> is a derived type of <code>HttpClientOptions</code> which just contains a base address and time-out value. I&#39;ll come back to <code>CorrelationIdDelegatingHandler</code> and <code>UserAgentDelegatingHandler</code> in a moment.</p>

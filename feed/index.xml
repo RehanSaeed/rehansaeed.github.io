@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Sun, 04 Apr 2021 12:33:19 GMT</lastBuildDate>
+        <lastBuildDate>Sun, 04 Apr 2021 12:52:34 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -1735,8 +1735,8 @@ public class RetryPolicyOptions
 <p>Notice that each policy is using the <code>HandleTransientHttpError</code> method which tells Polly when to apply the retry and circuit breakers. One important question is, what is a transient HTTP error according to Polly? Well, looking at the <a href="https://github.com/App-vNext/Polly.Extensions.Http/blob/808665304882fb921b1c38cbbd38fcc102229f84/src/Polly.Extensions.Http.Shared/HttpPolicyExtensions.cs">source code</a> in the <code>Polly.Extensions.Http</code> GitHub repository, it looks like they consider any of the below as transient errors:</p>
 <ol>
 <li>Any <code>HttpRequestException</code> thrown. This can happen when the server is down.</li>
-<li>A response with a status code of 408 Request Timeout.</li>
-<li>A response with a status code of 500 or above.</li>
+<li>A response with a status code of <code>408 Request Timeout</code>.</li>
+<li>A response with a status code of <code>500 Internal Server Error</code> or above.</li>
 </ol>
 <h1 id="configuring-httpclient">Configuring HttpClient</h1>
 <p>Finally, we can get down to configuring our <code>HttpClient</code> itself. The <code>AddHttpClient</code> method starts by binding the <code>TClientOptions</code> type to a configuration section in <code>appsettings.json</code>. <code>TClientOptions</code> is a derived type of <code>HttpClientOptions</code> which just contains a base address and time-out value. I&#39;ll come back to <code>CorrelationIdDelegatingHandler</code> and <code>UserAgentDelegatingHandler</code> in a moment.</p>
