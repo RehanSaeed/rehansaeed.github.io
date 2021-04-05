@@ -50,14 +50,15 @@ export default {
 
 <style lang="scss">
 .webmention-faces {
+  --overlap: 0.4rem;
+
   display: flex;
   align-content: flex-start;
   flex-wrap: wrap;
-  margin-left: 8px;
+  padding-left: var(--overlap);
 }
 
 .webmention-faces__face {
-  margin-left: -8px;
-  opacity: 0.999;
+  margin-left: calc(var(--overlap) * -1);
 }
 </style>
