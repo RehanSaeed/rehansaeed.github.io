@@ -3,6 +3,7 @@ export default {
   name: "u-scroll-custom-property",
   data() {
     return {
+      previousScroll: 0,
       scroll: 0,
     };
   },
@@ -19,6 +20,7 @@ export default {
   methods: {
     onScroll() {
       requestAnimationFrame(() => {
+        this.previousScroll = this.scroll;
         this.scroll =
           window.pageYOffset /
           (document.body.offsetHeight - window.innerHeight);
@@ -27,8 +29,17 @@ export default {
   },
   render() {
     const scroll = this.scroll;
-    if (this.$parent.$el) {
-      this.$parent.$el.style.cssText = "--scroll: " + scroll;
+    const element = this.$parent.$el;
+    if (element) {
+      element.style.setProperty("--scroll", scroll);
+
+      if (this.scroll > this.previousScroll) {
+        element.classList.add("scroll-down");
+        element.classList.remove("scroll-up");
+      } else {
+        element.classList.remove("scroll-down");
+        element.classList.add("scroll-up");
+      }
     }
 
     // TODO: Rename to $slots in Vue 3.
