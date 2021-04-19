@@ -5,7 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/the-fastest-nuget-package-ever-published-probably/"
 heroImage: "/images/hero/NuGet-1366x768.png"
 date: "2020-07-08T08:34:00Z"
-dateModified: "2020-09-17T09:29:00Z"
+dateModified: "2021-04-12T09:50:00Z"
 published: true
 categories:
     - ".NET"
@@ -16,17 +16,15 @@ tags:
     - ".NET Boxed"
 ---
 
+::: tip Updated 2021-04-12 09:50
+I appeared on the [.NET Docs Show](https://dotnet.microsoft.com/live/dotnet-docs) and ran through this blog post and much more. I've added a [link to the show](https://www.youtube.com/watch?v=A93Fn_qMLX4) on YouTube below.
+:::
+
 ::: tip Updated 2020-09-17 09:29
-Added GitHub CLI commands to create labels instead of doing it manually.
+Added GitHub CLI commands to create labels instead of doing it manually. The GitHub CLI also simplified some commands, so I've updated the post to make use of those simpler commands.
 :::
 
-::: tip Updated 2020-09-08 09:46
-The GitHub CLI simplified some commands, so I've updated the post to make use of those simpler commands.
-:::
-
-::: tip Updated 2020-07-08 12:16
-I forgot to mention how we can use labels to help automatically draft release notes, so I've updated the post with a few extra screenshots and descriptions.
-:::
+https://www.youtube.com/watch?v=A93Fn_qMLX4
 
 So, you want to publish a new NuGet package? You just want to get your code up into nuget.org as quickly as possible but there is so much that you have to setup to get there. Not any more! I'll show you how you can create a new project and publish a NuGet package with all the bells and whistles in a **couple of minutes**.
 
