@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Sat, 17 Apr 2021 03:07:04 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 19 Apr 2021 09:05:11 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -432,15 +432,13 @@ else {
             <guid>https://rehansaeed.com/the-fastest-nuget-package-ever-published-probably/</guid>
             <pubDate>Wed, 08 Jul 2020 08:34:00 GMT</pubDate>
             <description><![CDATA[The fastest way to create a new NuGet package project and get it published with all the bells and whistles like continuous integration (CI) builds and drafted release notes.]]></description>
-            <content:encoded><![CDATA[<p>::: tip Updated 2020-09-17 09:29
-Added GitHub CLI commands to create labels instead of doing it manually.
+            <content:encoded><![CDATA[<p>::: tip Updated 2021-04-12 09:50
+I appeared on the <a href="https://dotnet.microsoft.com/live/dotnet-docs">.NET Docs Show</a> and ran through this blog post and much more. I&#39;ve added a <a href="https://www.youtube.com/watch?v=A93Fn_qMLX4">link to the show</a> on YouTube below.
 :::</p>
-<p>::: tip Updated 2020-09-08 09:46
-The GitHub CLI simplified some commands, so I&#39;ve updated the post to make use of those simpler commands.
+<p>::: tip Updated 2020-09-17 09:29
+Added GitHub CLI commands to create labels instead of doing it manually. The GitHub CLI also simplified some commands, so I&#39;ve updated the post to make use of those simpler commands.
 :::</p>
-<p>::: tip Updated 2020-07-08 12:16
-I forgot to mention how we can use labels to help automatically draft release notes, so I&#39;ve updated the post with a few extra screenshots and descriptions.
-:::</p>
+<p><a href="https://www.youtube.com/watch?v=A93Fn_qMLX4">https://www.youtube.com/watch?v=A93Fn_qMLX4</a></p>
 <p>So, you want to publish a new NuGet package? You just want to get your code up into nuget.org as quickly as possible but there is so much that you have to setup to get there. Not any more! I&#39;ll show you how you can create a new project and publish a NuGet package with all the bells and whistles in a <strong>couple of minutes</strong>.</p>
 <p>We&#39;ll start off by creating a new GitHub repository using the new <a href="https://github.com/cli/cli">GitHub CLI</a>.</p>
 <pre><code class="language-powershell">gh repo create RehanSaeed/FastestNuGet --public --confirm
