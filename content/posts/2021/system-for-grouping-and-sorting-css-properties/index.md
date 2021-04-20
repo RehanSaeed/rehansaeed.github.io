@@ -4,7 +4,7 @@ description: "Grouping and Sorting CSS properties can make your CSS easier to re
 author: "Muhammad Rehan Saeed"
 permalink: "/system-for-grouping-and-sorting-css-properties/"
 heroImage: "/images/hero/CSS-1600x900.png"
-date: "2021-04-20"
+date: "2021-04-20T10:00:00Z"
 dateModified: null
 published: true
 categories:
@@ -35,10 +35,10 @@ Here is an example of the four groups in real life:
 
 ```css
 .card {
-    // Parent Layout
+    /* Parent Layout */
     grid-area: card;
 
-    // Layout
+    /* Layout */
     display: grid;
     align-items: center;
     gap: 10px;
@@ -49,14 +49,14 @@ Here is an example of the four groups in real life:
     grid-template-rows: 1fr 1fr;
     justify-items: center;
 
-    // Box Model
+    /* Box Model */
     box-sizing: border-box;
     width: 100px;
     height: 100px;
     margin: 10px;
     padding: 10px;
 
-    // Positioning
+    /* Positioning */
     position: absolute;
     top: 0;
     right: 0;
@@ -64,7 +64,7 @@ Here is an example of the four groups in real life:
     left: 0;
     z-index: 10;
 
-    // Display
+    /* Display */
     background-color: red;
     border: 10px solid green;
     color: white;
@@ -80,24 +80,24 @@ The parent layout is any CSS layout properties that effect or come from the pare
 
 ```css
 .card {
-    // Parent Layout
+    /* Parent Layout */
     grid-area: card;
 
-    // ...
+    /* ... */
 }
 ```
 
 ## Layout
 
-CSS Layout properties determine how the contents of the CSS class will be layed out. The common case is that you're using CSS Grid or Flexbox and want to group their respective properties together where they make the most sense.
+CSS Layout properties determine how the contents of the CSS class will be layed out. The common case is that you're using CSS Grid or FlexBox and want to group their respective properties together where they make the most sense.
 
 I think it makes the most sense to start with the `display` property because that determines the type of layout followed by other properties in alphabetical order.
 
 ```css
 .card {
-    // ...
+    /* ... */
 
-    // Layout
+    /* Layout */
     display: grid;
     align-items: center;
     gap: 10px;
@@ -108,7 +108,7 @@ I think it makes the most sense to start with the `display` property because tha
     grid-template-rows: 1fr 1fr;
     justify-items: center;
 
-    // ...
+    /* ... */
 ```
 
 ## Box Model
@@ -117,16 +117,16 @@ CSS properties that affect the box model can come next. Again, I'm using alphabe
 
 ```css
 .card {
-    // ...
+    /* ... */
 
-    // Box Model
+    /* Box Model */
     box-sizing: border-box;
     margin: 10px;
     padding: 10px;
     width: 100px;
     height: 100px;
 
-    // ...
+    /* ... */
 ```
 
 ## Positioning
@@ -135,9 +135,9 @@ CSS properties related to `position` come next. Similar to `display`, we put the
 
 ```css
 .card {
-    // ...
+    /* ... */
 
-    // Positioning
+    /* Positioning */
     position: absolute;
     top: 0;
     right: 0;
@@ -145,7 +145,7 @@ CSS properties related to `position` come next. Similar to `display`, we put the
     left: 0;
     z-index: 10;
 
-    // ...
+    /* ... */
 ```
 
 ## Display
@@ -154,9 +154,9 @@ Finally, there are CSS display properties which affect the look and feel. This i
 
 ```css
 .card {
-    // ...
+    /* ... */
 
-    // Display
+    /* Display */
     background-color: red;
     border: 10px solid green;
     color: white;
