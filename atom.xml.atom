@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2021-04-19T09:05:11.389Z</updated>
+    <updated>2021-04-20T10:07:36.367Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -14,6 +14,143 @@
     <logo>https://rehansaeed.com/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg</logo>
     <icon>https://rehansaeed.com/favicon.ico</icon>
     <rights>Copyright © 2021 Muhammad Rehan Saeed</rights>
+    <entry>
+        <title type="html"><![CDATA[A System for Grouping & Sorting CSS Properties]]></title>
+        <id>https://rehansaeed.com/system-for-grouping-and-sorting-css-properties/</id>
+        <link href="https://rehansaeed.com/system-for-grouping-and-sorting-css-properties/"/>
+        <updated>2021-04-20T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Grouping and Sorting CSS properties can make your CSS easier to read and helps with consistency in a team environment. There is no correct answer but something is better than nothing.]]></summary>
+        <content type="html"><![CDATA[<p>There are no hard and fast rules for code style and as I&#39;ve <a href="https://rehansaeed.com/stop-brace-wars-use-stylecop/">written about before</a> it can get ugly when people have various opposing opinions on the subject. In CSS, which I&#39;m quite fond of writing, I believe the answer is mostly given to us by using <a href="https://prettier.io/">Prettier</a>, the opinionated code formatter. Unfortunately, Prettier does not sort CSS properties for you <a href="https://github.com/prettier/prettier/issues/1963">and never will</a>, so this post is one solution (<strong>not</strong> the correct solution because there is no correct solution).</p>
+<p>There are automated tools like <a href="https://github.com/hudochenkov/postcss-sorting">postcss-sorting</a> that can help with this but I think it&#39;d be difficult to use in real life because there will always be exceptions to the hard coded rules.</p>
+<p>But why even bother to group and sort CSS properties? Well, I think it makes sense for two reasons. The first is that it can make it quicker to quickly scan the CSS and find what you need. The second is that if you&#39;re working in a team environment, it can make it easier to work on CSS that has one over arching consistent style.</p>
+<h1 id="grouping-css-properties">Grouping CSS Properties</h1>
+<p>I believe you can split CSS properties into a few groups:</p>
+<ol>
+<li>Parent layout</li>
+<li>Layout</li>
+<li>Box Model</li>
+<li>Positioning</li>
+<li>Display</li>
+</ol>
+<p>Here is an example of the four groups in real life:</p>
+<pre><code class="language-css">.card {
+    // Parent Layout
+    grid-area: card;
+
+    // Layout
+    display: grid;
+    align-items: center;
+    gap: 10px;
+    grid-template-areas:
+        &quot;header header&quot;
+        &quot;content content&quot;;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    justify-items: center;
+
+    // Box Model
+    box-sizing: border-box;
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+    padding: 10px;
+
+    // Positioning
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+
+    // Display
+    background-color: red;
+    border: 10px solid green;
+    color: white;
+    font-family: sans-serif;
+    font-size: 16px;
+    text-align: center;
+}
+</code></pre>
+<h2 id="parent-layout">Parent Layout</h2>
+<p>The parent layout is any CSS layout properties that effect or come from the parent element. This usually boils down to <code>grid-area</code> if you&#39;re using <code>grid-template-areas</code> which you <a href="https://css-tricks.com/snippets/css/complete-guide-grid/#grid-template-areas">totally should</a> because it allows you to change the layout child elements without modifying the child elements CSS too much.</p>
+<pre><code class="language-css">.card {
+    // Parent Layout
+    grid-area: card;
+
+    // ...
+}
+</code></pre>
+<h2 id="layout">Layout</h2>
+<p>CSS Layout properties determine how the contents of the CSS class will be layed out. The common case is that you&#39;re using CSS Grid or Flexbox and want to group their respective properties together where they make the most sense.</p>
+<p>I think it makes the most sense to start with the <code>display</code> property because that determines the type of layout followed by other properties in alphabetical order.</p>
+<pre><code class="language-css">.card {
+    // ...
+
+    // Layout
+    display: grid;
+    align-items: center;
+    gap: 10px;
+    grid-template-areas:
+        &quot;header header&quot;
+        &quot;content content&quot;;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    justify-items: center;
+
+    // ...
+</code></pre>
+<h2 id="box-model">Box Model</h2>
+<p>CSS properties that affect the box model can come next. Again, I&#39;m using alphabetical order except for <code>width</code> and <code>height</code> where it makes more sense for them to go together with <code>width</code> always being first (there are a lot of exceptions to the rules in CSS).</p>
+<pre><code class="language-css">.card {
+    // ...
+
+    // Box Model
+    box-sizing: border-box;
+    margin: 10px;
+    padding: 10px;
+    width: 100px;
+    height: 100px;
+
+    // ...
+</code></pre>
+<h2 id="positioning">Positioning</h2>
+<p>CSS properties related to <code>position</code> come next. Similar to <code>display</code>, we put the position at the top and follow in alphabetical order. Again there is an exception to be made here with <code>top</code>, <code>right</code>, <code>bottom</code> and <code>left</code> which follow the order that <code>margin</code> and <code>padding</code> values take.</p>
+<pre><code class="language-css">.card {
+    // ...
+
+    // Positioning
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+
+    // ...
+</code></pre>
+<h2 id="display">Display</h2>
+<p>Finally, there are CSS display properties which affect the look and feel. This is also a kind of &#39;Other&#39; category where you can place remaining properties which don&#39;t make sense in other groups.</p>
+<pre><code class="language-css">.card {
+    // ...
+
+    // Display
+    background-color: red;
+    border: 10px solid green;
+    color: white;
+    font-family: sans-serif;
+    font-size: 16px;
+    text-align: center;
+}
+</code></pre>
+<h1 id="final-comments">Final Comments</h1>
+<p>This is just one method of grouping and ordering CSS properties that I&#39;ve found useful in real life projects. There is no correct answer to this problem and I think the problem space is probably too complex to make a tool like Prettier do the work for you because there will always be exceptions to the rules.</p>
+]]></content>
+        <author>
+            <name/>
+            <uri>https://rehansaeed.com</uri>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Exporting Open Telemetry Data to Jaeger]]></title>
         <id>https://rehansaeed.com/exporting-open-telemetry-data-to-jaeger/</id>
