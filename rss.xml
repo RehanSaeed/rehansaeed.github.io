@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Wed, 21 Apr 2021 10:55:44 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 21 Apr 2021 11:09:30 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -675,7 +675,8 @@ git push --set-upstream origin main
 <p>Next we need to create some default labels that we can apply to pull requests. This will help us create automatic release notes for any NuGet packages we release. The <code>bug</code>, <code>enhancement</code> and <code>maintenance</code> labels will categorise changes in our release notes. The <code>major</code>, <code>minor</code> and <code>patch</code> labels will automatically generate a semantic versioning 2.0 compliant version number for us.</p>
 <p><img src="https://rehansaeed.com/the-fastest-nuget-package-ever-published-probably/images/GitHub-Labels-1106x756.png" alt="GitHub Labels"></p>
 <p>I&#39;ve gone in to GitHub and deleted all the existing labels and then run a few GitHub CLI commands to create just the ones I want:</p>
-<pre><code class="language-powershell">gh api --silent repos/:owner/:repo/labels -f name=&quot;bug&quot; -f description=&quot;Issues describing a bug or pull requests fixing a bug.&quot; -f color=&quot;ee0701&quot;
+<pre><code class="language-powershell">gh api --silent repos/:owner/:repo/labels -f name=&quot;documentation&quot; -f description=&quot;Pull requests or issues to add or modify documentation.&quot; -f color=&quot;0075ca&quot;
+gh api --silent repos/:owner/:repo/labels -f name=&quot;bug&quot; -f description=&quot;Issues describing a bug or pull requests fixing a bug.&quot; -f color=&quot;ee0701&quot;
 gh api --silent repos/:owner/:repo/labels -f name=&quot;enhancement&quot; -f description=&quot;Issues describing an enhancement or pull requests adding an enhancement.&quot; -f color=&quot;a2eeef&quot;
 gh api --silent repos/:owner/:repo/labels -f name=&quot;maintenance&quot; -f description=&quot;Pull requests that perform maintenance on the project but add no features or bug fixes.&quot; -f color=&quot;fff89b&quot;
 gh api --silent repos/:owner/:repo/labels -f name=&quot;major&quot; -f description=&quot;Pull requests requiring a major version update according to semantic versioning.&quot; -f color=&quot;b23021&quot;
@@ -723,6 +724,7 @@ start &quot;https://github.com/RehanSaeed/FastestNuGet/packages&quot;
 
 # Create major, minor, patch, bug, enhancement, maintenance labels
 start &quot;https://github.com/RehanSaeed/FastestNuGet/labels&quot;
+gh api --silent repos/:owner/:repo/labels -f name=&quot;documentation&quot; -f description=&quot;Pull requests or issues to add or modify documentation.&quot; -f color=&quot;0075ca&quot;
 gh api --silent repos/:owner/:repo/labels -f name=&quot;bug&quot; -f description=&quot;Issues describing a bug or pull requests fixing a bug.&quot; -f color=&quot;ee0701&quot;
 gh api --silent repos/:owner/:repo/labels -f name=&quot;enhancement&quot; -f description=&quot;Issues describing an enhancement or pull requests adding an enhancement.&quot; -f color=&quot;a2eeef&quot;
 gh api --silent repos/:owner/:repo/labels -f name=&quot;maintenance&quot; -f description=&quot;Pull requests that perform maintenance on the project but add no features or bug fixes.&quot; -f color=&quot;fff89b&quot;
