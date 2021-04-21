@@ -26,7 +26,7 @@ describe("Smoke", () => {
     cy.get("h1#muhammad-rehan-saeed").should("be.visible");
 
     cy.get(".post-card__title").first().click();
-    cy.get("#muhammad-rehan-saeed").should("not.be.visible");
+    cy.get(".post-page__title-container").should("be.visible");
 
     cy.get(".tags__link").first().click();
     cy.get("h1").should("contain", "#");
