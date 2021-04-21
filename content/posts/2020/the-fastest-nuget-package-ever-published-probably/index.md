@@ -74,6 +74,7 @@ Next we need to create some default labels that we can apply to pull requests. T
 I've gone in to GitHub and deleted all the existing labels and then run a few GitHub CLI commands to create just the ones I want:
 
 ```powershell
+gh api --silent repos/:owner/:repo/labels -f name="documentation" -f description="Pull requests or issues to add or modify documentation." -f color="0075ca"
 gh api --silent repos/:owner/:repo/labels -f name="bug" -f description="Issues describing a bug or pull requests fixing a bug." -f color="ee0701"
 gh api --silent repos/:owner/:repo/labels -f name="enhancement" -f description="Issues describing an enhancement or pull requests adding an enhancement." -f color="a2eeef"
 gh api --silent repos/:owner/:repo/labels -f name="maintenance" -f description="Pull requests that perform maintenance on the project but add no features or bug fixes." -f color="fff89b"
@@ -143,6 +144,7 @@ start "https://github.com/RehanSaeed/FastestNuGet/packages"
 
 # Create major, minor, patch, bug, enhancement, maintenance labels
 start "https://github.com/RehanSaeed/FastestNuGet/labels"
+gh api --silent repos/:owner/:repo/labels -f name="documentation" -f description="Pull requests or issues to add or modify documentation." -f color="0075ca"
 gh api --silent repos/:owner/:repo/labels -f name="bug" -f description="Issues describing a bug or pull requests fixing a bug." -f color="ee0701"
 gh api --silent repos/:owner/:repo/labels -f name="enhancement" -f description="Issues describing an enhancement or pull requests adding an enhancement." -f color="a2eeef"
 gh api --silent repos/:owner/:repo/labels -f name="maintenance" -f description="Pull requests that perform maintenance on the project but add no features or bug fixes." -f color="fff89b"
