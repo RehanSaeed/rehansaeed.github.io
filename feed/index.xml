@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Tue, 27 Apr 2021 09:49:27 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 27 Apr 2021 16:17:54 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -46,7 +46,7 @@
 <h1 id="layout">Layout</h1>
 <p>I find that people have a lot of trouble laying out content the way they want. This is a huge topic but here are some basic things I found useful.</p>
 <h2 id="html">HTML</h2>
-<p>If you&#39;re HTML isn&#39;t great, you are going to have a tough time with your CSS. This is usually because there are lots of extra <code>div</code> or <code>span</code> elements that you don&#39;t need. Get your HTML right first and avoid adding HTML elements just to get the layout right.</p>
+<p>If your HTML isn&#39;t great, you are going to have a tough time with your CSS. This is usually because there are lots of extra <code>div</code> or <code>span</code> elements that you don&#39;t need. Get your HTML right first and avoid adding HTML elements just to get the layout right.</p>
 <p>It&#39;s also a good idea to learn about <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element">Semantic HTML</a>. Every HTML tag has a meaning for search engines and those who use assistive technologies like screen readers to navigate the web (there are more people using these than you think).</p>
 <h2 id="grid-vs-flexbox">Grid vs FlexBox</h2>
 <p>As a general rule <a href="https://css-tricks.com/snippets/css/complete-guide-grid/">CSS Grid</a> can cater to 80% of your layout needs, so learn it well. In particular pay close attention to <code>grid-template-areas</code> which is a little more verbose to setup but makes your CSS Grid layout much easier to read and makes it more flexible because changing the layout means only changing the CSS for the container instead of each and every child of the container.</p>
