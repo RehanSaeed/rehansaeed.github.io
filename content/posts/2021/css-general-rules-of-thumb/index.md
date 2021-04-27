@@ -53,7 +53,7 @@ I find that people have a lot of trouble laying out content the way they want. T
 
 ## HTML
 
-If you're HTML isn't great, you are going to have a tough time with your CSS. This is usually because there are lots of extra `div` or `span` elements that you don't need. Get your HTML right first and avoid adding HTML elements just to get the layout right.
+If your HTML isn't great, you are going to have a tough time with your CSS. This is usually because there are lots of extra `div` or `span` elements that you don't need. Get your HTML right first and avoid adding HTML elements just to get the layout right.
 
 It's also a good idea to learn about [Semantic HTML](https://developer.mozilla.org/en-US/docs/Web/HTML/Element). Every HTML tag has a meaning for search engines and those who use assistive technologies like screen readers to navigate the web (there are more people using these than you think).
 
