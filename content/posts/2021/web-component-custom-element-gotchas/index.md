@@ -50,7 +50,7 @@ The rendered HTML from these frameworks looks exactly the same as above. However
 
 # The Wrapper div
 
-The first gotcha we encounter is that we now have an extra HTML element that we don't actually need. The fix for this is simple, we can simply remove the wrapper `div` inside our component, so our code now becomes:
+The first gotcha we encounter is that we now have an extra HTML element that we don't actually need. Extra DOM elements, mean higher memory usage and slower performance. As I'll discuss in a moment, it can also mean a more complex layout. The fix for this is simple, we can simply remove the wrapper `div` inside our component, so our code now becomes:
 
 ```html
 <h1>Hello</h1>
