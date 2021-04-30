@@ -1,6 +1,6 @@
 ---
 title: "Web Component Custom Element Gotchas"
-description: ""
+description: "Web components have certain gotchas with relation to custom elements and CSS. This post goes through them all and shows how you can avoid them."
 author: "Muhammad Rehan Saeed"
 permalink: "/web-component-custom-element-gotchas/"
 heroImage: "/images/hero/Web-Components-1600x900.png"
