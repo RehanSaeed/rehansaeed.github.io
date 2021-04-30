@@ -17,7 +17,7 @@ tags:
 
 Recently I've been writing web components and found several gotchas that make working with them, that much more difficult. In this post, I'll describe some gotchas you can experience when using web components.
 
-This post is framework agnostic but I've been using a lightweight library called [FAST Element](https://www.fast.design/docs/fast-element/getting-started) built by Microsoft, it's similar to Google's [LitElement](https://lit-element.polymer-project.org/guide) in that it provides a very lightweight wrapper around native web component API's. Overall the experience has been interesting but I'm not sure I'm willing to give up on Vue just yet.
+This post is framework agnostic but I've been using a lightweight library called [FAST Element](https://www.fast.design/docs/fast-element/getting-started) built by Microsoft. It is similar to Google's [LitElement](https://lit-element.polymer-project.org/guide) in that it provides a very lightweight wrapper around native web component API's. Overall the experience has been interesting but I'm not sure I'm willing to give up on Vue just yet. This post was written based on my experiences with it.
 
 # Non-Web Components
 
