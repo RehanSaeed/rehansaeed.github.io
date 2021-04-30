@@ -43,6 +43,10 @@ You should add CSS classes to any HTML elements you want to add CSS styles to. T
 }
 ```
 
+## !important
+
+If you are using `!important` in your CSS, you are probably doing the wrong thing. It's usually used to force a particular style because a developer couldn't get the style to be applied in other ways that they tried. What you need to do instead is understand [CSS Specificity](https://css-tricks.com/specifics-on-css-specificity/). The problem you are having is probably because you have some styles elsewhere which are far too specific and are taking precedence. If you make these styles less specific, then should not need to use `!important`, except [in a few cases](https://css-tricks.com/when-using-important-is-the-right-choice/).
+
 ## CSS Code Style
 
 Keeping your CSS organised can help make reading it easier for yourself and others. Code style is a very subjective topic and everyone has their own opinions. I talk more about this [here](/system-for-grouping-and-sorting-css-properties/).
