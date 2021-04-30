@@ -8,11 +8,11 @@ date: "2014-02-08"
 dateModified: null
 published: true
 categories:
-  - "Tools"
+    - "Tools"
 tags:
-  - "C#"
-  - "standards"
-  - "StyleCop"
+    - "C#"
+    - "Standards"
+    - "StyleCop"
 ---
 
 There is an on-going war among developers. This silent war has claimed countless hours of developer time through hours wasted in pointless meetings and millions of small skirmishes over the style of each developers written code. This post outlines a peace treaty, a way forward if you will but first I will outline the problem.

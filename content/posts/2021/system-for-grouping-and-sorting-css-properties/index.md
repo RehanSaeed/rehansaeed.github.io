@@ -12,7 +12,7 @@ categories:
 tags:
     - "CSS"
     - "CSS Classes"
-    - "standards"
+    - "Standards"
 ---
 
 There are no hard and fast rules for code style and as I've [written about before](/stop-brace-wars-use-stylecop/) it can get ugly when people have various opposing opinions on the subject. In CSS, which I'm quite fond of writing, I believe the answer is mostly given to us by using [Prettier](https://prettier.io/), the opinionated code formatter. Unfortunately, Prettier does not sort CSS properties for you [and never will](https://github.com/prettier/prettier/issues/1963), so this post is one solution (**not** the correct solution because there is no correct solution).

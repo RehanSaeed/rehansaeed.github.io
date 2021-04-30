@@ -10,15 +10,15 @@ published: true
 series: "Reactive Extensions (Rx)"
 seriesOrder: 3
 categories:
-  - "Reactive Extensions (Rx)"
+    - "Reactive Extensions (Rx)"
 tags:
-  - ".NET"
-  - "C#"
-  - "Events"
-  - "Naming Convention"
-  - "Reactive Extensions"
-  - "Rx"
-  - "standards"
+    - ".NET"
+    - "C#"
+    - "Events"
+    - "Naming Convention"
+    - "Reactive Extensions"
+    - "Rx"
+    - "Standards"
 ---
 
 1. [Reactive Extensions (Rx) - Replacing C# Events](/reactive-extensions-part1-replacing-events/)

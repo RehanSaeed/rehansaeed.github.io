@@ -8,15 +8,15 @@ date: "2014-09-04"
 dateModified: null
 published: true
 categories:
-  - "C++"
-  - "SQL"
+    - "C++"
+    - "SQL"
 tags:
-  - "C#"
-  - "Naming Convention"
-  - "SQL"
-  - "standards"
-  - "StyleCop"
-  - "T-SQL"
+    - "C#"
+    - "Naming Convention"
+    - "SQL"
+    - "Standards"
+    - "StyleCop"
+    - "T-SQL"
 ---
 
 Code is written to be read by humans, not for machines so it makes sense that following some basic ground rules for the look and feel of your code could make your code easier to read and boost your productivity. This is particularly important if you work in teams where each developer can go off and write their code in entirely different ways. Reading these different styles hinders your productivity. In my opinion if you add up all the few extra seconds here and there, it all adds up to extra hours or even days wasted over the course of a year per developer.
