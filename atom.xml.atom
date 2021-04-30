@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2021-04-30T08:44:56.007Z</updated>
+    <updated>2021-04-30T10:04:16.324Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -40,6 +40,8 @@
 .button--big {
 }
 </code></pre>
+<h2 id="important">!important</h2>
+<p>If you are using <code>!important</code> in your CSS, you are probably doing the wrong thing. It&#39;s usually used to force a particular style because a developer couldn&#39;t get the style to be applied in other ways that they tried. What you need to do instead is understand <a href="https://css-tricks.com/specifics-on-css-specificity/">CSS Specificity</a>. The problem you are having is probably because you have some styles elsewhere which are far too specific and are taking precedence. If you make these styles less specific, then should not need to use <code>!important</code>, except <a href="https://css-tricks.com/when-using-important-is-the-right-choice/">in a few cases</a>.</p>
 <h2 id="css-code-style">CSS Code Style</h2>
 <p>Keeping your CSS organised can help make reading it easier for yourself and others. Code style is a very subjective topic and everyone has their own opinions. I talk more about this <a href="https://rehansaeed.com/system-for-grouping-and-sorting-css-properties/">here</a>.</p>
 <h1 id="layout">Layout</h1>
