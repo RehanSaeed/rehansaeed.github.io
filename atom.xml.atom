@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2021-04-30T11:26:09.654Z</updated>
+    <updated>2021-04-30T11:31:34.121Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -19,6 +19,7 @@
         <id>https://rehansaeed.com/web-component-custom-element-gotchas/</id>
         <link href="https://rehansaeed.com/web-component-custom-element-gotchas/"/>
         <updated>2021-04-30T12:12:00.000Z</updated>
+        <summary type="html"><![CDATA[Web components have certain gotchas with relation to custom elements and CSS. This post goes through them all and shows how you can avoid them.]]></summary>
         <content type="html"><![CDATA[<p>Recently I&#39;ve been writing web components and found several gotchas that make working with them, that much more difficult. In this post, I&#39;ll describe some gotchas you can experience when using web components.</p>
 <p>This post is framework agnostic but I&#39;ve been using a lightweight library called <a href="https://www.fast.design/docs/fast-element/getting-started">FAST Element</a> built by Microsoft, it&#39;s similar to Google&#39;s <a href="https://lit-element.polymer-project.org/guide">LitElement</a> in that it provides a very lightweight wrapper around native web component API&#39;s. Overall the experience has been interesting but I&#39;m not sure I&#39;m willing to give up on Vue just yet.</p>
 <h1 id="non-web-components">Non-Web Components</h1>
