@@ -15,6 +15,10 @@ tags:
     - "CSS"
 ---
 
+::: tip Update (04 May 2021)
+[Chris Holt](https://twitter.com/chrisdholt) from the [FAST UI](https://www.fast.design/docs/fast-element/getting-started) team at Microsoft got in touch with me with an alternative workaround to using a wrapper element when required to use a semantic HTML element like a `section`, so I've updated that section below.
+:::
+
 Recently I've been writing web components and found several gotchas that make working with them, that much more difficult. In this post, I'll describe some gotchas you can experience when using web components.
 
 This post is framework agnostic but I've been using a lightweight library called [FAST Element](https://www.fast.design/docs/fast-element/getting-started) built by Microsoft. It is similar to Google's [LitElement](https://lit-element.polymer-project.org/guide) in that it provides a very lightweight wrapper around native web component API's. Overall the experience has been interesting but I'm not sure I'm willing to give up on Vue just yet. This post was written based on my experiences with it.
@@ -109,6 +113,37 @@ In addition, if the content of your web component does not extend beyond the bou
 }
 
 .custom-component {
+    // ...
+}
+```
+
+# Template Element
+
+One alternative to using a `section` above pointed out by [Chris Holt](https://twitter.com/chrisdholt) is to use a `template` HTML element which gives you the ability to add custom HTML attributes to the `custom-component` element itself.
+
+```html
+<template role="section">
+    <h1>Hello</h1>
+    <p>World</p>
+</template>
+```
+
+Our HTML will now be rendered as:
+
+```html
+<custom-component role="section">
+    <h1>Hello</h1>
+    <p>World</p>
+</custom-component>
+```
+
+In the example above, I've added `role="section"` to tell search engines and screen readers to treat the `custom-component` HTML element like a `section` element. With this approach, we no longer have a wrapper HTML element which should help improve performance and lower memory usage (particularly on low powered phones). We also get the advantage of not having to add extra styles for the wrapper element. The downside is that we have to use the `role` attribute.
+
+```css
+:host {
+    display: block;
+
+    contain: paint;
     // ...
 }
 ```
