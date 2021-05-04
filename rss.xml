@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Fri, 30 Apr 2021 12:59:23 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 04 May 2021 09:28:15 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -21,7 +21,10 @@
             <guid>https://rehansaeed.com/web-component-custom-element-gotchas/</guid>
             <pubDate>Fri, 30 Apr 2021 12:12:00 GMT</pubDate>
             <description><![CDATA[Web components have certain gotchas with relation to custom elements and CSS. This post goes through them all and shows how you can avoid them.]]></description>
-            <content:encoded><![CDATA[<p>Recently I&#39;ve been writing web components and found several gotchas that make working with them, that much more difficult. In this post, I&#39;ll describe some gotchas you can experience when using web components.</p>
+            <content:encoded><![CDATA[<p>::: tip Update (04 May 2021)
+<a href="https://twitter.com/chrisdholt">Chris Holt</a> from the <a href="https://www.fast.design/docs/fast-element/getting-started">FAST UI</a> team at Microsoft got in touch with me with an alternative workaround to using a wrapper element when required to use a semantic HTML element like a <code>section</code>, so I&#39;ve updated that section below.
+:::</p>
+<p>Recently I&#39;ve been writing web components and found several gotchas that make working with them, that much more difficult. In this post, I&#39;ll describe some gotchas you can experience when using web components.</p>
 <p>This post is framework agnostic but I&#39;ve been using a lightweight library called <a href="https://www.fast.design/docs/fast-element/getting-started">FAST Element</a> built by Microsoft. It is similar to Google&#39;s <a href="https://lit-element.polymer-project.org/guide">LitElement</a> in that it provides a very lightweight wrapper around native web component API&#39;s. Overall the experience has been interesting but I&#39;m not sure I&#39;m willing to give up on Vue just yet. This post was written based on my experiences with it.</p>
 <h1 id="non-web-components">Non-Web Components</h1>
 <p>When writing a non-web component called <code>custom-component</code> using a framework like Vue, React or Angular, you quite often end up with HTML and CSS that looks like this:</p>
@@ -84,6 +87,27 @@
 }
 
 .custom-component {
+    // ...
+}
+</code></pre>
+<h1 id="template-element">Template Element</h1>
+<p>One alternative to using a <code>section</code> above pointed out by <a href="https://twitter.com/chrisdholt">Chris Holt</a> is to use a <code>template</code> HTML element which gives you the ability to add custom HTML attributes to the <code>custom-component</code> element itself.</p>
+<pre><code class="language-html">&lt;template role=&quot;section&quot;&gt;
+    &lt;h1&gt;Hello&lt;/h1&gt;
+    &lt;p&gt;World&lt;/p&gt;
+&lt;/template&gt;
+</code></pre>
+<p>Our HTML will now be rendered as:</p>
+<pre><code class="language-html">&lt;custom-component role=&quot;section&quot;&gt;
+    &lt;h1&gt;Hello&lt;/h1&gt;
+    &lt;p&gt;World&lt;/p&gt;
+&lt;/custom-component&gt;
+</code></pre>
+<p>In the example above, I&#39;ve added <code>role=&quot;section&quot;</code> to tell search engines and screen readers to treat the <code>custom-component</code> HTML element like a <code>section</code> element. With this approach, we no longer have a wrapper HTML element which should help improve performance and lower memory usage (particularly on low powered phones). We also get the advantage of not having to add extra styles for the wrapper element. The downside is that we have to use the <code>role</code> attribute.</p>
+<pre><code class="language-css">:host {
+    display: block;
+
+    contain: paint;
     // ...
 }
 </code></pre>
