@@ -21,7 +21,7 @@
     "url": "git+https://github.com/RehanSaeed/rehansaeed.github.io.git"
   },
   "dependencies": {
-    "@fontsource/audiowide": "4.2.2",
+    "@fontsource/audiowide": "4.3.0",
     "@vssue/api-github-v3": "1.4.7",
     "date-fns": "2.21.2",
     "dialog-polyfill": "0.5.6",
