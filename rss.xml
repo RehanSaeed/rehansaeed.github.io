@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Mon, 10 May 2021 09:06:28 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 10 May 2021 15:08:34 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -15,6 +15,41 @@
         </image>
         <copyright>Copyright © 2021 Muhammad Rehan Saeed</copyright>
         <atom:link href="https://rehansaeed.com/rss.xml" rel="self" type="application/rss+xml"/>
+        <item>
+            <title><![CDATA[Code Coverage & Frontend Testing]]></title>
+            <link>https://rehansaeed.com/code-coverage-and-frontend-testing/</link>
+            <guid>https://rehansaeed.com/code-coverage-and-frontend-testing/</guid>
+            <pubDate>Mon, 10 May 2021 11:23:00 GMT</pubDate>
+            <description><![CDATA[What is the correct level of code coverage for your project and what tools are best for quickly writing unit and integration tests for a frontend application.]]></description>
+            <content:encoded><![CDATA[<p>I was recently asked an interesting question about unit test code coverage and frontend testing by a colleague:</p>
+<blockquote>
+<p>Policies describe 80% plus unit test coverage and our React devs are pushing back a lot, arguing there is little logic in React and it would be a wast of time.
+Rehan any advice/pointer for us on this?</p>
+</blockquote>
+<p>Code coverage in tests is always a controversial topic with developers in which I don&#39;t think there is a &#39;correct&#39; answer. The answer you&#39;re going to get from most people is &#39;it depends&#39; 🤷🏼.</p>
+<p>If you&#39;re developing a mars rover where one bad line of code could mean mission over or flight navigation software, go ahead and go for 100% code coverage, let alone 80%. The question is, how tolerant are you to the risk of a bug in the front end React code? If something doesn&#39;t work, how long will it take you to fix it and how much will that cost you versus the cost of writing extra tests?</p>
+<h1 id="jest">Jest</h1>
+<p>Specifically regarding frontend unit testing, my team has been using <a href="https://jestjs.io/">Jest</a> which is an excellent unit testing framework built by Facebook which I highly recommend. Jest is special because it&#39;s a single NPM package with everything you need rolled into it, including an assertion library, mocking framework and code coverage tools.</p>
+<p>To reduce the burden of writing tests you can leverage snapshot testing. A snapshot test takes very few lines of code to write and generates a file containing the rendered HTML for a Vue/React/Angular/Web/Other component. My team writes at least one snapshot test for every component we write and it hasn&#39;t been too onerous for us.</p>
+<p>I just ran the code coverage tool built into Jest on one of our projects and it came to 78.7% coverage. It&#39;s worth mentioning that our projects are mostly very simple and don&#39;t contain much complex branching logic. Jest also allows you to set a code coverage limit which will fail a build if code coverage drops below a certain level set by you. Here is an example of configuring Jest that in your <code>package.json</code> file to do just that:</p>
+<pre><code class="language-json">&quot;jest&quot;: {
+  &quot;coverageThreshold&quot;: {
+    &quot;global&quot;: {
+      &quot;branches&quot;: 70,
+      &quot;functions&quot;: 70,
+      &quot;lines&quot;: 70,
+      &quot;statements&quot;: -10
+    }
+  }
+}
+</code></pre>
+<h1 id="cypress">Cypress</h1>
+<p>In addition, if you want a robust system, it&#39;s also worth setting up some integration or functional tests. I recommend a tool called <a href="https://www.cypress.io/">Cypress</a> for this job. According to the testing pyramid you need fewer of these tests as compared to unit tests as they can be more brittle.</p>
+<p><img src="https://rehansaeed.com/code-coverage-and-frontend-testing/images/Test-Pyramid-800x400.png" alt="Testing Pyramid showing UI, Service and Unit Tests in that order"></p>
+<p>I&#39;ve found them very useful for making sure that you don&#39;t release something completely broken (happens more often in the wild than any dev would like you to think). In fact, I use Cypress for this very blog to verify every commit to make sure I don&#39;t accidentally break it.</p>
+]]></content:encoded>
+            <enclosure url="https://rehansaeed.com/images/hero/Jest-Cypress-1600x900.png" length="0" type="image/png"/>
+        </item>
         <item>
             <title><![CDATA[Web Component Custom Element Gotchas]]></title>
             <link>https://rehansaeed.com/web-component-custom-element-gotchas/</link>
