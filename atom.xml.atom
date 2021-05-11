@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2021-05-11T08:27:09.918Z</updated>
+    <updated>2021-05-11T09:57:37.066Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -140,12 +140,34 @@ Rehan any advice/pointer for us on this?</p>
     &lt;p&gt;World&lt;/p&gt;
 &lt;/custom-component&gt;
 </code></pre>
-<p>In the example above, I&#39;ve added <code>role=&quot;section&quot;</code> to tell search engines and screen readers to treat the <code>custom-component</code> HTML element like a <code>section</code> element. With this approach, we no longer have a wrapper HTML element which should help improve performance and lower memory usage (particularly on low powered phones). We also get the advantage of not having to add extra styles for the wrapper element. The downside is that we have to use the <code>role</code> attribute.</p>
+<p>In the example above, I&#39;ve added <code>role=&quot;section&quot;</code> to tell search engines and screen readers to treat the <code>custom-component</code> HTML element like a <code>section</code> element. With this approach, we no longer have a wrapper HTML element which should help improve performance and lower memory usage (particularly on low powered phones). We also get the advantage of not having to add extra styles for the wrapper element. One downside is that we have to use the <code>role</code> attribute.</p>
 <pre><code class="language-css">:host {
     display: block;
 
     contain: paint;
     // ...
+}
+</code></pre>
+<p>Another downside of this approach I discovered when trying to write a custom button component is that some CSS pseudo-selectors like <code>:disabled</code> will not work:</p>
+<pre><code class="language-html">&lt;custom-button role=&quot;button&quot;&gt;
+    &lt;slot&gt;&lt;/slot&gt;
+&lt;/custom-button&gt;
+</code></pre>
+<pre><code class="language-css">:host(:disabled) {
+    // This will not work.
+    color: red;
+}
+</code></pre>
+<p>You have to fallback to using a HTML <code>button</code> element instead which lights up the <code>:disabled</code> pseudo-selector:</p>
+<pre><code class="language-html">&lt;custom-button&gt;
+    &lt;button class=&quot;custom-button&quot;&gt;
+        &lt;slot&gt;&lt;/slot&gt;
+    &lt;/button&gt;
+&lt;/custom-button&gt;
+</code></pre>
+<pre><code class="language-css">.custom-button:disabled {
+    // This will work.
+    color: red;
 }
 </code></pre>
 <h1 id="final-thoughts">Final Thoughts</h1>
