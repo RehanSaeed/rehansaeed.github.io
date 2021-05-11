@@ -137,7 +137,7 @@ Our HTML will now be rendered as:
 </custom-component>
 ```
 
-In the example above, I've added `role="section"` to tell search engines and screen readers to treat the `custom-component` HTML element like a `section` element. With this approach, we no longer have a wrapper HTML element which should help improve performance and lower memory usage (particularly on low powered phones). We also get the advantage of not having to add extra styles for the wrapper element. The downside is that we have to use the `role` attribute.
+In the example above, I've added `role="section"` to tell search engines and screen readers to treat the `custom-component` HTML element like a `section` element. With this approach, we no longer have a wrapper HTML element which should help improve performance and lower memory usage (particularly on low powered phones). We also get the advantage of not having to add extra styles for the wrapper element. One downside is that we have to use the `role` attribute.
 
 ```css
 :host {
@@ -145,6 +145,38 @@ In the example above, I've added `role="section"` to tell search engines and scr
 
     contain: paint;
     // ...
+}
+```
+
+Another downside of this approach I discovered when trying to write a custom button component is that some CSS pseudo-selectors like `:disabled` will not work:
+
+```html
+<custom-button role="button">
+    <slot></slot>
+</custom-button>
+```
+
+```css
+:host(:disabled) {
+    // This will not work.
+    color: red;
+}
+```
+
+You have to fallback to using a HTML `button` element instead which lights up the `:disabled` pseudo-selector:
+
+```html
+<custom-button>
+    <button class="custom-button">
+        <slot></slot>
+    </button>
+</custom-button>
+```
+
+```css
+.custom-button:disabled {
+    // This will work.
+    color: red;
 }
 ```
 
