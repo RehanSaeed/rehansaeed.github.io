@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2021-05-17T09:42:10.214Z</updated>
+    <updated>2021-05-17T10:41:37.122Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -188,6 +188,21 @@ Rehan any advice/pointer for us on this?</p>
 <p>In this post, I wanted to give some super simple general rules of thumb that developers who are new to CSS can follow and get pretty far fairly quickly. I also wanted a public resource I could point to when I was reviewing CSS in pull requests. As these are rules of thumb, they won&#39;t be applicable everywhere but they should work in the general case.</p>
 <h1 id="standards">Standards</h1>
 <p>There are lots of ways of doing things in CSS. Here are some friendly defaults that make a good start.</p>
+<h2 id="css-type-selectors">CSS Type Selectors</h2>
+<p>Using <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Type_selectors">CSS type selectors</a> that target a specific HTML tag makes your CSS brittle. If someone decides to change the tag used in their HTML, your CSS will also need to be changed.</p>
+<pre><code class="language-html">&lt;div&gt;&lt;/div&gt;
+</code></pre>
+<pre><code class="language-css">div {
+    color: red;
+}
+</code></pre>
+<p>A better way is to use <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Class_selectors">CSS class selectors</a> which will decouple your HTML from your CSS.</p>
+<pre><code class="language-html">&lt;div class=&quot;foo&quot;&gt;&lt;/div&gt;
+</code></pre>
+<pre><code class="language-css">.foo {
+    color: red;
+}
+</code></pre>
 <h2 id="block-element-modifier-bem">Block Element Modifier (BEM)</h2>
 <p>You should add CSS classes to any HTML elements you want to add CSS styles to. This means coming up with a naming convention for these CSS class names. <a href="https://css-tricks.com/bem-101/">Block Element Modifier (BEM)</a> is a great naming convention to get you started. It&#39;s worth noting that there are many conventions out there, the key is to pick one and stay consistent.</p>
 <pre><code class="language-css">/* Block component */
