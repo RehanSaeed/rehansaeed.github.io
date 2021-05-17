@@ -23,6 +23,32 @@ In this post, I wanted to give some super simple general rules of thumb that dev
 
 There are lots of ways of doing things in CSS. Here are some friendly defaults that make a good start.
 
+## CSS Type Selectors
+
+Using [CSS type selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/Type_selectors) that target a specific HTML tag makes your CSS brittle. If someone decides to change the tag used in their HTML, your CSS will also need to be changed.
+
+```html
+<div></div>
+```
+
+```css
+div {
+    color: red;
+}
+```
+
+A better way is to use [CSS class selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/Class_selectors) which will decouple your HTML from your CSS.
+
+```html
+<div class="foo"></div>
+```
+
+```css
+.foo {
+    color: red;
+}
+```
+
 ## Block Element Modifier (BEM)
 
 You should add CSS classes to any HTML elements you want to add CSS styles to. This means coming up with a naming convention for these CSS class names. [Block Element Modifier (BEM)](https://css-tricks.com/bem-101/) is a great naming convention to get you started. It's worth noting that there are many conventions out there, the key is to pick one and stay consistent.
