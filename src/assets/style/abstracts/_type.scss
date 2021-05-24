@@ -18,7 +18,10 @@ $font-size-maximum: 1.25em; // 20px
           #{$min-font-size} + #{functions.strip-unit(
               $max-font-size - $min-font-size
             )} *
-            ((100vw - #{$min-vw}) / #{functions.strip-unit($max-vw - $min-vw)})
+            math.div(
+              100vw - #{$min-vw},
+              #{functions.strip-unit($max-vw - $min-vw)}
+            )
         );
       }
       @media (min-width: $max-vw) {
