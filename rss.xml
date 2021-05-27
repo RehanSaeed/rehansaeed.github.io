@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Thu, 27 May 2021 09:34:24 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 27 May 2021 10:17:21 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -15,6 +15,31 @@
         </image>
         <copyright>Copyright © 2021 Muhammad Rehan Saeed</copyright>
         <atom:link href="https://rehansaeed.com/rss.xml" rel="self" type="application/rss+xml"/>
+        <item>
+            <title><![CDATA[.NET Boxed Visual Studio Integration]]></title>
+            <link>https://rehansaeed.com/dotnet-boxed-visual-studio-integration/</link>
+            <guid>https://rehansaeed.com/dotnet-boxed-visual-studio-integration/</guid>
+            <pubDate>Thu, 27 May 2021 11:00:00 GMT</pubDate>
+            <description><![CDATA[You can now create .NET Boxed projects directly from Visual Studio. Here's a short post showing you how.]]></description>
+            <content:encoded><![CDATA[<p>A few weeks ago <a href="https://www.hanselman.com/blog/dotnet-boxed-includes-prescriptive-templates-for-net-core">Scott Hanselman blogged</a> about creating <code>dotnet new</code> based projects directly from Visual Studio. Unfortunately, at that time Visual Studio 16.9 didn&#39;t properly support full solution templates and only supported project templates.</p>
+<p>Happily, Microsoft just released <a href="https://devblogs.microsoft.com/visualstudio/visual-studio-2019-v16-10-and-v16-11-preview-1-are-available-today/">Visual Studio 16.10</a> and one of the things they didn&#39;t talk about was that it now adds a user interface for creating solutions from <code>dotnet new</code> templates.</p>
+<p>Given that I author the <a href="https://github.com/Dotnet-Boxed/Templates">.NET Boxed</a> solution and item templates, I thought I&#39;d run through how it&#39;s done.</p>
+<h1 id="step-by-step">Step by Step</h1>
+<p>The first step is to install a <code>dotnet new</code> based solution/project/item template NuGet package. Sadly, this step is still command line only but there are plans to add a UI so you can search for and install templates all through Visual Studio.</p>
+<pre><code class="language-powershell">dotnet new --install Boxed.Templates
+</code></pre>
+<p>Next we can fire up Visual Studio and go to the &#39;New Project&#39; dialogue. You can select &#39;.NET Boxed&#39; from the &#39;Project type&#39; menu on the top right to see all .NET Boxed project templates.</p>
+<p><img src="https://rehansaeed.com/dotnet-boxed-visual-studio-integration/images/NewProject-1536x1020.png" alt="Visual Studio new project dialogue"></p>
+<p>The next step is where we can give the project a name as usual and decide where we want to store it on disk.</p>
+<p><img src="https://rehansaeed.com/dotnet-boxed-visual-studio-integration/images/ConfigureProject-1536x1020.png" alt="Visual Studio configure project dialogue"></p>
+<p>Finally, we get to the new interesting bit, where we can select from the many options that .NET Boxed templates provide:</p>
+<p><img src="https://rehansaeed.com/dotnet-boxed-visual-studio-integration/images/AdditionalInformation-1536x1942.png" alt="Visual Studio additional information dialogue"></p>
+<p>Finally, we can hit &#39;Create&#39; and start getting productive in Visual Studio.</p>
+<p><img src="https://rehansaeed.com/dotnet-boxed-visual-studio-integration/images/VisualStudio-2256x1455.png" alt="New Visual Studio solution"></p>
+<p>That&#39;s it! Simple isn&#39;t it.</p>
+]]></content:encoded>
+            <enclosure url="https://rehansaeed.com/images/hero/Visual-Studio-1366x768.png" length="0" type="image/png"/>
+        </item>
         <item>
             <title><![CDATA[Code Coverage & Frontend Testing]]></title>
             <link>https://rehansaeed.com/code-coverage-and-frontend-testing/</link>
