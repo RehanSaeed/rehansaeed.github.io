@@ -171,7 +171,7 @@ module.exports = {
           {
             typeName: "post",
             indexName: "post",
-            fields: ["title", "description", "heroImage"],
+            fields: ["title", "description", "heroImage", "permalink"],
           },
           {
             typeName: "portfolio",
