@@ -45,6 +45,7 @@ indent_size = 2
 
 # Markdown Files
 [*.md]
+indent_size = 2
 trim_trailing_whitespace = false
 
 # Web Files

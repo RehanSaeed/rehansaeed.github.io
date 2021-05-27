@@ -8,15 +8,15 @@ date: "2018-05-13"
 dateModified: null
 published: true
 categories:
-    - "Open Source"
+  - "Open Source"
 tags:
-    - ".NET Boxed"
-    - ".NET Core"
-    - "API"
-    - "ASP.NET Core"
-    - "ASP.NET Core Boilerplate"
-    - "GraphQL"
-    - "Swagger"
+  - ".NET Boxed"
+  - ".NET Core"
+  - "API"
+  - "ASP.NET Core"
+  - "ASP.NET Core Boilerplate"
+  - "GraphQL"
+  - "Swagger"
 ---
 
 [.NET Boxed](https://github.com/Dotnet-Boxed/Templates) is a set of project templates with batteries included, providing the minimum amount of code required to get you going faster. Right now it includes API and GraphQL project templates.
