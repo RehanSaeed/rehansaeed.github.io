@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Tue, 08 Jun 2021 09:20:42 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 08 Jun 2021 09:55:20 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -1740,7 +1740,7 @@ public class MapTo
 }
 </code></pre>
 <p>The implementation for an object mapper using the .NET Boxed Mapper is shown below. Note the <code>IMapper</code> interface which is the heart of the .NET Boxed Mapper. There is also an <code>IAsyncMapper</code> if for any reason you need to map between two objects asynchronously, the only difference being that it returns a <code>Task</code>.</p>
-<pre><code class="language-cs">public class DemoMapper : IMapper
+<pre><code class="language-cs">public class DemoMapper : IMapper&lt;MapFrom, MapTo&gt;
 {
     public void Map(MapFrom source, MapTo destination)
     {

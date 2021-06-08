@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2021-06-08T09:20:42.896Z</updated>
+    <updated>2021-06-08T09:55:20.833Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -1802,7 +1802,7 @@ public class MapTo
 }
 </code></pre>
 <p>The implementation for an object mapper using the .NET Boxed Mapper is shown below. Note the <code>IMapper</code> interface which is the heart of the .NET Boxed Mapper. There is also an <code>IAsyncMapper</code> if for any reason you need to map between two objects asynchronously, the only difference being that it returns a <code>Task</code>.</p>
-<pre><code class="language-cs">public class DemoMapper : IMapper
+<pre><code class="language-cs">public class DemoMapper : IMapper&lt;MapFrom, MapTo&gt;
 {
     public void Map(MapFrom source, MapTo destination)
     {
