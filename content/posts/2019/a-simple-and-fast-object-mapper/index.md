@@ -83,7 +83,7 @@ public class MapTo
 The implementation for an object mapper using the .NET Boxed Mapper is shown below. Note the `IMapper` interface which is the heart of the .NET Boxed Mapper. There is also an `IAsyncMapper` if for any reason you need to map between two objects asynchronously, the only difference being that it returns a `Task`.
 
 ```cs
-public class DemoMapper : IMapper
+public class DemoMapper : IMapper<MapFrom, MapTo>
 {
     public void Map(MapFrom source, MapTo destination)
     {
