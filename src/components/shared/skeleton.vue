@@ -59,17 +59,22 @@ export default {
 
 <style lang="scss">
 .skeleton {
-  animation: skeleton-animation 2s infinite linear;
-  background: linear-gradient(
-      to right,
-      var(--global-skeleton-light-color) 0%,
-      var(--global-skeleton-dark-color) 30%,
-      var(--global-skeleton-dark-color) 70%,
-      var(--global-skeleton-light-color) 100%
-    )
-    0 0 / 200% 100% var(--global-skeleton-dark-color);
+  background: var(--global-skeleton-dark-color);
+  cursor: progress;
   overflow: hidden;
   position: relative;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: skeleton-animation 2s infinite linear;
+    background: linear-gradient(
+        to right,
+        var(--global-skeleton-light-color) 0%,
+        var(--global-skeleton-dark-color) 30%,
+        var(--global-skeleton-dark-color) 70%,
+        var(--global-skeleton-light-color) 100%
+      )
+      0 0 / 200% 100% var(--global-skeleton-dark-color);
+  }
 
   @keyframes skeleton-animation {
     100% {
