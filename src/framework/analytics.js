@@ -48,3 +48,21 @@ export function appThemeChanged(theme) {
     ga("send", "event", "app-theme", "theme-changed", theme);
   }
 }
+
+export function searchOpened() {
+  if (ga) {
+    ga("send", "event", "search", "search-opened");
+  }
+}
+
+export function searchClosed() {
+  if (ga) {
+    ga("send", "event", "search", "search-closed");
+  }
+}
+
+export function searchResultSelected(query) {
+  if (ga) {
+    ga("send", "event", "search", "search-result-selected", query);
+  }
+}

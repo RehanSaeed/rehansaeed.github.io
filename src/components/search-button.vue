@@ -18,7 +18,7 @@
       <u-search
         :is-open="isOpen"
         :search="this.$route.query.search"
-        @selected="onClose"
+        @selected="onSelected"
       />
     </u-dialogue>
   </div>
@@ -29,6 +29,11 @@ import button from "~/components/shared/button.vue";
 import dialogue from "~/components/shared/dialogue.vue";
 import iconSearch from "~/components/shared/icons/icon-search.vue";
 import search from "~/components/search.vue";
+import {
+  searchOpened,
+  searchClosed,
+  searchResultSelected,
+} from "~/framework/analytics";
 
 // TODO: Add 'find' and '/' keyup event handlers.
 
@@ -48,9 +53,18 @@ export default {
   methods: {
     onOpen() {
       this.isOpen = true;
+      searchOpened();
+      console.log("search opened");
     },
     onClose() {
       this.isOpen = false;
+      searchClosed();
+      console.log("search closed");
+    },
+    onSelected(searchTerm) {
+      this.isOpen = false;
+      searchResultSelected(searchTerm);
+      console.log("search executed", searchTerm);
     },
   },
   mounted() {
