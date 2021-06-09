@@ -11,6 +11,23 @@
   "display": "standalone",
   "theme_color": "#6b17e8",
   "background_color": "#f2f4f7",
+  "screenshots": [
+    {
+      "src": "/images/screenshots/screenshot1-586x1041.png",
+      "sizes": "586x1041",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/screenshots/screenshot2-586x1041.png",
+      "sizes": "586x1041",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/screenshots/screenshot3-586x1041.png",
+      "sizes": "586x1041",
+      "type": "image/png"
+    }
+  ],
   "icons": [
     {
       "src": "assets/static/favicon-512x512.png",
