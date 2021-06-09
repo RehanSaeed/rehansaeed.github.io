@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     onSelected() {
-      this.$emit("selected");
+      this.$emit("selected", this.searchTerm);
     },
   },
   watch: {
