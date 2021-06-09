@@ -11,9 +11,7 @@
 
 <script>
 import button from "~/components/shared/button.vue";
-import dialogue from "~/components/shared/dialogue.vue";
 import iconAddHome from "~/components/shared/icons/icon-add-home.vue";
-import search from "~/components/search.vue";
 
 export default {
   name: "u-install-button",
