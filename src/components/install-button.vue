@@ -12,6 +12,13 @@
 <script>
 import button from "~/components/shared/button.vue";
 import iconAddHome from "~/components/shared/icons/icon-add-home.vue";
+import {
+  pwaInstallPromoShown,
+  pwaInstallPromoClicked,
+  pwaInstallAppInstalled,
+  appLaunchDomContentLoaded,
+  appLaunchDisplayModeChanged,
+} from "~/framework/analytics";
 
 export default {
   name: "u-install-button",
@@ -22,30 +29,51 @@ export default {
   data() {
     return {
       deferredPrompt: undefined,
+      displayModeMediaQuery: undefined,
+      installSource: undefined,
       isVisible: false,
     };
   },
   methods: {
     async onInstall() {
       this.isVisible = false;
+      this.installSource = "install-button";
+
       this.deferredPrompt.prompt();
       const choiceResult = await this.deferredPrompt.userChoice;
+
+      pwaInstallPromoClicked(
+        this.installSource,
+        choiceResult.outcome === "accepted"
+      );
+
       if (choiceResult.outcome === "accepted") {
+        this.deferredPrompt = undefined;
         console.log("PWA Installed");
       } else {
+        this.installSource = undefined;
         console.log("PWA Install Declined");
       }
     },
     onAppInstalled(e) {
       this.isVisible = false;
+      this.deferredPrompt = undefined;
+
+      if (document.visibilityState !== "visible") {
+        return;
+      }
+
       console.log("PWA Installed");
+      pwaInstallAppInstalled(this.installSource);
     },
     onBeforeInstallPrompt(e) {
       // Prevent the mini-infobar from appearing on mobile
       // e.preventDefault();
       this.deferredPrompt = e;
       this.isVisible = true;
+
       console.log("PWA Installable");
+      pwaInstallPromoShown();
     },
     onDomContentLoaded() {
       let displayMode = "browser tab";
@@ -56,15 +84,16 @@ export default {
         displayMode = "standalone";
       }
       console.log("PWA launched with display mode:", displayMode);
-
-      window.matchMedia("(display-mode: standalone)").addListener((evt) => {
-        let displayMode = "browser tab";
-        if (evt.matches) {
-          displayMode = "standalone";
-        }
-        console.log("PWA display mode changed:", displayMode);
-      });
+      appLaunchDomContentLoaded(displayMode);
     },
+  },
+  onDisplayModeChanged(e) {
+    let displayMode = "browser tab";
+    if (e.matches) {
+      displayMode = "standalone";
+    }
+    console.log("PWA display mode changed:", displayMode);
+    appLaunchDisplayModeChanged(displayMode);
   },
   mounted() {
     if (window) {
@@ -74,6 +103,14 @@ export default {
         this.onBeforeInstallPrompt
       );
       window.addEventListener("DOMContentLoaded", this.onDomContentLoaded);
+
+      this.displayModeMediaQuery = window.matchMedia(
+        "(display-mode: standalone)"
+      );
+      this.displayModeMediaQuery.addEventListener(
+        "change",
+        this.onDisplayModeChanged
+      );
     }
   },
   unmounted() {
@@ -84,6 +121,11 @@ export default {
         this.onBeforeInstallPrompt
       );
       window.removeEventListener("DOMContentLoaded", this.onDomContentLoaded);
+
+      this.displayModeMediaQuery.removeEventListener(
+        "change",
+        this.onDisplayModeChanged
+      );
     }
   },
 };
