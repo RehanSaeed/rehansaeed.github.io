@@ -1,8 +1,8 @@
 <template>
   <portal to="body">
     <dialog
+      :id="id"
       class="dialog"
-      ref="dialog"
       @close="close"
       :class="{ 'dialog--fullscreen': fullscreen }"
     >
@@ -24,9 +24,11 @@
 </template>
 
 <script>
+import dialogPolyfill from "dialog-polyfill";
 import button from "~/components/shared/button.vue";
 import heading from "~/components/shared/heading.vue";
 import iconClose from "~/components/shared/icons/icon-close.vue";
+import { guid } from "~/framework/guid.js";
 
 export default {
   name: "u-dialogue",
@@ -34,6 +36,11 @@ export default {
     "u-button": button,
     "u-heading": heading,
     "u-icon-close": iconClose,
+  },
+  data() {
+    return {
+      id: `dialogue-${guid()}`,
+    };
   },
   props: {
     fullscreen: {
@@ -50,17 +57,15 @@ export default {
   },
   computed: {
     dialog() {
-      return this.$refs.dialog;
+      return document.getElementById(this.id);
     },
   },
   watch: {
     isOpen() {
-      if (this.dialog) {
-        if (this.isOpen) {
-          this.dialog.showModal();
-        } else {
-          this.dialog.close();
-        }
+      if (this.isOpen) {
+        this.dialog.showModal();
+      } else {
+        this.dialog.close();
       }
     },
   },
@@ -78,7 +83,6 @@ export default {
 
     this.$nextTick().then(
       this.$nextTick(() => {
-        const dialogPolyfill = require("dialog-polyfill").default;
         dialogPolyfill.registerDialog(this.dialog);
       })
     );
