@@ -202,6 +202,9 @@ export default {
 
 .webmentions {
   display: grid;
+
+  content-visibility: auto;
+  contain-intrinsic-size: 704px;
 }
 
 .webmentions__title {

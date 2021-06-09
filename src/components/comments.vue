@@ -33,6 +33,11 @@ export default {
 <style lang="scss">
 @use "~/assets/style/abstracts/type";
 
+.comments {
+  content-visibility: auto;
+  contain-intrinsic-size: 427px;
+}
+
 .comments__title {
   margin-top: 0;
 }

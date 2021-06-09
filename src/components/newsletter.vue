@@ -32,7 +32,7 @@
         aria-hidden="true"
         type="text"
         name="b_0d1d7c30db26dd0a4aa1b5b40_07ce865066"
-        style="position: absolute; left: -5000px;"
+        style="position: absolute; left: -5000px"
         tabindex="-1"
         value
       />
@@ -67,6 +67,11 @@ query {
 </static-query>
 
 <style lang="scss">
+.newsletter {
+  content-visibility: auto;
+  contain-intrinsic-size: 354px;
+}
+
 .newsletter__form {
   display: grid;
   grid-template-columns: 1fr auto auto 1fr;
