@@ -13,6 +13,7 @@
 import button from "~/components/shared/button.vue";
 import iconMoon from "~/components/shared/icons/icon-moon.vue";
 import iconSun from "~/components/shared/icons/icon-sun.vue";
+import { appThemeChanged, appThemeLoaded } from "~/framework/analytics";
 
 export default {
   name: "u-theme-button",
@@ -26,18 +27,27 @@ export default {
       darkTheme: false,
     };
   },
+  computed: {
+    theme() {
+      return this.darkTheme ? "dark" : "light";
+    },
+  },
   methods: {
     onToggleTheme() {
       this.darkTheme = !this.darkTheme;
 
       // This is using a script that is added in index.html
-      window.__setPreferredTheme(this.darkTheme ? "dark" : "light");
+      window.__setPreferredTheme(this.theme);
+
+      appThemeChanged(this.theme);
     },
   },
   mounted() {
     if (window.__theme == "dark") {
       this.darkTheme = true;
     }
+
+    appThemeLoaded(this.theme);
   },
 };
 </script>

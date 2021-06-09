@@ -36,3 +36,15 @@ export function appLaunchDisplayModeChanged(displayMode) {
     ga("send", "event", "app-launch", "display-mode-changed", displayMode);
   }
 }
+
+export function appThemeLoaded(theme) {
+  if (ga) {
+    ga("send", "event", "app-theme", "theme-loaded", theme);
+  }
+}
+
+export function appThemeChanged(theme) {
+  if (ga) {
+    ga("send", "event", "app-theme", "theme-changed", theme);
+  }
+}
