@@ -26,7 +26,7 @@ export default {
   },
   computed: {
     commentWidth() {
-      return this.width - 75;
+      return Math.min(0, this.width - 75);
     },
     viewBox() {
       return `0 0 ${this.width} 92`;
