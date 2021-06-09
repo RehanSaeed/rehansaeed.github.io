@@ -24,7 +24,6 @@
 </template>
 
 <script>
-import dialogPolyfill from "dialog-polyfill";
 import button from "~/components/shared/button.vue";
 import heading from "~/components/shared/heading.vue";
 import iconClose from "~/components/shared/icons/icon-close.vue";
@@ -83,6 +82,7 @@ export default {
 
     this.$nextTick().then(
       this.$nextTick(() => {
+        const dialogPolyfill = require("dialog-polyfill").default;
         dialogPolyfill.registerDialog(this.dialog);
       })
     );
