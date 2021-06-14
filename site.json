@@ -51,6 +51,9 @@
     },
     "paypal": {
       "url": "https://www.paypal.me/MuhammadRehanSaeed"
+    },
+    "twitch": {
+      "url": "https://www.twitch.tv/rehansaeeduk"
     }
   }
 }
