@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2021-06-16T15:06:13.748Z</updated>
+    <updated>2021-06-16T20:44:00.783Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -433,6 +433,164 @@ color: hsl(0, 0%, 100%);
 </code></pre>
 <h1 id="final-comments">Final Comments</h1>
 <p>This is just one method of grouping and ordering CSS properties that I&#39;ve found useful in real life projects. There is no correct answer to this problem and I think the problem space is probably too complex to make a tool like Prettier do the work for you because there will always be exceptions to the rules.</p>
+]]></content>
+        <author>
+            <name/>
+            <uri>https://rehansaeed.com</uri>
+        </author>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Optimally Configuring Open Telemetry for ASP.NET Core]]></title>
+        <id>https://rehansaeed.com/optimally-configuring-open-telemetry-for-asp-net-core/</id>
+        <link href="https://rehansaeed.com/optimally-configuring-open-telemetry-for-asp-net-core/"/>
+        <updated>2021-02-15T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[How to optimally configure Open Telemetry metrics, logs, and traces for ASP.NET and display them in Jaeger.]]></summary>
+        <content type="html"><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/deep-dive-into-open-telemetry-for-net/">Open Telemetry - Deep Dive into Open Telemetry for .NET</a></li>
+<li><a href="https://rehansaeed.com/open-telemetry-for-asp-net-core/">Open Telemetry - Configuring Open Telemetry for ASP.NET Core</a></li>
+<li><a href="https://rehansaeed.com/exporting-open-telemetry-data-to-jaeger/">Open Telemetry - Exporting Open Telemetry Data to Jaeger</a></li>
+<li>Open Telemetry - Optimally Configuring Open Telemetry for ASP.NET Core</li>
+</ol>
+<p><a href="https://github.blog/2021-05-26-why-and-how-github-is-adopting-opentelemetry/">https://github.blog/2021-05-26-why-and-how-github-is-adopting-opentelemetry/</a></p>
+<p>Configuring Open Telemetry for ASP.NET Core is a fairly simple process. In this post, I&#39;ll show you the simplest setup for tracing Open Telemetry in ASP.NET Core and then move to a more fully featured example.</p>
+<p>To begin with, we&#39;ll just be exporting our Open Telemetry traces to the debug output so we can see what is being recorded but we&#39;ll soon move on to exporting to Jaeger in another post where we can see nice visualisations of our traces.</p>
+<h1 id="simplest-setup">Simplest Setup</h1>
+<p>Open Telemetry for ASP.NET Core ships as several NuGet packages. The <code>OpenTelemetry.Extensions.Hosting</code> package is the required core package to add Open Telemetry to your application.</p>
+<p>You can optionally add packages beginning with <code>OpenTelemetry.Instrumentation.*</code> to collect extra span attributes e.g. the <code>OpenTelemetry.Instrumentation.AspNetCore</code> package adds span attributes for the current request and response.</p>
+<p>You can also optionally add packages beginning with <code>OpenTelemetry.Exporter.*</code> to export trace data e.g. the <code>OpenTelemetry.Exporter.Console</code> package exports all trace data to the console or debug output of your application.</p>
+<pre><code class="language-xml">&lt;ItemGroup Label=&quot;Package References&quot;&gt;
+  &lt;PackageReference Include=&quot;OpenTelemetry.Exporter.Console&quot; Version=&quot;1.0.0-rc2&quot; /&gt;
+  &lt;PackageReference Include=&quot;OpenTelemetry.Extensions.Hosting&quot; Version=&quot;1.0.0-rc2&quot; /&gt;
+  &lt;PackageReference Include=&quot;OpenTelemetry.Instrumentation.AspNetCore&quot; Version=&quot;1.0.0-rc2&quot; /&gt;
+&lt;/ItemGroup&gt;
+</code></pre>
+<p>In our <code>Startup</code> class&#39;s <code>ConfigureServices</code> method, we can add Open Telemetry support with just a few lines of code using the <code>AddOpenTelemetryTracing</code> method.</p>
+<pre><code class="language-cs">public class Startup
+{
+    private readonly IWebHostEnvironment webHostEnvironment;
+
+    public Startup(IWebHostEnvironment webHostEnvironment) =&gt;
+        this.webHostEnvironment = webHostEnvironment;
+
+    public virtual void ConfigureServices(IServiceCollection services)
+    {
+        // ...omitted
+        services.AddOpenTelemetryTracing(
+            builder =&gt;
+            {
+                builder
+                    .SetResourceBuilder(ResourceBuilder
+                        .CreateDefault()
+                        .AddService(webHostEnvironment.ApplicationName))
+                    .AddAspNetCoreInstrumentation();
+                if (webHostEnvironment.IsDevelopment())
+                {
+                    builder.AddConsoleExporter(options =&gt; options.Targets = ConsoleExporterOutputTargets.Debug);
+                }
+            });
+    }
+
+    // ...omitted
+}
+</code></pre>
+<p>The <code>SetResourceBuilder</code> method is your opportunity to add a set of common attributes to all spans created in the application. In the above case, we&#39;ve added an application name.</p>
+<p>The <code>AddAspNetCoreInstrumentation</code> method is where we enable collection of attributes relating to ASP.NET Core requests and responses.</p>
+<p>Finally, we use <code>AddConsoleExporter</code> to export the trace data to the debug output. You could also output to the console but there is a lot of trace data and the console is already outputting log information which results in duplication, so I prefer not to do that. Note that we only do this if we are running in the development environment.</p>
+<p>If we now start the application and execute a request/response cycle, we can see the following in our IDE&#39;s debug output window:</p>
+<pre><code>[10:28:25 INF] HTTP GET /favicon-32x32.png responded 200 in 0.7371 ms
+Activity.Id:          00-dde96d459fee4144a83818e054e221b1-cac69896c1bcd14f-01
+Activity.DisplayName: /favicon-32x32.png
+Activity.Kind:        Server
+Activity.StartTime:   2021-02-01T10:28:25.4637044Z
+Activity.Duration:    00:00:00.0086712
+Activity.TagObjects:
+    http.host: localhost:5001
+    http.method: GET
+    http.path: /favicon-32x32.png
+    http.url: https://localhost:5001/favicon-32x32.png
+    http.user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36
+    http.status_code: 200
+    otel.status_code: UNSET
+Resource associated with Activity:
+    service.name: ApiTemplate
+    service.instance.id: defe9269-04f2-4b49-a05c-ebddf2112993
+    telemetry.sdk.name: opentelemetry
+    telemetry.sdk.language: dotnet
+    telemetry.sdk.version: 1.0.0.0
+</code></pre>
+<p>The first line of the debug output is actually from our log output (I had only enabled information level logs). The second line is where the Open Telemetry trace starts and is broken up into several sections. Most of the trace output is pretty self explanatory and describes the request/response pretty well, including the span ID, path, response status code, start time and duration of the span.</p>
+<p>What I personally found surprising is the last section. In the last section we get the application name that we setup in the <code>SetResourceBuilder</code> call but we also get a unique identifier for the current instance of the application. This can be useful if we were running multiple instances of the application.</p>
+<p>Finally, we also get quite a lot of information about the Open Telemetry library used to collect the information. It may eventually be useful when multiple versions of the Open Telemetry protocol are released and there is some feature difference between them but as of now, it&#39;s not very useful. I haven&#39;t been able to find a way to turn it off, since it&#39;s a fair amount of information to send in absolutely every trace message.</p>
+<pre><code class="language-cs">public virtual void ConfigureServices(IServiceCollection services) =&gt;
+    services
+        // ...omitted
+        .AddOpenTelemetryTracing(
+            builder =&gt;
+            {
+                builder
+                    .AddAspNetCoreInstrumentation(
+                        options =&gt;
+                        {
+                            // Enrich spans with additional request and response meta data.
+                            // See https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/trace/semantic_conventions/http.md
+                            options.Enrich = (activity, eventName, obj) =&gt;
+                            {
+                                if (obj is HttpRequest request)
+                                {
+                                    activity.AddTag(&quot;http.flavor&quot;, GetHttpFlavour(request.Protocol));
+                                    activity.AddTag(&quot;http.scheme&quot;, request.Scheme);
+                                    activity.AddTag(&quot;http.client_ip&quot;, request.Headers[ForwardedHeadersDefaults.XForwardedForHeaderName]);
+                                    activity.AddTag(&quot;http.request_content_length&quot;, request.ContentLength);
+                                    activity.AddTag(&quot;http.request_content_type&quot;, request.ContentType);
+                                }
+                                else if (obj is HttpResponse response)
+                                {
+                                    activity.AddTag(&quot;http.response_content_length&quot;, response.ContentLength);
+                                    activity.AddTag(&quot;http.response_content_type&quot;, response.ContentType);
+                                }
+
+                                static string GetHttpFlavour(string protocol)
+                                {
+                                    if (HttpProtocol.IsHttp10(protocol))
+                                    {
+                                        return &quot;1.0&quot;;
+                                    }
+                                    else if (HttpProtocol.IsHttp11(protocol))
+                                    {
+                                        return &quot;1.1&quot;;
+                                    }
+                                    else if (HttpProtocol.IsHttp2(protocol))
+                                    {
+                                        return &quot;2.0&quot;;
+                                    }
+                                    else if (HttpProtocol.IsHttp3(protocol))
+                                    {
+                                        return &quot;3.0&quot;;
+                                    }
+
+                                    throw new InvalidOperationException($&quot;Protocol {protocol} not recognised.&quot;);
+                                }
+                            };
+                            options.RecordException = true;
+                        });
+                // TODO: Add OpenTelemetry.Instrumentation.* NuGet packages and configure them to collect more span data.
+                //       E.g. add OpenTelemetry.Instrumentation.Http to instrument calls to HttpClient.
+                // TODO: Add OpenTelemetry.Exporter.* NuGet packages and configure them here to export open telemetry span data.
+                //       E.g. Add OpenTelemetry.Exporter.Jaeger to export span data to Jaeger.
+            });
+</code></pre>
+<pre><code>&lt;PackageReference Include=&quot;Serilog.Enrichers.Span&quot; Version=&quot;1.0.1&quot; Condition=&quot;&#39;$(OpenTelemetry)&#39; == &#39;true&#39;&quot; /&gt;
+</code></pre>
+<p>Changed default port for OTLP Exporter from 55680 to 4317</p>
+<pre><code>55680 - OTLP receiver
+16686 - Dashboard
+13133 - Health Check
+</code></pre>
+<p>docker run --name jaeger -p 13133:13133 -p 16686:16686 -p 55680:55680 -d --restart=unless-stopped jaegertracing/opentelemetry-all-in-one</p>
+<pre><code>&lt;PackageReference Include=&quot;OpenTelemetry.Exporter.OpenTelemetryProtocol&quot; Version=&quot;1.0.0-rc1.1&quot; Condition=&quot;&#39;$(OpenTelemetry)&#39; == &#39;true&#39;&quot; /&gt;
+
+                builder.AddOtlpExporter(options =&gt; options.Endpoint = &quot;localhost:55680&quot;);
+</code></pre>
 ]]></content>
         <author>
             <name/>
