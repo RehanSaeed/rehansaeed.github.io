@@ -139,6 +139,12 @@ export default function (Vue, { router, head, isClient }) {
     content: "no-referrer-when-downgrade",
   });
 
+  // Colour Scheme
+  head.meta.push({
+    name: "color-scheme",
+    content: "dark light"
+  });
+
   // Set default layout as a global component
   Vue.component("Layout", defaultLayout);
 
