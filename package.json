@@ -63,7 +63,11 @@
     "build": "gridsome build",
     "start": "gridsome develop",
     "explore": "gridsome explore",
-    "test": "cypress open",
+    "test": "npm run test:chrome && npm run test:edge && npm run test:firefox",
+    "test:debug": "cypress open",
+    "test:chrome": "cypress run --headless --browser chrome",
+    "test:edge": "cypress run --headless --browser edge",
+    "test:firefox": "cypress run --headless --browser firefox",
     "lighthouse": "lhci autorun"
   },
   "browserslist": [
