@@ -85,7 +85,7 @@
 worker_processes			1;
 
 # Maximum file descriptors that can be opened per process
-# This should be &gt; worker_connections
+# This should be > worker_connections
 worker_rlimit_nofile		8192;
 
 # Log errors to the following location. Feel free to change these.
@@ -95,13 +95,13 @@ pid							logs/nginx.pid;
 
 events {
 
-    # When you need &gt; 8000 * cpu_cores connections, you start optimizing
+    # When you need > 8000 * cpu_cores connections, you start optimizing
     # your OS, and this is probably the point at where you hire people
     # who are smarter than you, this is *a lot* of requests.
     worker_connections		8000;
 
-    # This sets up some smart queueing for accept(2)&#39;ing requests
-    # Set it to &quot;on&quot; if you have &gt; worker_processes
+    # This sets up some smart queueing for accept(2)'ing requests
+    # Set it to "on" if you have > worker_processes
     accept_mutex			off;
 
     # These settings are OS specific, by defualt Nginx uses select(2),
@@ -120,9 +120,9 @@ http {
     default_type            application/octet-stream;
 
     # Format for our log files.
-    log_format              main &#39;$remote_addr - $remote_user [$time_local]  $status &#39;
-                                 &#39;&quot;$request&quot; $body_bytes_sent &quot;$http_referer&quot; &#39;
-                                 &#39;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&#39;;
+    log_format              main '$remote_addr - $remote_user [$time_local]  $status '
+                                 '"$request" $body_bytes_sent "$http_referer" '
+                                 '"$http_user_agent" "$http_x_forwarded_for"';
 
     # Log requests to the following location. Feel free to change this.
     access_log              logs/access.log  main;
@@ -139,7 +139,7 @@ http {
     # See http://nginx.org/en/docs/http/ngx_http_limit_req_module.html#limit_req_zone
     limit_req_zone          $binary_remote_addr zone=one:10m rate=5r/s;
 
-    # Disables emitting Nginx version in error messages and in the &#39;Server&#39; HTTP response header.
+    # Disables emitting Nginx version in error messages and in the 'Server' HTTP response header.
     server_tokens           off;
 
     # To serve static files using Nginx efficiently.
@@ -154,7 +154,7 @@ http {
     # Enable GZIP over HTTP 1.0 (The default is HTTP 1.1).
     gzip_http_version       1.0;
     # Disable GZIP compression for IE 1 to 6.
-    gzip_disable            &quot;MSIE [1-6]\.&quot;
+    gzip_disable            "MSIE [1-6]\."
     # Enable GZIP compression for the following MIME types (text/html is included by default).
     gzip_types              # Plain Text
                             text/plain
@@ -182,7 +182,7 @@ http {
                             # Images
                             image/svg+xml
                             image/x-icon;
-    # Enables inserting the &#39;Vary: Accept-Encoding&#39; response header.
+    # Enables inserting the 'Vary: Accept-Encoding' response header.
     gzip_vary               on;
 
     # Sets configuration for a virtual server. You can have multiple virtual servers.
@@ -200,7 +200,7 @@ http {
         ssl_certificate_key         /etc/ssl/certs/testCert.key;
         ssl_protocols               TLSv1.1 TLSv1.2;
         ssl_prefer_server_ciphers   on;
-        ssl_ciphers                 &quot;EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH&quot;;
+        ssl_ciphers                 "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
         ssl_ecdh_curve              secp384r1;
         ssl_session_cache           shared:SSL:10m;
         ssl_session_tickets         off;
@@ -221,14 +221,14 @@ http {
             # The default minimum configuration required for ASP.NET Core
             # See https://docs.asp.net/en/latest/publishing/linuxproduction.html?highlight=nginx#configure-a-reverse-proxy-server
             proxy_cache_bypass      $http_upgrade;
-            # Turn off changing the URL&#39;s in headers like the &#39;Location&#39; HTTP header.
+            # Turn off changing the URL's in headers like the 'Location' HTTP header.
             proxy_redirect          off;
             # Forwards the Host HTTP header.
             proxy_set_header        Host $host;
             # The Kestrel web server we are forwarding requests to only speaks HTTP 1.1.
             proxy_http_version      1.1;
             proxy_set_header        Upgrade $http_upgrade;
-            # Adds the &#39;Connection: keep-alive&#39; HTTP header.
+            # Adds the 'Connection: keep-alive' HTTP header.
             proxy_set_header        Connection keep-alive;
 
             # Sets the maximum allowed size of the client request body.

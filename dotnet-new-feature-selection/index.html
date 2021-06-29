@@ -46,7 +46,7 @@
 <li><a href="/unit-testing-dotnet-new-templates/">dotnet new - Unit Testing dotnet new Templates</a></li>
 </ol>
 <p>In my last post I showed how to <a href="/custom-project-templates-using-dotnet-new/">get started</a> with using <code class="language-inline-text">dotnet new</code> to build project templates. In this post, I'm going to build on that knowledge and show how to add feature selection to your project template so developers can choose to add or remove bits of your template. If you check out my <a href="https://github.com/Dotnet-Boxed/Templates" target="_blank" rel="nofollow noopener noreferrer">.NET Boxed API</a> project template, you'll see that I have 17 features for you to set. If you run the help command against my template you'll see a description of each and instructions on how you can set them (I've cleaned up the CLI output, the current help commands output is pretty awful but this is being <a href="https://github.com/dotnet/templating/issues/348" target="_blank" rel="nofollow noopener noreferrer">addressed</a> in the next version of <code class="language-inline-text">dotnet new</code>).</p>
-<div class="line-highlight" data-language="text"><pre class="language-text"><code class="language-text">PS C:\Users\rehan.saeed&gt; dotnet new api --help
+<div class="line-highlight" data-language="text"><pre class="language-text"><code class="language-text">PS C:\Users\rehan.saeed> dotnet new api --help
 Template Instantiation Commands for .NET Core CLI.
 
 Usage: dotnet new [arguments] [options]
