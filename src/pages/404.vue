@@ -14,7 +14,6 @@
 </template>
 
 <script>
-import Layout from "~/layouts/default.vue";
 import card from "~/components/shared/card.vue";
 import linkButton from "~/components/shared/link-button.vue";
 import heading from "~/components/shared/heading.vue";
@@ -22,7 +21,6 @@ import newsletter from "~/components/newsletter.vue";
 
 export default {
   components: {
-    Layout,
     "u-card": card,
     "u-link-button": linkButton,
     "u-heading": heading,

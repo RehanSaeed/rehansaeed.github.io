@@ -27,14 +27,12 @@
 </template>
 
 <script>
-import Layout from "~/layouts/default.vue";
 import heading from "~/components/shared/heading.vue";
 import newsletter from "~/components/newsletter.vue";
 import portfolioCard from "~/components/portfolio-card.vue";
 
 export default {
   components: {
-    Layout,
     "u-heading": heading,
     "u-newsletter": newsletter,
     "u-portfolio-card": portfolioCard,

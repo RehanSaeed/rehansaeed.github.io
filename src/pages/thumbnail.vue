@@ -1,120 +1,118 @@
 <template>
-  <div>
-    <Layout>
-      <article
-        class="thumbnail"
-        :class="[backgroundClass]"
-        :style="{ backgroundImage: backgroundImage }"
+  <EmptyLayout>
+    <article
+      class="thumbnail"
+      :class="[backgroundClass]"
+      :style="{ backgroundImage: backgroundImage }"
+    >
+      <img
+        v-if="logo"
+        class="thumbnail__logo"
+        src="/favicon.svg"
+        :style="{ alignSelf: logoAlign, justifySelf: logoJustify }"
+        width="150"
+        height="150"
+      />
+      <img
+        v-if="item1"
+        class="thumbnail__item thumbnail__item1"
+        :src="item1"
+        :style="{
+          transform: item1Transform,
+          width: toPx(item1Width),
+          height: toPx(item1Height),
+          left: toPx(item1X),
+          top: toPx(item1Y),
+        }"
+        :width="item1Width"
+        :height="item1Height"
+      />
+      <img
+        v-if="item2"
+        class="thumbnail__item thumbnail__item2"
+        :src="item2"
+        :style="{
+          transform: item2Transform,
+          width: toPx(item2Width),
+          height: toPx(item2Height),
+          left: toPx(item2X),
+          top: toPx(item2Y),
+        }"
+        :width="item2Width"
+        :height="item2Height"
+      />
+      <section
+        v-if="title || subtitle"
+        class="thumbnail__text"
+        :style="{
+          fontSize: toEm(titleFontSize),
+          alignContent: titleAlign,
+          justifyItems: titleJustify,
+          width: toPx(titleWidth),
+        }"
       >
-        <img
-          v-if="logo"
-          class="thumbnail__logo"
-          src="/favicon.svg"
-          :style="{ alignSelf: logoAlign, justifySelf: logoJustify }"
-          width="150"
-          height="150"
-        />
-        <img
-          v-if="item1"
-          class="thumbnail__item thumbnail__item1"
-          :src="item1"
-          :style="{
-            transform: item1Transform,
-            width: toPx(item1Width),
-            height: toPx(item1Height),
-            left: toPx(item1X),
-            top: toPx(item1Y),
-          }"
-          :width="item1Width"
-          :height="item1Height"
-        />
-        <img
-          v-if="item2"
-          class="thumbnail__item thumbnail__item2"
-          :src="item2"
-          :style="{
-            transform: item2Transform,
-            width: toPx(item2Width),
-            height: toPx(item2Height),
-            left: toPx(item2X),
-            top: toPx(item2Y),
-          }"
-          :width="item2Width"
-          :height="item2Height"
-        />
-        <section
-          v-if="title || subtitle"
-          class="thumbnail__text"
-          :style="{
-            fontSize: toEm(titleFontSize),
-            alignContent: titleAlign,
-            justifyItems: titleJustify,
-            width: toPx(titleWidth),
-          }"
-        >
-          <h1 v-if="title" class="thumbnail__title">
-            {{ title }}
-          </h1>
-          <h2 v-if="subtitle" class="thumbnail__subtitle">{{ subtitle }}</h2>
-        </section>
-      </article>
-      <aside v-if="help">
-        <h2>General</h2>
-        <ul>
-          <li>
-            <em>background</em> - none, light, dark,
-            /images/hero/Code-1600x900.jpg
-          </li>
-          <li><em>help</em></li>
-        </ul>
+        <h1 v-if="title" class="thumbnail__title">
+          {{ title }}
+        </h1>
+        <h2 v-if="subtitle" class="thumbnail__subtitle">{{ subtitle }}</h2>
+      </section>
+    </article>
+    <aside v-if="help">
+      <h2>General</h2>
+      <ul>
+        <li>
+          <em>background</em> - none, light, dark,
+          /images/hero/Code-1600x900.jpg
+        </li>
+        <li><em>help</em></li>
+      </ul>
 
-        <h2>Title</h2>
-        <ul>
-          <li><em>title</em> - Title</li>
-          <li><em>subtitle</em> - Subtitle</li>
-          <li><em>title-font-size</em> - 5</li>
-          <li><em>title-justify</em> - start, center, end</li>
-          <li><em>title-align</em> - start, center, end</li>
-          <li><em>title-width</em> - 300</li>
-        </ul>
+      <h2>Title</h2>
+      <ul>
+        <li><em>title</em> - Title</li>
+        <li><em>subtitle</em> - Subtitle</li>
+        <li><em>title-font-size</em> - 5</li>
+        <li><em>title-justify</em> - start, center, end</li>
+        <li><em>title-align</em> - start, center, end</li>
+        <li><em>title-width</em> - 300</li>
+      </ul>
 
-        <h2>Logo</h2>
-        <ul>
-          <li><em>logo</em></li>
-          <li><em>logo-justify</em> - start, center, end</li>
-          <li><em>logo-align</em> - start, center, end</li>
-        </ul>
+      <h2>Logo</h2>
+      <ul>
+        <li><em>logo</em></li>
+        <li><em>logo-justify</em> - start, center, end</li>
+        <li><em>logo-align</em> - start, center, end</li>
+      </ul>
 
-        <h2>Item 1</h2>
-        <ul>
-          <li><em>item1</em> - /images/hero/Code-1600x900.jpg</li>
-          <li><em>item1-rotate</em> - 0-360</li>
-          <li><em>item1-width</em> - 600</li>
-          <li><em>item1-height</em> - 600</li>
-          <li><em>item1-x</em> - 950</li>
-          <li><em>item1-y</em> - 200</li>
-        </ul>
+      <h2>Item 1</h2>
+      <ul>
+        <li><em>item1</em> - /images/hero/Code-1600x900.jpg</li>
+        <li><em>item1-rotate</em> - 0-360</li>
+        <li><em>item1-width</em> - 600</li>
+        <li><em>item1-height</em> - 600</li>
+        <li><em>item1-x</em> - 950</li>
+        <li><em>item1-y</em> - 200</li>
+      </ul>
 
-        <h2>Item 2</h2>
-        <ul>
-          <li><em>item2</em> - /images/hero/Code-1600x900.jpg</li>
-          <li><em>item2-rotate</em> - 0-360</li>
-          <li><em>item2-width</em> - 600</li>
-          <li><em>item2-height</em> - 600</li>
-          <li><em>item2-x</em> - 950</li>
-          <li><em>item2-y</em> - 200</li>
-        </ul>
-      </aside>
-    </Layout>
-  </div>
+      <h2>Item 2</h2>
+      <ul>
+        <li><em>item2</em> - /images/hero/Code-1600x900.jpg</li>
+        <li><em>item2-rotate</em> - 0-360</li>
+        <li><em>item2-width</em> - 600</li>
+        <li><em>item2-height</em> - 600</li>
+        <li><em>item2-x</em> - 950</li>
+        <li><em>item2-y</em> - 200</li>
+      </ul>
+    </aside>
+  </EmptyLayout>
 </template>
 
 <script>
-import Layout from "~/layouts/empty.vue";
+import EmptyLayout from "~/layouts/empty.vue";
 
 export default {
   components: {
-    Layout,
+    EmptyLayout,
   },
   data() {
     return {

@@ -85,7 +85,6 @@
 </template>
 
 <script>
-import Layout from "~/layouts/default.vue";
 import card from "~/components/shared/card.vue";
 import heading from "~/components/shared/heading.vue";
 import newsletter from "~/components/newsletter.vue";
@@ -93,7 +92,6 @@ import socialLinks from "~/components/social-links.vue";
 
 export default {
   components: {
-    Layout,
     "u-card": card,
     "u-heading": heading,
     "u-newsletter": newsletter,
