@@ -19,10 +19,10 @@
           class="thumbnail__item thumbnail__item1"
           :src="item1"
           :style="{
-            width: item1WidthPx,
-            height: item1HeightPx,
-            left: item1XPx,
-            top: item1YPx,
+            width: toPx(item1Width),
+            height: toPx(item1Height),
+            left: toPx(item1X),
+            top: toPx(item1Y),
           }"
           :width="item1Width"
           :height="item1Height"
@@ -32,10 +32,10 @@
           class="thumbnail__item thumbnail__item2"
           :src="item2"
           :style="{
-            width: item2WidthPx,
-            height: item2HeightPx,
-            left: item2XPx,
-            top: item2YPx,
+            width: toPx(item2Width),
+            height: toPx(item2Height),
+            left: toPx(item2X),
+            top: toPx(item2Y),
           }"
           :width="item2Width"
           :height="item2Height"
@@ -43,9 +43,16 @@
         <section
           v-if="title || subtitle"
           class="thumbnail__text"
-          :style="{ alignContent: titleAlign, justifyItems: titleJustify }"
+          :style="{
+            fontSize: toEm(titleFontSize),
+            alignContent: titleAlign,
+            justifyItems: titleJustify,
+            width: toPx(titleWidth),
+          }"
         >
-          <h1 v-if="title" class="thumbnail__title">{{ title }}</h1>
+          <h1 v-if="title" class="thumbnail__title">
+            {{ title }}
+          </h1>
           <h2 v-if="subtitle" class="thumbnail__subtitle">{{ subtitle }}</h2>
         </section>
       </article>
@@ -63,8 +70,10 @@
         <ul>
           <li><em>title</em> - Title</li>
           <li><em>subtitle</em> - Subtitle</li>
+          <li><em>title-font-size</em> - 5</li>
           <li><em>title-justify</em> - start, center, end</li>
           <li><em>title-align</em> - start, center, end</li>
+          <li><em>title-width</em> - 300</li>
         </ul>
 
         <h2>Logo</h2>
@@ -112,6 +121,7 @@ export default {
       subtitle: "",
       titleJustify: "",
       titleAlign: "",
+      titleWidth: undefined,
 
       logo: false,
       logoJustify: "",
@@ -128,6 +138,13 @@ export default {
       item2Height: "0",
       item2X: "0",
       item2Y: "0",
+
+      toEm: function (value) {
+        return value + "em";
+      },
+      toPx: function (value) {
+        return value + "px";
+      },
     };
   },
   computed: {
@@ -139,30 +156,6 @@ export default {
         this.background?.startsWith("http")
         ? `url("${this.background}")`
         : "";
-    },
-    item1WidthPx() {
-      return this.item1Width + "px";
-    },
-    item1HeightPx() {
-      return this.item1Height + "px";
-    },
-    item1XPx() {
-      return this.item1X + "px";
-    },
-    item1YPx() {
-      return this.item1Y + "px";
-    },
-    item2WidthPx() {
-      return this.item2Width + "px";
-    },
-    item2HeightPx() {
-      return this.item2Height + "px";
-    },
-    item2XPx() {
-      return this.item2X + "px";
-    },
-    item2YPx() {
-      return this.item2Y + "px";
     },
   },
   mounted() {
@@ -183,8 +176,10 @@ export default {
       "logo-justify": logoJustify,
       "logo-align": logoAlign,
       title,
+      "title-font-size": titleFontSize,
       "title-justify": titleJustify,
-      "align-title": titleAlign,
+      "title-align": titleAlign,
+      "title-width": titleWidth,
       subtitle,
     } = this.$route.query;
 
@@ -193,8 +188,10 @@ export default {
 
     this.title = title;
     this.subtitle = subtitle;
+    this.titleFontSize = titleFontSize || 3.5;
     this.titleJustify = titleJustify || "start";
     this.titleAlign = titleAlign || "end";
+    this.titleWidth = titleWidth;
 
     this.logo = logo === null;
     this.logoJustify = logoJustify || "end";
@@ -259,7 +256,6 @@ body {
 .thumbnail__title {
   background: var(--global-background-color);
   color: var(--global-accent-color);
-  font-size: var(--global-font-size-9);
   line-height: var(--global-line-height-0);
   margin: 0;
   padding: var(--global-space-fluid-1) var(--global-space-fluid-2);
@@ -267,7 +263,6 @@ body {
 .thumbnail__subtitle {
   background: var(--global-accent-color);
   color: var(--global-background-color);
-  font-size: var(--global-font-size-9);
   line-height: var(--global-line-height-0);
   margin: 0;
   padding: var(--global-space-fluid-1) var(--global-space-fluid-2);
