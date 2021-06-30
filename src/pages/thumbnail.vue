@@ -201,16 +201,16 @@ export default {
     this.logoAlign = logoAlign || "start";
 
     this.item1 = item1;
-    this.item1Width = item1Width || "600";
-    this.item1Height = item1Height || "600";
+    this.item1Width = item1Width || "700";
+    this.item1Height = item1Height || "1000";
     this.item1X = item1X || "950";
-    this.item1Y = item1Y || "200";
+    this.item1Y = item1Y || "100";
 
     this.item2 = item2;
     this.item2Width = item2Width || "600";
     this.item2Height = item2Height || "600";
-    this.item2X = item2X || "950";
-    this.item2Y = item2Y || "200";
+    this.item2X = item2X || "200";
+    this.item2Y = item2Y || "0";
   },
 };
 </script>
