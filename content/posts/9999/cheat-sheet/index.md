@@ -16,9 +16,13 @@ tags:
 # Table of Contents
 
 # Heading 1 Heading 1 Heading 1 Heading 1
+
 ## Heading 2 Heading 2 Heading 2 Heading 2
+
 ### Heading 3 Heading 3 Heading 3 Heading 3
+
 #### Heading 4 Heading 4 Heading 4 Heading 4
+
 ##### Heading 5 Heading 5 Heading 5 Heading 5
 
 # Paragraphs
@@ -29,7 +33,7 @@ Duis aliquet ex eu scelerisque ultricies. Nam ac sagittis ligula. Vestibulum vel
 
 # Formatting
 
-**Bold**, *Italic*, ~~Strikethrough~~,
+**Bold**, _Italic_, ~~Strikethrough~~,
 
 # Links
 
@@ -66,23 +70,29 @@ Duis aliquet ex eu scelerisque ultricies. Nam ac sagittis ligula. Vestibulum vel
 With line break:
 
 > Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dolor in tellus dictum, vel pharetra lacus ultricies.
-> 
+>
 > Phasellus porttitor scelerisque elit et ultrices. Donec auctor sapien finibus metus commodo, nec tempus tortor interdum. Vestibulum porttitor venenatis eros quis lacinia.
 
 With `<cite>`:
 
 > Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dolor in tellus dictum, vel pharetra lacus ultricies.
-> 
+>
 > Phasellus porttitor scelerisque elit et ultrices. Donec auctor sapien finibus metus commodo, nec tempus tortor interdum. Vestibulum porttitor venenatis eros quis lacinia.
+>
 > <footer><cite>Muhammad Rehan Saeed</cite></footer>
 
 # Tables
 
-| Tables        | Are           | Cool  |
-| ------------- |:-------------:| -----:|
+| Tables        |      Are      |  Cool |
+| ------------- | :-----------: | ----: |
 | col 3 is      | right-aligned | $1600 |
-| col 2 is      | centered      |   $12 |
-| zebra stripes | are neat      |    $1 |
+| col 2 is      |   centered    |   $12 |
+| zebra stripes |   are neat    |    $1 |
+| zebra stripes |   are neat    |    $1 |
+| zebra stripes |   are neat    |    $1 |
+| zebra stripes |   are neat    |    $1 |
+| zebra stripes |   are neat    |    $1 |
+| zebra stripes |   are neat    |    $1 |
 
 # Custom Containers
 
@@ -139,12 +149,12 @@ This is `inline` code.
 ```js
 // Line Highlight
 export default {
-  data () {
+  data() {
     return {
-      msg: 'Line Highlight'
-    }
-  }
-}
+      msg: "Line Highlight",
+    };
+  },
+};
 ```
 
 ```js{2,4-5}
