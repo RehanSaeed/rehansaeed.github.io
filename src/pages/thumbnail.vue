@@ -5,60 +5,23 @@
       :class="[backgroundClass]"
       :style="{ backgroundImage: backgroundImage }"
     >
+      <u-thumbnail-title class="thumbnail__title" />
       <u-thumbnail-logo class="thumbnail__logo" />
-      <img
-        v-if="item1"
-        class="thumbnail__item thumbnail__item1"
-        :src="item1"
-        :style="{
-          transform: item1Transform,
-          width: toPx(item1Width),
-          height: toPx(item1Height),
-          left: toPx(item1X),
-          top: toPx(item1Y),
-        }"
-        :width="item1Width"
-        :height="item1Height"
-      />
-      <img
-        v-if="item2"
-        class="thumbnail__item thumbnail__item2"
-        :src="item2"
-        :style="{
-          transform: item2Transform,
-          width: toPx(item2Width),
-          height: toPx(item2Height),
-          left: toPx(item2X),
-          top: toPx(item2Y),
-        }"
-        :width="item2Width"
-        :height="item2Height"
-      />
-      <section
-        v-if="title || subtitle"
-        class="thumbnail__text"
-        :style="{
-          fontSize: toEm(titleFontSize),
-          alignContent: titleAlign,
-          justifyItems: titleJustify,
-          width: toPx(titleWidth),
-        }"
-      >
-        <h1 v-if="title" class="thumbnail__title">
-          {{ title }}
-        </h1>
-        <h2 v-if="subtitle" class="thumbnail__subtitle">{{ subtitle }}</h2>
-      </section>
+      <u-thumbnail-image class="thumbnail__image1" name="image1" />
+      <u-thumbnail-image class="thumbnail__image2" name="image2" />
     </article>
-    <aside v-if="help">
+    <aside>
       <h2>General</h2>
-      <ul>
-        <li>
-          <em>background</em> - none, light, dark,
-          /images/hero/Code-1600x900.jpg
-        </li>
-        <li><em>help</em></li>
-      </ul>
+      <section>
+        <fieldset class="thumbnail__fieldset">
+          <label class="thumbnail__label">background</label>
+          <input
+            class="thumbnail__input"
+            v-model="background"
+            placeholder="none|light|dark|/images/hero/Code-1600x900.jpg"
+          />
+        </fieldset>
+      </section>
 
       <h2>Title</h2>
       <ul>
@@ -77,24 +40,24 @@
         <li><em>logo-align</em> - start, center, end</li>
       </ul>
 
-      <h2>Item 1</h2>
+      <h2>Image 1</h2>
       <ul>
-        <li><em>item1</em> - /images/hero/Code-1600x900.jpg</li>
-        <li><em>item1-rotate</em> - 0-360</li>
-        <li><em>item1-width</em> - 600</li>
-        <li><em>item1-height</em> - 600</li>
-        <li><em>item1-x</em> - 950</li>
-        <li><em>item1-y</em> - 200</li>
+        <li><em>image1</em> - /images/hero/Code-1600x900.jpg</li>
+        <li><em>image1-rotate</em> - 0-360</li>
+        <li><em>image1-width</em> - 600</li>
+        <li><em>image1-height</em> - 600</li>
+        <li><em>image1-x</em> - 950</li>
+        <li><em>image1-y</em> - 200</li>
       </ul>
 
-      <h2>Item 2</h2>
+      <h2>Image 2</h2>
       <ul>
-        <li><em>item2</em> - /images/hero/Code-1600x900.jpg</li>
-        <li><em>item2-rotate</em> - 0-360</li>
-        <li><em>item2-width</em> - 600</li>
-        <li><em>item2-height</em> - 600</li>
-        <li><em>item2-x</em> - 950</li>
-        <li><em>item2-y</em> - 200</li>
+        <li><em>image2</em> - /images/hero/Code-1600x900.jpg</li>
+        <li><em>image2-rotate</em> - 0-360</li>
+        <li><em>image2-width</em> - 600</li>
+        <li><em>image2-height</em> - 600</li>
+        <li><em>image2-x</em> - 950</li>
+        <li><em>image2-y</em> - 200</li>
       </ul>
     </aside>
   </Layout>
@@ -102,44 +65,20 @@
 
 <script>
 import Layout from "~/layouts/empty.vue";
+import thumbnailImage from "~/components/thumbnail/thumbnail-image.vue";
 import thumbnailLogo from "~/components/thumbnail/thumbnail-logo.vue";
+import thumbnailTitle from "~/components/thumbnail/thumbnail-title.vue";
 
 export default {
   components: {
     Layout,
+    "u-thumbnail-image": thumbnailImage,
     "u-thumbnail-logo": thumbnailLogo,
+    "u-thumbnail-title": thumbnailTitle,
   },
   data() {
     return {
-      help: false,
-      background: "",
-
-      title: "",
-      subtitle: "",
-      titleJustify: "",
-      titleAlign: "",
-      titleWidth: undefined,
-
-      item1: "",
-      item1Rotate: undefined,
-      item1Width: "0",
-      item1Height: "0",
-      item1X: "0",
-      item1Y: "0",
-
-      item2: "",
-      item2Rotate: undefined,
-      item2Width: "0",
-      item2Height: "0",
-      item2X: "0",
-      item2Y: "0",
-
-      toEm: function (value) {
-        return value + "em";
-      },
-      toPx: function (value) {
-        return value + "px";
-      },
+      background: "dark",
     };
   },
   computed: {
@@ -152,63 +91,12 @@ export default {
         ? `url("${this.background}")`
         : "";
     },
-    item1Transform() {
-      return this.item1Rotate ? `rotate(${this.item1Rotate}deg)` : undefined;
-    },
-    item2Transform() {
-      return this.item2Rotate ? `rotate(${this.item2Rotate}deg)` : undefined;
-    },
   },
   mounted() {
     document.body.style.backgroundColor = "transparent";
-    const {
-      background,
-      help,
-      item1,
-      "item1-rotate": item1Rotate,
-      "item1-width": item1Width,
-      "item1-height": item1Height,
-      "item1-x": item1X,
-      "item1-y": item1Y,
-      item2,
-      "item2-rotate": item2Rotate,
-      "item2-width": item2Width,
-      "item2-height": item2Height,
-      "item2-x": item2X,
-      "item2-y": item2Y,
-      title,
-      "title-font-size": titleFontSize,
-      "title-justify": titleJustify,
-      "title-align": titleAlign,
-      "title-width": titleWidth,
-      subtitle,
-    } = this.$route.query;
+    const { background } = this.$route.query;
 
     this.background = background;
-    this.help = help === null;
-
-    this.title = title;
-    this.subtitle = subtitle;
-    this.titleFontSize = titleFontSize || 3.5;
-    this.titleJustify = titleJustify || "start";
-    this.titleAlign = titleAlign || "end";
-    this.titleWidth = titleWidth;
-
-    this.item1 = item1;
-    this.item1Rotate = item1Rotate;
-    this.item1Width = item1Width || "700";
-    this.item1Height = item1Height || "1000";
-    this.item1X = item1X || "950";
-    this.item1Y = item1Y || "100";
-
-    this.item2 = item2;
-    this.item2Rotate = item2Rotate;
-    this.item2Width = item2Width || "600";
-    this.item2Height = item2Height || "600";
-    this.item2X = item2X || "200";
-    this.item2Y = item2Y || "0";
-
-    console.log(this);
   },
 };
 </script>
@@ -233,41 +121,15 @@ export default {
   background-color: var(--global-body-color);
 }
 
-.thumbnail__logo {
+.thumbnail__logo,
+.thumbnail__title,
+.thumbnail__image1,
+.thumbnail__image2 {
   grid-area: content;
 }
 
-.thumbnail__text {
-  grid-area: content;
-
-  display: grid;
+.thumbnail__fieldset {
+  display: flex;
   gap: var(--global-space-fluid-2);
-  z-index: 2;
-}
-.thumbnail__title {
-  background: var(--global-background-color);
-  color: var(--global-accent-color);
-  line-height: var(--global-line-height-0);
-  margin: 0;
-  padding: var(--global-space-fluid-1) var(--global-space-fluid-2);
-}
-.thumbnail__subtitle {
-  background: var(--global-accent-color);
-  color: var(--global-background-color);
-  line-height: var(--global-line-height-0);
-  margin: 0;
-  padding: var(--global-space-fluid-1) var(--global-space-fluid-2);
-}
-
-.thumbnail__item {
-  grid-area: content;
-
-  filter: drop-shadow(
-      0 0 var(--global-space-fluid-3) var(--global-background-color)
-    )
-    drop-shadow(0 0 var(--global-space-fluid-3) var(--global-background-color))
-    drop-shadow(0 0 var(--global-space-fluid-3) var(--global-background-color));
-  position: absolute;
-  z-index: 1;
 }
 </style>

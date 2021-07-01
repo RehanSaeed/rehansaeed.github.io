@@ -41,6 +41,7 @@ export default {
   background: var(--global-background-color);
   border-radius: 50%;
   color: var(--global-accent-color);
+  overflow: hidden;
   width: 150px;
   height: 150px;
   z-index: 2;
