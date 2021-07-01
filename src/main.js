@@ -3,13 +3,10 @@ import "@fontsource/audiowide/latin-400.css";
 import audiowide from "@fontsource/audiowide/files/audiowide-latin-400-normal.woff2";
 import "~/assets/style/index.scss";
 
-// Import default layout so we don't need to import it to every page
-import defaultLayout from "~/layouts/default.vue";
-
 // Import Teleport component for Vue 2.
 // <portal-target></portal-target> added to default.vue.
 // <portal></portal> added to dialogue.vue
-import PortalVue from 'portal-vue';
+import PortalVue from "portal-vue";
 
 // Import comments
 import Vssue from "vssue";
@@ -142,11 +139,8 @@ export default function (Vue, { router, head, isClient }) {
   // Colour Scheme
   head.meta.push({
     name: "color-scheme",
-    content: "dark light"
+    content: "dark light",
   });
-
-  // Set default layout as a global component
-  Vue.component("Layout", defaultLayout);
 
   Vue.use(PortalVue);
 
