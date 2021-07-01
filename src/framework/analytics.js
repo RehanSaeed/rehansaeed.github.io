@@ -1,5 +1,5 @@
 export function pwaInstallPromoShown() {
-  if (ga) {
+  if (typeof ga === "function") {
     ga("send", "event", {
       eventCategory: "pwa-install",
       eventAction: "promo-shown",
@@ -9,7 +9,7 @@ export function pwaInstallPromoShown() {
 }
 
 export function pwaInstallPromoClicked(installSource, accepted) {
-  if (ga) {
+  if (typeof ga === "function") {
     ga("send", "event", {
       eventCategory: "pwa-install",
       eventAction: "promo-clicked",
@@ -20,49 +20,49 @@ export function pwaInstallPromoClicked(installSource, accepted) {
 }
 
 export function pwaInstallAppInstalled(installSource) {
-  if (ga) {
+  if (typeof ga === "function") {
     ga("send", "event", "pwa-install", "installed", installSource || "browser");
   }
 }
 
 export function appLaunchDomContentLoaded(displayMode) {
-  if (ga) {
+  if (typeof ga === "function") {
     ga("send", "event", "app-launch", "dom-content-loaded", displayMode);
   }
 }
 
 export function appLaunchDisplayModeChanged(displayMode) {
-  if (ga) {
+  if (typeof ga === "function") {
     ga("send", "event", "app-launch", "display-mode-changed", displayMode);
   }
 }
 
 export function appThemeLoaded(theme) {
-  if (ga) {
+  if (typeof ga === "function") {
     ga("send", "event", "app-theme", "theme-loaded", theme);
   }
 }
 
 export function appThemeChanged(theme) {
-  if (ga) {
+  if (typeof ga === "function") {
     ga("send", "event", "app-theme", "theme-changed", theme);
   }
 }
 
 export function searchOpened() {
-  if (ga) {
+  if (typeof ga === "function") {
     ga("send", "event", "search", "search-opened");
   }
 }
 
 export function searchClosed() {
-  if (ga) {
+  if (typeof ga === "function") {
     ga("send", "event", "search", "search-closed");
   }
 }
 
 export function searchResultSelected(query) {
-  if (ga) {
+  if (typeof ga === "function") {
     ga("send", "event", "search", "search-result-selected", query);
   }
 }
