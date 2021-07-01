@@ -5,14 +5,7 @@
       :class="[backgroundClass]"
       :style="{ backgroundImage: backgroundImage }"
     >
-      <img
-        v-if="logo"
-        class="thumbnail__logo"
-        src="/favicon.svg"
-        :style="{ alignSelf: logoAlign, justifySelf: logoJustify }"
-        width="150"
-        height="150"
-      />
+      <u-thumbnail-logo class="thumbnail__logo" />
       <img
         v-if="item1"
         class="thumbnail__item thumbnail__item1"
@@ -109,10 +102,12 @@
 
 <script>
 import Layout from "~/layouts/empty.vue";
+import thumbnailLogo from "~/components/thumbnail/thumbnail-logo.vue";
 
 export default {
   components: {
     Layout,
+    "u-thumbnail-logo": thumbnailLogo,
   },
   data() {
     return {
@@ -124,10 +119,6 @@ export default {
       titleJustify: "",
       titleAlign: "",
       titleWidth: undefined,
-
-      logo: false,
-      logoJustify: "",
-      logoAlign: "",
 
       item1: "",
       item1Rotate: undefined,
@@ -185,9 +176,6 @@ export default {
       "item2-height": item2Height,
       "item2-x": item2X,
       "item2-y": item2Y,
-      logo,
-      "logo-justify": logoJustify,
-      "logo-align": logoAlign,
       title,
       "title-font-size": titleFontSize,
       "title-justify": titleJustify,
@@ -205,10 +193,6 @@ export default {
     this.titleJustify = titleJustify || "start";
     this.titleAlign = titleAlign || "end";
     this.titleWidth = titleWidth;
-
-    this.logo = logo === null;
-    this.logoJustify = logoJustify || "end";
-    this.logoAlign = logoAlign || "start";
 
     this.item1 = item1;
     this.item1Rotate = item1Rotate;
@@ -251,12 +235,6 @@ export default {
 
 .thumbnail__logo {
   grid-area: content;
-
-  background: var(--global-background-color);
-  border-radius: 50%;
-  width: 150px;
-  height: 150px;
-  z-index: 2;
 }
 
 .thumbnail__text {
