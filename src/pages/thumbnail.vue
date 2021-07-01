@@ -1,5 +1,5 @@
 <template>
-  <Layout>
+  <EmptyLayout>
     <article
       class="thumbnail"
       :class="[backgroundClass]"
@@ -104,15 +104,15 @@
         <li><em>item2-y</em> - 200</li>
       </ul>
     </aside>
-  </Layout>
+  </EmptyLayout>
 </template>
 
 <script>
-import Layout from "~/layouts/empty.vue";
+import EmptyLayout from "~/layouts/empty.vue";
 
 export default {
   components: {
-    Layout,
+    EmptyLayout,
   },
   data() {
     return {

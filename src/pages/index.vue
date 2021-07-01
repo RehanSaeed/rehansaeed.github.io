@@ -19,7 +19,6 @@
 </template>
 
 <script>
-import Layout from "~/layouts/default.vue";
 import author from "~/components/author.vue";
 import newsletter from "~/components/newsletter.vue";
 import pager from "~/components/pager.vue";
@@ -28,7 +27,6 @@ import { previousUrl, nextUrl } from "~/framework/paging.js";
 
 export default {
   components: {
-    Layout,
     "u-author": author,
     "u-newsletter": newsletter,
     "u-pager": pager,
