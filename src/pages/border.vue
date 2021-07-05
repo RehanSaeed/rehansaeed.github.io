@@ -31,10 +31,10 @@ export default {
       return (this.$route.query["saturation2"] ?? "0") + "%";
     },
     lightness1() {
-      return (this.$route.query["lightness1"] ?? "70") + "%";
+      return (this.$route.query["lightness1"] ?? "100") + "%";
     },
     lightness2() {
-      return (this.$route.query["lightness2"] ?? "100") + "%";
+      return (this.$route.query["lightness2"] ?? "80") + "%";
     },
     style() {
       return {
