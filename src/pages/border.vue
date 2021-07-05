@@ -36,6 +36,12 @@ export default {
     lightness2() {
       return (this.$route.query["lightness2"] ?? "80") + "%";
     },
+    width() {
+      return (this.$route.query["width"] ?? "1920") + "px";
+    },
+    height() {
+      return (this.$route.query["height"] ?? "1080") + "px";
+    },
     style() {
       return {
         "--border-width": this.borderWidth,
@@ -46,6 +52,8 @@ export default {
         "--saturation2": this.saturation2,
         "--lightness1": this.lightness1,
         "--lightness2": this.lightness2,
+        "--width": this.width,
+        "--height": this.height,
       };
     },
   },
@@ -69,8 +77,8 @@ export default {
   mask-size: 100% var(--border-width), 100% var(--border-width),
     var(--border-width) 100%, var(--border-width) 100%;
   mask-repeat: no-repeat;
-  width: 1920px;
-  height: 1080px;
+  width: var(--width);
+  height: var(--height);
 }
 
 .border::after {
@@ -80,8 +88,9 @@ export default {
   left: calc(-1 * var(--border-width));
   width: calc(100% + var(--border-width) * 2);
   height: calc(100% + var(--border-width) * 2);
-  background: var(--gradient);
+
   animation: animated-gradient var(--duration) ease-in-out infinite;
+  background: var(--gradient);
   background-size: 200% 200%;
 }
 
