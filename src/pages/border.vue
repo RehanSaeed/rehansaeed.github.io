@@ -12,6 +12,9 @@ export default {
     Layout,
   },
   computed: {
+    borderRadius() {
+      return (this.$route.query["border-radius"] ?? "0") + "px";
+    },
     borderWidth() {
       return (this.$route.query["border-width"] ?? "20") + "px";
     },
@@ -44,6 +47,7 @@ export default {
     },
     style() {
       return {
+        "--border-radius": this.borderRadius,
         "--border-width": this.borderWidth,
         "--duration": this.duration,
         "--hue1": this.hue1,
