@@ -19,7 +19,7 @@ jobs:
       with:
         lfs: true
     - name: 'NPM Install'
-      run: npm install
+      run: npm ci
     - name: 'NPM Build'
       run: npm run build
     - name: 'Copy RSS Feed'
