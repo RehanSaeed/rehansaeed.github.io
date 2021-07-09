@@ -37,7 +37,7 @@ export default {
       return (this.$route.query["lightness1"] ?? "100") + "%";
     },
     lightness2() {
-      return (this.$route.query["lightness2"] ?? "80") + "%";
+      return (this.$route.query["lightness2"] ?? "70") + "%";
     },
     width() {
       return (this.$route.query["width"] ?? "1920") + "px";
