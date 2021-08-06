@@ -144,6 +144,16 @@ export default function (Vue, { router, head, isClient }) {
     name: "color-scheme",
     content: "dark light"
   });
+  head.meta.push({
+    name: "theme-color",
+    content: "#6b17e8",
+    media: "(prefers-color-scheme: light)"
+  });
+  head.meta.push({
+    name: "theme-color",
+    content: "#ccbdff",
+    media: "(prefers-color-scheme: dark)"
+  });
 
   // Set default layout as a global component
   Vue.component("Layout", defaultLayout);
