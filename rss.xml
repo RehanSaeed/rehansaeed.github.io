@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Fri, 13 Aug 2021 15:49:04 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 16 Aug 2021 06:42:46 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -760,7 +760,7 @@ public async Task LongRunningOperationAsync()
             <description><![CDATA[I did a fun podcast episode with Leonardo Tuna. We talked about the difficulty of getting a job at Microsoft, some of my work there, JavaScript frontend frameworks, Vue vs React and my interesting experiences writing software for education at Bridge International Academies.]]></description>
             <content:encoded><![CDATA[<p>I did a fun podcast episode with <a href="https://www.leotuna.com/">Leonardo Tuna</a>. We talked about the difficulty of getting a job at Microsoft, some of my work there, JavaScript frontend frameworks, Vue vs React and my interesting experiences writing software for education at Bridge International Academies.</p>
 <p>Leonardo is also looking for other developers from all walks of life who are interested in recoding podcast episodes, so if you&#39;re interested give him a ping.</p>
-<p><a href="https://www.youtube.com/watch?v=ou8ghziWAwA">https://www.youtube.com/watch?v=ou8ghziWAwA</a></p>
+<p>https://www.youtube.com/watch?v=ou8ghziWAwA</p>
 ]]></content:encoded>
             <enclosure url="https://rehansaeed.com/images/hero/Leonardo-Podcast-1600x900.jpg" length="0" type="image/jpg"/>
         </item>
@@ -848,7 +848,7 @@ I appeared on the <a href="https://dotnet.microsoft.com/live/dotnet-docs">.NET D
 <p>::: tip Updated 2020-09-17 09:29
 Added GitHub CLI commands to create labels instead of doing it manually. The GitHub CLI also simplified some commands, so I&#39;ve updated the post to make use of those simpler commands.
 :::</p>
-<p><a href="https://www.youtube.com/watch?v=A93Fn_qMLX4">https://www.youtube.com/watch?v=A93Fn_qMLX4</a></p>
+<p>https://www.youtube.com/watch?v=A93Fn_qMLX4</p>
 <p>So, you want to publish a new NuGet package? You just want to get your code up into nuget.org as quickly as possible but there is so much that you have to setup to get there. Not any more! I&#39;ll show you how you can create a new project and publish a NuGet package with all the bells and whistles in a <strong>couple of minutes</strong>.</p>
 <p>We&#39;ll start off by creating a new GitHub repository using the new <a href="https://github.com/cli/cli">GitHub CLI</a>.</p>
 <pre><code class="language-powershell">gh repo create RehanSaeed/FastestNuGet --public --confirm
@@ -2886,7 +2886,7 @@ networks:
 </code></pre>
 <p>Once again, we are binding the image to the Docker socket using a volume mount but also giving Portainer another volume to store it&#39;s data. We also set a constraint, so that the container runs on a manager node.</p>
 <h1 id="sonatype-nexus">Sonatype Nexus</h1>
-<p>[<a href="https://hub.docker.com/r/sonatype/nexus3/%5D">https://hub.docker.com/r/sonatype/nexus3/]</a>(Sonatype Nexus) is an open source repository manager that can be used as a private Docker registry to store your images. In fact, it can also be used as a repository for NuGet, Maven, Ruby and NPM too. It&#39;s pretty powerful stuff and has user management built in too.</p>
+<p>[https://hub.docker.com/r/sonatype/nexus3/](Sonatype Nexus) is an open source repository manager that can be used as a private Docker registry to store your images. In fact, it can also be used as a repository for NuGet, Maven, Ruby and NPM too. It&#39;s pretty powerful stuff and has user management built in too.</p>
 <p><img src="https://rehansaeed.com/useful-docker-images-part1/images/Sonatype-Nexus.png" alt="Sonatype Nexus"></p>
 <pre><code class="language-yaml">version: &#39;3.3&#39;
 
@@ -5496,7 +5496,7 @@ I looked into this subject for use by the company I work for, who had existing i
 <li><a href="https://rehansaeed.com/subresource-integrity-taghelper-using-asp-net-core-part-2/">Subresource Integrity TagHelper Using ASP.NET Core - Part 2</a></li>
 </ol>
 <p>Last week I wrote part one of a blog post discussing a Subresource Integrity (SRI) tag helper I wrote for ASP.NET Core. It turns out the post was featured on the ASP.NET Community Standup and discussed at length by <a href="http://twitter.com/shanselman">Scott Hanselman</a>, <a href="http://twitter.com/damianedwards">Damian Edwards</a> and <a href="http://twitter.com/jongalloway">Jon Galloway</a>. Here is the discussion:</p>
-<p><a href="https://www.youtube.com/watch?v=Mu2jol8EmVo">https://www.youtube.com/watch?v=Mu2jol8EmVo</a></p>
+<p>https://www.youtube.com/watch?v=Mu2jol8EmVo</p>
 <p>The overall impression from the standup was that the SRI tag helper I wrote was a good first step but there was more work to be done. It was however, still more secure than &quot;the rest of the internet&quot; according to Jon Galloway. The main issue raised during the standup was that the first call made to get the resource could retrieve a version of it that was compromised.</p>
 <p>My initial thinking was that you could check the files at deployment time when the tag helper first runs. Then the tag helper would have calculated the hash and cached it without any expiration time, so you are good from then on. In hindsight checking the files on every deployment is not great for the developer.</p>
 <h1 id="the-2nd-iteration">The 2nd Iteration</h1>
@@ -6160,10 +6160,10 @@ sitemap: http://example.com/sitemap.xml
 </ul>
 <p>The aim of this post is to give your site better search engine rankings using special <a href="https://en.wikipedia.org/wiki/Search_engine_optimization">Search Engine Optimization (SEO)</a> techniques. Take a look at the URL&#39;s below and see if you can spot the differences between them:</p>
 <ol>
-<li><a href="http://example.com/one/two/">http://example.com/one/two/</a></li>
-<li><a href="https://example.com/one/two/">https://example.com/one/two/</a></li>
-<li><a href="http://example.com/one/two">http://example.com/one/two</a></li>
-<li><a href="http://example.com/One/Two">http://example.com/One/Two</a></li>
+<li>http://example.com/one/two/</li>
+<li>https://example.com/one/two/</li>
+<li>http://example.com/one/two</li>
+<li>http://example.com/One/Two</li>
 </ol>
 <p>The second one has a HTTPS scheme, the third omits the trailing slash and the fourth has mixed case characters. All of the URL&#39;s point to the same resource but it turns out that search engines treat every one of these URL&#39;s as unique and different. Search engines give each URL a page rank, which determines where the resource will show up in the search results. Another term you will also hear quite often is &#39;link juice&#39;. The link juice conceptualizes how page rank flows between pages and websites.</p>
 <p>If your site exposes the above four different URL&#39;s to the single resource, your link juice is being spread against each one and as a result, that will be having a detrimental impact on your page rank.</p>
@@ -9890,7 +9890,7 @@ await observable.ForEachAsync(x =&gt; Console.WriteLine(x));
 <li><a href="https://rehansaeed.com/wpf-metro-part3-elysium/">WPF Metro - Elysium</a></li>
 <li><a href="https://rehansaeed.com/wpf-metro-part4-elysium-extra/">WPF Metro - Elysium Extra</a></li>
 </ol>
-<p><a href="https://www.youtube.com/watch?v=PGM_uBy99GA">https://www.youtube.com/watch?v=PGM_uBy99GA</a></p>
+<p>https://www.youtube.com/watch?v=PGM_uBy99GA</p>
 <p>In these series of posts I&#39;m going to do a quick review of a few different open source WPF Metro (Or Modern if you prefer) style SDK&#39;s. Each of them provides styles and new controls to build your WPF application from scratch. Here are the home pages for the open source projects in question where you can download the source code and the binaries to play with them yourself:</p>
 <ul>
 <li><a href="https://mui.codeplex.com/">Modern UI for WPF</a></li>
@@ -10021,7 +10021,7 @@ I am the developer of Elysium Extra. It was developed at the company where I wor
 <li><a href="https://rehansaeed.com/wpf-metro-part3-elysium/">WPF Metro - Elysium</a></li>
 <li><a href="https://rehansaeed.com/wpf-metro-part4-elysium-extra/">WPF Metro - Elysium Extra</a></li>
 </ol>
-<p><a href="https://www.youtube.com/watch?v=YChJguA6ai8">https://www.youtube.com/watch?v=YChJguA6ai8</a></p>
+<p>https://www.youtube.com/watch?v=YChJguA6ai8</p>
 <p>In these series of posts I&#39;m going to do a quick review of a few different open source WPF Metro (Or Modern if you prefer) style SDK&#39;s. Each of them provides styles and new controls to build your WPF application from scratch. Here are the home pages for the open source projects in question where you can download the source code and the binaries to play with them yourself:</p>
 <ul>
 <li><a href="https://mui.codeplex.com/">Modern UI for WPF</a></li>
@@ -10199,7 +10199,7 @@ private void OnTimerElapsed(object sender, ElapsedEventArgs e)
 <li><a href="https://rehansaeed.com/wpf-metro-part3-elysium/">WPF Metro - Elysium</a></li>
 <li><a href="https://rehansaeed.com/wpf-metro-part4-elysium-extra/">WPF Metro - Elysium Extra</a></li>
 </ol>
-<p><a href="https://www.youtube.com/watch?v=FLmCkKfIp84">https://www.youtube.com/watch?v=FLmCkKfIp84</a></p>
+<p>https://www.youtube.com/watch?v=FLmCkKfIp84</p>
 <p>In these series of posts I&#39;m going to do a quick review of a few different open source WPF Metro (Or Modern if you prefer) style SDK&#39;s. Each of them provides styles and new controls to build your WPF application from scratch. Here are the home pages for the open source projects in question where you can download the source code and the binaries to play with them yourself:</p>
 <ul>
 <li><a href="https://mui.codeplex.com/">Modern UI for WPF</a></li>
@@ -10262,7 +10262,7 @@ private void OnTimerElapsed(object sender, ElapsedEventArgs e)
 <li><a href="https://rehansaeed.com/wpf-metro-part3-elysium/">WPF Metro - Elysium</a></li>
 <li><a href="https://rehansaeed.com/wpf-metro-part4-elysium-extra/">WPF Metro - Elysium Extra</a></li>
 </ol>
-<p><a href="https://www.youtube.com/watch?v=Bk7mlEQI2rk">https://www.youtube.com/watch?v=Bk7mlEQI2rk</a></p>
+<p>https://www.youtube.com/watch?v=Bk7mlEQI2rk</p>
 <p>In these series of posts I&#39;m going to do a quick review of a few different open source WPF Metro (Or Modern if you prefer) style SDK&#39;s. Each of them provides styles and new controls to build your WPF application from scratch. Here are the home pages for the open source projects in question where you can download the source code and the binaries to play with them yourself:</p>
 <ul>
 <li><a href="https://mui.codeplex.com/">Modern UI for WPF</a></li>
