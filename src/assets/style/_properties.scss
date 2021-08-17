@@ -53,9 +53,10 @@
   --ease-in-out-back: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
   // Font Family
-  --global-font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --global-font-family-sans-serif: -apple-system, BlinkMacSystemFont,
+    "Segoe UI Variable", "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
   --global-font-family-serif: "Georgia", serif;
   --global-font-family-monospace: "Cascadia Code", "Cascadia Code PL",
     "Fira Code", Consolas, SFMono-Regular, Menlo, Monaco, "Liberation Mono",
