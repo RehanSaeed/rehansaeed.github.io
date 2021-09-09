@@ -75,7 +75,7 @@
   ],
   "prettier": {
     "bracketSameLine": true,
-    "endOfLine": "crlf"
+    "endOfLine": "auto"
   },
   "husky": {
     "hooks": {
