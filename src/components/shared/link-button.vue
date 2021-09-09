@@ -10,8 +10,7 @@
     :href="href"
     :to="to"
     :rel="rel"
-    :aria-label="label"
-  >
+    :aria-label="label">
     <slot />
   </Component>
 </template>

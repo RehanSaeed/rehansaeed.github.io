@@ -6,8 +6,7 @@
       'button--contrast': contrast,
       'button--primary': primary,
     }"
-    :type="type"
-  >
+    :type="type">
     <slot />
   </button>
 </template>

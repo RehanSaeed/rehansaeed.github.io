@@ -7,8 +7,7 @@
         src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png"
         width="50"
         height="50"
-        blur="0"
-      />
+        blur="0" />
     </u-link-button>
     <div class="navigation__items-left">
       <u-link-button class="navigation__item" to="/">Blog</u-link-button>

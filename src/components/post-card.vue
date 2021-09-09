@@ -4,15 +4,13 @@
     tag="article"
     hoverable
     focusable
-    :class="{ 'post-card--has-poster': post.poster }"
-  >
+    :class="{ 'post-card--has-poster': post.poster }">
     <div class="post-card__header">
       <g-image
         v-if="post.heroImage"
         class="post-card__image"
         :alt="imageMeta.alt"
-        :src="post.heroImage"
-      />
+        :src="post.heroImage" />
     </div>
     <div class="post-card__content">
       <u-heading

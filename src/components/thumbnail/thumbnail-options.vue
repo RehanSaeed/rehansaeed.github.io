@@ -8,8 +8,7 @@
           class="thumbnail-options__input"
           placeholder="none|light|dark|/images/hero/Code-1600x900.jpg"
           :value="background"
-          @input="$emit('update:background', $event.target.value)"
-        />
+          @input="$emit('update:background', $event.target.value)" />
       </fieldset>
     </section>
 

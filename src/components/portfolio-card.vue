@@ -5,8 +5,7 @@
         :alt="portfolio.title"
         v-if="portfolio.heroImage"
         class="portfolio-card__image"
-        :src="portfolio.heroImage"
-      />
+        :src="portfolio.heroImage" />
     </div>
     <div class="portfolio-card__content">
       <u-heading
@@ -21,8 +20,7 @@
       <u-tags
         v-if="portfolio.tags"
         class="portfolio-card__tags"
-        :tags="portfolio.tags"
-      />
+        :tags="portfolio.tags" />
     </div>
   </u-card>
 </template>

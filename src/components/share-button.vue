@@ -8,47 +8,41 @@
       title="Share"
       :is-open="isDialogueOpen"
       @close="onClose"
-      class="share-dialogue"
-    >
+      class="share-dialogue">
       <div class="share-dialogue__links">
         <u-link-button
           bordered
           :href="facebookUrl"
           @click.native="onClose"
-          class="share-dialogue__link"
-        >
+          class="share-dialogue__link">
           <u-icon-facebook /> Facebook
         </u-link-button>
         <u-link-button
           bordered
           :href="twitterUrl"
           @click.native="onClose"
-          class="share-dialogue__link"
-        >
+          class="share-dialogue__link">
           <u-icon-twitter /> Twitter
         </u-link-button>
         <u-link-button
           bordered
           :href="redditUrl"
           @click.native="onClose"
-          class="share-dialogue__link"
-        >
+          class="share-dialogue__link">
           <u-icon-reddit /> Reddit
         </u-link-button>
         <u-link-button
           bordered
           :href="linkedinUrl"
           @click.native="onClose"
-          class="share-dialogue__link"
-        >
+          class="share-dialogue__link">
           <u-icon-linkedin /> LinkedIn
         </u-link-button>
         <u-link-button
           bordered
           :href="mailUrl"
           @click.native="onClose"
-          class="share-dialogue__link"
-        >
+          class="share-dialogue__link">
           <u-icon-email /> Email
         </u-link-button>
       </div>

@@ -17,8 +17,7 @@
         <u-portfolio-card
           v-for="edge of $page.portfolio.edges"
           :key="edge.node.id"
-          :portfolio="edge.node"
-        />
+          :portfolio="edge.node" />
       </div>
 
       <u-newsletter class="portfolio__newsletter" />

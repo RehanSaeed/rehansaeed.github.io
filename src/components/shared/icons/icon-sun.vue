@@ -11,8 +11,7 @@
     stroke="currentColor"
     stroke-width="2"
     stroke-linecap="round"
-    stroke-linejoin="round"
-  >
+    stroke-linejoin="round">
     <title>{{ title }}</title>
     <circle cx="12" cy="12" r="5"></circle>
     <line x1="12" y1="1" x2="12" y2="3"></line>

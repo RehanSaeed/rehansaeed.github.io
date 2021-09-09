@@ -3,8 +3,7 @@
     <article
       class="thumbnail"
       :class="[backgroundClass]"
-      :style="{ backgroundImage: backgroundImage }"
-    >
+      :style="{ backgroundImage: backgroundImage }">
       <u-thumbnail-title class="thumbnail__title" />
       <u-thumbnail-logo class="thumbnail__logo" />
       <u-thumbnail-image class="thumbnail__image1" name="image1" />
@@ -12,8 +11,7 @@
     </article>
     <u-thumbnail-options
       :background="background"
-      @update:background="background = $event"
-    />
+      @update:background="background = $event" />
   </Layout>
 </template>
 

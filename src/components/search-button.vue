@@ -3,8 +3,7 @@
     <u-button
       class="search-button"
       aria-label="Open search"
-      @click.native.prevent="onOpen"
-    >
+      @click.native.prevent="onOpen">
       <u-icon-search v-if="!isOpen" :size="24" />
     </u-button>
 
@@ -13,13 +12,11 @@
       title="Search"
       :is-open="isOpen"
       @close="onClose"
-      class="search-dialogue"
-    >
+      class="search-dialogue">
       <u-search
         :is-open="isOpen"
         :search="this.$route.query.search"
-        @selected="onSelected"
-      />
+        @selected="onSelected" />
     </u-dialogue>
   </div>
 </template>

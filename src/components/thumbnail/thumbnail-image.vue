@@ -11,8 +11,7 @@
       top: toPx(imageY),
     }"
     :width="imageWidth"
-    :height="imageHeight"
-  />
+    :height="imageHeight" />
 </template>
 
 <script>

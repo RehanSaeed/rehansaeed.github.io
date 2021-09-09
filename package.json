@@ -74,6 +74,7 @@
     "defaults"
   ],
   "prettier": {
+    "bracketSameLine": true,
     "endOfLine": "crlf"
   },
   "husky": {

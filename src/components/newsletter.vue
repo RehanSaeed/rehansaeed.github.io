@@ -3,8 +3,7 @@
     <form
       class="newsletter__form"
       method="post"
-      :action="this.$static.metadata.mailchimpUrl"
-    >
+      :action="this.$static.metadata.mailchimpUrl">
       <u-heading
         id="newsletter"
         class="newsletter__title"
@@ -25,8 +24,7 @@
         required
         type="email"
         autocapitalize="off"
-        autocorrect="off"
-      />
+        autocorrect="off" />
       <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
       <input
         aria-hidden="true"
@@ -34,8 +32,7 @@
         name="b_0d1d7c30db26dd0a4aa1b5b40_07ce865066"
         style="position: absolute; left: -5000px"
         tabindex="-1"
-        value
-      />
+        value />
       <u-button bordered submit class="newsletter__button">Subscribe</u-button>
     </form>
   </u-card>

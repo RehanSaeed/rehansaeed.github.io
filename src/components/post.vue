@@ -5,8 +5,7 @@
         v-if="post.heroImage"
         :alt="imageMeta.alt"
         :src="post.heroImage"
-        class="post__photo"
-      />
+        class="post__photo" />
     </header>
 
     <div class="post__content e-content" v-html="post.content" />
@@ -16,8 +15,7 @@
         <u-share-button
           class="post__share"
           :title="post.title"
-          :tags="post.tags.map((x) => x.title)"
-        />
+          :tags="post.tags.map((x) => x.title)" />
         <u-edit-post-button class="post__edit" :post="post" />
         <u-support-button class="post__support" />
       </div>

@@ -5,8 +5,7 @@
       label="Twitter"
       :href="this.$static.metadata.author.twitter.url"
       class="social__link"
-      rel="me"
-    >
+      rel="me">
       <u-icon-twitter :size="30" />
     </u-link-button>
     <u-link-button
@@ -14,8 +13,7 @@
       label="GitHub"
       :href="this.$static.metadata.author.gitHub.url"
       class="social__link"
-      rel="me authn"
-    >
+      rel="me authn">
       <u-icon-github :size="30" />
     </u-link-button>
     <u-link-button
@@ -23,8 +21,7 @@
       label="Stack Overflow"
       :href="this.$static.metadata.author.stackOverflow.url"
       class="social__link"
-      rel="me"
-    >
+      rel="me">
       <u-icon-stackoverflow :size="30" />
     </u-link-button>
     <u-link-button
@@ -32,8 +29,7 @@
       label="LinkedIn"
       :href="this.$static.metadata.author.linkedIn.url"
       class="social__link"
-      rel="me"
-    >
+      rel="me">
       <u-icon-linkedin :size="30" />
     </u-link-button>
     <u-link-button
@@ -41,8 +37,7 @@
       label="Youtube"
       :href="this.$static.metadata.author.youtube.url"
       class="social__link"
-      rel="me"
-    >
+      rel="me">
       <u-icon-youtube :size="30" />
     </u-link-button>
     <u-link-button
@@ -50,8 +45,7 @@
       label="Twitch"
       :href="this.$static.metadata.author.twitch.url"
       class="social__link"
-      rel="me"
-    >
+      rel="me">
       <u-icon-twitch :size="30" />
     </u-link-button>
     <u-link-button class="social__link" label="Email" :href="mailTo">

@@ -6,8 +6,7 @@
       :label="name"
       :alt="name"
       :src="photo"
-      size="large"
-    />
+      size="large" />
     <u-heading
       class="webmention-reply__author"
       :id="id"

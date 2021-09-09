@@ -7,8 +7,7 @@
     <u-dialogue
       title="Buy me a Coffee"
       :is-open="isDialogueOpen"
-      @close="close"
-    >
+      @close="close">
       <u-support-links />
     </u-dialogue>
   </div>

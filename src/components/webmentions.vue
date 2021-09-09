@@ -11,8 +11,7 @@
       >
       <a
         class="webmentions__help"
-        href="https://en.wikipedia.org/wiki/Webmention"
-      >
+        href="https://en.wikipedia.org/wiki/Webmention">
         <u-icon-question class="webmentions__icon" :size="18" />
         <span>What's this?</span>
       </a>
@@ -21,46 +20,40 @@
           <u-icon-heart
             class="webmentions__icon"
             :size="16"
-            :title="likesDescription"
-          />
+            :title="likesDescription" />
           <span>{{ likesDescription }}</span>
         </p>
         <u-webmention-faces
           v-if="!isLoading"
           class="webmentions__like-faces"
-          :mentions="likes"
-        />
+          :mentions="likes" />
         <u-webmention-faces-skeleton v-else />
 
         <p class="webmentions__count webmentions__repost-count">
           <u-icon-repost
             class="webmentions__icon"
             :size="16"
-            :title="repostsDescription"
-          />
+            :title="repostsDescription" />
           <span>{{ repostsDescription }}</span>
         </p>
         <u-webmention-faces
           v-if="!isLoading"
           class="webmentions__repost-faces"
-          :mentions="reposts"
-        />
+          :mentions="reposts" />
         <u-webmention-faces-skeleton v-else />
 
         <p class="webmentions__count webmentions__link-count">
           <u-icon-link
             class="webmentions__icon"
             :size="16"
-            :title="linksDescription"
-          />
+            :title="linksDescription" />
           <span>{{ linksDescription }}</span>
         </p>
         <div v-if="!isLoading" class="webmentions__links">
           <u-webmention-link
             v-for="link of links"
             :key="link.id"
-            :link="link"
-          />
+            :link="link" />
         </div>
         <u-webmention-links-skeleton v-else />
 
@@ -68,16 +61,14 @@
           <u-icon-comment
             class="webmentions__icon"
             :size="16"
-            :title="repliesDescription"
-          />
+            :title="repliesDescription" />
           <span>{{ repliesDescription }}</span>
         </p>
         <div v-if="!isLoading" class="webmentions__replies">
           <u-webmention-reply
             v-for="reply of replies"
             :key="reply.id"
-            :reply="reply"
-          />
+            :reply="reply" />
         </div>
         <u-webmention-replies-skeleton v-else />
       </div>

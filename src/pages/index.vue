@@ -7,8 +7,7 @@
         <u-post-card
           v-for="edge of $page.posts.edges"
           :key="edge.node.id"
-          :post="edge.node"
-        />
+          :post="edge.node" />
       </div>
 
       <u-pager class="posts__pager" :page-info="$page.posts.pageInfo" />

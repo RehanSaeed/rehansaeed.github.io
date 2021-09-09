@@ -8,15 +8,13 @@
       class="search__input"
       placeholder="Search"
       inputmode="search"
-      type="search"
-    />
+      type="search" />
     <div class="search__results">
       <u-search-result
         v-for="searchResult of searchResults"
         :key="searchResult.id"
         :searchResult="searchResult"
-        @click.native="onSelected"
-      />
+        @click.native="onSelected" />
     </div>
   </section>
 </template>

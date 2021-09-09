@@ -9,15 +9,13 @@
     :aria-label="label"
     :title="label"
     :href="href"
-    :to="to"
-  >
+    :to="to">
     <g-image
       class="avatar__image"
       :alt="alt"
       :src="src"
       :width="sizeInPixels"
-      :height="sizeInPixels"
-    />
+      :height="sizeInPixels" />
   </Component>
 </template>
 

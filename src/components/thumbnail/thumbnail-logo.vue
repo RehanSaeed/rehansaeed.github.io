@@ -2,8 +2,7 @@
   <div
     v-if="!noLogo"
     class="thumbnail-logo"
-    :style="{ alignSelf: logoAlign, justifySelf: logoJustify }"
-  >
+    :style="{ alignSelf: logoAlign, justifySelf: logoJustify }">
     <u-icon-rehan width="150" height="150" />
   </div>
 </template>

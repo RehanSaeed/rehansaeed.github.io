@@ -7,8 +7,7 @@
       immediate
       src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png"
       width="120"
-      height="120"
-    />
+      height="120" />
 
     <u-heading
       :id="$static.metadata.name"

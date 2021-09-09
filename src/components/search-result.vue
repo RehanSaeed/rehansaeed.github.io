@@ -5,13 +5,11 @@
       @click.native="onSelected"
       :href="searchResult.node.permalink"
       :to="searchResult.path"
-      class="search-result__link"
-    >
+      class="search-result__link">
       <g-image
         v-if="searchResult.node.heroImage"
         class="search-result__image"
-        :src="searchResult.node.heroImage"
-      />
+        :src="searchResult.node.heroImage" />
       <u-heading
         :id="searchResult.node.title"
         class="search-result__title"

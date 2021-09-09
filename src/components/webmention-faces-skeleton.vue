@@ -6,8 +6,7 @@
         :key="n"
         :cx="getXPosition(n)"
         :cy="radius"
-        :r="radius"
-      />
+        :r="radius" />
     </svg>
   </u-skeleton>
 </template>

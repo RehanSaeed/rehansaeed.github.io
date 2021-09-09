@@ -7,8 +7,7 @@
       :href="mention.data.url"
       :label="label"
       :alt="mention.data.author.name"
-      :src="mention.data.author.photo"
-    />
+      :src="mention.data.author.photo" />
   </div>
 </template>
 

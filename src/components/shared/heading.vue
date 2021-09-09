@@ -3,16 +3,14 @@
     class="heading"
     :is="headingTag"
     :id="idInternal"
-    :class="[sizeClass, { 'heading--center': center }]"
-  >
+    :class="[sizeClass, { 'heading--center': center }]">
     <Component
       v-if="hasLink"
       :is="linkTag"
       class="heading__link"
       :class="linkClass"
       :href="href"
-      :to="to"
-    >
+      :to="to">
       <slot />
     </Component>
     <slot v-else />

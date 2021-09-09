@@ -11,8 +11,7 @@
     stroke="currentColor"
     stroke-width="2"
     stroke-linecap="round"
-    stroke-linejoin="round"
-  >
+    stroke-linejoin="round">
     <title>{{ title }}</title>
     <path d="M20 20l-4-4" />
     <circle cx="10" cy="10" r="7" />

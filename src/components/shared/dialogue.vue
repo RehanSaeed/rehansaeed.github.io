@@ -4,8 +4,7 @@
       :id="id"
       class="dialog"
       @close="close"
-      :class="{ 'dialog--fullscreen': fullscreen }"
-    >
+      :class="{ 'dialog--fullscreen': fullscreen }">
       <div class="dialog__container">
         <u-heading id="title" level="2" class="dialog__title">{{
           title

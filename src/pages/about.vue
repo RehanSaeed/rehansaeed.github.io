@@ -12,8 +12,7 @@
           height="480"
           width="320"
           src="~/assets/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg"
-          quality="100"
-        />
+          quality="100" />
         <u-heading
           :id="$static.metadata.author.name"
           level="2"
@@ -40,8 +39,7 @@
             alt="GitHub follower count"
             height="30"
             width="168"
-            :src="gitHubFollowersUrl"
-          />
+            :src="gitHubFollowersUrl" />
         </a>
         <p class="about__description">
           You can see a timeline of my open source work and blog posts in my
@@ -54,8 +52,7 @@
             alt="Stack Overflow profile statistics"
             height="58"
             width="208"
-            :src="stackOverflowProfileUrl"
-          />
+            :src="stackOverflowProfileUrl" />
         </a>
         <p class="about__description">
           Before I joined Microsoft, I was a
@@ -70,8 +67,7 @@
             height="84"
             width="208"
             src="~/assets/images/Microsoft-Most-Valuable-Professional-750x303.png"
-            quality="100"
-          />
+            quality="100" />
         </a>
         <p class="about__description">
           Do you have questions or comments about my work? Please feel free to

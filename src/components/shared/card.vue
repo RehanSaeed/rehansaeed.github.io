@@ -2,8 +2,7 @@
   <div
     class="card"
     :is="tag"
-    :class="{ 'card--hoverable': hoverable, 'card--focusable': focusable }"
-  >
+    :class="{ 'card--hoverable': hoverable, 'card--focusable': focusable }">
     <slot />
   </div>
 </template>

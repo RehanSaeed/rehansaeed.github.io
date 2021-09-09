@@ -7,8 +7,7 @@
       alignContent: titleAlign,
       justifyItems: titleJustify,
       width: toPx(titleWidth),
-    }"
-  >
+    }">
     <h1 v-if="title" class="thumbnail-title__title">
       {{ title }}
     </h1>

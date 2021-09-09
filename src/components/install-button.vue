@@ -3,8 +3,7 @@
     v-show="isVisible"
     class="install-button"
     aria-label="Install the app"
-    @click.native.prevent="onInstall"
-  >
+    @click.native.prevent="onInstall">
     <u-icon-add-home :size="24" />
   </u-button>
 </template>
