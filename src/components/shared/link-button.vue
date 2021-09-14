@@ -80,7 +80,7 @@ export default {
   background-color: var(--global-background-color);
   border: var(--global-border-width-1) solid var(--global-border-color);
   border-radius: var(--global-border-radius);
-  box-shadow: 0 1px 3px hsl(0, 0%, 90%);
+  box-shadow: var(--global-shadow-1);
   font-size: var(--global-font-size-1);
   padding: var(--global-space-fixed-2) var(--global-space-fixed-4);
 
@@ -115,7 +115,7 @@ export default {
   z-index: -1;
 
   border-radius: inherit;
-  box-shadow: 0 3px 5px hsl(0, 0%, 70%);
+  box-shadow: var(--global-shadow-2);
   opacity: 0;
   transition: opacity var(--global-duration-2) var(--ease-in-out-cubic);
 }
@@ -129,7 +129,7 @@ export default {
 
 .link-button--bordered:active::before,
 .vssue-logout:active::before {
-  box-shadow: 0 0 0 hsl(0, 0%, 70%);
+  box-shadow: var(--global-shadow-1);
   opacity: 1;
 }
 

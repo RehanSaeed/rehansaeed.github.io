@@ -14,7 +14,7 @@ textarea {
 
   &:focus {
     border-color: var(--global-accent-color);
-    box-shadow: 0 0 3px 1px var(--global-accent-color);
+    box-shadow: var(--global-shadow-2);
   }
 
   &:disabled {

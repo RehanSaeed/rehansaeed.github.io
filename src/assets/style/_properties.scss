@@ -15,11 +15,18 @@
   --global-border-width-5: 0.4rem; // 8px
 
   // Box Shadows
-  --global-shadow-1: 0px 2px 4px rgba(37, 37, 37, 0.1);
-  --global-shadow-2: 0px 4px 8px rgba(37, 37, 37, 0.1);
-  --global-shadow-3: 0px 8px 16px rgba(37, 37, 37, 0.1);
-  --global-shadow-4: 0px 16px 24px rgba(37, 37, 37, 0.1);
-  --global-shadow-5: 0px 24px 32px rgba(37, 37, 37, 0.1);
+  --global-shadow-1: 0 1px 3px var(--global-shadow-color);
+  --global-shadow-2: 0 2px 3px var(--global-shadow-color),
+    0 4px 6px var(--global-shadow-color), 0 6px 9px var(--global-shadow-color);
+  --global-shadow-3: 0 2px 3px var(--global-shadow-color),
+    0 4px 6px var(--global-shadow-color), 0 8px 12px var(--global-shadow-color),
+    0 8px 12px var(--global-shadow-color),
+    0 16px 24px var(--global-shadow-color);
+  --global-shadow-4: 0 2px 3px var(--global-shadow-color),
+    0 4px 6px var(--global-shadow-color), 0 8px 12px var(--global-shadow-color),
+    0 8px 12px var(--global-shadow-color),
+    0 16px 24px var(--global-shadow-color),
+    0 32px 48px var(--global-shadow-color);
 
   // Duration
   --global-duration-1: 200ms;
@@ -174,6 +181,7 @@
   --global-title-color: hsl(0, 0%, 7%);
   --global-disabled-color: hsla(0, 0%, 0%, 0.1);
   --global-placeholder-color: hsl(210, 8%, 67%);
+  --global-shadow-color: hsla(0, 0%, 15%, 0.1);
 
   // Link
   --global-link-color: hsl(264, 82%, 50%);
@@ -226,6 +234,7 @@
   --global-title-color: hsl(0, 0%, 100%);
   --global-disabled-color: hsla(0, 0%, 100%, 0.1);
   --global-placeholder-color: hsl(210, 8%, 67%);
+  --global-shadow-color: hsla(0, 0%, 85%, 0.1);
 
   // Link
   --global-link-color: hsl(254, 100%, 87%);

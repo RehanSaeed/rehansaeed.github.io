@@ -246,7 +246,7 @@ export default {
   .vssue-comment.vssue-comment-edit-mode
   .vssue-comment-main {
   border-color: var(--global-accent-color);
-  box-shadow: 0 0 3px 1px var(--global-accent-color);
+  box-shadow: var(--global-shadow-2);
 
   textarea:focus {
     border: none;
