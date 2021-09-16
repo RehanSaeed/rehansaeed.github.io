@@ -137,13 +137,13 @@ query Tag($id: ID!) {
 <style lang="scss">
 .tag-page {
   display: grid;
-  grid-gap: var(--global-space-fluid-5);
+  gap: var(--global-space-fluid-5);
   grid-template-columns: 1fr;
 }
 
 .tag-page__items {
   display: grid;
-  grid-gap: var(--global-space-fluid-5);
+  gap: var(--global-space-fluid-5);
   grid-template-columns: repeat(
     auto-fit,
     minmax(

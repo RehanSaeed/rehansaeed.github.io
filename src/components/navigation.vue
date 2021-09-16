@@ -55,12 +55,13 @@ query {
 @use "~/assets/style/abstracts/breakpoints";
 
 .navigation {
-  align-items: center;
   display: grid;
-  font-size: var(--global-font-size-3);
+  align-items: center;
+  gap: var(--global-space-fluid-5);
   grid-template-columns: auto 1fr auto;
   grid-template-rows: auto;
-  grid-gap: var(--global-space-fluid-5);
+
+  font-size: var(--global-font-size-3);
   padding: var(--global-space-fluid-5);
   visibility: hidden;
 }
@@ -80,8 +81,8 @@ query {
 
 .navigation__items-left {
   display: grid;
+  gap: var(--global-space-fluid-5);
   grid-template-columns: repeat(3, auto);
-  grid-gap: var(--global-space-fluid-5);
   justify-content: start;
 }
 
@@ -92,11 +93,11 @@ query {
   grid-row-end: 3;
 
   display: grid;
+  gap: var(--global-space-fluid-5);
   grid-template-areas:
     "search theme"
     ". install";
   grid-template-columns: repeat(2, auto);
-  grid-gap: var(--global-space-fluid-5);
 }
 
 .navigation__item {
@@ -120,14 +121,15 @@ query {
 
 @include breakpoints.respond-above(xl) {
   .navigation {
-    grid-gap: var(--global-space-fluid-3);
+    gap: var(--global-space-fluid-3);
     grid-template-rows: auto auto;
-    margin-bottom: -9.5rem;
     justify-items: left;
+
+    margin-bottom: -9.5rem;
   }
 
   .navigation__items-left {
-    grid-gap: var(--global-space-fluid-3);
+    gap: var(--global-space-fluid-3);
     grid-column-start: 1;
     grid-row-start: 2;
     grid-template-columns: auto;

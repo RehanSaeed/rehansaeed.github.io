@@ -250,7 +250,7 @@ query {
 <style lang="scss">
 .about {
   display: grid;
-  grid-gap: var(--global-space-fluid-5);
+  gap: var(--global-space-fluid-5);
   justify-items: center;
 }
 

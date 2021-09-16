@@ -39,7 +39,7 @@ export default {
 <style lang="scss">
 .not-found {
   display: grid;
-  grid-gap: var(--global-space-fluid-5);
+  gap: var(--global-space-fluid-5);
   justify-items: center;
 }
 

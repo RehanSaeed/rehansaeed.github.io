@@ -226,13 +226,13 @@ query($page: Int) {
 <style lang="scss">
 .posts {
   display: grid;
-  grid-gap: var(--global-space-fluid-5);
+  gap: var(--global-space-fluid-5);
   grid-template-columns: 1fr;
 }
 
 .posts__items {
   display: grid;
-  grid-gap: var(--global-space-fluid-5);
+  gap: var(--global-space-fluid-5);
   grid-template-columns: repeat(
     auto-fit,
     minmax(

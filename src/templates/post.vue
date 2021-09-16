@@ -216,7 +216,7 @@ query Post ($id: ID!) {
 <style lang="scss">
 .post-page {
   display: grid;
-  grid-gap: var(--global-space-fluid-5);
+  gap: var(--global-space-fluid-5);
   grid-template-columns: repeat(
     1,
     minmax(

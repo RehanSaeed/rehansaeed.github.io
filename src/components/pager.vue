@@ -55,11 +55,12 @@ export default {
 
 <style lang="scss">
 .pager {
-  align-items: center;
   display: grid;
-  grid-gap: var(--global-space-fluid-4);
+  align-items: center;
+  gap: var(--global-space-fluid-4);
   grid-template-areas: "previous info next";
   grid-template-columns: 7rem 1fr 7rem;
+
   text-align: center;
 }
 

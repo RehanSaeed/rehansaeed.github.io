@@ -73,7 +73,7 @@ export default {
 
 .webmention-reply {
   display: grid;
-  grid-column-gap: var(--global-space-fixed-3);
+  column-gap: var(--global-space-fixed-3);
   grid-template-areas:
     "avatar author"
     "avatar timestamp"

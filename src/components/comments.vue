@@ -44,7 +44,7 @@ export default {
 
 .vssue {
   display: grid;
-  grid-gap: var(--global-space-fixed-5);
+  gap: var(--global-space-fixed-5);
   overflow: hidden;
 
   p {
@@ -148,8 +148,8 @@ export default {
 // Body
 .vssue-body {
   display: grid;
+  gap: var(--global-space-fixed-4);
   grid-template-columns: 1fr;
-  grid-gap: var(--global-space-fixed-4);
 }
 
 // New Comment
@@ -158,7 +158,7 @@ export default {
   padding-bottom: var(--global-space-fixed-5);
 
   display: grid;
-  grid-gap: var(--global-space-fixed-3);
+  gap: var(--global-space-fixed-3);
   grid-template-columns: auto 1fr;
   grid-template-areas:
     "avatar body"
@@ -192,7 +192,7 @@ export default {
   grid-area: footer;
 
   display: grid;
-  grid-gap: var(--global-space-fixed-3);
+  gap: var(--global-space-fixed-3);
   grid-template-columns: 1fr auto;
   grid-template-areas: "user operations";
 }
@@ -216,12 +216,12 @@ export default {
 // Comment
 .vssue-comments > div {
   display: grid;
-  grid-gap: var(--global-space-fixed-4);
+  gap: var(--global-space-fixed-4);
   grid-template-columns: 1fr;
 }
 .vssue-comment {
   display: grid;
-  grid-gap: var(--global-space-fixed-3);
+  gap: var(--global-space-fixed-3);
   grid-template-columns: auto 1fr;
   grid-template-areas: "avatar body";
 

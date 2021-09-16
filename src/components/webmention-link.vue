@@ -50,7 +50,7 @@ export default {
 
 .webmention-link {
   display: grid;
-  grid-column-gap: var(--global-space-fixed-3);
+  column-gap: var(--global-space-fixed-3);
   grid-template-areas:
     "author"
     "timestamp";

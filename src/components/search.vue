@@ -64,7 +64,7 @@ export default {
 <style lang="scss">
 .search {
   display: grid;
-  grid-gap: var(--global-space-fixed-5);
+  gap: var(--global-space-fixed-5);
 }
 
 .search__input {
@@ -73,8 +73,9 @@ export default {
 
 .search__results {
   display: grid;
+  gap: var(--global-space-fixed-5);
   grid-template-columns: 1fr;
-  grid-gap: var(--global-space-fixed-5);
+
   overflow-y: auto;
 }
 </style>

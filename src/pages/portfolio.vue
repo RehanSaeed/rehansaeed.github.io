@@ -144,7 +144,7 @@ query {
 <style lang="scss">
 .portfolio {
   display: grid;
-  grid-gap: var(--global-space-fluid-5);
+  gap: var(--global-space-fluid-5);
   grid-template-columns: 1fr;
 }
 
@@ -156,7 +156,7 @@ query {
 
 .portfolio__items {
   display: grid;
-  grid-gap: var(--global-space-fluid-5);
+  gap: var(--global-space-fluid-5);
   grid-template-columns: repeat(
     auto-fit,
     minmax(

@@ -222,7 +222,7 @@ export default {
 
 .webmentions__container {
   display: grid;
-  grid-gap: var(--global-space-fixed-3);
+  gap: var(--global-space-fixed-3);
 }
 
 .webmentions__count {
@@ -235,11 +235,11 @@ export default {
 
 .webmentions__links {
   display: grid;
-  grid-gap: var(--global-space-fixed-3);
+  gap: var(--global-space-fixed-3);
 }
 
 .webmentions__replies {
   display: grid;
-  grid-gap: var(--global-space-fixed-3);
+  gap: var(--global-space-fixed-3);
 }
 </style>
