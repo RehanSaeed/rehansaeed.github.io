@@ -135,6 +135,7 @@ query {
 }
 
 .social__link {
+  line-height: 0;
   margin-right: var(--global-space-fixed-4);
   margin-bottom: var(--global-space-fixed-4);
 }
