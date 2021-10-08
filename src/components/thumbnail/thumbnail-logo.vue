@@ -3,7 +3,7 @@
     v-if="!noLogo"
     class="thumbnail-logo"
     :style="{ alignSelf: logoAlign, justifySelf: logoJustify }">
-    <u-icon-rehan width="150" height="150" />
+    <u-icon-rehan class="thumbnail-logo__icon" />
   </div>
 </template>
 
@@ -44,5 +44,10 @@ export default {
   width: 150px;
   height: 150px;
   z-index: 2;
+}
+
+.thumbnail-logo__icon {
+  width: 150px;
+  height: 150px;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <u-button bordered @click.native="onClick">
-      <u-icon-coffee /> Buy me a Coffee
+      <u-icon-coffee inline /> Buy me a Coffee
     </u-button>
 
     <u-dialogue

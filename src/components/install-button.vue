@@ -4,7 +4,7 @@
     class="install-button"
     aria-label="Install the app"
     @click.native.prevent="onInstall">
-    <u-icon-add-home :size="24" />
+    <u-icon-add-home />
   </u-button>
 </template>
 
@@ -132,7 +132,7 @@ export default {
 
 <style lang="scss">
 .install-button {
-  line-height: 0;
+  font-size: var(--global-font-size-4);
   position: relative;
 }
 

@@ -4,7 +4,7 @@
       class="search-button"
       aria-label="Open search"
       @click.native.prevent="onOpen">
-      <u-icon-search v-if="!isOpen" :size="24" />
+      <u-icon-search v-if="!isOpen" />
     </u-button>
 
     <u-dialogue
@@ -75,6 +75,6 @@ export default {
 <style lang="scss">
 .search-button {
   display: block;
-  line-height: 0;
+  font-size: var(--global-font-size-4);
 }
 </style>

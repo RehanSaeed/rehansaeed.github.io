@@ -1,24 +1,20 @@
-function createIcon(title, widthMultiplier = 1, heightMultiplier = 1) {
+import icon from "~/components/shared/icons/icon.vue";
+
+export default function createIcon(name) {
   return {
+    name: name,
+    components: {
+      "u-icon": icon,
+    },
     props: {
-      size: {
-        default: 14,
-        type: Number,
+      inline: {
+        default: false,
+        type: Boolean,
       },
       title: {
-        default: title,
+        default: undefined,
         type: String,
-      },
-    },
-    computed: {
-      height() {
-        return this.size * heightMultiplier;
-      },
-      width() {
-        return this.size * widthMultiplier;
       },
     },
   };
 }
-
-export default createIcon;

@@ -1,6 +1,6 @@
 <template>
   <u-link-button bordered :to="url">
-    <u-icon-github /> Edit on GitHub
+    <u-icon-github inline /> Edit on GitHub
   </u-link-button>
 </template>
 

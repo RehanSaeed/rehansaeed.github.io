@@ -12,16 +12,12 @@
       <a
         class="webmentions__help"
         href="https://en.wikipedia.org/wiki/Webmention">
-        <u-icon-question class="webmentions__icon" :size="18" />
-        <span>What's this?</span>
+        <u-icon-question inline /> What's this?
       </a>
       <div class="webmentions__container">
         <p class="webmentions__count webmentions__like-count">
-          <u-icon-heart
-            class="webmentions__icon"
-            :size="16"
-            :title="likesDescription" />
-          <span>{{ likesDescription }}</span>
+          <u-icon-heart inline :title="likesDescription" />
+          {{ likesDescription }}
         </p>
         <u-webmention-faces
           v-if="!isLoading"
@@ -30,11 +26,8 @@
         <u-webmention-faces-skeleton v-else />
 
         <p class="webmentions__count webmentions__repost-count">
-          <u-icon-repost
-            class="webmentions__icon"
-            :size="16"
-            :title="repostsDescription" />
-          <span>{{ repostsDescription }}</span>
+          <u-icon-repost inline :title="repostsDescription" />
+          {{ repostsDescription }}
         </p>
         <u-webmention-faces
           v-if="!isLoading"
@@ -43,11 +36,8 @@
         <u-webmention-faces-skeleton v-else />
 
         <p class="webmentions__count webmentions__link-count">
-          <u-icon-link
-            class="webmentions__icon"
-            :size="16"
-            :title="linksDescription" />
-          <span>{{ linksDescription }}</span>
+          <u-icon-link inline :title="linksDescription" />
+          {{ linksDescription }}
         </p>
         <div v-if="!isLoading" class="webmentions__links">
           <u-webmention-link
@@ -58,11 +48,8 @@
         <u-webmention-links-skeleton v-else />
 
         <p class="webmentions__count webmentions__reply-count">
-          <u-icon-comment
-            class="webmentions__icon"
-            :size="16"
-            :title="repliesDescription" />
-          <span>{{ repliesDescription }}</span>
+          <u-icon-comment inline :title="repliesDescription" />
+          {{ repliesDescription }}
         </p>
         <div v-if="!isLoading" class="webmentions__replies">
           <u-webmention-reply
@@ -225,12 +212,14 @@ export default {
   gap: var(--global-space-fixed-3);
 }
 
+.webmentions__help,
 .webmentions__count {
-  min-width: 0;
+  display: grid;
+  align-items: center;
+  gap: var(--global-space-fixed-2);
+  grid-template-columns: auto 1fr;
+
   margin-bottom: 0;
-}
-.webmentions__icon {
-  margin-right: var(--global-space-fixed-2);
 }
 
 .webmentions__links {

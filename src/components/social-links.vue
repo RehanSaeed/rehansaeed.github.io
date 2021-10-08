@@ -4,55 +4,49 @@
       v-if="this.$static.metadata.author.twitter.url"
       label="Twitter"
       :href="this.$static.metadata.author.twitter.url"
-      class="social__link"
       rel="me">
-      <u-icon-twitter :size="30" />
+      <u-icon-twitter />
     </u-link-button>
     <u-link-button
       v-if="this.$static.metadata.author.gitHub.url"
       label="GitHub"
       :href="this.$static.metadata.author.gitHub.url"
-      class="social__link"
       rel="me authn">
-      <u-icon-github :size="30" />
+      <u-icon-github />
     </u-link-button>
     <u-link-button
       v-if="this.$static.metadata.author.stackOverflow.url"
       label="Stack Overflow"
       :href="this.$static.metadata.author.stackOverflow.url"
-      class="social__link"
       rel="me">
-      <u-icon-stackoverflow :size="30" />
+      <u-icon-stackoverflow />
     </u-link-button>
     <u-link-button
       v-if="this.$static.metadata.author.linkedIn.url"
       label="LinkedIn"
       :href="this.$static.metadata.author.linkedIn.url"
-      class="social__link"
       rel="me">
-      <u-icon-linkedin :size="30" />
+      <u-icon-linkedin />
     </u-link-button>
     <u-link-button
       v-if="this.$static.metadata.author.youtube.url"
       label="Youtube"
       :href="this.$static.metadata.author.youtube.url"
-      class="social__link"
       rel="me">
-      <u-icon-youtube :size="30" />
+      <u-icon-youtube />
     </u-link-button>
     <u-link-button
       v-if="this.$static.metadata.author.twitch.url"
       label="Twitch"
       :href="this.$static.metadata.author.twitch.url"
-      class="social__link"
       rel="me">
-      <u-icon-twitch :size="30" />
+      <u-icon-twitch />
     </u-link-button>
-    <u-link-button class="social__link" label="Email" :href="mailTo">
-      <u-icon-email :size="30" />
+    <u-link-button label="Email" :href="mailTo">
+      <u-icon-email />
     </u-link-button>
-    <u-link-button href="/rss.xml" label="RSS" class="social__link">
-      <u-icon-rss :size="30" />
+    <u-link-button href="/rss.xml" label="RSS">
+      <u-icon-rss />
     </u-link-button>
   </div>
 </template>
@@ -126,17 +120,12 @@ query {
 
 <style lang="scss">
 .social {
-  align-items: center;
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
+  gap: var(--global-space-fixed-4);
   justify-content: center;
-  margin-right: var(--global-space-fixed--4);
-  margin-bottom: var(--global-space-fixed--4);
-}
 
-.social__link {
-  line-height: 0;
-  margin-right: var(--global-space-fixed-4);
-  margin-bottom: var(--global-space-fixed-4);
+  font-size: var(--global-font-size-7);
 }
 </style>

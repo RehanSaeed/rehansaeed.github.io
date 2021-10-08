@@ -1,7 +1,7 @@
 <template>
   <div>
     <u-button bordered @click.native="onClick">
-      <u-icon-share /> Share
+      <u-icon-share inline /> Share
     </u-button>
 
     <u-dialogue
@@ -10,40 +10,20 @@
       @close="onClose"
       class="share-dialogue">
       <div class="share-dialogue__links">
-        <u-link-button
-          bordered
-          :href="facebookUrl"
-          @click.native="onClose"
-          class="share-dialogue__link">
-          <u-icon-facebook /> Facebook
+        <u-link-button bordered :href="facebookUrl" @click.native="onClose">
+          <u-icon-facebook inline /> Facebook
         </u-link-button>
-        <u-link-button
-          bordered
-          :href="twitterUrl"
-          @click.native="onClose"
-          class="share-dialogue__link">
-          <u-icon-twitter /> Twitter
+        <u-link-button bordered :href="twitterUrl" @click.native="onClose">
+          <u-icon-twitter inline /> Twitter
         </u-link-button>
-        <u-link-button
-          bordered
-          :href="redditUrl"
-          @click.native="onClose"
-          class="share-dialogue__link">
-          <u-icon-reddit /> Reddit
+        <u-link-button bordered :href="redditUrl" @click.native="onClose">
+          <u-icon-reddit inline /> Reddit
         </u-link-button>
-        <u-link-button
-          bordered
-          :href="linkedinUrl"
-          @click.native="onClose"
-          class="share-dialogue__link">
-          <u-icon-linkedin /> LinkedIn
+        <u-link-button bordered :href="linkedinUrl" @click.native="onClose">
+          <u-icon-linkedin inline /> LinkedIn
         </u-link-button>
-        <u-link-button
-          bordered
-          :href="mailUrl"
-          @click.native="onClose"
-          class="share-dialogue__link">
-          <u-icon-email /> Email
+        <u-link-button bordered :href="mailUrl" @click.native="onClose">
+          <u-icon-email inline /> Email
         </u-link-button>
       </div>
     </u-dialogue>
@@ -182,16 +162,8 @@ query {
 
 <style lang="scss">
 .share-dialogue__links {
-  --gap: var(--global-space-fixed-3);
-
   display: flex;
   flex-wrap: wrap;
-  margin-right: calc(-1 * var(--gap));
-  margin-bottom: calc(-1 * var(--gap));
-}
-
-.share-dialogue__link {
-  margin-right: var(--gap);
-  margin-bottom: var(--gap);
+  gap: var(--global-space-fixed-3);
 }
 </style>

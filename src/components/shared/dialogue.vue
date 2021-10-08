@@ -176,6 +176,8 @@ dialog + .backdrop {
 
 .dialog__close {
   grid-area: close;
+
+  font-size: var(--global-font-size-5);
 }
 
 .dialog__content {

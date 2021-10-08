@@ -10,25 +10,22 @@
         v-if="this.$static.metadata.author.buyMeACoffee.url"
         bordered
         label="Buy me a Coffee"
-        :href="this.$static.metadata.author.buyMeACoffee.url"
-        class="support-links__link">
-        <u-icon-coffee /> Buy me a Coffee
+        :href="this.$static.metadata.author.buyMeACoffee.url">
+        <u-icon-coffee inline /> Buy me a Coffee
       </u-link-button>
       <u-link-button
         v-if="this.$static.metadata.author.gitHub.sponsorsUrl"
         bordered
         label="GitHub Sponsors"
-        :href="this.$static.metadata.author.gitHub.sponsorsUrl"
-        class="support-links__link">
-        <u-icon-github /> GitHub Sponsors
+        :href="this.$static.metadata.author.gitHub.sponsorsUrl">
+        <u-icon-github inline /> GitHub Sponsors
       </u-link-button>
       <u-link-button
         v-if="this.$static.metadata.author.paypal.url"
         bordered
         label="Paypal"
-        :href="this.$static.metadata.author.paypal.url"
-        class="support-links__link">
-        <u-icon-paypal /> Paypal
+        :href="this.$static.metadata.author.paypal.url">
+        <u-icon-paypal inline /> Paypal
       </u-link-button>
     </div>
   </div>
@@ -71,16 +68,10 @@ query {
 
 <style lang="scss">
 .support-links {
-  align-items: center;
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
+  gap: var(--global-space-fixed-4);
   justify-content: center;
-  margin-right: var(--global-space-fixed--4);
-  margin-bottom: var(--global-space-fixed--4);
-}
-
-.support-links__link {
-  margin-right: var(--global-space-fixed-4);
-  margin-bottom: var(--global-space-fixed-4);
 }
 </style>
