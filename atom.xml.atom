@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2021-10-12T11:42:26.874Z</updated>
+    <updated>2021-10-12T12:56:16.075Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -104,7 +104,7 @@ winget install --id &#39;Microsoft.dotnet&#39; --interactive --scope machine
 </code></pre>
 <p>A few of things to note in my script. All apps with random looking ID&#39;s like <code>9P9TQF7MRM4R</code> are Windows Store applications. Secondly, for non-Windows Store applications I always use the <code>--interactive</code> flag because:</p>
 <blockquote>
-<p>Don’t accept the defaults</p>
+<p>Don’t accept the defaults!</p>
 <footer><cite>Abel Wang</cite></footer>
 </blockquote>
 <p>I never want a shortcut added to my desktop, extra toolbars or system tray icons, so never accept the defaults and always manually select the options you want in the installer. Maybe one day we can set the options we want from <code>winget</code> itself (we can dream!).</p>
