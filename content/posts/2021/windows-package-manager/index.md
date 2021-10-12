@@ -8,9 +8,10 @@ date: "2021-10-12T08:40:00Z"
 dateModified: null
 published: true
 categories:
-    - "Tools"
+  - "Tools"
 tags:
-    - "Windows Package Manager (winget)"
+  - "Windows Package Manager (winget)"
+  - "Windows"
 ---
 
 Winget is a package manager for Windows a bit like apt for linux or the open source Chocolatey for Windows. Version 1.1 of the Windows Package Manager (winget) was [recently released](https://devblogs.microsoft.com/commandline/windows-package-manager-1-1/). I've had my eye on it for a while now and its only recently gotten good enough to use for real.
@@ -101,7 +102,8 @@ winget install --id 'Microsoft.dotnet' --interactive --scope machine
 
 A few of things to note in my script. All apps with random looking ID's like `9P9TQF7MRM4R` are Windows Store applications. Secondly, for non-Windows Store applications I always use the `--interactive` flag because:
 
-> Don’t accept the defaults
+> Don’t accept the defaults!
+>
 > <footer><cite>Abel Wang</cite></footer>
 
 I never want a shortcut added to my desktop, extra toolbars or system tray icons, so never accept the defaults and always manually select the options you want in the installer. Maybe one day we can set the options we want from `winget` itself (we can dream!).
