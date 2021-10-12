@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2021-10-12T12:56:16.075Z</updated>
+    <updated>2021-10-12T13:02:41.391Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -1811,7 +1811,10 @@ fatal: protocol error: bad pack header
         <link href="https://rehansaeed.com/securing-asp-net-core-in-docker/"/>
         <updated>2019-03-25T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[How to secure your ASP.NET Core Docker image by setting the file system to be read-only. First in a series of blog posts covering Docker image security.]]></summary>
-        <content type="html"><![CDATA[<p>Some time ago, I blogged about how you can get some <a href="https://rehansaeed.com/docker-read-file-systems/">extra security when running Docker containers</a> by making their file systems read-only. This ensures that should an attacker get into the container somehow, they won&#39;t be able to change any files. This only works with certain containers that support it however and unfortunately, at that time ASP.NET Core did not support running in a Docker container with a read-only file system. Happily, this is now fixed!</p>
+        <content type="html"><![CDATA[<p>::: warning Update (2020-10-12)
+Making the file system for an ASP.NET Core application read-only is great for security but under high load ASP.NET Core can buffer requests to disk. In this scenario, you will see exceptions. So weight the positives and negatives of doing this.
+:::</p>
+<p>Some time ago, I blogged about how you can get some <a href="https://rehansaeed.com/docker-read-file-systems/">extra security when running Docker containers</a> by making their file systems read-only. This ensures that should an attacker get into the container somehow, they won&#39;t be able to change any files. This only works with certain containers that support it however and unfortunately, at that time ASP.NET Core did not support running in a Docker container with a read-only file system. Happily, this is now fixed!</p>
 <p>Lets see an example. I created a brand new hello world ASP.NET Core project and added this <code>Dockerfile</code>:</p>
 <pre><code class="language-dockerfile">FROM microsoft/dotnet:2.2-sdk AS builder
 WORKDIR /source
@@ -1837,7 +1840,7 @@ ENTRYPOINT [&quot;dotnet&quot;, &quot;ReadOnlyTest.dll&quot;]
 <p>If I now run the same image with the <code>COMPlus_EnableDiagnostics</code> environment variable turned off:</p>
 <pre><code class="language-powershell">docker run --rm --read-only -it -p 8000:80 -e COMPlus_EnableDiagnostics=0 read-only-test
 </code></pre>
-<p>The app now starts! The <code>COMPlus_EnableDiagnostics</code> environment variable (which is <a href="https://github.com/dotnet/docs/issues/10217">undocumented</a>) turns off debugging and profiling support, so I would not bake this environment variable into the <code>Dockerfile</code>. For some reason these features need a read/write file system to work properly. If you&#39;d like to try this yourself, you can checkout all the code in <a href="https://github.com/RehanSaeed/ReadOnlyDockerTest">this repo</a>.</p>
+<p>The app now starts! The <code>COMPlus_EnableDiagnostics</code> environment variable (which is <a href="https://docs.microsoft.com/en-us/dotnet/core/run-time-config/debugging-profiling#enable-diagnostics">documented here</a>) turns off debugging and profiling support, so I would not bake this environment variable into the <code>Dockerfile</code>. For some reason these features need a read/write file system to work properly. If you&#39;d like to try this yourself, you can checkout all the code in <a href="https://github.com/RehanSaeed/ReadOnlyDockerTest">this repo</a>.</p>
 ]]></content>
         <author>
             <name/>
