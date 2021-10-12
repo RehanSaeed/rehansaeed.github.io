@@ -16,6 +16,10 @@ tags:
   - "Kubernetes"
 ---
 
+::: warning Update (2020-10-12)
+Making the file system for an ASP.NET Core application read-only is great for security but under high load ASP.NET Core can buffer requests to disk. In this scenario, you will see exceptions. So weight the positives and negatives of doing this.
+:::
+
 Some time ago, I blogged about how you can get some [extra security when running Docker containers](/docker-read-file-systems/) by making their file systems read-only. This ensures that should an attacker get into the container somehow, they won't be able to change any files. This only works with certain containers that support it however and unfortunately, at that time ASP.NET Core did not support running in a Docker container with a read-only file system. Happily, this is now fixed!
 
 Lets see an example. I created a brand new hello world ASP.NET Core project and added this `Dockerfile`:
@@ -58,4 +62,4 @@ If I now run the same image with the `COMPlus_EnableDiagnostics` environment var
 docker run --rm --read-only -it -p 8000:80 -e COMPlus_EnableDiagnostics=0 read-only-test
 ```
 
-The app now starts! The `COMPlus_EnableDiagnostics` environment variable (which is [undocumented](https://github.com/dotnet/docs/issues/10217)) turns off debugging and profiling support, so I would not bake this environment variable into the `Dockerfile`. For some reason these features need a read/write file system to work properly. If you'd like to try this yourself, you can checkout all the code in [this repo](https://github.com/RehanSaeed/ReadOnlyDockerTest).
+The app now starts! The `COMPlus_EnableDiagnostics` environment variable (which is [documented here](https://docs.microsoft.com/en-us/dotnet/core/run-time-config/debugging-profiling#enable-diagnostics)) turns off debugging and profiling support, so I would not bake this environment variable into the `Dockerfile`. For some reason these features need a read/write file system to work properly. If you'd like to try this yourself, you can checkout all the code in [this repo](https://github.com/RehanSaeed/ReadOnlyDockerTest).
