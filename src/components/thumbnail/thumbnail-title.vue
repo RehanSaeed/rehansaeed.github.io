@@ -70,13 +70,15 @@ export default {
   color: var(--global-accent-color);
   line-height: var(--global-line-height-0);
   margin: 0;
-  padding: var(--global-space-fluid-1) var(--global-space-fluid-2);
+  padding: var(--global-space-fluid-1) var(--global-space-fluid-2)
+    var(--global-space-fluid-2) var(--global-space-fluid-2);
 }
 .thumbnail-title__subtitle {
   background: var(--global-accent-color);
   color: var(--global-background-color);
   line-height: var(--global-line-height-0);
   margin: 0;
-  padding: var(--global-space-fluid-1) var(--global-space-fluid-2);
+  padding: var(--global-space-fluid-1) var(--global-space-fluid-2)
+    var(--global-space-fluid-2) var(--global-space-fluid-2);
 }
 </style>
