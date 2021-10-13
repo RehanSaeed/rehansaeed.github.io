@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2021-10-13T16:28:21.622Z</updated>
+    <updated>2021-10-13T16:32:29.837Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -62,8 +62,7 @@
 </code></pre>
 <p>That&#39;s not idea either. I think Visual Studio should ideally show you these using statements somehow.</p>
 <h1 id="conclusions">Conclusions</h1>
-<p>Overall this is a cool feature that can remove the need for many duplicated lines of code in your project but I think there is a little too much magic going on here for my liking, so I think I&#39;ll be more careful about using this feature in the future.</p>
-<p>Implicit usings are <a href="https://devblogs.microsoft.com/dotnet/announcing-net-6-release-candidate-2/#net-sdk-c-project-templates-modernized">disabled by default</a> in the latest blank project templates shipped in Visual Studio. It was initially enabled by defualt but developer feedback changed that. I think this makes a lot of sense for this particular feature.</p>
+<p>Implicit usings are <a href="https://devblogs.microsoft.com/dotnet/announcing-net-6-release-candidate-2/#net-sdk-c-project-templates-modernized">enabled by default</a> in the latest blank project templates shipped with .NET. Overall this is a cool feature that can remove the need for many duplicated lines of code in your project but I think there is a little too much magic going on here for my liking, so I think I&#39;ll be more careful about using this feature in the future.</p>
 ]]></content>
         <author>
             <name/>
