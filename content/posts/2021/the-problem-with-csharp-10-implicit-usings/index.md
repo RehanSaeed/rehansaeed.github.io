@@ -63,4 +63,6 @@ That's not idea either. I think Visual Studio should ideally show you these usin
 
 # Conclusions
 
-Implicit usings are now [enabled by default](https://devblogs.microsoft.com/dotnet/announcing-net-6-release-candidate-2/#net-sdk-c-project-templates-modernized) in the latest blank project templates shipped in Visual Studio. Overall this is a cool feature that can remove the need for many duplicated lines of code in your project but I think there is a little too much magic going on here for my liking, so I think I'll be more careful about using this feature in the future.
+Overall this is a cool feature that can remove the need for many duplicated lines of code in your project but I think there is a little too much magic going on here for my liking, so I think I'll be more careful about using this feature in the future.
+
+Implicit usings are [disabled by default](https://devblogs.microsoft.com/dotnet/announcing-net-6-release-candidate-2/#net-sdk-c-project-templates-modernized) in the latest blank project templates shipped in Visual Studio. It was initially enabled by defualt but developer feedback changed that. I think this makes a lot of sense for this particular feature.
