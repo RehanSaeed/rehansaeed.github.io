@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Wed, 13 Oct 2021 11:12:23 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 13 Oct 2021 11:31:17 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -15,6 +15,58 @@
         </image>
         <copyright>Copyright © 2021 Muhammad Rehan Saeed</copyright>
         <atom:link href="https://rehansaeed.com/rss.xml" rel="self" type="application/rss+xml"/>
+        <item>
+            <title><![CDATA[The Problem with C# 10 Implicit Usings]]></title>
+            <link>https://rehansaeed.com/the-problem-with-csharp-10-implicit-usings/</link>
+            <guid>https://rehansaeed.com/the-problem-with-csharp-10-implicit-usings/</guid>
+            <pubDate>Wed, 13 Oct 2021 09:24:00 GMT</pubDate>
+            <description><![CDATA[I tried using C# 10 implicit using statements and found that they had a fatal flaw which meant you couldn't use them under certain circumstances]]></description>
+            <content:encoded><![CDATA[<p>Yesterday I livestreamed myself upgrading a project to .NET 6 and C# 10. Along the way I tried using a new C# 10 feature called <a href="https://docs.microsoft.com/en-us/dotnet/core/compatibility/sdk/6.0/implicit-namespaces">implicit using statements</a> and discovered that it wasn&#39;t quite as straightforward as I first thought and you should probably not use it under certain circumstances.</p>
+<p>Here is the live stream for those who are interested (I&#39;m eager to get any feedback on how I&#39;m presenting as its not a natural skill for me):</p>
+<p><a href="https://www.youtube.com/watch?v=FjnS4oF8K3E">https://www.youtube.com/watch?v=FjnS4oF8K3E</a></p>
+<h1 id="what-are-implicit-using-statements">What are Implicit Using Statements?</h1>
+<p>Adding the line below to your <code>.csproj</code> project file turns the feature on:</p>
+<pre><code class="language-xml">&lt;ImplicitUsings&gt;enable&lt;/ImplicitUsings&gt;
+</code></pre>
+<p>Once enabled, depending on the type of project you have created you&#39;ll have the following global using statements added to your project implicitly.</p>
+<table>
+<thead>
+<tr>
+<th>SDK</th>
+<th>Default namespaces</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Microsoft.NET.Sdk</td>
+<td><code>System</code><br><code>System.Collections.Generic</code><br><code>System.IO</code><br><code>System.Linq</code><br><code>System.Net.Http</code><br><code>System.Threading</code><br><code>System.Threading.Tasks</code></td>
+</tr>
+<tr>
+<td>Microsoft.NET.Sdk.Web</td>
+<td><code>System.Net.Http.Json</code><br><code>Microsoft.AspNetCore.Builder</code><br><code>Microsoft.AspNetCore.Hosting</code><br><code>Microsoft.AspNetCore.Http</code><br><code>Microsoft.AspNetCore.Routing</code><br><code>Microsoft.Extensions.Configuration</code><br><code>Microsoft.Extensions.DependencyInjection</code><br><code>Microsoft.Extensions.Hosting</code><br><code>Microsoft.Extensions.Logging</code></td>
+</tr>
+<tr>
+<td>Microsoft.NET.Sdk.Worker</td>
+<td><code>Microsoft.Extensions.Configuration</code><br><code>Microsoft.Extensions.DependencyInjection</code><br><code>Microsoft.Extensions.Hosting</code><br><code>Microsoft.Extensions.Logging</code></td>
+</tr>
+</tbody></table>
+<p>Sounds great, now you can delete a large portion of the using statements in your project right? Well not so fast, here are some problems I discovered along the way.</p>
+<h2 id="build-errors">Build Errors</h2>
+<p>I discovered the first problem while multi-targetting a class library project for a NuGet package. I had targetted .NET 4.7.2 as well as other target frameworks like .NET 6 for backwards compatibility and found that <code>System.Net.Http</code> could not be found. It turns out I hadn&#39;t referenced that particular NuGet package for .NET 4.7.2 and was now getting a build error.</p>
+<p>I could add the <code>System.Net.Http</code> NuGet package for .NET 4.7.2 on its own and that would solve the problem but I really didn&#39;t like having the overhead of another unnecessary package reference. That also means extra work for me to maintain updating the version number or relying on tools like <a href="https://dependabot.com/">Dependabot</a> and <a href="https://www.whitesourcesoftware.com/free-developer-tools/renovate/">Renovate</a> to submit PR&#39;s to upgrade the version number for me. So in this case I&#39;m happy to avoid using implicit using statements.</p>
+<pre><code class="language-xml">&lt;ItemGroup Label=&quot;Package References (.NET 4.7.2)&quot; Condition=&quot;&#39;$(TargetFramework)&#39; == &#39;net472&#39;&quot;&gt;
+    &lt;PackageReference Include=&quot;System.Net.Http&quot; Version=&quot;4.3.4&quot; /&gt;
+&lt;/ItemGroup&gt;
+</code></pre>
+<h2 id="what-usings-were-added">What Using&#39;s Were Added?</h2>
+<p>The second problem is trying to understand what using&#39;s have been added. As you can see from the table above, you could go and look in the <a href="https://docs.microsoft.com/en-us/dotnet/core/compatibility/sdk/6.0/implicit-namespaces">documentation</a> to figure this out but that&#39;s slow and time consuming. Another alternative is actually to build your project and then look in its <code>obj</code> directory under:</p>
+<pre><code>My.Project\obj\Debug\net472\My.Project.GlobalUsings.g.cs
+</code></pre>
+<p>That&#39;s not idea either. I think Visual Studio should ideally show you these using statements somehow.</p>
+<h1 id="conclusions">Conclusions</h1>
+<p>Overall this is a cool feature that can remove the need for many duplicated lines of code in your project but I think there is a little too much magic going on here for my liking, so I think I&#39;ll be more careful about using this feature in the future.</p>
+]]></content:encoded>
+            <enclosure url="https://rehansaeed.com/images/hero/Microsoft-.NET-1366x768.png" length="0" type="image/png"/>
+        </item>
         <item>
             <title><![CDATA[The Windows Package Manager]]></title>
             <link>https://rehansaeed.com/windows-package-manager/</link>
