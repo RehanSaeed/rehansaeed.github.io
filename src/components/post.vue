@@ -104,9 +104,20 @@ export default {
     max-width: none;
   }
 
-  .youtube-embed div {
-    margin-left: var(--global-space-fluid--6);
-    margin-right: var(--global-space-fluid--6);
+  .youtube-embed {
+    margin-top: var(--global-space-fixed-4);
+    margin-bottom: var(--global-space-fixed-5);
+
+    div {
+      margin-right: var(--global-space-fluid--6);
+      margin-left: var(--global-space-fluid--6);
+
+      div {
+        --padding-value: 34%;
+        padding-top: var(--padding-value) !important;
+        padding-bottom: var(--padding-value) !important;
+      }
+    }
   }
 }
 

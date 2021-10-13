@@ -419,7 +419,7 @@ module.exports = {
           {
             enabledProviders: ["Youtube"], // 'Twitter', 'Codepen'
             Youtube: {
-              margin: "25px 0 25px 0",
+              // margin: "25px 0 25px 0",
             },
             // Twitter: {
             //   hideMedia: false
