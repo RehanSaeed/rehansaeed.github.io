@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Wed, 13 Oct 2021 11:31:17 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 13 Oct 2021 16:25:35 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -63,7 +63,7 @@
 </code></pre>
 <p>That&#39;s not idea either. I think Visual Studio should ideally show you these using statements somehow.</p>
 <h1 id="conclusions">Conclusions</h1>
-<p>Overall this is a cool feature that can remove the need for many duplicated lines of code in your project but I think there is a little too much magic going on here for my liking, so I think I&#39;ll be more careful about using this feature in the future.</p>
+<p>Implicit usings are now <a href="https://devblogs.microsoft.com/dotnet/announcing-net-6-release-candidate-2/#net-sdk-c-project-templates-modernized">enabled by default</a> in the latest blank project templates shipped in Visual Studio. Overall this is a cool feature that can remove the need for many duplicated lines of code in your project but I think there is a little too much magic going on here for my liking, so I think I&#39;ll be more careful about using this feature in the future.</p>
 ]]></content:encoded>
             <enclosure url="https://rehansaeed.com/images/hero/Microsoft-.NET-1366x768.png" length="0" type="image/png"/>
         </item>
