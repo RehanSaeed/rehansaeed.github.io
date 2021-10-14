@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2021-10-13T16:32:29.837Z</updated>
+    <updated>2021-10-14T10:19:28.500Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -20,7 +20,10 @@
         <link href="https://rehansaeed.com/the-problem-with-csharp-10-implicit-usings/"/>
         <updated>2021-10-13T09:24:00.000Z</updated>
         <summary type="html"><![CDATA[I tried using C# 10 implicit using statements and found that they had a fatal flaw which meant you couldn't use them under certain circumstances]]></summary>
-        <content type="html"><![CDATA[<p>Yesterday I livestreamed myself upgrading a project to .NET 6 and C# 10. Along the way I tried using a new C# 10 feature called <a href="https://docs.microsoft.com/en-us/dotnet/core/compatibility/sdk/6.0/implicit-namespaces">implicit using statements</a> and discovered that it wasn&#39;t quite as straightforward as I first thought and you should probably not use it under certain circumstances.</p>
+        <content type="html"><![CDATA[<p>::: tip Update (2021-10-14)
+<a href="https://twitter.com/markrendle">Mark Rendle</a> made an interesting suggestion on Twitter after seeing this blog post. I&#39;ve updated the post below with his code.
+:::</p>
+<p>Yesterday I livestreamed myself upgrading a project to .NET 6 and C# 10. Along the way I tried using a new C# 10 feature called <a href="https://docs.microsoft.com/en-us/dotnet/core/compatibility/sdk/6.0/implicit-namespaces">implicit using statements</a> and discovered that it wasn&#39;t quite as straightforward as I first thought and you should probably not use it under certain circumstances.</p>
 <p>Here is the live stream for those who are interested (I&#39;m eager to get any feedback on how I&#39;m presenting as its not a natural skill for me):</p>
 <p><a href="https://www.youtube.com/watch?v=FjnS4oF8K3E">https://www.youtube.com/watch?v=FjnS4oF8K3E</a></p>
 <h1 id="what-are-implicit-using-statements">What are Implicit Using Statements?</h1>
@@ -51,11 +54,17 @@
 <p>Sounds great, now you can delete a large portion of the using statements in your project right? Well not so fast, here are some problems I discovered along the way.</p>
 <h2 id="build-errors">Build Errors</h2>
 <p>I discovered the first problem while multi-targetting a class library project for a NuGet package. I had targetted .NET 4.7.2 as well as other target frameworks like .NET 6 for backwards compatibility and found that <code>System.Net.Http</code> could not be found. It turns out I hadn&#39;t referenced that particular NuGet package for .NET 4.7.2 and was now getting a build error.</p>
-<p>I could add the <code>System.Net.Http</code> NuGet package for .NET 4.7.2 on its own and that would solve the problem but I really didn&#39;t like having the overhead of another unnecessary package reference. That also means extra work for me to maintain updating the version number or relying on tools like <a href="https://dependabot.com/">Dependabot</a> and <a href="https://www.whitesourcesoftware.com/free-developer-tools/renovate/">Renovate</a> to submit PR&#39;s to upgrade the version number for me. So in this case I&#39;m happy to avoid using implicit using statements.</p>
+<p>I could add the <code>System.Net.Http</code> NuGet package for .NET 4.7.2 on its own and that would solve the problem but I really didn&#39;t like having the overhead of another unnecessary package reference. That also means extra work for me to maintain updating the version number or relying on tools like <a href="https://dependabot.com/">Dependabot</a> and <a href="https://www.whitesourcesoftware.com/free-developer-tools/renovate/">Renovate</a> to submit PR&#39;s to upgrade the version number for me.</p>
 <pre><code class="language-xml">&lt;ItemGroup Label=&quot;Package References (.NET 4.7.2)&quot; Condition=&quot;&#39;$(TargetFramework)&#39; == &#39;net472&#39;&quot;&gt;
     &lt;PackageReference Include=&quot;System.Net.Http&quot; Version=&quot;4.3.4&quot; /&gt;
 &lt;/ItemGroup&gt;
 </code></pre>
+<p><a href="https://twitter.com/markrendle">Mark Rendle</a> on Twitter suggested another workaround after seeing this blog post. His suggestion was to remove the offending using statement in the <code>.csproj</code> file.</p>
+<pre><code class="language-xml">&lt;ItemGroup&gt;
+    &lt;Using Remove=&quot;System.Net.Http&quot; /&gt;
+&lt;/ItemGroup&gt;
+</code></pre>
+<p>This looks awfully strange to me. I&#39;m not sure how I feel about adding or removing namespaces from C# project files yet. It doesn&#39;t seem very discoverable to me. So in this particular case I&#39;m happy to avoid using implicit using statements for now.</p>
 <h2 id="what-usings-were-added">What Using&#39;s Were Added?</h2>
 <p>The second problem is trying to understand what using&#39;s have been added. As you can see from the table above, you could go and look in the <a href="https://docs.microsoft.com/en-us/dotnet/core/compatibility/sdk/6.0/implicit-namespaces">documentation</a> to figure this out but that&#39;s slow and time consuming. Another alternative is actually to build your project and then look in its <code>obj</code> directory under:</p>
 <pre><code>My.Project\obj\Debug\net472\My.Project.GlobalUsings.g.cs
