@@ -15,6 +15,10 @@ tags:
   - "Implicit Using Statements"
 ---
 
+::: tip Update (2021-10-14)
+[Mark Rendle](https://twitter.com/markrendle) made an interesting suggestion on Twitter after seeing this blog post. I've updated the post below with his code.
+:::
+
 Yesterday I livestreamed myself upgrading a project to .NET 6 and C# 10. Along the way I tried using a new C# 10 feature called [implicit using statements](https://docs.microsoft.com/en-us/dotnet/core/compatibility/sdk/6.0/implicit-namespaces) and discovered that it wasn't quite as straightforward as I first thought and you should probably not use it under certain circumstances.
 
 Here is the live stream for those who are interested (I'm eager to get any feedback on how I'm presenting as its not a natural skill for me):
@@ -43,13 +47,23 @@ Sounds great, now you can delete a large portion of the using statements in your
 
 I discovered the first problem while multi-targetting a class library project for a NuGet package. I had targetted .NET 4.7.2 as well as other target frameworks like .NET 6 for backwards compatibility and found that `System.Net.Http` could not be found. It turns out I hadn't referenced that particular NuGet package for .NET 4.7.2 and was now getting a build error.
 
-I could add the `System.Net.Http` NuGet package for .NET 4.7.2 on its own and that would solve the problem but I really didn't like having the overhead of another unnecessary package reference. That also means extra work for me to maintain updating the version number or relying on tools like [Dependabot](https://dependabot.com/) and [Renovate](https://www.whitesourcesoftware.com/free-developer-tools/renovate/) to submit PR's to upgrade the version number for me. So in this case I'm happy to avoid using implicit using statements.
+I could add the `System.Net.Http` NuGet package for .NET 4.7.2 on its own and that would solve the problem but I really didn't like having the overhead of another unnecessary package reference. That also means extra work for me to maintain updating the version number or relying on tools like [Dependabot](https://dependabot.com/) and [Renovate](https://www.whitesourcesoftware.com/free-developer-tools/renovate/) to submit PR's to upgrade the version number for me.
 
 ```xml
 <ItemGroup Label="Package References (.NET 4.7.2)" Condition="'$(TargetFramework)' == 'net472'">
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
 </ItemGroup>
 ```
+
+[Mark Rendle](https://twitter.com/markrendle) on Twitter suggested another workaround after seeing this blog post. His suggestion was to remove the offending using statement in the `.csproj` file.
+
+```xml
+<ItemGroup>
+    <Using Remove="System.Net.Http" />
+</ItemGroup>
+```
+
+This looks awfully strange to me. I'm not sure how I feel about adding or removing namespaces from C# project files yet. It doesn't seem very discoverable to me. So in this particular case I'm happy to avoid using implicit using statements for now.
 
 ## What Using's Were Added?
 
