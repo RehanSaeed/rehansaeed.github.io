@@ -17,6 +17,10 @@ tags:
   - "GetHashCode"
 ---
 
+::: tip Update (2021-10-22)
+Updated after I discovered that there is a new Nuget package called `Microsoft.Bcl.HashCode` which allows you to use `System.HashCode` in frameworks older than `netstandard2.1`.
+:::
+
 ::: tip Update (2019-06-12)
 I updated my HashCode implementation to cover a few more scenarios which I discuss below.
 :::
@@ -54,7 +58,7 @@ public sealed class SuperHero
     public override bool Equals(object obj)
     {
         // ...
-    } 
+    }
 
     public override int GetHashCode()
     {
@@ -153,7 +157,7 @@ public struct HashCode : IEquatable<HashCode>
     /// <typeparam name="T">The type of the item.</typeparam>
     /// <param name="item">The item.</param>
     /// <returns>The new hash code.</returns>
-    public HashCode And<T>(T item) => 
+    public HashCode And<T>(T item) =>
         new HashCode(CombineHashCodes(this.value, GetHashCode(item)));
 
     /// <summary>
@@ -248,13 +252,14 @@ Now isn't that pretty? All the nasty magic numbers and `unchecked` code has been
 One interesting edge case is what to do when hashing a collection and you get either a `null` or empty collection. Should you use a zero to represent both scenarios (zero is usually used to represent a `null` value) or differentiate them somehow. I managed to get a response from [Jon Skeet]() himself on Stack Overflow:
 
 > if both states are valid, it seems perfectly reasonable to differentiate between them. (Someone carrying an empty box isn't the same as someone not carrying a box at all...)
+>
 > <footer><cite><a href="https://stackoverflow.com/questions/8094867/good-gethashcode-override-for-list-of-foo-objects-respecting-the-order/8094931?noredirect=1#comment99700237_8094931">Jon Skeet</a></cite></footer>
 
 This is why we use the prime number 19 (it could have been any prime number) to represent an empty collection. Whether this matters or not depends on your use case. If an empty collection means something different in your scenario, then we've got you covered. Generally speaking though, if you are exposing a collection property in your class you should consider making it a getter only and initializing it in the constructor, so that it is never `null` in the first place but here we're trying to cover all scenarios.
 
 # .NET Core HashCode
 
-If you are using .NET Core 2.1, consider using the [System.HashCode](https://docs.microsoft.com/en-us/dotnet/api/system.hashcode?view=netcore-2.1) `struct` instead of my code. There are two ways to use it:
+If you are using .NET Core 2.1, consider using the [System.HashCode](https://docs.microsoft.com/en-us/dotnet/api/system.hashcode?view=netcore-2.1) `struct` instead of my code. If your using an older framework you can also try the `Microsoft.Bcl.HashCode` NuGet package. There are two ways to use it:
 
 ## HashCode.Combine
 
@@ -262,7 +267,7 @@ The `Combine` method can be used to create a hash code, given up to eight object
 
 ```cs
 public override int GetHashCode() =>
-  HashCode.Combine(object1, object2);
+    HashCode.Combine(object1, object2);
 ```
 
 ## HashCode.Add
