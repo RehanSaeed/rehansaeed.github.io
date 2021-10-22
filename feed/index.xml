@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Fri, 22 Oct 2021 10:18:13 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 22 Oct 2021 10:35:27 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -9694,7 +9694,10 @@ public async Task&lt;string&gt; WaitForFirstResultAndReturnResultWithTimeOut()
             <guid>https://rehansaeed.com/gethashcode-made-easy/</guid>
             <pubDate>Mon, 14 Apr 2014 00:00:00 GMT</pubDate>
             <description><![CDATA[Implementing GetHashCode is hard work and little understood. Learn how to implement GetHashCode as quickly and as simply as possible.]]></description>
-            <content:encoded><![CDATA[<p>::: tip Update (2019-06-12)
+            <content:encoded><![CDATA[<p>::: tip Update (2021-10-22)
+Updated after I discovered that there is a new Nuget package called <code>Microsoft.Bcl.HashCode</code> which allows you to use <code>System.HashCode</code> in frameworks older than <code>netstandard2.1</code>.
+:::</p>
+<p>::: tip Update (2019-06-12)
 I updated my HashCode implementation to cover a few more scenarios which I discuss below.
 :::</p>
 <p>::: tip Update (2018-08-14)
@@ -9725,7 +9728,7 @@ I updated this article to talk about a new <code>HashCode</code> class included 
     public override bool Equals(object obj)
     {
         // ...
-    } 
+    }
 
     public override int GetHashCode()
     {
@@ -9816,7 +9819,7 @@ public struct HashCode : IEquatable&lt;HashCode&gt;
     /// &lt;typeparam name=&quot;T&quot;&gt;The type of the item.&lt;/typeparam&gt;
     /// &lt;param name=&quot;item&quot;&gt;The item.&lt;/param&gt;
     /// &lt;returns&gt;The new hash code.&lt;/returns&gt;
-    public HashCode And&lt;T&gt;(T item) =&gt; 
+    public HashCode And&lt;T&gt;(T item) =&gt;
         new HashCode(CombineHashCodes(this.value, GetHashCode(item)));
 
     /// &lt;summary&gt;
@@ -9910,11 +9913,11 @@ public struct HashCode : IEquatable&lt;HashCode&gt;
 </blockquote>
 <p>This is why we use the prime number 19 (it could have been any prime number) to represent an empty collection. Whether this matters or not depends on your use case. If an empty collection means something different in your scenario, then we&#39;ve got you covered. Generally speaking though, if you are exposing a collection property in your class you should consider making it a getter only and initializing it in the constructor, so that it is never <code>null</code> in the first place but here we&#39;re trying to cover all scenarios.</p>
 <h1 id="net-core-hashcode">.NET Core HashCode</h1>
-<p>If you are using .NET Core 2.1, consider using the <a href="https://docs.microsoft.com/en-us/dotnet/api/system.hashcode?view=netcore-2.1">System.HashCode</a> <code>struct</code> instead of my code. There are two ways to use it:</p>
+<p>If you are using .NET Core 2.1, consider using the <a href="https://docs.microsoft.com/en-us/dotnet/api/system.hashcode?view=netcore-2.1">System.HashCode</a> <code>struct</code> instead of my code. If your using an older framework you can also try the <code>Microsoft.Bcl.HashCode</code> NuGet package. There are two ways to use it:</p>
 <h2 id="hashcodecombine">HashCode.Combine</h2>
 <p>The <code>Combine</code> method can be used to create a hash code, given up to eight objects.</p>
 <pre><code class="language-cs">public override int GetHashCode() =&gt;
-  HashCode.Combine(object1, object2);
+    HashCode.Combine(object1, object2);
 </code></pre>
 <h2 id="hashcodeadd">HashCode.Add</h2>
 <p>The Add method is similar to my code but it does not handle collections and is not fluent:</p>
