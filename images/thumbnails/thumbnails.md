@@ -21,3 +21,7 @@
 # [2021-10-22-ASP-NET-Serialization-40-Faster.png](http://localhost:8080/streaming/thumbnail?background=%2Fimages%2Fhero%2FCode-1600x900.jpg&title=ASP.NET%20Serialization&subtitle=40%25%20Faster%21&image1=%2Fimages%2Freactions%2FPointing-Left-1099x924.png&image1-width=1099&image1-height=924&image1-x=700&image1-y=150&image2=%2Fimages%2Fitems%2FNET-768x768.png&image2-width=468&image2-height=468&image2-x=100)
 
 ![2021-10-22-ASP-NET-Serialization-40-Faster.png](./2021-10-22-ASP-NET-Serialization-40-Faster.png)
+
+# [2021-10-27-ASP-NET-New-Host.png](http://localhost:8080/streaming/thumbnail?background=%2Fimages%2Fhero%2FCode-1600x900.jpg&title=ASP.NET%27s%20New%20Host&subtitle=Is%20It%20Better%3F&image1=%2Fimages%2Freactions%2FPointing-Left-1099x924.png&image1-width=1099&image1-height=924&image1-x=700&image1-y=150&image2=%2Fimages%2Fitems%2FNET-768x768.png&image2-width=468&image2-height=468&image2-x=100)
+
+![2021-10-27-ASP-NET-New-Host.png](./2021-10-27-ASP-NET-New-Host.png)
