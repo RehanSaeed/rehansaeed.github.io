@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Wed, 27 Oct 2021 08:10:51 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 01 Nov 2021 09:55:18 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -70,7 +70,7 @@
 <p>The second problem is trying to understand what using&#39;s have been added. As you can see from the table above, you could go and look in the <a href="https://docs.microsoft.com/en-us/dotnet/core/compatibility/sdk/6.0/implicit-namespaces">documentation</a> to figure this out but that&#39;s slow and time consuming. Another alternative is actually to build your project and then look in its <code>obj</code> directory under:</p>
 <pre><code>My.Project\obj\Debug\net472\My.Project.GlobalUsings.g.cs
 </code></pre>
-<p>That&#39;s not idea either. I think Visual Studio should ideally show you these using statements somehow.</p>
+<p>That&#39;s not ideal either. I think Visual Studio should ideally show you these using statements somehow.</p>
 <h1 id="conclusions">Conclusions</h1>
 <p>Implicit usings are <a href="https://devblogs.microsoft.com/dotnet/announcing-net-6-release-candidate-2/#net-sdk-c-project-templates-modernized">enabled by default</a> in the latest blank project templates shipped with .NET. Overall this is a cool feature that can remove the need for many duplicated lines of code in your project but I think there is a little too much magic going on here for my liking, so I think I&#39;ll be more careful about using this feature in the future.</p>
 ]]></content:encoded>
