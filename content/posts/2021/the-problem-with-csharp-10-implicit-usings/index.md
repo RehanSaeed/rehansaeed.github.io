@@ -73,7 +73,7 @@ The second problem is trying to understand what using's have been added. As you 
 My.Project\obj\Debug\net472\My.Project.GlobalUsings.g.cs
 ```
 
-That's not idea either. I think Visual Studio should ideally show you these using statements somehow.
+That's not ideal either. I think Visual Studio should ideally show you these using statements somehow.
 
 # Conclusions
 
