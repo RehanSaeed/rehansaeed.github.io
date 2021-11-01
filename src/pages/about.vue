@@ -21,42 +21,73 @@
         >
         <u-social-links class="about__social-links" />
         <p class="about__description">
-          Rehan is a professional Software Developer at Microsoft. Although he
-          works for Microsoft his opinions are his own. If it’s written in C# or
-          .NET, Rehan has probably written something using it in anger!
+          I'm is a professional Software Developer at Microsoft. Although I work
+          for Microsoft, my opinions are my own. If it’s written in C# or .NET,
+          I've probably written something using it in anger!
         </p>
         <p class="about__description">
-          You can see some of the open source projects that he's started and
-          maintained his
+          I live stream my software development escapades on
+          <a :href="youtubeUrl">Youtube</a> and
+          <a :href="twitchUrl">Twitch</a> twice a week. Feel free to join me
+          live and ask questions.
+        </p>
+        <div class="about__youtube-images">
+          <a :href="youtubeUrl">
+            <img
+              class="about__youtube-image"
+              alt="Youtube views"
+              height="58"
+              width="208"
+              :src="youtubeViewsImageUrl" />
+          </a>
+          <a :href="youtubeUrl">
+            <img
+              class="about__youtube-image"
+              alt="Youtube subscribers"
+              height="58"
+              width="208"
+              :src="youtubeSubscribersImageUrl" />
+          </a>
+        </div>
+        <p class="about__description">
+          You can see some of the open source projects that I've founded and
+          maintained in my
           <g-link to="/portfolio/">portfolio</g-link>. There are many others
-          he's contributed to which you can see in his
+          I've contributed to which you can see in my
           <a :href="gitHubUrl">GitHub profile</a> and of course there are other
-          commercial projects that he cannot disclose.
+          commercial projects that I cannot disclose.
         </p>
-        <a class="about__github-images" :href="gitHubUrl">
-          <img
-            class="about__github-image"
-            alt="GitHub sponsors"
-            height="30"
-            width="121"
-            :src="gitHubSponsorsUrl" />
-          <img
-            class="about__github-image"
-            alt="GitHub follower count"
-            height="30"
-            width="168"
-            :src="gitHubFollowersUrl" />
-          <img
-            class="about__github-image"
-            alt="GitHub stars"
-            height="30"
-            width="135"
-            :src="gitHubStarsUrl" />
-        </a>
+        <div class="about__github-images">
+          <a :href="gitHubSponsorsUrl">
+            <img
+              class="about__github-image"
+              alt="GitHub sponsors"
+              height="30"
+              width="121"
+              :src="gitHubSponsorsImageUrl" />
+          </a>
+          <a :href="gitHubFollowersUrl">
+            <img
+              class="about__github-image"
+              alt="GitHub follower count"
+              height="30"
+              width="168"
+              :src="gitHubFollowersImageUrl" />
+          </a>
+          <a :href="gitHubUrl">
+            <img
+              class="about__github-image"
+              alt="GitHub stars"
+              height="30"
+              width="135"
+              :src="gitHubStarsImageUrl" />
+          </a>
+        </div>
         <p class="about__description">
-          You can see a timeline of his open source work and blog posts in his
+          You can see a timeline of my open source work and blog posts in my
           <a :href="stackOverflowStoryUrl">Stack Overflow Developer Story</a> or
-          just view his <a :href="stackOverflowUrl">Stack Overflow profile</a>.
+          you can just view my
+          <a :href="stackOverflowUrl">Stack Overflow profile</a>.
         </p>
         <a :href="stackOverflowUrl">
           <img
@@ -67,10 +98,10 @@
             :src="stackOverflowProfileUrl" />
         </a>
         <p class="about__description">
-          Before Rehan joined Microsoft, he was a
+          Before I joined Microsoft, I was a
           <a :href="mvpUrl">Microsoft Most Valuable Professional (MVP)</a>. This
-          gave him inside information into the work Microsoft was doing. Once he
-          joined Microsoft, he had to give up this award but is still a member
+          gave me inside information into the work Microsoft was doing. Once I
+          joined Microsoft, I had to give up this award but I'm still a member
           of <a :href="mvpUrl">MVP Reconnect</a>.
         </p>
         <a :href="mvpUrl">
@@ -143,16 +174,34 @@ export default {
       return this.$static.metadata.author.gitHub.url;
     },
     gitHubSponsorsUrl() {
+      return `https://github.com/sponsors/${this.$static.metadata.author.gitHub.user}`;
+    },
+    gitHubSponsorsImageUrl() {
       return `https://img.shields.io/github/sponsors/${this.$static.metadata.author.gitHub.user}?logo=github&style=social`;
     },
     gitHubFollowersUrl() {
+      return `https://github.com/${this.$static.metadata.author.gitHub.user}?tab=followers`;
+    },
+    gitHubFollowersImageUrl() {
       return `https://img.shields.io/github/followers/${this.$static.metadata.author.gitHub.user}?style=social`;
     },
-    gitHubStarsUrl() {
+    gitHubStarsImageUrl() {
       return `https://img.shields.io/github/stars/${this.$static.metadata.author.gitHub.user}?style=social`;
     },
     mvpUrl() {
       return "https://mvp.microsoft.com/en-us/PublicProfile/5001654?fullName=Muhammad%20Rehan%20Saeed";
+    },
+    twitchUrl() {
+      return this.$static.metadata.author.twitch.url;
+    },
+    youtubeUrl() {
+      return this.$static.metadata.author.youtube.url;
+    },
+    youtubeViewsImageUrl() {
+      return `https://img.shields.io/youtube/channel/views/${this.$static.metadata.author.youtube.user}?style=social`;
+    },
+    youtubeSubscribersImageUrl() {
+      return `https://img.shields.io/youtube/channel/subscribers/${this.$static.metadata.author.youtube.user}?style=social`;
     },
     oppositeTheme() {
       return this.theme === "light" ? "dark" : "light";
@@ -261,6 +310,13 @@ query {
       twitter {
         user
       }
+      twitch {
+        url
+      }
+      youtube {
+        user
+        url
+      }
     }
   }
 }
@@ -292,13 +348,15 @@ query {
   margin-bottom: var(--global-space-fluid-3);
 }
 
-.about__github-images {
+.about__github-images,
+.about__youtube-images {
   display: flex;
   gap: var(--global-space-fixed-4);
 
   margin-bottom: var(--global-space-fixed-5);
 }
-.about__github-image {
+.about__github-image,
+.about__youtube-image {
   height: 30px;
 }
 
