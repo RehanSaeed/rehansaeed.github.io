@@ -33,13 +33,25 @@
           <a :href="gitHubUrl">GitHub profile</a> and of course there are other
           commercial projects that I cannot disclose.
         </p>
-        <a :href="gitHubUrl">
+        <a class="about__github-images" :href="gitHubUrl">
           <img
-            class="about__github-followers"
+            class="about__github-image"
+            alt="GitHub sponsors"
+            height="30"
+            width="121"
+            :src="gitHubSponsorsUrl" />
+          <img
+            class="about__github-image"
             alt="GitHub follower count"
             height="30"
             width="168"
             :src="gitHubFollowersUrl" />
+          <img
+            class="about__github-image"
+            alt="GitHub stars"
+            height="30"
+            width="135"
+            :src="gitHubStarsUrl" />
         </a>
         <p class="about__description">
           You can see a timeline of my open source work and blog posts in my
@@ -129,8 +141,14 @@ export default {
     gitHubUrl() {
       return this.$static.metadata.author.gitHub.url;
     },
+    gitHubSponsorsUrl() {
+      return `https://img.shields.io/github/sponsors/${this.$static.metadata.author.gitHub.user}?logo=github&style=social`;
+    },
     gitHubFollowersUrl() {
       return `https://img.shields.io/github/followers/${this.$static.metadata.author.gitHub.user}?style=social`;
+    },
+    gitHubStarsUrl() {
+      return `https://img.shields.io/github/stars/${this.$static.metadata.author.gitHub.user}?style=social`;
     },
     mvpUrl() {
       return "https://mvp.microsoft.com/en-us/PublicProfile/5001654?fullName=Muhammad%20Rehan%20Saeed";
@@ -274,11 +292,14 @@ query {
   margin-bottom: var(--global-space-fluid-3);
 }
 
-.about__github-followers {
-  display: block;
+.about__github-images {
+  display: flex;
+  gap: var(--global-space-fixed-4);
+
   margin-bottom: var(--global-space-fixed-5);
+}
+.about__github-image {
   height: 30px;
-  width: 168px;
 }
 
 .about__stack-overflow-image {
