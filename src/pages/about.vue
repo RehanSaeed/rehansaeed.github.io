@@ -26,12 +26,12 @@
           .NET, Rehan has probably written something using it in anger!
         </p>
         <p class="about__description">
-          You can see some of the open source projects that I've started and
-          maintained in my
+          You can see some of the open source projects that he's started and
+          maintained his
           <g-link to="/portfolio/">portfolio</g-link>. There are many others
-          I've contributed to which you can see in my
+          he's contributed to which you can see in his
           <a :href="gitHubUrl">GitHub profile</a> and of course there are other
-          commercial projects that I cannot disclose.
+          commercial projects that he cannot disclose.
         </p>
         <a class="about__github-images" :href="gitHubUrl">
           <img
@@ -54,9 +54,9 @@
             :src="gitHubStarsUrl" />
         </a>
         <p class="about__description">
-          You can see a timeline of my open source work and blog posts in my
+          You can see a timeline of his open source work and blog posts in his
           <a :href="stackOverflowStoryUrl">Stack Overflow Developer Story</a> or
-          just view my <a :href="stackOverflowUrl">Stack Overflow profile</a>.
+          just view his <a :href="stackOverflowUrl">Stack Overflow profile</a>.
         </p>
         <a :href="stackOverflowUrl">
           <img
@@ -67,10 +67,11 @@
             :src="stackOverflowProfileUrl" />
         </a>
         <p class="about__description">
-          Before I joined Microsoft, I was a
+          Before Rehan joined Microsoft, he was a
           <a :href="mvpUrl">Microsoft Most Valuable Professional (MVP)</a>. This
-          gave me inside information into the work Microsoft was doing. Once I
-          joined Microsoft, I had to give up this award.
+          gave him inside information into the work Microsoft was doing. Once he
+          joined Microsoft, he had to give up this award but is still a member
+          of <a :href="mvpUrl">MVP Reconnect</a>.
         </p>
         <a :href="mvpUrl">
           <g-image
@@ -275,7 +276,6 @@ query {
 .about__container {
   display: grid;
   justify-items: center;
-  text-align: center;
 
   &:last-child {
     margin-bottom: 0;
