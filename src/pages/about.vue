@@ -21,9 +21,9 @@
         >
         <u-social-links class="about__social-links" />
         <p class="about__description">
-          I'm is a professional Software Developer at Microsoft. Although I work
+          I am a professional Software Developer at Microsoft. Although I work
           for Microsoft, my opinions are my own. If it’s written in C# or .NET,
-          I've probably written something using it in anger!
+          I have probably written something using it in anger!
         </p>
         <p class="about__description">
           I live stream my software development escapades on
@@ -50,10 +50,10 @@
           </a>
         </div>
         <p class="about__description">
-          You can see some of the open source projects that I've founded and
+          You can see some of the open source projects that I have founded and
           maintained in my
-          <g-link to="/portfolio/">portfolio</g-link>. There are many others
-          I've contributed to which you can see in my
+          <g-link to="/portfolio/">portfolio</g-link>. There are many others I
+          have contributed to which you can see in my
           <a :href="gitHubUrl">GitHub profile</a> and of course there are other
           commercial projects that I cannot disclose.
         </p>
@@ -101,7 +101,7 @@
           Before I joined Microsoft, I was a
           <a :href="mvpUrl">Microsoft Most Valuable Professional (MVP)</a>. This
           gave me inside information into the work Microsoft was doing. Once I
-          joined Microsoft, I had to give up this award but I'm still a member
+          joined Microsoft, I had to give up this award but I am still a member
           of <a :href="mvpUrl">MVP Reconnect</a>.
         </p>
         <a :href="mvpUrl">
