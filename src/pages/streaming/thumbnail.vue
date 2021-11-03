@@ -8,6 +8,7 @@
       <u-thumbnail-logo class="thumbnail__logo" />
       <u-thumbnail-image class="thumbnail__image1" name="image1" />
       <u-thumbnail-image class="thumbnail__image2" name="image2" />
+      <u-thumbnail-image class="thumbnail__image3" name="image3" />
     </article>
     <u-thumbnail-options
       :background="background"
@@ -78,7 +79,8 @@ export default {
 .thumbnail__logo,
 .thumbnail__title,
 .thumbnail__image1,
-.thumbnail__image2 {
+.thumbnail__image2,
+.thumbnail__image3 {
   grid-area: content;
 }
 </style>
