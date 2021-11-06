@@ -247,17 +247,6 @@ module.exports = {
             type: "image/png",
           },
         ],
-
-        // Windows Meta Tags
-        msTileImage: "src/favicon.png",
-        msTileColor: "#6b17e8",
-
-        // Standard Meta Tags
-        svgFavicon: "favicon.svg",
-
-        // Apple MacOS Meta Tags
-        appleMaskIcon: "favicon.svg",
-        appleMaskIconColor: "#6b17e8",
       },
     },
     // https://gridsome.org/plugins/gridsome-plugin-robots

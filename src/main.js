@@ -9,7 +9,7 @@ import defaultLayout from "~/layouts/default.vue";
 // Import Teleport component for Vue 2.
 // <portal-target></portal-target> added to default.vue.
 // <portal></portal> added to dialogue.vue
-import PortalVue from 'portal-vue';
+import PortalVue from "portal-vue";
 
 // Import comments
 import Vssue from "vssue";
@@ -61,6 +61,51 @@ export default function (Vue, { router, head, isClient }) {
     as: "font",
     type: "font/woff2",
     crossorigin: "",
+  });
+
+  // Colour Scheme
+  head.meta.push({
+    name: "color-scheme",
+    content: "dark light",
+  });
+  head.meta.push({
+    name: "theme-color",
+    content: "#6b17e8",
+    media: "(prefers-color-scheme: light)",
+  });
+  head.meta.push({
+    name: "theme-color",
+    content: "#ccbdff",
+    media: "(prefers-color-scheme: dark)",
+  });
+
+  // Favicons
+  head.link.push({
+    rel: "icon",
+    type: "image/svg+xml",
+    href: "favicon.svg",
+  });
+  head.link.push({
+    rel: "alternate icon",
+    href: "favicon.ico",
+    sizes: "any",
+  });
+
+  // Apple MacOS Meta Tags
+  head.link.push({
+    rel: "mask-icon",
+    color: "#6b17e8",
+    href: "favicon.svg",
+  });
+
+  // Windows Meta Tags
+  head.meta.push({
+    name: "msapplication-TileColor",
+    content: "#6b17e8",
+  });
+  head.meta.push({
+    name: "msapplication-TileImage",
+    content: "src/favicon.png",
   });
 
   // Search
@@ -137,22 +182,6 @@ export default function (Vue, { router, head, isClient }) {
   head.meta.push({
     name: "referrer",
     content: "no-referrer-when-downgrade",
-  });
-
-  // Colour Scheme
-  head.meta.push({
-    name: "color-scheme",
-    content: "dark light"
-  });
-  head.meta.push({
-    name: "theme-color",
-    content: "#6b17e8",
-    media: "(prefers-color-scheme: light)"
-  });
-  head.meta.push({
-    name: "theme-color",
-    content: "#ccbdff",
-    media: "(prefers-color-scheme: dark)"
   });
 
   // Set default layout as a global component
