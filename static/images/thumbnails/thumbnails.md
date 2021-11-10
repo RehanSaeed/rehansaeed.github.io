@@ -33,3 +33,7 @@
 # [2021-11-05-Twitter-Snowflake-ID.png](http://localhost:8080/streaming/thumbnail?background=%2Fimages%2Fhero%2FCode-1600x900.jpg&title=Twitter%20Snowflake%EF%B8%8F%20ID%27s&subtitle=%2B%20ASP.NET%20Minimal%20API%3F&image1=%2Fimages%2Freactions%2FPointing-Left-1099x924.png&image1-width=1099&image1-height=924&image1-x=700&image1-y=150&image3=%2Fimages%2Fitems%2FTwitter-1350x1200.png&image3-width=468&image3-height=468&image3-x=50&image2=%2Fimages%2Fitems%2FSnowflake-1600x1600.png&image2-width=468&image2-height=468&image2-x=350&image2-y=-100)
 
 ![2021-11-05-Twitter-Snowflake-ID.png](./2021-11-05-Twitter-Snowflake-ID.png)
+
+# [2021-11-10-NET-6-Released.png](http://localhost:8080/streaming/thumbnail?background=%2Fimages%2Fhero%2FCode-1600x900.jpg&title=.NET%206%20Released%21&subtitle=ASP.NET%20Updates&image1=%2Fimages%2Freactions%2FPointing-Left-1099x924.png&image1-width=1099&image1-height=924&image1-x=700&image1-y=150&image2=%2Fimages%2Fitems%2FNET-768x768.png&image2-width=468&image2-height=468&image2-x=100)
+
+![2021-11-10-NET-6-Released.png](./2021-11-10-NET-6-Released.png)
