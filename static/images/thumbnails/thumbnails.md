@@ -37,3 +37,7 @@
 # [2021-11-10-NET-6-Released.png](http://localhost:8080/streaming/thumbnail?background=%2Fimages%2Fhero%2FCode-1600x900.jpg&title=.NET%206%20Released%21&subtitle=ASP.NET%20Updates&image1=%2Fimages%2Freactions%2FPointing-Left-1099x924.png&image1-width=1099&image1-height=924&image1-x=700&image1-y=150&image2=%2Fimages%2Fitems%2FNET-768x768.png&image2-width=468&image2-height=468&image2-x=100)
 
 ![2021-11-10-NET-6-Released.png](./2021-11-10-NET-6-Released.png)
+
+# [2021-11-17-Azure-Container-Apps.png](http://localhost:8080/streaming/thumbnail?background=%2Fimages%2Fhero%2FCode-1600x900.jpg&title=Azure%20Container%20Apps&subtitle=Is%20it%20any%20good%3F&image1=%2Fimages%2Freactions%2FPointing-Left-1099x924.png&image1-width=1099&image1-height=924&image1-x=700&image1-y=150&image3=%2Fimages%2Fitems%2FAzure-2300x2300.png&image3-width=468&image3-height=468&image3-x=0&image2=%2Fimages%2Fitems%2FPulumi-300x300.png&image2-width=468&image2-height=468&image2-x=250&image2-y=-50)
+
+![2021-11-17-Azure-Container-Apps.png](./2021-11-17-Azure-Container-Apps.png)
