@@ -28,6 +28,44 @@
       "type": "image/png"
     }
   ],
+  "shortcuts": [
+    {
+      "name": "Blog",
+      "short_name": "Blog",
+      "description": "Read the latest blog posts.",
+      "url": "/",
+      "icons": [
+        {
+          "src": "/images/icons/blog.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Portfolio",
+      "short_name": "Portfolio",
+      "description": "View the portfolio of my projects.",
+      "url": "/portfolio/",
+      "icons": [
+        {
+          "src": "/images/icons/portfolio.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "About",
+      "short_name": "About",
+      "description": "About Muhammad Rehan Saeed.",
+      "url": "/about/",
+      "icons": [
+        {
+          "src": "/images/icons/about.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
   "icons": [
     {
       "src": "assets/static/favicon-512x512.png",
