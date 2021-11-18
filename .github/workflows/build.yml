@@ -48,6 +48,8 @@ jobs:
       with:
         name: cypress-videos
         path: cypress/videos
+    - name: 'Lighthouse'
+      run: npm run lighthouse
     - name: 'Deploy'
       if: github.event_name != 'pull_request'
       run: |
