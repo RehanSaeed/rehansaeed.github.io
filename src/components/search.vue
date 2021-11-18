@@ -1,14 +1,17 @@
 <template>
-  <section class="search" role="search" aria-label="site">
-    <input
-      ref="search"
-      id="search"
-      autofocus
-      v-model="searchTerm"
-      class="search__input"
-      placeholder="Search"
-      inputmode="search"
-      type="search" />
+  <section class="search" aria-label="site">
+    <form class="search__form" role="search">
+      <label class="search__label" for="search">Search</label>
+      <input
+        class="search__input"
+        ref="search"
+        id="search"
+        autofocus
+        v-model="searchTerm"
+        placeholder="Search"
+        inputmode="search"
+        type="search" />
+    </form>
     <div class="search__results">
       <u-search-result
         v-for="searchResult of searchResults"
@@ -62,11 +65,19 @@ export default {
 </script>
 
 <style lang="scss">
+@use "~/assets/style/abstracts/visually-hidden";
+
 .search {
   display: grid;
   gap: var(--global-space-fixed-5);
 }
 
+.search__form {
+  display: grid;
+}
+.search__label {
+  @include visually-hidden.visually-hidden();
+}
 .search__input {
   font-size: var(--global-font-size-5);
 }
