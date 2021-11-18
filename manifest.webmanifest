@@ -13,18 +13,18 @@
   "background_color": "#f2f4f7",
   "screenshots": [
     {
-      "src": "/images/screenshots/screenshot1-586x1041.png",
-      "sizes": "586x1041",
+      "src": "/images/screenshots/screenshot1-1172x1820.png",
+      "sizes": "1172x1820",
       "type": "image/png"
     },
     {
-      "src": "/images/screenshots/screenshot2-586x1041.png",
-      "sizes": "586x1041",
+      "src": "/images/screenshots/screenshot2-1172x1820.png",
+      "sizes": "1172x1820",
       "type": "image/png"
     },
     {
-      "src": "/images/screenshots/screenshot3-586x1041.png",
-      "sizes": "586x1041",
+      "src": "/images/screenshots/screenshot3-1172x1820.png",
+      "sizes": "1172x1820",
       "type": "image/png"
     }
   ],
