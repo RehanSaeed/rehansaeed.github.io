@@ -1,3 +1,8 @@
+// Only show focus outline when using keyboard navigation.
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
 :focus-visible {
   outline-color: var(--global-accent-color);
 }
