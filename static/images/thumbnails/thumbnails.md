@@ -45,3 +45,7 @@
 # [2021-11-19-Azure-Container-Apps-2.png](http://localhost:8080/streaming/thumbnail?background=%2Fimages%2Fhero%2FCode-1600x900.jpg&title=Azure%20Container%20Apps&subtitle=Is%20it%20any%20good%3F%20-%20Part%202&image1=%2Fimages%2Freactions%2FPointing-Left-1099x924.png&image1-width=1099&image1-height=924&image1-x=700&image1-y=150&image3=%2Fimages%2Fitems%2FAzure-2300x2300.png&image3-width=468&image3-height=468&image3-x=0&image2=%2Fimages%2Fitems%2FPulumi-300x300.png&image2-width=468&image2-height=468&image2-x=250&image2-y=-50)
 
 ![2021-11-19-Azure-Container-Apps-2.png](./2021-11-19-Azure-Container-Apps-2.png)
+
+# [2021-11-19-Azure-Container-Apps-3.png](http://localhost:8080/streaming/thumbnail?background=%2Fimages%2Fhero%2FCode-1600x900.jpg&title=Azure%20Container%20Apps&subtitle=The%20show%20down%20-%20Part%203&image1=%2Fimages%2Freactions%2FPointing-Left-1099x924.png&image1-width=1099&image1-height=924&image1-x=700&image1-y=150&image3=%2Fimages%2Fitems%2FAzure-2300x2300.png&image3-width=468&image3-height=468&image3-x=0&image2=%2Fimages%2Fitems%2FPulumi-300x300.png&image2-width=468&image2-height=468&image2-x=250&image2-y=-50)
+
+![2021-11-19-Azure-Container-Apps-3.png](./2021-11-19-Azure-Container-Apps-3.png)
