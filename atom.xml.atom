@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2021-12-29T12:18:15.874Z</updated>
+    <updated>2022-01-05T10:38:58.144Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -13,7 +13,7 @@
     <subtitle>Software Developer at Microsoft, Open Source Contributor and Blogger</subtitle>
     <logo>https://rehansaeed.com/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg</logo>
     <icon>https://rehansaeed.com/favicon.ico</icon>
-    <rights>Copyright © 2021 Muhammad Rehan Saeed</rights>
+    <rights>Copyright © 2022 Muhammad Rehan Saeed</rights>
     <entry>
         <title type="html"><![CDATA[The Problem with C# 10 Implicit Usings]]></title>
         <id>https://rehansaeed.com/the-problem-with-csharp-10-implicit-usings/</id>
