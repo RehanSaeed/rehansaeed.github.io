@@ -23,9 +23,12 @@ h6 {
     height: 22px;
     width: 22px;
     text-decoration: none;
-    text-decoration-skip-ink: initial;
     transition: opacity var(--global-duration-2) ease-out 100ms;
     vertical-align: middle;
+
+    svg {
+      display: inline;
+    }
   }
 
   &:hover,
