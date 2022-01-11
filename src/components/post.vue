@@ -96,55 +96,6 @@ export default {
     }
   }
 
-  p > a {
-    cursor: pointer;
-    color: var(--global-link-color);
-    position: relative;
-    text-decoration-color: var(--global-link-color);
-    transition: color var(--global-duration-3) var(--ease-in-out-cubic),
-      opacity var(--global-duration-1) var(--ease-in-out-cubic),
-      text-decoration-color var(--global-duration-1) var(--ease-in-out-cubic);
-
-    &:hover,
-    &:focus,
-    &:active {
-      text-decoration-color: var(--global-link-color);
-    }
-
-    &:visited {
-      color: var(--global-link-visited-color);
-      text-decoration-color: var(--global-link-visited-color);
-    }
-
-    &:not([href]),
-    &[href=""] {
-      text-decoration: none;
-    }
-
-    &::before {
-      background: var(--global-link-color);
-      content: "";
-      inset: 0;
-      position: absolute;
-      transform: scaleX(0);
-      transform-origin: right;
-      transition: transform var(--global-duration-3) var(--ease-in-out-cubic);
-      z-index: -1;
-    }
-    &:visited::before {
-      background: var(--global-link-visited-color);
-    }
-    &:hover::before {
-      transform: scaleX(1);
-      transform-origin: left;
-    }
-    &:hover,
-    &:focus,
-    &:active {
-      color: var(--global-content-background-color);
-    }
-  }
-
   img {
     width: calc(100% + (2 * var(--global-space-fluid-6)));
     margin-left: var(--global-space-fluid--6);
