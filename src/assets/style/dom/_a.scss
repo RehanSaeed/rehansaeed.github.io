@@ -3,7 +3,14 @@ a {
   color: var(--global-link-color);
   text-decoration-color: var(--global-link-color);
   transition: color var(--global-duration-3) var(--ease-in-out-cubic),
+    opacity var(--global-duration-1) var(--ease-in-out-cubic),
     text-decoration-color var(--global-duration-3) var(--ease-in-out-cubic);
+
+  &:hover,
+  &:focus,
+  &:active {
+    opacity: 0.7;
+  }
 
   &:visited {
     color: var(--global-link-visited-color);
