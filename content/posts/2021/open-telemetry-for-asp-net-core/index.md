@@ -27,7 +27,7 @@ tags:
 1. [Open Telemetry - Deep Dive into Open Telemetry for .NET](/deep-dive-into-open-telemetry-for-net/)
 2. [Open Telemetry - Configuring Open Telemetry for ASP.NET Core](/open-telemetry-for-asp-net-core/)
 3. [Open Telemetry - Exporting Open Telemetry Data to Jaeger](/exporting-open-telemetry-data-to-jaeger/)
-4. Open Telemetry - Optimally Configuring Open Telemetry for ASP.NET Core
+4. [Open Telemetry - Optimally Configuring Open Telemetry Tracing for ASP.NET Core](/optimally-configuring-open-telemetry-tracing-for-asp-net-core/)
 
 Configuring Open Telemetry for ASP.NET Core is a fairly simple process. In this post, I'll show you the simplest setup for tracing Open Telemetry in ASP.NET Core and then move to a more fully featured example.
 
@@ -49,38 +49,28 @@ You can also optionally add packages beginning with `OpenTelemetry.Exporter.*` t
 </ItemGroup>
 ```
 
-In our `Startup` class's `ConfigureServices` method, we can add Open Telemetry support with just a few lines of code using the `AddOpenTelemetryTracing` method.
+In our `Program.cs` I've added a `ConfigureServices` method, where we can add Open Telemetry support with just a few lines of code using the `AddOpenTelemetryTracing` method.
 
 ```cs
-public class Startup
+public virtual void ConfigureServices(
+    IServiceCollection services,
+    IWebHostEnvironment webHostEnvironment)
 {
-    private readonly IWebHostEnvironment webHostEnvironment;
-
-    public Startup(IWebHostEnvironment webHostEnvironment) =>
-        this.webHostEnvironment = webHostEnvironment;
-
-    public virtual void ConfigureServices(IServiceCollection services)
-    {
-        // ...omitted
-        services.AddOpenTelemetryTracing(
-            builder =>
+    // ...omitted
+    services.AddOpenTelemetryTracing(
+        builder =>
+        {
+            builder
+                .SetResourceBuilder(ResourceBuilder
+                    .CreateDefault()
+                    .AddService(webHostEnvironment.ApplicationName))
+                .AddAspNetCoreInstrumentation();
+            if (webHostEnvironment.IsDevelopment())
             {
-                builder
-                    .SetResourceBuilder(ResourceBuilder
-                        .CreateDefault()
-                        .AddService(webHostEnvironment.ApplicationName))
-                    .AddAspNetCoreInstrumentation();
-                if (webHostEnvironment.IsDevelopment())
-                {
-                    builder.AddConsoleExporter(options => options.Targets = ConsoleExporterOutputTargets.Debug);
-                }
-            });
-    }
-
-    public virtual void Configure(IApplicationBuilder application)
-    {
-        // ...omitted
-    }
+                builder.AddConsoleExporter(
+                    options => options.Targets = ConsoleExporterOutputTargets.Debug);
+            }
+        });
 }
 ```
 
@@ -95,28 +85,31 @@ Finally, we use `AddConsoleExporter` to export the trace data to the debug outpu
 If we now start the application and execute a request/response cycle, we can see the following in our IDE's debug output window:
 
 ```
-[09:14:35 INF] HTTP GET /favicon-32x32.png responded 200 in 0.7606 ms
-Activity.Id:          00-674c4d4b579bc64baa18b3bcd86c2de4-9d35fca101782841-01
+Activity.Id:          00-dde96d459fee4144a83818e054e221b1-cac69896c1bcd14f-01
 Activity.DisplayName: /favicon-32x32.png
 Activity.Kind:        Server
-Activity.StartTime:   2021-02-11T09:14:35.0633272Z
-Activity.Duration:    00:00:00.0113650
+Activity.StartTime:   2021-02-01T10:28:25.4637044Z
+Activity.Duration:    00:00:00.0086712
 Activity.TagObjects:
     http.host: localhost:5001
     http.method: GET
     http.path: /favicon-32x32.png
     http.url: https://localhost:5001/favicon-32x32.png
-    http.user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36
+    http.user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36
     http.status_code: 200
     otel.status_code: UNSET
-Resource associated with Activity:
     service.name: ApiTemplate
-    service.instance.id: dd70a756-4347-4794-aed5-0a5e94bca423
+    service.instance.id: defe9269-04f2-4b49-a05c-ebddf2112993
+    telemetry.sdk.name: opentelemetry
+    telemetry.sdk.language: dotnet
+    telemetry.sdk.version: 1.0.0.0
 ```
 
-The first line of the debug output is actually from our log output (I had only enabled information level logs). The second line is where the Open Telemetry trace starts and is broken up into several sections. Most of the trace output is pretty self explanatory and describes the request/response pretty well, including the span ID, path, response status code, start time and duration of the span.
+The first few lines give us some basic information about the span, including the span ID, start time and duration of the span. Under TagObjects is where we can see all attributes assigned to the span.
 
-What I personally found surprising is the last section. In the last section we get the application name that we setup in the `SetResourceBuilder` call but we also get a unique identifier for the current instance of the application. This can be useful if we were running multiple instances of the application in Kubernetes or Docker Swarm for example.
+All attributes starting with `http` tell us about the request and response while the attributes starting with `service` tell us about the application itself. This includes a unique identifier for the current instance of the application. This can be useful if we were running multiple instances of the application in Kubernetes or Docker Swarm for example.
+
+Finally, we also get quite a lot of information about the Open Telemetry library used to collect the information. It may eventually be useful when multiple versions of the Open Telemetry protocol are released and there is some feature difference between them but as of now, it's not very useful. I haven't been able to find a way to turn it off, since it's a fair amount of information to send in absolutely every trace message.
 
 # Up Next
 

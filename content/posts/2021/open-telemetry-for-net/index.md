@@ -28,7 +28,7 @@ tags:
 1. [Open Telemetry - Deep Dive into Open Telemetry for .NET](/deep-dive-into-open-telemetry-for-net/)
 2. [Open Telemetry - Configuring Open Telemetry for ASP.NET Core](/open-telemetry-for-asp-net-core/)
 3. [Open Telemetry - Exporting Open Telemetry Data to Jaeger](/exporting-open-telemetry-data-to-jaeger/)
-4. Open Telemetry - Optimally Configuring Open Telemetry for ASP.NET Core
+4. [Open Telemetry - Optimally Configuring Open Telemetry Tracing for ASP.NET Core](/optimally-configuring-open-telemetry-tracing-for-asp-net-core/)
 
 Open Telemetry is an open source specification, tools and SDK's used to instrument, generate, collect, and export telemetry data (metrics, logs, and traces). [Open Telemetry](https://opentelemetry.io/) is backed by the [Cloud Native Computing Foundation (CNCF)](https://www.cncf.io/webinars/fundamentals-of-opentelemetry/) which backs a mind boggling array of popular open source projects. It's worth looking at the [CNCF Landscape](https://landscape.cncf.io/) to see what I really mean. The SDK's support all the major programming languages including C# and ASP.NET Core.
 
@@ -41,6 +41,7 @@ Provides insight into application-specific messages emitted by processes. In a .
 ## Metrics
 
 Provide quantitative information about processes running inside the system, including counters, gauges, and histograms. Support for metrics in Open Telemetry is still under development and being finalised at the time of writing. Examples of metrics are:
+
 - Percentage CPU usage.
 - Bytes of memory used.
 - Number of HTTP requests.
@@ -79,7 +80,7 @@ private static ActivitySource activitySource = new ActivitySource(
     "semver1.0.0");
 ```
 
-Then we can call `StartActivity` to start recording and finally call `Dispose` to stop recording the span. 
+Then we can call `StartActivity` to start recording and finally call `Dispose` to stop recording the span.
 
 ```cs
 using (var activity = activitySource.StartActivity("ActivityName")
@@ -103,7 +104,7 @@ public async Task LongRunningOperationAsync()
 {
     await Task.Delay(1000).ConfigureAwait(false);
 
-    // Log timestamped events that can take place during an activity. 
+    // Log timestamped events that can take place during an activity.
     Activity.Current?.AddEvent(new ActivityEvent("Something happened."));
 }
 ```
@@ -173,6 +174,7 @@ Note the attribute names `http.method` and `http.url` I used in the above exampl
 Standardised attribute names use a `lower_kebab_case` syntax with `.` separator characters. Standardising the names of commonly used attribute names gives applications like Jaeger the ability to show nice UI customisations. Attribute names have been categorised under a few different buckets, it's worth spending some time taking a look at them:
 
 - [General](https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/trace/semantic_conventions/span-general.md): General semantic attributes that may be used in describing different kinds of operations.
+
 * [HTTP](https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/trace/semantic_conventions/http.md): Spans for both HTTP client and server.
 * [Database](https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/trace/semantic_conventions/database.md): Spans for SQL and NoSQL client calls.
 * [RPC/RMI](https://github.com/open-telemetry/opentelemetry-specification/blob/master/specification/trace/semantic_conventions/rpc.md): Spans for remote procedure calls (e.g., gRPC).

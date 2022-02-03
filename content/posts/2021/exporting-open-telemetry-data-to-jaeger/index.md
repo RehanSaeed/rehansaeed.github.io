@@ -28,7 +28,7 @@ tags:
 1. [Open Telemetry - Deep Dive into Open Telemetry for .NET](/deep-dive-into-open-telemetry-for-net/)
 2. [Open Telemetry - Configuring Open Telemetry for ASP.NET Core](/open-telemetry-for-asp-net-core/)
 3. [Open Telemetry - Exporting Open Telemetry Data to Jaeger](/exporting-open-telemetry-data-to-jaeger/)
-4. Open Telemetry - Optimally Configuring Open Telemetry for ASP.NET Core
+4. [Open Telemetry - Optimally Configuring Open Telemetry Tracing for ASP.NET Core](/optimally-configuring-open-telemetry-tracing-for-asp-net-core/)
 
 As I talked about in my [first post](/deep-dive-into-open-telemetry-for-net/), the end goal is to get nice visualisations from our Open Telemetry data, so we can spot patterns and learn something from the behaviours of our applications.
 
