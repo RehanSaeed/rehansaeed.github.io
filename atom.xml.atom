@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2022-02-03T10:24:53.081Z</updated>
+    <updated>2022-02-03T11:40:29.817Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -14,6 +14,200 @@
     <logo>https://rehansaeed.com/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg</logo>
     <icon>https://rehansaeed.com/favicon.ico</icon>
     <rights>Copyright © 2022 Muhammad Rehan Saeed</rights>
+    <entry>
+        <title type="html"><![CDATA[Optimally Configuring Open Telemetry Tracing for ASP.NET Core]]></title>
+        <id>https://rehansaeed.com/optimally-configuring-open-telemetry-tracing-for-asp-net-core/</id>
+        <link href="https://rehansaeed.com/optimally-configuring-open-telemetry-tracing-for-asp-net-core/"/>
+        <updated>2022-02-03T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[How to optimally configure Open Telemetry traces for ASP.NET Core enriched with lots of extra information.]]></summary>
+        <content type="html"><![CDATA[<ol>
+<li><a href="https://rehansaeed.com/deep-dive-into-open-telemetry-for-net/">Open Telemetry - Deep Dive into Open Telemetry for .NET</a></li>
+<li><a href="https://rehansaeed.com/open-telemetry-for-asp-net-core/">Open Telemetry - Configuring Open Telemetry for ASP.NET Core</a></li>
+<li><a href="https://rehansaeed.com/exporting-open-telemetry-data-to-jaeger/">Open Telemetry - Exporting Open Telemetry Data to Jaeger</a></li>
+<li><a href="https://rehansaeed.com/optimally-configuring-open-telemetry-tracing-for-asp-net-core/">Open Telemetry - Optimally Configuring Open Telemetry Tracing for ASP.NET Core</a></li>
+</ol>
+<p>Configuring tracing in Open Telemetry for ASP.NET Core can be a fairly simple process but never accept the defaults! There is always more we can do to make improvements.</p>
+<p>In this post, I&#39;ll show you how you can take the simplest setup for Open Telemetry tracing I showed you in <a href="https://rehansaeed.com/open-telemetry-for-asp-net-core/">&#39;Configuring Open Telemetry for ASP.NET Core&#39;</a> and move to a more fully featured example.</p>
+<h1 id="simplest-setup">Simplest Setup</h1>
+<p>Here is a reminder of the simple setup I showed you in <a href="https://rehansaeed.com/open-telemetry-for-asp-net-core/">&#39;Configuring Open Telemetry for ASP.NET Core&#39;</a>:</p>
+<pre><code class="language-cs">public virtual void ConfigureServices(
+    IServiceCollection services,
+    IWebHostEnvironment webHostEnvironment)
+{
+    // ...omitted
+    services.AddOpenTelemetryTracing(
+        builder =&gt;
+        {
+            builder
+                .SetResourceBuilder(ResourceBuilder
+                    .CreateDefault()
+                    .AddService(webHostEnvironment.ApplicationName))
+                .AddAspNetCoreInstrumentation();
+            if (webHostEnvironment.IsDevelopment())
+            {
+                builder.AddConsoleExporter(
+                    options =&gt; options.Targets = ConsoleExporterOutputTargets.Debug);
+            }
+        });
+}
+</code></pre>
+<p>And the tracing output you can expect for a request/response cycle:</p>
+<pre><code>Activity.Id:          00-dde96d459fee4144a83818e054e221b1-cac69896c1bcd14f-01
+Activity.DisplayName: /favicon-32x32.png
+Activity.Kind:        Server
+Activity.StartTime:   2021-02-01T10:28:25.4637044Z
+Activity.Duration:    00:00:00.0086712
+Activity.TagObjects:
+    http.host: localhost:5001
+    http.method: GET
+    http.path: /favicon-32x32.png
+    http.url: https://localhost:5001/favicon-32x32.png
+    http.user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36
+    http.status_code: 200
+    otel.status_code: UNSET
+    service.name: ApiTemplate
+    service.instance.id: defe9269-04f2-4b49-a05c-ebddf2112993
+    telemetry.sdk.name: opentelemetry
+    telemetry.sdk.language: dotnet
+    telemetry.sdk.version: 1.0.0.0
+</code></pre>
+<h1 id="the-kitchen-sink-setup">The Kitchen Sink Setup</h1>
+<p>This time we&#39;re going to setup a more advanced configuration. We&#39;re going to start off by adding a lot more information to our <code>ResourceBuilder</code> we pass to the <code>SetResourceBuilder</code> function above.</p>
+<pre><code class="language-cs">private static ResourceBuilder GetResourceBuilder(IWebHostEnvironment webHostEnvironment)
+{
+    var version = Assembly
+        .GetExecutingAssembly()
+        .GetCustomAttribute&lt;AssemblyFileVersionAttribute&gt;()!
+        .Version
+    ResourceBuilder
+        .CreateEmpty()
+        .AddService(webHostEnvironment.ApplicationName, serviceVersion: version)
+        .AddAttributes(
+            new KeyValuePair&lt;string, object&gt;[]
+            {
+                new(&quot;deployment.environment&quot;, webHostEnvironment.EnvironmentName),
+                new(&quot;host.name&quot;, Environment.MachineName),
+            })
+        .AddEnvironmentVariableDetector();
+}
+</code></pre>
+<p>This time we want to start with an empty resource builder calling <code>CreateEmpty</code>. We then add the application name and version which we can retrieve from the current assembly. You may have multiple versions of your application running over time and its important to have a way to differentiate between them.</p>
+<p>We then add a few attributes to every span including the environment name and machine name. The attribute names here are <a href="https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/semantic_conventions/README.md">standardised</a> as defined by the Open Telemetry specification. I decided that knowing the environment the application is running in and the machine name is important to know when troubleshooting issues.</p>
+<p>Finally, we add an environment variable detector which we can use to add further attributes to every span using environment variables. Using <code>ResourceBuilder.CreateDefault</code> already included this in the simple example above but since we started with an empty resource builder we need to add it explicitly. Here is a PowerShell example of how you can add add additional attributes to every span using the <code>OTEL_RESOURCE_ATTRIBUTES</code> environment variable:</p>
+<pre><code class="language-powershell">$env:OTEL_RESOURCE_ATTRIBUTES = &#39;key1=value1,key2=value2&#39;
+</code></pre>
+<p>We can now plug the <code>GetResourceBuilder</code> into our code below and add a few more goodies:</p>
+<pre><code class="language-cs">public virtual void ConfigureServices(
+    IServiceCollection services,
+    IWebHostEnvironment webHostEnvironment)
+{
+    // ...omitted
+    services.AddOpenTelemetryTracing(
+        builder =&gt;
+        {
+            builder
+                .SetResourceBuilder(GetResourceBuilder(webHostEnvironment))
+                .AddAspNetCoreInstrumentation(
+                    options =&gt;
+                    {
+                        options.Enrich = Enrich;
+                        options.RecordException = true;
+                    });
+            if (webHostEnvironment.IsDevelopment())
+            {
+                builder.AddConsoleExporter(
+                    options =&gt; options.Targets = ConsoleExporterOutputTargets.Debug);
+            }
+        });
+}
+
+private static void Enrich(Activity activity, string eventName, object obj)
+{
+    if (obj is HttpRequest request)
+    {
+        var context = request.HttpContext;
+        activity.AddTag(&quot;http.flavor&quot;, GetHttpFlavour(request.Protocol));
+        activity.AddTag(&quot;http.scheme&quot;, request.Scheme);
+        activity.AddTag(&quot;http.client_ip&quot;, context.Connection.RemoteIpAddress);
+        activity.AddTag(&quot;http.request_content_length&quot;, request.ContentLength);
+        activity.AddTag(&quot;http.request_content_type&quot;, request.ContentType);
+
+        var user = context.User;
+        if (user.Identity?.Name is not null)
+        {
+            activity.AddTag(&quot;enduser.id&quot;, user.Identity.Name);
+            activity.AddTag(
+                &quot;enduser.scope&quot;,
+                string.Join(&#39;,&#39;, user.Claims.Select(x =&gt; x.Value)));
+        }
+    }
+    else if (obj is HttpResponse response)
+    {
+        activity.AddTag(&quot;http.response_content_length&quot;, response.ContentLength);
+        activity.AddTag(&quot;http.response_content_type&quot;, response.ContentType);
+    }
+}
+
+public static string GetHttpFlavour(string protocol)
+{
+    if (HttpProtocol.IsHttp10(protocol))
+    {
+        return &quot;1.0&quot;;
+    }
+    else if (HttpProtocol.IsHttp11(protocol))
+    {
+        return &quot;1.1&quot;;
+    }
+    else if (HttpProtocol.IsHttp2(protocol))
+    {
+        return &quot;2.0&quot;;
+    }
+    else if (HttpProtocol.IsHttp3(protocol))
+    {
+        return &quot;3.0&quot;;
+    }
+
+    throw new InvalidOperationException($&quot;Protocol {protocol} not recognised.&quot;);
+}
+</code></pre>
+<p>Next, we configure <code>AddAspNetCoreInstrumentation</code> to enrich the spans with additional information about the current request, response and the user (if any) using standardised attributes. Finally, we record details of exceptions from our controllers which would otherwise be lost. This outputs the following:</p>
+<pre><code>Activity.Id:          00-3d0f70e71a8e6e5e87f156bdcf94b8c9-ccdd8d23a2e3ba93-01
+Activity.ActivitySourceName: OpenTelemetry.Instrumentation.AspNetCore
+Activity.DisplayName: /favicon-32x32.png
+Activity.Kind:        Server
+Activity.StartTime:   2022-02-03T10:52:47.6513334Z
+Activity.Duration:    00:00:00.0077181
+Activity.TagObjects:
+    http.host: localhost:5001
+    http.method: GET
+    http.target: /favicon-32x32.png
+    http.url: https://localhost:5001/favicon-32x32.png
+    http.user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36
+    http.flavor: 2.0
+    http.scheme: https
+    http.client_ip: ::1
+    http.request_content_length:
+    http.request_content_type:
+    http.status_code: 200
+    otel.status_code: UNSET
+    http.response_content_length: 628
+    http.response_content_type: image/png
+    deployment.environment: Development
+    host.name: REHANS-MACHINE
+    service.name: ApiTemplate
+    service.version: 5.1.1.0
+    service.instance.id: 4e364d08-4965-4d83-8afa-70769074ab0d
+</code></pre>
+<p>This time around you can see we&#39;ve collected a lot more information. Now, this may not be &#39;optimal&#39; for your application. Collecting additional information comes at a performance and monetary cost, so its up to you to judge what extra information is useful to you but I think most of the above is pretty essential basic information that would be valuable while debugging any issues.</p>
+<h1 id="wrapping-up">Wrapping Up</h1>
+<p>In this post, I showed a simple example showing how you can configure Open Telemetry tracing and then went on to show a more advanced real world example.</p>
+<p>Open Telemetry is gaining popularity and traction with even <a href="https://github.blog/2021-05-26-why-and-how-github-is-adopting-opentelemetry/">GitHub adopting it</a>. So far in this blog series we&#39;ve only discussed the basics of Open Telemetry and tracing in particular. When Open Telemetry metrics and logs comes out of alpha/beta, I&#39;ll write another post discussing configuring those.</p>
+]]></content>
+        <author>
+            <name/>
+            <uri>https://rehansaeed.com</uri>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[The Problem with C# 10 Implicit Usings]]></title>
         <id>https://rehansaeed.com/the-problem-with-csharp-10-implicit-usings/</id>
@@ -614,7 +808,7 @@ color: hsl(0, 0%, 100%);
 <li><a href="https://rehansaeed.com/deep-dive-into-open-telemetry-for-net/">Open Telemetry - Deep Dive into Open Telemetry for .NET</a></li>
 <li><a href="https://rehansaeed.com/open-telemetry-for-asp-net-core/">Open Telemetry - Configuring Open Telemetry for ASP.NET Core</a></li>
 <li><a href="https://rehansaeed.com/exporting-open-telemetry-data-to-jaeger/">Open Telemetry - Exporting Open Telemetry Data to Jaeger</a></li>
-<li>Open Telemetry - Optimally Configuring Open Telemetry for ASP.NET Core</li>
+<li><a href="https://rehansaeed.com/optimally-configuring-open-telemetry-tracing-for-asp-net-core/">Open Telemetry - Optimally Configuring Open Telemetry Tracing for ASP.NET Core</a></li>
 </ol>
 <p>As I talked about in my <a href="https://rehansaeed.com/deep-dive-into-open-telemetry-for-net/">first post</a>, the end goal is to get nice visualisations from our Open Telemetry data, so we can spot patterns and learn something from the behaviours of our applications.</p>
 <p>In this post, I&#39;ll show how we can export the Open Telemetry traces, logs and metrics that we&#39;ve collected to Jaeger and view them in the Jaeger dashboard.</p>
@@ -678,7 +872,7 @@ The default port used by the Open Telemetry Protocol has recently been changed f
 <li><a href="https://rehansaeed.com/deep-dive-into-open-telemetry-for-net/">Open Telemetry - Deep Dive into Open Telemetry for .NET</a></li>
 <li><a href="https://rehansaeed.com/open-telemetry-for-asp-net-core/">Open Telemetry - Configuring Open Telemetry for ASP.NET Core</a></li>
 <li><a href="https://rehansaeed.com/exporting-open-telemetry-data-to-jaeger/">Open Telemetry - Exporting Open Telemetry Data to Jaeger</a></li>
-<li>Open Telemetry - Optimally Configuring Open Telemetry for ASP.NET Core</li>
+<li><a href="https://rehansaeed.com/optimally-configuring-open-telemetry-tracing-for-asp-net-core/">Open Telemetry - Optimally Configuring Open Telemetry Tracing for ASP.NET Core</a></li>
 </ol>
 <p>Configuring Open Telemetry for ASP.NET Core is a fairly simple process. In this post, I&#39;ll show you the simplest setup for tracing Open Telemetry in ASP.NET Core and then move to a more fully featured example.</p>
 <p>To begin with, we&#39;ll just be exporting our Open Telemetry traces to the debug output so we can see what is being recorded but we&#39;ll soon move on to exporting to Jaeger in another post where we can see nice visualisations of our traces.</p>
@@ -692,36 +886,26 @@ The default port used by the Open Telemetry Protocol has recently been changed f
   &lt;PackageReference Include=&quot;OpenTelemetry.Instrumentation.AspNetCore&quot; Version=&quot;1.0.0-rc2&quot; /&gt;
 &lt;/ItemGroup&gt;
 </code></pre>
-<p>In our <code>Startup</code> class&#39;s <code>ConfigureServices</code> method, we can add Open Telemetry support with just a few lines of code using the <code>AddOpenTelemetryTracing</code> method.</p>
-<pre><code class="language-cs">public class Startup
+<p>In our <code>Program.cs</code> I&#39;ve added a <code>ConfigureServices</code> method, where we can add Open Telemetry support with just a few lines of code using the <code>AddOpenTelemetryTracing</code> method.</p>
+<pre><code class="language-cs">public virtual void ConfigureServices(
+    IServiceCollection services,
+    IWebHostEnvironment webHostEnvironment)
 {
-    private readonly IWebHostEnvironment webHostEnvironment;
-
-    public Startup(IWebHostEnvironment webHostEnvironment) =&gt;
-        this.webHostEnvironment = webHostEnvironment;
-
-    public virtual void ConfigureServices(IServiceCollection services)
-    {
-        // ...omitted
-        services.AddOpenTelemetryTracing(
-            builder =&gt;
+    // ...omitted
+    services.AddOpenTelemetryTracing(
+        builder =&gt;
+        {
+            builder
+                .SetResourceBuilder(ResourceBuilder
+                    .CreateDefault()
+                    .AddService(webHostEnvironment.ApplicationName))
+                .AddAspNetCoreInstrumentation();
+            if (webHostEnvironment.IsDevelopment())
             {
-                builder
-                    .SetResourceBuilder(ResourceBuilder
-                        .CreateDefault()
-                        .AddService(webHostEnvironment.ApplicationName))
-                    .AddAspNetCoreInstrumentation();
-                if (webHostEnvironment.IsDevelopment())
-                {
-                    builder.AddConsoleExporter(options =&gt; options.Targets = ConsoleExporterOutputTargets.Debug);
-                }
-            });
-    }
-
-    public virtual void Configure(IApplicationBuilder application)
-    {
-        // ...omitted
-    }
+                builder.AddConsoleExporter(
+                    options =&gt; options.Targets = ConsoleExporterOutputTargets.Debug);
+            }
+        });
 }
 </code></pre>
 <p>The <code>SetResourceBuilder</code> method is your opportunity to add a set of common attributes to all spans created in the application. In the above case, we&#39;ve added an application name.</p>
@@ -729,26 +913,28 @@ The default port used by the Open Telemetry Protocol has recently been changed f
 <p>Finally, we use <code>AddConsoleExporter</code> to export the trace data to the debug output. You could also output to the console but there is a lot of trace data and the console is already outputting log information which results in duplication, so I prefer not to do that. Note that we only do this if we are running in the development environment.</p>
 <h1 id="the-trace-output">The Trace Output</h1>
 <p>If we now start the application and execute a request/response cycle, we can see the following in our IDE&#39;s debug output window:</p>
-<pre><code>[09:14:35 INF] HTTP GET /favicon-32x32.png responded 200 in 0.7606 ms
-Activity.Id:          00-674c4d4b579bc64baa18b3bcd86c2de4-9d35fca101782841-01
+<pre><code>Activity.Id:          00-dde96d459fee4144a83818e054e221b1-cac69896c1bcd14f-01
 Activity.DisplayName: /favicon-32x32.png
 Activity.Kind:        Server
-Activity.StartTime:   2021-02-11T09:14:35.0633272Z
-Activity.Duration:    00:00:00.0113650
+Activity.StartTime:   2021-02-01T10:28:25.4637044Z
+Activity.Duration:    00:00:00.0086712
 Activity.TagObjects:
     http.host: localhost:5001
     http.method: GET
     http.path: /favicon-32x32.png
     http.url: https://localhost:5001/favicon-32x32.png
-    http.user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36
+    http.user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36
     http.status_code: 200
     otel.status_code: UNSET
-Resource associated with Activity:
     service.name: ApiTemplate
-    service.instance.id: dd70a756-4347-4794-aed5-0a5e94bca423
+    service.instance.id: defe9269-04f2-4b49-a05c-ebddf2112993
+    telemetry.sdk.name: opentelemetry
+    telemetry.sdk.language: dotnet
+    telemetry.sdk.version: 1.0.0.0
 </code></pre>
-<p>The first line of the debug output is actually from our log output (I had only enabled information level logs). The second line is where the Open Telemetry trace starts and is broken up into several sections. Most of the trace output is pretty self explanatory and describes the request/response pretty well, including the span ID, path, response status code, start time and duration of the span.</p>
-<p>What I personally found surprising is the last section. In the last section we get the application name that we setup in the <code>SetResourceBuilder</code> call but we also get a unique identifier for the current instance of the application. This can be useful if we were running multiple instances of the application in Kubernetes or Docker Swarm for example.</p>
+<p>The first few lines give us some basic information about the span, including the span ID, start time and duration of the span. Under TagObjects is where we can see all attributes assigned to the span.</p>
+<p>All attributes starting with <code>http</code> tell us about the request and response while the attributes starting with <code>service</code> tell us about the application itself. This includes a unique identifier for the current instance of the application. This can be useful if we were running multiple instances of the application in Kubernetes or Docker Swarm for example.</p>
+<p>Finally, we also get quite a lot of information about the Open Telemetry library used to collect the information. It may eventually be useful when multiple versions of the Open Telemetry protocol are released and there is some feature difference between them but as of now, it&#39;s not very useful. I haven&#39;t been able to find a way to turn it off, since it&#39;s a fair amount of information to send in absolutely every trace message.</p>
 <h1 id="up-next">Up Next</h1>
 <p>I&#39;ve shown a basic example of setting up Open Telemetry and discussed the defaults of what trace data is collected in ASP.NET Core. In my next post, I&#39;ll cover how you can fire up Jaeger and show how you can get an ASP.NET Core app to export Open Telemetry data to it.</p>
 ]]></content>
@@ -767,7 +953,7 @@ Resource associated with Activity:
 <li><a href="https://rehansaeed.com/deep-dive-into-open-telemetry-for-net/">Open Telemetry - Deep Dive into Open Telemetry for .NET</a></li>
 <li><a href="https://rehansaeed.com/open-telemetry-for-asp-net-core/">Open Telemetry - Configuring Open Telemetry for ASP.NET Core</a></li>
 <li><a href="https://rehansaeed.com/exporting-open-telemetry-data-to-jaeger/">Open Telemetry - Exporting Open Telemetry Data to Jaeger</a></li>
-<li>Open Telemetry - Optimally Configuring Open Telemetry for ASP.NET Core</li>
+<li><a href="https://rehansaeed.com/optimally-configuring-open-telemetry-tracing-for-asp-net-core/">Open Telemetry - Optimally Configuring Open Telemetry Tracing for ASP.NET Core</a></li>
 </ol>
 <p>Open Telemetry is an open source specification, tools and SDK&#39;s used to instrument, generate, collect, and export telemetry data (metrics, logs, and traces). <a href="https://opentelemetry.io/">Open Telemetry</a> is backed by the <a href="https://www.cncf.io/webinars/fundamentals-of-opentelemetry/">Cloud Native Computing Foundation (CNCF)</a> which backs a mind boggling array of popular open source projects. It&#39;s worth looking at the <a href="https://landscape.cncf.io/">CNCF Landscape</a> to see what I really mean. The SDK&#39;s support all the major programming languages including C# and ASP.NET Core.</p>
 <p>In this post, I&#39;m going to discuss what Open Telemetry is all about, why you&#39;d want to use it and how to use it with .NET specifically. With a typical application there are three sets of data that you usually want to record: metrics, logs and traces. Lets start by discussing what they are.</p>
@@ -799,7 +985,7 @@ Unfortunately, .NET&#39;s naming has significantly deviated from the official Op
     &quot;companyname.product.library&quot;,
     &quot;semver1.0.0&quot;);
 </code></pre>
-<p>Then we can call <code>StartActivity</code> to start recording and finally call <code>Dispose</code> to stop recording the span. </p>
+<p>Then we can call <code>StartActivity</code> to start recording and finally call <code>Dispose</code> to stop recording the span.</p>
 <pre><code class="language-cs">using (var activity = activitySource.StartActivity(&quot;ActivityName&quot;)
 {
     // Pretend to do some work.
@@ -817,7 +1003,7 @@ public async Task LongRunningOperationAsync()
 {
     await Task.Delay(1000).ConfigureAwait(false);
 
-    // Log timestamped events that can take place during an activity. 
+    // Log timestamped events that can take place during an activity.
     Activity.Current?.AddEvent(new ActivityEvent(&quot;Something happened.&quot;));
 }
 </code></pre>

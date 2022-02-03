@@ -44,7 +44,7 @@
 <li><a href="/deep-dive-into-open-telemetry-for-net/">Open Telemetry - Deep Dive into Open Telemetry for .NET</a></li>
 <li><a href="/open-telemetry-for-asp-net-core/">Open Telemetry - Configuring Open Telemetry for ASP.NET Core</a></li>
 <li><a href="/exporting-open-telemetry-data-to-jaeger/">Open Telemetry - Exporting Open Telemetry Data to Jaeger</a></li>
-<li>Open Telemetry - Optimally Configuring Open Telemetry for ASP.NET Core</li>
+<li><a href="/optimally-configuring-open-telemetry-tracing-for-asp-net-core/">Open Telemetry - Optimally Configuring Open Telemetry Tracing for ASP.NET Core</a></li>
 </ol>
 <p>Open Telemetry is an open source specification, tools and SDK's used to instrument, generate, collect, and export telemetry data (metrics, logs, and traces). <a href="https://opentelemetry.io/" target="_blank" rel="nofollow noopener noreferrer">Open Telemetry</a> is backed by the <a href="https://www.cncf.io/webinars/fundamentals-of-opentelemetry/" target="_blank" rel="nofollow noopener noreferrer">Cloud Native Computing Foundation (CNCF)</a> which backs a mind boggling array of popular open source projects. It's worth looking at the <a href="https://landscape.cncf.io/" target="_blank" rel="nofollow noopener noreferrer">CNCF Landscape</a> to see what I really mean. The SDK's support all the major programming languages including C# and ASP.NET Core.</p>
 <p>In this post, I'm going to discuss what Open Telemetry is all about, why you'd want to use it and how to use it with .NET specifically. With a typical application there are three sets of data that you usually want to record: metrics, logs and traces. Lets start by discussing what they are.</p>
@@ -72,7 +72,7 @@
 <div class="line-highlight" data-language="cs"><pre class="language-cs"><code class="language-cs"><span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token class-name">ActivitySource</span> activitySource <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token constructor-invocation class-name">ActivitySource</span><span class="token punctuation">(</span>
     <span class="token string">"companyname.product.library"</span><span class="token punctuation">,</span>
     <span class="token string">"semver1.0.0"</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
-<p>Then we can call <code class="language-inline-text">StartActivity</code> to start recording and finally call <code class="language-inline-text">Dispose</code> to stop recording the span. </p>
+<p>Then we can call <code class="language-inline-text">StartActivity</code> to start recording and finally call <code class="language-inline-text">Dispose</code> to stop recording the span.</p>
 <div class="line-highlight" data-language="cs"><pre class="language-cs"><code class="language-cs"><span class="token keyword">using</span> <span class="token punctuation">(</span><span class="token class-name"><span class="token keyword">var</span></span> activity <span class="token operator">=</span> activitySource<span class="token punctuation">.</span><span class="token function">StartActivity</span><span class="token punctuation">(</span><span class="token string">"ActivityName"</span><span class="token punctuation">)</span>
 <span class="token punctuation">{</span>
     <span class="token comment">// Pretend to do some work.</span>
@@ -89,7 +89,7 @@
 <span class="token punctuation">{</span>
     <span class="token keyword">await</span> Task<span class="token punctuation">.</span><span class="token function">Delay</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">ConfigureAwait</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    <span class="token comment">// Log timestamped events that can take place during an activity. </span>
+    <span class="token comment">// Log timestamped events that can take place during an activity.</span>
     Activity<span class="token punctuation">.</span>Current<span class="token punctuation">?.</span><span class="token function">AddEvent</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token constructor-invocation class-name">ActivityEvent</span><span class="token punctuation">(</span><span class="token string">"Something happened."</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code></pre></div>
 <p>Within the <code class="language-inline-text">LongRunningOperationAsync</code> method, we don't have access to the current span. One way to get hold of it would be to pass it in as a method parameter. However, a better way that decouples the two operations is to use <code class="language-inline-text">Activity.Current</code> which gives you access to the current span within the currently running thread.</p>
