@@ -167,6 +167,7 @@ dialog + .backdrop {
 
   height: 100%;
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .dialog__title {

@@ -198,6 +198,10 @@ export default {
 
 ![Code](./images/Code-1600x900.jpg)
 
-# Embed Youtube
+# Embed Youtube Video
 
 https://www.youtube.com/watch?v=PGM_uBy99GA
+
+# Embed Youtube Playlist
+
+https://www.youtube.com/playlist?list=PLUAZAVKVXTmQEF67lddyErymHlBDaPpjU
