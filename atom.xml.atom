@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2022-02-03T11:40:29.817Z</updated>
+    <updated>2022-02-04T09:13:21.347Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -14,6 +14,32 @@
     <logo>https://rehansaeed.com/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg</logo>
     <icon>https://rehansaeed.com/favicon.ico</icon>
     <rights>Copyright © 2022 Muhammad Rehan Saeed</rights>
+    <entry>
+        <title type="html"><![CDATA[Live Streaming .NET]]></title>
+        <id>https://rehansaeed.com/live-streaming-dotnet/</id>
+        <link href="https://rehansaeed.com/live-streaming-dotnet/"/>
+        <updated>2022-02-04T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[How I started live streaming my learnings on C#, .NET, ASP.NET Core and beyond to YouTube and Twitch.]]></summary>
+        <content type="html"><![CDATA[<p>I started live streaming my software development learnings simultaneously on <a href="https://www.youtube.com/c/MuhammadRehanSaeed">YouTube</a> and <a href="https://www.twitch.tv/rehansaeeduk">Twitch</a> a few months ago. I&#39;m by no means a professional and only have a couple hundred subscribers and a few thousand views at this time but I&#39;ve had a lot of fun learning and sharing my learnings with the world.</p>
+<p>After streaming for a while, I discovered that I hadn&#39;t been writing much code at work as my role at Microsoft has evolved into one that has meant more project management style work and leading a team of developers. So It&#39;s been rather liberating to force myself to allocate an hour to a live stream where I can go and learn something new or update one of my many open source projects with some new feature. I realized that I do indeed really like writing, thinking and talking about code and I want to continue to do more of it going forward.</p>
+<p>I put together a few YouTube playlists of the live streams I&#39;ve done so far.</p>
+<h1 id="net-6-and-c-10">.NET 6 and C# 10</h1>
+<p>This is where it all started, just before the release of .NET 6 and C# 10. There were <strong>a lot</strong> of hidden and not so obvious features in this release that I haven&#39;t seen many blog posts or videos cover. I&#39;ve been gathering these gems for the last year and talk about each one at length in this YouTube playlist.</p>
+<p><a href="https://www.youtube.com/playlist?list=PLUAZAVKVXTmQEF67lddyErymHlBDaPpjU">https://www.youtube.com/playlist?list=PLUAZAVKVXTmQEF67lddyErymHlBDaPpjU</a></p>
+<h1 id="twitter-snowflake-ids">Twitter Snowflake ID&#39;s</h1>
+<p>Twitter uses Snowflake ID&#39;s to generate unique identifiers for tweets. In this YouTube playlist I deep dive into how Twitter does this and using ASP.NET Core minimal API&#39;s to create an API. I think Twitter Snowflake ID&#39;s are a really cool way of generating really clean looking globally unique ID&#39;s and its worth looking into them as an alternative to ugly GUID&#39;s.</p>
+<p><a href="https://www.youtube.com/playlist?list=PLUAZAVKVXTmTS0Z1z-fmHv0jaxbF_Tys-">https://www.youtube.com/playlist?list=PLUAZAVKVXTmTS0Z1z-fmHv0jaxbF_Tys-</a></p>
+<h1 id="pulumi-azure-and-net">Pulumi, Azure and .NET</h1>
+<p><a href="https://www.pulumi.com/">Pulumi</a> is a tool used to build, deploy, and manage your cloud applications using pretty much any language on any cloud. I used Pulumi with .NET to play around with <a href="https://azure.microsoft.com/en-gb/pricing/details/container-apps/">Azure Container Apps</a> which I found to be promising but very early in its development. I&#39;m also now looking into creating an <a href="https://azure.microsoft.com/en-gb/services/kubernetes-service/">Azure Kubernetes Service</a> cluster using Pulumi.</p>
+<p><a href="https://www.youtube.com/playlist?list=PLUAZAVKVXTmTAb2Vko40UMnnRLLW51UhS">https://www.youtube.com/playlist?list=PLUAZAVKVXTmTAb2Vko40UMnnRLLW51UhS</a></p>
+<h1 id="feedback">Feedback</h1>
+<p>Since I&#39;m new to this, I&#39;d love to hear your feedback and suggestions. Oh and don&#39;t forget to <strong>subscribe and smash that like button</strong>! Sorry, its obligatory to say that once you post videos to YouTube. I can&#39;t get over how silly it sounds when I say it.</p>
+]]></content>
+        <author>
+            <name/>
+            <uri>https://rehansaeed.com</uri>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Optimally Configuring Open Telemetry Tracing for ASP.NET Core]]></title>
         <id>https://rehansaeed.com/optimally-configuring-open-telemetry-tracing-for-asp-net-core/</id>
