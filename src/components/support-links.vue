@@ -7,6 +7,13 @@
 
     <div class="support-links">
       <u-link-button
+        v-if="this.$static.metadata.author.patreon.url"
+        bordered
+        label="Patreon"
+        :href="this.$static.metadata.author.patreon.url">
+        <u-icon-patreon inline /> Patreon
+      </u-link-button>
+      <u-link-button
         v-if="this.$static.metadata.author.buyMeACoffee.url"
         bordered
         label="Buy me a Coffee"
@@ -35,6 +42,7 @@
 import linkButton from "~/components/shared/link-button.vue";
 import iconCoffee from "~/components/shared/icons/icon-coffee.vue";
 import iconGitHub from "~/components/shared/icons/icon-github.vue";
+import iconPatreon from "~/components/shared/icons/icon-patreon.vue";
 import iconPaypal from "~/components/shared/icons/icon-paypal.vue";
 
 export default {
@@ -43,6 +51,7 @@ export default {
     "u-link-button": linkButton,
     "u-icon-coffee": iconCoffee,
     "u-icon-github": iconGitHub,
+    "u-icon-patreon": iconPatreon,
     "u-icon-paypal": iconPaypal,
   },
 };
@@ -54,6 +63,9 @@ query {
     author {
       gitHub {
         sponsorsUrl
+      }
+      patreon {
+        url
       }
       buyMeACoffee {
         url
