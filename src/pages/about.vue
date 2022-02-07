@@ -84,10 +84,9 @@
           </a>
         </div>
         <p class="about__description">
-          You can see a timeline of my open source work and blog posts in my
-          <a :href="stackOverflowStoryUrl">Stack Overflow Developer Story</a> or
-          you can just view my
-          <a :href="stackOverflowUrl">Stack Overflow profile</a>.
+          I have been fairly active on StackOverflow. You can view my
+          <a :href="stackOverflowUrl">Stack Overflow profile</a> and see my
+          contribution to the community.
         </p>
         <a :href="stackOverflowUrl">
           <img
@@ -163,9 +162,6 @@ export default {
     },
     stackOverflowUrl() {
       return this.$static.metadata.author.stackOverflow.url;
-    },
-    stackOverflowStoryUrl() {
-      return this.$static.metadata.author.stackOverflow.storyUrl;
     },
     stackOverflowProfileUrl() {
       return `https://stackoverflow.com/users/flair/${this.$static.metadata.author.stackOverflow.user}.png?theme=${this.oppositeTheme}`;
@@ -305,7 +301,6 @@ query {
       stackOverflow {
         user
         url
-        storyUrl
       }
       twitter {
         user
