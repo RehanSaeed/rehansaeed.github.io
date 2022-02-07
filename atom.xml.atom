@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2022-02-06T11:55:15.127Z</updated>
+    <updated>2022-02-07T10:23:46.885Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -14,6 +14,33 @@
     <logo>https://rehansaeed.com/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg</logo>
     <icon>https://rehansaeed.com/favicon.ico</icon>
     <rights>Copyright © 2022 Muhammad Rehan Saeed</rights>
+    <entry>
+        <title type="html"><![CDATA[I Was Awarded as an Open UK Honouree]]></title>
+        <id>https://rehansaeed.com/open-uk-honouree/</id>
+        <link href="https://rehansaeed.com/open-uk-honouree/"/>
+        <updated>2022-02-07T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[I am very thankful for being awarded as an Open UK 2022 Honouree. Open UK is an organisation funded by tech companies to lobby the UK government in favour of open source.]]></summary>
+        <content type="html"><![CDATA[<p>Generally speaking I&#39;m not the sort of person who generally receives awards or prizes, so I was rather surprised when out of the blue I was contacted by <a href="https://openuk.uk">Open UK</a> to receive a medal to signify being listed among their <a href="https://openuk.uk/2022HonoursList/">2022 honours list</a>.</p>
+<p>I had never heard of Open UK before so I was initially very sceptical but it seems to be a legit organisation that is <a href="https://openuk.uk/participants/partners/">funded by the likes of arm, GitHub, Google, Huawei, Microsoft and Red Hat</a> and partners with <a href="https://openuk.uk/participants/our-memberships/">several open source</a> organisations including the Linux Foundation.</p>
+<p>I did a bunch of reading before I accepted any award to make sure they weren&#39;t doing anything shady and found that they seem to be lobbying the UK government in favour of Open Source which is fine by me!</p>
+<blockquote>
+<p>The 2022 #openukgennext #openukhonouree list is made up of individuals with broad ranging experience in Open Technology identified as being ones to watch in the UK!</p>
+</blockquote>
+<blockquote>
+<p>They hail from all walks of Open Source Software, Open Hardware and Open Data. This is <em>the</em> list of those to watch for the future of Open Technology. All are earmarked as leading the next generation of Open Technology whether through social media, their jobs, community contributions, policy or in education.</p>
+<p>The British Honours system is something very specific to the UK and a means of rewarding an individual for their achievement or service. Medals are used within this system to recognise an activity or long or valuable service.</p>
+<p>Congratulations to all of those listed. Enjoy the recognition of our New Year’s Honour from your peers at OpenUK and we look forward to seeing all that you will achieve in Open Technology through 2022 and beyond.</p>
+<footer><cite><a href="https://openuk.uk/2022HonoursList/">Open UK 2022 Honours List</a></cite></footer>
+</blockquote>
+<p>This is the second year the award has been handed out. I&#39;m not certain what the selection criteria was apart from the fact that I&#39;m a developer in the UK but I do have a fairly active <a href="https://github.com/RehanSaeed">GitHub profile</a> so I suspect that is how they found me.</p>
+<p><img src="https://rehansaeed.com/open-uk-honouree/images/Medal.jpg" alt="Open UK 2022 Honouree Medal"></p>
+<p>Overall, I&#39;m very thankful that I was recognised (albeit without knowing exactly why) and am happy to add the Open UK medal to my small collection of <a href="https://mvp.microsoft.com/en-us/PublicProfile/5001654?fullName=Muhammad%20Rehan%20Saeed">Microsoft MVP</a> awards from before I became a Microsoft employee.</p>
+]]></content>
+        <author>
+            <name/>
+            <uri>https://rehansaeed.com</uri>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Live Streaming .NET]]></title>
         <id>https://rehansaeed.com/live-streaming-dotnet/</id>
