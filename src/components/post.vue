@@ -104,6 +104,13 @@ export default {
     max-width: none;
   }
 
+  .mermaid {
+    svg {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
   .youtube-embed {
     margin-top: var(--global-space-fixed-4);
     margin-bottom: var(--global-space-fixed-5);

@@ -191,6 +191,11 @@ module.exports = {
         serviceWorkerPath: "service-worker.js",
         cachedFileTypes: "js,json,css,html,png,jpg,jpeg,svg,gif",
         disableTemplatedUrls: true,
+        // modifyServiceWorkerConfig: (config) => {
+        //   config.globIgnores.push("static/images/items/**/*");
+        //   config.globIgnores.push("static/images/reactions/**/*");
+        //   config.globIgnores.push("static/images/thumbnails/**/*");
+        // },
 
         // Manifest
         manifestPath: "manifest.webmanifest",
@@ -359,6 +364,13 @@ module.exports = {
         ],
         "remark-kbd",
         "remark-toc",
+        // https://github.com/Braincoke/gridsome-plugin-remark-mermaid
+        [
+          "gridsome-plugin-remark-mermaid",
+          {
+            theme: "neutral",
+          },
+        ],
         [
           "gridsome-plugin-remark-prismjs-all",
           {

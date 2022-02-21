@@ -44,6 +44,7 @@
     "gridsome-plugin-brotli": "0.1.3",
     "gridsome-plugin-flexsearch": "2.0.2",
     "gridsome-plugin-pwa": "0.0.21",
+    "gridsome-plugin-remark-mermaid": "1.0.1",
     "gridsome-plugin-remark-prismjs-all": "0.4.8",
     "gridsome-plugin-robots": "0.2.1",
     "gridsome-remark-embed-snippet": "1.0.3",

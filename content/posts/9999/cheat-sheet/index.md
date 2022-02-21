@@ -190,6 +190,19 @@ export default {
 }
 ```
 
+# Mermaid
+
+```mermaid
+flowchart TD
+  A --> B
+  A --> C
+```
+
+```mermaid
+flowchart TD
+  A[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dolor in tellus dictum, vel pharetra lacus ultricies. Phasellus porttitor scelerisque elit et ultrices.] --> B
+```
+
 # Embed Code Snippets
 
 `embed:foo.cs`
