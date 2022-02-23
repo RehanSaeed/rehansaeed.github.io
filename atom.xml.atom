@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2022-02-21T10:09:20.788Z</updated>
+    <updated>2022-02-23T14:43:40.635Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -10,7 +10,7 @@
     </author>
     <link rel="alternate" href="https://rehansaeed.com"/>
     <link rel="self" href="https://rehansaeed.com/atom.xml.atom"/>
-    <subtitle>Software Developer at Microsoft, Open Source Contributor and Blogger</subtitle>
+    <subtitle>Software Developer at Microsoft, YouTuber, Open Source Contributor and Blogger</subtitle>
     <logo>https://rehansaeed.com/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg</logo>
     <icon>https://rehansaeed.com/favicon.ico</icon>
     <rights>Copyright © 2022 Muhammad Rehan Saeed</rights>

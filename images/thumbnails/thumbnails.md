@@ -50,10 +50,14 @@
 
 ![2021-11-19-Azure-Container-Apps-3.png](./2021-11-19-Azure-Container-Apps-3.png)
 
-# [2021-12-08-Azure-Traffic-Manager.png](http://localhost:8080/streaming/thumbnail?background=%2Fimages%2Fhero%2FCode-1600x900.jpg&title=Azure%20Traffic%20Manager&subtitle=&image1=%2Fimages%2Freactions%2FPointing-Left-1099x924.png&image1-width=1099&image1-height=924&image1-x=700&image1-y=150&image3=%2Fimages%2Fitems%2FAzure-2300x2300.png&image3-width=468&image3-height=468&image3-x=0&image2=%2Fimages%2Fitems%2FPulumi-300x300.png&image2-width=468&image2-height=468&image2-x=250&image2-y=-50)
+# [2022-12-01-Azure-Kubernetes.png](http://localhost:8080/streaming/thumbnail?background=%2Fimages%2Fhero%2FCode-1600x900.jpg&title=Azure%20Kubernetes&subtitle=With%20Pulumi%3F&image1=%2Fimages%2Freactions%2FPointing-Left-1099x924.png&image1-width=1099&image1-height=924&image1-x=700&image1-y=150&image3=%2Fimages%2Fitems%2FKubernetes.svg&image3-width=468&image3-height=468&image3-x=0&image2=%2Fimages%2Fitems%2FPulumi-300x300.png&image2-width=468&image2-height=468&image2-x=250&image2-y=-50)
 
-![2021-12-08-Azure-Traffic-Manager.png](./2021-12-08-Azure-Traffic-Manager.png)
+![2022-12-01-Azure-Kubernetes.png](./2022-12-01-Azure-Kubernetes.png)
 
-# [2021-12-15-Azure-Kubernetes.png](http://localhost:8080/streaming/thumbnail?background=%2Fimages%2Fhero%2FCode-1600x900.jpg&title=Azure%20Kubernetes&subtitle=With%20Pulumi%3F&image1=%2Fimages%2Freactions%2FPointing-Left-1099x924.png&image1-width=1099&image1-height=924&image1-x=700&image1-y=150&image3=%2Fimages%2Fitems%2FKubernetes.svg&image3-width=468&image3-height=468&image3-x=0&image2=%2Fimages%2Fitems%2FPulumi-300x300.png&image2-width=468&image2-height=468&image2-x=250&image2-y=-50)
+# [2022-02-23-Azure-Kubernetes-2.png](http://localhost:8080/streaming/thumbnail?background=%2Fimages%2Fhero%2FCode-1600x900.jpg&title=Azure%20Kubernetes&subtitle=Pulumi%20-%20Part%202&image1=%2Fimages%2Freactions%2FPointing-Left-1099x924.png&image1-width=1099&image1-height=924&image1-x=700&image1-y=150&image3=%2Fimages%2Fitems%2FKubernetes.svg&image3-width=468&image3-height=468&image3-x=0&image2=%2Fimages%2Fitems%2FPulumi-300x300.png&image2-width=468&image2-height=468&image2-x=250&image2-y=-50)
 
-![2021-12-15-Azure-Kubernetes-Service.png](./2021-12-15-Azure-Kubernetes.png)
+![2022-02-23-Azure-Kubernetes-2.png](./2022-02-23-Azure-Kubernetes-2.png)
+
+# [2022-03-01-.NET-Global-Tool.png](http://localhost:8080/streaming/thumbnail?background=%2Fimages%2Fhero%2FCode-1600x900.jpg&title=.NET%20Global%20Tool&subtitle=Lets%20make%20one%21&image1=%2Fimages%2Freactions%2FPointing-Left-1099x924.png&image1-width=1099&image1-height=924&image1-x=700&image1-y=150&image2=%2Fimages%2Fitems%2FNET-768x768.png&image2-width=468&image2-height=468&image2-x=100)
+
+![2022-03-01-.NET-Global-Tool.png](./2022-03-01-.NET-Global-Tool.png)
