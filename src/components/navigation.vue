@@ -10,11 +10,21 @@
         blur="0" />
     </u-link-button>
     <div class="navigation__items-left">
-      <u-link-button class="navigation__item" to="/">Blog</u-link-button>
-      <u-link-button class="navigation__item" to="/portfolio/"
+      <u-link-button class="navigation__item" to="/" :aria-current="blogPage"
+        >Blog</u-link-button
+      >
+      <u-link-button
+        class="navigation__item"
+        to="/portfolio/"
+        :aria-current="portfolioPage"
         >Portfolio</u-link-button
       >
-      <u-link-button class="navigation__item" to="/about/">About</u-link-button>
+      <u-link-button
+        class="navigation__item"
+        to="/about/"
+        :aria-current="aboutPage"
+        >About</u-link-button
+      >
     </div>
     <div class="navigation__items-right">
       <u-search-button class="navigation__search" />
@@ -36,6 +46,22 @@ export default {
     "u-install-button": installButton,
     "u-search-button": searchButton,
     "u-theme-button": themeButton,
+  },
+  computed: {
+    blogPage() {
+      return this.getIsCurrentPage("/");
+    },
+    portfolioPage() {
+      return this.getIsCurrentPage("/portfolio/");
+    },
+    aboutPage() {
+      return this.getIsCurrentPage("/about/");
+    },
+  },
+  methods: {
+    getIsCurrentPage(path) {
+      return this.$route.path === path ? "page" : undefined;
+    },
   },
 };
 </script>
@@ -102,6 +128,10 @@ query {
 
 .navigation__item {
   visibility: visible;
+}
+
+.navigation__item[aria-current="page"] {
+  color: var(--global-accent-color);
 }
 
 .navigation__search {
