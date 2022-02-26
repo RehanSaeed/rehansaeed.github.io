@@ -24,7 +24,7 @@
 
 <script>
 import Search from "gridsome-plugin-flexsearch/SearchMixin";
-import SearchResult from "./search-result.vue";
+import SearchResult from "~/components/search/search-result.vue";
 
 export default {
   name: "u-search",

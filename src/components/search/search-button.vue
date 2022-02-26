@@ -25,7 +25,7 @@
 import button from "~/components/shared/button.vue";
 import dialogue from "~/components/shared/dialogue.vue";
 import iconSearch from "~/components/shared/icons/icon-search.vue";
-import search from "~/components/search.vue";
+import search from "~/components/search/search.vue";
 import {
   searchOpened,
   searchClosed,

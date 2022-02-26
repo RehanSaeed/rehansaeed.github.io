@@ -42,6 +42,7 @@
     "gh-pages": "3.2.3",
     "gridsome": "0.7.23",
     "gridsome-plugin-brotli": "0.1.3",
+    "gridsome-plugin-bundle-analyzer": "1.0.0",
     "gridsome-plugin-flexsearch": "2.0.2",
     "gridsome-plugin-pwa": "0.0.21",
     "gridsome-plugin-remark-mermaid": "1.0.1",

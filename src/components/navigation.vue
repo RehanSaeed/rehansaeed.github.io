@@ -37,7 +37,7 @@
 <script>
 import linkButton from "~/components/shared/link-button.vue";
 import installButton from "~/components/install-button.vue";
-import searchButton from "~/components/search-button.vue";
+import searchButton from "~/components/search/search-button.vue";
 import themeButton from "~/components/theme-button.vue";
 
 export default {

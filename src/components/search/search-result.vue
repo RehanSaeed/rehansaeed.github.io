@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import Heading from "./shared/heading.vue";
+import Heading from "~/components/shared/heading.vue";
 
 export default {
   name: "u-search-result",
