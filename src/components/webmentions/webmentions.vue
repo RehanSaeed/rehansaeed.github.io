@@ -72,12 +72,12 @@ import iconHeart from "~/components/shared/icons/icon-heart.vue";
 import iconLink from "~/components/shared/icons/icon-link.vue";
 import iconQuestion from "~/components/shared/icons/icon-question.vue";
 import iconRepost from "~/components/shared/icons/icon-repost.vue";
-import webmentionFaces from "~/components/webmention-faces.vue";
-import webmentionFacesSkeleton from "~/components/webmention-faces-skeleton.vue";
-import webmentionLink from "~/components/webmention-link.vue";
-import webmentionLinksSkeleton from "~/components/webmention-links-skeleton.vue";
-import webmentionReply from "~/components/webmention-reply.vue";
-import webmentionRepliesSkeleton from "~/components/webmention-replies-skeleton.vue";
+import webmentionFaces from "~/components/webmentions/webmention-faces.vue";
+import webmentionFacesSkeleton from "~/components/webmentions/webmention-faces-skeleton.vue";
+import webmentionLink from "~/components/webmentions/webmention-link.vue";
+import webmentionLinksSkeleton from "~/components/webmentions/webmention-links-skeleton.vue";
+import webmentionReply from "~/components/webmentions/webmention-reply.vue";
+import webmentionRepliesSkeleton from "~/components/webmentions/webmention-replies-skeleton.vue";
 
 export default {
   name: "u-webmentions",

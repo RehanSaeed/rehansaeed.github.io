@@ -33,7 +33,7 @@ import newsletter from "~/components/newsletter.vue";
 import comments from "~/components/comments.vue";
 import post from "~/components/post.vue";
 import postMeta from "~/components/post-meta.vue";
-import webmentions from "~/components/webmentions.vue";
+import webmentions from "~/components/webmentions/webmentions.vue";
 import { getOpenGraphImage, getSchemaImageObject } from "~/framework/images.js";
 
 export default {
