@@ -2,10 +2,6 @@
   <Component
     class="avatar"
     :is="tag"
-    :class="{
-      'avatar--medium': size === 'medium',
-      'avatar--large': size === 'large',
-    }"
     :aria-label="label"
     :title="label"
     :href="href"
@@ -29,11 +25,6 @@ export default {
     },
     alt: {
       required: true,
-      type: String,
-    },
-    size: {
-      default: "medium",
-      required: false,
       type: String,
     },
     src: {
@@ -62,50 +53,34 @@ export default {
 
 <style lang="scss">
 .avatar {
-  background-color: var(--global-accent-color);
-  border-radius: 100%;
   display: inline-block;
-  line-height: 0;
+
+  background-color: var(--global-content-background-color);
+  border: var(--global-border-width-3) solid
+    var(--global-content-background-color);
+  border-radius: 100%;
+  overflow: hidden;
+  transition: border-color var(--global-duration-3) var(--ease-out-cubic),
+    transform var(--global-duration-3) var(--ease-out-cubic);
+  height: 3rem;
+  width: 3rem;
+  will-change: border-color, transform;
 
   &:hover,
   &:focus {
+    border: var(--global-border-width-3) solid var(--global-accent-color);
     opacity: 1;
     outline: none;
+    transform: scale(1.4);
     z-index: 1;
-
-    .avatar__image {
-      border: var(--global-border-width-2) solid
-        var(--global-alternate-accent-color);
-      transform: scale(1.3);
-    }
   }
 }
 
 .avatar__image {
-  border: var(--global-border-width-2) solid var(--global-title-color);
-  border-radius: 100%;
   display: block;
+
   object-fit: cover;
-  transition: border-color var(--global-duration-3) var(--ease-out-cubic),
-    transform var(--global-duration-3) var(--ease-out-cubic);
-  will-change: border-color, transform;
-}
-
-.avatar--medium {
-  height: 2.5rem;
-  width: 2.5rem;
-  .avatar__image {
-    height: 2.5rem;
-    width: 2.5rem;
-  }
-}
-
-.avatar--large {
-  height: 3rem;
-  width: 3rem;
-  .avatar__image {
-    height: 3rem;
-    width: 3rem;
-  }
+  height: 100%;
+  width: 100%;
 }
 </style>

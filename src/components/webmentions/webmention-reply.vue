@@ -5,8 +5,7 @@
       :href="url"
       :label="name"
       :alt="name"
-      :src="photo"
-      size="large" />
+      :src="photo" />
     <u-heading
       class="webmention-reply__author"
       :id="id"

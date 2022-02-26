@@ -8,11 +8,11 @@
 
   // Border Width
   --global-border-width-0: 0;
-  --global-border-width-1: 0.05rem; // 1px
-  --global-border-width-2: 0.1rem; // 2px
-  --global-border-width-3: 0.2rem; // 4px
-  --global-border-width-4: 0.3rem; // 6px
-  --global-border-width-5: 0.4rem; // 8px
+  --global-border-width-1: 1px; // 0.05rem
+  --global-border-width-2: 2px; // 0.1rem
+  --global-border-width-3: 4px; // 0.2rem
+  --global-border-width-4: 6px; // 0.3rem
+  --global-border-width-5: 8px; // 0.4rem
 
   // Box Shadows
   --global-shadow-1: 0 1px 3px var(--global-shadow-color);

@@ -8,8 +8,7 @@
       :href="mention.data.url"
       :label="label"
       :alt="mention.data.author.name"
-      :src="mention.data.author.photo"
-      size="large" />
+      :src="mention.data.author.photo" />
   </div>
 </template>
 
@@ -51,16 +50,18 @@ export default {
 
 <style lang="scss">
 .webmention-faces {
-  --overlap: 0.4rem;
+  --overlap: 0.9rem;
 
   display: flex;
   align-content: flex-start;
   align-items: center;
   flex-wrap: wrap;
+
   padding-left: var(--overlap);
 }
 
 .webmention-faces__content {
+  margin-left: calc(var(--overlap) * -1);
   margin-right: var(--global-space-fluid-3);
 }
 
