@@ -15,30 +15,29 @@
         <u-icon-question inline /> What's this?
       </a>
       <div class="webmentions__container">
-        <p class="webmentions__count webmentions__like-count">
-          <u-icon-heart inline :title="likesDescription" />
-          {{ likesDescription }}
-        </p>
         <u-webmention-faces
           v-if="!isLoading"
           class="webmentions__like-faces"
-          :mentions="likes" />
+          :mentions="likes">
+          <h3 class="webmentions__count webmentions__like-count">
+            {{ likesDescription }}
+          </h3>
+        </u-webmention-faces>
         <u-webmention-faces-skeleton v-else />
 
-        <p class="webmentions__count webmentions__repost-count">
-          <u-icon-repost inline :title="repostsDescription" />
-          {{ repostsDescription }}
-        </p>
         <u-webmention-faces
           v-if="!isLoading"
           class="webmentions__repost-faces"
-          :mentions="reposts" />
+          :mentions="reposts">
+          <h3 class="webmentions__count webmentions__repost-count">
+            {{ repostsDescription }}
+          </h3>
+        </u-webmention-faces>
         <u-webmention-faces-skeleton v-else />
 
-        <p class="webmentions__count webmentions__link-count">
-          <u-icon-link inline :title="linksDescription" />
+        <h3 class="webmentions__count webmentions__link-count">
           {{ linksDescription }}
-        </p>
+        </h3>
         <div v-if="!isLoading" class="webmentions__links">
           <u-webmention-link
             v-for="link of links"
@@ -47,10 +46,9 @@
         </div>
         <u-webmention-links-skeleton v-else />
 
-        <p class="webmentions__count webmentions__reply-count">
-          <u-icon-comment inline :title="repliesDescription" />
+        <h3 class="webmentions__count webmentions__reply-count">
           {{ repliesDescription }}
-        </p>
+        </h3>
         <div v-if="!isLoading" class="webmentions__replies">
           <u-webmention-reply
             v-for="reply of replies"
@@ -67,11 +65,7 @@
 import card from "~/components/shared/card.vue";
 import heading from "~/components/shared/heading.vue";
 import intersect from "~/components/shared/intersect.vue";
-import iconComment from "~/components/shared/icons/icon-comment.vue";
-import iconHeart from "~/components/shared/icons/icon-heart.vue";
-import iconLink from "~/components/shared/icons/icon-link.vue";
 import iconQuestion from "~/components/shared/icons/icon-question.vue";
-import iconRepost from "~/components/shared/icons/icon-repost.vue";
 import webmentionFaces from "~/components/webmentions/webmention-faces.vue";
 import webmentionFacesSkeleton from "~/components/webmentions/webmention-faces-skeleton.vue";
 import webmentionLink from "~/components/webmentions/webmention-link.vue";
@@ -85,11 +79,7 @@ export default {
     "u-card": card,
     "u-heading": heading,
     "u-intersect": intersect,
-    "u-icon-comment": iconComment,
-    "u-icon-heart": iconHeart,
-    "u-icon-link": iconLink,
     "u-icon-question": iconQuestion,
-    "u-icon-repost": iconRepost,
     "u-webmention-faces": webmentionFaces,
     "u-webmention-faces-skeleton": webmentionFacesSkeleton,
     "u-webmention-link": webmentionLink,
@@ -210,6 +200,12 @@ export default {
 .webmentions__container {
   display: grid;
   gap: var(--global-space-fixed-3);
+}
+
+.webmentions__like-count,
+.webmentions__repost-count {
+  margin-top: 0;
+  min-width: 9rem;
 }
 
 .webmentions__help,

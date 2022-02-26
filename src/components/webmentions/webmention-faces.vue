@@ -1,5 +1,6 @@
 <template>
   <div class="webmention-faces">
+    <div class="webmention-faces__content"><slot></slot></div>
     <u-avatar
       class="webmention-faces__face"
       v-for="{ mention, label } of mentionsDisplay"
@@ -7,7 +8,8 @@
       :href="mention.data.url"
       :label="label"
       :alt="mention.data.author.name"
-      :src="mention.data.author.photo" />
+      :src="mention.data.author.photo"
+      size="large" />
   </div>
 </template>
 
@@ -53,11 +55,16 @@ export default {
 
   display: flex;
   align-content: flex-start;
+  align-items: center;
   flex-wrap: wrap;
   padding-left: var(--overlap);
 }
 
-.webmention-faces__face {
+.webmention-faces__content {
+  margin-right: var(--global-space-fluid-3);
+}
+
+.webmention-faces__face:not(:first-of-type) {
   margin-left: calc(var(--overlap) * -1);
 }
 </style>
