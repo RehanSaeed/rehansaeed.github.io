@@ -35,27 +35,35 @@
         </u-webmention-faces>
         <u-webmention-faces-skeleton v-else />
 
-        <h3 class="webmentions__count webmentions__link-count">
-          {{ linksDescription }}
-        </h3>
-        <div v-if="!isLoading" class="webmentions__links">
-          <u-webmention-link
-            v-for="link of links"
-            :key="link.id"
-            :link="link" />
+        <div class="webmentions__links">
+          <h3 class="webmentions__count webmentions__link-count">
+            {{ linksDescription }}
+          </h3>
+          <div
+            v-if="!isLoading && !isLinksEmpty"
+            class="webmentions__links-container">
+            <u-webmention-link
+              v-for="link of links"
+              :key="link.id"
+              :link="link" />
+          </div>
+          <u-webmention-links-skeleton v-if="isLoading" />
         </div>
-        <u-webmention-links-skeleton v-else />
 
-        <h3 class="webmentions__count webmentions__reply-count">
-          {{ repliesDescription }}
-        </h3>
-        <div v-if="!isLoading" class="webmentions__replies">
-          <u-webmention-reply
-            v-for="reply of replies"
-            :key="reply.id"
-            :reply="reply" />
+        <div class="webmentions__replies">
+          <h3 class="webmentions__count webmentions__reply-count">
+            {{ repliesDescription }}
+          </h3>
+          <div
+            v-if="!isLoading && !isRepliesEmpty"
+            class="webmentions__replies-container">
+            <u-webmention-reply
+              v-for="reply of replies"
+              :key="reply.id"
+              :reply="reply" />
+          </div>
+          <u-webmention-replies-skeleton v-if="isLoading" />
         </div>
-        <u-webmention-replies-skeleton v-else />
       </div>
     </u-card>
   </u-intersect>
@@ -103,6 +111,12 @@ export default {
     },
   },
   computed: {
+    isLinksEmpty() {
+      return this.links.length === 0;
+    },
+    isRepliesEmpty() {
+      return this.replies.length === 0;
+    },
     likesDescription() {
       return `${this.likes?.length ?? 0} ${this.pluralise(
         this.likes?.length,
@@ -199,13 +213,15 @@ export default {
 
 .webmentions__container {
   display: grid;
-  gap: var(--global-space-fixed-3);
+  gap: var(--global-space-fixed-5);
 }
 
+.webmentions__count {
+  margin-top: 0;
+}
 .webmentions__like-count,
 .webmentions__repost-count {
-  margin-top: 0;
-  min-width: 10.65rem;
+  min-width: 10.35rem;
 }
 
 .webmentions__help,
@@ -220,10 +236,18 @@ export default {
 
 .webmentions__links {
   display: grid;
+  gap: var(--global-space-fixed-2);
+}
+.webmentions__links-container {
+  display: grid;
   gap: var(--global-space-fixed-3);
 }
 
 .webmentions__replies {
+  display: grid;
+  gap: var(--global-space-fixed-2);
+}
+.webmentions__replies-container {
   display: grid;
   gap: var(--global-space-fixed-3);
 }
