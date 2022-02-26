@@ -16,6 +16,16 @@ module.exports = {
   },
 
   plugins: [
+    // https://github.com/krmax44/gridsome-plugin-bundle-analyzer
+    {
+      use: 'gridsome-plugin-bundle-analyzer',
+      options: {
+        onlyProduction: true,
+        analyzerOptions: {
+          openAnalyzer: false,
+        }
+      },
+    },
     {
       use: "@gridsome/plugin-critical",
       options: {
@@ -80,12 +90,12 @@ module.exports = {
       },
     },
     // https://gridsome.org/plugins/gridsome-plugin-brotli
-    // {
-    //   use: "gridsome-plugin-brotli",
-    //   options: {
-    //     extensions: ["css", "html", "js", "svg", "json"],
-    //   },
-    // },
+    {
+      use: "gridsome-plugin-brotli",
+      options: {
+        extensions: ["css", "html", "js", "svg", "json"],
+      },
+    },
     // https://github.com/Microflash/gridsome-plugin-feed
     {
       use: "@microflash/gridsome-plugin-feed",
