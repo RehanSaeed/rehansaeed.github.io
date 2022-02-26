@@ -50,12 +50,13 @@ export default {
 
 <style lang="scss">
 .webmention-faces {
-  --overlap: 0.9rem;
+  --overlap: 0.6rem;
 
   display: flex;
   align-content: flex-start;
   align-items: center;
   flex-wrap: wrap;
+  row-gap: var(--global-space-fixed-2);
 
   padding-left: var(--overlap);
 }

@@ -56,8 +56,7 @@ export default {
   display: inline-block;
 
   background-color: var(--global-content-background-color);
-  border: var(--global-border-width-3) solid
-    var(--global-content-background-color);
+  border: var(--global-border-width-3) solid transparent;
   border-radius: 100%;
   overflow: hidden;
   transition: border-color var(--global-duration-3) var(--ease-out-cubic),
@@ -65,6 +64,8 @@ export default {
   height: 3rem;
   width: 3rem;
   will-change: border-color, transform;
+
+  margin: calc(var(--global-border-width-3) * -1);
 
   &:hover,
   &:focus {

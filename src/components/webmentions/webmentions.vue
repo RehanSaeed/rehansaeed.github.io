@@ -205,7 +205,7 @@ export default {
 .webmentions__like-count,
 .webmentions__repost-count {
   margin-top: 0;
-  min-width: 9.65rem;
+  min-width: 10.65rem;
 }
 
 .webmentions__help,
