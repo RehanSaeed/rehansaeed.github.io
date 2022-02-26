@@ -18,10 +18,11 @@ module.exports = {
   plugins: [
     // https://github.com/krmax44/gridsome-plugin-bundle-analyzer
     {
-      use: 'gridsome-plugin-bundle-analyzer',
+      use: "gridsome-plugin-bundle-analyzer",
       options: {
         onlyProduction: true,
         analyzerOptions: {
+          analyzerMode: "static",
           openAnalyzer: false,
         }
       },
