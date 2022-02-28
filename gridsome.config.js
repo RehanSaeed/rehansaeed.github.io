@@ -24,7 +24,7 @@ module.exports = {
         analyzerOptions: {
           analyzerMode: "static",
           openAnalyzer: false,
-        }
+        },
       },
     },
     {
@@ -202,11 +202,11 @@ module.exports = {
         serviceWorkerPath: "service-worker.js",
         cachedFileTypes: "js,json,css,html,png,jpg,jpeg,svg,gif",
         disableTemplatedUrls: true,
-        // modifyServiceWorkerConfig: (config) => {
-        //   config.globIgnores.push("static/images/items/**/*");
-        //   config.globIgnores.push("static/images/reactions/**/*");
-        //   config.globIgnores.push("static/images/thumbnails/**/*");
-        // },
+        modifyServiceWorkerConfig: (config) => {
+          config.globIgnores.push("images/items/**/*");
+          config.globIgnores.push("images/reactions/**/*");
+          config.globIgnores.push("images/thumbnails/**/*");
+        },
 
         // Manifest
         manifestPath: "manifest.webmanifest",
