@@ -1,6 +1,6 @@
 <template>
   <!-- Added webmention markup (See https://indiewebify.me/validate-h-card/?url=https%3A%2F%2Frehansaeed.com) -->
-  <section class="author h-card">
+  <section class="author h-card" :aria-label="$static.metadata.name">
     <g-image
       class="author__image u-photo"
       :alt="$static.metadata.name"
