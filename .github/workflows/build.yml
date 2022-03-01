@@ -1,6 +1,6 @@
 name: Build
 
-concurrency: production
+concurrency: ${{ github.ref }}
 
 on:
   push:
