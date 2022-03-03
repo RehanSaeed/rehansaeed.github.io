@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2022-03-01T18:20:43.476Z</updated>
+    <updated>2022-03-03T08:30:48.794Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -6066,13 +6066,15 @@ I looked into this subject for use by the company I work for, who had existing i
 <p>My initial thinking was that you could check the files at deployment time when the tag helper first runs. Then the tag helper would have calculated the hash and cached it without any expiration time, so you are good from then on. In hindsight checking the files on every deployment is not great for the developer.</p>
 <h1 id="the-2nd-iteration">The 2nd Iteration</h1>
 <p>So for the next iteration I have added a new alternative source attribute, basically a local file from which the SRI is calculated. Now the tag helper looks like this when in use:</p>
-<pre><code class="language-html">&lt;script src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js&quot; 
-        asp-subresource-integrity-src=&quot;~/js/jquery.min.js&quot;&gt;&lt;/script&gt;
+<pre><code class="language-html">&lt;script
+  src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js&quot;
+  asp-subresource-integrity-src=&quot;~/js/jquery.min.js&quot;&gt;&lt;/script&gt;
 </code></pre>
 <p>You can also customize the hashing algorithm used in your SRI. You can choose between SHA256, SHA384 and SHA512, by default the tag helper uses the most secure option SHA512 which seems to be supported by all browsers. Should you choose to use a different hashing algorithm or even use more than one algorithm, you can set the <code>asp-subresource-integrity-hash-algorithms</code> attribute which is just a flagged enumeration (Note that I am using ASP.NET Core RC2 syntax, where the name of the enumeration can be omitted):</p>
-<pre><code class="language-html">&lt;script src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js&quot; 
-        asp-subresource-integrity-src=&quot;~/js/jquery.min.js&quot;
-        asp-subresource-integrity-hash-algorithms=&quot;SHA256 | SHA384 | SHA512&quot;&gt;&lt;/script&gt;
+<pre><code class="language-html">&lt;script
+  src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js&quot;
+  asp-subresource-integrity-src=&quot;~/js/jquery.min.js&quot;
+  asp-subresource-integrity-hash-algorithms=&quot;SHA256 | SHA384 | SHA512&quot;&gt;&lt;/script&gt;
 </code></pre>
 <p>What is it doing behind the scenes?</p>
 <ol>
@@ -6088,16 +6090,13 @@ I looked into this subject for use by the company I work for, who had existing i
 <p>Last week, I noted that leaving out the scheme in the URL for your CDN resource e.g. <code>//example.com/jquery.js</code> caused Firefox to error and fail to load the resource completely and I recommended that you always include the <code>https://</code> scheme. It turns out that this was not Firefox causing the issue at all but a Firefox browser extension. I&#39;ve yet to figure out which one yet as I have quite a few installed (most of them security related because I&#39;m paranoid) but it&#39;s probably an extension called HTTPS Everywhere which attempts to use HTTPS if it is available. To be on the safe side and avoid this problem, always specify the <code>https://</code> scheme.</p>
 <h1 id="cdn-fallbacks">CDN Fallbacks</h1>
 <p>So what happens when a CDN script is maliciously edited or (much more likely) you messed up and your local copy of the CDN script is different from the one in the CDN? Well, this is where CDN script fallbacks come in. There is already a tag helper provided by ASP.NET Core that does this:</p>
-<pre><code class="language-html">&lt;script src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js&quot;
-        asp-subresource-integrity-src=&quot;~/js/jquery.min.js&quot;
-        asp-fallback-src=&quot;~/js/jquery.min.js&quot;
-        asp-fallback-test=&quot;window.jQuery&quot;&gt;
-&lt;/script&gt;
+<pre><code class="language-html">&lt;script
+  src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js&quot;
+  asp-subresource-integrity-src=&quot;~/js/jquery.min.js&quot;
+  asp-fallback-src=&quot;~/js/jquery.min.js&quot;
+  asp-fallback-test=&quot;window.jQuery&quot;&gt;&lt;/script&gt;
 </code></pre>
 <p>I should also mention that although the fallback tag helper is cool and very simple to use, it adds inline script which is not compatible with the <a href="https://rehansaeed.com/content-security-policy-for-asp-net-mvc/">Content Security Policy (CSP)</a> HTTP header. If you care about security and you probably do if you are reading this, that means using the fallback tag helper is not possible. I myself prefer to move all my fallback checks to a separate JavaScript file.</p>
-<h1 id="sritestio">sritest.io</h1>
-<p>A big shout out to <a href="https://blog.gaborszathmari.me">Gabor Szathmari</a> and his website <a href="https://sritest.io/">sritest.io</a>. It is able to scan your page and check that all your external resources have SRI enabled and most importantly that it has been setup correctly. You could use the console window from a browser like Chrome or Firefox but this website will also tell you if you&#39;ve forgotten to add SRI to any external resources and also highlight edge cases such as the ones I highlighted in these two blog posts.</p>
-<p><img src="https://rehansaeed.com/subresource-integrity-taghelper-using-asp-net-core-part-2/images/SRI-Test.png" alt="sritest.io Screenshot"></p>
 <h1 id="where-can-i-get-it">Where Can I Get It?</h1>
 <p>This tag helper is available in a few ways:</p>
 <ol>
