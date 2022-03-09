@@ -58,6 +58,7 @@ export default {
 
   &:hover,
   &:focus {
+    color: var(--global-accent-color);
     transform: scale(1.07);
   }
 

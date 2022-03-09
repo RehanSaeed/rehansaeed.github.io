@@ -70,7 +70,7 @@ export default {
   }
 
   &:hover {
-    color: var(--global-title-color);
+    color: var(--global-accent-color);
     transform: scale(1.07);
   }
 }
