@@ -1,9 +1,15 @@
 <template>
   <Layout>
     <div class="about">
-      <u-heading id="about" level="1" center :href="relativeUrl"
-        >About</u-heading
-      >
+      <header class="about__title">
+        <u-heading id="about" level="1" center :to="relativeUrl"
+          >About</u-heading
+        >
+        <p>
+          A little about my professional career, open source projects and
+          history.
+        </p>
+      </header>
 
       <u-arrows class="about__arrows" />
 
@@ -323,6 +329,10 @@ query {
   display: grid;
   gap: var(--global-space-fluid-5);
   justify-items: center;
+}
+
+.about__title {
+  text-align: center;
 }
 
 .about__arrows {
