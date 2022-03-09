@@ -13,23 +13,20 @@
         <u-post-meta :meta="post" />
       </div>
 
+      <u-arrows class="post-page__arrows" />
+
       <u-post class="post-page__content" :post="post" />
 
       <u-webmentions class="post-page__webmentions" :url="url" />
 
       <u-comments class="post-page__comments" :title="title" />
-
-      <u-newsletter />
-
-      <u-author class="post-page__author" />
     </div>
   </Layout>
 </template>
 
 <script>
+import arrows from "~/components/shared/arrows.vue";
 import heading from "~/components/shared/heading.vue";
-import author from "~/components/author.vue";
-import newsletter from "~/components/newsletter.vue";
 import comments from "~/components/comments.vue";
 import post from "~/components/post.vue";
 import postMeta from "~/components/post-meta.vue";
@@ -38,10 +35,9 @@ import { getOpenGraphImage, getSchemaImageObject } from "~/framework/images.js";
 
 export default {
   components: {
+    "u-arrows": arrows,
     "u-comments": comments,
     "u-heading": heading,
-    "u-author": author,
-    "u-newsletter": newsletter,
     "u-post": post,
     "u-post-meta": postMeta,
     "u-webmentions": webmentions,
@@ -231,7 +227,16 @@ query Post ($id: ID!) {
   display: grid;
   justify-items: center;
   margin: 0 auto;
-  padding: var(--global-space-fluid-5) 0 var(--global-space-fluid-5);
+  padding-top: var(--global-space-fluid-5);
   text-align: center;
+}
+
+.post-page__arrows {
+  margin-left: calc(
+    var(--global-space-main) + var(--global-space-content-max-width) * -1
+  );
+  margin-right: calc(
+    var(--global-space-main) + var(--global-space-content-max-width) * -1
+  );
 }
 </style>

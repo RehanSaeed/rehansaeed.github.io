@@ -59,4 +59,8 @@ export default {
     padding-right: 0;
   }
 }
+
+.footer {
+  margin-top: var(--global-space-fluid-5);
+}
 </style>

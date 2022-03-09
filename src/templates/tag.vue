@@ -5,26 +5,26 @@
         ># {{ title }}</u-heading
       >
 
+      <u-arrows class="tag-page__arrows" />
+
       <div class="tag-page__items">
         <u-post-card v-for="post of posts" :key="post.id" :post="post" />
       </div>
-
-      <u-newsletter class="tag-page__newsletter" />
     </div>
   </Layout>
 </template>
 
 <script>
+import arrows from "~/components/shared/arrows.vue";
 import heading from "~/components/shared/heading.vue";
 import author from "~/components/author.vue";
-import newsletter from "~/components/newsletter.vue";
 import postCard from "~/components/post-card.vue";
 
 export default {
   components: {
+    "u-arrows": arrows,
     "u-heading": heading,
     "u-author": author,
-    "u-newsletter": newsletter,
     "u-post-card": postCard,
   },
   computed: {
@@ -141,6 +141,11 @@ query Tag($id: ID!) {
   grid-template-columns: 1fr;
 }
 
+.tag-page__arrows {
+  margin-left: calc(var(--global-space-main) * -1);
+  margin-right: calc(var(--global-space-main) * -1);
+}
+
 .tag-page__items {
   display: grid;
   gap: var(--global-space-fluid-5);
@@ -152,9 +157,5 @@ query Tag($id: ID!) {
     )
   );
   justify-content: center;
-}
-
-.tag-page__newsletter {
-  justify-self: center;
 }
 </style>

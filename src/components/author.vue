@@ -52,7 +52,8 @@ query {
 .author {
   display: grid;
   justify-items: center;
-  padding: var(--global-space-fluid-5) var(--global-space-fluid-3);
+  padding-left: var(--global-space-fluid-3);
+  padding-right: var(--global-space-fluid-3);
 }
 
 .author__image {

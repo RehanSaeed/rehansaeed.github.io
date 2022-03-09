@@ -2,6 +2,7 @@
   <Layout>
     <div class="posts">
       <u-author />
+      <u-arrows class="posts__arrows" />
 
       <div class="posts__items">
         <u-post-card
@@ -11,15 +12,13 @@
       </div>
 
       <u-pager class="posts__pager" :page-info="$page.posts.pageInfo" />
-
-      <u-newsletter class="posts__newsletter" />
     </div>
   </Layout>
 </template>
 
 <script>
 import author from "~/components/author.vue";
-import newsletter from "~/components/newsletter.vue";
+import arrows from "~/components/shared/arrows.vue";
 import pager from "~/components/pager.vue";
 import postCard from "~/components/post-card.vue";
 import { previousUrl, nextUrl } from "~/framework/paging.js";
@@ -27,7 +26,7 @@ import { previousUrl, nextUrl } from "~/framework/paging.js";
 export default {
   components: {
     "u-author": author,
-    "u-newsletter": newsletter,
+    "u-arrows": arrows,
     "u-pager": pager,
     "u-post-card": postCard,
   },
@@ -230,6 +229,11 @@ query($page: Int) {
   grid-template-columns: 1fr;
 }
 
+.posts__arrows {
+  margin-left: calc(var(--global-space-main) * -1);
+  margin-right: calc(var(--global-space-main) * -1);
+}
+
 .posts__items {
   display: grid;
   gap: var(--global-space-fluid-5);
@@ -244,10 +248,6 @@ query($page: Int) {
 }
 
 .posts__pager {
-  justify-self: center;
-}
-
-.posts__newsletter {
   justify-self: center;
 }
 </style>

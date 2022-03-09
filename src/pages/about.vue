@@ -5,6 +5,8 @@
         >About</u-heading
       >
 
+      <u-arrows class="about__arrows" />
+
       <u-card class="about__container" tag="article">
         <g-image
           class="about__image"
@@ -117,23 +119,22 @@
           contact me using any of the links above.
         </p>
       </u-card>
-
-      <u-newsletter />
     </div>
   </Layout>
 </template>
 
 <script>
+import arrows from "~/components/shared/arrows.vue";
 import card from "~/components/shared/card.vue";
 import heading from "~/components/shared/heading.vue";
-import newsletter from "~/components/newsletter.vue";
 import socialLinks from "~/components/social-links.vue";
 
 export default {
+  name: "u-about",
   components: {
+    "u-arrows": arrows,
     "u-card": card,
     "u-heading": heading,
-    "u-newsletter": newsletter,
     "u-social-links": socialLinks,
   },
   data() {
@@ -324,6 +325,12 @@ query {
   justify-items: center;
 }
 
+.about__arrows {
+  justify-self: normal;
+  margin-left: calc(var(--global-space-main) * -1);
+  margin-right: calc(var(--global-space-main) * -1);
+}
+
 .about__container {
   display: grid;
   justify-items: center;
@@ -336,7 +343,7 @@ query {
 .about__image {
   border-radius: var(--global-border-radius);
   display: block;
-  width: 320px;
+  max-width: 320px;
 }
 
 .about__social-links {
@@ -346,6 +353,8 @@ query {
 .about__github-images,
 .about__youtube-images {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: var(--global-space-fixed-4);
 
   margin-bottom: var(--global-space-fixed-5);

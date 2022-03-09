@@ -1,7 +1,7 @@
 <template>
   <Layout>
     <div class="portfolio">
-      <div class="portfolio__title">
+      <header class="portfolio__title">
         <u-heading id="portfolio" level="1" center :to="relativeUrl"
           >Portfolio</u-heading
         >
@@ -11,7 +11,9 @@
           see in my GitHub profile and of course there are other commercial
           projects that I cannot disclose.
         </p>
-      </div>
+      </header>
+
+      <u-arrows class="portfolio__arrows" />
 
       <div class="portfolio__items">
         <u-portfolio-card
@@ -19,21 +21,19 @@
           :key="edge.node.id"
           :portfolio="edge.node" />
       </div>
-
-      <u-newsletter class="portfolio__newsletter" />
     </div>
   </Layout>
 </template>
 
 <script>
+import arrows from "~/components/shared/arrows.vue";
 import heading from "~/components/shared/heading.vue";
-import newsletter from "~/components/newsletter.vue";
 import portfolioCard from "~/components/portfolio-card.vue";
 
 export default {
   components: {
+    "u-arrows": arrows,
     "u-heading": heading,
-    "u-newsletter": newsletter,
     "u-portfolio-card": portfolioCard,
   },
   computed: {
@@ -154,6 +154,11 @@ query {
   text-align: center;
 }
 
+.portfolio__arrows {
+  margin-left: calc(var(--global-space-main) * -1);
+  margin-right: calc(var(--global-space-main) * -1);
+}
+
 .portfolio__items {
   display: grid;
   gap: var(--global-space-fluid-5);
@@ -165,9 +170,5 @@ query {
     )
   );
   justify-content: center;
-}
-
-.portfolio__newsletter {
-  justify-self: center;
 }
 </style>

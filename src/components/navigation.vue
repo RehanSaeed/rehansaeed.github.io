@@ -85,7 +85,10 @@ query {
   align-items: center;
   gap: var(--global-space-fluid-5);
   grid-template-columns: auto 1fr auto;
-  grid-template-rows: auto;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "image left right"
+    ". . right";
 
   font-size: var(--global-font-size-3);
   padding: var(--global-space-fluid-5);
@@ -93,10 +96,11 @@ query {
 }
 
 .navigation__image-container {
+  grid-area: image;
+
   line-height: 0;
   visibility: visible;
 }
-
 .navigation__image {
   border: var(--global-border-width-2) solid var(--global-title-color);
   border-radius: 100%;
@@ -106,6 +110,8 @@ query {
 }
 
 .navigation__items-left {
+  grid-area: left;
+
   display: grid;
   gap: var(--global-space-fluid-5);
   grid-template-columns: repeat(3, auto);
@@ -113,17 +119,13 @@ query {
 }
 
 .navigation__items-right {
-  align-self: start;
-  grid-column-start: 3;
-  grid-row-start: 1;
-  grid-row-end: 3;
+  grid-area: right;
 
   display: grid;
   gap: var(--global-space-fluid-5);
-  grid-template-areas:
-    "search theme"
-    ". install";
-  grid-template-columns: repeat(2, auto);
+
+  padding-top: var(--global-space-fluid-4);
+  padding-right: var(--global-space-fluid-4);
 }
 
 .navigation__item {
@@ -134,35 +136,33 @@ query {
   color: var(--global-accent-color);
 }
 
-.navigation__search {
-  grid-area: search;
-  visibility: visible;
-}
-
-.navigation__toggle-theme {
-  grid-area: theme;
-  visibility: visible;
-}
-
+.navigation__search,
+.navigation__toggle-theme,
 .navigation__install {
-  grid-area: install;
   visibility: visible;
 }
 
 @include breakpoints.respond-above(xl) {
   .navigation {
+    grid-template-areas:
+      "image . right"
+      "left . right";
     gap: var(--global-space-fluid-3);
-    grid-template-rows: auto auto;
-    justify-items: left;
 
     margin-bottom: -9.5rem;
   }
 
   .navigation__items-left {
     gap: var(--global-space-fluid-3);
-    grid-column-start: 1;
-    grid-row-start: 2;
     grid-template-columns: auto;
+  }
+
+  .navigation__items-right {
+    align-self: start;
+    gap: var(--global-space-fluid-4);
+
+    padding-top: initial;
+    padding-right: initial;
   }
 }
 
