@@ -8,7 +8,7 @@
     "education"
   ],
   "start_url": "/",
-  "display": "standalone",
+  "display": "minimal-ui",
   "theme_color": "#6b17e8",
   "background_color": "#f2f4f7",
   "screenshots": [
