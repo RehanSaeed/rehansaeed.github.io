@@ -210,6 +210,7 @@ module.exports = {
 
         // Manifest
         manifestPath: "manifest.webmanifest",
+        id: "https://rehansaeed.com/",
         title: site.name,
         shortName: site.shortName,
         description: site.description,
