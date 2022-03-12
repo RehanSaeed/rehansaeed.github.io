@@ -12,7 +12,7 @@
         href="#newsletter"
         >Newsletter</u-heading
       >
-      <label class="newsletter__content" for="email"
+      <label class="newsletter__label" for="email"
         >Stay up to date! Get all the latest &amp; greatest posts delivered
         straight to your inbox!</label
       >
@@ -64,6 +64,8 @@ query {
 </static-query>
 
 <style lang="scss">
+@use "~/assets/style/abstracts/breakpoints";
+
 .newsletter {
   content-visibility: auto;
   contain-intrinsic-size: 354px;
@@ -71,11 +73,21 @@ query {
 
 .newsletter__form {
   display: grid;
-  grid-template-columns: 1fr auto auto 1fr;
+  gap: var(--global-space-fluid-3);
   grid-template-areas:
     "title title title title"
-    "content content content content"
+    "label label label label"
     ". input button .";
+  grid-template-columns: 1fr auto auto 1fr;
+
+  @include breakpoints.respond-below(md) {
+    grid-template-areas:
+      "title title title"
+      "label label label"
+      ". input ."
+      ". button .";
+    grid-template-columns: 1fr auto 1fr;
+  }
 }
 
 .newsletter__title {
@@ -84,16 +96,15 @@ query {
   text-align: center;
 }
 
-.newsletter__content {
-  grid-area: content;
+.newsletter__label {
+  grid-area: label;
   justify-self: center;
-  margin-bottom: var(--global-space-fixed-5);
+  margin-bottom: var(--global-space-fixed-4);
   text-align: center;
 }
 
 .newsletter__input {
   grid-area: input;
-  margin-right: var(--global-space-fluid-3);
 }
 
 .newsletter__button {
