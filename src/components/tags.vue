@@ -30,16 +30,8 @@ export default {
 
 <style lang="scss">
 .tags {
-  --gap: var(--global-space-fixed-3);
-
   display: flex;
+  gap: var(--global-space-fixed-3);
   flex-wrap: wrap;
-  margin-right: calc(-1 * var(--gap));
-  margin-bottom: calc(-1 * var(--gap));
-}
-
-.tags__link {
-  margin-right: var(--gap);
-  margin-bottom: var(--gap);
 }
 </style>
