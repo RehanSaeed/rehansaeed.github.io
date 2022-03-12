@@ -218,7 +218,7 @@ module.exports = {
         lang: "en-GB",
         dir: "ltr",
         startUrl: "/",
-        display: "standalone",
+        display: "minimal-ui",
         statusBarStyle: "default",
         backgroundColor: "#f2f4f7",
         themeColor: "#6b17e8",
