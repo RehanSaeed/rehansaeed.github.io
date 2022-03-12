@@ -130,23 +130,15 @@ export default {
 
 .post__footer {
   display: grid;
+  gap: var(--global-space-fixed-3);
   justify-items: start;
+
   margin-top: var(--global-space-fixed-6);
 }
 
 .post__footer__actions {
-  --gap: var(--global-space-fixed-3);
-
   display: flex;
   flex-wrap: wrap;
-  margin-right: calc(-1 * var(--gap));
-  margin-bottom: calc(-1 * var(--gap) + var(--global-space-fixed-5));
-}
-
-.post__edit,
-.post__share,
-.post__support {
-  margin-right: var(--gap);
-  margin-bottom: var(--gap);
+  gap: var(--global-space-fixed-3);
 }
 </style>
