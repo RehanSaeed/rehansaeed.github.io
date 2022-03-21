@@ -74,6 +74,10 @@
 
 ![2022-03-14-Azure-Kubernetes-5.png](./2022-03-14-Azure-Kubernetes-5.png)
 
-# [2022-04-01-.NET-Global-Tool.png](http://localhost:8080/streaming/thumbnail?background=%2Fimages%2Fhero%2FCode-1600x900.jpg&title=.NET%20Global%20Tool&subtitle=Lets%20make%20one%21&image1=%2Fimages%2Freactions%2FPointing-Left-1099x924.png&image1-width=1099&image1-height=924&image1-x=700&image1-y=150&image2=%2Fimages%2Fitems%2FNET-768x768.png&image2-width=468&image2-height=468&image2-x=100)
+# [2022-03-18-.NET-Global-Tool.png](http://localhost:8080/streaming/thumbnail?background=%2Fimages%2Fhero%2FCode-1600x900.jpg&title=.NET%20Global%20Tool&subtitle=Lets%20make%20one%21&image1=%2Fimages%2Freactions%2FPointing-Left-1099x924.png&image1-width=1099&image1-height=924&image1-x=700&image1-y=150&image2=%2Fimages%2Fitems%2FNET-768x768.png&image2-width=468&image2-height=468&image2-x=100)
 
-![2022-04-01-.NET-Global-Tool.png](./2022-04-01-.NET-Global-Tool.png)
+![2022-03-18-.NET-Global-Tool.png](./2022-03-18-.NET-Global-Tool.png)
+
+# [2022-03-21-System.CommandLine.png](http://localhost:8080/streaming/thumbnail?background=%2Fimages%2Fhero%2FCode-1600x900.jpg&title=System.CommandLine&subtitle=CLI%20Tools%20Made%20Easy%21&image1=%2Fimages%2Freactions%2FPointing-Left-1099x924.png&image1-width=1099&image1-height=924&image1-x=700&image1-y=150&image2=%2Fimages%2Fitems%2FNET-768x768.png&image2-width=468&image2-height=468&image2-x=100)
+
+![2022-03-21-System.CommandLine.png](./2022-03-21-System.CommandLine.png)
