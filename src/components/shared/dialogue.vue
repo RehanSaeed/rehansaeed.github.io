@@ -3,6 +3,7 @@
     <dialog
       :id="id"
       class="dialog"
+      aria-labelledby="title"
       @close="close"
       :class="{ 'dialog--fullscreen': fullscreen }">
       <div class="dialog__container">
