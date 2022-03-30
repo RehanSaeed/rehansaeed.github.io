@@ -8,13 +8,17 @@ date: "2020-07-08T08:34:00Z"
 dateModified: "2021-04-12T09:50:00Z"
 published: true
 categories:
-    - ".NET"
+  - ".NET"
 tags:
-    - "NuGet"
-    - "GitHub"
-    - "GitHub Actions"
-    - ".NET Boxed"
+  - "NuGet"
+  - "GitHub"
+  - "GitHub Actions"
+  - ".NET Boxed"
 ---
+
+::: tip Updated 2022-03-30 22:42
+The GitHub CLI added support for creating labels, so updated the post with those new commands.
+:::
 
 ::: tip Updated 2021-04-12 09:50
 I appeared on the [.NET Docs Show](https://dotnet.microsoft.com/live/dotnet-docs) and ran through this blog post and much more. I've added a [link to the show](https://www.youtube.com/watch?v=A93Fn_qMLX4) on YouTube below.
@@ -74,13 +78,14 @@ Next we need to create some default labels that we can apply to pull requests. T
 I've gone in to GitHub and deleted all the existing labels and then run a few GitHub CLI commands to create just the ones I want:
 
 ```powershell
-gh api --silent repos/:owner/:repo/labels -f name="documentation" -f description="Pull requests or issues to add or modify documentation." -f color="0075ca"
-gh api --silent repos/:owner/:repo/labels -f name="bug" -f description="Issues describing a bug or pull requests fixing a bug." -f color="ee0701"
-gh api --silent repos/:owner/:repo/labels -f name="enhancement" -f description="Issues describing an enhancement or pull requests adding an enhancement." -f color="a2eeef"
-gh api --silent repos/:owner/:repo/labels -f name="maintenance" -f description="Pull requests that perform maintenance on the project but add no features or bug fixes." -f color="fff89b"
-gh api --silent repos/:owner/:repo/labels -f name="major" -f description="Pull requests requiring a major version update according to semantic versioning." -f color="b23021"
-gh api --silent repos/:owner/:repo/labels -f name="minor" -f description="Pull requests requiring a minor version update according to semantic versioning." -f color="f99248"
-gh api --silent repos/:owner/:repo/labels -f name="patch" -f description="Pull requests requiring a patch version update according to semantic versioning." -f color="eaf42c"
+gh label create "dependencies" --description "Pull requests that update a dependency file." --color "0366d6"
+gh label create "documentation" --description "Pull requests or issues to add or modify documentation." --color "0075ca"
+gh label create "bug" --description "Issues describing a bug or pull requests fixing a bug." --color "ee0701"
+gh label create "enhancement" --description "Issues describing an enhancement or pull requests adding an enhancement." --color "a2eeef"
+gh label create "maintenance" --description "Pull requests that perform maintenance on the project but add no features or bug fixes." --color "fff89b"
+gh label create "major" --description "Pull requests requiring a major version update according to semantic versioning." --color "b23021"
+gh label create "minor" --description "Pull requests requiring a minor version update according to semantic versioning." --color "f99248"
+gh label create "patch" --description "Pull requests requiring a patch version update according to semantic versioning." --color "eaf42c"
 ```
 
 Now it's time to make a change and submit a new pull request (PR) to our repository. Notice I'm adding a `major` and `enhancement` label to the pull request.
@@ -144,13 +149,14 @@ start "https://github.com/RehanSaeed/FastestNuGet/packages"
 
 # Create major, minor, patch, bug, enhancement, maintenance labels
 start "https://github.com/RehanSaeed/FastestNuGet/labels"
-gh api --silent repos/:owner/:repo/labels -f name="documentation" -f description="Pull requests or issues to add or modify documentation." -f color="0075ca"
-gh api --silent repos/:owner/:repo/labels -f name="bug" -f description="Issues describing a bug or pull requests fixing a bug." -f color="ee0701"
-gh api --silent repos/:owner/:repo/labels -f name="enhancement" -f description="Issues describing an enhancement or pull requests adding an enhancement." -f color="a2eeef"
-gh api --silent repos/:owner/:repo/labels -f name="maintenance" -f description="Pull requests that perform maintenance on the project but add no features or bug fixes." -f color="fff89b"
-gh api --silent repos/:owner/:repo/labels -f name="major" -f description="Pull requests requiring a major version update according to semantic versioning." -f color="b23021"
-gh api --silent repos/:owner/:repo/labels -f name="minor" -f description="Pull requests requiring a minor version update according to semantic versioning." -f color="f99248"
-gh api --silent repos/:owner/:repo/labels -f name="patch" -f description="Pull requests requiring a patch version update according to semantic versioning." -f color="eaf42c"
+gh label create "dependencies" --description "Pull requests that update a dependency file." --color "0366d6"
+gh label create "documentation" --description "Pull requests or issues to add or modify documentation." --color "0075ca"
+gh label create "bug" --description "Issues describing a bug or pull requests fixing a bug." --color "ee0701"
+gh label create "enhancement" --description "Issues describing an enhancement or pull requests adding an enhancement." --color "a2eeef"
+gh label create "maintenance" --description "Pull requests that perform maintenance on the project but add no features or bug fixes." --color "fff89b"
+gh label create "major" --description "Pull requests requiring a major version update according to semantic versioning." --color "b23021"
+gh label create "minor" --description "Pull requests requiring a minor version update according to semantic versioning." --color "f99248"
+gh label create "patch" --description "Pull requests requiring a patch version update according to semantic versioning." --color "eaf42c"
 
 git switch --create some-change
 git add .
