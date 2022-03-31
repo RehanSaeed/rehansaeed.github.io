@@ -83,3 +83,7 @@
 ![2022-03-21-System.CommandLine.png](./2022-03-21-System.CommandLine.png)
 
 ![2022-03-25-Dotnet-New-UI.png](./2022-03-25-Dotnet-New-UI.png)
+
+# [2022-04-01-Azure-Kubernetes-6.png](http://localhost:8080/streaming/thumbnail?background=%2Fimages%2Fhero%2FCode-1600x900.jpg&title=Azure%20Kubernetes&subtitle=Private%20Clusters&image1=%2Fimages%2Freactions%2FPointing-Left-1099x924.png&image1-width=1099&image1-height=924&image1-x=700&image1-y=150&image3=%2Fimages%2Fitems%2FKubernetes.svg&image3-width=468&image3-height=468&image3-x=0&image2=%2Fimages%2Fitems%2FPulumi-300x300.png&image2-width=468&image2-height=468&image2-x=250&image2-y=-50)
+
+![2022-04-01-Azure-Kubernetes-6.png](./2022-04-01-Azure-Kubernetes-6.png)
