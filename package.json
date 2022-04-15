@@ -51,7 +51,7 @@
     "gridsome-remark-embed-snippet": "1.0.3",
     "gridsome-source-static-meta": "1.0.1",
     "husky": "7.0.4",
-    "lint-staged": "12.3.7",
+    "lint-staged": "12.3.8",
     "marked": "3.0.8",
     "prettier": "2.6.1",
     "remark-containers": "1.2.0",
