@@ -4,7 +4,7 @@
       <g-image
         :alt="this.$static.metadata.author.name"
         class="navigation__image"
-        src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png"
+        src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-192x192.png"
         width="50"
         height="50"
         blur="0" />

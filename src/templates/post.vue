@@ -139,14 +139,24 @@ export default {
             author: {
               "@type": "Person",
               name: this.author,
-              logo: {
-                "@type": "ImageObject",
-                url: `${this.metadata.url}/images/author/${this.author
-                  .split(" ")
-                  .join("-")}/Logo-260x260.png`, //
-                width: 260,
-                height: 260,
-              },
+              logo: [
+                {
+                  "@type": "ImageObject",
+                  url: `${this.metadata.url}/images/author/${this.author
+                    .split(" ")
+                    .join("-")}/Logo-192x192.png`,
+                  width: 192,
+                  height: 192,
+                },
+                {
+                  "@type": "ImageObject",
+                  url: `${this.metadata.url}/images/author/${this.author
+                    .split(" ")
+                    .join("-")}/Logo-512x512.png`,
+                  width: 512,
+                  height: 512,
+                },
+              ],
               url: this.metadata.url + "/about/",
             },
             publisher: {

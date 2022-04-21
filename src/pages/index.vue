@@ -135,16 +135,28 @@ export default {
             author: {
               "@type": "Person",
               name: this.$static.metadata.author.name,
-              logo: {
-                "@type": "ImageObject",
-                url: `${
-                  this.$static.metadata.url
-                }/images/author/${this.$static.metadata.author.name
-                  .split(" ")
-                  .join("-")}/Logo-260x260.png`,
-                width: 260,
-                height: 260,
-              },
+              logo: [
+                {
+                  "@type": "ImageObject",
+                  url: `${
+                    this.$static.metadata.url
+                  }/images/author/${this.$static.metadata.author.name
+                    .split(" ")
+                    .join("-")}/Logo-192x192.png`,
+                  width: 192,
+                  height: 192,
+                },
+                {
+                  "@type": "ImageObject",
+                  url: `${
+                    this.$static.metadata.url
+                  }/images/author/${this.$static.metadata.author.name
+                    .split(" ")
+                    .join("-")}/Logo-512x512.png`,
+                  width: 512,
+                  height: 512,
+                },
+              ],
               url: this.$static.metadata.url + "/about/",
             },
             publisher: {

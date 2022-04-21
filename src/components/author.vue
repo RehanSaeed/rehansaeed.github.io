@@ -5,7 +5,7 @@
       class="author__image u-photo"
       :alt="$static.metadata.name"
       immediate
-      src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-260x260.png"
+      src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-192x192.png"
       width="120"
       height="120" />
 
