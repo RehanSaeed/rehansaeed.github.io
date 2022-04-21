@@ -5,6 +5,7 @@
   <Description>Search Muhammad Rehan Saeed's Blog</Description>
   <InputEncoding>UTF-8</InputEncoding>
   <Image width="16" height="16" type="image/x-icon">https://rehansaeed.com/favicon.ico</Image>
+  <Image width="64" height="64" type="image/png">https://rehansaeed.com/images/author/Muhammad-Rehan-Saeed/Logo-64x64.png</Image>
   <Url type="text/html" template="https://rehansaeed.com/">
     <Param name="search" value="{searchTerms}"/>
   </Url>
