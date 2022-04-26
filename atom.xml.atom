@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2022-04-26T08:20:08.954Z</updated>
+    <updated>2022-04-26T13:15:34.923Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -1311,14 +1311,14 @@ git push --set-upstream origin main
 <p>Next we need to create some default labels that we can apply to pull requests. This will help us create automatic release notes for any NuGet packages we release. The <code>bug</code>, <code>enhancement</code> and <code>maintenance</code> labels will categorise changes in our release notes. The <code>major</code>, <code>minor</code> and <code>patch</code> labels will automatically generate a semantic versioning 2.0 compliant version number for us.</p>
 <p><img src="https://rehansaeed.com/the-fastest-nuget-package-ever-published-probably/images/GitHub-Labels-1106x756.png" alt="GitHub Labels"></p>
 <p>I&#39;ve gone in to GitHub and deleted all the existing labels and then run a few GitHub CLI commands to create just the ones I want:</p>
-<pre><code class="language-powershell">gh label create &quot;dependencies&quot; --description &quot;Pull requests that update a dependency file.&quot; --color &quot;0366d6&quot;
-gh label create &quot;documentation&quot; --description &quot;Pull requests or issues to add or modify documentation.&quot; --color &quot;0075ca&quot;
-gh label create &quot;bug&quot; --description &quot;Issues describing a bug or pull requests fixing a bug.&quot; --color &quot;ee0701&quot;
-gh label create &quot;enhancement&quot; --description &quot;Issues describing an enhancement or pull requests adding an enhancement.&quot; --color &quot;a2eeef&quot;
-gh label create &quot;maintenance&quot; --description &quot;Pull requests that perform maintenance on the project but add no features or bug fixes.&quot; --color &quot;fff89b&quot;
-gh label create &quot;major&quot; --description &quot;Pull requests requiring a major version update according to semantic versioning.&quot; --color &quot;b23021&quot;
-gh label create &quot;minor&quot; --description &quot;Pull requests requiring a minor version update according to semantic versioning.&quot; --color &quot;f99248&quot;
-gh label create &quot;patch&quot; --description &quot;Pull requests requiring a patch version update according to semantic versioning.&quot; --color &quot;eaf42c&quot;
+<pre><code class="language-powershell">gh label create &quot;dependencies&quot; --description &quot;Pull requests that update a dependency file.&quot; --color &quot;0366d6&quot; --force
+gh label create &quot;documentation&quot; --description &quot;Pull requests or issues to add or modify documentation.&quot; --color &quot;0075ca&quot; --force
+gh label create &quot;bug&quot; --description &quot;Issues describing a bug or pull requests fixing a bug.&quot; --color &quot;ee0701&quot; --force
+gh label create &quot;enhancement&quot; --description &quot;Issues describing an enhancement or pull requests adding an enhancement.&quot; --color &quot;a2eeef&quot; --force
+gh label create &quot;maintenance&quot; --description &quot;Pull requests that perform maintenance on the project but add no features or bug fixes.&quot; --color &quot;fff89b&quot; --force
+gh label create &quot;major&quot; --description &quot;Pull requests requiring a major version update according to semantic versioning.&quot; --color &quot;b23021&quot; --force
+gh label create &quot;minor&quot; --description &quot;Pull requests requiring a minor version update according to semantic versioning.&quot; --color &quot;f99248&quot; --force
+gh label create &quot;patch&quot; --description &quot;Pull requests requiring a patch version update according to semantic versioning.&quot; --color &quot;eaf42c&quot; --force
 </code></pre>
 <p>Now it&#39;s time to make a change and submit a new pull request (PR) to our repository. Notice I&#39;m adding a <code>major</code> and <code>enhancement</code> label to the pull request.</p>
 <pre><code class="language-powershell">git switch --create some-change
@@ -1361,14 +1361,14 @@ start &quot;https://github.com/RehanSaeed/FastestNuGet/packages&quot;
 
 # Create major, minor, patch, bug, enhancement, maintenance labels
 start &quot;https://github.com/RehanSaeed/FastestNuGet/labels&quot;
-gh label create &quot;dependencies&quot; --description &quot;Pull requests that update a dependency file.&quot; --color &quot;0366d6&quot;
-gh label create &quot;documentation&quot; --description &quot;Pull requests or issues to add or modify documentation.&quot; --color &quot;0075ca&quot;
-gh label create &quot;bug&quot; --description &quot;Issues describing a bug or pull requests fixing a bug.&quot; --color &quot;ee0701&quot;
-gh label create &quot;enhancement&quot; --description &quot;Issues describing an enhancement or pull requests adding an enhancement.&quot; --color &quot;a2eeef&quot;
-gh label create &quot;maintenance&quot; --description &quot;Pull requests that perform maintenance on the project but add no features or bug fixes.&quot; --color &quot;fff89b&quot;
-gh label create &quot;major&quot; --description &quot;Pull requests requiring a major version update according to semantic versioning.&quot; --color &quot;b23021&quot;
-gh label create &quot;minor&quot; --description &quot;Pull requests requiring a minor version update according to semantic versioning.&quot; --color &quot;f99248&quot;
-gh label create &quot;patch&quot; --description &quot;Pull requests requiring a patch version update according to semantic versioning.&quot; --color &quot;eaf42c&quot;
+gh label create &quot;dependencies&quot; --description &quot;Pull requests that update a dependency file.&quot; --color &quot;0366d6&quot; --force
+gh label create &quot;documentation&quot; --description &quot;Pull requests or issues to add or modify documentation.&quot; --color &quot;0075ca&quot; --force
+gh label create &quot;bug&quot; --description &quot;Issues describing a bug or pull requests fixing a bug.&quot; --color &quot;ee0701&quot; --force
+gh label create &quot;enhancement&quot; --description &quot;Issues describing an enhancement or pull requests adding an enhancement.&quot; --color &quot;a2eeef&quot; --force
+gh label create &quot;maintenance&quot; --description &quot;Pull requests that perform maintenance on the project but add no features or bug fixes.&quot; --color &quot;fff89b&quot; --force
+gh label create &quot;major&quot; --description &quot;Pull requests requiring a major version update according to semantic versioning.&quot; --color &quot;b23021&quot; --force
+gh label create &quot;minor&quot; --description &quot;Pull requests requiring a minor version update according to semantic versioning.&quot; --color &quot;f99248&quot; --force
+gh label create &quot;patch&quot; --description &quot;Pull requests requiring a patch version update according to semantic versioning.&quot; --color &quot;eaf42c&quot; --force
 
 git switch --create some-change
 git add .
