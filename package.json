@@ -52,7 +52,7 @@
     "gridsome-source-static-meta": "1.0.1",
     "husky": "7.0.4",
     "lint-staged": "12.4.1",
-    "marked": "3.0.8",
+    "marked": "4.0.15",
     "prettier": "2.6.2",
     "remark-containers": "1.2.0",
     "remark-kbd": "1.1.0",
