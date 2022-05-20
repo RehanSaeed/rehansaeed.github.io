@@ -870,13 +870,13 @@
   }
 
   .blob-wrapper-embedded {
-    max-height: 240px;
+    max-block-size: 240px;
     overflow-y: auto;
   }
 
   .blob-num {
     width: 1%;
-    min-width: 50px;
+    min-inline-size: 50px;
     padding-inline: 10px;
     font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
     font-size: 12px;

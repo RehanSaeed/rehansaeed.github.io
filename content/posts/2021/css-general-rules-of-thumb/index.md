@@ -8,11 +8,11 @@ date: "2021-04-20T12:24:00Z"
 dateModified: null
 published: true
 categories:
-    - "CSS"
+  - "CSS"
 tags:
-    - "CSS"
-    - "Accessibility"
-    - "Block Element Modifier (BEM)"
+  - "CSS"
+  - "Accessibility"
+  - "Block Element Modifier (BEM)"
 ---
 
 Learning CSS is difficult and as someone who has tried to teach CSS others, it's also difficult to point to good teaching resources. There isn't a simple video course I can point to and say "go and watch this". I think part of the problem is that there are so many ways to do things in CSS and also that there are so many little tricks you have to learn. As yet, the best advice I've been able to give is to go and read the last few years worth of [CSS Tricks](https://css-tricks.com/) blog posts but that isn't really an easy or quick task or even one that most people would do.
@@ -33,7 +33,7 @@ Using [CSS type selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/Type
 
 ```css
 div {
-    color: red;
+  color: red;
 }
 ```
 
@@ -45,7 +45,7 @@ A better way is to use [CSS class selectors](https://developer.mozilla.org/en-US
 
 ```css
 .foo {
-    color: red;
+  color: red;
 }
 ```
 
@@ -109,7 +109,7 @@ Rather than explicitly setting a size, try to allow the contents of the containe
 2. `grid-gap` or `gap` (in newer browsers) - Used with CSS Grid and FlexBox (only supports `gap`). This allows you to add spacing between elements in your container.
 3. `padding` - It's generally preferable to use CSS properties that only affect the current element as opposed to the parent elements like `margin` does.
 4. `margin`
-5. `min-height`/`max-height` and `min-width`/`max-width`
+5. `min-height`/`max-height`/`min-block-size`/`max-block-size` and `min-width`/`max-width`/`min-inline-size`/`max-inline-size`
 6. `height` and `width` - Use this with care if you really know what you're doing.
 
 # Browser Support
@@ -141,7 +141,7 @@ Never set the `outline` on a focusable element to `none`. People need those outl
 
 ```css
 .foo {
-    outline: none;
+  outline: none;
 }
 ```
 
