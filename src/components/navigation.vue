@@ -149,7 +149,7 @@ query {
       "left . right";
     gap: var(--global-space-fluid-3);
 
-    margin-bottom: -9.5rem;
+    margin-block-end: -9.5rem;
   }
 
   .navigation__items-left {

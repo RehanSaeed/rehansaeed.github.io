@@ -62,11 +62,11 @@ export default {
 }
 
 .webmention-faces__content {
-  margin-left: calc(var(--overlap) * -1);
-  margin-right: var(--global-space-fluid-3);
+  margin-inline-start: calc(var(--overlap) * -1);
+  margin-inline-end: var(--global-space-fluid-3);
 }
 
 .webmention-faces__face:not(:first-of-type) {
-  margin-left: calc(var(--overlap) * -1);
+  margin-inline-start: calc(var(--overlap) * -1);
 }
 </style>

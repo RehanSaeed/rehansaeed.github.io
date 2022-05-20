@@ -93,7 +93,7 @@ export default {
 
 .heading--1 {
   font-size: var(--global-font-size-7);
-  margin-top: 0;
+  margin-block-start: 0;
 }
 
 .heading--2 {
@@ -121,8 +121,7 @@ export default {
 }
 
 .heading--center {
-  margin-left: auto;
-  margin-right: auto;
+  margin-inline: auto;
   text-align: center;
 }
 </style>

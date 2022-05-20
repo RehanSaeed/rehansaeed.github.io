@@ -142,8 +142,7 @@ query Tag($id: ID!) {
 }
 
 .tag-page__arrows {
-  margin-left: calc(var(--global-space-main) * -1);
-  margin-right: calc(var(--global-space-main) * -1);
+  margin-inline: calc(var(--global-space-main) * -1);
 }
 
 .tag-page__items {

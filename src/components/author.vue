@@ -61,7 +61,7 @@ query {
   border-radius: 100%;
   width: 6rem;
   height: 6rem;
-  margin-bottom: var(--global-space-fluid-3);
+  margin-block-end: var(--global-space-fluid-3);
   transition: border-color var(--global-duration-3) ease-out;
 }
 

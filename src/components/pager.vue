@@ -66,7 +66,7 @@ export default {
 
 .pager__info {
   grid-area: info;
-  margin-bottom: 0;
+  margin-block-end: 0;
   min-width: 0;
 }
 

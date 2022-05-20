@@ -61,9 +61,9 @@ export default {
 
 .post__header {
   border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
-  margin-left: var(--global-space-fluid--6);
-  margin-top: var(--global-space-fluid--6);
-  margin-bottom: var(--global-space-fluid-5);
+  margin-inline-start: var(--global-space-fluid--6);
+  margin-block-start: var(--global-space-fluid--6);
+  margin-block-end: var(--global-space-fluid-5);
   overflow: hidden;
   width: calc(100% + (2 * var(--global-space-fluid-6)));
 
@@ -74,7 +74,7 @@ export default {
 
 .post__content {
   > h2:first-child {
-    margin-top: 0;
+    margin-block-start: 0;
   }
 
   > p:first-of-type {
@@ -92,32 +92,29 @@ export default {
       font-size: calc(var(--global-font-size-4) * 2.6);
       line-height: calc(var(--global-line-height-1) * 0.44);
       padding-right: var(--global-space-fixed-2);
-      margin-top: 0.65rem;
+      margin-block-start: 0.65rem;
     }
   }
 
   img {
     width: calc(100% + (2 * var(--global-space-fluid-6)));
-    margin-left: var(--global-space-fluid--6);
-    margin-right: var(--global-space-fluid--6);
+    margin-inline: var(--global-space-fluid--6);
     display: block;
     max-width: none;
   }
 
   .mermaid {
     svg {
-      margin-left: auto;
-      margin-right: auto;
+      margin-inline: auto;
     }
   }
 
   .youtube-embed {
-    margin-top: var(--global-space-fixed-4);
-    margin-bottom: var(--global-space-fixed-5);
+    margin-block-start: var(--global-space-fixed-4);
+    margin-block-end: var(--global-space-fixed-5);
 
     div {
-      margin-right: var(--global-space-fluid--6);
-      margin-left: var(--global-space-fluid--6);
+      margin-inline: var(--global-space-fluid--6);
 
       div {
         --padding-value: 34%;
@@ -133,7 +130,7 @@ export default {
   gap: var(--global-space-fixed-3);
   justify-items: start;
 
-  margin-top: var(--global-space-fixed-6);
+  margin-block-start: var(--global-space-fixed-6);
 }
 
 .post__footer__actions {

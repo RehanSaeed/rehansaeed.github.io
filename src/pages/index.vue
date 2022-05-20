@@ -242,8 +242,7 @@ query($page: Int) {
 }
 
 .posts__arrows {
-  margin-left: calc(var(--global-space-main) * -1);
-  margin-right: calc(var(--global-space-main) * -1);
+  margin-inline: calc(var(--global-space-main) * -1);
 }
 
 .posts__items {

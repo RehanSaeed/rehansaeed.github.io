@@ -106,7 +106,7 @@ export default {
   grid-area: content;
 
   > p:last-of-type {
-    margin-bottom: 0;
+    margin-block-end: 0;
   }
 }
 </style>

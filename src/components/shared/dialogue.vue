@@ -99,7 +99,7 @@ dialog {
   // Fix the position of the dialog in the middle of the screen.
   position: fixed;
   top: 0;
-  margin-top: 35vh;
+  margin-block-start: 35vh;
 
   @media (prefers-reduced-motion: no-preference) {
     will-change: transform;
@@ -111,7 +111,7 @@ dialog {
 
 .dialog--fullscreen {
   // Fix the position of the dialog in the middle of the screen.
-  margin-top: 5vh;
+  margin-block-start: 5vh;
 }
 
 dialog:not([open]) {

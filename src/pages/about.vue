@@ -337,8 +337,7 @@ query {
 
 .about__arrows {
   justify-self: normal;
-  margin-left: calc(var(--global-space-main) * -1);
-  margin-right: calc(var(--global-space-main) * -1);
+  margin-inline: calc(var(--global-space-main) * -1);
 }
 
 .about__container {
@@ -346,7 +345,7 @@ query {
   justify-items: center;
 
   &:last-child {
-    margin-bottom: 0;
+    margin-block-end: 0;
   }
 }
 
@@ -357,7 +356,7 @@ query {
 }
 
 .about__social-links {
-  margin-bottom: var(--global-space-fluid-3);
+  margin-block-end: var(--global-space-fluid-3);
 }
 
 .about__github-images,
@@ -367,7 +366,7 @@ query {
   justify-content: center;
   gap: var(--global-space-fixed-4);
 
-  margin-bottom: var(--global-space-fixed-5);
+  margin-block-end: var(--global-space-fixed-5);
 }
 .about__github-image,
 .about__youtube-image {
@@ -377,7 +376,7 @@ query {
 .about__stack-overflow-image {
   border-radius: var(--global-border-radius);
   display: block;
-  margin-bottom: var(--global-space-fixed-5);
+  margin-block-end: var(--global-space-fixed-5);
   height: 58px;
   width: 208px;
 }
@@ -385,7 +384,7 @@ query {
 .about__mvp-image {
   border-radius: var(--global-border-radius);
   display: block;
-  margin-bottom: var(--global-space-fixed-5);
+  margin-block-end: var(--global-space-fixed-5);
   height: 84px;
   width: 208px;
 }

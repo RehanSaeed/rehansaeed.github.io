@@ -63,10 +63,9 @@ export default {
 
 .post-card__header {
   border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
-  margin-left: var(--global-space-fluid--6);
-  margin-right: var(--global-space-fluid--6);
-  margin-bottom: var(--global-space-fluid-5);
-  margin-top: var(--global-space-fluid--6);
+  margin-inline: var(--global-space-fluid--6);
+  margin-block-start: var(--global-space-fluid--6);
+  margin-block-end: var(--global-space-fluid-5);
   overflow: hidden;
 
   &:empty {
@@ -79,7 +78,7 @@ export default {
 }
 
 .post-card__title {
-  margin-top: 0;
+  margin-block-start: 0;
 }
 
 .post-card__title a::after {
@@ -92,7 +91,7 @@ export default {
 }
 
 .post-card__tags {
-  margin-top: var(--global-space-fixed-4);
+  margin-block-start: var(--global-space-fixed-4);
   position: relative;
   z-index: 1;
 }

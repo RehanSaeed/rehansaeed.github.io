@@ -61,6 +61,6 @@ export default {
 }
 
 .footer {
-  margin-top: var(--global-space-fluid-5);
+  margin-block-start: var(--global-space-fluid-5);
 }
 </style>

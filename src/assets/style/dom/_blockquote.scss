@@ -2,14 +2,14 @@ blockquote {
   border-left: var(--global-border-width-4) solid var(--global-border-color);
   color: var(--global-title-color);
   line-height: var(--global-line-height-2);
-  margin-bottom: var(--global-space-fixed-5);
+  margin-block-end: var(--global-space-fixed-5);
   padding-top: var(--global-space-fixed-2);
   padding-left: var(--global-space-fixed-5);
   padding-bottom: var(--global-space-fixed-2);
   quotes: none;
 
   p:last-of-type {
-    margin-bottom: 0;
+    margin-block-end: 0;
   }
 
   cite {
@@ -18,7 +18,7 @@ blockquote {
 
     &:before {
       content: "—";
-      margin-right: 5px;
+      margin-inline-end: 5px;
     }
   }
 }

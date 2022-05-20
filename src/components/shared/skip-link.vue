@@ -17,8 +17,7 @@ export default {
 
 <style lang="scss">
 .skip-link {
-  margin-left: auto;
-  margin-right: auto;
+  margin-inline: auto;
   position: absolute;
   left: 0;
   right: 0;

@@ -39,7 +39,7 @@ export default {
 }
 
 .comments__title {
-  margin-top: 0;
+  margin-block-start: 0;
 }
 
 .vssue {
@@ -141,8 +141,7 @@ export default {
   color: var(--global-accent-color);
 }
 .vssue .vssue-status .vssue-status-info {
-  margin-top: var(--global-space-fixed-3);
-  margin-bottom: var(--global-space-fixed-3);
+  margin-block: var(--global-space-fixed-3);
 }
 
 // Body
@@ -316,7 +315,7 @@ export default {
   color: var(--global-accent-color);
   cursor: pointer;
   display: inline-block;
-  margin-right: var(--global-space-fixed-4);
+  margin-inline-end: var(--global-space-fixed-4);
 
   // Disable New Comment Functionality - Disable click on buttons.
   cursor: default;
@@ -336,7 +335,7 @@ export default {
   .vssue-comment-operations
   .vssue-comment-operation {
   cursor: pointer;
-  margin-left: var(--global-space-fixed-4);
+  margin-inline-start: var(--global-space-fixed-4);
 }
 .vssue
   .vssue-comments

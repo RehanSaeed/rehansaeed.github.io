@@ -47,10 +47,10 @@ export default {
 
 .arrows__arrow-1 {
   background: transparent;
-  margin-top: calc(var(--arrow-height) * -1);
+  margin-block-start: calc(var(--arrow-height) * -1);
 }
 .arrows__arrow-7 {
-  margin-bottom: var(--arrow-height);
+  margin-block-end: var(--arrow-height);
 }
 
 .arrows__arrow-1 {

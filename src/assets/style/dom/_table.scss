@@ -9,7 +9,7 @@ table {
   border-spacing: 0;
   color: var(--global-title-color);
   display: block;
-  margin-bottom: var(--global-space-fixed-5);
+  margin-block-end: var(--global-space-fixed-5);
   overflow: auto;
   transition: background-color var(--global-duration-3) ease-out,
     border-color var(--global-duration-3) ease-out,

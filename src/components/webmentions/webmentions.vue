@@ -193,7 +193,7 @@ export default {
   grid-column: 1;
   grid-row: 1;
 
-  margin-top: 0;
+  margin-block-start: 0;
 }
 
 .webmentions__help {
@@ -201,7 +201,7 @@ export default {
   grid-row: 1;
   align-self: center;
   justify-self: end;
-  margin-bottom: var(--global-space-fixed-4);
+  margin-block-end: var(--global-space-fixed-4);
 }
 
 @include breakpoints.respond-below(md) {
@@ -217,7 +217,7 @@ export default {
 }
 
 .webmentions__count {
-  margin-top: 0;
+  margin-block-start: 0;
 }
 .webmentions__like-count,
 .webmentions__repost-count {
@@ -231,7 +231,7 @@ export default {
   gap: var(--global-space-fixed-2);
   grid-template-columns: auto 1fr;
 
-  margin-bottom: 0;
+  margin-block-end: 0;
 }
 
 .webmentions__links {

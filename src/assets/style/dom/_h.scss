@@ -8,8 +8,8 @@ h6 {
   font-family: var(--global-font-family-heading);
   font-weight: var(--global-font-weight-normal);
   line-height: var(--global-line-height-1);
-  margin-top: var(--global-space-fixed-5);
-  margin-bottom: var(--global-space-fixed-4);
+  margin-block-start: var(--global-space-fixed-5);
+  margin-block-end: var(--global-space-fixed-4);
   max-width: var(--global-line-length-max);
   text-shadow: 0.01em 0.01em hsl(0, 0%, 70%);
   transition: color var(--global-duration-3);
@@ -17,9 +17,9 @@ h6 {
   a[aria-hidden="true"] {
     color: var(--global-link-color);
     float: left;
-    margin-left: -30px;
+    margin-inline-start: -30px;
     opacity: 0;
-    margin-right: 8px;
+    margin-inline-end: 8px;
     height: 22px;
     width: 22px;
     text-decoration: none;

@@ -92,14 +92,14 @@ query {
 
 .newsletter__title {
   grid-area: title;
-  margin-top: 0;
+  margin-block-start: 0;
   text-align: center;
 }
 
 .newsletter__label {
   grid-area: label;
   justify-self: center;
-  margin-bottom: var(--global-space-fixed-4);
+  margin-block-end: var(--global-space-fixed-4);
   text-align: center;
 }
 

@@ -34,7 +34,7 @@ export default {
 <style lang="scss">
 .post-meta {
   font-size: var(--global-font-size-1);
-  margin-bottom: 0;
+  margin-block-end: 0;
   opacity: 0.8;
 }
 </style>

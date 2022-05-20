@@ -1,18 +1,17 @@
 ul {
   list-style-type: disc;
-  margin-left: var(--global-space-fixed-5);
-  margin-bottom: var(--global-space-fixed-5);
+  margin-inline-start: var(--global-space-fixed-5);
+  margin-block-end: var(--global-space-fixed-5);
 
   li,
   p,
   ul,
   ol {
-    margin-bottom: var(--global-space-fixed-3);
-    margin-top: var(--global-space-fixed-3);
+    margin-block: var(--global-space-fixed-3);
   }
 
   li:first-child {
-    margin-top: 0;
+    margin-block-start: 0;
   }
 
   li::marker {

@@ -242,10 +242,7 @@ query Post ($id: ID!) {
 }
 
 .post-page__arrows {
-  margin-left: calc(
-    var(--global-space-main) + var(--global-space-content-max-width) * -1
-  );
-  margin-right: calc(
+  margin-inline: calc(
     var(--global-space-main) + var(--global-space-content-max-width) * -1
   );
 }
