@@ -51,12 +51,10 @@ export default {
 
 .main {
   margin: 0 auto;
-  padding-left: var(--global-space-main);
-  padding-right: var(--global-space-main);
+  padding-inline: var(--global-space-main);
 
   @include breakpoints.respond-below(sm) {
-    padding-left: 0;
-    padding-right: 0;
+    padding-inline: 0;
   }
 }
 

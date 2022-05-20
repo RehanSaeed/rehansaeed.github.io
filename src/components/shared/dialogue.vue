@@ -184,6 +184,6 @@ dialog + .backdrop {
 
 .dialog__content {
   grid-area: content;
-  padding-top: var(--global-space-fluid-5);
+  padding-block-start: var(--global-space-fluid-5);
 }
 </style>

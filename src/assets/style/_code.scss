@@ -143,8 +143,7 @@ code[class*="language-css"] {
   font-family: var(--global-font-family-monospace);
   font-size: var(--global-font-size-1);
   margin-block-end: -0.8rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-inline: 1rem;
   position: relative;
 
   @include type.word-wrap();
@@ -153,7 +152,7 @@ code[class*="language-css"] {
 // Line Numbers
 pre[class*="language-"].line-numbers {
   position: relative;
-  padding-left: 3.15rem;
+  padding-inline-start: 3.15rem;
   counter-reset: linenumber;
 }
 
@@ -171,8 +170,7 @@ pre[class*="language-"].line-numbers > code {
   top: 0;
   width: 3em; /* works for line-numbers below 1000 lines */
   user-select: none;
-  padding-top: 1em;
-  padding-bottom: 1em;
+  padding-block: 1em;
 }
 
 .line-numbers-rows > span {
@@ -185,8 +183,8 @@ pre[class*="language-"].line-numbers > code {
   color: hsl(194, 61%, 43%);
   content: counter(linenumber);
   display: block;
-  padding-left: 1em;
-  padding-right: 0.5em;
+  padding-inline-start: 1em;
+  padding-inline-end: 0.5em;
   text-align: right;
 }
 
@@ -200,9 +198,9 @@ pre[class*="language-"].line-numbers > code {
   );
   display: block;
   margin-inline-start: -0.45rem;
-  padding-left: 0.25rem;
-  padding-top: 0.09rem;
-  padding-bottom: 0.08rem;
+  padding-inline-start: 0.25rem;
+  padding-block-start: 0.09rem;
+  padding-block-end: 0.08rem;
   border-left: var(--global-border-width-3) solid hsl(204, 63%, 85%);
 }
 
@@ -284,7 +282,7 @@ pre[class*="language-"].line-numbers > code {
   // Line Numbers
   pre[class*="language-"].line-numbers {
     position: relative;
-    padding-left: 3.15rem;
+    padding-inline-start: 3.15rem;
     counter-reset: linenumber;
   }
 }

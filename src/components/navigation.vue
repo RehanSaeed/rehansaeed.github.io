@@ -124,8 +124,8 @@ query {
   display: grid;
   gap: var(--global-space-fluid-5);
 
-  padding-top: var(--global-space-fluid-4);
-  padding-right: var(--global-space-fluid-4);
+  padding-block-start: var(--global-space-fluid-4);
+  padding-inline-end: var(--global-space-fluid-4);
 }
 
 .navigation__item {
@@ -161,8 +161,8 @@ query {
     align-self: start;
     gap: var(--global-space-fluid-4);
 
-    padding-top: initial;
-    padding-right: initial;
+    padding-block-start: initial;
+    padding-inline-end: initial;
   }
 }
 

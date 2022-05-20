@@ -18,7 +18,7 @@
   //   float: left;
   //   line-height: 1;
   //   margin-inline-start: -20px;
-  //   padding-right: 4px;
+  //   padding-inline-end: 4px;
   // }
 
   // .anchor:focus {
@@ -253,7 +253,7 @@
 
   // ol,
   // ul {
-  //   padding-left: 0;
+  //   padding-inline-start: 0;
   //   margin-block-start: 0;
   //   margin-block-end: 0;
   // }
@@ -333,46 +333,44 @@
   }
 
   .pl-0 {
-    padding-left: 0 !important;
+    padding-inline-start: 0 !important;
   }
 
   .py-0 {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
+    padding-block: 0 !important;
   }
 
   .pl-1 {
-    padding-left: 4px !important;
+    padding-inline-start: 4px !important;
   }
 
   .pl-2 {
-    padding-left: 8px !important;
+    padding-inline-start: 8px !important;
   }
 
   .py-2 {
-    padding-top: 8px !important;
-    padding-bottom: 8px !important;
+    padding-block: 8px !important;
   }
 
   .pl-3,
   .px-3 {
-    padding-left: 16px !important;
+    padding-inline-start: 16px !important;
   }
 
   .px-3 {
-    padding-right: 16px !important;
+    padding-inline-end: 16px !important;
   }
 
   .pl-4 {
-    padding-left: 24px !important;
+    padding-inline-start: 24px !important;
   }
 
   .pl-5 {
-    padding-left: 32px !important;
+    padding-inline-start: 32px !important;
   }
 
   .pl-6 {
-    padding-left: 40px !important;
+    padding-inline-start: 40px !important;
   }
 
   .f6 {
@@ -524,65 +522,63 @@
   }
 
   .pl-0 {
-    padding-left: 0 !important;
+    padding-inline-start: 0 !important;
   }
 
   .py-0 {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
+    padding-block: 0 !important;
   }
 
   .pl-1 {
-    padding-left: 4px !important;
+    padding-inline-start: 4px !important;
   }
 
   .pl-2 {
-    padding-left: 8px !important;
+    padding-inline-start: 8px !important;
   }
 
   .py-2 {
-    padding-top: 8px !important;
-    padding-bottom: 8px !important;
+    padding-block: 8px !important;
   }
 
   .pl-3 {
-    padding-left: 16px !important;
+    padding-inline-start: 16px !important;
   }
 
   .pl-4 {
-    padding-left: 24px !important;
+    padding-inline-start: 24px !important;
   }
 
   .pl-5 {
-    padding-left: 32px !important;
+    padding-inline-start: 32px !important;
   }
 
   .pl-6 {
-    padding-left: 40px !important;
+    padding-inline-start: 40px !important;
   }
 
   .pl-7 {
-    padding-left: 48px !important;
+    padding-inline-start: 48px !important;
   }
 
   .pl-8 {
-    padding-left: 64px !important;
+    padding-inline-start: 64px !important;
   }
 
   .pl-9 {
-    padding-left: 80px !important;
+    padding-inline-start: 80px !important;
   }
 
   .pl-10 {
-    padding-left: 96px !important;
+    padding-inline-start: 96px !important;
   }
 
   .pl-11 {
-    padding-left: 112px !important;
+    padding-inline-start: 112px !important;
   }
 
   .pl-12 {
-    padding-left: 128px !important;
+    padding-inline-start: 128px !important;
   }
 
   // hr {
@@ -677,7 +673,7 @@
 
   // h1,
   // h2 {
-  //   padding-bottom: .3em;
+  //   padding-block-end: .3em;
   //   border-bottom: 1px solid #eaecef;
   // }
 
@@ -704,7 +700,7 @@
 
   // ol,
   // ul {
-  //   padding-left: 2em;
+  //   padding-inline-start: 2em;
   // }
 
   // ol ol,
@@ -775,11 +771,11 @@
   // }
 
   // img[align=right] {
-  //   padding-left: 20px;
+  //   padding-inline-start: 20px;
   // }
 
   // img[align=left] {
-  //   padding-right: 20px;
+  //   padding-inline-end: 20px;
   // }
 
   img[height="40"][width="40"] {
@@ -881,8 +877,7 @@
   .blob-num {
     width: 1%;
     min-width: 50px;
-    padding-right: 10px;
-    padding-left: 10px;
+    padding-inline: 10px;
     font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
     font-size: 12px;
     line-height: 20px;
@@ -904,8 +899,7 @@
 
   .blob-code {
     position: relative;
-    padding-right: 10px;
-    padding-left: 10px;
+    padding-inline: 10px;
     line-height: 20px;
     vertical-align: top;
   }

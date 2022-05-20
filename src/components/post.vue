@@ -91,7 +91,7 @@ export default {
       float: left;
       font-size: calc(var(--global-font-size-4) * 2.6);
       line-height: calc(var(--global-line-height-1) * 0.44);
-      padding-right: var(--global-space-fixed-2);
+      padding-inline-end: var(--global-space-fixed-2);
       margin-block-start: 0.65rem;
     }
   }
@@ -118,8 +118,7 @@ export default {
 
       div {
         --padding-value: 34%;
-        padding-top: var(--padding-value) !important;
-        padding-bottom: var(--padding-value) !important;
+        padding-block: var(--padding-value) !important;
       }
     }
   }

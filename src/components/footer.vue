@@ -68,7 +68,7 @@ query {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-bottom: var(--global-space-fluid-5);
+  padding-block-end: var(--global-space-fluid-5);
   text-align: center;
   font-size: var(--global-font-size-1);
 

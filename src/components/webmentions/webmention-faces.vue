@@ -58,7 +58,7 @@ export default {
   flex-wrap: wrap;
   row-gap: var(--global-space-fixed-2);
 
-  padding-left: var(--overlap);
+  padding-inline-start: var(--overlap);
 }
 
 .webmention-faces__content {

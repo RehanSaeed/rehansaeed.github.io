@@ -136,8 +136,8 @@ export default {
 }
 .vssue .vssue-status {
   text-align: center;
-  padding-top: var(--global-space-fixed-4);
-  padding-bottom: var(--global-space-fixed-3);
+  padding-block-start: var(--global-space-fixed-4);
+  padding-block-end: var(--global-space-fixed-3);
   color: var(--global-accent-color);
 }
 .vssue .vssue-status .vssue-status-info {
@@ -154,7 +154,7 @@ export default {
 // New Comment
 .vssue-new-comment {
   border-bottom: var(--global-border-width-1) solid var(--global-border-color);
-  padding-bottom: var(--global-space-fixed-5);
+  padding-block-end: var(--global-space-fixed-5);
 
   display: grid;
   gap: var(--global-space-fixed-3);

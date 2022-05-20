@@ -3,9 +3,8 @@ blockquote {
   color: var(--global-title-color);
   line-height: var(--global-line-height-2);
   margin-block-end: var(--global-space-fixed-5);
-  padding-top: var(--global-space-fixed-2);
-  padding-left: var(--global-space-fixed-5);
-  padding-bottom: var(--global-space-fixed-2);
+  padding-block: var(--global-space-fixed-2);
+  padding-inline-start: var(--global-space-fixed-5);
   quotes: none;
 
   p:last-of-type {

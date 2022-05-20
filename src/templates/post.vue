@@ -237,7 +237,7 @@ query Post ($id: ID!) {
   display: grid;
   justify-items: center;
   margin: 0 auto;
-  padding-top: var(--global-space-fluid-5);
+  padding-block-start: var(--global-space-fluid-5);
   text-align: center;
 }
 
