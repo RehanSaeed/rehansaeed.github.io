@@ -154,15 +154,6 @@ private static void Enrich(Activity activity, string eventName, object obj)
         activity.AddTag("http.client_ip", context.Connection.RemoteIpAddress);
         activity.AddTag("http.request_content_length", request.ContentLength);
         activity.AddTag("http.request_content_type", request.ContentType);
-
-        var user = context.User;
-        if (user.Identity?.Name is not null)
-        {
-            activity.AddTag("enduser.id", user.Identity.Name);
-            activity.AddTag(
-                "enduser.scope",
-                string.Join(',', user.Claims.Select(x => x.Value)));
-        }
     }
     else if (obj is HttpResponse response)
     {
@@ -194,7 +185,7 @@ public static string GetHttpFlavour(string protocol)
 }
 ```
 
-Next, we configure `AddAspNetCoreInstrumentation` to enrich the spans with additional information about the current request, response and the user (if any) using standardised attributes. Finally, we record details of exceptions from our controllers which would otherwise be lost. This outputs the following:
+Next, we configure `AddAspNetCoreInstrumentation` to enrich the spans with additional information about the current request, response using standardised attributes. Finally, we record details of exceptions from our controllers which would otherwise be lost. This outputs the following:
 
 ```
 Activity.Id:          00-3d0f70e71a8e6e5e87f156bdcf94b8c9-ccdd8d23a2e3ba93-01
