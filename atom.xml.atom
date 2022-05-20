@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2022-05-20T08:38:09.933Z</updated>
+    <updated>2022-05-20T14:43:15.096Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -184,15 +184,6 @@ private static void Enrich(Activity activity, string eventName, object obj)
         activity.AddTag(&quot;http.client_ip&quot;, context.Connection.RemoteIpAddress);
         activity.AddTag(&quot;http.request_content_length&quot;, request.ContentLength);
         activity.AddTag(&quot;http.request_content_type&quot;, request.ContentType);
-
-        var user = context.User;
-        if (user.Identity?.Name is not null)
-        {
-            activity.AddTag(&quot;enduser.id&quot;, user.Identity.Name);
-            activity.AddTag(
-                &quot;enduser.scope&quot;,
-                string.Join(&#39;,&#39;, user.Claims.Select(x =&gt; x.Value)));
-        }
     }
     else if (obj is HttpResponse response)
     {
@@ -223,7 +214,7 @@ public static string GetHttpFlavour(string protocol)
     throw new InvalidOperationException($&quot;Protocol {protocol} not recognised.&quot;);
 }
 </code></pre>
-<p>Next, we configure <code>AddAspNetCoreInstrumentation</code> to enrich the spans with additional information about the current request, response and the user (if any) using standardised attributes. Finally, we record details of exceptions from our controllers which would otherwise be lost. This outputs the following:</p>
+<p>Next, we configure <code>AddAspNetCoreInstrumentation</code> to enrich the spans with additional information about the current request, response using standardised attributes. Finally, we record details of exceptions from our controllers which would otherwise be lost. This outputs the following:</p>
 <pre><code>Activity.Id:          00-3d0f70e71a8e6e5e87f156bdcf94b8c9-ccdd8d23a2e3ba93-01
 Activity.ActivitySourceName: OpenTelemetry.Instrumentation.AspNetCore
 Activity.DisplayName: /favicon-32x32.png

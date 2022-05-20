@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, YouTuber, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Fri, 20 May 2022 08:38:09 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 20 May 2022 14:43:15 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -179,15 +179,6 @@ private static void Enrich(Activity activity, string eventName, object obj)
         activity.AddTag(&quot;http.client_ip&quot;, context.Connection.RemoteIpAddress);
         activity.AddTag(&quot;http.request_content_length&quot;, request.ContentLength);
         activity.AddTag(&quot;http.request_content_type&quot;, request.ContentType);
-
-        var user = context.User;
-        if (user.Identity?.Name is not null)
-        {
-            activity.AddTag(&quot;enduser.id&quot;, user.Identity.Name);
-            activity.AddTag(
-                &quot;enduser.scope&quot;,
-                string.Join(&#39;,&#39;, user.Claims.Select(x =&gt; x.Value)));
-        }
     }
     else if (obj is HttpResponse response)
     {
@@ -218,7 +209,7 @@ public static string GetHttpFlavour(string protocol)
     throw new InvalidOperationException($&quot;Protocol {protocol} not recognised.&quot;);
 }
 </code></pre>
-<p>Next, we configure <code>AddAspNetCoreInstrumentation</code> to enrich the spans with additional information about the current request, response and the user (if any) using standardised attributes. Finally, we record details of exceptions from our controllers which would otherwise be lost. This outputs the following:</p>
+<p>Next, we configure <code>AddAspNetCoreInstrumentation</code> to enrich the spans with additional information about the current request, response using standardised attributes. Finally, we record details of exceptions from our controllers which would otherwise be lost. This outputs the following:</p>
 <pre><code>Activity.Id:          00-3d0f70e71a8e6e5e87f156bdcf94b8c9-ccdd8d23a2e3ba93-01
 Activity.ActivitySourceName: OpenTelemetry.Instrumentation.AspNetCore
 Activity.DisplayName: /favicon-32x32.png
