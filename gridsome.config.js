@@ -27,6 +27,7 @@ module.exports = {
         },
       },
     },
+    // https://gridsome.org/plugins/@gridsome/plugin-critical
     {
       use: "@gridsome/plugin-critical",
       options: {
@@ -60,6 +61,7 @@ module.exports = {
         },
       },
     },
+    // https://gridsome.org/plugins/@gridsome/source-filesystem
     {
       // Create posts from markdown files
       use: "@gridsome/source-filesystem",
@@ -75,6 +77,7 @@ module.exports = {
         },
       },
     },
+    // https://gridsome.org/plugins/@gridsome/source-filesystem
     {
       // Create posts from markdown files
       use: "@gridsome/source-filesystem",
