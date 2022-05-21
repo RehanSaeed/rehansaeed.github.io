@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2022-05-21T17:43:36.356Z</updated>
+    <updated>2022-05-21T18:03:24.630Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -5378,31 +5378,31 @@ In both cases you have to be careful to start the application by clicking <code>
 # See http://nginx.org/en/docs/ and https://www.nginx.com/resources/wiki/
 
 # Set another default user than root for security reasons.
-# user                        xxx;
+# user						xxx;
 
 # The maximum number of connections for Nginx is calculated by:
 # max_clients = worker_processes * worker_c
-worker_processes            1;
+worker_processes			1;
 
 # Maximum file descriptors that can be opened per process
 # This should be &gt; worker_connections
-worker_rlimit_nofile        8192;
+worker_rlimit_nofile		8192;
 
 # Log errors to the following location. Feel free to change these.
-error_log                    logs/error.log;
+error_log					logs/error.log;
 # Log NXingx process errors to the following location. Feel free to change these.
-pid                            logs/nginx.pid;
+pid							logs/nginx.pid;
 
 events {
 
     # When you need &gt; 8000 * cpu_cores connections, you start optimizing
     # your OS, and this is probably the point at where you hire people
     # who are smarter than you, this is *a lot* of requests.
-    worker_connections        8000;
+    worker_connections		8000;
 
     # This sets up some smart queueing for accept(2)&#39;ing requests
     # Set it to &quot;on&quot; if you have &gt; worker_processes
-    accept_mutex            off;
+    accept_mutex			off;
 
     # These settings are OS specific, by defualt Nginx uses select(2),
     # however, for a large number of requests epoll(2) and kqueue(2)
@@ -5509,7 +5509,7 @@ http {
         ssl_stapling_verify         on;
 
         # The name of the virtual server where you can specify one or more domains that you own.
-        server_name                    localhost;
+        server_name					localhost;
         # server_name    example.com www.example.com *.example.com www.example.*;
 
         # Match incoming requests with the following path and forward them to the specified location.
@@ -7638,7 +7638,7 @@ Console.WriteLine(nameof(kenobi));
 <p>This interface is notorious if you are doing any WPF/Silverlight/WinRT/XAML development, for requiring strings to be passed to it. With the <code>nameof</code> operator, this becomes a thing of the past.</p>
 <pre><code class="language-cs">public class Ship : INotifyPropertyChanged
 {
-    public event PropertyChangedEventHandler PropertyChanged;    
+    public event PropertyChangedEventHandler PropertyChanged;	
     
     private string name;
     
