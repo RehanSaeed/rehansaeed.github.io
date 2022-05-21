@@ -2,7 +2,7 @@
 // To restart press CTRL + C in terminal and run `gridsome develop`
 
 const site = require("./site.json");
-const marked = require("marked");
+const { marked } = require("marked");
 
 module.exports = {
   siteName: site.name,
