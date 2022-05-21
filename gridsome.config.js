@@ -289,6 +289,7 @@ module.exports = {
       externalLinksRel: ["nofollow", "noopener", "noreferrer"],
       anchorClassName: "icon icon-link",
       plugins: [
+        // https://github.com/sammndhr/gridsome-remark-embed-snippet
         ["gridsome-remark-embed-snippet", {}],
         // https://github.com/remarkjs/remark-autolink-headings
         [
@@ -320,6 +321,7 @@ module.exports = {
             },
           },
         ],
+        // https://github.com/nevenall/remark-containers
         [
           "remark-containers",
           {
@@ -374,8 +376,10 @@ module.exports = {
             ],
           },
         ],
-        "remark-kbd",
-        "remark-toc",
+        // https://github.com/zestedesavoir/zmarkdown/tree/master/packages/remark-kbd
+        ["remark-kbd", {}],
+        // https://github.com/remarkjs/remark-toc
+        ["remark-toc", {}],
         // https://github.com/Braincoke/gridsome-plugin-remark-mermaid
         [
           "gridsome-plugin-remark-mermaid",
@@ -383,6 +387,9 @@ module.exports = {
             theme: "neutral",
           },
         ],
+        // https://github.com/pchorus/gridsome-remark-katex
+        ["gridsome-remark-katex", {}],
+        // https://github.com/DavidCouronne/gridsome-plugin-remark-prismjs-all
         [
           "gridsome-plugin-remark-prismjs-all",
           {
@@ -442,6 +449,7 @@ module.exports = {
             // }
           },
         ],
+        // https://github.com/remarkjs/remark-validate-links
         ["remark-validate-links", {}],
       ],
     },

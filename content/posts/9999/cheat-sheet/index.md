@@ -190,12 +190,41 @@ export default {
 }
 ```
 
+# Math
+
+```
+This is $ (a+b)^2 = a^2 + 2ab + b^2 $ inline math.
+```
+
+This is $ (a+b)^2 = a^2 + 2ab + b^2 $ inline math.
+
+```
+$$
+(a+b)^2 = a^2 + 2ab + b^2
+$$
+```
+
+$$
+(a+b)^2 = a^2 + 2ab + b^2
+$$
+
 # Mermaid
+
+```
+flowchart TD
+  A --> B
+  A --> C
+```
 
 ```mermaid
 flowchart TD
   A --> B
   A --> C
+```
+
+```
+flowchart TD
+  A[Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent condimentum dolor in tellus dictum, vel pharetra lacus ultricies. Phasellus porttitor scelerisque elit et ultrices.] --> B
 ```
 
 ```mermaid

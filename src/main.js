@@ -2,6 +2,7 @@
 import "@fontsource/audiowide/latin-400.css";
 import audiowide from "@fontsource/audiowide/files/audiowide-latin-400-normal.woff2";
 import "~/assets/style/index.scss";
+import "katex/dist/katex.min.css";
 
 // Import default layout so we don't need to import it to every page
 import defaultLayout from "~/layouts/default.vue";
