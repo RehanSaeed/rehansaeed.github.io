@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2022-05-21T18:03:24.630Z</updated>
+    <updated>2022-05-23T12:49:36.063Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -624,14 +624,14 @@ Rehan any advice/pointer for us on this?</p>
 <pre><code class="language-html">&lt;div&gt;&lt;/div&gt;
 </code></pre>
 <pre><code class="language-css">div {
-    color: red;
+  color: red;
 }
 </code></pre>
 <p>A better way is to use <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Class_selectors">CSS class selectors</a> which will decouple your HTML from your CSS.</p>
 <pre><code class="language-html">&lt;div class=&quot;foo&quot;&gt;&lt;/div&gt;
 </code></pre>
 <pre><code class="language-css">.foo {
-    color: red;
+  color: red;
 }
 </code></pre>
 <h2 id="block-element-modifier-bem">Block Element Modifier (BEM)</h2>
@@ -673,7 +673,7 @@ Rehan any advice/pointer for us on this?</p>
 <li><code>grid-gap</code> or <code>gap</code> (in newer browsers) - Used with CSS Grid and FlexBox (only supports <code>gap</code>). This allows you to add spacing between elements in your container.</li>
 <li><code>padding</code> - It&#39;s generally preferable to use CSS properties that only affect the current element as opposed to the parent elements like <code>margin</code> does.</li>
 <li><code>margin</code></li>
-<li><code>min-height</code>/<code>max-height</code> and <code>min-width</code>/<code>max-width</code></li>
+<li><code>min-height</code>/<code>max-height</code>/<code>min-block-size</code>/<code>max-block-size</code> and <code>min-width</code>/<code>max-width</code>/<code>min-inline-size</code>/<code>max-inline-size</code></li>
 <li><code>height</code> and <code>width</code> - Use this with care if you really know what you&#39;re doing.</li>
 </ol>
 <h1 id="browser-support">Browser Support</h1>
@@ -692,7 +692,7 @@ color: hsl(0, 0%, 100%);
 <h2 id="outline">Outline</h2>
 <p>Never set the <code>outline</code> on a focusable element to <code>none</code>. People need those outlines to see what they&#39;ve focused on.</p>
 <pre><code class="language-css">.foo {
-    outline: none;
+  outline: none;
 }
 </code></pre>
 <h2 id="accessible-colours">Accessible Colours</h2>
