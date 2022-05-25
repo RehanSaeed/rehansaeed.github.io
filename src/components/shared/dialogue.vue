@@ -98,7 +98,8 @@ dialog {
 
   // Fix the position of the dialog in the middle of the screen.
   position: fixed;
-  top: 0;
+  inset-block-start: 0;
+
   margin-block-start: 35vh;
 
   @media (prefers-reduced-motion: no-preference) {
@@ -142,9 +143,11 @@ dialog + .backdrop {
       var(--global-alternate-accent-color) 100%
     );
     display: block;
+
     position: absolute;
-    top: 0;
-    left: 0;
+    inset-inline-start: 0;
+    inset-block-start: 0;
+
     inline-size: 100%;
     block-size: 0.5rem;
   }

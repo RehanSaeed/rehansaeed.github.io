@@ -73,11 +73,9 @@ export default {
 
 .portfolio-card__title a::after {
   content: "";
+
   position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
 }
 
 .portfolio-card__tags {

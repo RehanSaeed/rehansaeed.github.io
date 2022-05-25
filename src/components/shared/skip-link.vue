@@ -17,10 +17,10 @@ export default {
 
 <style lang="scss">
 .skip-link {
-  margin-inline: auto;
   position: absolute;
-  left: 0;
-  right: 0;
+  inset-inline: 0;
+
+  margin-inline: auto;
   text-align: center;
   transform: translateY(-110%);
   transition: transform var(--global-duration-2) var(--ease-in-out-cubic);

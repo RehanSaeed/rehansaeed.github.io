@@ -162,12 +162,13 @@ pre[class*="language-"].line-numbers > code {
 }
 
 .line-numbers .line-numbers-rows {
+  position: absolute;
+  inset-inline-start: -3.8em;
+  inset-block-start: 0;
+
   border-inline-end: var(--global-border-width-1) solid hsl(0, 0%, 65%);
   font-size: 100%;
-  left: -3.8em;
   pointer-events: none;
-  position: absolute;
-  top: 0;
   inline-size: 3em; /* works for line-numbers below 1000 lines */
   user-select: none;
   padding-block: 1em;

@@ -34,8 +34,8 @@ export default {
   display: block;
 
   position: absolute;
-  top: 100%;
-  left: 0;
+  inset-inline-start: 0;
+  inset-block-start: 100%;
 
   background: var(--arrow-colour);
   content: "";

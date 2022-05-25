@@ -17,12 +17,13 @@ export default {
     var(--global-accent-color) 100%
   );
 
+  position: fixed;
+  inset-inline-start: 0;
+  inset-block-start: 0;
+  z-index: 9999;
+
   inline-size: 0%;
   block-size: 3px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 9999;
 
   animation: scroll-indicator 1s linear;
   animation-play-state: paused;

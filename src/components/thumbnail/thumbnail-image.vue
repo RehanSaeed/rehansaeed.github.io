@@ -7,8 +7,8 @@
       transform: imageTransform,
       'inline-size': toPx(imageWidth),
       'block-size': toPx(imageHeight),
-      left: toPx(imageX),
-      top: toPx(imageY),
+      'inset-inline-start': toPx(imageX),
+      'inset-block-start': toPx(imageY),
     }"
     :width="imageWidth"
     :height="imageHeight" />

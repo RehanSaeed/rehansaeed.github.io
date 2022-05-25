@@ -64,6 +64,12 @@ Here is an example of the four groups in real life:
   right: 0;
   bottom: 0;
   left: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  inset-inline: 0;
+  inset-block-start: 0;
+  inset-block-end: 0;
+  inset-block: 0;
   z-index: 10;
 
   /* Display */
@@ -147,6 +153,12 @@ CSS properties related to `position` come next. Similar to `display`, we put the
     right: 0;
     bottom: 0;
     left: 0;
+    inset-inline-start: 0;
+    inset-inline-end: 0;
+    inset-block-start: 0;
+    inset-block-end: 0;
+    inset-inline: 0;
+    inset-block: 0;
     z-index: 10;
 
     /* ... */

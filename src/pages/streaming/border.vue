@@ -87,9 +87,11 @@ export default {
 
 .border::after {
   content: "";
+
   position: absolute;
-  top: calc(-1 * var(--border-width));
-  left: calc(-1 * var(--border-width));
+  inset-inline-start: calc(-1 * var(--border-width));
+  inset-block-start: calc(-1 * var(--border-width));
+
   inline-size: calc(100% + var(--border-width) * 2);
   block-size: calc(100% + var(--border-width) * 2);
 

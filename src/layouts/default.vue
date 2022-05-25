@@ -44,7 +44,7 @@ export default {
 @include breakpoints.respond-above(xl) {
   .navigation {
     position: sticky;
-    top: 0;
+    inset-block-start: 0;
     z-index: 10;
   }
 }

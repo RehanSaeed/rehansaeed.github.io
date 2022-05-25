@@ -117,9 +117,10 @@ export default {
 }
 .vssue .vssue-notice .vssue-alert {
   position: absolute;
+  inset-block-start: 0;
   z-index: 101;
+
   cursor: pointer;
-  top: 0;
   padding: var(--global-space-fixed-3) var(--global-space-fixed-4);
   inline-size: 100%;
   color: var(--global-accent-color);
@@ -129,8 +130,8 @@ export default {
 }
 .vssue .vssue-notice .vssue-progress {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset-inline-start: 0;
+  inset-block-start: 0;
   block-size: 2px;
   background-color: var(--global-accent-color);
 }
@@ -184,8 +185,8 @@ export default {
 }
 .vssue-new-comment-loading {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  inset-inline-start: 50%;
+  inset-block-start: 50%;
   transform: translate(-50%, -50%);
 }
 .vssue-new-comment-footer {

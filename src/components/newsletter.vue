@@ -30,7 +30,7 @@
         aria-hidden="true"
         type="text"
         name="b_0d1d7c30db26dd0a4aa1b5b40_07ce865066"
-        style="position: absolute; left: -5000px"
+        style="position: absolute; inset-inline-start: -5000px"
         tabindex="-1"
         value />
       <u-button bordered submit class="newsletter__button">Subscribe</u-button>
