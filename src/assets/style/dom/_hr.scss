@@ -1,6 +1,6 @@
 hr {
   display: block;
-  height: var(--global-border-width-1);
+  block-size: var(--global-border-width-1);
   border: 0;
   border-top: var(--global-border-width-1) solid var(--global-border-color);
   margin-block: var(--global-space-fixed-5);

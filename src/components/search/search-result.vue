@@ -65,7 +65,7 @@ export default {
   border-radius: var(--global-border-radius);
   margin-inline-end: var(--global-space-fixed-5);
   min-width: 8rem;
-  width: 8rem;
+  inline-size: 8rem;
 }
 .search-result__title {
   grid-area: title;

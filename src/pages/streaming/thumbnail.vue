@@ -66,8 +66,8 @@ export default {
   overflow: hidden;
   padding: var(--global-space-fluid-6);
   position: relative;
-  width: 1920px;
-  height: 1080px;
+  inline-size: 1920px;
+  block-size: 1080px;
 }
 .thumbnail--background-light {
   background-color: var(--global-content-background-color);

@@ -20,6 +20,6 @@ export default {
 
 <style lang="scss">
 .webmention-links-skeleton {
-  height: 1.5rem;
+  block-size: 1.5rem;
 }
 </style>

@@ -20,8 +20,8 @@ h6 {
     margin-inline-start: -30px;
     opacity: 0;
     margin-inline-end: 8px;
-    height: 22px;
-    width: 22px;
+    inline-size: 22px;
+    block-size: 22px;
     text-decoration: none;
     transition: opacity var(--global-duration-2) ease-out 100ms;
     vertical-align: middle;

@@ -105,8 +105,8 @@ query {
   border: var(--global-border-width-2) solid var(--global-title-color);
   border-radius: 100%;
   transition: border-color var(--global-duration-3) ease-out;
-  height: 2.5rem;
-  width: 2.5rem;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
 }
 
 .navigation__items-left {

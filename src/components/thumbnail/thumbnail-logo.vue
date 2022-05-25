@@ -41,13 +41,13 @@ export default {
   border-radius: 50%;
   color: var(--global-accent-color);
   overflow: hidden;
-  width: 150px;
-  height: 150px;
+  inline-size: 150px;
+  block-size: 150px;
   z-index: 2;
 }
 
 .thumbnail-logo__icon {
-  width: 150px;
-  height: 150px;
+  inline-size: 150px;
+  block-size: 150px;
 }
 </style>

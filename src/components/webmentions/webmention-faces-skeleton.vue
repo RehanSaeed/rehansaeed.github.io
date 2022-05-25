@@ -73,6 +73,6 @@ export default {
 
 <style lang="scss">
 .webmention-faces-skeleton {
-  height: 2.5rem;
+  block-size: 2.5rem;
 }
 </style>

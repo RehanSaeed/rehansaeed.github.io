@@ -142,19 +142,19 @@ dialog + .backdrop {
       var(--global-alternate-accent-color) 100%
     );
     display: block;
-    height: 0.5rem;
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
+    inline-size: 100%;
+    block-size: 0.5rem;
   }
 }
 
 .dialog--fullscreen {
   border: none;
   border-radius: var(--global-border-radius);
-  height: 90vh;
-  width: 90vw;
+  inline-size: 90vw;
+  block-size: 90vh;
 }
 
 .dialog__container {
@@ -166,7 +166,7 @@ dialog + .backdrop {
     "content content";
   padding: var(--global-space-fluid-5);
 
-  height: 100%;
+  block-size: 100%;
   overflow-y: auto;
   overscroll-behavior: contain;
 }

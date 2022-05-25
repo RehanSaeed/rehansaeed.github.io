@@ -48,6 +48,6 @@ export default {
 
 <style lang="scss">
 .webmention-replies-skeleton {
-  height: 4.75rem;
+  block-size: 4.75rem;
 }
 </style>

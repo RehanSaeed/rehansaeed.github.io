@@ -81,8 +81,8 @@ export default {
   mask-size: 100% var(--border-width), 100% var(--border-width),
     var(--border-width) 100%, var(--border-width) 100%;
   mask-repeat: no-repeat;
-  width: var(--width);
-  height: var(--height);
+  inline-size: var(--width);
+  block-size: var(--height);
 }
 
 .border::after {
@@ -90,8 +90,8 @@ export default {
   position: absolute;
   top: calc(-1 * var(--border-width));
   left: calc(-1 * var(--border-width));
-  width: calc(100% + var(--border-width) * 2);
-  height: calc(100% + var(--border-width) * 2);
+  inline-size: calc(100% + var(--border-width) * 2);
+  block-size: calc(100% + var(--border-width) * 2);
 
   animation: animated-gradient var(--duration) ease-in-out infinite;
   background: var(--gradient);

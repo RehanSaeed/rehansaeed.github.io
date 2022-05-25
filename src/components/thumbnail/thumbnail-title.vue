@@ -6,7 +6,7 @@
       fontSize: toEm(titleFontSize),
       alignContent: titleAlign,
       justifyItems: titleJustify,
-      width: toPx(titleWidth),
+      'inline-size': toPx(titleWidth),
     }">
     <h1 v-if="title" class="thumbnail-title__title">
       {{ title }}

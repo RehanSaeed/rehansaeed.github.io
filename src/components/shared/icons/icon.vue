@@ -46,7 +46,7 @@ export default {
 <style lang="scss">
 .icon {
   display: block;
-  width: 1em;
+  inline-size: 1em;
 }
 
 .icon--inline {

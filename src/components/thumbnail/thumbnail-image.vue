@@ -5,8 +5,8 @@
     :src="image"
     :style="{
       transform: imageTransform,
-      width: toPx(imageWidth),
-      height: toPx(imageHeight),
+      'inline-size': toPx(imageWidth),
+      'block-size': toPx(imageHeight),
       left: toPx(imageX),
       top: toPx(imageY),
     }"

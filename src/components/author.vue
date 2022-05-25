@@ -58,8 +58,8 @@ query {
 .author__image {
   border: var(--global-border-width-2) solid var(--global-title-color);
   border-radius: 100%;
-  width: 6rem;
-  height: 6rem;
+  inline-size: 6rem;
+  block-size: 6rem;
   margin-block-end: var(--global-space-fluid-3);
   transition: border-color var(--global-duration-3) ease-out;
 }

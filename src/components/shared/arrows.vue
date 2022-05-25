@@ -23,7 +23,7 @@ export default {
 
 .arrows__arrow {
   background: var(--arrow-colour);
-  height: var(--arrow-height);
+  block-size: var(--arrow-height);
   position: relative;
   z-index: var(--arrow-index);
 }
@@ -41,8 +41,8 @@ export default {
   content: "";
   mask: var(--arrow-mask);
   -webkit-mask: var(--arrow-mask);
-  width: 100%;
-  height: var(--arrow-height);
+  inline-size: 100%;
+  block-size: var(--arrow-height);
 }
 
 .arrows__arrow-1 {

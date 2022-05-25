@@ -370,22 +370,22 @@ query {
 }
 .about__github-image,
 .about__youtube-image {
-  height: 30px;
+  block-size: 30px;
 }
 
 .about__stack-overflow-image {
   border-radius: var(--global-border-radius);
   display: block;
   margin-block-end: var(--global-space-fixed-5);
-  height: 58px;
-  width: 208px;
+  inline-size: 208px;
+  block-size: 58px;
 }
 
 .about__mvp-image {
   border-radius: var(--global-border-radius);
   display: block;
   margin-block-end: var(--global-space-fixed-5);
-  height: 84px;
-  width: 208px;
+  inline-size: 208px;
+  block-size: 84px;
 }
 </style>

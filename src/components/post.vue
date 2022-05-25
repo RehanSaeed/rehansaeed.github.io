@@ -65,7 +65,7 @@ export default {
   margin-block-start: var(--global-space-fluid--6);
   margin-block-end: var(--global-space-fluid-5);
   overflow: hidden;
-  width: calc(100% + (2 * var(--global-space-fluid-6)));
+  inline-size: calc(100% + (2 * var(--global-space-fluid-6)));
 
   &:empty {
     display: none;
@@ -97,9 +97,9 @@ export default {
   }
 
   img {
-    width: calc(100% + (2 * var(--global-space-fluid-6)));
-    margin-inline: var(--global-space-fluid--6);
     display: block;
+    inline-size: calc(100% + (2 * var(--global-space-fluid-6)));
+    margin-inline: var(--global-space-fluid--6);
     max-width: none;
   }
 

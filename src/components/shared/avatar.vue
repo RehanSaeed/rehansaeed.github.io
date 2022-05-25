@@ -61,8 +61,8 @@ export default {
   overflow: hidden;
   transition: border-color var(--global-duration-3) var(--ease-out-cubic),
     transform var(--global-duration-3) var(--ease-out-cubic);
-  height: 3rem;
-  width: 3rem;
+  inline-size: 3rem;
+  block-size: 3rem;
   will-change: border-color, transform;
 
   margin: calc(var(--global-border-width-3) * -1);
@@ -81,7 +81,7 @@ export default {
   display: block;
 
   object-fit: cover;
-  height: 100%;
-  width: 100%;
+  inline-size: 100%;
+  block-size: 100%;
 }
 </style>

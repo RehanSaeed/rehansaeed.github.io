@@ -8,11 +8,11 @@ date: "2021-04-20T10:00:00Z"
 dateModified: null
 published: true
 categories:
-    - "CSS"
+  - "CSS"
 tags:
-    - "CSS"
-    - "CSS Classes"
-    - "Standards"
+  - "CSS"
+  - "CSS Classes"
+  - "Standards"
 ---
 
 There are no hard and fast rules for code style and as I've [written about before](/stop-brace-wars-use-stylecop/) it can get ugly when people have various opposing opinions on the subject. In CSS, which I'm quite fond of writing, I believe the answer is mostly given to us by using [Prettier](https://prettier.io/), the opinionated code formatter. Unfortunately, Prettier does not sort CSS properties for you [and never will](https://github.com/prettier/prettier/issues/1963), so this post is one solution (**not** the correct solution because there is no correct solution).
@@ -35,42 +35,44 @@ Here is an example of the four groups in real life:
 
 ```css
 .card {
-    /* Parent Layout */
-    grid-area: card;
+  /* Parent Layout */
+  grid-area: card;
 
-    /* Layout */
-    display: grid;
-    align-items: center;
-    gap: 10px;
-    grid-template-areas:
-        "header header"
-        "content content";
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    justify-items: center;
+  /* Layout */
+  display: grid;
+  align-items: center;
+  gap: 10px;
+  grid-template-areas:
+    "header header"
+    "content content";
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  justify-items: center;
 
-    /* Box Model */
-    box-sizing: border-box;
-    width: 100px;
-    height: 100px;
-    margin: 10px;
-    padding: 10px;
+  /* Box Model */
+  box-sizing: border-box;
+  width: 100px;
+  height: 100px;
+  inline-size: 100px;
+  block-size: 100px;
+  margin: 10px;
+  padding: 10px;
 
-    /* Positioning */
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 10;
+  /* Positioning */
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
 
-    /* Display */
-    background-color: red;
-    border: 10px solid green;
-    color: white;
-    font-family: sans-serif;
-    font-size: 16px;
-    text-align: center;
+  /* Display */
+  background-color: red;
+  border: 10px solid green;
+  color: white;
+  font-family: sans-serif;
+  font-size: 16px;
+  text-align: center;
 }
 ```
 
@@ -80,10 +82,10 @@ The parent layout is any CSS layout properties that effect or come from the pare
 
 ```css
 .card {
-    /* Parent Layout */
-    grid-area: card;
+  /* Parent Layout */
+  grid-area: card;
 
-    /* ... */
+  /* ... */
 }
 ```
 
@@ -125,6 +127,8 @@ CSS properties that affect the box model can come next. Again, I'm using alphabe
     padding: 10px;
     width: 100px;
     height: 100px;
+    inline-size: 100px;
+    block-size: 100px;
 
     /* ... */
 ```
@@ -154,15 +158,15 @@ Finally, there are CSS display properties which affect the look and feel. This i
 
 ```css
 .card {
-    /* ... */
+  /* ... */
 
-    /* Display */
-    background-color: red;
-    border: 10px solid green;
-    color: white;
-    font-family: sans-serif;
-    font-size: 16px;
-    text-align: center;
+  /* Display */
+  background-color: red;
+  border: 10px solid green;
+  color: white;
+  font-family: sans-serif;
+  font-size: 16px;
+  text-align: center;
 }
 ```
 

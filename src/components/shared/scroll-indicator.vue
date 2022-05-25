@@ -17,8 +17,8 @@ export default {
     var(--global-accent-color) 100%
   );
 
-  height: 3px;
-  width: 0%;
+  inline-size: 0%;
+  block-size: 3px;
   position: fixed;
   top: 0;
   left: 0;
@@ -33,7 +33,7 @@ export default {
 
 @keyframes scroll-indicator {
   to {
-    width: 100%;
+    inline-size: 100%;
   }
 }
 </style>

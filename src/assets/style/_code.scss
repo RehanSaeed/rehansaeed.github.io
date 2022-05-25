@@ -168,7 +168,7 @@ pre[class*="language-"].line-numbers > code {
   pointer-events: none;
   position: absolute;
   top: 0;
-  width: 3em; /* works for line-numbers below 1000 lines */
+  inline-size: 3em; /* works for line-numbers below 1000 lines */
   user-select: none;
   padding-block: 1em;
 }

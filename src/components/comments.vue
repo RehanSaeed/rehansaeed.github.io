@@ -69,8 +69,8 @@ export default {
 
 // Icon
 .vssue .vssue-icon {
-  width: 1rem;
-  height: 1rem;
+  inline-size: 1rem;
+  block-size: 1rem;
   vertical-align: -0.15rem;
   fill: var(--global-accent-color);
   overflow: hidden;
@@ -121,7 +121,7 @@ export default {
   cursor: pointer;
   top: 0;
   padding: var(--global-space-fixed-3) var(--global-space-fixed-4);
-  width: 100%;
+  inline-size: 100%;
   color: var(--global-accent-color);
   border: var(--global-border-width-1) solid var(--global-accent-color);
   border-radius: var(--global-border-radius);
@@ -131,7 +131,7 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  height: 2px;
+  block-size: 2px;
   background-color: var(--global-accent-color);
 }
 .vssue .vssue-status {
@@ -172,8 +172,8 @@ export default {
     .vssue-icon {
       cursor: pointer;
       padding: 5px;
-      height: var(--global-space-fixed-6);
-      width: var(--global-space-fixed-6);
+      inline-size: var(--global-space-fixed-6);
+      block-size: var(--global-space-fixed-6);
       fill: var(--global-body-color);
     }
   }
@@ -209,7 +209,7 @@ export default {
 // Comment Input
 .vssue-new-comment-input {
   resize: none;
-  width: 100%;
+  inline-size: 100%;
 }
 
 // Comment
@@ -234,8 +234,8 @@ export default {
   img {
     border: var(--global-border-width-1) solid var(--global-border-color);
     border-radius: var(--global-border-radius);
-    width: var(--global-space-fixed-6);
-    height: var(--global-space-fixed-6);
+    inline-size: var(--global-space-fixed-6);
+    block-size: var(--global-space-fixed-6);
   }
 }
 
@@ -292,7 +292,7 @@ export default {
   border: none;
   resize: none;
   outline: none;
-  width: 100%;
+  inline-size: 100%;
   padding: var(--global-space-fixed--4);
 }
 
