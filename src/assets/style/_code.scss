@@ -33,7 +33,8 @@ pre[class*="language-"] ::selection {
 pre[class*="language-"] {
   padding: 0.85rem;
   margin: 1.275rem 0;
-  overflow-x: auto;
+  overflow-x: auto; // Remove when browser support is good enough.
+  overflow-inline: auto;
   overflow-y: hidden; // Remove when browser support is good enough.
   overflow-block: hidden;
   background-color: hsl(0, 0%, 100%);
