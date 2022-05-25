@@ -114,7 +114,7 @@ Some Code
 
 # Keyboard
 
-This uses `<kbd>` and looks like this ||CTRL+C||. Cool!
+Writing `||CTRL+C||` looks like ||CTRL+C|| and outputs `<kbd>CTRL+C</kbd>`.
 
 # Syntax Highlighting
 
