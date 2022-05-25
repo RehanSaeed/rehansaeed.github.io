@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2022-05-24T15:25:31.755Z</updated>
+    <updated>2022-05-25T10:30:24.296Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -725,51 +725,59 @@ color: hsl(0, 0%, 100%);
 </ol>
 <p>Here is an example of the four groups in real life:</p>
 <pre><code class="language-css">.card {
-    /* Parent Layout */
-    grid-area: card;
+  /* Parent Layout */
+  grid-area: card;
 
-    /* Layout */
-    display: grid;
-    align-items: center;
-    gap: 10px;
-    grid-template-areas:
-        &quot;header header&quot;
-        &quot;content content&quot;;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    justify-items: center;
+  /* Layout */
+  display: grid;
+  align-items: center;
+  gap: 10px;
+  grid-template-areas:
+    &quot;header header&quot;
+    &quot;content content&quot;;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  justify-items: center;
 
-    /* Box Model */
-    box-sizing: border-box;
-    width: 100px;
-    height: 100px;
-    margin: 10px;
-    padding: 10px;
+  /* Box Model */
+  box-sizing: border-box;
+  width: 100px;
+  height: 100px;
+  inline-size: 100px;
+  block-size: 100px;
+  margin: 10px;
+  padding: 10px;
 
-    /* Positioning */
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 10;
+  /* Positioning */
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  inset-inline: 0;
+  inset-block-start: 0;
+  inset-block-end: 0;
+  inset-block: 0;
+  z-index: 10;
 
-    /* Display */
-    background-color: red;
-    border: 10px solid green;
-    color: white;
-    font-family: sans-serif;
-    font-size: 16px;
-    text-align: center;
+  /* Display */
+  background-color: red;
+  border: 10px solid green;
+  color: white;
+  font-family: sans-serif;
+  font-size: 16px;
+  text-align: center;
 }
 </code></pre>
 <h2 id="parent-layout">Parent Layout</h2>
 <p>The parent layout is any CSS layout properties that effect or come from the parent element. This usually boils down to <code>grid-area</code> if you&#39;re using <code>grid-template-areas</code> which you <a href="https://css-tricks.com/snippets/css/complete-guide-grid/#grid-template-areas">totally should</a> because it allows you to change the layout child elements without modifying the child elements CSS too much.</p>
 <pre><code class="language-css">.card {
-    /* Parent Layout */
-    grid-area: card;
+  /* Parent Layout */
+  grid-area: card;
 
-    /* ... */
+  /* ... */
 }
 </code></pre>
 <h2 id="layout">Layout</h2>
@@ -802,6 +810,8 @@ color: hsl(0, 0%, 100%);
     padding: 10px;
     width: 100px;
     height: 100px;
+    inline-size: 100px;
+    block-size: 100px;
 
     /* ... */
 </code></pre>
@@ -816,6 +826,12 @@ color: hsl(0, 0%, 100%);
     right: 0;
     bottom: 0;
     left: 0;
+    inset-inline-start: 0;
+    inset-inline-end: 0;
+    inset-block-start: 0;
+    inset-block-end: 0;
+    inset-inline: 0;
+    inset-block: 0;
     z-index: 10;
 
     /* ... */
@@ -823,15 +839,15 @@ color: hsl(0, 0%, 100%);
 <h2 id="display">Display</h2>
 <p>Finally, there are CSS display properties which affect the look and feel. This is also a kind of &#39;Other&#39; category where you can place remaining properties which don&#39;t make sense in other groups.</p>
 <pre><code class="language-css">.card {
-    /* ... */
+  /* ... */
 
-    /* Display */
-    background-color: red;
-    border: 10px solid green;
-    color: white;
-    font-family: sans-serif;
-    font-size: 16px;
-    text-align: center;
+  /* Display */
+  background-color: red;
+  border: 10px solid green;
+  color: white;
+  font-family: sans-serif;
+  font-size: 16px;
+  text-align: center;
 }
 </code></pre>
 <h1 id="final-comments">Final Comments</h1>
