@@ -281,7 +281,8 @@ export default {
   text-decoration: none;
 }
 .vssue-comment-created-at {
-  float: right;
+  float: right; // Remove when browser support is good enough.
+  float: inline-end;
 }
 
 // Comment Main

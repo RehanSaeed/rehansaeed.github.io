@@ -15,7 +15,7 @@
   // }
 
   // .anchor {
-  //   float: left;
+  //   float: inline-start;
   //   line-height: 1;
   //   margin-inline-start: -20px;
   //   padding-inline-end: 4px;
@@ -832,8 +832,10 @@
     border-radius: var(--global-border-radius);
     font-size: var(--global-font-size-1);
     line-height: 1.45;
-    overflow-x: auto;
-    overflow-y: hidden;
+    overflow-x: auto; // Remove when browser support is good enough.
+    overflow-inline: auto;
+    overflow-y: hidden; // Remove when browser support is good enough.
+    overflow-block: hidden;
 
     direction: ltr;
     text-align: start;
@@ -848,8 +850,10 @@
   pre code {
     display: block;
     padding: 0.85rem;
-    overflow-x: auto;
-    overflow-y: hidden;
+    overflow-x: auto; // Remove when browser support is good enough.
+    overflow-inline: auto;
+    overflow-y: hidden; // Remove when browser support is good enough.
+    overflow-block: hidden;
   }
 
   .commit-tease-sha {
@@ -865,13 +869,16 @@
   }
 
   .blob-wrapper {
-    overflow-x: auto;
-    overflow-y: hidden;
+    overflow-x: auto; // Remove when browser support is good enough.
+    overflow-inline: auto;
+    overflow-y: hidden; // Remove when browser support is good enough.
+    overflow-block: hidden;
   }
 
   .blob-wrapper-embedded {
     max-block-size: 240px;
-    overflow-y: auto;
+    overflow-y: auto; // Remove when browser support is good enough.
+    overflow-block: auto;
   }
 
   .blob-num {

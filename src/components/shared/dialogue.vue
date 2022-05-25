@@ -170,7 +170,8 @@ dialog + .backdrop {
   padding: var(--global-space-fluid-5);
 
   block-size: 100%;
-  overflow-y: auto;
+  overflow-y: auto; // Remove when browser support is good enough.
+  overflow-block: auto;
   overscroll-behavior: contain;
 }
 

@@ -88,7 +88,8 @@ export default {
 
       // initial-letter: 2; // Only supported by Safari
       // OR
-      float: left;
+      float: left; // Remove when browser support is good enough.
+      float: inline-start;
       font-size: calc(var(--global-font-size-4) * 2.6);
       line-height: calc(var(--global-line-height-1) * 0.44);
       padding-inline-end: var(--global-space-fixed-2);

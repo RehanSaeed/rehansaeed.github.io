@@ -34,7 +34,8 @@ pre[class*="language-"] {
   padding: 0.85rem;
   margin: 1.275rem 0;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: hidden; // Remove when browser support is good enough.
+  overflow-block: hidden;
   background-color: hsl(0, 0%, 100%);
   border: var(--global-border-width-1) solid hsl(0, 0%, 87%);
   border-radius: var(--global-border-radius);

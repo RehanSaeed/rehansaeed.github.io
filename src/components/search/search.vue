@@ -87,6 +87,7 @@ export default {
   gap: var(--global-space-fixed-5);
   grid-template-columns: 1fr;
 
-  overflow-y: auto;
+  overflow-y: auto; // Remove when browser support is good enough.
+  overflow-block: auto;
 }
 </style>
