@@ -10,7 +10,7 @@ h6 {
   line-height: var(--global-line-height-1);
   margin-block-start: var(--global-space-fixed-5);
   margin-block-end: var(--global-space-fixed-4);
-  max-width: var(--global-line-length-max);
+  max-inline-size: var(--global-line-length-max);
   text-shadow: 0.01em 0.01em hsl(0, 0%, 70%);
   transition: color var(--global-duration-3);
 

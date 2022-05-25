@@ -74,7 +74,7 @@ export default {
 }
 
 .post-card__image {
-  min-width: 100%;
+  min-inline-size: 100%;
 }
 
 .post-card__title {

@@ -221,7 +221,7 @@ export default {
 }
 .webmentions__like-count,
 .webmentions__repost-count {
-  min-width: 10.35rem;
+  min-inline-size: 10.35rem;
 }
 
 .webmentions__help,

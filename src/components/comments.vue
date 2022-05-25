@@ -48,7 +48,7 @@ export default {
   overflow: hidden;
 
   p {
-    min-width: 0;
+    min-inline-size: 0;
   }
 }
 

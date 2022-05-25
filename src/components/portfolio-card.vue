@@ -64,7 +64,7 @@ export default {
 }
 
 .portfolio-card__image {
-  min-width: 100%;
+  min-inline-size: 100%;
 }
 
 .portfolio-card__title {

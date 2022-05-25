@@ -352,7 +352,7 @@ query {
 .about__image {
   border-radius: var(--global-border-radius);
   display: block;
-  max-width: 320px;
+  max-inline-size: 320px;
 }
 
 .about__social-links {

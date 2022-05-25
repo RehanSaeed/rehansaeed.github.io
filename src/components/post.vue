@@ -80,7 +80,7 @@ export default {
   > p:first-of-type {
     color: var(--global-title-color);
     font-size: var(--global-font-size-4);
-    min-width: 0;
+    min-inline-size: 0;
 
     &:first-letter {
       color: var(--global-accent-color);
@@ -100,7 +100,7 @@ export default {
     display: block;
     inline-size: calc(100% + (2 * var(--global-space-fluid-6)));
     margin-inline: var(--global-space-fluid--6);
-    max-width: none;
+    max-inline-size: none;
   }
 
   .mermaid {

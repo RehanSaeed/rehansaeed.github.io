@@ -1,5 +1,5 @@
 p {
   margin-block-end: var(--global-space-fixed-5);
-  max-width: var(--global-line-length-max);
-  min-width: var(--global-line-length-min);
+  max-inline-size: var(--global-line-length-max);
+  min-inline-size: var(--global-line-length-min);
 }

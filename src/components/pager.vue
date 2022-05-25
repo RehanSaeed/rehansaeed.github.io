@@ -67,7 +67,7 @@ export default {
 .pager__info {
   grid-area: info;
   margin-block-end: 0;
-  min-width: 0;
+  min-inline-size: 0;
 }
 
 .pager__previous-button,

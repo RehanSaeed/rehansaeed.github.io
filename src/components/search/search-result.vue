@@ -64,7 +64,7 @@ export default {
   border: var(--global-border-width-2) solid var(--global-border-color);
   border-radius: var(--global-border-radius);
   margin-inline-end: var(--global-space-fixed-5);
-  min-width: 8rem;
+  min-inline-size: 8rem;
   inline-size: 8rem;
 }
 .search-result__title {

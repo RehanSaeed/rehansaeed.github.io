@@ -4,7 +4,7 @@ textarea {
   border-radius: var(--global-border-radius);
   color: var(--global-title-color);
   font-family: var(--global-font-family-sans-serif);
-  min-width: 13rem;
+  min-inline-size: 13rem;
   padding: var(--global-space-fixed-2) var(--global-space-fixed-3);
   transition: border-color var(--global-duration-3) ease-out;
 
