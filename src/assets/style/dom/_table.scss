@@ -31,17 +31,18 @@ table {
     }
 
     th:first-child {
-      border-top-left-radius: var(--global-border-radius);
+      border-start-start-radius: var(--global-border-radius);
     }
 
     th:last-child {
-      border-top-right-radius: var(--global-border-radius);
+      border-start-end-radius: var(--global-border-radius);
     }
   }
 
   tbody {
     td {
-      border-top: var(--global-border-width-1) solid var(--global-border-color);
+      border-block-start: var(--global-border-width-1) solid
+        var(--global-border-color);
       min-inline-size: var(--global-space-fixed-7);
       padding: var(--global-space-fixed-2) var(--global-space-fixed-3);
       vertical-align: top;
@@ -53,11 +54,11 @@ table {
 
     tr:last-child {
       td:first-child {
-        border-bottom-left-radius: var(--global-border-radius);
+        border-end-start-radius: var(--global-border-radius);
       }
 
       td:last-child {
-        border-bottom-right-radius: var(--global-border-radius);
+        border-end-end-radius: var(--global-border-radius);
       }
     }
   }

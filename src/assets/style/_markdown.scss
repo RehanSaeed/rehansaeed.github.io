@@ -154,7 +154,7 @@
   //   overflow: hidden;
   //   background: transparent;
   //   border: 0;
-  //   border-bottom: 1px solid #dfe2e5;
+  //   border-block-end: 1px solid #dfe2e5;
   // }
 
   // hr:after,
@@ -305,7 +305,7 @@
   }
 
   .border-bottom {
-    border-bottom: 1px solid #e1e4e8 !important;
+    border-block-end: 1px solid #e1e4e8 !important;
   }
 
   .rounded-1 {
@@ -582,7 +582,7 @@
   }
 
   // hr {
-  //   border-bottom-color: #eee;
+  //   border-block-end-color: #eee;
   // }
 
   // kbd {
@@ -644,7 +644,7 @@
   // blockquote {
   //   padding: 0 1em;
   //   color: #6a737d;
-  //   border-left: .25em solid #dfe2e5;
+  //   border-inline-start: .25em solid #dfe2e5;
   // }
 
   // blockquote>:first-child {
@@ -674,7 +674,7 @@
   // h1,
   // h2 {
   //   padding-block-end: .3em;
-  //   border-bottom: 1px solid #eaecef;
+  //   border-block-end: 1px solid #eaecef;
   // }
 
   // h2 {
@@ -757,7 +757,7 @@
 
   // table tr {
   //   background-color: #fff;
-  //   border-top: 1px solid #c6cbd1;
+  //   border-block-start: 1px solid #c6cbd1;
   // }
 
   // table tr:nth-child(2n) {

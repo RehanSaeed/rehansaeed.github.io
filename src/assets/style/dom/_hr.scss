@@ -2,7 +2,8 @@ hr {
   display: block;
   block-size: var(--global-border-width-1);
   border: 0;
-  border-top: var(--global-border-width-1) solid var(--global-border-color);
+  border-block-start: var(--global-border-width-1) solid
+    var(--global-border-color);
   margin-block: var(--global-space-fixed-5);
   padding: 0;
 }

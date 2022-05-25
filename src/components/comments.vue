@@ -153,7 +153,8 @@ export default {
 
 // New Comment
 .vssue-new-comment {
-  border-bottom: var(--global-border-width-1) solid var(--global-border-color);
+  border-block-end: var(--global-border-width-1) solid
+    var(--global-border-color);
   padding-block-end: var(--global-space-fixed-5);
 
   display: grid;
@@ -267,9 +268,9 @@ export default {
 // Comment Header
 .vssue-comment-header {
   border: var(--global-border-width-1) solid var(--global-border-color);
-  border-bottom: none;
-  border-top-left-radius: var(--global-border-radius);
-  border-top-right-radius: var(--global-border-radius);
+  border-block-end: none;
+  border-start-start-radius: var(--global-border-radius);
+  border-start-end-radius: var(--global-border-radius);
   overflow: hidden;
   padding: var(--global-space-fixed-3) var(--global-space-fixed-4);
 }
@@ -301,7 +302,7 @@ export default {
   border: var(--global-border-width-1) solid var(--global-border-color);
   border-bottom-left-radius: var(--global-border-radius);
   border-bottom-right-radius: var(--global-border-radius);
-  border-top: none;
+  border-block-start: none;
   overflow: hidden;
   padding: var(--global-space-fixed-3) var(--global-space-fixed-4);
 
