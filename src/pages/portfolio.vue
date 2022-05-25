@@ -164,7 +164,7 @@ query {
   grid-template-columns: repeat(
     auto-fit,
     minmax(
-      var(--global-space-content-min-width),
+      min(var(--global-space-content-min-width), 100%),
       var(--global-space-content-max-width)
     )
   );
