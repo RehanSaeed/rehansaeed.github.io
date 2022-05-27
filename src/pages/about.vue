@@ -91,6 +91,16 @@
               :src="gitHubStarsImageUrl" />
           </a>
         </div>
+        <div class="about__github-statistics">
+          <a :href="gitHubUrl">
+            <img
+              class="about__github-statistics"
+              alt="GitHub statistics"
+              height="1280"
+              width="850"
+              :src="gitHubStatisticsImageUrl" />
+          </a>
+        </div>
         <p class="about__description">
           I have been fairly active on StackOverflow. You can view my
           <a :href="stackOverflowUrl">Stack Overflow profile</a> and see my
@@ -190,6 +200,13 @@ export default {
     },
     gitHubStarsImageUrl() {
       return `https://img.shields.io/github/stars/${this.$static.metadata.author.gitHub.user}?style=social`;
+    },
+    gitHubStatisticsImageUrl() {
+      const fileName =
+        this.theme === "light"
+          ? "profile-green-animate.svg"
+          : "profile-night-green.svg";
+      return `https://raw.githubusercontent.com/RehanSaeed/RehanSaeed/main/profile-3d-contrib/${fileName}`;
     },
     mvpUrl() {
       return "https://mvp.microsoft.com/en-us/PublicProfile/5001654?fullName=Muhammad%20Rehan%20Saeed";
@@ -371,6 +388,10 @@ query {
 .about__github-image,
 .about__youtube-image {
   block-size: 30px;
+}
+.about__github-statistics {
+  block-size: 26rem;
+  margin-block-end: var(--global-space-fixed-5);
 }
 
 .about__stack-overflow-image {
