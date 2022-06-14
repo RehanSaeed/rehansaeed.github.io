@@ -54,7 +54,7 @@
     "husky": "8.0.1",
     "lint-staged": "13.0.1",
     "marked": "4.0.17",
-    "prettier": "2.6.2",
+    "prettier": "2.7.0",
     "remark-containers": "1.2.0",
     "remark-kbd": "1.1.0",
     "remark-toc": "7.2.0",
