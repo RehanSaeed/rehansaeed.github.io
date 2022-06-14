@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2022-06-10T16:32:51.389Z</updated>
+    <updated>2022-06-14T08:48:02.689Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -10042,10 +10042,10 @@ Console.WriteLine(disposable.IsDisposed);
 <li>Click NuGet Package Manager</li>
 <li>Click Package Manager Console</li>
 <li>Select Your Project in the Package Manager Console</li>
-<li>Execute the following command to install <code>NotificationsExtensions.Portable</code>:<pre><code class="language-powershell">Install-Package NotificationsExtensions.Portable -Version 1.0.0
-</code></pre>
-</li>
+<li>Execute the following command to install <code>NotificationsExtensions.Portable</code>:</li>
 </ol>
+<pre><code class="language-powershell">Install-Package NotificationsExtensions.Portable -Version 1.0.0
+</code></pre>
 <h1 id="attribution-and-changes-made">Attribution and Changes Made</h1>
 <p>All praise goes to the above two projects and the Microsoft developers who built them. The only changes I made to the code was to switch from <code>XmlDocument</code> to <code>XDocument</code>, remove a few WinRT specific references and stick it into a Portable Class Library (PCL).</p>
 ]]></content>

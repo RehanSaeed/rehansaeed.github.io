@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, YouTuber, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Fri, 10 Jun 2022 16:32:51 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 14 Jun 2022 08:48:02 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -9785,10 +9785,10 @@ Console.WriteLine(disposable.IsDisposed);
 <li>Click NuGet Package Manager</li>
 <li>Click Package Manager Console</li>
 <li>Select Your Project in the Package Manager Console</li>
-<li>Execute the following command to install <code>NotificationsExtensions.Portable</code>:<pre><code class="language-powershell">Install-Package NotificationsExtensions.Portable -Version 1.0.0
-</code></pre>
-</li>
+<li>Execute the following command to install <code>NotificationsExtensions.Portable</code>:</li>
 </ol>
+<pre><code class="language-powershell">Install-Package NotificationsExtensions.Portable -Version 1.0.0
+</code></pre>
 <h1 id="attribution-and-changes-made">Attribution and Changes Made</h1>
 <p>All praise goes to the above two projects and the Microsoft developers who built them. The only changes I made to the code was to switch from <code>XmlDocument</code> to <code>XDocument</code>, remove a few WinRT specific references and stick it into a Portable Class Library (PCL).</p>
 ]]></content:encoded>
