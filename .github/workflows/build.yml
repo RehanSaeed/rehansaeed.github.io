@@ -33,19 +33,19 @@ jobs:
           mkdir dist/feed
           cp dist/rss.xml dist/feed/index.xml
       - name: "Cypress Run"
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v4.1.0
         with:
           start: npm start
           wait-on: "http://localhost:8080"
           wait-on-timeout: 120
       - name: "Upload Cypress Screenshots"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.1.0
         if: failure()
         with:
           name: cypress-screenshots
           path: cypress/screenshots
       - name: "Upload Cypress Videos"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.1.0
         if: always()
         with:
           name: cypress-videos
