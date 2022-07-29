@@ -51,17 +51,14 @@ export default {
     onOpen() {
       this.isOpen = true;
       searchOpened();
-      console.log("search opened");
     },
     onClose() {
       this.isOpen = false;
       searchClosed();
-      console.log("search closed");
     },
     onSelected(searchTerm) {
       this.isOpen = false;
       searchResultSelected(searchTerm);
-      console.log("search executed", searchTerm);
     },
   },
   mounted() {
