@@ -39,30 +39,26 @@
           <h3 class="webmentions__count webmentions__link-count">
             {{ linksDescription }}
           </h3>
-          <div
-            v-if="!isLoading && !isLinksEmpty"
-            class="webmentions__links-container">
+          <div v-if="!isLoading" class="webmentions__links-container">
             <u-webmention-link
               v-for="link of links"
               :key="link.id"
               :link="link" />
           </div>
-          <u-webmention-links-skeleton v-if="isLoading" />
+          <u-webmention-links-skeleton v-else />
         </div>
 
         <div class="webmentions__replies">
           <h3 class="webmentions__count webmentions__reply-count">
             {{ repliesDescription }}
           </h3>
-          <div
-            v-if="!isLoading && !isRepliesEmpty"
-            class="webmentions__replies-container">
+          <div v-if="!isLoading" class="webmentions__replies-container">
             <u-webmention-reply
               v-for="reply of replies"
               :key="reply.id"
               :reply="reply" />
           </div>
-          <u-webmention-replies-skeleton v-if="isLoading" />
+          <u-webmention-replies-skeleton v-else />
         </div>
       </div>
     </u-card>
@@ -111,12 +107,6 @@ export default {
     },
   },
   computed: {
-    isLinksEmpty() {
-      return this.links.length === 0;
-    },
-    isRepliesEmpty() {
-      return this.replies.length === 0;
-    },
     likesDescription() {
       return `${this.likes?.length ?? 0} ${this.pluralise(
         this.likes?.length,
@@ -236,19 +226,27 @@ export default {
 
 .webmentions__links {
   display: grid;
-  gap: var(--global-space-fixed-2);
 }
 .webmentions__links-container {
   display: grid;
   gap: var(--global-space-fixed-3);
+
+  margin-block-start: var(--global-space-fixed-2);
+}
+.webmentions__links-container:empty {
+  margin-block-start: 0;
 }
 
 .webmentions__replies {
   display: grid;
-  gap: var(--global-space-fixed-2);
 }
 .webmentions__replies-container {
   display: grid;
   gap: var(--global-space-fixed-3);
+
+  margin-block-start: var(--global-space-fixed-2);
+}
+.webmentions__replies-container:empty {
+  margin-block-start: 0;
 }
 </style>
