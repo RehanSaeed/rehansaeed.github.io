@@ -7,11 +7,6 @@ import "katex/dist/katex.min.css";
 // Import default layout so we don't need to import it to every page
 import defaultLayout from "~/layouts/default.vue";
 
-// Import Teleport component for Vue 2.
-// <portal-target></portal-target> added to default.vue.
-// <portal></portal> added to dialogue.vue
-import PortalVue from "portal-vue";
-
 // Import comments
 import Vssue from "vssue";
 import GithubV3 from "@vssue/api-github-v3";
@@ -187,8 +182,6 @@ export default function (Vue, { router, head, isClient }) {
 
   // Set default layout as a global component
   Vue.component("Layout", defaultLayout);
-
-  Vue.use(PortalVue);
 
   Vue.use(Vssue, {
     api: GithubV3,
