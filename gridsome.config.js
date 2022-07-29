@@ -225,7 +225,7 @@ module.exports = {
         statusBarStyle: "default",
         backgroundColor: "#f2f4f7",
         themeColor: "#6b17e8",
-        icon: "src/favicon.png",
+        icon: "static/favicon.png",
         maskableIcon: true,
         shortcuts: [
           {

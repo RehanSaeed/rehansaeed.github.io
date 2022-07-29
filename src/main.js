@@ -79,11 +79,11 @@ export default function (Vue, { router, head, isClient }) {
   head.link.push({
     rel: "icon",
     type: "image/svg+xml",
-    href: "favicon.svg",
+    href: `${site.url}/favicon.svg`,
   });
   head.link.push({
     rel: "alternate icon",
-    href: "favicon.ico",
+    href: `${site.url}/favicon.ico`,
     sizes: "any",
   });
 
@@ -91,7 +91,7 @@ export default function (Vue, { router, head, isClient }) {
   head.link.push({
     rel: "mask-icon",
     color: "#6b17e8",
-    href: "favicon.svg",
+    href: `${site.url}/favicon.svg`,
   });
 
   // Windows Meta Tags
@@ -101,14 +101,14 @@ export default function (Vue, { router, head, isClient }) {
   });
   head.meta.push({
     name: "msapplication-TileImage",
-    content: "src/favicon.png",
+    content: `${site.url}/favicon.png`,
   });
 
   // Search
   head.link.push({
     rel: "search",
     type: "application/opensearchdescription+xml",
-    href: "/opensearch.xml",
+    href: `${site.url}/opensearch.xml`,
     title: "Muhammad Rehan Saeed",
   });
 
@@ -116,19 +116,19 @@ export default function (Vue, { router, head, isClient }) {
   head.link.push({
     rel: "alternate",
     type: "application/atom+xml",
-    href: "/atom.xml",
+    href: `${site.url}/atom.xml`,
     title: "Muhammad Rehan Saeed",
   });
   head.link.push({
     rel: "alternate",
     type: "application/json",
-    href: "/feed.json",
+    href: `${site.url}/feed.json`,
     title: "Muhammad Rehan Saeed",
   });
   head.link.push({
     rel: "alternate",
     type: "application/rss+xml",
-    href: "/rss.xml",
+    href: `${site.url}/rss.xml`,
     title: "Muhammad Rehan Saeed",
   });
 
