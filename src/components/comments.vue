@@ -314,10 +314,16 @@ export default {
 .vssue-comment-hint {
   color: var(--global-placeholder-color);
 }
+.vssue-comment-reactions {
+  display: flex;
+}
 .vssue-comment-reaction {
+  display: flex;
+  gap: var(--global-space-fixed-2);
+
   color: var(--global-accent-color);
   cursor: pointer;
-  display: inline-block;
+  line-height: 1;
   margin-inline-end: var(--global-space-fixed-4);
 
   // Disable New Comment Functionality - Disable click on buttons.
