@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2022-07-29T15:24:40.711Z</updated>
+    <updated>2022-08-01T14:38:54.715Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -14,6 +14,85 @@
     <logo>https://rehansaeed.com/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg</logo>
     <icon>https://rehansaeed.com/favicon.ico</icon>
     <rights>Copyright © 2022 Muhammad Rehan Saeed</rights>
+    <entry>
+        <title type="html"><![CDATA[On the Etiquette of Pull Request Comments]]></title>
+        <id>https://rehansaeed.com/on-the-etiquette-of-pull-request-comments/</id>
+        <link href="https://rehansaeed.com/on-the-etiquette-of-pull-request-comments/"/>
+        <updated>2022-02-07T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Commenting on a pull request is fraught with potential pitfalls. Here is a short guide to the etiquette of writing pull request comments.]]></summary>
+        <content type="html"><![CDATA[<p>Picture the scene. A hard working newbie developer is mashing their keyboard for hours trying to get something working smoothly. Eventually, perseverance and maybe more than a little help from StackOverflow leads to success. The developer carefully commits their code and crafts a pull request, ready for the world to bask in its glory.</p>
+<p>The next day the developer eagerly opens up their pull request and sees a dozen or so comments that all look something like this:</p>
+<blockquote>
+<p>nit: Fix this.</p>
+<footer><cite>Reviewer</cite></footer>
+</blockquote>
+<p>You may see this comment and not see any problems. I&#39;d like to suggest that this comment is an example of somewhat bad etiquette. Let us discuss the etiquette of pull request comments.</p>
+<h1 id="being-short">Being Short</h1>
+<p>I have a limited number of <a href="https://www.keysleft.com">keystrokes before I die</a>. Are my fellow developers not worthy of a share of those strokes? We&#39;re all in a rush to get something done but spending the time to write a full comment is not a waste of time, it shows that <strong>you care</strong>!</p>
+<blockquote>
+<p>Fix this.</p>
+<footer><cite>Reviewer</cite></footer>
+</blockquote>
+<p>What needs to be fixed? How does it need to be fixed? Why does it need to be fixed? Answering the what, why and how is important to getting your point across.</p>
+<p>In cases like this, saving yourself some keystrokes by assuming knowledge on the part of the developer submitting the PR is often a mistake. By not fully explaining yourself, you increase the chances of further questions being asked or even direct contact via messaging systems like Slack or Microsoft Teams. Since PR reviews are asynchronous in nature, this can increase the time it takes to review a PR by hours or even days.</p>
+<h1 id="code-style">Code Style</h1>
+<p>If you&#39;re writing pull request comments that are about code style, consider using a tool like <a href="https://rehansaeed.com/stop-brace-wars-use-stylecop/">StyleCop</a> or Prettier to automate this. It also ends any conflict in a team about the style of code the team should adopt and makes everyone&#39;s code look the same for optimal readability. Thus you can avoid having comments like this in your pull requests:</p>
+<blockquote>
+<p>Prefix your fields with <code>_</code>.</p>
+<footer><cite>Reviewer</cite></footer>
+</blockquote>
+<h1 id="jargon">Jargon</h1>
+<p>The first time I saw &#39;nit:&#39; in a PR review, I had to google its meaning. Evidently, it means that the comment is a minor point by evoking the spectre of a <a href="https://en.wikipedia.org/wiki/Head_louse">blood sucking parasite</a>. It saves the writer around seven keystrokes but always evokes a mild sense of disgust in me personally. Why not save someone doing that Google search and disgust and just write &#39;Minor point:&#39;?</p>
+<blockquote>
+<p>nit: This can be done better.</p>
+<footer><cite>Reviewer</cite></footer>
+</blockquote>
+<h1 id="passive-aggressive">Passive Aggressive</h1>
+<p>The way you word your PR comments can come across as passive aggressive if you&#39;re not careful. Is the commenter below suggesting that I hadn&#39;t considered the use of &#39;X&#39;? What if I already did and discounted it?</p>
+<blockquote>
+<p>Use X here.</p>
+<footer><cite>Reviewer</cite></footer>
+</blockquote>
+<p>Below are a couple of better ways to phrase the above comment. The comments assume nothing about the developers intent and simply ask a question.</p>
+<blockquote>
+<p>Have you considered doing X here?
+Have you thought about X?
+Would X help here?</p>
+<footer><cite>Reviewer</cite></footer>
+</blockquote>
+<h1 id="emote-😆">Emote 😆</h1>
+<p>Text is an imperfect low bandwidth means of communication. One way to increase that bandwidth is to use emoji and get an emotional point across along with your technical one. It also gets across a sense of fun to what can come across as something quite negative, since you are after all picking out all the mistakes you can spot in someone&#39;s hard work.</p>
+<blockquote>
+<p>Looks like there is a 🐛 crawling on this line.</p>
+<footer><cite>Reviewer</cite></footer>
+</blockquote>
+<h1 id="positive-comments">Positive Comments</h1>
+<p>Not every comment has to be a negative comment picking out a bug or mistake. It&#39;s useful to call out a positive change. Other reviewers in the team may see it and pick up on the practice too.</p>
+<blockquote>
+<p>🚀 This is awesome, we need to do this elsewhere.</p>
+<footer><cite>Reviewer</cite></footer>
+</blockquote>
+<h1 id="bring-evidence">Bring Evidence</h1>
+<p>I sometimes see comments to the effect of the one below. Why is &#39;X&#39; better? Says who?</p>
+<blockquote>
+<p>X is a better way to do this.</p>
+<footer><cite>Reviewer</cite></footer>
+</blockquote>
+<p>Now imagine there was a link below to a blog post providing evidence as to why &#39;X&#39; is better. We&#39;ll even use better language and the odd emoji:</p>
+<blockquote>
+<p>Have you considered using X, it&#39;s 🔥?</p>
+<p>🔗 <a href="https://rehansaeed.com/why-x-is-better-than-y">https://rehansaeed.com/why-x-is-better-than-y</a></p>
+<footer><cite>Reviewer</cite></footer>
+</blockquote>
+<h1 id="teachable-moments">Teachable Moments</h1>
+<p>Every PR comment is a teachable moment where you have the opportunity to take a little extra time and explain why you are requesting a particular change. As I&#39;ve said above, take the time to add a link to a relevant article or blog post but I&#39;ve found that sometimes writing a paragraph or two can also help.</p>
+<p>One thing to watch out for though is that PR comments <strong>don&#39;t scale</strong>! If you find yourself making the same comment on a second persons PR, it&#39;s time to think about writing a blog post (as I&#39;ve done in the past), wiki entry or some documentation somewhere and sharing that with your team.</p>
+]]></content>
+        <author>
+            <name/>
+            <uri>https://rehansaeed.com</uri>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[I Was Awarded as an Open UK Honouree]]></title>
         <id>https://rehansaeed.com/open-uk-honouree/</id>
