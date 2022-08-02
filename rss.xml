@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, YouTuber, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Mon, 01 Aug 2022 14:38:54 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 02 Aug 2022 10:49:43 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -19,7 +19,7 @@
             <title><![CDATA[On the Etiquette of Pull Request Comments]]></title>
             <link>https://rehansaeed.com/on-the-etiquette-of-pull-request-comments/</link>
             <guid>https://rehansaeed.com/on-the-etiquette-of-pull-request-comments/</guid>
-            <pubDate>Mon, 07 Feb 2022 00:00:00 GMT</pubDate>
+            <pubDate>Tue, 02 Aug 2022 00:00:00 GMT</pubDate>
             <description><![CDATA[Commenting on a pull request is fraught with potential pitfalls. Here is a short guide to the etiquette of writing pull request comments.]]></description>
             <content:encoded><![CDATA[<p>Picture the scene. A hard working newbie developer is mashing their keyboard for hours trying to get something working smoothly. Eventually, perseverance and maybe more than a little help from StackOverflow leads to success. The developer carefully commits their code and crafts a pull request, ready for the world to bask in its glory.</p>
 <p>The next day the developer eagerly opens up their pull request and sees a dozen or so comments that all look something like this:</p>
