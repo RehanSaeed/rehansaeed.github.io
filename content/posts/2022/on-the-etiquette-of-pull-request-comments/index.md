@@ -4,7 +4,7 @@ description: "Commenting on a pull request is fraught with potential pitfalls. H
 author: "Muhammad Rehan Saeed"
 permalink: "/on-the-etiquette-of-pull-request-comments/"
 heroImage: "/images/hero/Precious-PR-1600x900.jpg"
-date: "2022-02-07"
+date: "2022-08-02"
 dateModified: null
 published: true
 categories:
