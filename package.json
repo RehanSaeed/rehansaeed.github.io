@@ -57,7 +57,7 @@
     "remark-kbd": "1.1.0",
     "remark-toc": "7.2.0",
     "remark-validate-links": "10.0.4",
-    "sass": "1.54.0",
+    "sass": "1.54.1",
     "sass-loader": "10.3.1"
   },
   "scripts": {
