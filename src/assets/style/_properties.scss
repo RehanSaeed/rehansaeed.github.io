@@ -172,122 +172,122 @@
 
 // Light theme
 [data-theme="light"] {
-  --global-accent-color: hsl(264, 82%, 50%);
-  --global-alternate-accent-color: hsl(254, 100%, 87%);
-  --global-background-color: hsl(216, 24%, 98%);
-  --global-content-background-color: hsl(0, 0%, 100%);
-  --global-border-color: hsla(0, 0%, 0%, 0.1);
-  --global-body-color: hsl(0, 0%, 27%);
-  --global-title-color: hsl(0, 0%, 7%);
-  --global-disabled-color: hsla(0, 0%, 0%, 0.1);
-  --global-placeholder-color: hsl(210, 8%, 67%);
-  --global-shadow-color: hsla(0, 0%, 15%, 0.1);
+  --global-accent-color: hsl(264 82% 50%);
+  --global-alternate-accent-color: hsl(254 100% 87%);
+  --global-background-color: hsl(216 24% 98%);
+  --global-content-background-color: hsl(0 0% 100%);
+  --global-border-color: hsl(0 0% 0% / 0.1);
+  --global-body-color: hsl(0 0% 27%);
+  --global-title-color: hsl(0 0% 7%);
+  --global-disabled-color: hsl(0 0% 0% / 0.1);
+  --global-placeholder-color: hsl(210 8% 67%);
+  --global-shadow-color: hsl(0 0% 15% / 0.1);
 
   // Arrows
-  --global-arrows-color-1: hsl(264, 82%, 88%);
-  --global-arrows-color-2: hsl(264, 82%, 80%);
-  --global-arrows-color-3: hsl(264, 82%, 72%);
-  --global-arrows-color-4: hsl(264, 82%, 64%);
-  --global-arrows-color-5: hsl(264, 82%, 58%);
-  --global-arrows-color-6: hsl(264, 82%, 50%);
+  --global-arrows-color-1: hsl(264 82% 88%);
+  --global-arrows-color-2: hsl(264 82% 80%);
+  --global-arrows-color-3: hsl(264 82% 72%);
+  --global-arrows-color-4: hsl(264 82% 64%);
+  --global-arrows-color-5: hsl(264 82% 58%);
+  --global-arrows-color-6: hsl(264 82% 50%);
 
   // Link
-  --global-link-color: hsl(264, 82%, 50%);
-  --global-link-visited-color: hsl(264, 61%, 35%);
+  --global-link-color: hsl(264 82% 50%);
+  --global-link-visited-color: hsl(264 61% 35%);
 
   // Selection
-  --global-selection-background-color: hsl(264, 82%, 50%);
-  --global-selection-body-color: hsl(216, 24%, 96%);
+  --global-selection-background-color: hsl(264 82% 50%);
+  --global-selection-body-color: hsl(216 24% 96%);
 
   // Scroll
-  --global-scroll-thumb-color: hsl(0, 0%, 100%);
-  --global-scroll-track-color: hsl(0, 0%, 87%);
+  --global-scroll-thumb-color: hsl(0 0% 100%);
+  --global-scroll-track-color: hsl(0 0% 87%);
 
   // Skeleton
-  --global-skeleton-light-color: hsl(30, 1%, 99%);
-  --global-skeleton-dark-color: hsl(30, 2%, 95%);
+  --global-skeleton-light-color: hsl(30 1% 99%);
+  --global-skeleton-dark-color: hsl(30 2% 95%);
 
   // Info
   --global-info-background-color: var(--global-background-color);
-  --global-info-border-color: hsl(153, 47%, 49%);
+  --global-info-border-color: hsl(153 47% 49%);
   --global-info-body-color: var(--global-body-color);
   --global-info-title-color: var(--global-title-color);
 
   // Warning
-  --global-warning-background-color: hsla(50, 100%, 70%, 0.3);
-  --global-warning-border-color: hsl(50, 100%, 35%);
-  --global-warning-body-color: hsl(0, 0%, 0%);
-  --global-warning-title-color: hsl(50, 100%, 20%);
+  --global-warning-background-color: hsl(50 100% 70% / 0.3);
+  --global-warning-border-color: hsl(50 100% 35%);
+  --global-warning-body-color: hsl(0 0% 0%);
+  --global-warning-title-color: hsl(50 100% 20%);
 
   // Danger
-  --global-danger-background-color: hsl(0, 100%, 95%);
-  --global-danger-border-color: hsl(0, 100%, 30%);
-  --global-danger-body-color: hsl(0, 0%, 0%);
-  --global-danger-title-color: hsl(0, 100%, 10%);
+  --global-danger-background-color: hsl(0 100% 95%);
+  --global-danger-border-color: hsl(0 100% 30%);
+  --global-danger-body-color: hsl(0 0% 0%);
+  --global-danger-title-color: hsl(0 100% 10%);
 
   @media (prefers-contrast: more) {
-    --global-body-color: hsl(0, 0%, 0%);
-    --global-title-color: hsl(0, 0%, 0%);
+    --global-body-color: hsl(0 0% 0%);
+    --global-title-color: hsl(0 0% 0%);
   }
 }
 
 // Dark theme
 [data-theme="dark"] {
-  --global-accent-color: hsl(254, 100%, 87%);
-  --global-alternate-accent-color: hsl(264, 82%, 50%);
-  --global-background-color: hsl(207, 62%, 14%);
-  --global-content-background-color: hsl(206, 64%, 16%);
-  --global-border-color: hsla(0, 0%, 100%, 0.1);
-  --global-body-color: hsl(203, 20%, 90%);
-  --global-title-color: hsl(0, 0%, 100%);
-  --global-disabled-color: hsla(0, 0%, 100%, 0.1);
-  --global-placeholder-color: hsl(210, 8%, 67%);
-  --global-shadow-color: hsla(0, 0%, 85%, 0.1);
+  --global-accent-color: hsl(254 100% 87%);
+  --global-alternate-accent-color: hsl(264 82% 50%);
+  --global-background-color: hsl(207 62% 14%);
+  --global-content-background-color: hsl(206 64% 16%);
+  --global-border-color: hsl(0 0% 100% / 0.1);
+  --global-body-color: hsl(203 20% 90%);
+  --global-title-color: hsl(0 0% 100%);
+  --global-disabled-color: hsl(0 0% 100% / 0.1);
+  --global-placeholder-color: hsl(210 8% 67%);
+  --global-shadow-color: hsl(0 0% 85% / 0.1);
 
   // Arrows
-  --global-arrows-color-1: hsl(254, 100%, 87%);
-  --global-arrows-color-2: hsl(254, 100%, 79%);
-  --global-arrows-color-3: hsl(254, 100%, 71%);
-  --global-arrows-color-4: hsl(254, 100%, 63%);
-  --global-arrows-color-5: hsl(254, 100%, 55%);
-  --global-arrows-color-6: hsl(254, 100%, 47%);
+  --global-arrows-color-1: hsl(254 100% 87%);
+  --global-arrows-color-2: hsl(254 100% 79%);
+  --global-arrows-color-3: hsl(254 100% 71%);
+  --global-arrows-color-4: hsl(254 100% 63%);
+  --global-arrows-color-5: hsl(254 100% 55%);
+  --global-arrows-color-6: hsl(254 100% 47%);
 
   // Link
-  --global-link-color: hsl(254, 100%, 87%);
-  --global-link-visited-color: hsl(254, 46%, 69%);
+  --global-link-color: hsl(254 100% 87%);
+  --global-link-visited-color: hsl(254 46% 69%);
 
   // Selection
-  --global-selection-background-color: hsl(254, 100%, 87%);
-  --global-selection-body-color: hsl(216, 24%, 96%);
+  --global-selection-background-color: hsl(254 100% 87%);
+  --global-selection-body-color: hsl(216 24% 96%);
 
   // Scroll
-  --global-scroll-thumb-color: hsl(70, 8%, 15%);
-  --global-scroll-track-color: hsl(0, 0%, 30%);
+  --global-scroll-thumb-color: hsl(70 8% 15%);
+  --global-scroll-track-color: hsl(0 0% 30%);
 
   // Skeleton
-  --global-skeleton-light-color: hsl(206, 64%, 25%);
-  --global-skeleton-dark-color: hsl(206, 64%, 20%);
+  --global-skeleton-light-color: hsl(206 64% 25%);
+  --global-skeleton-dark-color: hsl(206 64% 20%);
 
   // Info
   --global-info-background-color: var(--global-background-color);
-  --global-info-border-color: hsl(153, 47%, 49%);
+  --global-info-border-color: hsl(153 47% 49%);
   --global-info-body-color: var(--global-body-color);
   --global-info-title-color: var(--global-title-color);
 
   // Warning
-  --global-warning-background-color: hsla(50, 100%, 46%, 0.3);
+  --global-warning-background-color: hsl(50 100% 46% / 0.3);
   --global-warning-border-color: hsl(50, 100%, 35%);
   --global-warning-body-color: var(--global-title-color);
   --global-warning-title-color: var(--global-title-color);
 
   // Danger
-  --global-danger-background-color: hsl(0, 100%, 9%);
-  --global-danger-border-color: hsl(0, 100%, 30%);
+  --global-danger-background-color: hsl(0 100% 9%);
+  --global-danger-border-color: hsl(0 100% 30%);
   --global-danger-body-color: var(--global-title-color);
   --global-danger-title-color: var(--global-title-color);
 
   @media (prefers-contrast: more) {
-    --global-body-color: hsl(203, 20%, 100%);
-    --global-title-color: hsl(0, 0%, 100%);
+    --global-body-color: hsl(203 20% 100%);
+    --global-title-color: hsl(0 0% 100%);
   }
 }

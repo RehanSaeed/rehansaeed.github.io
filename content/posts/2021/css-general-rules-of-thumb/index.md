@@ -123,8 +123,8 @@ A colour in CSS can be written in several ways. Below, I'm setting the colour wh
 ```css
 color: white;
 color: #ffffff;
-color: rgb(255, 255, 255);
-color: hsl(0, 0%, 100%);
+color: rgb(255 255 255);
+color: hsl(0 0% 100%);
 ```
 
 # Accessibility

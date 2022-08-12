@@ -69,11 +69,11 @@ export default {
 
 <style lang="scss">
 .border {
-  color: hsl(0, 0%, 96%);
+  color: hsl(0 0% 96%);
   --gradient: radial-gradient(
     circle,
-    hsl(var(--hue1), var(--saturation1), var(--lightness1)) 0%,
-    hsl(var(--hue2), var(--saturation2), var(--lightness2)) 100%
+    hsl(var(--hue1) var(--saturation1) var(--lightness1)) 0%,
+    hsl(var(--hue2) var(--saturation2) var(--lightness2)) 100%
   );
 
   mask: linear-gradient(#fff, #fff) top, linear-gradient(#fff, #fff) bottom,

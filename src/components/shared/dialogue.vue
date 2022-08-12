@@ -122,7 +122,7 @@ export default {
 }
 
 .dialog::backdrop {
-  background: hsla(0, 0%, 0%, 0.2);
+  background: hsl(0 0% 0% / 0.2);
   backdrop-filter: blur(3px);
 }
 
