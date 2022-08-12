@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, YouTuber, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Wed, 10 Aug 2022 15:21:20 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 12 Aug 2022 09:21:16 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -735,8 +735,8 @@ Rehan any advice/pointer for us on this?</p>
 <p>A colour in CSS can be written in several ways. Below, I&#39;m setting the colour white in a few different ways. You should prefer <code>hsl</code> because it&#39;s easiest for a human to understand how it works.</p>
 <pre><code class="language-css">color: white;
 color: #ffffff;
-color: rgb(255, 255, 255);
-color: hsl(0, 0%, 100%);
+color: rgb(255 255 255);
+color: hsl(0 0% 100%);
 </code></pre>
 <h1 id="accessibility">Accessibility</h1>
 <p>Making your web application accessible is a must, lets talk about how.</p>

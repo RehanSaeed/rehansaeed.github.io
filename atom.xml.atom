@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2022-08-10T15:21:20.676Z</updated>
+    <updated>2022-08-12T09:21:16.478Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -761,8 +761,8 @@ Rehan any advice/pointer for us on this?</p>
 <p>A colour in CSS can be written in several ways. Below, I&#39;m setting the colour white in a few different ways. You should prefer <code>hsl</code> because it&#39;s easiest for a human to understand how it works.</p>
 <pre><code class="language-css">color: white;
 color: #ffffff;
-color: rgb(255, 255, 255);
-color: hsl(0, 0%, 100%);
+color: rgb(255 255 255);
+color: hsl(0 0% 100%);
 </code></pre>
 <h1 id="accessibility">Accessibility</h1>
 <p>Making your web application accessible is a must, lets talk about how.</p>
