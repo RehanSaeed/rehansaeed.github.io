@@ -17,10 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v3.1.0
         with:
           lfs: true
-      - uses: actions/setup-node@v3.4.1
+      - uses: actions/setup-node@v3.5.1
         with:
           node-version: "16"
           cache: npm
@@ -39,13 +39,13 @@ jobs:
           wait-on: "http://localhost:8080"
           wait-on-timeout: 120
       - name: "Upload Cypress Screenshots"
-        uses: actions/upload-artifact@v3.1.0
+        uses: actions/upload-artifact@v3.1.1
         if: failure()
         with:
           name: cypress-screenshots
           path: cypress/screenshots
       - name: "Upload Cypress Videos"
-        uses: actions/upload-artifact@v3.1.0
+        uses: actions/upload-artifact@v3.1.1
         if: always()
         with:
           name: cypress-videos
