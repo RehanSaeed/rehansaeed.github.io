@@ -44,3 +44,10 @@ $font-size-maximum: 1.25em; // 20px
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
+@mixin line-clamp($lines) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
