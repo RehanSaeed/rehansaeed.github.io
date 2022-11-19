@@ -1,34 +1,6 @@
 <template>
   <div class="social">
     <u-link-button
-      v-if="this.$static.metadata.author.twitter.url"
-      label="Twitter"
-      :href="this.$static.metadata.author.twitter.url"
-      rel="me">
-      <u-icon-twitter />
-    </u-link-button>
-    <u-link-button
-      v-if="this.$static.metadata.author.gitHub.url"
-      label="GitHub"
-      :href="this.$static.metadata.author.gitHub.url"
-      rel="me authn">
-      <u-icon-github />
-    </u-link-button>
-    <u-link-button
-      v-if="this.$static.metadata.author.stackOverflow.url"
-      label="Stack Overflow"
-      :href="this.$static.metadata.author.stackOverflow.url"
-      rel="me">
-      <u-icon-stackoverflow />
-    </u-link-button>
-    <u-link-button
-      v-if="this.$static.metadata.author.linkedIn.url"
-      label="LinkedIn"
-      :href="this.$static.metadata.author.linkedIn.url"
-      rel="me">
-      <u-icon-linkedin />
-    </u-link-button>
-    <u-link-button
       v-if="this.$static.metadata.author.youtube.url"
       label="Youtube"
       :href="this.$static.metadata.author.youtube.url"
@@ -41,6 +13,41 @@
       :href="this.$static.metadata.author.twitch.url"
       rel="me">
       <u-icon-twitch />
+    </u-link-button>
+    <u-link-button
+      v-if="this.$static.metadata.author.twitter.url"
+      label="Twitter"
+      :href="this.$static.metadata.author.twitter.url"
+      rel="me">
+      <u-icon-twitter />
+    </u-link-button>
+    <u-link-button
+      v-if="this.$static.metadata.author.mastodon.url"
+      label="Mastodon"
+      :href="this.$static.metadata.author.mastodon.url"
+      rel="me">
+      <u-icon-mastodon />
+    </u-link-button>
+    <u-link-button
+      v-if="this.$static.metadata.author.gitHub.url"
+      label="GitHub"
+      :href="this.$static.metadata.author.gitHub.url"
+      rel="me authn">
+      <u-icon-github />
+    </u-link-button>
+    <u-link-button
+      v-if="this.$static.metadata.author.linkedIn.url"
+      label="LinkedIn"
+      :href="this.$static.metadata.author.linkedIn.url"
+      rel="me">
+      <u-icon-linkedin />
+    </u-link-button>
+    <u-link-button
+      v-if="this.$static.metadata.author.stackOverflow.url"
+      label="Stack Overflow"
+      :href="this.$static.metadata.author.stackOverflow.url"
+      rel="me">
+      <u-icon-stackoverflow />
     </u-link-button>
     <u-link-button label="Email" :href="mailTo">
       <u-icon-email />
@@ -56,6 +63,7 @@ import linkButton from "~/components/shared/link-button.vue";
 import iconEmail from "~/components/shared/icons/icon-email.vue";
 import iconGitHub from "~/components/shared/icons/icon-github.vue";
 import iconLinkedIn from "~/components/shared/icons/icon-linkedin.vue";
+import iconMastodon from "~/components/shared/icons/icon-mastodon.vue";
 import iconRss from "~/components/shared/icons/icon-rss.vue";
 import iconStackOverflow from "~/components/shared/icons/icon-stackoverflow.vue";
 import iconTwitch from "~/components/shared/icons/icon-twitch.vue";
@@ -70,6 +78,7 @@ export default {
     "u-icon-email": iconEmail,
     "u-icon-github": iconGitHub,
     "u-icon-linkedin": iconLinkedIn,
+    "u-icon-mastodon": iconMastodon,
     "u-icon-rss": iconRss,
     "u-icon-stackoverflow": iconStackOverflow,
     "u-icon-twitch": iconTwitch,
@@ -99,6 +108,9 @@ query {
         url
       }
       linkedIn {
+        url
+      }
+      mastodon {
         url
       }
       stackOverflow {
