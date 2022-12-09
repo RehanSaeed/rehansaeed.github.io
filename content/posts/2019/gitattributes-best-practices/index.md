@@ -46,6 +46,7 @@ The solution to this is to add a `.gitattributes` file at the root of your repos
 # in Windows via a file share from Linux, the scripts will work.
 *.{cmd,[cC][mM][dD]} text eol=crlf
 *.{bat,[bB][aA][tT]} text eol=crlf
+*.{ics,[iI][cC][sS]} text eol=crlf
 
 # Force bash scripts to always use LF line endings so that if a repo is accessed
 # in Unix via a file share from Windows, the scripts will work.
@@ -83,7 +84,7 @@ LFS is supported by most source control providers like GitHub, Bitbucket and Azu
 *.woff2 filter=lfs diff=lfs merge=lfs -text
 
 # Other
-*.exe filter=lfs diff=lfs merge=lfs -text 
+*.exe filter=lfs diff=lfs merge=lfs -text
 ```
 
 So here I've added a whole list of file extensions for various file types I want to be controlled by Git LFS. I tell Git that I want to filter, diff and merge using the LFS tool and finally the `-text` argument tells Git that this is not a text file, which is a strange way to tell it that it's a binary file.
