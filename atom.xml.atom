@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://rehansaeed.com</id>
     <title>Muhammad Rehan Saeed</title>
-    <updated>2022-12-09T10:39:42.106Z</updated>
+    <updated>2022-12-09T10:46:03.582Z</updated>
     <generator>Gridsome Feed Plugin</generator>
     <author>
         <name>Muhammad Rehan Saeed</name>
@@ -818,15 +818,6 @@ color: hsl(0 0% 100%);
   grid-template-rows: 1fr 1fr;
   justify-items: center;
 
-  /* Box Model */
-  box-sizing: border-box;
-  width: 100px;
-  height: 100px;
-  inline-size: 100px;
-  block-size: 100px;
-  margin: 10px;
-  padding: 10px;
-
   /* Positioning */
   position: absolute;
   top: 0;
@@ -840,6 +831,15 @@ color: hsl(0 0% 100%);
   inset-block-end: 0;
   inset-block: 0;
   z-index: 10;
+
+  /* Box Model */
+  box-sizing: border-box;
+  width: 100px;
+  height: 100px;
+  inline-size: 100px;
+  block-size: 100px;
+  margin: 10px;
+  padding: 10px;
 
   /* Display */
   background-color: red;
@@ -878,22 +878,6 @@ color: hsl(0 0% 100%);
 
     /* ... */
 </code></pre>
-<h2 id="box-model">Box Model</h2>
-<p>CSS properties that affect the box model can come next. Again, I&#39;m using alphabetical order except for <code>width</code> and <code>height</code> where it makes more sense for them to go together with <code>width</code> always being first (there are a lot of exceptions to the rules in CSS).</p>
-<pre><code class="language-css">.card {
-    /* ... */
-
-    /* Box Model */
-    box-sizing: border-box;
-    margin: 10px;
-    padding: 10px;
-    width: 100px;
-    height: 100px;
-    inline-size: 100px;
-    block-size: 100px;
-
-    /* ... */
-</code></pre>
 <h2 id="positioning">Positioning</h2>
 <p>CSS properties related to <code>position</code> come next. Similar to <code>display</code>, we put the position at the top and follow in alphabetical order. Again there is an exception to be made here with <code>top</code>, <code>right</code>, <code>bottom</code> and <code>left</code> which follow the order that <code>margin</code> and <code>padding</code> values take.</p>
 <pre><code class="language-css">.card {
@@ -912,6 +896,22 @@ color: hsl(0 0% 100%);
     inset-inline: 0;
     inset-block: 0;
     z-index: 10;
+
+    /* ... */
+</code></pre>
+<h2 id="box-model">Box Model</h2>
+<p>CSS properties that affect the box model can come next. Again, I&#39;m using alphabetical order except for <code>width</code> and <code>height</code> where it makes more sense for them to go together with <code>width</code> always being first (there are a lot of exceptions to the rules in CSS).</p>
+<pre><code class="language-css">.card {
+    /* ... */
+
+    /* Box Model */
+    box-sizing: border-box;
+    margin: 10px;
+    padding: 10px;
+    width: 100px;
+    height: 100px;
+    inline-size: 100px;
+    block-size: 100px;
 
     /* ... */
 </code></pre>
@@ -2056,6 +2056,7 @@ Added some more information about CRLF line endings for <code>.cmd</code> and <c
 # in Windows via a file share from Linux, the scripts will work.
 *.{cmd,[cC][mM][dD]} text eol=crlf
 *.{bat,[bB][aA][tT]} text eol=crlf
+*.{ics,[iI][cC][sS]} text eol=crlf
 
 # Force bash scripts to always use LF line endings so that if a repo is accessed
 # in Unix via a file share from Windows, the scripts will work.
@@ -2087,7 +2088,7 @@ Added some more information about CRLF line endings for <code>.cmd</code> and <c
 *.woff2 filter=lfs diff=lfs merge=lfs -text
 
 # Other
-*.exe filter=lfs diff=lfs merge=lfs -text 
+*.exe filter=lfs diff=lfs merge=lfs -text
 </code></pre>
 <p>So here I&#39;ve added a whole list of file extensions for various file types I want to be controlled by Git LFS. I tell Git that I want to filter, diff and merge using the LFS tool and finally the <code>-text</code> argument tells Git that this is not a text file, which is a strange way to tell it that it&#39;s a binary file.</p>
 <p>A quick warning about adding LFS to an existing repository with existing binary files checked into it. The existing binary files will be checked into Git and not LFS without rewriting Git history which would be bad and you shouldn&#39;t do unless you are the only developer. You will have to add a one off commit to take the latest versions of all binary files and add them to LFS. Everyone who uses the repository will also have to re-clone the repository (I found this out the hard way in a team of 15 people. Many apologies were made over the course of a week). Ideally you add this from day one and educate developers about Git&#39;s treatment of binary files, so people don&#39;t check-in any binary files not controlled by LFS.</p>
