@@ -49,15 +49,6 @@ Here is an example of the four groups in real life:
   grid-template-rows: 1fr 1fr;
   justify-items: center;
 
-  /* Box Model */
-  box-sizing: border-box;
-  width: 100px;
-  height: 100px;
-  inline-size: 100px;
-  block-size: 100px;
-  margin: 10px;
-  padding: 10px;
-
   /* Positioning */
   position: absolute;
   top: 0;
@@ -71,6 +62,15 @@ Here is an example of the four groups in real life:
   inset-block-end: 0;
   inset-block: 0;
   z-index: 10;
+
+  /* Box Model */
+  box-sizing: border-box;
+  width: 100px;
+  height: 100px;
+  inline-size: 100px;
+  block-size: 100px;
+  margin: 10px;
+  padding: 10px;
 
   /* Display */
   background-color: red;
@@ -119,26 +119,6 @@ I think it makes the most sense to start with the `display` property because tha
     /* ... */
 ```
 
-## Box Model
-
-CSS properties that affect the box model can come next. Again, I'm using alphabetical order except for `width` and `height` where it makes more sense for them to go together with `width` always being first (there are a lot of exceptions to the rules in CSS).
-
-```css
-.card {
-    /* ... */
-
-    /* Box Model */
-    box-sizing: border-box;
-    margin: 10px;
-    padding: 10px;
-    width: 100px;
-    height: 100px;
-    inline-size: 100px;
-    block-size: 100px;
-
-    /* ... */
-```
-
 ## Positioning
 
 CSS properties related to `position` come next. Similar to `display`, we put the position at the top and follow in alphabetical order. Again there is an exception to be made here with `top`, `right`, `bottom` and `left` which follow the order that `margin` and `padding` values take.
@@ -160,6 +140,26 @@ CSS properties related to `position` come next. Similar to `display`, we put the
     inset-inline: 0;
     inset-block: 0;
     z-index: 10;
+
+    /* ... */
+```
+
+## Box Model
+
+CSS properties that affect the box model can come next. Again, I'm using alphabetical order except for `width` and `height` where it makes more sense for them to go together with `width` always being first (there are a lot of exceptions to the rules in CSS).
+
+```css
+.card {
+    /* ... */
+
+    /* Box Model */
+    box-sizing: border-box;
+    margin: 10px;
+    padding: 10px;
+    width: 100px;
+    height: 100px;
+    inline-size: 100px;
+    block-size: 100px;
 
     /* ... */
 ```
