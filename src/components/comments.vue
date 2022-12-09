@@ -80,18 +80,18 @@ export default {
 }
 @-webkit-keyframes vssue-keyframe-rotation {
   from {
-    transform: rotate(0deg);
+    rotate: 0deg;
   }
   to {
-    transform: rotate(360deg);
+    rotate: 360deg;
   }
 }
 @keyframes vssue-keyframe-rotation {
   from {
-    transform: rotate(0deg);
+    rotate: 0deg;
   }
   to {
-    transform: rotate(360deg);
+    rotate: 360deg;
   }
 }
 
@@ -113,7 +113,7 @@ export default {
 .vssue .vssue-notice {
   position: relative;
   z-index: 100;
-  transform: translateY(-11px);
+  translate: 0 -11px;
 }
 .vssue .vssue-notice .vssue-alert {
   position: absolute;
@@ -187,7 +187,7 @@ export default {
   position: absolute;
   inset-inline-start: 50%;
   inset-block-start: 50%;
-  transform: translate(-50%, -50%);
+  translate: -50%, -50%;
 }
 .vssue-new-comment-footer {
   grid-area: footer;

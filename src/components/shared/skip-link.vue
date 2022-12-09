@@ -22,12 +22,12 @@ export default {
 
   margin-inline: auto;
   text-align: center;
-  transform: translateY(-110%);
-  transition: transform var(--global-duration-2) var(--ease-in-out-cubic);
+  translate: 0 -110%;
+  transition: translate var(--global-duration-2) var(--ease-in-out-cubic);
   inline-size: 10rem;
 }
 
 .skip-link:focus {
-  transform: translateY(10%);
+  translate: 0 10%;
 }
 </style>

@@ -33,8 +33,8 @@ export default {
   border-radius: var(--global-border-radius);
   box-shadow: var(--global-shadow-1);
   padding: var(--global-space-fluid-6);
-  transition: transform var(--global-duration-2) var(--ease-in-out-cubic);
-  will-change: transform;
+  transition: translate var(--global-duration-2) var(--ease-in-out-cubic);
+  will-change: translate;
 
   @include type.word-wrap();
 }
@@ -46,7 +46,7 @@ export default {
 
 .card--hoverable:hover,
 .card--focusable:focus-within {
-  transform: translateY(-5px);
+  translate: 0 -5px;
 }
 
 .card--hoverable::before,

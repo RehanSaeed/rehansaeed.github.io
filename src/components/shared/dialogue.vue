@@ -100,10 +100,9 @@ export default {
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    will-change: transform;
-
     transition: opacity var(--global-duration-1) var(--ease-out-cubic),
-      transform var(--global-duration-1) var(--ease-out-cubic);
+      translate var(--global-duration-1) var(--ease-out-cubic);
+    will-change: translate;
   }
 }
 
@@ -111,7 +110,7 @@ export default {
   display: block;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(30%);
+  translate: 0 30%;
 }
 
 .dialog--fullscreen {

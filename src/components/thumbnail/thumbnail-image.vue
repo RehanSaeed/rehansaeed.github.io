@@ -4,7 +4,7 @@
     class="thumbnail-image"
     :src="image"
     :style="{
-      transform: imageTransform,
+      rotate: imageRotateDegrees,
       'inline-size': toPx(imageWidth),
       'block-size': toPx(imageHeight),
       'inset-inline-start': toPx(imageX),
@@ -33,8 +33,8 @@ export default {
     },
   },
   computed: {
-    imageTransform() {
-      return this.imageRotate ? `rotate(${this.imageRotate}deg)` : undefined;
+    imageRotateDegrees() {
+      return this.imageRotate ? `${this.imageRotate}deg` : undefined;
     },
   },
   methods: {

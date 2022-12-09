@@ -158,16 +158,16 @@ export default {
 
   @keyframes pulse {
     0% {
-      transform: scale(1);
       opacity: 0;
+      scale: 1;
     }
     50% {
-      transform: scale(2);
       opacity: 1;
+      scale: 2;
     }
     100% {
-      transform: scale(1);
       opacity: 0;
+      scale: 1;
     }
   }
 }

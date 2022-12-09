@@ -60,10 +60,10 @@ export default {
   border-radius: 100%;
   overflow: hidden;
   transition: border-color var(--global-duration-3) var(--ease-out-cubic),
-    transform var(--global-duration-3) var(--ease-out-cubic);
+    scale var(--global-duration-3) var(--ease-out-cubic);
   inline-size: 3rem;
   block-size: 3rem;
-  will-change: border-color, transform;
+  will-change: border-color, scale;
 
   margin: calc(var(--global-border-width-3) * -1);
 
@@ -72,7 +72,7 @@ export default {
     border: var(--global-border-width-3) solid var(--global-accent-color);
     opacity: 1;
     outline: none;
-    transform: scale(1.4);
+    scale: 1.4;
     z-index: 1;
   }
 }

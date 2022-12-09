@@ -243,7 +243,7 @@ query Post ($id: ID!) {
 
 .post-page__arrows {
   margin-inline-start: 50%;
-  transform: translateX(-50%);
+  translate: -50%;
   width: 100vw;
 }
 </style>
