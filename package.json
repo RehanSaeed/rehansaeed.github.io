@@ -49,7 +49,7 @@
     "gridsome-remark-embed-snippet": "1.0.3",
     "gridsome-remark-katex": "0.1.1",
     "gridsome-source-static-meta": "1.0.1",
-    "husky": "8.0.2",
+    "husky": "8.0.3",
     "lint-staged": "13.1.0",
     "marked": "4.2.5",
     "prettier": "2.8.1",
