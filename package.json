@@ -55,7 +55,7 @@
     "prettier": "2.8.4",
     "remark-containers": "1.2.0",
     "remark-kbd": "1.1.0",
-    "remark-toc": "7.2.0",
+    "remark-toc": "8.0.1",
     "remark-validate-links": "10.0.4",
     "sass": "1.59.3",
     "sass-loader": "10.4.1"
