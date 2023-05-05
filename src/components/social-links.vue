@@ -2,6 +2,7 @@
   <div class="social">
     <u-link-button
       v-if="this.$static.metadata.author.youtube.url"
+      class="social__link"
       label="Youtube"
       :href="this.$static.metadata.author.youtube.url"
       rel="me">
@@ -9,6 +10,7 @@
     </u-link-button>
     <u-link-button
       v-if="this.$static.metadata.author.twitch.url"
+      class="social__link"
       label="Twitch"
       :href="this.$static.metadata.author.twitch.url"
       rel="me">
@@ -16,6 +18,7 @@
     </u-link-button>
     <u-link-button
       v-if="this.$static.metadata.author.twitter.url"
+      class="social__link"
       label="Twitter"
       :href="this.$static.metadata.author.twitter.url"
       rel="me">
@@ -23,6 +26,7 @@
     </u-link-button>
     <u-link-button
       v-if="this.$static.metadata.author.mastodon.url"
+      class="social__link"
       label="Mastodon"
       :href="this.$static.metadata.author.mastodon.url"
       rel="me">
@@ -30,6 +34,7 @@
     </u-link-button>
     <u-link-button
       v-if="this.$static.metadata.author.gitHub.url"
+      class="social__link"
       label="GitHub"
       :href="this.$static.metadata.author.gitHub.url"
       rel="me authn">
@@ -37,6 +42,7 @@
     </u-link-button>
     <u-link-button
       v-if="this.$static.metadata.author.linkedIn.url"
+      class="social__link"
       label="LinkedIn"
       :href="this.$static.metadata.author.linkedIn.url"
       rel="me">
@@ -44,15 +50,16 @@
     </u-link-button>
     <u-link-button
       v-if="this.$static.metadata.author.stackOverflow.url"
+      class="social__link"
       label="Stack Overflow"
       :href="this.$static.metadata.author.stackOverflow.url"
       rel="me">
       <u-icon-stackoverflow />
     </u-link-button>
-    <u-link-button label="Email" :href="mailTo">
+    <u-link-button class="social__link" label="Email" :href="mailTo">
       <u-icon-email />
     </u-link-button>
-    <u-link-button href="/rss.xml" label="RSS">
+    <u-link-button class="social__link" href="/rss.xml" label="RSS">
       <u-icon-rss />
     </u-link-button>
   </div>
