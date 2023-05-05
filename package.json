@@ -23,7 +23,7 @@
   "dependencies": {
     "@fontsource/audiowide": "4.5.9",
     "@vssue/api-github-v3": "1.4.7",
-    "date-fns": "2.29.3",
+    "date-fns": "2.30.0",
     "vssue": "1.4.8"
   },
   "devDependencies": {
