@@ -33,7 +33,7 @@ jobs:
           mkdir dist/feed
           cp dist/rss.xml dist/feed/index.xml
       - name: "Cypress Run"
-        uses: cypress-io/github-action@v5.6.2
+        uses: cypress-io/github-action@v5.7.2
         with:
           start: npm start
           wait-on: "http://localhost:8080"
