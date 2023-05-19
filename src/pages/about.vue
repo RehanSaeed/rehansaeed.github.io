@@ -116,20 +116,72 @@
         </a>
         <p class="about__description">
           Before I joined Microsoft, I was a
-          <a :href="mvpUrl">Microsoft Most Valuable Professional (MVP)</a>. This
-          gave me inside information into the work Microsoft was doing. Once I
-          joined Microsoft, I had to give up this award but I am still a member
-          of <a :href="mvpUrl">MVP Reconnect</a>.
+          <a :href="mvpUrl">Microsoft Most Valuable Professional (MVP)</a> for
+          three years. This gave me inside information into the work Microsoft
+          was doing. Once I joined Microsoft, I had to give up this award.
         </p>
-        <a :href="mvpUrl">
-          <g-image
-            class="about__mvp-image"
-            alt="Microsoft Most Valuable Professional (MVP)"
-            height="84"
-            width="208"
-            src="~/assets/images/Microsoft-Most-Valuable-Professional-750x303.png"
-            quality="100" />
-        </a>
+        <div class="about__mvp-images">
+          <a :href="mvpUrl">
+            <g-image
+              class="about__mvp-image"
+              alt="Microsoft Most Valuable Professional (MVP)"
+              height="84"
+              width="208"
+              src="~/assets/images/Microsoft-Most-Valuable-Professional-750x303.png"
+              quality="100" />
+          </a>
+          <a :href="mvpUrl">
+            <g-image
+              class="about__badge-image"
+              alt="Microsoft Most Valuable Professional (MVP) Alumni"
+              height="300"
+              width="300"
+              src="~/assets/images/Microsoft-Most-Valuable-Professional-Alumni-300x300.png"
+              quality="100" />
+          </a>
+        </div>
+        <p class="about__description">
+          Here are some of the awards I have been given for my work as a
+          software engineer in open source or elsewhere:
+        </p>
+        <div class="about_awards-images">
+          <a href="/open-uk-honouree/">
+            <g-image
+              class="about__open-uk-honours-image"
+              alt="Open UK Honours 2022"
+              height="396"
+              width="1288"
+              src="~/assets/images/Open-UK-Honours-2022-1288x396.jpg"
+              quality="100" />
+          </a>
+          <a :href="credlyUrl">
+            <g-image
+              class="about__badge-image"
+              alt="Microsoft Global Hackathon 2022.png"
+              height="300"
+              width="300"
+              src="~/assets/images/Microsoft-Global-Hackathon-2022-300x300.png"
+              quality="100" />
+          </a>
+          <a :href="credlyUrl">
+            <g-image
+              class="about__badge-image"
+              alt="Microsoft Global Hackathon 2021.png"
+              height="300"
+              width="300"
+              src="~/assets/images/Microsoft-Global-Hackathon-2021-300x300.png"
+              quality="100" />
+          </a>
+          <a :href="credlyUrl">
+            <g-image
+              class="about__badge-image about__badge-image--large"
+              alt="Microsoft Global Hackathon 2020.png"
+              height="300"
+              width="300"
+              src="~/assets/images/Microsoft-Global-Hackathon-2020-300x300.png"
+              quality="100" />
+          </a>
+        </div>
         <p class="about__description">
           Do you have questions or comments about my work? Please feel free to
           contact me using any of the links above.
@@ -210,6 +262,9 @@ export default {
     },
     mvpUrl() {
       return "https://mvp.microsoft.com/en-us/PublicProfile/5001654?fullName=Muhammad%20Rehan%20Saeed";
+    },
+    credlyUrl() {
+      return "https://www.credly.com/users/muhammad_rehan_saeed/badges";
     },
     twitchUrl() {
       return this.$static.metadata.author.twitch.url;
@@ -402,11 +457,44 @@ query {
   block-size: 58px;
 }
 
+.about__mvp-images {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--global-space-fixed-6);
+
+  margin-block-end: var(--global-space-fixed-5);
+}
 .about__mvp-image {
   border-radius: var(--global-border-radius);
-  display: block;
-  margin-block-end: var(--global-space-fixed-5);
   inline-size: 208px;
   block-size: 84px;
+}
+
+.about__badge-image {
+  inline-size: 150px;
+  block-size: 150px;
+}
+.about__badge-image--large {
+  inline-size: 200px;
+  block-size: 200px;
+}
+
+.about_awards-images {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--global-space-fixed-6);
+
+  margin-block-end: var(--global-space-fixed-5);
+  max-inline-size: 800px;
+}
+.about__open-uk-honours-image {
+  border: 1px solid var(--global-accent-color);
+  border-radius: var(--global-border-radius);
+  inline-size: 322px;
+  block-size: 99x;
 }
 </style>
