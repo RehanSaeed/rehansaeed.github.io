@@ -174,11 +174,11 @@
           </a>
           <a :href="credlyUrl">
             <g-image
-              class="about__badge-image about__badge-image--large"
+              class="about__badge-image about__badge-image--wide"
               alt="Microsoft Global Hackathon 2020.png"
               height="300"
-              width="300"
-              src="~/assets/images/Microsoft-Global-Hackathon-2020-300x300.png"
+              width="350"
+              src="~/assets/images/Microsoft-Global-Hackathon-2020-350x300.png"
               quality="100" />
           </a>
         </div>
@@ -462,7 +462,7 @@ query {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: var(--global-space-fixed-6);
+  gap: var(--global-space-fixed-5);
 
   margin-block-end: var(--global-space-fixed-5);
 }
@@ -476,9 +476,8 @@ query {
   inline-size: 150px;
   block-size: 150px;
 }
-.about__badge-image--large {
-  inline-size: 200px;
-  block-size: 200px;
+.about__badge-image--wide {
+  inline-size: 180px;
 }
 
 .about_awards-images {
@@ -486,7 +485,7 @@ query {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: var(--global-space-fixed-6);
+  gap: var(--global-space-fixed-5);
 
   margin-block-end: var(--global-space-fixed-5);
   max-inline-size: 800px;
