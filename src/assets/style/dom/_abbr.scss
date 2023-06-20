@@ -1,3 +1,7 @@
+abbr {
+  speak-as: spell-out;
+}
+
 @media print {
   abbr[title]:after {
     content: " (" attr(title) ")";
