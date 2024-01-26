@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, YouTuber, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Wed, 04 Oct 2023 13:56:05 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 26 Jan 2024 11:35:23 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -13,7 +13,7 @@
             <url>https://rehansaeed.com/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg</url>
             <link>https://rehansaeed.com</link>
         </image>
-        <copyright>Copyright © 2023 Muhammad Rehan Saeed</copyright>
+        <copyright>Copyright © 2024 Muhammad Rehan Saeed</copyright>
         <atom:link href="https://rehansaeed.com/rss.xml" rel="self" type="application/rss+xml"/>
         <item>
             <title><![CDATA[On the Etiquette of Pull Request Comments]]></title>
@@ -1223,18 +1223,6 @@ public async Task LongRunningOperationAsync()
 <p>I&#39;ve discussed that Open Telemetry is all about collecting Logs, Metrics and Trace data and gone fairly deep into collecting Trace data. In my next post, I&#39;ll cover how you can configure ASP.NET Core and Open Telemetry traces and logs.</p>
 ]]></content:encoded>
             <enclosure url="https://rehansaeed.com/images/hero/Open-Telemetry-1600x900.png" length="0" type="image/png"/>
-        </item>
-        <item>
-            <title><![CDATA[Muhammad Rehan Saeed: Developer at Microsoft | Leonardo Tuna Podcast]]></title>
-            <link>https://rehansaeed.com/leonardo-tuna-podcast/</link>
-            <guid>https://rehansaeed.com/leonardo-tuna-podcast/</guid>
-            <pubDate>Mon, 30 Nov 2020 10:57:00 GMT</pubDate>
-            <description><![CDATA[I did a fun podcast episode with Leonardo Tuna. We talked about the difficulty of getting a job at Microsoft, some of my work there, JavaScript frontend frameworks, Vue vs React and my interesting experiences writing software for education at Bridge International Academies.]]></description>
-            <content:encoded><![CDATA[<p>I did a fun podcast episode with <a href="https://www.leotuna.com/">Leonardo Tuna</a>. We talked about the difficulty of getting a job at Microsoft, some of my work there, JavaScript frontend frameworks, Vue vs React and my interesting experiences writing software for education at Bridge International Academies.</p>
-<p>Leonardo is also looking for other developers from all walks of life who are interested in recoding podcast episodes, so if you&#39;re interested give him a ping.</p>
-<p><a href="https://www.youtube.com/watch?v=ou8ghziWAwA">https://www.youtube.com/watch?v=ou8ghziWAwA</a></p>
-]]></content:encoded>
-            <enclosure url="https://rehansaeed.com/images/hero/Leonardo-Podcast-1600x900.jpg" length="0" type="image/jpg"/>
         </item>
         <item>
             <title><![CDATA[Automating .NET Security Updates]]></title>
