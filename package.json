@@ -50,7 +50,7 @@
     "gridsome-remark-katex": "0.1.1",
     "gridsome-source-static-meta": "1.0.1",
     "husky": "8.0.3",
-    "lint-staged": "14.0.1",
+    "lint-staged": "15.2.10",
     "marked": "9.0.3",
     "prettier": "3.0.3",
     "remark-containers": "1.2.0",
