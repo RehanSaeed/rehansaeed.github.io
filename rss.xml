@@ -4,7 +4,7 @@
         <title>Muhammad Rehan Saeed</title>
         <link>https://rehansaeed.com</link>
         <description>Software Developer at Microsoft, YouTuber, Open Source Contributor and Blogger</description>
-        <lastBuildDate>Fri, 26 Jan 2024 11:35:23 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 02 Mar 2026 11:28:28 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>Gridsome Feed Plugin</generator>
         <language>en-GB</language>
@@ -13,7 +13,7 @@
             <url>https://rehansaeed.com/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg</url>
             <link>https://rehansaeed.com</link>
         </image>
-        <copyright>Copyright © 2024 Muhammad Rehan Saeed</copyright>
+        <copyright>Copyright © 2026 Muhammad Rehan Saeed</copyright>
         <atom:link href="https://rehansaeed.com/rss.xml" rel="self" type="application/rss+xml"/>
         <item>
             <title><![CDATA[On the Etiquette of Pull Request Comments]]></title>
@@ -1850,7 +1850,7 @@ I certainly didn&#39;t do an in-depth review of each static site generator. Thes
             <pubDate>Tue, 31 Dec 2019 00:00:00 GMT</pubDate>
             <description><![CDATA[What the 'dotnet new' CLI command could be if some effort was spent on developing it. I compare it to other templating engines and suggest ideas.]]></description>
             <content:encoded><![CDATA[<p>The &#39;<a href="https://docs.microsoft.com/en-us/dotnet/core/tools/custom-templates">dotnet new</a>&#39; CLI command is a great way to create projects from templates in dotnet. However, I think it could provide a much better experience than it currently does. I also suspect it isn&#39;t used much, mostly because templates authored for the <code>dotnet new</code> experience are not included in the <code>Visual Studio File -&gt; New Project</code> experience. For template authors, the experience of developing templates could do with some improvements. I tweeted about it this morning and got asked to write a short gist about what could be improved, so this is that list.</p>
-<p><a href="https://twitter.com/RehanSaeedUK/status/1211663043840684036?s=20"><img src="https://rehansaeed.com/what-dotnet-new-could-be/images/Twitter.png" alt="Any plans to improve the dotnet new templating engine? Lots of unfixed bugs. Lots of rough edges needing smoothing. A &#39;dotnet new ui&#39; command to create projects using a visual editor would be cool"></a></p>
+<p><img src="https://rehansaeed.com/what-dotnet-new-could-be/images/Twitter.png" alt="Any plans to improve the dotnet new templating engine? Lots of unfixed bugs. Lots of rough edges needing smoothing. A &#39;dotnet new ui&#39; command to create projects using a visual editor would be cool"></p>
 <h2>Why do I Care?</h2>
 <p>I author a <a href="https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/API.md">Swagger API</a>, <a href="https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/GraphQL.md">GraphQL API</a>, <a href="https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/Orleans.md">Microsoft Orleans</a> and <a href="https://github.com/Dotnet-Boxed/Templates/blob/main/Docs/NuGet.md">NuGet</a> project templates in my <a href="https://github.com/Dotnet-Boxed/Templates">Dotnet Boxed</a> project. The project currently has 1,900 stars on GitHub and the <a href="https://www.nuget.org/packages/Boxed.Templates/">Boxed.Templates</a> NuGet package has around 12,149 downloads at the time of writing. The Dotnet Boxed templates are also some of the more complex templates using <code>dotnet new</code>. They all have a dozen or more optional features.</p>
 <h2>Visual Studio Integration</h2>
@@ -3654,7 +3654,7 @@ public class CatsController : ControllerBase
             <pubDate>Sun, 13 Aug 2017 00:00:00 GMT</pubDate>
             <description><![CDATA[Keeping up with the changes in the software development industry always feels like a losing battle.]]></description>
             <content:encoded><![CDATA[<p>Keeping up with the changes in the software development industry always feels like a losing battle. Just when I feel like I&#39;ve started to catch up and learn the things I need to know to do my job (and hobby), a new version of something is released or even worse, something totally revolutionary comes out which means we have to start learning from first principles again.</p>
-<p><a href="https://twitter.com/RehanSaeedUK/status/895705722943660033">WebAssembly</a> is one such technology which is a game changer but still at the prototype stage. When it does hit, prepare for the whirlwind. Prepare to throw away most of what you knew and re-learn that which is now deemed the state of the art and the way to do things.</p>
+<p>WebAssembly is one such technology which is a game changer but still at the prototype stage. When it does hit, prepare for the whirlwind. Prepare to throw away most of what you knew and re-learn that which is now deemed the state of the art and the way to do things.</p>
 <p>At some point in history it was possible for a single human being to learn all scientific knowledge known to mankind if they could somehow get hold of the information. We&#39;ve long since surpassed that point with a single technology like .NET, let alone software development in general.</p>
 <p>Then you&#39;ve got the cross-functional developers out there. The ones that try to learn everything required to build a complete application. I try to do this but I have the constant feeling that I&#39;m behind, that I need to catch up. It&#39;s impossible to learn everything in any real depth, so you have to skim the surface of some technologies to get by. I wish I knew more about T-SQL, ElasticSearch, Webpack and pretty much all of the myriad of JavaScript frameworks.</p>
 <p>I&#39;m not complaining of course, having to learn is what keeps it interesting and what keeps us coming back for more.</p>
@@ -5925,12 +5925,12 @@ I looked into this subject for use by the company I work for, who had existing i
 </ul>
 <p>If you have already added Open Graph meta tags, then Twitter can make use of them and you can omit some of the meta tags that Twitter requires. This makes adding a Twitter Card very easy and in fact, most of the time all you need to do is include a Twitter username and the card type. Here is an example of what Twitter card meta tags look like given that you already have Open Graph meta tags:</p>
 <pre><code class="language-html">&lt;meta name=&quot;twitter:card&quot; content=&quot;summary_large_image&quot;&gt;
-&lt;meta name=&quot;twitter:site&quot; content=&quot;@RehanSaeedUK&quot;&gt;
+&lt;meta name=&quot;twitter:site&quot; content=&quot;@RehanSaeed&quot;&gt;
 </code></pre>
 <p>Below, is an example of how to generate the above code using my tag helpers or HTML helpers. I have used the <code>Summary Large Image</code> card (Notice the double <code>@</code> sign in the tag helper, this is because <code>@</code> is a special character in Razor and a double <code>@@</code> escapes the character):</p>
-<pre><code class="language-html">&lt;twitter-card-summary-large-image username=&quot;@@RehanSaeedUK&quot;&gt;
+<pre><code class="language-html">&lt;twitter-card-summary-large-image username=&quot;@@RehanSaeed&quot;&gt;
 </code></pre>
-<pre><code class="language-cs">@Html.TwitterCard(new SummaryLargeImageTwitterCard(&quot;@RehanSaeedUK&quot;));
+<pre><code class="language-cs">@Html.TwitterCard(new SummaryLargeImageTwitterCard(&quot;@RehanSaeed&quot;));
 </code></pre>
 <p>There are also tag helpers and HTML helpers for all of the above Twitter cards. The other cards are a little more complicated than the summary card I have shown in my example above.</p>
 <h1>Google+, Pintrest &amp; Others</h1>
