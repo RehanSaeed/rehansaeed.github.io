@@ -111,7 +111,7 @@ export default {
         this.encodedUrl
       }&hashtags=${
         this.encodedTags
-      }&via=${this.$static.metadata.author.twitter.user.replace("@", "")}`;
+      }`;
     },
     redditUrl() {
       return `http://www.reddit.com/submit?url=${this.encodedUrl}&title=${this.encodedTitle}`;
@@ -147,18 +147,6 @@ export default {
   },
 };
 </script>
-
-<static-query>
-query {
-  metadata {
-    author {
-      twitter {
-        user
-      }
-    }
-  }
-}
-</static-query>
 
 <style lang="scss">
 .share-dialogue__links {
