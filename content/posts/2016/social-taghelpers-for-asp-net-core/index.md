@@ -143,17 +143,17 @@ If you have already added Open Graph meta tags, then Twitter can make use of the
 
 ```html
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:site" content="@RehanSaeedUK">
+<meta name="twitter:site" content="@RehanSaeed">
 ```
 
 Below, is an example of how to generate the above code using my tag helpers or HTML helpers. I have used the `Summary Large Image` card (Notice the double `@` sign in the tag helper, this is because `@` is a special character in Razor and a double `@@` escapes the character):
 
 ```html
-<twitter-card-summary-large-image username="@@RehanSaeedUK">
+<twitter-card-summary-large-image username="@@RehanSaeed">
 ```
 
 ```cs
-@Html.TwitterCard(new SummaryLargeImageTwitterCard("@RehanSaeedUK"));
+@Html.TwitterCard(new SummaryLargeImageTwitterCard("@RehanSaeed"));
 ```
 
 There are also tag helpers and HTML helpers for all of the above Twitter cards. The other cards are a little more complicated than the summary card I have shown in my example above.

@@ -16,7 +16,7 @@ tags:
 
 Keeping up with the changes in the software development industry always feels like a losing battle. Just when I feel like I've started to catch up and learn the things I need to know to do my job (and hobby), a new version of something is released or even worse, something totally revolutionary comes out which means we have to start learning from first principles again.
 
-[WebAssembly](https://twitter.com/RehanSaeedUK/status/895705722943660033) is one such technology which is a game changer but still at the prototype stage. When it does hit, prepare for the whirlwind. Prepare to throw away most of what you knew and re-learn that which is now deemed the state of the art and the way to do things.
+WebAssembly is one such technology which is a game changer but still at the prototype stage. When it does hit, prepare for the whirlwind. Prepare to throw away most of what you knew and re-learn that which is now deemed the state of the art and the way to do things.
 
 At some point in history it was possible for a single human being to learn all scientific knowledge known to mankind if they could somehow get hold of the information. We've long since surpassed that point with a single technology like .NET, let alone software development in general.
 
