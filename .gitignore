@@ -360,3 +360,6 @@ dist
 .lighthouseci/
 
 cypress/videos/
+
+# Parity snapshots
+.parity/
