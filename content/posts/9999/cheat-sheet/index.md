@@ -124,11 +124,11 @@ This is `inline` code.
 // No Language
 ```
 
-```js{codeTitle: "Code Title Code Title"}
+```js [Code Title Code Title]
 // Code Title
 ```
 
-```js{numberLines: true}
+```js line-numbers
 // Line Numbers
 // Line Numbers
 // Line Numbers
@@ -172,7 +172,7 @@ export default {
 docker image build --tag foo:1.0.0 --label "build"="123" --label "changeset"="0d9c7d3b77817caab3977b16d1d76bb3eb024837" .
 ```
 
-```js{codeTitle: "Code Title Code Title Code Title Code Title Code Title Code Title Code Title Code Title Code Title Code Title Code Title Code Title Code Title Code Title"}{numberLines: true}{2,4-5,9-10}
+```js [Code Title Code Title Code Title Code Title Code Title Code Title Code Title Code Title Code Title Code Title Code Title Code Title Code Title Code Title] {2,4-5,9-10} line-numbers
 // Code Title, Line Numbers, Line Highlight ----------------------------------------------
 // Code Title, Line Numbers, Line Highlight
 // Code Title, Line Numbers, Line Highlight

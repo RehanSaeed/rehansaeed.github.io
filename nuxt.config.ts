@@ -8,6 +8,9 @@ export default defineNuxtConfig({
 
   modules: ["@nuxt/content"],
 
+  // Global, as in Gridsome's main.js, so rehype-katex output is styled on every page.
+  css: ["katex/dist/katex.min.css"],
+
   app: {
     head: {
       htmlAttrs: { lang: site.language },
@@ -24,7 +27,29 @@ export default defineNuxtConfig({
           // Not enabled in Gridsome; would turn ":word:" text into emoji.
           "remark-emoji": false,
         },
+        highlight: {
+          // Closest matches to the old Prism "vs" (light) and "okaidia" (dark) colours. The dark
+          // variables are switched on by [data-theme="dark"] in _code.scss.
+          theme: { default: "light-plus", dark: "monokai" },
+          langs: [
+            "cs",
+            "css",
+            "dockerfile",
+            "http",
+            "ini",
+            "js",
+            "json",
+            "powershell",
+            "sql",
+            "xml",
+            "yaml",
+          ],
+        },
       },
+    },
+    renderer: {
+      // Heading anchors are added at build time by rehypeHeadingAnchors (modules/blog-content).
+      anchorLinks: false,
     },
     experimental: {
       // Node >= 22.5 built-in node:sqlite, avoiding the better-sqlite3 native build.
