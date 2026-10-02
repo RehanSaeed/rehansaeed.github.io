@@ -38,7 +38,6 @@
     "@playwright/test": "^1.63.0",
     "@remy/webmention": "1.5.0",
     "cheerio": "^1.2.0",
-    "cypress": "13.17.0",
     "gh-pages": "6.3.0",
     "gridsome": "0.7.23",
     "gridsome-plugin-brotli": "0.1.3",
@@ -65,16 +64,17 @@
   },
   "scripts": {
     "build": "gridsome build",
-    "start": "gridsome develop",
+    "start": "serve dist -l 8080",
     "explore": "gridsome explore",
-    "test": "npm run test:chrome && npm run test:edge && npm run test:firefox",
-    "test:debug": "cypress open",
-    "test:chrome": "cypress run --headless --browser chrome",
-    "test:edge": "cypress run --headless --browser edge",
-    "test:firefox": "cypress run --headless --browser firefox",
+    "test": "playwright test --project=chrome --project=edge --project=firefox",
+    "test:debug": "playwright test --ui",
+    "test:chrome": "playwright test --project=chrome",
+    "test:edge": "playwright test --project=edge",
+    "test:firefox": "playwright test --project=firefox",
     "lighthouse": "lhci autorun",
     "parity:snapshot": "node scripts/parity/snapshot.mjs",
-    "parity:diff": "node scripts/parity/diff.mjs tests/parity/baseline .parity/local"
+    "parity:diff": "node scripts/parity/diff.mjs tests/parity/baseline .parity/local",
+    "test:visual": "playwright test --project=visual"
   },
   "browserslist": [
     "defaults"

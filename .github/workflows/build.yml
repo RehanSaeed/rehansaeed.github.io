@@ -32,24 +32,20 @@ jobs:
         run: |
           mkdir dist/feed
           cp dist/rss.xml dist/feed/index.xml
-      - name: "Cypress Run"
-        uses: cypress-io/github-action@v6.10.9
+      - name: "Setup Node for Playwright"
+        uses: actions/setup-node@v4.4.0
         with:
-          start: npm start
-          wait-on: "http://localhost:8080"
-          wait-on-timeout: 120
-      - name: "Upload Cypress Screenshots"
+          node-version: "24"
+      - name: "Install Playwright Browsers"
+        run: npx playwright install --with-deps firefox
+      - name: "Playwright Test"
+        run: npm test
+      - name: "Upload Playwright Report"
         uses: actions/upload-artifact@v7.0.0
         if: failure()
         with:
-          name: cypress-screenshots
-          path: cypress/screenshots
-      - name: "Upload Cypress Videos"
-        uses: actions/upload-artifact@v7.0.0
-        if: always()
-        with:
-          name: cypress-videos
-          path: cypress/videos
+          name: playwright-report
+          path: playwright-report
       - name: "Deploy"
         if: github.event_name != 'pull_request'
         run: |

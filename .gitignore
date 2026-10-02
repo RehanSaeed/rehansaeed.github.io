@@ -359,7 +359,12 @@ dist
 
 .lighthouseci/
 
-cypress/videos/
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+tests/e2e/**/*-snapshots/
 
 # Parity snapshots
 .parity/
