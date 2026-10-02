@@ -3,7 +3,7 @@
     <u-button
       class="search-button"
       aria-label="Open search"
-      @click.native.prevent="onOpen">
+      @click.prevent="onOpen">
       <u-icon-search v-if="!isOpen" />
     </u-button>
 
@@ -15,7 +15,7 @@
       class="search-dialogue">
       <u-search
         :is-open="isOpen"
-        :search="this.$route.query.search"
+        :search="$route.query.search"
         @selected="onSelected" />
     </u-dialogue>
   </div>
@@ -31,8 +31,6 @@ import {
   searchClosed,
   searchResultSelected,
 } from "~/framework/analytics";
-
-// TODO: Add 'find' and '/' keyup event handlers.
 
 export default {
   name: "u-search-button",

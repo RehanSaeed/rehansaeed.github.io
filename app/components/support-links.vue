@@ -7,31 +7,31 @@
 
     <div class="support-links">
       <u-link-button
-        v-if="this.$static.metadata.author.patreon.url"
+        v-if="metadata.author.patreon.url"
         bordered
         label="Patreon"
-        :href="this.$static.metadata.author.patreon.url">
+        :href="metadata.author.patreon.url">
         <u-icon-patreon inline /> Patreon
       </u-link-button>
       <u-link-button
-        v-if="this.$static.metadata.author.buyMeACoffee.url"
+        v-if="metadata.author.buyMeACoffee.url"
         bordered
         label="Buy me a Coffee"
-        :href="this.$static.metadata.author.buyMeACoffee.url">
+        :href="metadata.author.buyMeACoffee.url">
         <u-icon-coffee inline /> Buy me a Coffee
       </u-link-button>
       <u-link-button
-        v-if="this.$static.metadata.author.gitHub.sponsorsUrl"
+        v-if="metadata.author.gitHub.sponsorsUrl"
         bordered
         label="GitHub Sponsors"
-        :href="this.$static.metadata.author.gitHub.sponsorsUrl">
+        :href="metadata.author.gitHub.sponsorsUrl">
         <u-icon-github inline /> GitHub Sponsors
       </u-link-button>
       <u-link-button
-        v-if="this.$static.metadata.author.paypal.url"
+        v-if="metadata.author.paypal.url"
         bordered
         label="Paypal"
-        :href="this.$static.metadata.author.paypal.url">
+        :href="metadata.author.paypal.url">
         <u-icon-paypal inline /> Paypal
       </u-link-button>
     </div>
@@ -54,29 +54,11 @@ export default {
     "u-icon-patreon": iconPatreon,
     "u-icon-paypal": iconPaypal,
   },
+  setup() {
+    return { metadata: useAppConfig().site };
+  },
 };
 </script>
-
-<static-query>
-query {
-  metadata {
-    author {
-      gitHub {
-        sponsorsUrl
-      }
-      patreon {
-        url
-      }
-      buyMeACoffee {
-        url
-      }
-      paypal {
-        url
-      }
-    }
-  }
-}
-</static-query>
 
 <style lang="scss">
 .support-links {

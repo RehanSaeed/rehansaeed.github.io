@@ -3,7 +3,7 @@
   .fade-leave-active {
     transition: opacity var(--global-duration-1) ease-in;
   }
-  .fade-enter,
+  .fade-enter-from,
   .fade-leave-to {
     opacity: 0;
   }

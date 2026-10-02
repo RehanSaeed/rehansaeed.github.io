@@ -6,7 +6,7 @@
     :title="label"
     :href="href"
     :to="to">
-    <g-image
+    <img
       class="avatar__image"
       :alt="alt"
       :src="src"
@@ -16,6 +16,8 @@
 </template>
 
 <script>
+import { NuxtLink } from "#components";
+
 export default {
   name: "u-avatar",
   props: {
@@ -45,7 +47,7 @@ export default {
       return this.size === "medium" ? "50" : "60";
     },
     tag() {
-      return this.to ? "g-link" : "a";
+      return this.to ? NuxtLink : "a";
     },
   },
 };
@@ -59,7 +61,8 @@ export default {
   border: var(--global-border-width-3) solid transparent;
   border-radius: 100%;
   overflow: hidden;
-  transition: border-color var(--global-duration-3) var(--ease-out-cubic),
+  transition:
+    border-color var(--global-duration-3) var(--ease-out-cubic),
     scale var(--global-duration-3) var(--ease-out-cubic);
   inline-size: 3rem;
   block-size: 3rem;

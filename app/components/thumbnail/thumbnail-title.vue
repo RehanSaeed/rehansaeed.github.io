@@ -26,6 +26,7 @@ export default {
     return {
       title: "",
       subtitle: "",
+      titleFontSize: undefined,
       titleJustify: "",
       titleAlign: "",
       titleWidth: undefined,

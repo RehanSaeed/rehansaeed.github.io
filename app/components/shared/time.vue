@@ -5,7 +5,10 @@
 </template>
 
 <script>
-import { getDisplayDateFromString } from "~/framework/date.js";
+import {
+  getAbsoluteDisplayDateFromString,
+  getDisplayDateFromString,
+} from "~/framework/date.js";
 
 export default {
   name: "u-time",
@@ -15,10 +18,22 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      isMounted: false,
+    };
+  },
   computed: {
+    // Recent dates are shown relative to now (e.g. "3 days ago"), which is only known in the
+    // browser. The prerendered HTML has the absolute date, which hydration must match.
     datetimeDisplay() {
-      return getDisplayDateFromString(this.datetime);
+      return this.isMounted
+        ? getDisplayDateFromString(this.datetime)
+        : getAbsoluteDisplayDateFromString(this.datetime);
     },
+  },
+  mounted() {
+    this.isMounted = true;
   },
 };
 </script>

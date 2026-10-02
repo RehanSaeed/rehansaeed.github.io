@@ -1,11 +1,14 @@
 <template>
   <u-card class="portfolio-card" tag="article" hoverable focusable>
     <div class="portfolio-card__header">
-      <g-image
+      <NuxtImg
         :alt="portfolio.title"
         v-if="portfolio.heroImage"
         class="portfolio-card__image"
-        :src="portfolio.heroImage" />
+        :src="portfolio.heroImage"
+        width="770"
+        densities="x1 x2"
+        loading="lazy" />
     </div>
     <div class="portfolio-card__content">
       <u-heading

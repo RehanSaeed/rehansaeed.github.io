@@ -1,5 +1,5 @@
 <template>
-  <Layout>
+  <NuxtLayout>
     <div class="not-found">
       <u-heading id="not-found" level="1" center>404 Not Found</u-heading>
 
@@ -10,30 +10,25 @@
         <u-link-button bordered to="/">Go Home</u-link-button>
       </u-card>
     </div>
-  </Layout>
+  </NuxtLayout>
 </template>
 
-<script>
-import arrows from "~/components/shared/arrows.vue";
-import card from "~/components/shared/card.vue";
-import linkButton from "~/components/shared/link-button.vue";
-import heading from "~/components/shared/heading.vue";
+<script setup>
+import UArrows from "~/components/shared/arrows.vue";
+import UCard from "~/components/shared/card.vue";
+import ULinkButton from "~/components/shared/link-button.vue";
+import UHeading from "~/components/shared/heading.vue";
 
-export default {
-  components: {
-    "u-arrows": arrows,
-    "u-card": card,
-    "u-link-button": linkButton,
-    "u-heading": heading,
+defineProps({
+  error: {
+    type: Object,
+    required: true,
   },
-  metaInfo() {
-    return {
-      title: "Not Found",
-      link: [],
-      meta: [],
-    };
-  },
-};
+});
+
+useHead({
+  title: "Not Found",
+});
 </script>
 
 <style lang="scss">

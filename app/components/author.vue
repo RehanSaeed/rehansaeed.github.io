@@ -1,52 +1,47 @@
 <template>
   <!-- Added webmention markup (See https://indiewebify.me/validate-h-card/?url=https%3A%2F%2Frehansaeed.com) -->
-  <section class="author h-card" :aria-label="$static.metadata.name">
-    <g-image
+  <section class="author h-card" :aria-label="metadata.name">
+    <NuxtImg
       class="author__image u-photo"
-      :alt="$static.metadata.name"
-      immediate
-      src="~/assets/images/author/Muhammad-Rehan-Saeed/Logo-192x192.png"
+      :alt="metadata.name"
+      loading="eager"
+      src="/images/author/Muhammad-Rehan-Saeed/Logo-192x192.png"
       width="120"
       height="120" />
 
     <u-heading
-      :id="$static.metadata.name"
+      :id="metadata.name"
       class="author__site-title"
       link-class="u-url u-uid p-name"
       level="1"
-      :href="$static.metadata.url"
+      :href="metadata.url"
       center
-      >{{ $static.metadata.name }}</u-heading
+      >{{ metadata.name }}</u-heading
     >
 
-    <p class="author__description p-note">{{ $static.metadata.description }}</p>
+    <p class="author__description p-note">{{ metadata.description }}</p>
 
     <u-social-links />
   </section>
 </template>
 
 <script>
+import { NuxtImg } from "#components";
 import heading from "~/components/shared/heading.vue";
 import socialLinks from "~/components/social-links.vue";
 
 export default {
   name: "u-author",
   components: {
+    NuxtImg,
     "u-heading": heading,
     "u-social-links": socialLinks,
   },
+  setup() {
+    return { metadata: useAppConfig().site };
+  },
 };
 </script>
-
-<static-query>
-query {
-  metadata {
-    name
-    description
-    url
-  }
-}
-</static-query>
 
 <style lang="scss">
 .author {

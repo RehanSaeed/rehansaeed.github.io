@@ -1,23 +1,24 @@
 <template>
-  <Layout>
-    <article
-      class="thumbnail"
-      :class="[backgroundClass]"
-      :style="{ backgroundImage: backgroundImage }">
-      <u-thumbnail-title class="thumbnail__title" />
-      <u-thumbnail-logo class="thumbnail__logo" />
-      <u-thumbnail-image class="thumbnail__image1" name="image1" />
-      <u-thumbnail-image class="thumbnail__image2" name="image2" />
-      <u-thumbnail-image class="thumbnail__image3" name="image3" />
-    </article>
-    <u-thumbnail-options
-      :background="background"
-      @update:background="background = $event" />
-  </Layout>
+  <article
+    class="thumbnail"
+    :class="[backgroundClass]"
+    :style="{ backgroundImage: backgroundImage }">
+    <u-thumbnail-title class="thumbnail__title" />
+    <u-thumbnail-logo class="thumbnail__logo" />
+    <u-thumbnail-image class="thumbnail__image1" name="image1" />
+    <u-thumbnail-image class="thumbnail__image2" name="image2" />
+    <u-thumbnail-image class="thumbnail__image3" name="image3" />
+  </article>
+  <u-thumbnail-options
+    :background="background"
+    @update:background="background = $event" />
 </template>
 
+<script setup>
+definePageMeta({ layout: "empty" });
+</script>
+
 <script>
-import Layout from "~/layouts/empty.vue";
 import thumbnailImage from "~/components/thumbnail/thumbnail-image.vue";
 import thumbnailLogo from "~/components/thumbnail/thumbnail-logo.vue";
 import thumbnailOptions from "~/components/thumbnail/thumbnail-options.vue";
@@ -25,7 +26,6 @@ import thumbnailTitle from "~/components/thumbnail/thumbnail-title.vue";
 
 export default {
   components: {
-    Layout,
     "u-thumbnail-image": thumbnailImage,
     "u-thumbnail-logo": thumbnailLogo,
     "u-thumbnail-options": thumbnailOptions,

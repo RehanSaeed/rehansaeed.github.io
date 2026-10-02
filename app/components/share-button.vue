@@ -1,6 +1,6 @@
 <template>
   <div>
-    <u-button bordered @click.native="onClick">
+    <u-button bordered @click="onClick">
       <u-icon-share inline /> Share
     </u-button>
 
@@ -10,19 +10,19 @@
       @close="onClose"
       class="share-dialogue">
       <div class="share-dialogue__links">
-        <u-link-button bordered :href="facebookUrl" @click.native="onClose">
+        <u-link-button bordered :href="facebookUrl" @click="onClose">
           <u-icon-facebook inline /> Facebook
         </u-link-button>
-        <u-link-button bordered :href="twitterUrl" @click.native="onClose">
+        <u-link-button bordered :href="twitterUrl" @click="onClose">
           <u-icon-twitter inline /> Twitter
         </u-link-button>
-        <u-link-button bordered :href="redditUrl" @click.native="onClose">
+        <u-link-button bordered :href="redditUrl" @click="onClose">
           <u-icon-reddit inline /> Reddit
         </u-link-button>
-        <u-link-button bordered :href="linkedinUrl" @click.native="onClose">
+        <u-link-button bordered :href="linkedinUrl" @click="onClose">
           <u-icon-linkedin inline /> LinkedIn
         </u-link-button>
-        <u-link-button bordered :href="mailUrl" @click.native="onClose">
+        <u-link-button bordered :href="mailUrl" @click="onClose">
           <u-icon-email inline /> Email
         </u-link-button>
       </div>
@@ -54,10 +54,13 @@ export default {
     "u-icon-share": iconShare,
     "u-icon-twitter": iconTwitter,
   },
+  setup() {
+    return { metadata: useAppConfig().site };
+  },
   data() {
     return {
       isDialogueOpen: false,
-      isSupported: process.isClient && navigator.share,
+      isSupported: false,
     };
   },
   props: {
@@ -73,19 +76,11 @@ export default {
   },
   computed: {
     internalTitle() {
-      return this.title || document.title;
+      return this.title || (import.meta.client ? document.title : "");
     },
     internalUrl() {
-      let url = this.url;
-      if (!url && process.isClient) {
-        const canonicalElement = document.querySelector("link[rel=canonical]");
-        if (canonicalElement !== null) {
-          url = canonicalElement.href;
-        } else {
-          url = document.location.href;
-        }
-      }
-      return url;
+      // The canonical URL, which is what the page's link[rel=canonical] contains.
+      return this.url || `${this.metadata.url}${this.$route.path}`;
     },
     encodedTitle() {
       return encodeURIComponent(this.internalTitle);
@@ -96,7 +91,7 @@ export default {
     encodedTags() {
       if (this.tags) {
         return encodeURIComponent(
-          this.tags.map((x) => x.replace(/[\W_]+/g, "")).join(",")
+          this.tags.map((x) => x.replace(/[\W_]+/g, "")).join(","),
         );
       }
       return "";
@@ -109,9 +104,7 @@ export default {
       // https://developer.twitter.com/en/docs/twitter-for-websites/tweet-button/overview
       return `https://twitter.com/intent/tweet?text=${this.encodedTitle}&url=${
         this.encodedUrl
-      }&hashtags=${
-        this.encodedTags
-      }`;
+      }&hashtags=${this.encodedTags}`;
     },
     redditUrl() {
       return `http://www.reddit.com/submit?url=${this.encodedUrl}&title=${this.encodedTitle}`;
@@ -123,6 +116,9 @@ export default {
     mailUrl() {
       return `mailto:?subject=${this.encodedTitle}&body=${this.encodedUrl}`;
     },
+  },
+  mounted() {
+    this.isSupported = !!navigator.share;
   },
   methods: {
     open() {

@@ -1,16 +1,14 @@
 <template>
-  <Layout>
-    <article class="border" :style="style"></article>
-  </Layout>
+  <article class="border" :style="style"></article>
 </template>
 
-<script>
-import Layout from "~/layouts/empty.vue";
+<script setup>
+definePageMeta({ layout: "empty" });
+</script>
 
+<script>
 export default {
-  components: {
-    Layout,
-  },
+  components: {},
   computed: {
     borderRadius() {
       return (this.$route.query["border-radius"] ?? "0") + "px";
@@ -76,10 +74,16 @@ export default {
     hsl(var(--hue2) var(--saturation2) var(--lightness2)) 100%
   );
 
-  mask: linear-gradient(#fff, #fff) top, linear-gradient(#fff, #fff) bottom,
-    linear-gradient(#fff, #fff) left, linear-gradient(#fff, #fff) right;
-  mask-size: 100% var(--border-width), 100% var(--border-width),
-    var(--border-width) 100%, var(--border-width) 100%;
+  mask:
+    linear-gradient(#fff, #fff) top,
+    linear-gradient(#fff, #fff) bottom,
+    linear-gradient(#fff, #fff) left,
+    linear-gradient(#fff, #fff) right;
+  mask-size:
+    100% var(--border-width),
+    100% var(--border-width),
+    var(--border-width) 100%,
+    var(--border-width) 100%;
   mask-repeat: no-repeat;
   inline-size: var(--width);
   block-size: var(--height);

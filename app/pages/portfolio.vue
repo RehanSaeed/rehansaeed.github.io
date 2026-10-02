@@ -1,129 +1,70 @@
 <template>
-  <Layout>
-    <div class="portfolio">
-      <header class="portfolio__title">
-        <u-heading id="portfolio" level="1" center :to="relativeUrl"
-          >Portfolio</u-heading
-        >
-        <p>
-          These are some of the open source projects that I've started and
-          maintained. There are many others I've contributed to which you can
-          see in my GitHub profile and of course there are other commercial
-          projects that I cannot disclose.
-        </p>
-      </header>
+  <div class="portfolio">
+    <header class="portfolio__title">
+      <u-heading id="portfolio" level="1" center :to="relativeUrl"
+        >Portfolio</u-heading
+      >
+      <p>
+        These are some of the open source projects that I've started and
+        maintained. There are many others I've contributed to which you can see
+        in my GitHub profile and of course there are other commercial projects
+        that I cannot disclose.
+      </p>
+    </header>
 
-      <u-arrows class="portfolio__arrows" />
+    <u-arrows class="portfolio__arrows" />
 
-      <div class="portfolio__items">
-        <u-portfolio-card
-          v-for="edge of $page.portfolio.edges"
-          :key="edge.node.id"
-          :portfolio="edge.node" />
-      </div>
+    <div class="portfolio__items">
+      <u-portfolio-card
+        v-for="item of portfolio"
+        :key="item.id"
+        :portfolio="item" />
     </div>
-  </Layout>
+  </div>
 </template>
 
-<script>
-import arrows from "~/components/shared/arrows.vue";
-import heading from "~/components/shared/heading.vue";
-import portfolioCard from "~/components/portfolio-card.vue";
+<script setup>
+import UArrows from "~/components/shared/arrows.vue";
+import UHeading from "~/components/shared/heading.vue";
+import UPortfolioCard from "~/components/portfolio-card.vue";
+import { heroImagePath, imageSize } from "~/composables/use-site-head";
 
-export default {
-  components: {
-    "u-arrows": arrows,
-    "u-heading": heading,
-    "u-portfolio-card": portfolioCard,
-  },
-  computed: {
-    title() {
-      return "Portfolio";
-    },
-    description() {
-      return `Portfolio of work by ${this.$static.metadata.author.name}.`;
-    },
-    image() {
-      return (
-        this.$static.metadata.url +
-        "/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg"
-      );
-    },
-    relativeUrl() {
-      return "/portfolio/";
-    },
-    url() {
-      return this.$static.metadata.url + this.relativeUrl;
-    },
-  },
-  metaInfo() {
-    return {
-      title: this.title,
-      link: [{ rel: "canonical", href: this.url }],
-      meta: [
-        { name: "description", content: this.description },
-        { name: "author", content: this.$static.metadata.author.name },
-        // Open Graph
-        { property: "og:title", content: this.title },
-        { property: "og:url", content: this.url },
-        { property: "og:image", content: this.image },
-        {
-          property: "og:image:height",
-          content: this.image.match(/(\d*)x(\d*)/)[2],
-        },
-        {
-          property: "og:image:width",
-          content: this.image.match(/(\d*)x(\d*)/)[1],
-        },
-        { property: "og:description", content: this.description },
-        {
-          property: "og:locale",
-          content: this.$static.metadata.language.replace("-", "_"),
-        },
-        { property: "og:site_name", content: this.$static.metadata.name },
-        { property: "og:type", content: "website" },
-        { property: "fb:app_id", content: this.$static.metadata.facebookAppId },
-      ],
-    };
-  },
-};
+const site = useAppConfig().site;
+const title = "Portfolio";
+const description = `Portfolio of work by ${site.author.name}.`;
+const image = site.url + heroImagePath;
+const relativeUrl = "/portfolio/";
+const url = site.url + relativeUrl;
+const { width, height } = imageSize(image);
+
+useHead({
+  title,
+  link: [{ rel: "canonical", href: url }],
+  meta: [
+    { name: "description", content: description },
+    { name: "author", content: site.author.name },
+    // Open Graph
+    { property: "og:title", content: title },
+    { property: "og:url", content: url },
+    { property: "og:image", content: image },
+    { property: "og:image:height", content: height },
+    { property: "og:image:width", content: width },
+    { property: "og:description", content: description },
+    { property: "og:locale", content: site.language.replace("-", "_") },
+    { property: "og:site_name", content: site.name },
+    { property: "og:type", content: "website" },
+    { property: "fb:app_id", content: site.facebookAppId },
+  ],
+});
+
+const { data: portfolio } = await useAsyncData("portfolio", () =>
+  queryCollection("portfolio")
+    .where("published", "=", true)
+    .order("date", "DESC")
+    .select("id", "title", "description", "heroImage", "permalink", "tags")
+    .all(),
+);
 </script>
-
-<static-query>
-query {
-  metadata {
-    name
-    url
-    language
-    facebookAppId
-    author {
-      name
-    }
-  }
-}
-</static-query>
-
-<page-query>
-query {
-  portfolio: allPortfolio(filter: { published: { eq: true }}, sortBy: "date") {
-    edges {
-      node {
-        id
-        title
-        date (format: "YYYY-MM-DDTHH:mm:ssZ")
-        description
-        heroImage (width: 770, height: 380, blur: 10)
-        permalink
-        tags {
-          id
-          title
-          path
-        }
-      }
-    }
-  }
-}
-</page-query>
 
 <style lang="scss">
 .portfolio {

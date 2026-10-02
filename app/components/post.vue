@@ -1,21 +1,23 @@
 <template>
   <u-card class="post" tag="article">
     <header class="post__header">
-      <g-image
+      <NuxtImg
         v-if="post.heroImage"
         :alt="imageMeta.alt"
         :src="post.heroImage"
-        class="post__photo" />
+        class="post__photo"
+        width="860"
+        densities="x1 x2" />
     </header>
 
-    <div class="post__content e-content" v-html="post.content" />
+    <ContentRenderer class="post__content e-content" :value="post" />
 
     <footer class="post__footer">
       <div class="post__footer__actions">
         <u-share-button
           class="post__share"
           :title="post.title"
-          :tags="post.tags.map((x) => x.title)" />
+          :tags="post.tags" />
         <u-edit-post-button class="post__edit" :post="post" />
         <u-support-button class="post__support" />
       </div>

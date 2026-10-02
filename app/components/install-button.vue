@@ -3,7 +3,7 @@
     v-show="isVisible"
     class="install-button"
     aria-label="Install the app"
-    @click.native.prevent="onInstall">
+    @click.prevent="onInstall">
     <u-icon-add-home />
   </u-button>
 </template>
@@ -43,7 +43,7 @@ export default {
 
       pwaInstallPromoClicked(
         this.installSource,
-        choiceResult.outcome === "accepted"
+        choiceResult.outcome === "accepted",
       );
 
       if (choiceResult.outcome === "accepted") {
@@ -85,30 +85,30 @@ export default {
       console.log("PWA launched with display mode:", displayMode);
       appLaunchDomContentLoaded(displayMode);
     },
-  },
-  onDisplayModeChanged(e) {
-    let displayMode = "browser tab";
-    if (e.matches) {
-      displayMode = "standalone";
-    }
-    console.log("PWA display mode changed:", displayMode);
-    appLaunchDisplayModeChanged(displayMode);
+    onDisplayModeChanged(e) {
+      let displayMode = "browser tab";
+      if (e.matches) {
+        displayMode = "standalone";
+      }
+      console.log("PWA display mode changed:", displayMode);
+      appLaunchDisplayModeChanged(displayMode);
+    },
   },
   mounted() {
     if (window) {
       window.addEventListener("appinstalled", this.onAppInstalled);
       window.addEventListener(
         "beforeinstallprompt",
-        this.onBeforeInstallPrompt
+        this.onBeforeInstallPrompt,
       );
       window.addEventListener("DOMContentLoaded", this.onDomContentLoaded);
 
       this.displayModeMediaQuery = window.matchMedia(
-        "(display-mode: standalone)"
+        "(display-mode: standalone)",
       );
       this.displayModeMediaQuery.addEventListener(
         "change",
-        this.onDisplayModeChanged
+        this.onDisplayModeChanged,
       );
     }
   },
@@ -117,13 +117,13 @@ export default {
       window.removeEventListener("appinstalled", this.onAppInstalled);
       window.removeEventListener(
         "beforeinstallprompt",
-        this.onBeforeInstallPrompt
+        this.onBeforeInstallPrompt,
       );
       window.removeEventListener("DOMContentLoaded", this.onDomContentLoaded);
 
       this.displayModeMediaQuery.removeEventListener(
         "change",
-        this.onDisplayModeChanged
+        this.onDisplayModeChanged,
       );
     }
   },

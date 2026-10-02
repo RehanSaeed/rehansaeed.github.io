@@ -8,14 +8,10 @@ export default {
     };
   },
   mounted() {
-    if (window) {
-      window.addEventListener("scroll", this.onScroll);
-    }
+    window.addEventListener("scroll", this.onScroll);
   },
   unmounted() {
-    if (window) {
-      window.removeEventListener("scroll", this.onScroll);
-    }
+    window.removeEventListener("scroll", this.onScroll);
   },
   methods: {
     onScroll() {
@@ -24,14 +20,16 @@ export default {
         this.scroll =
           window.pageYOffset /
           (document.body.offsetHeight - window.innerHeight);
+        this.update();
       });
     },
-  },
-  render() {
-    const scroll = this.scroll;
-    const element = this.$parent.$el;
-    if (element) {
-      element.style.setProperty("--scroll", scroll);
+    update() {
+      const element = this.$el;
+      if (!(element instanceof HTMLElement)) {
+        return;
+      }
+
+      element.style.setProperty("--scroll", this.scroll);
 
       if (this.scroll > this.previousScroll) {
         element.classList.add("scroll-down");
@@ -40,10 +38,12 @@ export default {
         element.classList.remove("scroll-down");
         element.classList.add("scroll-up");
       }
-    }
-
-    // TODO: Rename to $slots in Vue 3.
-    return this.$scopedSlots.default();
+    },
+  },
+  render() {
+    // Render the single wrapped element so that this.$el is that element.
+    const nodes = this.$slots.default?.() ?? [];
+    return nodes.length === 1 ? nodes[0] : nodes;
   },
 };
 </script>

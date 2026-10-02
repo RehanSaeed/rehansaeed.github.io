@@ -33,6 +33,7 @@ export default {
     "u-heading": heading,
     "u-icon-close": iconClose,
   },
+  emits: ["close"],
   props: {
     fullscreen: {
       default: false,
@@ -61,11 +62,6 @@ export default {
         this.$emit("close");
       }
     },
-  },
-  mounted() {
-    if (!process.isClient) {
-      return;
-    }
   },
 };
 </script>
@@ -100,7 +96,8 @@ export default {
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    transition: opacity var(--global-duration-1) var(--ease-out-cubic),
+    transition:
+      opacity var(--global-duration-1) var(--ease-out-cubic),
       translate var(--global-duration-1) var(--ease-out-cubic);
     will-change: translate;
   }

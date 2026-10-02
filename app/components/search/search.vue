@@ -1,6 +1,6 @@
 <template>
   <section class="search" aria-label="site">
-    <form class="search__form" role="search">
+    <form class="search__form" role="search" @submit.prevent>
       <label class="search__label" for="search">Search</label>
       <input
         class="search__input"
@@ -17,21 +17,49 @@
         v-for="searchResult of searchResults"
         :key="searchResult.id"
         :searchResult="searchResult"
-        @click.native="onSelected" />
+        @selected="onSelected" />
     </div>
   </section>
 </template>
 
 <script>
-import Search from "gridsome-plugin-flexsearch/SearchMixin";
+import { Document } from "flexsearch";
 import SearchResult from "~/components/search/search-result.vue";
+
+const minimumSearchTermLength = 3;
+const resultLimit = 8;
+let indexPromise;
+
+// Downloads the prerendered /flexsearch.json once and builds the index in the browser.
+function loadIndex() {
+  indexPromise ??= $fetch("/flexsearch.json")
+    .then((documents) => {
+      const index = new Document({
+        tokenize: "forward",
+        document: {
+          id: "id",
+          index: ["title", "description"],
+          store: true,
+        },
+      });
+      for (const document of documents) {
+        index.add(document);
+      }
+      return index;
+    })
+    .catch((error) => {
+      indexPromise = undefined;
+      throw error;
+    });
+  return indexPromise;
+}
 
 export default {
   name: "u-search",
   components: {
     "u-search-result": SearchResult,
   },
-  mixins: [Search],
+  emits: ["selected"],
   props: {
     isOpen: {
       type: Boolean,
@@ -40,17 +68,53 @@ export default {
       type: String,
     },
   },
+  data() {
+    return {
+      searchTerm: "",
+      searchResults: [],
+    };
+  },
   methods: {
     onSelected() {
       this.$emit("selected", this.searchTerm);
     },
+    async updateSearchResults() {
+      const searchTerm = this.searchTerm;
+      if (searchTerm.length < minimumSearchTermLength) {
+        this.searchResults = [];
+        return;
+      }
+
+      try {
+        const index = await loadIndex();
+        if (searchTerm !== this.searchTerm) {
+          return;
+        }
+
+        // The limit applies per field, so the merged results are limited again.
+        this.searchResults = index
+          .search(searchTerm, { limit: resultLimit, enrich: true, merge: true })
+          .slice(0, resultLimit)
+          .map((result) => result.doc);
+      } catch (error) {
+        console.error(error);
+      }
+    },
   },
   watch: {
+    $route(to, from) {
+      // Nuxt can update the route object after hydration without navigating, e.g. on deep links with ?search=.
+      if (to.path !== from.path) {
+        this.searchTerm = "";
+      }
+    },
+    searchTerm() {
+      this.updateSearchResults();
+    },
     isOpen() {
       if (this.isOpen) {
+        loadIndex().catch(() => {});
         setTimeout(() => {
-          // TODO: Implement v-focus directive in Vue 3
-          // https://v3.vuejs.org/guide/custom-directive.html
           this.$refs.search.focus();
         }, 100);
       }

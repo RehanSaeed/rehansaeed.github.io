@@ -55,7 +55,7 @@
 export default {
   props: {
     background: {
-      required: true,
+      default: "",
       type: String,
     },
   },

@@ -2,6 +2,7 @@ import { posix } from "node:path";
 import { fromMarkdown } from "mdast-util-from-markdown";
 import { visit } from "unist-util-visit";
 import { keepTagPrefix } from "./markdown";
+import { contentImagesBaseURL } from "./paths";
 import { stripFrontMatter } from "./scan";
 
 type MinimarkNode =
@@ -99,7 +100,6 @@ export function headings(markdown: string): { depth: number; value: string }[] {
   return result;
 }
 
-export const contentImagesBaseURL = "/content-images";
 export const contentImagePattern = /\.(png|jpe?g|gif|svg|webp|avif)$/i;
 const absoluteUrlPattern = /^(?:[a-z][a-z\d+.-]*:|\/|#)/i;
 

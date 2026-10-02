@@ -9,18 +9,17 @@
     <section class="footer__text">
       <span class="footer__copyright"
         >Copyright © {{ new Date().getFullYear() }}
-        {{ this.$static.metadata.author.name }}</span
+        {{ metadata.author.name }}</span
       >
       <span>|</span>
       <span class="footer__copyright"><a href="/sitemap.xml">Sitemap</a></span>
       <span>|</span>
       <span class="footer__links"
-        >Built with <a href="https://gridsome.org">Gridsome</a></span
+        >Built with <a href="https://nuxt.com">Nuxt</a></span
       >
       <span>|</span>
       <span class="footer__links"
-        >Code on
-        <a :href="this.$static.metadata.repository.url">GitHub</a></span
+        >Code on <a :href="metadata.repository.url">GitHub</a></span
       >
     </section>
   </footer>
@@ -38,21 +37,11 @@ export default {
     "u-author": author,
     "u-newsletter": newsletter,
   },
+  setup() {
+    return { metadata: useAppConfig().site };
+  },
 };
 </script>
-
-<static-query>
-query {
-  metadata {
-    author {
-      name
-    }
-    repository {
-      url
-    }
-  }
-}
-</static-query>
 
 <style lang="scss">
 .footer {

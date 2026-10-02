@@ -4,14 +4,15 @@
       class="tags__link"
       bordered
       v-for="tag of tags"
-      :key="tag.id"
-      :to="tag.path"
-      >{{ tag.title }}</u-link-button
+      :key="tag"
+      :to="tagPath(tag)"
+      >{{ tag }}</u-link-button
     >
   </div>
 </template>
 
 <script>
+import { tagPath } from "#shared/utils/tag";
 import linkButton from "~/components/shared/link-button.vue";
 
 export default {
@@ -19,9 +20,12 @@ export default {
   components: {
     "u-link-button": linkButton,
   },
+  setup() {
+    return { tagPath };
+  },
   props: {
     tags: {
-      isRequired: true,
+      required: true,
       type: Array,
     },
   },

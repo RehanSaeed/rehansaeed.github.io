@@ -8,7 +8,6 @@ import remarkToc from "remark-toc";
 import { tagPath } from "../../shared/utils/tag";
 import {
   contentImagePattern,
-  contentImagesBaseURL,
   findEmailsOutsideCode,
   headings,
   prerenderCodeBlocks,
@@ -27,6 +26,7 @@ import {
   remarkMermaid,
   remarkYouTube,
 } from "./markdown";
+import { contentImagesBaseURL, contentPublicDir } from "./paths";
 import { listFiles, scanContent, toPosix } from "./scan";
 
 const postsPerPage = 10;
@@ -42,7 +42,11 @@ export default defineNuxtModule({
   async setup(_options, nuxt) {
     const contentDir = join(nuxt.options.rootDir, "content");
     const dataDir = join(nuxt.options.rootDir, ".data");
-    const imagesDir = join(dataDir, "content-images");
+    const imagesDir = join(
+      nuxt.options.rootDir,
+      contentPublicDir,
+      contentImagesBaseURL,
+    );
 
     // @nuxt/content caches parsed files by content checksum, ignoring the afterParse hook below.
     // Drop that cache whenever this module's source changes so computed fields are never stale.
@@ -93,6 +97,7 @@ export default defineNuxtModule({
     };
 
     // Copy co-located images, e.g. content/posts/2014/foo/images/bar.png -> /content-images/posts/2014/foo/images/bar.png.
+    // contentPublicDir is served (and readable by IPX) via @nuxt/image's `dirs` in nuxt.config.ts.
     await rm(imagesDir, { recursive: true, force: true });
     const images = (await listFiles(contentDir)).filter((file) =>
       contentImagePattern.test(file),
@@ -103,14 +108,6 @@ export default defineNuxtModule({
         await cp(join(contentDir, file), join(imagesDir, file));
       }),
     );
-    nuxt.hook("nitro:config", (nitroConfig) => {
-      nitroConfig.publicAssets ||= [];
-      nitroConfig.publicAssets.push({
-        dir: imagesDir,
-        baseURL: contentImagesBaseURL,
-        maxAge: 60 * 60 * 24 * 365,
-      });
-    });
 
     nuxt.hook("content:file:afterParse", ({ file, content, collection }) => {
       if (collection.name !== "posts" && collection.name !== "portfolio") {
@@ -133,11 +130,14 @@ export default defineNuxtModule({
       for (const key of ["categories", "tags"] as const) {
         content[key] ??= [];
       }
-      // Normalise "2020-04-30" and "2020-04-30T10:00:00Z" so SQL ordering is chronological.
+      // Normalise "2020-04-30" and "2020-04-30T10:00:00Z" to Gridsome's "YYYY-MM-DDTHH:mm:ssZ"
+      // format ("2020-04-30T00:00:00+00:00"). It is also what SQL ordering compares.
       for (const key of ["date", "dateModified"] as const) {
         const value = content[key];
         if (typeof value === "string" && value) {
-          content[key] = new Date(value).toISOString();
+          content[key] = new Date(value)
+            .toISOString()
+            .replace(/\.\d{3}Z$/, "+00:00");
         }
       }
     });

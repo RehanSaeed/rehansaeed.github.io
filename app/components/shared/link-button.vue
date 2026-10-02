@@ -16,6 +16,8 @@
 </template>
 
 <script>
+import { NuxtLink } from "#components";
+
 export default {
   name: "u-link-button",
   props: {
@@ -43,7 +45,7 @@ export default {
   },
   computed: {
     tag() {
-      return this.to ? "g-link" : "a";
+      return this.to ? NuxtLink : "a";
     },
   },
 };
@@ -58,7 +60,8 @@ export default {
   line-height: var(--global-line-height-1);
   position: relative;
   text-decoration: none;
-  transition: color var(--global-duration-1) var(--ease-in-out-cubic),
+  transition:
+    color var(--global-duration-1) var(--ease-in-out-cubic),
     opacity var(--global-duration-1) var(--ease-in-out-cubic),
     transform var(--global-duration-1) var(--ease-in-out-cubic);
   will-change: transform;

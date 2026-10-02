@@ -1,10 +1,10 @@
 <template>
-  <div
+  <component
     class="card"
     :is="tag"
     :class="{ 'card--hoverable': hoverable, 'card--focusable': focusable }">
     <slot />
-  </div>
+  </component>
 </template>
 
 <script>

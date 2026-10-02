@@ -1,7 +1,7 @@
 <script>
 export default {
   name: "u-intersect",
-  abstract: true,
+  emits: ["change", "destroyed", "enter", "enterFirstTime", "leave"],
   data() {
     return {
       hasIntersected: false,
@@ -43,26 +43,27 @@ export default {
         threshold: this.threshold,
         root: this.root,
         rootMargin: this.rootMargin,
-      }
+      },
     );
 
     this.$nextTick(() => {
-      if (this.$slots.default && this.$slots.default.length > 1) {
-        warn("You may only wrap one element in a <u-intersect> component.");
-      } else if (!this.$slots.default || this.$slots.default.length < 1) {
-        warn("You must have one child inside a <u-intersect> component.");
+      if (!(this.$el instanceof Element)) {
+        console.warn(
+          "You must have exactly one element inside a <u-intersect> component.",
+        );
         return;
       }
 
-      this.observer.observe(this.$slots.default[0].elm);
+      this.observer.observe(this.$el);
     });
   },
-  destroyed() {
+  unmounted() {
     this.$emit("destroyed");
     this.observer.disconnect();
   },
   render() {
-    return this.$slots.default ? this.$slots.default[0] : null;
+    const nodes = this.$slots.default?.() ?? [];
+    return nodes[0] ?? null;
   },
 };
 </script>

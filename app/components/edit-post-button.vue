@@ -19,26 +19,14 @@ export default {
       type: Object,
     },
   },
+  setup() {
+    return { metadata: useAppConfig().site };
+  },
   computed: {
     url() {
-      return (
-        `${this.$static.metadata.repository.url}/tree/${this.$static.metadata.repository.branch}/content/posts/` +
-        new Date(this.post.date).getFullYear() +
-        this.post.path +
-        "index.md"
-      );
+      const { url, branch } = this.metadata.repository;
+      return `${url}/tree/${branch}/content/${this.post.stem}.${this.post.extension}`;
     },
   },
 };
 </script>
-
-<static-query>
-query {
-  metadata {
-    repository {
-      url
-      branch
-    }
-  }
-}
-</static-query>

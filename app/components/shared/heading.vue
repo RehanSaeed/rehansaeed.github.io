@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import { NuxtLink } from "#components";
+
 export default {
   name: "u-heading",
   props: {
@@ -63,7 +65,7 @@ export default {
     },
     linkTag() {
       if (this.hasLink) {
-        return this.to ? "g-link" : "a";
+        return this.to ? NuxtLink : "a";
       } else {
         return "span";
       }

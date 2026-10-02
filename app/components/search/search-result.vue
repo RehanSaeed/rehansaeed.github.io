@@ -2,28 +2,31 @@
   <article class="search-result">
     <Component
       :is="tag"
-      @click.native="onSelected"
-      :href="searchResult.node.permalink"
-      :to="searchResult.path"
-      class="search-result__link">
-      <g-image
-        v-if="searchResult.node.heroImage"
+      :href="isExternal ? searchResult.permalink : undefined"
+      :to="isExternal ? undefined : searchResult.permalink"
+      class="search-result__link"
+      @click="onSelected">
+      <img
+        v-if="searchResult.heroImage"
         class="search-result__image"
-        :src="searchResult.node.heroImage" />
+        alt=""
+        loading="lazy"
+        :src="searchResult.heroImage" />
       <u-heading
-        :id="searchResult.node.title"
+        :id="searchResult.title"
         class="search-result__title"
         level="3"
-        >{{ searchResult.node.title }}</u-heading
+        >{{ searchResult.title }}</u-heading
       >
       <p class="search-result__description">
-        {{ searchResult.node.description }}
+        {{ searchResult.description }}
       </p>
     </Component>
   </article>
 </template>
 
 <script>
+import { NuxtLink } from "#components";
 import Heading from "~/components/shared/heading.vue";
 
 export default {
@@ -31,6 +34,7 @@ export default {
   components: {
     "u-heading": Heading,
   },
+  emits: ["selected"],
   props: {
     searchResult: {
       type: Object,
@@ -38,8 +42,11 @@ export default {
     },
   },
   computed: {
+    isExternal() {
+      return /^https?:\/\//.test(this.searchResult.permalink);
+    },
     tag() {
-      return this.searchResult.node.permalink ? "a" : "g-link";
+      return this.isExternal ? "a" : NuxtLink;
     },
   },
   methods: {

@@ -8,7 +8,8 @@
       href="#comments"
       >Comment</u-heading
     >
-    <Vssue :title="title" />
+    <!-- TODO(c9): GitHub Issues comments replace Vssue. -->
+    <a :href="issueUrl">Leave and View Directly on GitHub.com</a>
   </u-card>
 </template>
 
@@ -25,6 +26,16 @@ export default {
   props: {
     title: {
       type: String,
+    },
+  },
+  computed: {
+    issueUrl() {
+      const { url } = useAppConfig().site.repository;
+      const query = new URLSearchParams({
+        title: `[Comment] ${this.title}`,
+        labels: "comment",
+      });
+      return `${url}/issues/new?${query}`;
     },
   },
 };
@@ -103,7 +114,7 @@ export default {
 .vssue .fade-leave-active {
   transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
 }
-.vssue .fade-enter,
+.vssue .fade-enter-from,
 .vssue .fade-leave-to,
 .vssue .fade-appear {
   opacity: 0;
@@ -187,7 +198,9 @@ export default {
   position: absolute;
   inset-inline-start: 50%;
   inset-block-start: 50%;
-  translate: -50%, -50%;
+  translate:
+    -50%,
+    -50%;
 }
 .vssue-new-comment-footer {
   grid-area: footer;

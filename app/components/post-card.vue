@@ -6,17 +6,20 @@
     focusable
     :class="{ 'post-card--has-poster': post.poster }">
     <div class="post-card__header">
-      <g-image
+      <NuxtImg
         v-if="post.heroImage"
         class="post-card__image"
         :alt="imageMeta.alt"
-        :src="post.heroImage" />
+        :src="post.heroImage"
+        width="770"
+        densities="x1 x2"
+        loading="lazy" />
     </div>
     <div class="post-card__content">
       <u-heading
         class="post-card__title"
         :id="post.title"
-        :to="post.path"
+        :to="post.permalink"
         level="2"
         >{{ post.title }}</u-heading
       >

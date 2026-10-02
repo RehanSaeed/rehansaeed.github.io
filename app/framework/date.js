@@ -29,3 +29,11 @@ export function getDisplayDateFromString(date) {
   }
   return undefined;
 }
+
+// The server renders this, as relative dates would be frozen at build time.
+export function getAbsoluteDisplayDateFromString(date) {
+  if (date) {
+    return longDateTimeFormat.format(new Date(date));
+  }
+  return undefined;
+}

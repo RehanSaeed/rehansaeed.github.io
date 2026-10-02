@@ -3,7 +3,7 @@
     <form
       class="newsletter__form"
       method="post"
-      :action="this.$static.metadata.mailchimpUrl">
+      :action="metadata.mailchimpUrl">
       <u-heading
         id="newsletter"
         class="newsletter__title"
@@ -38,8 +38,6 @@
   </u-card>
 </template>
 
-mailchimpUrl
-
 <script>
 import button from "~/components/shared/button.vue";
 import card from "~/components/shared/card.vue";
@@ -52,16 +50,11 @@ export default {
     "u-card": card,
     "u-heading": heading,
   },
+  setup() {
+    return { metadata: useAppConfig().site };
+  },
 };
 </script>
-
-<static-query>
-query {
-  metadata {
-    mailchimpUrl
-  }
-}
-</static-query>
 
 <style lang="scss">
 @use "~/assets/style/abstracts/breakpoints";

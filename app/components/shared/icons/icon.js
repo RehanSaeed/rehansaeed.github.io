@@ -1,11 +1,6 @@
-import icon from "~/components/shared/icons/icon.vue";
-
 export default function createIcon(name) {
   return {
     name: name,
-    components: {
-      "u-icon": icon,
-    },
     props: {
       inline: {
         default: false,
@@ -14,6 +9,11 @@ export default function createIcon(name) {
       title: {
         default: undefined,
         type: String,
+      },
+    },
+    computed: {
+      svgClass() {
+        return this.inline ? "icon icon--inline" : "icon";
       },
     },
   };
