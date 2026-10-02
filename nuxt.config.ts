@@ -6,10 +6,29 @@ export default defineNuxtConfig({
   compatibilityDate: "2026-07-01",
   ssr: true,
 
+  modules: ["@nuxt/content"],
+
   app: {
     head: {
       htmlAttrs: { lang: site.language },
       titleTemplate: `%s - ${site.name}`,
+    },
+  },
+
+  content: {
+    build: {
+      markdown: {
+        // Gridsome never derived title/description from the first heading/paragraph.
+        contentHeading: false,
+        remarkPlugins: {
+          // Not enabled in Gridsome; would turn ":word:" text into emoji.
+          "remark-emoji": false,
+        },
+      },
+    },
+    experimental: {
+      // Node >= 22.5 built-in node:sqlite, avoiding the better-sqlite3 native build.
+      sqliteConnector: "native",
     },
   },
 

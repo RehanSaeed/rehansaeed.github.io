@@ -353,7 +353,6 @@ MigrationBackup/
 .nuxt/
 .output/
 .data/
-public/content-images/
 .cache
 .DS_Store
 dist

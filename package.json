@@ -26,6 +26,7 @@
     "@nuxt/image": "2.1.0",
     "@nuxtjs/robots": "6.2.3",
     "@nuxtjs/sitemap": "8.5.1",
+    "@sindresorhus/slugify": "0.8.0",
     "@vite-pwa/nuxt": "1.1.1",
     "date-fns": "2.30.0",
     "feed": "6.0.0",
@@ -46,10 +47,13 @@
     "husky": "8.0.3",
     "lint-staged": "14.0.1",
     "marked": "9.0.3",
+    "mdast-util-from-markdown": "2.0.3",
     "prettier": "3.8.1",
     "remark-toc": "7.2.0",
     "sass-embedded": "1.105.0",
-    "serve": "^14.2.6"
+    "serve": "^14.2.6",
+    "unist-util-visit": "5.1.0",
+    "yaml": "2.9.1"
   },
   "scripts": {
     "dev": "nuxt dev",
