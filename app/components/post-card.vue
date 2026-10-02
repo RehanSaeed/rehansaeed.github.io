@@ -13,6 +13,7 @@
         :src="post.heroImage"
         width="770"
         densities="x1 x2"
+        format="webp"
         loading="lazy" />
     </div>
     <div class="post-card__content">

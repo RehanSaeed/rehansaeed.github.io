@@ -5,8 +5,12 @@ import { queryCollection } from "@nuxt/content/server";
 export default defineEventHandler(async (event) => {
   const fields = ["title", "description", "heroImage", "permalink"] as const;
   const [posts, portfolio] = await Promise.all([
-    queryCollection(event, "posts").select(...fields).all(),
-    queryCollection(event, "portfolio").select(...fields).all(),
+    queryCollection(event, "posts")
+      .select(...fields)
+      .all(),
+    queryCollection(event, "portfolio")
+      .select(...fields)
+      .all(),
   ]);
   return [
     ...posts.map((doc) => ({ ...doc, index: "post" })),

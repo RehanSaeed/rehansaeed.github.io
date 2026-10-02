@@ -171,19 +171,41 @@ test.describe("Service worker", () => {
   test.use({ serviceWorkers: "allow" });
 
   test("Registers at /service-worker.js", async ({ page, baseURL }) => {
+    test.slow();
     await page.goto("/");
 
-    await expect
-      .poll(() =>
-        page.evaluate(async () => {
-          const registration = await navigator.serviceWorker.getRegistration();
-          const worker =
-            registration?.active ??
-            registration?.waiting ??
-            registration?.installing;
-          return worker?.scriptURL;
-        }),
-      )
-      .toBe(new URL("/service-worker.js", baseURL).href);
+    // ready only resolves once the precache install succeeds and the worker activates.
+    const scriptURL = await page.evaluate(
+      async () => (await navigator.serviceWorker.ready).active?.scriptURL,
+    );
+    expect(scriptURL).toBe(new URL("/service-worker.js", baseURL).href);
+  });
+
+  test("Works offline", async ({ page, context, browserName }) => {
+    test.skip(
+      browserName === "firefox",
+      "Playwright's Firefox offline mode bypasses service workers.",
+    );
+    test.slow();
+    // Without the HTTP cache, every offline request must be answered by the service worker.
+    const cdp = await context.newCDPSession(page);
+    await cdp.send("Network.setCacheDisabled", { cacheDisabled: true });
+    await page.goto("/");
+    await page.evaluate(async () => {
+      await navigator.serviceWorker.ready;
+      if (!navigator.serviceWorker.controller) {
+        await new Promise((resolve) =>
+          navigator.serviceWorker.addEventListener("controllerchange", resolve),
+        );
+      }
+    });
+    await context.setOffline(true);
+
+    await page.goto("/tag/c/");
+    await expect(page).toHaveTitle(/C#/);
+
+    await page.locator('a[href="/about/"]').first().click();
+    await expect(page).toHaveURL(/\/about\/$/);
+    await expect(page).toHaveTitle(/^About/);
   });
 });

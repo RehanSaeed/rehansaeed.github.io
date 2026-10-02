@@ -24,7 +24,6 @@
     "@fontsource/audiowide": "5.0.18",
     "@nuxt/content": "3.16.1",
     "@nuxt/image": "2.1.0",
-    "@nuxtjs/robots": "6.2.3",
     "@nuxtjs/sitemap": "8.5.1",
     "@sindresorhus/slugify": "0.8.0",
     "@vite-pwa/nuxt": "1.1.1",

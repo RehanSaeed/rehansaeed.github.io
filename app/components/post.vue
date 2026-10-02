@@ -7,7 +7,8 @@
         :src="post.heroImage"
         class="post__photo"
         width="860"
-        densities="x1 x2" />
+        densities="x1 x2"
+        format="webp" />
     </header>
 
     <ContentRenderer class="post__content e-content" :value="post" />
