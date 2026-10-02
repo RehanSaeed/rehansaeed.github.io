@@ -46,7 +46,10 @@ function collectText(nodes: MinimarkNode[], out: string[]): void {
   for (const node of nodes) {
     if (typeof node === "string") {
       out.push(node);
-    } else if (node[0] === "pre" && typeof node[1].code === "string") {
+    } else if (
+      (node[0] === "pre" || node[0] === "mermaid-diagram") &&
+      typeof node[1].code === "string"
+    ) {
       // Count the source, not Shiki's token spans, which can split words.
       out.push(node[1].code);
     } else if (isKatex(node)) {

@@ -259,7 +259,7 @@ export function remarkYouTube() {
   };
 }
 
-/** ```mermaid blocks become `<div class="mermaid">` which the post page renders client-side. */
+/** Mermaid source is server-rendered, then the diagram component loads the renderer on mount. */
 export function remarkMermaid() {
   return (tree: Node) => {
     walk(tree, (node, index, parent) => {
@@ -267,9 +267,8 @@ export function remarkMermaid() {
         parent.children![index] = {
           type: "mermaid",
           data: {
-            hName: "div",
-            hProperties: { className: ["mermaid"] },
-            hChildren: [{ type: "text", value: node.value ?? "" }],
+            hName: "mermaid-diagram",
+            hProperties: { code: node.value ?? "" },
           },
           children: [],
         };

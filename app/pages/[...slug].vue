@@ -38,7 +38,28 @@ const route = useRoute();
 const permalink = route.path.endsWith("/") ? route.path : `${route.path}/`;
 
 const { data: post } = await useAsyncData(`post-${permalink}`, () =>
-  queryCollection("posts").where("permalink", "=", permalink).first(),
+  queryCollection("posts")
+    .where("permalink", "=", permalink)
+    .select(
+      "id",
+      "title",
+      "author",
+      "body",
+      "date",
+      "dateModified",
+      "description",
+      "extension",
+      "headings",
+      "heroImage",
+      "meta",
+      "path",
+      "permalink",
+      "published",
+      "stem",
+      "tags",
+      "timeToRead",
+    )
+    .first(),
 );
 if (!post.value) {
   throw createError({

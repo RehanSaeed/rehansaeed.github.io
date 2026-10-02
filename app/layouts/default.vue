@@ -8,7 +8,7 @@
       <u-navigation class="navigation" />
 
       <transition name="fade" appear>
-        <main id="main" class="main">
+        <main id="main" class="main" tabindex="-1">
           <slot />
         </main>
       </transition>

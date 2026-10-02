@@ -25,11 +25,14 @@ export default defineNuxtConfig({
   site: {
     url: site.url,
     name: site.name,
+    description: site.description,
+    defaultLocale: site.language,
     trailingSlash: true,
   },
 
   // Built from the prerendered pages, in the same form as the Gridsome sitemap.
   sitemap: {
+    zeroRuntime: true,
     xsl: false,
     credits: false,
     discoverImages: false,
@@ -345,6 +348,10 @@ export default defineNuxtConfig({
 
   devtools: { enabled: true },
 
+  $production: {
+    sourcemap: { client: false },
+  },
+
   experimental: {
     defaults: {
       nuxtLink: {
@@ -359,6 +366,7 @@ export default defineNuxtConfig({
       publicDir: fileURLToPath(new URL("./dist", import.meta.url)),
     },
     prerender: {
+      concurrency: 4,
       autoSubfolderIndex: true,
       crawlLinks: true,
       failOnError: true,

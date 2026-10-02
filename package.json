@@ -52,7 +52,9 @@
     "remark-toc": "7.2.0",
     "sass-embedded": "1.105.0",
     "serve": "^14.2.6",
+    "typescript": "5.9.3",
     "unist-util-visit": "5.1.0",
+    "vue-tsc": "3.3.11",
     "yaml": "2.9.1"
   },
   "scripts": {
@@ -60,6 +62,7 @@
     "build": "nuxt generate",
     "start": "serve dist -l 8080",
     "analyze": "nuxt analyze",
+    "typecheck": "nuxt typecheck",
     "postinstall": "nuxt prepare",
     "test": "playwright test --project=chrome --project=edge --project=firefox",
     "test:debug": "playwright test --ui",
@@ -87,6 +90,6 @@
     "*.{js,mjs,ts,json,css,scss,sass,vue}": "prettier --write"
   },
   "engines": {
-    "node": ">=24"
+    "node": "^24.11.0 || >=26.0.0"
   }
 }

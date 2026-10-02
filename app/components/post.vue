@@ -7,8 +7,12 @@
         :src="post.heroImage"
         class="post__photo"
         width="860"
+        :height="Math.round((860 * imageMeta.height) / imageMeta.width)"
         densities="x1 x2"
-        format="webp" />
+        format="webp"
+        loading="eager"
+        fetchpriority="high"
+        :preload="{ fetchPriority: 'high' }" />
     </header>
 
     <ContentRenderer class="post__content e-content" :value="post" />
