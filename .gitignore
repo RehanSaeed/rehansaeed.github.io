@@ -349,10 +349,13 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
-# Gridsome
+# Nuxt
+.nuxt/
+.output/
+.data/
+public/content-images/
 .cache
 .DS_Store
-src/.temp
 dist
 .env
 .env.*
