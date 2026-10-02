@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { expect, test } from "@playwright/test";
+import { parse } from "yaml";
 import { timeToRead } from "../../modules/blog-content/fields";
 
 const postPath = "/on-the-etiquette-of-pull-request-comments/";
@@ -138,5 +139,28 @@ test.describe("Nuxt best practices", () => {
     );
     expect(workflow).not.toContain("google.com/ping");
     expect(workflow).not.toContain("bing.com/ping");
+  });
+
+  test("Defers expensive PR workflows until ready for review", () => {
+    for (const [file, job] of [
+      ["build.yml", "build"],
+      ["codeql-analysis.yml", "analyze"],
+      ["compress-images.yml", "build"],
+    ] as const) {
+      const workflow = parse(
+        readFileSync(join(process.cwd(), ".github", "workflows", file), "utf8"),
+      );
+      expect(workflow.on.pull_request.types).toEqual([
+        "opened",
+        "synchronize",
+        "reopened",
+        "ready_for_review",
+      ]);
+      expect(workflow.jobs[job].if).toBe(
+        file === "compress-images.yml"
+          ? "github.event.pull_request.head.repo.full_name == github.repository && !github.event.pull_request.draft"
+          : "github.event_name != 'pull_request' || !github.event.pull_request.draft",
+      );
+    }
   });
 });
