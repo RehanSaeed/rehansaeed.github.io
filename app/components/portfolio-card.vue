@@ -7,6 +7,9 @@
         class="portfolio-card__image"
         :src="portfolio.heroImage"
         width="770"
+        :height="
+          Math.round((770 * Number(imageMeta.height)) / Number(imageMeta.width))
+        "
         densities="x1 x2"
         format="webp"
         loading="lazy" />
@@ -33,6 +36,7 @@
 import card from "~/components/shared/card.vue";
 import heading from "~/components/shared/heading.vue";
 import tags from "~/components/tags.vue";
+import { getImageMetadata } from "~/framework/images.js";
 
 export default {
   name: "u-portfolio-card",
@@ -45,6 +49,11 @@ export default {
     portfolio: {
       required: true,
       type: Object,
+    },
+  },
+  computed: {
+    imageMeta() {
+      return getImageMetadata(this.portfolio.heroImage);
     },
   },
 };

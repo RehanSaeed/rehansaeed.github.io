@@ -35,11 +35,14 @@ jobs:
           cache: npm
       - name: "NPM Install"
         run: npm ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: "NPM Build"
         run: npm run build
         env:
           TZ: UTC
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUXT_PUBLIC_GOOGLE_ANALYTICS_ID: ${{ vars.GA4_MEASUREMENT_ID }}
       - name: "Type Check"
         run: npm run typecheck
       - name: "Cache Playwright Browsers"

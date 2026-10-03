@@ -5,7 +5,11 @@
     <u-arrows class="tag-page__arrows" />
 
     <div class="tag-page__items">
-      <u-post-card v-for="post of posts" :key="post.id" :post="post" />
+      <u-post-card
+        v-for="(post, index) of posts"
+        :key="post.id"
+        :post="post"
+        :priority="index === 0" />
     </div>
   </div>
 </template>

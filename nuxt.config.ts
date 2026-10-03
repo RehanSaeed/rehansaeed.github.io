@@ -8,6 +8,12 @@ const contentPublicPath = fileURLToPath(
 );
 // An unknown URL, prerendered as dist/404.html.
 const notFoundRoute = "/404-not-found/";
+const googleAnalyticsId = process.env.NUXT_PUBLIC_GOOGLE_ANALYTICS_ID ?? "";
+if (googleAnalyticsId && !/^G-[A-Z0-9]+$/.test(googleAnalyticsId)) {
+  throw new Error(
+    "NUXT_PUBLIC_GOOGLE_ANALYTICS_ID must be a GA4 G- measurement ID.",
+  );
+}
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -17,9 +23,19 @@ export default defineNuxtConfig({
   modules: [
     "@nuxt/content",
     "@nuxt/image",
+    "@nuxt/scripts",
     "@nuxtjs/sitemap",
     "@vite-pwa/nuxt",
   ],
+
+  scripts: {
+    registry: {
+      googleAnalytics: {
+        proxy: false,
+        bundle: false,
+      },
+    },
+  },
 
   // nuxt-site-config, used by @nuxtjs/sitemap.
   site: {
@@ -150,6 +166,7 @@ export default defineNuxtConfig({
       titleTemplate: `%s - ${site.name}`,
       meta: [
         { name: "format-detection", content: "telephone=no" },
+        { name: "twitter:card", content: "summary_large_image" },
         // Colour Scheme
         { name: "color-scheme", content: "dark light" },
         { name: "theme-color", content: "#6b17e8" },
@@ -175,6 +192,11 @@ export default defineNuxtConfig({
         { name: "referrer", content: "no-referrer-when-downgrade" },
       ],
       link: [
+        {
+          rel: "apple-touch-icon",
+          sizes: "180x180",
+          href: "/images/icons/favicon-180x180.png",
+        },
         // Favicons
         { rel: "icon", type: "image/svg+xml", href: `${site.url}/favicon.svg` },
         {
@@ -386,6 +408,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       siteUrl: site.url,
+      googleAnalyticsId,
     },
   },
 });

@@ -12,9 +12,13 @@
         :alt="imageMeta.alt"
         :src="post.heroImage"
         width="770"
+        :height="
+          Math.round((770 * Number(imageMeta.height)) / Number(imageMeta.width))
+        "
         densities="x1 x2"
         format="webp"
-        loading="lazy" />
+        :loading="priority ? 'eager' : 'lazy'"
+        :fetchpriority="priority ? 'high' : undefined" />
     </div>
     <div class="post-card__content">
       <u-heading
@@ -48,6 +52,10 @@ export default {
     "u-tags": tags,
   },
   props: {
+    priority: {
+      type: Boolean,
+      default: false,
+    },
     post: {
       type: Object,
     },

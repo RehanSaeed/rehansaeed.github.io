@@ -5,7 +5,9 @@
       'button--bordered': bordered,
       'button--contrast': contrast,
       'button--primary': primary,
+      'button--hydrating': !hydrated && !disabled && !submit,
     }"
+    :disabled="disabled || (!hydrated && !submit)"
     :type="type">
     <slot />
   </button>
@@ -15,6 +17,9 @@
 export default {
   name: "u-button",
   props: {
+    disabled: {
+      type: Boolean,
+    },
     bordered: {
       type: Boolean,
     },
@@ -27,6 +32,12 @@ export default {
     submit: {
       type: Boolean,
     },
+  },
+  data() {
+    return { hydrated: false };
+  },
+  mounted() {
+    this.hydrated = true;
   },
   computed: {
     type() {
@@ -51,7 +62,8 @@ export default {
   line-height: var(--global-line-height-1);
   padding: 0;
   position: relative;
-  transition: color var(--global-duration-1) var(--ease-in-out-cubic),
+  transition:
+    color var(--global-duration-1) var(--ease-in-out-cubic),
     opacity var(--global-duration-1) var(--ease-in-out-cubic),
     transform var(--global-duration-1) var(--ease-in-out-cubic);
   will-change: transform;
@@ -66,6 +78,11 @@ export default {
     color: var(--global-disabled-color);
     cursor: not-allowed;
     transform: scale(1);
+  }
+
+  &.button--hydrating:disabled {
+    color: var(--global-title-color);
+    cursor: progress;
   }
 }
 

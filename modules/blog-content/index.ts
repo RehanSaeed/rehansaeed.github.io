@@ -28,6 +28,7 @@ import {
 } from "./markdown";
 import { contentImagesBaseURL, contentPublicDir } from "./paths";
 import { listFiles, scanContent, toPosix } from "./scan";
+import { commentSnapshots } from "./comments";
 
 const postsPerPage = 10;
 
@@ -47,19 +48,29 @@ export default defineNuxtModule({
       contentPublicDir,
       contentImagesBaseURL,
     );
+    await mkdir(dataDir, { recursive: true });
+    const comments = await commentSnapshots(dataDir);
 
     // @nuxt/content caches parsed files by content checksum, ignoring the afterParse hook below.
     // Drop that cache whenever this module's source changes so computed fields are never stale.
     const sources = await Promise.all(
-      ["index.ts", "fields.ts", "markdown.ts", "scan.ts"].map((name) =>
-        readFile(
-          join(nuxt.options.rootDir, "modules", "blog-content", name),
-          "utf8",
-        ).catch(() => name),
+      ["index.ts", "fields.ts", "markdown.ts", "scan.ts", "comments.ts"].map(
+        (name) =>
+          readFile(
+            join(nuxt.options.rootDir, "modules", "blog-content", name),
+            "utf8",
+          ).catch(() => name),
       ),
     );
     const moduleHash = createHash("sha256")
-      .update(sources.join("\0"))
+      .update(
+        sources.join("\0") +
+          (await readFile(
+            join(nuxt.options.rootDir, "shared", "utils", "comments.ts"),
+            "utf8",
+          )) +
+          JSON.stringify(comments),
+      )
       .digest("hex");
     const hashFile = join(dataDir, "blog-content.hash");
     if ((await readFile(hashFile, "utf8").catch(() => "")) !== moduleHash) {
@@ -114,6 +125,10 @@ export default defineNuxtModule({
         return;
       }
       const body = content.body as Parameters<typeof timeToRead>[0];
+      content.comments = comments[String(content.title)] ?? {
+        issue: null,
+        comments: [],
+      };
       restoreKeptTags(body.value);
       const fileDir = posix.dirname(toPosix(relative(contentDir, file.path)));
       rewriteRelativeImages(body.value, fileDir);

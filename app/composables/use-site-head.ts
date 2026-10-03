@@ -19,7 +19,7 @@ export function authorSchema(
   return {
     "@type": "Person",
     name,
-    logo: [logo(192), logo(512)],
+    image: [logo(192), logo(512)],
     url: site.url + "/about/",
   };
 }

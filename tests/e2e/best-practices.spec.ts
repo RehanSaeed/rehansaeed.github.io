@@ -1,12 +1,39 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 import { parse } from "yaml";
 import { timeToRead } from "../../modules/blog-content/fields";
 
 const postPath = "/on-the-etiquette-of-pull-request-comments/";
 
 test.describe("Nuxt best practices", () => {
+  test("Keeps JavaScript controls disabled until their handlers are attached", async ({
+    page,
+  }) => {
+    let resume!: () => void;
+    const scripts = new Promise<void>((resolve) => {
+      resume = resolve;
+    });
+    await page.route("**/_nuxt/*.js", async (route) => {
+      await scripts;
+      await route.continue();
+    });
+    try {
+      await page.goto("/", { waitUntil: "commit" });
+      const open = page.getByRole("button", { name: "Open search" });
+      await expect(open).toBeDisabled();
+      await expect(
+        page.locator('.newsletter button[type="submit"]'),
+      ).toBeEnabled();
+      resume();
+      await expect(open).toBeEnabled();
+      await open.click();
+      await expect(page.locator("input#search")).toBeVisible();
+    } finally {
+      resume();
+    }
+  });
+
   test("Announces client-side route changes", async ({ page }) => {
     await page.goto("/");
     await page

@@ -1,4 +1,3 @@
-@use "sass:map";
 @use "abstracts/breakpoints";
 @use "abstracts/type";
 
@@ -16,14 +15,17 @@
 
   // Box Shadows
   --global-shadow-1: 0 1px 3px var(--global-shadow-color);
-  --global-shadow-2: 0 2px 3px var(--global-shadow-color),
-    0 4px 6px var(--global-shadow-color), 0 6px 9px var(--global-shadow-color);
-  --global-shadow-3: 0 2px 3px var(--global-shadow-color),
-    0 4px 6px var(--global-shadow-color), 0 8px 12px var(--global-shadow-color),
+  --global-shadow-2:
+    0 2px 3px var(--global-shadow-color), 0 4px 6px var(--global-shadow-color),
+    0 6px 9px var(--global-shadow-color);
+  --global-shadow-3:
+    0 2px 3px var(--global-shadow-color), 0 4px 6px var(--global-shadow-color),
+    0 8px 12px var(--global-shadow-color),
     0 8px 12px var(--global-shadow-color),
     0 16px 24px var(--global-shadow-color);
-  --global-shadow-4: 0 2px 3px var(--global-shadow-color),
-    0 4px 6px var(--global-shadow-color), 0 8px 12px var(--global-shadow-color),
+  --global-shadow-4:
+    0 2px 3px var(--global-shadow-color), 0 4px 6px var(--global-shadow-color),
+    0 8px 12px var(--global-shadow-color),
     0 8px 12px var(--global-shadow-color),
     0 16px 24px var(--global-shadow-color),
     0 32px 48px var(--global-shadow-color);
@@ -60,26 +62,20 @@
   --ease-in-out-back: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
   // Font Family
-  --global-font-family-sans-serif: -apple-system, BlinkMacSystemFont,
-    "Segoe UI Variable", "Segoe UI", Roboto, "Helvetica Neue", Arial,
-    "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-    "Segoe UI Symbol", "Noto Color Emoji";
+  --global-font-family-sans-serif:
+    -apple-system, BlinkMacSystemFont, "Segoe UI Variable", "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --global-font-family-serif: "Georgia", serif;
-  --global-font-family-monospace: "Cascadia Code", "Cascadia Code PL",
-    "Fira Code", Consolas, SFMono-Regular, Menlo, Monaco, "Liberation Mono",
-    "Courier New", monospace;
+  --global-font-family-monospace:
+    "Cascadia Code", "Cascadia Code PL", "Fira Code", Consolas, SFMono-Regular,
+    Menlo, Monaco, "Liberation Mono", "Courier New", monospace;
   --global-font-family-heading: "Audiowide", sans-serif;
 
   // Fluid Font Size
   --global-font-size-minimum: #{type.$font-size-minimum};
   --global-font-size-maximum: #{type.$font-size-maximum};
-  @include type.fluid-type(
-    --global-font-size-default,
-    map-get(breakpoints.$breakpoints, sm),
-    map-get(breakpoints.$breakpoints, xxl),
-    type.$font-size-minimum,
-    type.$font-size-maximum
-  );
+  --global-font-size-default: clamp(1rem, 0.859375rem + 0.390625vw, 1.25rem);
 
   // Font Size
   --global-font-size-0: 0.65em;
@@ -116,15 +112,7 @@
   --global-content-width-maximum: 45rem;
 
   // Space
-  @include type.fluid-type(
-    --global-space-fluid-6,
-    36rem,
-    // map-get(breakpoints.$breakpoints, sm),
-    100rem,
-    // map-get(breakpoints.$breakpoints, xxl),
-    1.5rem,
-    4.5rem
-  );
+  --global-space-fluid-6: clamp(1.5rem, -0.1875rem + 4.6875vw, 4.5rem);
   --global-space-fluid--7: calc(var(--global-space-fluid-7) * -1);
   --global-space-fluid--6: calc(var(--global-space-fluid-6) * -1);
   --global-space-fluid--5: calc(var(--global-space-fluid-5) * -1);

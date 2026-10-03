@@ -1,44 +1,117 @@
 <template>
-  <u-card class="comments">
-    <u-heading
-      id="comments"
-      class="comments__title"
-      center
-      level="2"
-      href="#comments"
-      >Comment</u-heading
-    >
-    <!-- TODO(c9): GitHub Issues comments replace Vssue. -->
-    <a :href="issueUrl">Leave and View Directly on GitHub.com</a>
-  </u-card>
+  <u-intersect @enterFirstTime="refresh">
+    <u-card class="comments">
+      <u-heading
+        id="comments"
+        class="comments__title"
+        center
+        level="2"
+        href="#comments"
+        >Comment</u-heading
+      >
+      <div class="vssue">
+        <a :href="issueUrl">Leave and View Directly on GitHub.com</a>
+        <p class="comments__count">{{ current.comments.length }} Comments</p>
+        <p v-if="unavailable" role="status">
+          Live comments unavailable; showing saved comments. You can view the
+          latest on GitHub.
+        </p>
+        <div class="vssue-comments">
+          <div>
+            <article
+              v-for="comment in current.comments"
+              :key="comment.id"
+              class="vssue-comment">
+              <a
+                v-if="comment.user"
+                class="vssue-comment-avatar"
+                :href="comment.user.html_url">
+                <img
+                  :src="comment.user.avatar_url"
+                  :alt="comment.user.login"
+                  width="60"
+                  height="60"
+                  loading="lazy" />
+              </a>
+              <div class="vssue-comment-body">
+                <header class="vssue-comment-header">
+                  <span class="vssue-comment-author"
+                    ><a :href="comment.user?.html_url ?? comment.html_url">{{
+                      comment.user?.login ?? "Deleted user"
+                    }}</a></span
+                  >
+                  <a class="vssue-comment-created-at" :href="comment.html_url"
+                    ><u-time :datetime="comment.created_at"
+                  /></a>
+                </header>
+                <div class="vssue-comment-main" v-html="comment.body_html" />
+                <footer
+                  class="vssue-comment-footer"
+                  v-if="reactionCounts(comment).length">
+                  <span
+                    v-for="reaction in reactionCounts(comment)"
+                    :key="reaction.name"
+                    class="vssue-comment-reaction"
+                    >{{ reaction.name }} {{ reaction.count }}</span
+                  >
+                </footer>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </u-card>
+  </u-intersect>
 </template>
 
-<script>
-import card from "~/components/shared/card.vue";
-import heading from "~/components/shared/heading.vue";
+<script setup lang="ts">
+import UCard from "~/components/shared/card.vue";
+import UHeading from "~/components/shared/heading.vue";
+import UIntersect from "~/components/shared/intersect.vue";
+import UTime from "~/components/shared/time.vue";
+import type { CommentSnapshot, GitHubComment } from "#shared/utils/comments";
 
-export default {
-  name: "u-comments",
-  components: {
-    "u-card": card,
-    "u-heading": heading,
-  },
-  props: {
-    title: {
-      type: String,
-    },
-  },
-  computed: {
-    issueUrl() {
-      const { url } = useAppConfig().site.repository;
-      const query = new URLSearchParams({
-        title: `[Comment] ${this.title}`,
-        labels: "comment",
-      });
-      return `${url}/issues/new?${query}`;
-    },
-  },
-};
+const props = defineProps<{ title: string; snapshot: CommentSnapshot }>();
+const current = shallowRef(props.snapshot);
+const unavailable = ref(false);
+const repository = useAppConfig().site.repository;
+const controller = new AbortController();
+onBeforeUnmount(() => controller.abort());
+const issueUrl = computed(() => {
+  const query = new URLSearchParams({
+    title: `[Comment] ${props.title}`,
+    labels: "comment",
+  });
+  return (
+    current.value.issue?.html_url ?? `${repository.url}/issues/new?${query}`
+  );
+});
+function reactionCounts(comment: GitHubComment) {
+  return Object.entries(comment.reactions ?? {})
+    .filter(
+      ([name, count]) =>
+        name !== "total_count" && typeof count === "number" && count > 0,
+    )
+    .map(([name, count]) => ({ name, count }));
+}
+async function refresh() {
+  try {
+    const { refreshComments } = await import("~/utils/comments");
+    current.value = await refreshComments(
+      `${repository.owner}/${repository.name}`,
+      props.title,
+      current.value,
+      controller.signal,
+    );
+  } catch (error) {
+    if (controller.signal.aborted) return;
+    console.warn(
+      "[comments] Live refresh unavailable; retaining static snapshot:",
+      error,
+    );
+    unavailable.value = true;
+  }
+}
 </script>
 
 <style lang="scss">

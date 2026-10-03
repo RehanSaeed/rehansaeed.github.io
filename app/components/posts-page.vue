@@ -4,7 +4,11 @@
     <u-arrows class="posts__arrows" />
 
     <div class="posts__items">
-      <u-post-card v-for="post of posts" :key="post.id" :post="post" />
+      <u-post-card
+        v-for="(post, index) of posts"
+        :key="post.id"
+        :post="post"
+        :priority="index === 0" />
     </div>
 
     <u-pager class="posts__pager" :page-info="pageInfo" />
@@ -80,12 +84,13 @@ const pageInfo = {
 const title = "Blog";
 const description = `Blog posts and more authored by ${site.author.name}.`;
 const image = site.url + heroImagePath;
+const url = `${site.url}${props.page === 1 ? "/" : `/${props.page}/`}`;
 const { width: imageWidth, height: imageHeight } = imageSize(image);
 
 useHead({
   title,
   link: [
-    { rel: "canonical", href: site.url },
+    { rel: "canonical", href: url },
     ...[{ rel: "next", href: nextUrl(pageInfo, site.url) }].filter(
       (x) => x.href,
     ),
@@ -98,7 +103,7 @@ useHead({
     { name: "author", content: site.author.name },
     // Open Graph
     { property: "og:title", content: title },
-    { property: "og:url", content: site.url },
+    { property: "og:url", content: url },
     { property: "og:image", content: image },
     { property: "og:image:height", content: imageHeight },
     { property: "og:image:width", content: imageWidth },

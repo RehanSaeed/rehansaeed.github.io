@@ -22,7 +22,7 @@ export function getSchemaImageObject(url) {
   return {
     "@type": "ImageObject",
     url: url,
-    alternativeHeadline: imageMeta.alt,
+    caption: imageMeta.alt,
     width: imageMeta.width,
     height: imageMeta.height,
   };

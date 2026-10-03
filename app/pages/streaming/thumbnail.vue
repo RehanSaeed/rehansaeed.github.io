@@ -16,6 +16,7 @@
 
 <script setup>
 definePageMeta({ layout: "empty" });
+useHead({ meta: [{ name: "robots", content: "noindex, follow" }] });
 </script>
 
 <script>

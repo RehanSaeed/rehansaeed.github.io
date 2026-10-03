@@ -18,7 +18,10 @@
 
     <u-webmentions class="post-page__webmentions" :url="url" />
 
-    <u-comments class="post-page__comments" :title="title" />
+    <u-comments
+      class="post-page__comments"
+      :title="title"
+      :snapshot="post.comments" />
   </div>
 </template>
 
@@ -45,6 +48,7 @@ const { data: post } = await useAsyncData(`post-${permalink}`, () =>
       "title",
       "author",
       "body",
+      "comments",
       "date",
       "dateModified",
       "description",
@@ -73,7 +77,7 @@ const title = post.value.title;
 const description = post.value.description;
 const author = post.value.author;
 const date = post.value.date;
-const dateModified = post.value.dateModified;
+const dateModified = post.value.dateModified ?? date;
 const image = site.url + post.value.heroImage;
 const url = site.url + post.value.permalink;
 const tags = post.value.tags ?? [];
@@ -86,6 +90,9 @@ useHead({
     { name: "description", content: description },
     { name: "author", content: author },
     { name: "keywords", content: tags.join(",") },
+    ...(!post.value.published
+      ? [{ name: "robots", content: "noindex, follow" }]
+      : []),
     // Open Graph
     { property: "og:title", content: title },
     { property: "og:url", content: url },
@@ -117,7 +124,7 @@ useHead({
         "@type": "Article",
         mainEntityOfPage: {
           "@type": "WebPage",
-          "@id": site.url,
+          "@id": url,
         },
         headline: title,
         description,

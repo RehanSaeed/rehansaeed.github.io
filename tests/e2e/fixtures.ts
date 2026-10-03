@@ -50,7 +50,8 @@ export const getAnalyticsEvents = (page: Page): Promise<AnalyticsEvent[]> =>
       const params = (args[2] ?? {}) as Record<string, string | undefined>;
       events.push({
         category: params.event_category!,
-        action: args[1] as string,
+        // GA4 event names require underscores; the historical event contract uses hyphens.
+        action: (args[1] as string).replaceAll("_", "-"),
         label: params.event_label,
       });
     }
@@ -63,6 +64,14 @@ export const getAnalyticsEvents = (page: Page): Promise<AnalyticsEvent[]> =>
 export const test = base.extend<{ analytics: void }>({
   analytics: [
     async ({ page }, use) => {
+      await page.route(
+        (url) => url.protocol === "https:" && url.hostname !== "rehansaeed.com",
+        (route) =>
+          route.request().resourceType() === "image" ||
+          route.request().resourceType() === "document"
+            ? route.fulfill({ contentType: "text/plain", body: "" })
+            : route.continue(),
+      );
       await page.route("**/www.google-analytics.com/analytics.js", (route) =>
         route.fulfill({
           contentType: "text/javascript",
