@@ -21,7 +21,7 @@ I had never heard of Open UK before so I was initially very sceptical but it see
 I did a bunch of reading before I accepted any award to make sure they weren't doing anything shady and found that they seem to be lobbying the UK government in favour of Open Source which is fine by me!
 
 > The 2022 #openukgennext #openukhonouree list is made up of individuals with broad ranging experience in Open Technology identified as being ones to watch in the UK!
-
+>
 > They hail from all walks of Open Source Software, Open Hardware and Open Data. This is _the_ list of those to watch for the future of Open Technology. All are earmarked as leading the next generation of Open Technology whether through social media, their jobs, community contributions, policy or in education.
 >
 > The British Honours system is something very specific to the UK and a means of rewarding an individual for their achievement or service. Medals are used within this system to recognise an activity or long or valuable service.

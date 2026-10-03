@@ -1,0 +1,111 @@
+<template>
+  <u-card
+    class="post-card"
+    tag="article"
+    hoverable
+    focusable
+    :class="{ 'post-card--has-poster': post.poster }">
+    <div class="post-card__header">
+      <NuxtImg
+        v-if="post.heroImage"
+        class="post-card__image"
+        :alt="imageMeta.alt"
+        :src="post.heroImage"
+        :width="imageMeta.width"
+        :height="imageMeta.height"
+        :sizes="contentImageSizes"
+        densities="x1 x2"
+        format="webp"
+        :loading="priority ? 'eager' : 'lazy'"
+        :fetchpriority="priority ? 'high' : undefined" />
+    </div>
+    <div class="post-card__content">
+      <u-heading
+        class="post-card__title"
+        :id="post.title"
+        :to="post.permalink"
+        level="2"
+        >{{ post.title }}</u-heading
+      >
+      <p class="post-card__description">{{ post.description }}</p>
+
+      <u-post-meta class="post-card__meta" :meta="post" />
+      <u-tags v-if="post.tags" class="post-card__tags" :tags="post.tags" />
+    </div>
+  </u-card>
+</template>
+
+<script>
+import card from "~/components/shared/card.vue";
+import heading from "~/components/shared/heading.vue";
+import postMeta from "~/components/post-meta.vue";
+import tags from "~/components/tags.vue";
+import { getImageMetadata } from "~/framework/images.js";
+import { contentImageSizes } from "#shared/utils/images";
+
+export default {
+  name: "u-post-card",
+  components: {
+    "u-card": card,
+    "u-heading": heading,
+    "u-post-meta": postMeta,
+    "u-tags": tags,
+  },
+  props: {
+    priority: {
+      type: Boolean,
+      default: false,
+    },
+    post: {
+      type: Object,
+    },
+  },
+  computed: {
+    contentImageSizes() {
+      return contentImageSizes;
+    },
+    imageMeta() {
+      return getImageMetadata(this.post.heroImage);
+    },
+  },
+};
+</script>
+
+<style lang="scss">
+.post-card {
+  position: relative;
+}
+
+.post-card__header {
+  border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
+  margin-inline: var(--global-space-fluid--6);
+  margin-block-start: var(--global-space-fluid--6);
+  margin-block-end: var(--global-space-fluid-5);
+  overflow: hidden;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.post-card__image {
+  min-inline-size: 100%;
+}
+
+.post-card__title {
+  margin-block-start: 0;
+}
+
+.post-card__title a::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+}
+
+.post-card__tags {
+  margin-block-start: var(--global-space-fixed-4);
+  position: relative;
+  z-index: 1;
+}
+</style>

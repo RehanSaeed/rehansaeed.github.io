@@ -44,7 +44,7 @@ Feed reading websites like [Feedly](http://feedly.com/i/welcome) and [NewsBlur](
 
 # RSS vs Atom
 
-The latest versions of RSS is 2.0, while Atom is 1.0. Atom 1.0 is a web standard and you can read the official IETF Atom 1.0 specification [here](www.ietf.org/rfc/rfc4287.txt). RSS is not a web standard and is actually owned by Harvard University.
+The latest versions of RSS is 2.0, while Atom is 1.0. Atom 1.0 is a web standard and you can read the official IETF Atom 1.0 specification [here](https://www.ietf.org/rfc/rfc4287.txt). RSS is not a web standard and is actually owned by Harvard University.
 
 Atom was created specifically to address problems in RSS 2.0 and is the newer and more well defined format. Both of these formats are now pretty ancient by web standards and enjoy widespread support. If you have a choice of format, go with Atom 1.0.
 

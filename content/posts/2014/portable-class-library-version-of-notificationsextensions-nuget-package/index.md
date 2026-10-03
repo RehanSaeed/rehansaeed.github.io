@@ -52,9 +52,9 @@ It's useful when trying to send notifications from the server side using Azure M
 3. Click Package Manager Console
 4. Select Your Project in the Package Manager Console
 5. Execute the following command to install `NotificationsExtensions.Portable`:
-  ```powershell
-  Install-Package NotificationsExtensions.Portable -Version 1.0.0
-  ```
+   ```powershell
+   Install-Package NotificationsExtensions.Portable -Version 1.0.0
+   ```
 
 # Attribution and Changes Made
 

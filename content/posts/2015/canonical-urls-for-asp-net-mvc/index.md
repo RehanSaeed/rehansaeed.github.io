@@ -44,7 +44,9 @@ If your site exposes the above four different URL's to the single resource, your
 
 One way to solve this problem is to add a canonical link tag to the head of your HTML page. This tells search engines what the canonical (actual) URL to the page is. The link tag contains a URL to your preferred URL for the page.
 
-<link rel="canonical" href="http://example.com/one/two/">
+```html
+<link rel="canonical" href="http://example.com/one/two/" />
+```
 
 One thing you must decide early on is your preferred URL for every page. You must ask yourself the following questions and use the resulting URL in your canonical link tag.
 
