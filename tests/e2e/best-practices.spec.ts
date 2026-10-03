@@ -62,7 +62,7 @@ test.describe("Nuxt best practices", () => {
   }) => {
     await page.goto(postPath);
     const hero = page.locator("img.post__photo");
-    await expect(hero).toHaveAttribute("width", "860");
+    await expect(hero).toHaveAttribute("width", "1600");
     await expect(hero).toHaveAttribute("height", /^[1-9]\d*$/);
     await expect(hero).toHaveAttribute("loading", "eager");
     await expect(hero).toHaveAttribute("fetchpriority", "high");

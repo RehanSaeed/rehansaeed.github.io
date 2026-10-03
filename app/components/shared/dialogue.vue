@@ -3,14 +3,14 @@
     ref="dialog"
     class="dialog"
     :class="{ 'dialog--fullscreen': fullscreen }"
-    aria-labelledby="title"
+    :aria-labelledby="titleId"
     @close="close">
     <div class="dialog__container">
-      <u-heading id="title" level="2" class="dialog__title">{{
+      <u-heading :id="titleId" level="2" class="dialog__title">{{
         title
       }}</u-heading>
       <form class="dialog__form" method="dialog">
-        <u-button aria-label="Close search" class="dialog__close" submit>
+        <u-button :aria-label="`Close ${title}`" class="dialog__close" submit>
           <u-icon-close :size="24" />
         </u-button>
       </form>
@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import { useId } from "vue";
 import button from "~/components/shared/button.vue";
 import heading from "~/components/shared/heading.vue";
 import iconClose from "~/components/shared/icons/icon-close.vue";
@@ -34,6 +35,9 @@ export default {
     "u-icon-close": iconClose,
   },
   emits: ["close"],
+  setup() {
+    return { titleId: useId() };
+  },
   props: {
     fullscreen: {
       default: false,
@@ -44,6 +48,7 @@ export default {
       type: Boolean,
     },
     title: {
+      required: true,
       type: String,
     },
   },

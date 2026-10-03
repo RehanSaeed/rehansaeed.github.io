@@ -37,6 +37,19 @@ versions. It is not a claim that every upstream page has been read line by line.
 JavaScript-only buttons remain disabled until hydration completes, so early clicks
 are not lost. Native submit buttons remain available before hydration.
 
+Image dimensions are read from the source files at build time, not inferred from
+their names; the same metadata supplies rendering, Open Graph and ImageObject
+dimensions. Heroes, cards and Markdown images use responsive width candidates
+covering the fluid column at 1x/2x density. Markdown images reserve their intrinsic
+ratio before downloading and use native lazy loading; hero/LCP images remain
+eager and high priority. Dimension changes invalidate the parsed-content cache.
+The regression suite checks all 178 Markdown images across 42 posts, delayed
+downloads, distant lazy images, incorrect hero filenames and wide/retina layouts.
+
+Dialogs have hydration-stable, unique heading IDs and title-specific close labels.
+Literal currency dollars in Markdown must be escaped as `\$` so they cannot be
+mistaken for math delimiters; genuine KaTeX math remains enabled.
+
 ### Comments and analytics
 
 GitHub Issues remain the comment store. The build includes sanitized, read-only

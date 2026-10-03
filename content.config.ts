@@ -7,7 +7,7 @@ const schema = z.object({
   description: z.string(),
   author: z.string(),
   permalink: z.string(),
-  // OG image dimensions and alt text are parsed from the file name.
+  // Alt text uses the file name; dimensions are read from the image during the build.
   heroImage: z.string().regex(/^\/images\/.+-\d+x\d+\.(png|jpe?g)$/),
   date: z.string(),
   dateModified: z.string().nullable().optional(),

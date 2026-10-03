@@ -54,6 +54,7 @@
     "prettier": "3.8.1",
     "remark-toc": "7.2.0",
     "sass-embedded": "1.105.0",
+    "sharp": "0.35.4",
     "typescript": "5.9.3",
     "unist-util-visit": "5.1.0",
     "vue-tsc": "3.3.11",

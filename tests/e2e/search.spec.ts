@@ -15,7 +15,7 @@ test.describe("Search", () => {
   test("Close search", async ({ page }) => {
     await page.goto("/");
     await openSearch(page);
-    await page.getByRole("button", { name: "Close search" }).click();
+    await page.getByRole("button", { name: "Close Search" }).click();
 
     await expect(page.locator("input#search")).toBeHidden();
   });

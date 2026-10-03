@@ -1,9 +1,15 @@
+import images from "#blog-image-metadata";
+
 export function getImageMetadata(url) {
   const urlMatches = url.match(/(.*)\/(.+)-(\d+)x(\d+)/);
+  const dimensions = images[new URL(url, "https://image.invalid").pathname];
+  if (!urlMatches || !dimensions) {
+    throw new Error(`Missing build-time image metadata: ${url}`);
+  }
   return {
     alt: urlMatches[2].replace("-", " ").replace("_", " "),
-    height: urlMatches[4],
-    width: urlMatches[3],
+    height: String(dimensions.height),
+    width: String(dimensions.width),
   };
 }
 

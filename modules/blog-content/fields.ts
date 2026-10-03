@@ -4,6 +4,7 @@ import { visit } from "unist-util-visit";
 import { keepTagPrefix } from "./markdown";
 import { contentImagesBaseURL } from "./paths";
 import { stripFrontMatter } from "./scan";
+import type { ImageDimensions } from "../../shared/utils/images";
 
 type MinimarkNode =
   | string
@@ -110,6 +111,7 @@ const absoluteUrlPattern = /^(?:[a-z][a-z\d+.-]*:|\/|#)/i;
 export function rewriteRelativeImages(
   nodes: MinimarkNode[] | undefined,
   contentDir: string,
+  imageMetadata: Record<string, ImageDimensions>,
 ): void {
   for (const node of nodes ?? []) {
     if (typeof node === "string") {
@@ -126,7 +128,22 @@ export function rewriteRelativeImages(
         props[key] = posix.join(contentImagesBaseURL, contentDir, value);
       }
     }
-    rewriteRelativeImages(node.slice(2) as MinimarkNode[], contentDir);
+    if (node[0] === "img" && typeof props.src === "string") {
+      const dimensions = imageMetadata[props.src];
+      if (props.src.startsWith("/") && !dimensions) {
+        throw new Error(`Missing intrinsic image dimensions: ${props.src}`);
+      }
+      if (dimensions) {
+        props.width = dimensions.width;
+        props.height = dimensions.height;
+      }
+      props.loading = "lazy";
+    }
+    rewriteRelativeImages(
+      node.slice(2) as MinimarkNode[],
+      contentDir,
+      imageMetadata,
+    );
   }
 }
 

@@ -4,6 +4,7 @@ import { parse as parseYaml } from "yaml";
 
 export interface FrontMatter {
   title: string;
+  heroImage: string;
   permalink: string;
   published: boolean;
   tags?: string[];

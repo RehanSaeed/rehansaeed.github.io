@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join, posix, relative } from "node:path";
-import { defineNuxtModule } from "nuxt/kit";
+import { addTemplate, defineNuxtModule } from "nuxt/kit";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 import remarkToc from "remark-toc";
@@ -29,6 +29,7 @@ import {
 import { contentImagesBaseURL, contentPublicDir } from "./paths";
 import { listFiles, scanContent, toPosix } from "./scan";
 import { commentSnapshots } from "./comments";
+import { readImageDimensions } from "./images";
 
 const postsPerPage = 10;
 
@@ -50,16 +51,62 @@ export default defineNuxtModule({
     );
     await mkdir(dataDir, { recursive: true });
     const comments = await commentSnapshots(dataDir);
+    const entries = await scanContent(contentDir);
+    const images = (await listFiles(contentDir))
+      .filter((file) => contentImagePattern.test(file))
+      .sort();
+    const imageFiles = [
+      ...images.map((file) => ({
+        url: posix.join(contentImagesBaseURL, file),
+        file: join(contentDir, file),
+      })),
+      ...[...new Set(entries.map((entry) => entry.data.heroImage))]
+        .sort()
+        .map((url) => ({
+          url,
+          file: join(nuxt.options.rootDir, "public", url),
+        })),
+    ];
+    const imageMetadata = Object.fromEntries(
+      await Promise.all(
+        imageFiles.map(
+          async ({ url, file }) =>
+            [url, await readImageDimensions(file)] as const,
+        ),
+      ),
+    );
+    await writeFile(
+      join(dataDir, "blog-image-metadata.json"),
+      JSON.stringify(imageMetadata),
+    );
+    const heroMetadata = Object.fromEntries(
+      entries.map((entry) => [
+        entry.data.heroImage,
+        imageMetadata[entry.data.heroImage],
+      ]),
+    );
+    const imageTemplate = addTemplate({
+      filename: "blog-image-metadata.json",
+      write: true,
+      getContents: () => JSON.stringify(heroMetadata),
+    });
+    nuxt.options.alias["#blog-image-metadata"] = imageTemplate.dst;
 
     // @nuxt/content caches parsed files by content checksum, ignoring the afterParse hook below.
     // Drop that cache whenever this module's source changes so computed fields are never stale.
     const sources = await Promise.all(
-      ["index.ts", "fields.ts", "markdown.ts", "scan.ts", "comments.ts"].map(
-        (name) =>
-          readFile(
-            join(nuxt.options.rootDir, "modules", "blog-content", name),
-            "utf8",
-          ).catch(() => name),
+      [
+        "index.ts",
+        "fields.ts",
+        "markdown.ts",
+        "scan.ts",
+        "comments.ts",
+        "images.ts",
+      ].map((name) =>
+        readFile(
+          join(nuxt.options.rootDir, "modules", "blog-content", name),
+          "utf8",
+        ).catch(() => name),
       ),
     );
     const moduleHash = createHash("sha256")
@@ -69,7 +116,8 @@ export default defineNuxtModule({
             join(nuxt.options.rootDir, "shared", "utils", "comments.ts"),
             "utf8",
           )) +
-          JSON.stringify(comments),
+          JSON.stringify(comments) +
+          JSON.stringify(imageMetadata),
       )
       .digest("hex");
     const hashFile = join(dataDir, "blog-content.hash");
@@ -110,9 +158,6 @@ export default defineNuxtModule({
     // Copy co-located images, e.g. content/posts/2014/foo/images/bar.png -> /content-images/posts/2014/foo/images/bar.png.
     // contentPublicDir is served (and readable by IPX) via @nuxt/image's `dirs` in nuxt.config.ts.
     await rm(imagesDir, { recursive: true, force: true });
-    const images = (await listFiles(contentDir)).filter((file) =>
-      contentImagePattern.test(file),
-    );
     await Promise.all(
       images.map(async (file) => {
         await mkdir(dirname(join(imagesDir, file)), { recursive: true });
@@ -131,7 +176,7 @@ export default defineNuxtModule({
       };
       restoreKeptTags(body.value);
       const fileDir = posix.dirname(toPosix(relative(contentDir, file.path)));
-      rewriteRelativeImages(body.value, fileDir);
+      rewriteRelativeImages(body.value, fileDir, imageMetadata);
       content.timeToRead = timeToRead(body);
       const emails = findEmailsOutsideCode(body.value);
       if (emails.length) {
@@ -158,7 +203,6 @@ export default defineNuxtModule({
     });
 
     // The crawler starts at "/" and follows links; add everything that isn't linked from a published page.
-    const entries = await scanContent(contentDir);
     const posts = entries.filter((entry) => entry.collection === "posts");
     const publishedPosts = posts.filter((entry) => entry.data.published);
     const pageCount = Math.ceil(publishedPosts.length / postsPerPage);

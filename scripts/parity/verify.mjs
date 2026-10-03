@@ -14,6 +14,16 @@ const localArtifacts = await load(actualDir, "artifacts.json");
 const excluded = new Set(["/streaming/border/", "/streaming/thumbnail/"]);
 const postDates = new Map();
 const postTags = new Map();
+const correctedImageDimensions = {
+    "{origin}/images/hero/Git-1366x768.png": {
+        width: "1200",
+        height: "768",
+    },
+    "{origin}/images/hero/Elysium-1366x768.png": {
+        width: "1024",
+        height: "640",
+    },
+};
 
 for (const file of await readdir("content/posts", { recursive: true })) {
     if (!file.endsWith("index.md")) continue;
@@ -46,6 +56,11 @@ function approvedPage(path, source) {
     if (path === "/" || /^\/\d+\/$/.test(path))
         page.meta["og:url"] = `{origin}${path}`;
     if (excluded.has(path)) page.meta.robots = "noindex, follow";
+    const dimensions = correctedImageDimensions[page.meta["og:image"]];
+    if (dimensions) {
+        page.meta["og:image:width"] = dimensions.width;
+        page.meta["og:image:height"] = dimensions.height;
+    }
     for (const schema of page.jsonLd) {
         if (schema.author?.logo) {
             schema.author.image = schema.author.logo;
@@ -58,6 +73,7 @@ function approvedPage(path, source) {
             for (const image of schema.image) {
                 image.caption = image.alternativeHeadline;
                 delete image.alternativeHeadline;
+                Object.assign(image, correctedImageDimensions[image.url] ?? {});
             }
         }
     }

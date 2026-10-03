@@ -6,10 +6,9 @@
         v-if="portfolio.heroImage"
         class="portfolio-card__image"
         :src="portfolio.heroImage"
-        width="770"
-        :height="
-          Math.round((770 * Number(imageMeta.height)) / Number(imageMeta.width))
-        "
+        :width="imageMeta.width"
+        :height="imageMeta.height"
+        :sizes="contentImageSizes"
         densities="x1 x2"
         format="webp"
         loading="lazy" />
@@ -37,6 +36,7 @@ import card from "~/components/shared/card.vue";
 import heading from "~/components/shared/heading.vue";
 import tags from "~/components/tags.vue";
 import { getImageMetadata } from "~/framework/images.js";
+import { contentImageSizes } from "#shared/utils/images";
 
 export default {
   name: "u-portfolio-card",
@@ -52,6 +52,9 @@ export default {
     },
   },
   computed: {
+    contentImageSizes() {
+      return contentImageSizes;
+    },
     imageMeta() {
       return getImageMetadata(this.portfolio.heroImage);
     },

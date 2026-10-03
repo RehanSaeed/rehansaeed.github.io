@@ -11,10 +11,9 @@
         class="post-card__image"
         :alt="imageMeta.alt"
         :src="post.heroImage"
-        width="770"
-        :height="
-          Math.round((770 * Number(imageMeta.height)) / Number(imageMeta.width))
-        "
+        :width="imageMeta.width"
+        :height="imageMeta.height"
+        :sizes="contentImageSizes"
         densities="x1 x2"
         format="webp"
         :loading="priority ? 'eager' : 'lazy'"
@@ -42,6 +41,7 @@ import heading from "~/components/shared/heading.vue";
 import postMeta from "~/components/post-meta.vue";
 import tags from "~/components/tags.vue";
 import { getImageMetadata } from "~/framework/images.js";
+import { contentImageSizes } from "#shared/utils/images";
 
 export default {
   name: "u-post-card",
@@ -61,6 +61,9 @@ export default {
     },
   },
   computed: {
+    contentImageSizes() {
+      return contentImageSizes;
+    },
     imageMeta() {
       return getImageMetadata(this.post.heroImage);
     },

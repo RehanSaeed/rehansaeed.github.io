@@ -6,8 +6,9 @@
         :alt="imageMeta.alt"
         :src="post.heroImage"
         class="post__photo"
-        width="860"
-        :height="Math.round((860 * imageMeta.height) / imageMeta.width)"
+        :width="imageMeta.width"
+        :height="imageMeta.height"
+        :sizes="contentImageSizes"
         densities="x1 x2"
         format="webp"
         loading="eager"
@@ -38,6 +39,7 @@ import shareButton from "~/components/share-button.vue";
 import supportButton from "~/components/support-button.vue";
 import tags from "~/components/tags.vue";
 import { getImageMetadata } from "~/framework/images.js";
+import { contentImageSizes } from "#shared/utils/images";
 
 export default {
   name: "u-post",
@@ -54,6 +56,9 @@ export default {
     },
   },
   computed: {
+    contentImageSizes() {
+      return contentImageSizes;
+    },
     imageMeta() {
       return getImageMetadata(this.post.heroImage);
     },

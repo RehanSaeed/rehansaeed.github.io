@@ -137,7 +137,7 @@ test.describe("Parity", () => {
 
     await openSearch.click();
     await expect(searchInput).toBeVisible();
-    await page.getByRole("button", { name: "Close search" }).click();
+    await page.getByRole("button", { name: "Close Search" }).click();
     await expect(searchInput).toBeHidden();
     await page.getByRole("button", { name: "Toggle dark/light" }).click();
     await openSearch.click();
