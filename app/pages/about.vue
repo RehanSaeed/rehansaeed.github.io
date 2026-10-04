@@ -1,0 +1,414 @@
+<template>
+  <div class="about">
+    <header class="about__title">
+      <u-heading id="about" level="1" center :to="relativeUrl">About</u-heading>
+      <p>
+        A little about my professional career, open source projects and history.
+      </p>
+    </header>
+
+    <u-arrows class="about__arrows" />
+
+    <u-card class="about__container" tag="article">
+      <NuxtImg
+        class="about__image"
+        alt="Muhammad Rehan Saeed"
+        height="480"
+        width="320"
+        src="/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg"
+        quality="100" />
+      <u-heading :id="metadata.author.name" level="2" class="about__title">{{
+        metadata.author.name
+      }}</u-heading>
+      <u-social-links class="about__social-links" />
+      <p class="about__description">
+        I am a professional Software Developer at Microsoft. Although I work for
+        Microsoft, my opinions are my own. If it’s written in C# or .NET, I have
+        probably written something using it in anger!
+      </p>
+      <p class="about__description">
+        I live stream my software development escapades on
+        <a :href="youtubeUrl">Youtube</a> and
+        <a :href="twitchUrl">Twitch</a> twice a week. Feel free to join me live
+        and ask questions.
+      </p>
+      <div class="about__youtube-images">
+        <a :href="youtubeUrl">
+          <img
+            class="about__youtube-image"
+            alt="Youtube views"
+            height="58"
+            width="208"
+            :src="youtubeViewsImageUrl" />
+        </a>
+        <a :href="youtubeUrl">
+          <img
+            class="about__youtube-image"
+            alt="Youtube subscribers"
+            height="58"
+            width="208"
+            :src="youtubeSubscribersImageUrl" />
+        </a>
+      </div>
+      <p class="about__description">
+        You can see some of the open source projects that I have founded and
+        maintained in my
+        <NuxtLink to="/portfolio/">portfolio</NuxtLink>. There are many others I
+        have contributed to which you can see in my
+        <a :href="gitHubUrl">GitHub profile</a> and of course there are other
+        commercial projects that I cannot disclose.
+      </p>
+      <div class="about__github-images">
+        <a :href="gitHubSponsorsUrl">
+          <img
+            class="about__github-image"
+            alt="GitHub sponsors"
+            height="30"
+            width="121"
+            :src="gitHubSponsorsImageUrl" />
+        </a>
+        <a :href="gitHubFollowersUrl">
+          <img
+            class="about__github-image"
+            alt="GitHub follower count"
+            height="30"
+            width="168"
+            :src="gitHubFollowersImageUrl" />
+        </a>
+        <a :href="gitHubUrl">
+          <img
+            class="about__github-image"
+            alt="GitHub stars"
+            height="30"
+            width="135"
+            :src="gitHubStarsImageUrl" />
+        </a>
+      </div>
+      <div class="about__github-statistics">
+        <a :href="gitHubUrl">
+          <img
+            class="about__github-statistics"
+            alt="GitHub statistics"
+            height="1280"
+            width="850"
+            :src="gitHubStatisticsImageUrl" />
+        </a>
+      </div>
+      <p class="about__description">
+        I have been fairly active on StackOverflow. You can view my
+        <a :href="stackOverflowUrl">Stack Overflow profile</a> and see my
+        contribution to the community.
+      </p>
+      <a :href="stackOverflowUrl">
+        <img
+          class="about__stack-overflow-image"
+          alt="Stack Overflow profile statistics"
+          height="58"
+          width="208"
+          :src="stackOverflowProfileUrl" />
+      </a>
+      <p class="about__description">
+        Before I joined Microsoft, I was a
+        <a :href="mvpUrl">Microsoft Most Valuable Professional (MVP)</a> for
+        three years. This gave me inside information into the work Microsoft was
+        doing. Once I joined Microsoft, I had to give up this award.
+      </p>
+      <div class="about__mvp-images">
+        <a :href="mvpUrl">
+          <NuxtImg
+            class="about__mvp-image"
+            alt="Microsoft Most Valuable Professional (MVP)"
+            height="84"
+            width="208"
+            src="/images/about/Microsoft-Most-Valuable-Professional-750x303.png"
+            quality="100" />
+        </a>
+        <a :href="mvpUrl">
+          <NuxtImg
+            class="about__badge-image"
+            alt="Microsoft Most Valuable Professional (MVP) Alumni"
+            height="300"
+            width="300"
+            src="/images/about/Microsoft-Most-Valuable-Professional-Alumni-300x300.png"
+            quality="100" />
+        </a>
+      </div>
+      <p class="about__description">
+        Here are some of the awards I have been given for my work as a software
+        engineer in open source or elsewhere:
+      </p>
+      <div class="about_awards-images">
+        <a href="/open-uk-honouree/">
+          <NuxtImg
+            class="about__open-uk-honours-image"
+            alt="Open UK Honours 2022"
+            height="396"
+            width="1288"
+            src="/images/about/Open-UK-Honours-2022-1288x396.jpg"
+            quality="100" />
+        </a>
+        <a :href="credlyUrl">
+          <NuxtImg
+            class="about__badge-image"
+            alt="Microsoft Global Hackathon 2022.png"
+            height="300"
+            width="300"
+            src="/images/about/Microsoft-Global-Hackathon-2022-300x300.png"
+            quality="100" />
+        </a>
+        <a :href="credlyUrl">
+          <NuxtImg
+            class="about__badge-image"
+            alt="Microsoft Global Hackathon 2021.png"
+            height="300"
+            width="300"
+            src="/images/about/Microsoft-Global-Hackathon-2021-300x300.png"
+            quality="100" />
+        </a>
+        <a :href="credlyUrl">
+          <NuxtImg
+            class="about__badge-image about__badge-image--wide"
+            alt="Microsoft Global Hackathon 2020.png"
+            height="300"
+            width="350"
+            src="/images/about/Microsoft-Global-Hackathon-2020-350x300.png"
+            quality="100" />
+        </a>
+      </div>
+      <p class="about__description">
+        Do you have questions or comments about my work? Please feel free to
+        contact me using any of the links above.
+      </p>
+    </u-card>
+  </div>
+</template>
+
+<script>
+import arrows from "~/components/shared/arrows.vue";
+import card from "~/components/shared/card.vue";
+import heading from "~/components/shared/heading.vue";
+import socialLinks from "~/components/social-links.vue";
+import { heroImagePath, imageSize } from "~/composables/use-site-head";
+
+export default {
+  name: "u-about",
+  components: {
+    "u-arrows": arrows,
+    "u-card": card,
+    "u-heading": heading,
+    "u-social-links": socialLinks,
+  },
+  setup() {
+    const metadata = useAppConfig().site;
+    const title = "About";
+    const description = `About ${metadata.author.name}. ${metadata.description}.`;
+    const image = metadata.url + heroImagePath;
+    const url = metadata.url + "/about/";
+    const { width, height } = imageSize(image);
+    useHead({
+      title,
+      link: [{ rel: "canonical", href: url }],
+      meta: [
+        { name: "description", content: description },
+        { name: "author", content: metadata.author.name },
+        // Open Graph
+        { property: "og:title", content: title },
+        { property: "og:url", content: url },
+        { property: "og:image", content: image },
+        { property: "og:image:height", content: height },
+        { property: "og:image:width", content: width },
+        { property: "og:description", content: description },
+        { property: "og:locale", content: metadata.language.replace("-", "_") },
+        { property: "og:site_name", content: metadata.name },
+        { property: "og:type", content: "profile" },
+        { property: "profile:first_name", content: metadata.author.firstName },
+        { property: "profile:last_name", content: metadata.author.lastName },
+        { property: "profile:username", content: metadata.author.name },
+        { property: "profile:gender", content: metadata.author.gender },
+        { property: "fb:app_id", content: metadata.facebookAppId },
+      ],
+    });
+    return { metadata };
+  },
+  data() {
+    return {
+      theme: "light",
+    };
+  },
+  computed: {
+    relativeUrl() {
+      return "/about/";
+    },
+    stackOverflowUrl() {
+      return this.metadata.author.stackOverflow.url;
+    },
+    stackOverflowProfileUrl() {
+      return `https://stackoverflow.com/users/flair/${this.metadata.author.stackOverflow.user}.png?theme=${this.oppositeTheme}`;
+    },
+    gitHubUrl() {
+      return this.metadata.author.gitHub.url;
+    },
+    gitHubSponsorsUrl() {
+      return `https://github.com/sponsors/${this.metadata.author.gitHub.user}`;
+    },
+    gitHubSponsorsImageUrl() {
+      return `https://img.shields.io/github/sponsors/${this.metadata.author.gitHub.user}?logo=github&style=social`;
+    },
+    gitHubFollowersUrl() {
+      return `https://github.com/${this.metadata.author.gitHub.user}?tab=followers`;
+    },
+    gitHubFollowersImageUrl() {
+      return `https://img.shields.io/github/followers/${this.metadata.author.gitHub.user}?style=social`;
+    },
+    gitHubStarsImageUrl() {
+      return `https://img.shields.io/github/stars/${this.metadata.author.gitHub.user}?style=social`;
+    },
+    gitHubStatisticsImageUrl() {
+      const fileName =
+        this.theme === "light"
+          ? "profile-green-animate.svg"
+          : "profile-night-green.svg";
+      return `https://raw.githubusercontent.com/RehanSaeed/RehanSaeed/main/profile-3d-contrib/${fileName}`;
+    },
+    mvpUrl() {
+      return "https://mvp.microsoft.com/en-us/PublicProfile/5001654?fullName=Muhammad%20Rehan%20Saeed";
+    },
+    credlyUrl() {
+      return "https://www.credly.com/users/muhammad_rehan_saeed/badges";
+    },
+    twitchUrl() {
+      return this.metadata.author.twitch.url;
+    },
+    youtubeUrl() {
+      return this.metadata.author.youtube.url;
+    },
+    youtubeViewsImageUrl() {
+      return `https://img.shields.io/youtube/channel/views/${this.metadata.author.youtube.user}?style=social`;
+    },
+    youtubeSubscribersImageUrl() {
+      return `https://img.shields.io/youtube/channel/subscribers/${this.metadata.author.youtube.user}?style=social`;
+    },
+    oppositeTheme() {
+      return this.theme === "light" ? "dark" : "light";
+    },
+  },
+  methods: {
+    setTheme(e) {
+      this.theme = e.detail;
+    },
+  },
+  mounted() {
+    if (window) {
+      this.theme = window.__theme;
+      window.addEventListener("__themeChanged", this.setTheme);
+    }
+  },
+  unmounted() {
+    if (window) {
+      window.removeEventListener("__themeChanged", this.setTheme);
+    }
+  },
+};
+</script>
+
+<style lang="scss">
+.about {
+  display: grid;
+  gap: var(--global-space-fluid-5);
+  justify-items: center;
+}
+
+.about__title {
+  text-align: center;
+}
+
+.about__arrows {
+  justify-self: normal;
+  margin-inline: calc(var(--global-space-main) * -1);
+}
+
+.about__container {
+  display: grid;
+  justify-items: center;
+
+  &:last-child {
+    margin-block-end: 0;
+  }
+}
+
+.about__image {
+  border-radius: var(--global-border-radius);
+  display: block;
+  max-inline-size: 320px;
+}
+
+.about__social-links {
+  margin-block-end: var(--global-space-fluid-3);
+}
+
+.about__github-images,
+.about__youtube-images {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--global-space-fixed-4);
+
+  margin-block-end: var(--global-space-fixed-5);
+}
+.about__github-image,
+.about__youtube-image {
+  block-size: 30px;
+}
+.about__github-statistics {
+  block-size: 26rem;
+  margin-block-end: var(--global-space-fixed-5);
+}
+
+.about__stack-overflow-image {
+  border-radius: var(--global-border-radius);
+  display: block;
+  margin-block-end: var(--global-space-fixed-5);
+  inline-size: 208px;
+  block-size: 58px;
+}
+
+.about__mvp-images {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--global-space-fixed-5);
+
+  margin-block-end: var(--global-space-fixed-5);
+}
+.about__mvp-image {
+  border-radius: var(--global-border-radius);
+  inline-size: 208px;
+  block-size: 84px;
+}
+
+.about__badge-image {
+  inline-size: 150px;
+  block-size: 150px;
+}
+.about__badge-image--wide {
+  inline-size: 180px;
+}
+
+.about_awards-images {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--global-space-fixed-5);
+
+  margin-block-end: var(--global-space-fixed-5);
+  max-inline-size: 800px;
+}
+.about__open-uk-honours-image {
+  border: 1px solid var(--global-accent-color);
+  border-radius: var(--global-border-radius);
+  inline-size: 322px;
+  block-size: 99x;
+}
+</style>

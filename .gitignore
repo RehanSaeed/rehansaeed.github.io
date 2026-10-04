@@ -349,14 +349,24 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
-# Gridsome
+# Nuxt
+.nuxt/
+.output/
+.data/
 .cache
 .DS_Store
-src/.temp
 dist
 .env
 .env.*
 
 .lighthouseci/
 
-cypress/videos/
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+tests/e2e/**/*-snapshots/
+
+# Parity snapshots
+.parity/

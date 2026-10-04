@@ -102,7 +102,7 @@ Once again, we are binding the image to the Docker socket using a volume mount b
 
 # Sonatype Nexus
 
-[https://hub.docker.com/r/sonatype/nexus3/](Sonatype Nexus) is an open source repository manager that can be used as a private Docker registry to store your images. In fact, it can also be used as a repository for NuGet, Maven, Ruby and NPM too. It's pretty powerful stuff and has user management built in too.
+[Sonatype Nexus](https://hub.docker.com/r/sonatype/nexus3/) is an open source repository manager that can be used as a private Docker registry to store your images. In fact, it can also be used as a repository for NuGet, Maven, Ruby and NPM too. It's pretty powerful stuff and has user management built in too.
 
 ![Sonatype Nexus](./images/Sonatype-Nexus.png)
 
