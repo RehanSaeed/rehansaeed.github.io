@@ -49,6 +49,11 @@ downloads, distant lazy images, incorrect hero filenames and wide/retina layouts
 Dialogs have hydration-stable, unique heading IDs and title-specific close labels.
 Literal currency dollars in Markdown must be escaped as `\$` so they cannot be
 mistaken for math delimiters; genuine KaTeX math remains enabled.
+Markdown soft breaks retain spaces between inline elements without changing code
+or explicit hard breaks. Initial dates use UTC on both server and browser, then
+switch to relative/local dates after mounting. Footer, cards and search use
+distinct IDs; colliding page-title IDs are renamed without changing Markdown
+fragment targets.
 
 ### Comments and analytics
 
@@ -68,6 +73,24 @@ real `G-...` measurement ID before deployment, or set
 configuration; an absent ID explicitly disables the external tracker. No ID is
 hardcoded, and Universal Analytics has been removed. Enable GA4 enhanced-measurement
 page views for browser-history changes; no second manual SPA page-view hook is added.
+
+The production **Cloudflare response-header CSP must also be updated**; a Pages
+artifact cannot override an HTTP policy with a meta tag or `_headers` file.
+Preserve the existing first-party, GitHub, webmention, font and YouTube rules.
+For GA4 without Ads features, add the following sources to the effective
+directives, following [Google's CSP guidance](https://developers.google.com/tag-platform/security/guides/csp):
+
+| Directive                                              | Additional sources                                                                                                     |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| `script-src` (and `script-src-elem` if separately set) | `https://www.googletagmanager.com`                                                                                     |
+| `connect-src`                                          | `https://www.googletagmanager.com https://*.google-analytics.com https://*.google.com`                                 |
+| `img-src`                                              | `https://www.googletagmanager.com https://*.google-analytics.com` (already covered by the current `https:` image rule) |
+
+Do not enable `unsafe-eval`, add a static nonce, or replace the policy with `*`.
+The deployment preflight checks the enforced HTTP and meta policies, including
+regional collectors, when an ID is configured. Tests stub vendor/collection
+requests; real cookie storage and collection still require production verification
+with the real measurement ID.
 
 ### Typography and SEO
 
@@ -106,10 +129,56 @@ at the same origin, waits for actual controller takeover, checks old-cache clean
 and opens an unvisited post offline. Use a copy of the original release output,
 not a fabricated legacy worker.
 
-Before merging, switch repository **Settings → Pages → Source** to **GitHub Actions**.
-The workflow builds and tests before uploading `dist`; deployment runs only
-outside PRs. Keep the custom domain and Cloudflare configuration. The migration
-does not automatically change hosting settings or activate GA4 without its ID.
+`npm run build` also validates every reference route, unique HTML IDs and local
+assets/maintained navigation paths case-sensitively. Outbound Markdown examples
+and reader-authored comment links are not deployment assets. The artifact must have the correct `CNAME`,
+required feeds/worker/404, no links/private build files, and stay below the Pages
+1 GB limit. It writes `dist/deployment.json` with the build revision and critical
+HTML/asset checks for the post-deployment smoke check. Hidden public files such as
+`.well-known/security.txt` are included in the Pages upload.
+
+#### Safe cutover and rollback
+
+The inspected production configuration still publishes **`release` at `/`**.
+Merging alone is **not** a completed cutover. Neither the build nor its preflight
+changes Pages settings, DNS, the custom domain or Cloudflare.
+
+1. Finish local validation and the ready-for-review CI run before merging.
+   Preserve the current `release` branch and record its deployed commit
+   (`92e2ca92bf6deb684a4e8101045f6c6659a6b5d2` at the October 2026 inspection).
+   Keep the archived legacy output for the worker-cutover check.
+2. If configuring GA4, update the Cloudflare CSP above and supply the measurement
+   ID. Otherwise tracking remains explicitly disabled, without blocking the site.
+3. At the approved cutover, switch **Settings → Pages → Source** to
+   **GitHub Actions**, retaining `rehansaeed.com` and the existing DNS/proxy
+   configuration. Do not delete/recreate the Pages site or change its domain.
+   Run `npm run pages:preflight` with a read-only `GITHUB_TOKEN` and the same
+   analytics-ID environment used for the build; wrong source/domain/CSP or an
+   unhealthy HTTPS response fails explicitly.
+4. Merge. Only `main` can upload/deploy, including manual dispatches; PRs and
+   feature-branch dispatches cannot publish. Build, typecheck, tests and hosting
+   preflight must all succeed before upload. A failed build/preflight never
+   invokes deployment or replaces the published artifact. Deployments are not
+   cancelled mid-publication.
+5. The workflow downloads the exact uploaded artifact's verification marker,
+   deploys, then checks the custom-domain revision, critical HTML, hashed JS/CSS,
+   feeds, manifest/worker and real 404 status, retrying propagation for two minutes.
+   HTML checks allow unrelated CDN-injected markup; asset bytes must match.
+   If Cloudflare still serves old files, purge the affected cache and rerun
+   `npm run pages:verify`. Verify search, comments, GA4 DebugView and the installed
+   legacy worker in a browser too. Webmention failure is separately warned and
+   does not misreport a verified website deployment as failed.
+6. If cutover or the deployed site is unhealthy, restore Pages Source to
+   **Deploy from a branch → `release` → `/`**, keeping the domain/DNS unchanged;
+   verify the legacy site's return. No automatic rollback deletes a deployment,
+   rewrites `release`, or changes hosting. Later rollback can redeploy a known-good
+   Actions artifact. Review/purge Cloudflare caches and check worker recovery:
+   rolling back HTML alone is not a guarantee that every installed client has
+   reverted.
+
+Source switching and an actual production deployment are still manual/external
+operations; local checks cannot guarantee zero downtime or substitute for the
+first successful Pages deployment and public smoke check.
 The original unchecked-in CSS work was not available in this worktree and remains
 deferred; the retained SCSS structure supports adding it later.
 

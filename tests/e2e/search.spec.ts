@@ -9,7 +9,9 @@ test.describe("Search", () => {
     await page.goto("/");
     await openSearch(page);
 
-    await expect(page.locator("input#search")).toBeVisible();
+    await expect(
+      page.getByRole("searchbox", { name: "Search", exact: true }),
+    ).toBeVisible();
   });
 
   test("Close search", async ({ page }) => {
@@ -17,13 +19,21 @@ test.describe("Search", () => {
     await openSearch(page);
     await page.getByRole("button", { name: "Close Search" }).click();
 
-    await expect(page.locator("input#search")).toBeHidden();
+    await expect(
+      page.getByRole("searchbox", {
+        name: "Search",
+        exact: true,
+        includeHidden: true,
+      }),
+    ).toBeHidden();
   });
 
   test("Search portfolio", async ({ page }) => {
     await page.goto("/");
     await openSearch(page);
-    await page.locator("input#search").fill("Schema.NET");
+    await page
+      .getByRole("searchbox", { name: "Search", exact: true })
+      .fill("Schema.NET");
 
     await expect(page.locator(".search-result__link").first()).toHaveAttribute(
       "href",
@@ -34,9 +44,17 @@ test.describe("Search", () => {
   test("Search post", async ({ page }) => {
     await page.goto("/");
     await openSearch(page);
-    await page.locator("input#search").fill("ASP.NET");
+    await page
+      .getByRole("searchbox", { name: "Search", exact: true })
+      .fill("ASP.NET");
     await page.locator(".search-result__link").first().click();
 
-    await expect(page.locator("input#search")).toBeHidden();
+    await expect(
+      page.getByRole("searchbox", {
+        name: "Search",
+        exact: true,
+        includeHidden: true,
+      }),
+    ).toBeHidden();
   });
 });

@@ -1,11 +1,11 @@
 <template>
   <section class="search" aria-label="site">
     <form class="search__form" role="search" @submit.prevent>
-      <label class="search__label" for="search">Search</label>
+      <label class="search__label" :for="inputId">Search</label>
       <input
         class="search__input"
         ref="search"
-        id="search"
+        :id="inputId"
         autofocus
         v-model="searchTerm"
         placeholder="Search"
@@ -24,6 +24,7 @@
 
 <script>
 import { Document } from "flexsearch";
+import { useId } from "vue";
 import SearchResult from "~/components/search/search-result.vue";
 
 const minimumSearchTermLength = 3;
@@ -67,6 +68,9 @@ export default {
     search: {
       type: String,
     },
+  },
+  setup() {
+    return { inputId: `site-search-${useId()}` };
   },
   data() {
     return {

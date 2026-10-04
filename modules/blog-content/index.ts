@@ -24,6 +24,7 @@ import {
   remarkKbd,
   remarkLooseListItems,
   remarkMermaid,
+  remarkSoftBreaks,
   remarkYouTube,
 } from "./markdown";
 import { contentImagesBaseURL, contentPublicDir } from "./paths";
@@ -147,6 +148,7 @@ export default defineNuxtModule({
       "blog-youtube": { instance: remarkYouTube },
       "blog-loose-list-items": { instance: remarkLooseListItems },
       "blog-heading-ids": { instance: remarkHeadingIds },
+      "blog-soft-breaks": { instance: remarkSoftBreaks },
     };
     markdown.rehypePlugins = {
       ...markdown.rehypePlugins,

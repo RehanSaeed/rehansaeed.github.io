@@ -28,7 +28,9 @@ test.describe("Nuxt best practices", () => {
       resume();
       await expect(open).toBeEnabled();
       await open.click();
-      await expect(page.locator("input#search")).toBeVisible();
+      await expect(
+        page.getByRole("searchbox", { name: "Search", exact: true }),
+      ).toBeVisible();
     } finally {
       resume();
     }

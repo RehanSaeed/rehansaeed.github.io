@@ -4,7 +4,7 @@
 
     <u-newsletter class="footer__newsletter" />
 
-    <u-author class="footer_author" />
+    <u-author class="footer_author" heading-id="footer-author" />
 
     <section class="footer__text">
       <span class="footer__copyright"

@@ -123,7 +123,10 @@ test.describe("Parity", () => {
     await page.emulateMedia({ colorScheme: "light" });
     await page.goto("/");
     const openSearch = page.getByRole("button", { name: "Open search" });
-    const searchInput = page.locator("input#search");
+    const searchInput = page.getByRole("searchbox", {
+      name: "Search",
+      exact: true,
+    });
     const tracked = async () =>
       (await getAnalyticsEvents(page)).filter((e) =>
         ["app-theme", "search"].includes(e.category),
@@ -162,8 +165,12 @@ test.describe("Parity", () => {
   test("Search deep link opens the dialog prefilled", async ({ page }) => {
     await page.goto("/?search=ASP.NET");
 
-    await expect(page.locator("input#search")).toBeVisible();
-    await expect(page.locator("input#search")).toHaveValue("ASP.NET");
+    await expect(
+      page.getByRole("searchbox", { name: "Search", exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("searchbox", { name: "Search", exact: true }),
+    ).toHaveValue("ASP.NET");
   });
 });
 

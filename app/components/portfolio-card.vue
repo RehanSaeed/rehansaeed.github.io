@@ -15,7 +15,7 @@
     </div>
     <div class="portfolio-card__content">
       <u-heading
-        :id="portfolio.title"
+        :id="`portfolio-card-${portfolio.id}`"
         :to="portfolio.permalink"
         level="2"
         class="portfolio-card__title"

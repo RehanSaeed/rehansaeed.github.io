@@ -10,7 +10,7 @@
       height="120" />
 
     <u-heading
-      :id="metadata.name"
+      :id="headingId || metadata.name"
       class="author__site-title"
       link-class="u-url u-uid p-name"
       level="1"
@@ -36,6 +36,11 @@ export default {
     NuxtImg,
     "u-heading": heading,
     "u-social-links": socialLinks,
+  },
+  props: {
+    headingId: {
+      type: String,
+    },
   },
   setup() {
     return { metadata: useAppConfig().site };

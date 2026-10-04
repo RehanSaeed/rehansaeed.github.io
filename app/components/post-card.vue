@@ -22,7 +22,7 @@
     <div class="post-card__content">
       <u-heading
         class="post-card__title"
-        :id="post.title"
+        :id="`post-card-${post.id}`"
         :to="post.permalink"
         level="2"
         >{{ post.title }}</u-heading

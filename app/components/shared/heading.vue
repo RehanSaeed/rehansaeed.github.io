@@ -19,6 +19,7 @@
 
 <script>
 import { NuxtLink } from "#components";
+import { headingId } from "#shared/utils/headings";
 
 export default {
   name: "u-heading",
@@ -52,7 +53,7 @@ export default {
   },
   computed: {
     idInternal() {
-      return this.id.split(" ").join("-").toLowerCase();
+      return headingId(this.id);
     },
     hasLink() {
       return this.to || this.href;

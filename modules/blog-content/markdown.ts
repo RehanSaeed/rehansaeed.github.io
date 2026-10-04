@@ -46,6 +46,17 @@ function walk(
   }
 }
 
+// MDC drops newline-only text nodes, including soft breaks between inline elements.
+export function remarkSoftBreaks() {
+  return (tree: Node) => {
+    walk(tree, (node) => {
+      if (node.type === "text" && node.value?.includes("\n")) {
+        node.value = node.value.replace(/\r?\n/g, " ");
+      }
+    });
+  };
+}
+
 const containerTypes: Record<
   string,
   { tagName: string; titleTagName: string; title: string }

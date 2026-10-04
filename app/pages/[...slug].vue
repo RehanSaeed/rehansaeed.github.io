@@ -2,7 +2,7 @@
   <div class="post-page h-entry">
     <div class="post-page__title-container">
       <u-heading
-        :id="title"
+        :id="titleId"
         class="p-name u-url"
         level="1"
         center
@@ -34,6 +34,7 @@ import UPostMeta from "~/components/post-meta.vue";
 import UWebmentions from "~/components/webmentions/webmentions.vue";
 import { authorSchema, publisherSchema } from "~/composables/use-site-head";
 import { getOpenGraphImage, getSchemaImageObject } from "~/framework/images.js";
+import { pageHeadingId } from "#shared/utils/headings";
 
 const site = useAppConfig().site;
 const route = useRoute();
@@ -74,6 +75,7 @@ if (!post.value) {
 }
 
 const title = post.value.title;
+const titleId = pageHeadingId(title, post.value.body.value);
 const description = post.value.description;
 const author = post.value.author;
 const date = post.value.date;

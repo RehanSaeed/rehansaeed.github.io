@@ -62,7 +62,7 @@
   },
   "scripts": {
     "dev": "nuxt dev",
-    "build": "nuxt generate",
+    "build": "nuxt generate && node scripts/pages.mjs artifact",
     "start": "node scripts/serve.mjs",
     "analyze": "nuxt analyze",
     "typecheck": "nuxt typecheck",
@@ -77,7 +77,9 @@
     "parity:snapshot": "node scripts/parity/snapshot.mjs",
     "parity:diff": "node scripts/parity/diff.mjs tests/parity/baseline .parity/local",
     "parity:verify": "node scripts/parity/verify.mjs",
-    "parity:sw-cutover": "node scripts/parity/sw-cutover.mjs"
+    "parity:sw-cutover": "node scripts/parity/sw-cutover.mjs",
+    "pages:preflight": "node scripts/pages.mjs preflight",
+    "pages:verify": "node scripts/pages.mjs verify"
   },
   "browserslist": [
     "defaults"

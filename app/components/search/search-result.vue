@@ -13,7 +13,7 @@
         loading="lazy"
         :src="searchResult.heroImage" />
       <u-heading
-        :id="searchResult.title"
+        :id="`search-result-${searchResult.id}`"
         class="search-result__title"
         level="3"
         >{{ searchResult.title }}</u-heading

@@ -12,6 +12,13 @@ const longDateTimeFormat = new Intl.DateTimeFormat("en-GB", {
   year: "numeric",
 });
 
+const prerenderDateTimeFormat = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  timeZone: "UTC",
+});
+
 export function getDisplayDate(date) {
   const now = new Date();
   if (differenceInDays(now, date) <= 30) {
@@ -33,7 +40,7 @@ export function getDisplayDateFromString(date) {
 // The server renders this, as relative dates would be frozen at build time.
 export function getAbsoluteDisplayDateFromString(date) {
   if (date) {
-    return longDateTimeFormat.format(new Date(date));
+    return prerenderDateTimeFormat.format(new Date(date));
   }
   return undefined;
 }
