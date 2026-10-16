@@ -56,7 +56,7 @@ export default {
 .vssue-logout {
   animation: none;
   color: var(--global-title-color);
-  font-family: var(--global-font-family-heading);
+  font-family: var(--font-heading);
   line-height: var(--global-line-height-1);
   position: relative;
   text-decoration: none;

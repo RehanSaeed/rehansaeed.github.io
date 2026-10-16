@@ -1,8 +1,7 @@
 import { expect, test } from "./fixtures";
-import type { Page } from "@playwright/test";
+import type { Page, TestInfo } from "@playwright/test";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
-import type { TestInfo } from "@playwright/test";
 
 // Local-only visual comparison (excluded in CI). Capture baselines from live with
 // `BASE_URL=https://rehansaeed.com npm run test:visual -- --update-snapshots`, then run

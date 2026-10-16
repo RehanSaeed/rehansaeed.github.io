@@ -28,8 +28,29 @@ export default defineNuxtConfig({
     "@nuxtjs/sitemap",
     "@vite-pwa/nuxt",
     "@nuxt/a11y",
+    "@nuxt/eslint",
+    "@nuxt/fonts",
     "nuxt-link-checker",
   ],
+
+  fonts: {
+    provider: "npm",
+    families: [
+      {
+        name: "Audiowide",
+        weights: [400],
+        styles: ["normal"],
+        subsets: ["latin"],
+        preload: true,
+        providerOptions: {
+          npm: {
+            package: "@fontsource/audiowide",
+            file: "latin-400.css",
+          },
+        },
+      },
+    ],
+  },
 
   scripts: {
     registry: {
@@ -171,11 +192,7 @@ export default defineNuxtConfig({
   components: [{ path: "~/components/content", global: true }],
 
   // Global, as in Gridsome's main.js, so rehype-katex output is styled on every page.
-  css: [
-    "@fontsource/audiowide/latin-400.css",
-    "~/assets/style/index.scss",
-    "katex/dist/katex.min.css",
-  ],
+  css: ["~/assets/style/index.scss", "katex/dist/katex.min.css"],
 
   app: {
     head: {

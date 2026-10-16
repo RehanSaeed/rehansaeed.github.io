@@ -58,7 +58,7 @@ export default {
   border: none;
   color: var(--global-title-color);
   cursor: pointer;
-  font-family: var(--global-font-family-heading);
+  font-family: var(--font-heading);
   line-height: var(--global-line-height-1);
   padding: 0;
   position: relative;

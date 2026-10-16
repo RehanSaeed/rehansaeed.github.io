@@ -27,13 +27,12 @@
 </template>
 
 <script>
-import card from "~/components/shared/card.vue";
 import linkButton from "~/components/shared/link-button.vue";
 import { previousUrl, nextUrl } from "~/framework/paging.js";
 
 export default {
+  name: "BlogPager",
   components: {
-    "u-card": card,
     "u-link-button": linkButton,
   },
   props: {

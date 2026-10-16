@@ -53,6 +53,7 @@
 
 <script>
 export default {
+  emits: ["update:background"],
   props: {
     background: {
       default: "",

@@ -14,11 +14,6 @@
     @update:background="background = $event" />
 </template>
 
-<script setup>
-definePageMeta({ layout: "empty" });
-useHead({ meta: [{ name: "robots", content: "noindex, follow" }] });
-</script>
-
 <script>
 import thumbnailImage from "~/components/thumbnail/thumbnail-image.vue";
 import thumbnailLogo from "~/components/thumbnail/thumbnail-logo.vue";
@@ -55,6 +50,11 @@ export default {
     this.background = background;
   },
 };
+</script>
+
+<script setup>
+definePageMeta({ layout: "empty" });
+useHead({ meta: [{ name: "robots", content: "noindex, follow" }] });
 </script>
 
 <style lang="scss">

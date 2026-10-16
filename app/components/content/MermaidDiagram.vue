@@ -1,5 +1,6 @@
 <template>
   <div class="mermaid">
+    <!-- eslint-disable-next-line vue/no-v-html -- Mermaid renders this SVG with securityLevel: strict. -->
     <div v-if="svg" v-html="svg" />
     <template v-else>
       <pre>{{ code }}</pre>

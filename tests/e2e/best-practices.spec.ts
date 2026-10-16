@@ -73,6 +73,68 @@ test.describe("Nuxt best practices", () => {
       .toBe(true);
   });
 
+  test("Preloads the unchanged local heading font with metric-adjusted fallbacks", async ({
+    page,
+  }) => {
+    const response = await page.goto(postPath);
+    const html = await response!.text();
+    const preload = page.locator('link[rel="preload"][as="font"]');
+    await expect(preload).toHaveCount(1);
+    const href = await preload.getAttribute("href");
+    expect(href).toMatch(/^\/_nuxt\/fonts\/[^/]+\.woff2$/);
+    expect(html).toContain("size-adjust:");
+    expect(html).toContain("ascent-override:");
+    expect(html).not.toContain("fonts.googleapis.com");
+    expect(html).not.toContain("fonts.gstatic.com");
+
+    const files = readdirSync(join(process.cwd(), "dist", "_nuxt", "fonts"));
+    expect(files).toEqual([href!.split("/").at(-1)]);
+    expect(readFileSync(join(process.cwd(), "dist", href!.slice(1)))).toEqual(
+      readFileSync(
+        join(
+          process.cwd(),
+          "node_modules",
+          "@fontsource",
+          "audiowide",
+          "files",
+          "audiowide-latin-400-normal.woff2",
+        ),
+      ),
+    );
+    const heading = page.locator("h1").first();
+    expect(
+      await heading.evaluate((element) => getComputedStyle(element).fontFamily),
+    ).toContain("Audiowide Fallback");
+    await page.evaluate(() => document.fonts.ready.then(() => undefined));
+    expect(
+      await page.evaluate(() =>
+        [...document.fonts].some(
+          (face) => face.family === "Audiowide" && face.status === "loaded",
+        ),
+      ),
+    ).toBe(true);
+  });
+
+  test("Runs lint in CI and before committing supported source files", () => {
+    const workflow = parse(
+      readFileSync(
+        join(process.cwd(), ".github", "workflows", "build.yml"),
+        "utf8",
+      ),
+    );
+    expect(workflow.jobs.build.steps).toContainEqual({
+      name: "Lint",
+      run: "npm run lint",
+    });
+    const packageJson = JSON.parse(
+      readFileSync(join(process.cwd(), "package.json"), "utf8"),
+    );
+    expect(packageJson.scripts.lint).toBe("eslint . --max-warnings=0");
+    expect(packageJson["lint-staged"]["*.{js,mjs,cjs,ts,mts,cts,vue}"]).toEqual(
+      ["eslint --fix --max-warnings=0", "prettier --write"],
+    );
+  });
+
   test("Post payload omits unused raw Markdown without removing feed content", async ({
     request,
   }) => {

@@ -54,7 +54,7 @@ export default {
         console.log("PWA Install Declined");
       }
     },
-    onAppInstalled(e) {
+    onAppInstalled() {
       this.isVisible = false;
       this.deferredPrompt = undefined;
 

@@ -44,6 +44,7 @@
                     ><u-time :datetime="comment.created_at"
                   /></a>
                 </header>
+                <!-- eslint-disable-next-line vue/no-v-html -- safeComment sanitizes both saved and refreshed GitHub markup. -->
                 <div class="vssue-comment-main" v-html="comment.body_html" />
                 <footer
                   class="vssue-comment-footer"
@@ -71,6 +72,7 @@ import UIntersect from "~/components/shared/intersect.vue";
 import UTime from "~/components/shared/time.vue";
 import type { CommentSnapshot, GitHubComment } from "#shared/utils/comments";
 
+defineOptions({ name: "BlogComments" });
 const props = defineProps<{ title: string; snapshot: CommentSnapshot }>();
 const current = shallowRef(props.snapshot);
 const unavailable = ref(false);
@@ -363,7 +365,7 @@ async function refresh() {
 }
 .vssue-comment-author a {
   color: var(--global-title-color);
-  font-family: var(--global-font-family-heading);
+  font-family: var(--font-heading);
   text-decoration: none;
 }
 .vssue-comment-created-at {

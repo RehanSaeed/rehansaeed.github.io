@@ -16,12 +16,7 @@
 </template>
 
 <script>
-import iconRehan from "~/components/shared/icons/icon-rehan.vue";
-
 export default {
-  components: {
-    "u-icon-rehan": iconRehan,
-  },
   data() {
     return {
       title: "",

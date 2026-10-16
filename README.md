@@ -11,12 +11,14 @@ If you want to use this code for your own blog, you can do so but with proper at
 ## Development
 
 Use Node.js 24.15 or later in the 24.x LTS line, or Node.js 26+. Run `npm ci`, then `npm run dev`. Before pushing, run
-`npm run build`, `npm run typecheck`, and `npm test`. The build prerenders the site
+`npm run build`, `npm run typecheck`, `npm run lint`, and `npm test`. The build prerenders the site
 into `dist`; `npm start` serves that exact artifact. `npm run analyze` writes its
 report outside the published directory.
 
 Husky installs the `.husky/pre-commit` hook on installation; it runs lint-staged
-and Prettier, including ESM TypeScript test files. Set `HUSKY=0` when hooks should
+with ESLint followed by Prettier for JavaScript, TypeScript and Vue files,
+including ESM TypeScript tests. Other supported staged files use Prettier.
+`npm run lint:fix` applies ESLint's available fixes. Set `HUSKY=0` when hooks should
 not be installed, such as in CI.
 
 Image automation compresses files without using the action's GitHub-API commit
@@ -214,13 +216,39 @@ first successful Pages deployment and public smoke check.
 The original unchecked-in CSS work was not available in this worktree and remains
 deferred; the retained SCSS structure supports adding it later.
 
-### Deliberate exclusions
+### Module decisions and deliberate exclusions
 
 Keep the current automatically embedded YouTube players, without a cookie consent
 banner. Do not replace the existing search with Content's full-text search,
 switch to Nuxt 5 compatibility, enable script-free routes (which would break
 interactive features), or add experimental islands merely to enable more options.
-The font is already self-hosted, so an additional font module is not necessary.
+Nuxt Fonts resolves the existing Fontsource Audiowide Latin 400 package locally,
+retaining the identical 14,132-byte WOFF2 and one preload. Its generated
+metric-adjusted system-font fallbacks reduce heading reflow while the font loads;
+the manual app-level preload and Fontsource CSS import are removed. Only
+`--font-heading` is processed: body, serif and monospace stacks are unchanged.
+The unused WOFF fallback is no longer shipped. In a controlled Chromium cold-font
+experiment (375px/1280px viewports, home/post/about, font delivery held until after
+fallback layout, hydration disabled and the Audiowide `local()` shortcut removed),
+the mobile home font-swap CLS fell from about 0.072 to 0.0011 and the post from
+0.044 to 0.00066. These are isolated laboratory swaps, not production Core Web
+Vitals or a guaranteed LCP improvement; final loaded heading geometry matched.
+
+Nuxt ESLint provides the generated Nuxt/Vue/TypeScript flat configuration.
+CI runs `npm run lint` with zero warnings. Prettier remains the formatter;
+configuration preserves established Vue naming/ordering and optional-prop
+conventions, permits Vue 3 fragments and scopes Playwright fixture conventions to
+tests. Intentional HTML-rendering sinks have local, explained rule exceptions.
+Type checking still uses TypeScript 6's JavaScript compiler API through `vue-tsc`;
+Vue Language Tools' draft v4/TypeScript 7.1 content-mapper work has no stable ETA.
+
+Nuxt Icon and Color Mode are not added solely for performance: the existing inline
+SVGs and early inline theme bootstrap already avoid external icon requests and
+theme-flash delays. The SEO suite/OG generation are not automatically adopted.
+`nuxt-security` is deliberately omitted for this GitHub Pages deployment:
+Cloudflare owns the HTTP security headers, and Pages cannot run Nitro middleware.
+Static CSP/hash tooling can be useful on other deployments, but cannot relax an
+existing Cloudflare HTTP policy.
 
 AI-readable Markdown/`llms.txt`, new social-image generators, and a change to offline/update UX are separate
 decisions rather than automatic module additions.

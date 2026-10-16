@@ -49,6 +49,8 @@ jobs:
           NUXT_PUBLIC_GOOGLE_ANALYTICS_ID: ${{ vars.GA4_MEASUREMENT_ID }}
       - name: "Type Check"
         run: npm run typecheck
+      - name: "Lint"
+        run: npm run lint
       - name: "Cache Playwright Browsers"
         id: playwright-cache
         uses: actions/cache@v6.1.0

@@ -6,10 +6,12 @@
     class="line-highlight"
     :class="{ 'has-highlighted-lines': highlights?.length }"
     :data-language="language">
+    <!-- eslint-disable vue/no-v-html -- Shiki generates this highlighted code HTML at build time. -->
     <pre
       :class="
         preClass
       "><code :class="`language-${language}`" v-html="html" /></pre>
+    <!-- eslint-enable vue/no-v-html -->
   </div>
 </template>
 

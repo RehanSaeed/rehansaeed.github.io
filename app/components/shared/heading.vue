@@ -30,7 +30,6 @@ export default {
     },
     level: {
       default: "1",
-      required: true,
       type: String,
     },
     size: {

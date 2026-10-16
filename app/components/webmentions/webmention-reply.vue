@@ -15,6 +15,7 @@
       >{{ name }}</u-heading
     >
     <u-time class="webmention-reply__timestamp" :datetime="timestamp" />
+    <!-- eslint-disable-next-line vue/no-v-html -- Preserve the configured aggregator's HTML reply format. -->
     <div class="webmention-reply__content" v-html="content"></div>
   </article>
 </template>
