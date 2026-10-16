@@ -19,6 +19,10 @@ Husky installs the `.husky/pre-commit` hook on installation; it runs lint-staged
 and Prettier, including ESM TypeScript test files. Set `HUSKY=0` when hooks should
 not be installed, such as in CI.
 
+Image automation compresses files without using the action's GitHub-API commit
+path, then commits through Git so the repository's LFS filters retain image
+pointers. It checks those pointers before pushing and never force-pushes.
+
 TypeScript stays on `6.0.3`, the latest compatible JavaScript-API release for
 `vue-tsc`; TypeScript 7's native compiler is not a drop-in replacement for that
 Vue checker. Nuxt Scripts stays on its existing v2 beta channel.

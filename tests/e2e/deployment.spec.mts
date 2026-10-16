@@ -74,6 +74,48 @@ for (const directory of [".data", "__link-checker__"]) {
     });
 }
 
+test("Image automation commits through Git LFS rather than the action's raw-blob API", () => {
+    const workflow = parse(
+        readFileSync(".github/workflows/compress-images.yml", "utf8"),
+    );
+    const job = workflow.jobs.build;
+    expect(job.permissions).toEqual({
+        contents: "write",
+        "pull-requests": "read",
+    });
+    const checkout = job.steps.find(
+        (step: { name: string }) => step.name === "Checkout",
+    );
+    expect(checkout.with).toEqual({
+        lfs: true,
+        ref: "${{ github.head_ref }}",
+    });
+    const compress = job.steps.find(
+        (step: { name: string }) => step.name === "Compress Images",
+    );
+    expect(compress.with.compressOnly).toBe(true);
+    const commit = job.steps.find(
+        (step: { name: string }) =>
+            step.name === "Commit optimized images with LFS",
+    );
+    expect(commit.env.PR_BRANCH).toBe("${{ github.head_ref }}");
+    expect(commit.run).toContain("git add --renormalize -- .");
+    expect(commit.run).toContain("git diff --cached --quiet");
+    expect(commit.run.indexOf("git commit")).toBeLessThan(
+        commit.run.indexOf("git lfs fsck --pointers"),
+    );
+    expect(commit.run.indexOf("git lfs fsck --pointers")).toBeLessThan(
+        commit.run.indexOf('git push origin "HEAD:$PR_BRANCH"'),
+    );
+    expect(commit.run).not.toMatch(/--force|--amend/);
+    const build = parse(readFileSync(".github/workflows/build.yml", "utf8"));
+    expect(
+        build.jobs.build.steps.find(
+            (step: { name: string }) => step.name === "Check Git LFS Pointers",
+        ).run,
+    ).toBe("git lfs fsck --pointers");
+});
+
 test("Deployment is main-only, gated by successful build/tests/preflight and preserves hidden public files", () => {
     const workflow = parse(readFileSync(".github/workflows/build.yml", "utf8"));
     const condition =
