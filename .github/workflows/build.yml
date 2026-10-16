@@ -38,6 +38,7 @@ jobs:
         run: npm ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HUSKY: "0"
       - name: "NPM Build"
         run: npm run build
         env:

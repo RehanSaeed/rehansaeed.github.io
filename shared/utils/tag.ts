@@ -1,8 +1,6 @@
-// @ts-expect-error v0.8 ships no type declarations.
 import slugify from "@sindresorhus/slugify";
 
-// Gridsome 0.7 slugified tag titles with @sindresorhus/slugify@0.8 and `separator: "-"`.
-// Pinned to that version so every /tag/:slug/ URL stays identical, e.g. "C#" -> "c", ".NET" -> "net".
+// Preserve Gridsome's tag URLs, including "C#" -> "c" and ".NET" -> "net".
 export const tagSlug = (tag: string): string =>
   slugify(String(tag), { separator: "-" });
 

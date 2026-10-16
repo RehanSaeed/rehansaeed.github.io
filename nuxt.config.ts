@@ -1,5 +1,6 @@
 import { mkdirSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { isAbsolute } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { contentPublicDir } from "./modules/blog-content/paths";
 import site from "./site.json";
 
@@ -26,6 +27,8 @@ export default defineNuxtConfig({
     "@nuxt/scripts",
     "@nuxtjs/sitemap",
     "@vite-pwa/nuxt",
+    "@nuxt/a11y",
+    "nuxt-link-checker",
   ],
 
   scripts: {
@@ -54,6 +57,22 @@ export default defineNuxtConfig({
     discoverImages: false,
     discoverVideos: false,
     exclude: [notFoundRoute],
+  },
+
+  linkChecker: {
+    runOnBuild: true,
+    failOnError: true,
+    fetchRemoteUrls: false,
+    excludeLinks: [
+      // An intentionally fictional example in the pull-request etiquette post.
+      "https://rehansaeed.com/why-x-is-better-than-y",
+    ],
+    report: {
+      json: true,
+      markdown: true,
+      storage: ".data/link-checker-report",
+      publish: false,
+    },
   },
 
   // Same service worker and manifest URLs as gridsome-plugin-pwa, so installed users get an update
@@ -346,6 +365,17 @@ export default defineNuxtConfig({
         },
         ...(options.workbox.manifestTransforms ?? []),
       ];
+    },
+    "nitro:config": (nitro) => {
+      // Nuxt Scripts beta.16 passes a raw Windows path to Nitro's ESM driver import.
+      const cache = nitro.storage?.["nuxt-scripts-cache"];
+      if (
+        process.platform === "win32" &&
+        typeof cache?.driver === "string" &&
+        isAbsolute(cache.driver)
+      ) {
+        cache.driver = pathToFileURL(cache.driver).href;
+      }
     },
     // GitHub Pages serves 404.html for unknown URLs. Nuxt prerenders it as an empty SPA shell; Gridsome
     // server rendered the not found page instead, so write the rendered error page there.

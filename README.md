@@ -10,10 +10,37 @@ If you want to use this code for your own blog, you can do so but with proper at
 
 ## Development
 
-Use Node.js 24.11 or later in the 24.x LTS line, or Node.js 26+. Run `npm ci`, then `npm run dev`. Before pushing, run
+Use Node.js 24.15 or later in the 24.x LTS line, or Node.js 26+. Run `npm ci`, then `npm run dev`. Before pushing, run
 `npm run build`, `npm run typecheck`, and `npm test`. The build prerenders the site
 into `dist`; `npm start` serves that exact artifact. `npm run analyze` writes its
 report outside the published directory.
+
+Husky installs the `.husky/pre-commit` hook on installation; it runs lint-staged
+and Prettier, including ESM TypeScript test files. Set `HUSKY=0` when hooks should
+not be installed, such as in CI.
+
+TypeScript stays on `6.0.3`, the latest compatible JavaScript-API release for
+`vue-tsc`; TypeScript 7's native compiler is not a drop-in replacement for that
+Vue checker. Nuxt Scripts stays on its existing v2 beta channel.
+Its beta.16 Nitro cache-driver path is normalized to a file URL on Windows;
+Linux configuration is unchanged.
+
+`@nuxt/a11y` runs axe checks in development and exposes results in Nuxt DevTools.
+The published `1.0.0-alpha.1` release is development-only by default; it does not
+provide build reports or an accessibility CI gate. It is not enabled in production.
+
+`nuxt-link-checker` checks prerendered links during generation and fails the build
+on inspection errors. JSON and Markdown reports stay in
+`.data/link-checker-report`, outside `dist`. Remote URL fetching is disabled so
+third-party outages do not block a build; this also means absolute same-origin
+URLs are not checked for reachability by that module. The existing artifact
+validator still checks maintained navigation and assets. Only the fictional
+`why-x-is-better-than-y` URL in the pull-request etiquette post is excluded from
+link inspections; the article and its other links are still checked.
+Warning-only findings remain visible rather than being suppressed or
+automatically applied to historical articles. These include absolute internal
+URLs and source-level checks of disabled pagination, Cloudflare email links and
+labelled heading permalinks.
 
 ## Static build decisions
 

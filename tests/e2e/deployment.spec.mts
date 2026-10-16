@@ -1,5 +1,7 @@
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
+import { mkdir, writeFile } from "node:fs/promises";
+import { join } from "node:path";
 import { parse } from "yaml";
 import { expect, test } from "@playwright/test";
 import {
@@ -59,6 +61,18 @@ test("Published artifact respects Pages limits and resolves all routes and local
     expect(result.routes).toBe(408);
     expect(result.bytes).toBeLessThanOrEqual(1_000_000_000);
 });
+
+for (const directory of [".data", "__link-checker__"]) {
+    test(`Pages artifacts reject private reports in ${directory}`, async ({}, testInfo) => {
+        const artifact = testInfo.outputPath("artifact");
+        const report = join(artifact, directory);
+        await mkdir(report, { recursive: true });
+        await writeFile(join(report, "report.json"), "{}");
+        await expect(verifyArtifact(artifact, [])).rejects.toThrow(
+            "Private build file",
+        );
+    });
+}
 
 test("Deployment is main-only, gated by successful build/tests/preflight and preserves hidden public files", () => {
     const workflow = parse(readFileSync(".github/workflows/build.yml", "utf8"));
@@ -164,6 +178,7 @@ test("GA4 vendor and collector loads pass the corrected CSP without sending trac
     page,
 }) => {
     const requests: string[] = [];
+    const loaderRequests: string[] = [];
     await page.route("**/*", async (route) => {
         const url = new URL(route.request().url());
         if (
@@ -173,7 +188,9 @@ test("GA4 vendor and collector loads pass the corrected CSP without sending trac
                 "www.google.com",
             ].includes(url.hostname)
         ) {
-            requests.push(url.hostname);
+            // Keep the explicit probes separate from the app's configured GA4 loader.
+            if (url.searchParams.has("csp-probe")) requests.push(url.hostname);
+            else loaderRequests.push(url.href);
             await route.fulfill({
                 status: 200,
                 headers: { "Access-Control-Allow-Origin": "*" },
@@ -182,10 +199,18 @@ test("GA4 vendor and collector loads pass the corrected CSP without sending trac
             });
         } else if (route.request().resourceType() === "document") {
             const response = await route.fetch();
+            // Enable the real app loader even in artifacts built without a GA4 ID.
+            const body = (await response.text()).replace(
+                /googleAnalyticsId:"[^"]*"/,
+                'googleAnalyticsId:"G-APPTEST"',
+            );
+            expect(body).toContain('googleAnalyticsId:"G-APPTEST"');
             await route.fulfill({
                 response,
+                body,
                 headers: {
                     ...response.headers(),
+                    "content-length": String(Buffer.byteLength(body)),
                     "content-security-policy": policy,
                 },
             });
@@ -199,22 +224,39 @@ test("GA4 vendor and collector loads pass the corrected CSP without sending trac
             violations.push(message.text());
     });
     await page.goto("/");
+    await expect
+        .poll(() =>
+            loaderRequests.map((url) => new URL(url).searchParams.get("id")),
+        )
+        .toContain("G-APPTEST");
     await page.evaluate(async () => {
-        await new Promise<void>((resolve, reject) => {
-            const script = document.createElement("script");
-            script.src =
-                "https://www.googletagmanager.com/gtag/js?id=G-LOCALTEST";
-            script.onload = () => resolve();
-            script.onerror = () => reject(new Error("Vendor blocked"));
-            document.head.appendChild(script);
-        });
-        await fetch("https://region1.google-analytics.com/g/collect");
-        await fetch("https://www.google.com/");
+        const loadVendor = (src: string) =>
+            new Promise<void>((resolve, reject) => {
+                const script = document.createElement("script");
+                script.src = src;
+                script.onload = () => resolve();
+                script.onerror = () => reject(new Error("Vendor blocked"));
+                document.head.appendChild(script);
+            });
+        await loadVendor(
+            "https://www.googletagmanager.com/gtag/js?id=G-LOCALTEST&csp-probe=1",
+        );
+        await fetch(
+            "https://region1.google-analytics.com/g/collect?csp-probe=1",
+        );
+        await fetch("https://www.google.com/?csp-probe=1");
+        // Also exercise an untagged loader arriving after the probes.
+        await loadVendor(
+            "https://www.googletagmanager.com/gtag/js?id=G-APPTEST&order=after",
+        );
     });
     expect(requests).toEqual([
         "www.googletagmanager.com",
         "region1.google-analytics.com",
         "www.google.com",
     ]);
+    expect(loaderRequests).toContain(
+        "https://www.googletagmanager.com/gtag/js?id=G-APPTEST&order=after",
+    );
     expect(violations).toEqual([]);
 });

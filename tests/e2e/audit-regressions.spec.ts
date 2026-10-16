@@ -132,8 +132,10 @@ for (const timezoneId of ["Europe/London", "America/New_York", "Asia/Tokyo"]) {
         resume = resolve;
       });
       await page.route("**/_nuxt/*.js", async (route) => {
+        // Delay delivery, not the browser's module-preload network request.
+        const response = await route.fetch();
         await blocked;
-        await route.continue();
+        await route.fulfill({ response });
       });
       try {
         await page.goto(post, { waitUntil: "commit" });

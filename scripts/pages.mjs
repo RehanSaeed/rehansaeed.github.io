@@ -48,7 +48,7 @@ export async function verifyArtifact(directory, routes) {
         );
         const file = String(name).replaceAll("\\", "/");
         assert(
-            !/(^|\/)(?:\.git|\.github|\.env(?:\.[^/]*)?|node_modules)(?:\/|$)/.test(
+            !/(^|\/)(?:\.git|\.github|\.env(?:\.[^/]*)?|\.data|__link-checker__|node_modules)(?:\/|$)/.test(
                 file,
             ),
             `Private build file in Pages artifact: ${file}`,
