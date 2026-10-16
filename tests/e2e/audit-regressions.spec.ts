@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { load } from "cheerio";
 import { test as unitTest } from "@playwright/test";
-import { expect, test } from "./fixtures";
+import { delayClientScripts, expect, test } from "./fixtures";
 import { fromMarkdown } from "mdast-util-from-markdown";
 import { remarkSoftBreaks } from "../../modules/blog-content/markdown";
 import { pageHeadingId } from "../../shared/utils/headings";
@@ -127,23 +127,14 @@ for (const timezoneId of ["Europe/London", "America/New_York", "Asia/Tokyo"]) {
           errors.push(message.text());
       });
       page.on("pageerror", (error) => errors.push(error.message));
-      let resume!: () => void;
-      const blocked = new Promise<void>((resolve) => {
-        resume = resolve;
-      });
-      await page.route("**/_nuxt/*.js", async (route) => {
-        // Delay delivery, not the browser's module-preload network request.
-        const response = await route.fetch();
-        await blocked;
-        await route.fulfill({ response });
-      });
+      const scripts = await delayClientScripts(page);
       try {
         await page.goto(post, { waitUntil: "commit" });
         const date = page.locator(
           `.vssue-comment time[datetime="${timestamp}"]`,
         );
         await expect(date).toHaveText("17 May 2022");
-        resume();
+        scripts.resume();
         await expect(
           page.getByRole("button", { name: "Open search" }),
         ).toBeEnabled();
@@ -159,7 +150,7 @@ for (const timezoneId of ["Europe/London", "America/New_York", "Asia/Tokyo"]) {
         await expect(date).toHaveText(local);
         expect(errors).toEqual([]);
       } finally {
-        resume();
+        await scripts.dispose();
       }
     });
   });

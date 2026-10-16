@@ -22,6 +22,7 @@ not be installed, such as in CI.
 Image automation compresses files without using the action's GitHub-API commit
 path, then commits through Git so the repository's LFS filters retain image
 pointers. It checks those pointers before pushing and never force-pushes.
+Bot updates do not trigger another compression pass.
 
 TypeScript stays on `6.0.3`, the latest compatible JavaScript-API release for
 `vue-tsc`; TypeScript 7's native compiler is not a drop-in replacement for that

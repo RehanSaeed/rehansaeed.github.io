@@ -1,6 +1,6 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { expect, test } from "./fixtures";
+import { delayClientScripts, expect, test } from "./fixtures";
 import { parse } from "yaml";
 import { timeToRead } from "../../modules/blog-content/fields";
 
@@ -10,16 +10,7 @@ test.describe("Nuxt best practices", () => {
   test("Keeps JavaScript controls disabled until their handlers are attached", async ({
     page,
   }) => {
-    let resume!: () => void;
-    const scripts = new Promise<void>((resolve) => {
-      resume = resolve;
-    });
-    await page.route("**/_nuxt/*.js", async (route) => {
-      // Delay delivery, not the browser's module-preload network request.
-      const response = await route.fetch();
-      await scripts;
-      await route.fulfill({ response });
-    });
+    const scripts = await delayClientScripts(page);
     try {
       await page.goto("/", { waitUntil: "commit" });
       const open = page.getByRole("button", { name: "Open search" });
@@ -27,14 +18,14 @@ test.describe("Nuxt best practices", () => {
       await expect(
         page.locator('.newsletter button[type="submit"]'),
       ).toBeEnabled();
-      resume();
+      scripts.resume();
       await expect(open).toBeEnabled();
       await open.click();
       await expect(
         page.getByRole("searchbox", { name: "Search", exact: true }),
       ).toBeVisible();
     } finally {
-      resume();
+      await scripts.dispose();
     }
   });
 
@@ -189,7 +180,7 @@ test.describe("Nuxt best practices", () => {
       ]);
       expect(workflow.jobs[job].if).toBe(
         file === "compress-images.yml"
-          ? "github.event.pull_request.head.repo.full_name == github.repository && !github.event.pull_request.draft"
+          ? "github.event.pull_request.head.repo.full_name == github.repository && !github.event.pull_request.draft && github.actor != 'github-actions[bot]'"
           : "github.event_name != 'pull_request' || !github.event.pull_request.draft",
       );
     }
