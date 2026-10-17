@@ -320,7 +320,10 @@ Source inspection and generated-output checks take precedence over generic
 recommendations: Skew Protection really does restore old files into static
 output; Content's external portfolio URLs are not internal sitemap entries; and
 schema graphs are explicitly built rather than pretending unused frontmatter
-fields are implemented. Safe Nuxt improvements include native search-result
+fields are implemented. SEO Utils' body minifier is disabled because rewriting
+Shiki style text without updating Content's payload causes hydration mismatches;
+head-only JSON/CSS minification still runs during prerendering.
+Safe Nuxt improvements include native search-result
 announcements, NuxtLink external-link handling and tagged module diagnostics.
 Experimental WebMCP/islands, server-only MCP/IndexNow infrastructure, alternate
 renderers, extra social-card formats and cosmetic navigation transitions are

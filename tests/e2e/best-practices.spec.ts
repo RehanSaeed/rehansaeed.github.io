@@ -38,7 +38,10 @@ test.describe("Nuxt best practices", () => {
     await expect(page).toHaveURL(/\/about\/$/);
     await expect(page.locator("h1#about")).toBeVisible();
 
-    const announcer = page.locator('[aria-live="polite"]');
+    const announcer = page.locator(
+      '.nuxt-route-announcer [aria-live="polite"]',
+    );
+    await expect(announcer).toHaveCount(1);
     await expect(announcer).toContainText("About - Muhammad Rehan Saeed");
   });
 

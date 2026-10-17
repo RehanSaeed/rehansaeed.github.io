@@ -71,6 +71,8 @@ export default defineNuxtConfig({
   seo: {
     // Search/filter parameters do not create separate indexable blog pages.
     canonicalQueryWhitelist: [],
+    // Body minification changes Shiki's hydrated style text without updating its Content payload.
+    minify: { build: false, runtime: true },
   },
 
   robots: {
