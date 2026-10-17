@@ -1,0 +1,200 @@
+@use "abstracts/type";
+
+// Code blocks are highlighted at build time by Shiki (see nuxt.config.ts and ProsePre.vue):
+// <div class="code-title"><span>Title</span></div>
+// <div class="line-highlight" data-language="js">
+//   <pre class="language-js shiki … [line-numbers]"><code class="language-js">
+//     <span class="line [highlight]"><span class="sXXXX">…</span></span>
+// Token colours are CSS variables (--shiki-default/--shiki-dark) from the light-plus and monokai themes.
+
+code,
+pre[class*="language-"] {
+  --code-line-height: 1.3;
+
+  font-family: var(--global-font-family-monospace);
+  direction: ltr;
+  text-align: start;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  font-size: var(--global-font-size-1);
+  line-height: var(--code-line-height);
+  tab-size: 4;
+  hyphens: none;
+}
+
+code,
+pre[class*="language-"] {
+  color: hsl(70 5% 22%);
+}
+
+pre[class*="language-"]::selection,
+pre[class*="language-"] ::selection {
+  background: hsl(204 63% 85%);
+  color: unset;
+}
+
+:not(pre) > code ::selection {
+  background: var(--global-selection-background-color);
+  color: var(--global-selection-body-color);
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  padding: 0.85rem;
+  margin: 1.275rem 0;
+  overflow-x: auto; // Remove when browser support is good enough.
+  overflow-inline: auto;
+  overflow-y: hidden; // Remove when browser support is good enough.
+  overflow-block: hidden;
+  background-color: hsl(0 0% 100%);
+  border: var(--global-border-width-1) solid hsl(0 0% 87%);
+  border-radius: var(--global-border-radius);
+  transition:
+    background-color var(--global-duration-3) ease-out,
+    border-color var(--global-duration-3) ease-out,
+    color var(--global-duration-3) ease-out;
+}
+
+/* Inline code */
+:not(pre) > code {
+  padding: 0.05rem 0.25rem;
+  background: hsl(210 13% 12% / 0.05);
+  border-radius: var(--global-border-radius);
+  transition:
+    background-color var(--global-duration-3) ease-out,
+    color var(--global-duration-3) ease-out;
+}
+
+/* Tokens */
+.shiki span {
+  color: var(--shiki-default);
+  font-style: var(--shiki-default-font-style);
+  font-weight: var(--shiki-default-font-weight);
+  text-decoration: var(--shiki-default-text-decoration);
+}
+
+// Code Title
+.code-title {
+  font-family: var(--global-font-family-monospace);
+  font-size: var(--global-font-size-1);
+  margin-block-end: -0.8rem;
+  padding-inline: 1rem;
+  position: relative;
+
+  @include type.word-wrap();
+}
+
+// Line Numbers
+// Registered so it resolves to a length on the pre (in the pre's em) and is inherited as-is by the
+// smaller code text.
+@property --line-numbers-gutter {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+pre[class*="language-"].line-numbers {
+  --line-numbers-gutter: calc(3.15rem - 0.8em);
+
+  position: relative;
+  padding-inline-start: 3.15rem;
+  counter-reset: linenumber;
+
+  // Full-height divider between the numbers and the code.
+  &::before {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: var(--line-numbers-gutter);
+    border-inline-start: var(--global-border-width-1) solid hsl(0 0% 65%);
+    content: "";
+    pointer-events: none;
+  }
+}
+
+// Each number is pulled back into the gutter, outside any line highlight, with zero net advance.
+.line-numbers .line::before {
+  display: inline-block;
+  box-sizing: border-box;
+  inline-size: var(
+    --line-numbers-gutter
+  ); /* works for line-numbers below 1000 lines */
+  margin-inline-start: -3.15rem;
+  margin-inline-end: calc(3.15rem - var(--line-numbers-gutter));
+  padding-inline-end: 0.5em;
+  color: hsl(194 61% 43%);
+  content: counter(linenumber);
+  counter-increment: linenumber;
+  text-align: end;
+  user-select: none;
+}
+// Line Highlight
+.shiki .line.highlight {
+  background: hsl(204 63% 85% / 0.3);
+  background: linear-gradient(
+    to right,
+    hsl(204 63% 85% / 0.3) 80%,
+    hsl(237 42% 91% / 0)
+  );
+  display: block;
+  margin-inline-start: -0.45rem;
+  padding-inline-start: 0.25rem;
+  padding-block-start: 0.09rem;
+  padding-block-end: 0.08rem;
+  border-inline-start: var(--global-border-width-3) solid hsl(204 63% 85%);
+}
+
+[data-theme="dark"] {
+  code,
+  pre[class*="language-"] {
+    color: hsl(60 30% 96%);
+    text-shadow: 0 1px hsl(0 0% 0% / 0.3);
+  }
+
+  pre[class*="language-"]::selection,
+  pre[class*="language-"] ::selection {
+    background: hsl(200 1% 42%);
+    color: unset;
+  }
+
+  /* Code blocks */
+  pre[class*="language-"] {
+    border: var(--global-border-width-1) solid hsl(0 0% 30%);
+    background-color: hsl(70 8% 15%);
+  }
+
+  /* Inline code */
+  :not(pre) > code {
+    background: hsl(210 13% 80% / 0.1);
+  }
+
+  /* Tokens */
+  .shiki span {
+    color: var(--shiki-dark);
+    font-style: var(--shiki-dark-font-style);
+    font-weight: var(--shiki-dark-font-weight);
+    text-decoration: var(--shiki-dark-text-decoration);
+  }
+}
+
+// PowerShell: the console's blue background with the dark theme's tokens, in both themes.
+pre.language-powershell,
+[data-theme="dark"] pre.language-powershell {
+  background-color: hsl(215 98% 17%);
+  color: #ffffff;
+
+  &.shiki span {
+    color: var(--shiki-dark);
+    font-style: var(--shiki-dark-font-style);
+    font-weight: var(--shiki-dark-font-weight);
+    text-decoration: var(--shiki-dark-text-decoration);
+  }
+}
+pre.language-powershell::selection,
+pre.language-powershell ::selection,
+[data-theme="dark"] pre.language-powershell::selection,
+[data-theme="dark"] pre.language-powershell ::selection {
+  background: hsl(35 98% 83%);
+  color: unset;
+}

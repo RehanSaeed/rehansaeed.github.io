@@ -38,7 +38,7 @@ Git can actually be configured to automatically handle line endings using a sett
 
 The solution to this is to add a `.gitattributes` file at the root of your repository and set the line endings to be automatically normalised like so:
 
-```git
+```ini
 # Set default behavior to automatically normalize line endings.
 * text=auto
 
@@ -61,7 +61,7 @@ It's pretty common to want to check binary files into your Git repository. Build
 
 LFS is supported by most source control providers like GitHub, Bitbucket and Azure DevOps. It a plugin to Git that has to be separately installed (It's a checkbox in the Git installer) and it even has it's own CLI command 'git lfs' so you can run queries and operations against the files in LFS. You can control which files fall under LFS's remit in the `.gitattributes` file like so:
 
-```git
+```ini
  # Archives
 *.7z filter=lfs diff=lfs merge=lfs -text
 *.br filter=lfs diff=lfs merge=lfs -text
@@ -101,7 +101,7 @@ I really don't understand why GitHub charges for Git LFS because people who don'
 
 When talking about the `.gitattributes` file, you will quite often hear some people talk about explicitly listing all binary files instead of relying on Git to auto-detect binary files (yes Git is clever enough to do that) like this:
 
-```git
+```ini
 # Denote all files that are truly binary and should not be modified.
 *.png binary
 *.jpg binary
@@ -118,7 +118,7 @@ I was interested so I asked a [Stack Overflow question](https://stackoverflow.co
 
 This is what the final `.gitattributes` file I copy to most repositories looks like:
 
-```git
+```ini
 ###############################
 # Git Line Endings            #
 ###############################
