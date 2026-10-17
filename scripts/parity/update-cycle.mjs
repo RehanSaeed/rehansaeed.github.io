@@ -117,11 +117,13 @@ try {
     assert.equal(await buildId(accepted), oldManifest.id);
     let deferredReloads = 0;
     let acceptedReloads = 0;
-    page.on("framenavigated", (frame) => {
-        if (frame === page.mainFrame()) deferredReloads++;
+    page.on("request", (request) => {
+        if (request.isNavigationRequest() && request.frame() === page.mainFrame())
+            deferredReloads++;
     });
-    accepted.on("framenavigated", (frame) => {
-        if (frame === accepted.mainFrame()) acceptedReloads++;
+    accepted.on("request", (request) => {
+        if (request.isNavigationRequest() && request.frame() === accepted.mainFrame())
+            acceptedReloads++;
     });
     await stop();
     await start("dist");

@@ -56,6 +56,12 @@ onAppOutdated((manifest) => {
   available.value = true;
   if (navigator.onLine) void registration?.update().catch(reportError);
 });
+const removeChunkError = useNuxtApp().hook("app:chunkError", ({ error: cause }) => {
+  console.error("[site-update] A page asset could not be loaded.", cause);
+  error.value = "This page needs an update. Choose Update now to continue.";
+  available.value = true;
+  dismissed.value = false;
+});
 
 function waitForInstall(worker: ServiceWorker) {
   return new Promise<void>((resolve, reject) => {
@@ -129,7 +135,10 @@ onMounted(() => {
   });
 });
 
-onUnmounted(() => clearTimeout(activationTimer));
+onUnmounted(() => {
+  clearTimeout(activationTimer);
+  removeChunkError();
+});
 </script>
 
 <style lang="scss">

@@ -1,6 +1,11 @@
 import { load } from "cheerio";
 import { expect, test } from "@playwright/test";
+import type { NuxtApp } from "nuxt/app";
 import { filterMarkdownSitemap } from "../../modules/blog-content/seo";
+
+type NuxtRoot = HTMLElement & {
+  __vue_app__?: { config: { globalProperties: { $nuxt: NuxtApp } } };
+};
 
 test("Markdown discovery removes unlisted entries and empty groups, not similarly named public pages", () => {
   const sitemap =
@@ -91,4 +96,53 @@ test("Client-side pagination preserves one canonical and its crawler response ha
   expect(new Set(ids).size).toBe(ids.length);
   expect(ids).toContain("https://rehansaeed.com/2/#webpage");
   expect(ids).not.toContain("https://rehansaeed.com/#webpage");
+});
+
+test("Later preserves client navigation after a deployment and asset failures use the same update prompt", async ({
+  page,
+  baseURL,
+}) => {
+  await page.route(
+    (url) => url.origin !== new URL(baseURL!).origin,
+    (route) => route.fulfill({ contentType: "text/plain", body: "" }),
+  );
+  await page.goto("/");
+  await page.waitForFunction(
+    () => !!document.querySelector<NuxtRoot>("#__nuxt")?.__vue_app__,
+  );
+  await page.evaluate(async () => {
+    const app = document.querySelector<NuxtRoot>("#__nuxt")!.__vue_app__!.config
+      .globalProperties.$nuxt;
+    await app.hooks.callHook("app:manifest:update", {
+      id: "reader-controlled-update-test",
+      timestamp: Date.now(),
+    });
+  });
+  const notice = page.getByRole("region", { name: "Site update" });
+  await expect(notice).toHaveCount(1);
+  await notice.getByRole("button", { name: "Later", exact: true }).click();
+  await expect(notice).toHaveCount(0);
+  let documentNavigations = 0;
+  page.on("request", (request) => {
+    if (request.isNavigationRequest() && request.frame() === page.mainFrame())
+      documentNavigations++;
+  });
+  await page.getByRole("link", { name: "Next", exact: true }).click();
+  await expect(page).toHaveURL(/\/2\/$/);
+  await expect(page.locator("link[rel=canonical]")).toHaveAttribute(
+    "href",
+    "https://rehansaeed.com/2/",
+  );
+  expect(documentNavigations).toBe(0);
+  await expect(notice).toHaveCount(0);
+  await page.evaluate(async () => {
+    const app = document.querySelector<NuxtRoot>("#__nuxt")!.__vue_app__!.config
+      .globalProperties.$nuxt;
+    await app.hooks.callHook("app:chunkError", {
+      error: new Error("Test unavailable page asset"),
+    });
+  });
+  await expect(notice).toHaveCount(1);
+  await expect(notice).toContainText("This page needs an update.");
+  expect(documentNavigations).toBe(0);
 });

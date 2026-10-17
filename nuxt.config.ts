@@ -482,6 +482,8 @@ export default defineNuxtConfig({
   },
 
   experimental: {
+    // Keep Nuxt's chunk recovery from bypassing the reader-controlled update prompt.
+    emitRouteChunkError: "manual",
     defaults: {
       nuxtLink: {
         trailingSlash: "append",

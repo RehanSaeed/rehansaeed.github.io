@@ -158,6 +158,8 @@ file/dimensions, Markdown canonical/discovery/full export, and noindex exclusion
 The service worker and deployment-version detector share one accessible
 **Update now / Later** notice. Later neither activates the waiting worker nor
 reloads the reader; activation in another tab also does not force a reload.
+Nuxt's automatic chunk reload is disabled so Later also preserves client-side
+navigation. Missing page assets reopen the same prompt with an explicit error.
 Update now activates the installed worker and reloads once. Previous hashed
 assets are bundled into subsequent static output for up to 30 days/10 versions;
 the Actions cache preserves them between main builds. The full blog remains
