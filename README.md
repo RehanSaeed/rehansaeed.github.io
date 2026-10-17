@@ -160,11 +160,15 @@ The service worker and deployment-version detector share one accessible
 reloads the reader; activation in another tab also does not force a reload.
 Nuxt's automatic chunk reload is disabled so Later also preserves client-side
 navigation. Missing page assets reopen the same prompt with an explicit error.
+An imported worker policy rejects Gridsome's automatic `SKIP_WAITING` messages;
+the new prompt marks reader-approved activation explicitly. The first migration
+therefore waits until the last legacy tab closes without interrupting its reader.
 Update now activates the installed worker and reloads once. Previous hashed
 assets are bundled into subsequent static output for up to 30 days/10 versions;
 the Actions cache preserves them between main builds. The full blog remains
 precached; social-only cards are excluded. Cloudflare must not serve stale
-HTML, `service-worker.js`, `manifest.webmanifest` or `_nuxt/builds/latest.json`.
+HTML, `service-worker.js`, `service-worker-update-policy.js`,
+`manifest.webmanifest` or `_nuxt/builds/latest.json`.
 
 ### Comparison and deployment
 

@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { runInNewContext } from "node:vm";
 import { load } from "cheerio";
 import { expect, test } from "@playwright/test";
 import type { NuxtApp } from "nuxt/app";
@@ -6,6 +8,27 @@ import { filterMarkdownSitemap } from "../../modules/blog-content/seo";
 type NuxtRoot = HTMLElement & {
   __vue_app__?: { config: { globalProperties: { $nuxt: NuxtApp } } };
 };
+
+test("The worker rejects legacy automatic activation and accepts only reader-approved update messages", () => {
+  const worker = new EventTarget();
+  runInNewContext(
+    readFileSync("public/service-worker-update-policy.js", "utf8"),
+    { self: worker },
+  );
+  const received: unknown[] = [];
+  worker.addEventListener("message", (event) => {
+    received.push((event as MessageEvent).data);
+  });
+  worker.dispatchEvent(
+    new MessageEvent("message", { data: { type: "SKIP_WAITING" } }),
+  );
+  expect(received).toEqual([]);
+  const approved = { type: "SKIP_WAITING", readerApproved: true };
+  worker.dispatchEvent(new MessageEvent("message", { data: approved }));
+  const unrelated = { type: "CACHE_URLS" };
+  worker.dispatchEvent(new MessageEvent("message", { data: unrelated }));
+  expect(received).toEqual([approved, unrelated]);
+});
 
 test("Markdown discovery removes unlisted entries and empty groups, not similarly named public pages", () => {
   const sitemap =
@@ -111,8 +134,9 @@ test("Later preserves client navigation after a deployment and asset failures us
     () => !!document.querySelector<NuxtRoot>("#__nuxt")?.__vue_app__,
   );
   await page.evaluate(async () => {
-    const app = document.querySelector<NuxtRoot>("#__nuxt")!.__vue_app__!.config
-      .globalProperties.$nuxt;
+    const app =
+      document.querySelector<NuxtRoot>("#__nuxt")!.__vue_app__!.config
+        .globalProperties.$nuxt;
     await app.hooks.callHook("app:manifest:update", {
       id: "reader-controlled-update-test",
       timestamp: Date.now(),
@@ -136,8 +160,9 @@ test("Later preserves client navigation after a deployment and asset failures us
   expect(documentNavigations).toBe(0);
   await expect(notice).toHaveCount(0);
   await page.evaluate(async () => {
-    const app = document.querySelector<NuxtRoot>("#__nuxt")!.__vue_app__!.config
-      .globalProperties.$nuxt;
+    const app =
+      document.querySelector<NuxtRoot>("#__nuxt")!.__vue_app__!.config
+        .globalProperties.$nuxt;
     await app.hooks.callHook("app:chunkError", {
       error: new Error("Test unavailable page asset"),
     });

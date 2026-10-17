@@ -221,6 +221,7 @@ export default defineNuxtConfig({
     },
     workbox: {
       clientsClaim: true,
+      importScripts: ["/service-worker-update-policy.js"],
       globPatterns: [
         "**/*.{js,json,css,html,png,jpg,jpeg,svg,gif,woff2,webp,avif}",
       ],

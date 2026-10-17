@@ -26,7 +26,6 @@ const dismissed = ref(false);
 const updating = ref(false);
 const error = ref("");
 let registration: ServiceWorkerRegistration | undefined;
-let applyWorkerUpdate: (() => Promise<void>) | undefined;
 let latestVersion: string | undefined;
 let workerChanged = false;
 let reloading = false;
@@ -56,12 +55,15 @@ onAppOutdated((manifest) => {
   available.value = true;
   if (navigator.onLine) void registration?.update().catch(reportError);
 });
-const removeChunkError = useNuxtApp().hook("app:chunkError", ({ error: cause }) => {
-  console.error("[site-update] A page asset could not be loaded.", cause);
-  error.value = "This page needs an update. Choose Update now to continue.";
-  available.value = true;
-  dismissed.value = false;
-});
+const removeChunkError = useNuxtApp().hook(
+  "app:chunkError",
+  ({ error: cause }) => {
+    console.error("[site-update] A page asset could not be loaded.", cause);
+    error.value = "This page needs an update. Choose Update now to continue.";
+    available.value = true;
+    dismissed.value = false;
+  },
+);
 
 function waitForInstall(worker: ServiceWorker) {
   return new Promise<void>((resolve, reject) => {
@@ -103,7 +105,10 @@ async function update() {
         () => reportError(new Error("Service worker activation timed out.")),
         30000,
       );
-      await applyWorkerUpdate?.();
+      registration.waiting.postMessage({
+        type: "SKIP_WAITING",
+        readerApproved: true,
+      });
     } else if (workerChanged || !navigator.serviceWorker.controller) {
       reload();
     } else {
@@ -115,7 +120,7 @@ async function update() {
 }
 
 onMounted(() => {
-  applyWorkerUpdate = registerSW({
+  registerSW({
     immediate: true,
     onNeedRefresh() {
       available.value = true;
