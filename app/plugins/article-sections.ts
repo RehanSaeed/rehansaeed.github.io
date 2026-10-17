@@ -5,6 +5,20 @@ const separator = "\n";
 export default defineNuxtPlugin(() => {
   const head = injectHead();
   head.hooks?.hook("tags:resolve", (ctx) => {
+    const noindex = ctx.tags.some(
+      (tag) =>
+        tag.tag === "meta" &&
+        tag.props.name === "robots" &&
+        /\bnoindex\b/i.test(String(tag.props.content)),
+    );
+    if (noindex) {
+      ctx.tags = ctx.tags.filter(
+        (tag) =>
+          tag.tag !== "link" ||
+          tag.props.rel !== "alternate" ||
+          tag.props.type !== "text/markdown",
+      );
+    }
     ctx.tags = ctx.tags.flatMap((tag) => {
       const content = tag.props.content;
       if (

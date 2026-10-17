@@ -1,5 +1,6 @@
 import { defineCollection, defineContentConfig } from "@nuxt/content";
 import { z } from "zod";
+import { defineRobotsSchema, defineSitemapSchema } from "@nuxtjs/seo/content";
 import { commentSnapshotSchema } from "./shared/utils/comments";
 
 const schema = z.object({
@@ -17,6 +18,23 @@ const schema = z.object({
   series: z.string().optional(),
   seriesOrder: z.number().optional(),
   rawbody: z.string(),
+  robots: defineRobotsSchema(),
+  sitemap: defineSitemapSchema({
+    name: "posts",
+    filter: (entry) =>
+      entry.published === true &&
+      typeof entry.permalink === "string" &&
+      entry.permalink.startsWith("/"),
+    onUrl: (url, entry) => {
+      if (typeof entry.permalink === "string") url.loc = entry.permalink;
+      if (typeof (entry.dateModified ?? entry.date) === "string") {
+        url.lastmod = String(entry.dateModified ?? entry.date);
+      }
+      if (typeof entry.heroImage === "string") {
+        url.images = [{ loc: entry.heroImage }];
+      }
+    },
+  }),
   comments: commentSnapshotSchema,
   // Computed in modules/blog-content (content:file:afterParse).
   timeToRead: z.number().optional(),
@@ -35,7 +53,12 @@ export default defineContentConfig({
     portfolio: defineCollection({
       type: "page",
       source: "portfolio/**/index.md",
-      schema,
+      schema: schema.extend({
+        sitemap: defineSitemapSchema({
+          name: "portfolio",
+          filter: () => false,
+        }),
+      }),
     }),
   },
 });

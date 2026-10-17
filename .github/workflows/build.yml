@@ -41,6 +41,20 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HUSKY: "0"
+      - name: "Cache Social Images"
+        uses: actions/cache@v6.1.0
+        with:
+          path: node_modules/.cache/nuxt-seo/og-image
+          key: og-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            og-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
+      - name: "Restore Previous Deployment Assets"
+        uses: actions/cache/restore@v6.1.0
+        with:
+          path: node_modules/.cache/nuxt-seo/skew-protection
+          key: skew-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            skew-${{ runner.os }}-
       - name: "NPM Build"
         run: npm run build
         env:
@@ -67,6 +81,12 @@ jobs:
         run: npm test
         env:
           TZ: UTC
+      - name: "Save Deployment Assets"
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        uses: actions/cache/save@v6.1.0
+        with:
+          path: node_modules/.cache/nuxt-seo/skew-protection
+          key: skew-${{ runner.os }}-${{ github.sha }}
       - name: "Upload Playwright Report"
         uses: actions/upload-artifact@v7.0.0
         if: failure()

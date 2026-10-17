@@ -257,18 +257,28 @@ test.describe("Migration completion", () => {
       "/images/icons/favicon-180x180.png",
     );
     await page.goto("/on-the-etiquette-of-pull-request-comments/");
-    const schema = JSON.parse(
+    const graph = JSON.parse(
       (await page
         .locator('script[type="application/ld+json"]')
         .textContent()) ?? "",
     );
-    expect(schema.mainEntityOfPage["@id"]).toBe(
+    const schema = graph["@graph"].find(
+      (node: { "@type": string }) => node["@type"] === "Article",
+    );
+    const webpage = graph["@graph"].find(
+      (node: { "@id": string }) =>
+        node["@id"] === schema.mainEntityOfPage["@id"],
+    );
+    expect(webpage.url).toBe(
       "https://rehansaeed.com/on-the-etiquette-of-pull-request-comments/",
     );
     expect(schema.dateModified).toBe(schema.datePublished);
     expect(schema.image[0]).toHaveProperty("caption");
-    expect(schema.author).toHaveProperty("image");
-    expect(schema.author).not.toHaveProperty("logo");
+    const author = graph["@graph"].find(
+      (node: { "@id": string }) => node["@id"] === schema.author["@id"],
+    );
+    expect(author).toHaveProperty("image");
+    expect(author).not.toHaveProperty("logo");
   });
 
   test("Serves drafts and overlays but excludes them from the sitemap", async ({

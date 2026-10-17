@@ -358,6 +358,7 @@ MigrationBackup/
 dist
 .env
 .env.*
+!.env.example
 
 .lighthouseci/
 

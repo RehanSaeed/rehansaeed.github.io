@@ -32,8 +32,7 @@ import UComments from "~/components/comments.vue";
 import UPost from "~/components/post.vue";
 import UPostMeta from "~/components/post-meta.vue";
 import UWebmentions from "~/components/webmentions/webmentions.vue";
-import { authorSchema, publisherSchema } from "~/composables/use-site-head";
-import { getOpenGraphImage, getSchemaImageObject } from "~/framework/images.js";
+import { getSchemaImageObject } from "~/framework/images.js";
 import { pageHeadingId } from "#shared/utils/headings";
 
 const site = useAppConfig().site;
@@ -85,6 +84,29 @@ const url = site.url + post.value.permalink;
 const tags = post.value.tags ?? [];
 const headings = post.value.headings ?? [];
 
+useBlogOgImage(title, post.value.heroImage, author);
+useRobotsRule(post.value.published ? true : "noindex, follow");
+useSchemaOrg([
+  defineArticle({
+    "@id": `${url}#article`,
+    headline: title,
+    description,
+    keywords: tags,
+    url,
+    image: [getSchemaImageObject(image)],
+    datePublished: date,
+    dateModified,
+    author: { "@id": `${site.url}/#identity` },
+    publisher: { "@id": `${site.url}/#publisher` },
+  }),
+  defineBreadcrumb({
+    itemListElement: [
+      { name: "Blog", item: site.url + "/" },
+      { name: title, item: url },
+    ],
+  }),
+]);
+
 useHead({
   title,
   link: [{ rel: "canonical", href: url }],
@@ -92,13 +114,9 @@ useHead({
     { name: "description", content: description },
     { name: "author", content: author },
     { name: "keywords", content: tags.join(",") },
-    ...(!post.value.published
-      ? [{ name: "robots", content: "noindex, follow" }]
-      : []),
     // Open Graph
     { property: "og:title", content: title },
     { property: "og:url", content: url },
-    ...getOpenGraphImage(image),
     { property: "og:description", content: description },
     { property: "og:locale", content: site.language.replace("-", "_") },
     { property: "og:site_name", content: site.name },
@@ -117,28 +135,6 @@ useHead({
       content: x,
     })),
     { property: "fb:app_id", content: site.facebookAppId },
-  ],
-  script: [
-    {
-      type: "application/ld+json",
-      innerHTML: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "Article",
-        mainEntityOfPage: {
-          "@type": "WebPage",
-          "@id": url,
-        },
-        headline: title,
-        description,
-        keywords: tags.join(),
-        url,
-        image: [getSchemaImageObject(image)],
-        datePublished: date,
-        dateModified,
-        author: authorSchema(site, author),
-        publisher: publisherSchema(site),
-      }),
-    },
   ],
 });
 </script>

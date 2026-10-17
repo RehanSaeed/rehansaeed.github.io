@@ -25,12 +25,11 @@ export default defineNuxtConfig({
     "@nuxt/content",
     "@nuxt/image",
     "@nuxt/scripts",
-    "@nuxtjs/sitemap",
+    "@nuxtjs/seo",
     "@vite-pwa/nuxt",
     "@nuxt/a11y",
     "@nuxt/eslint",
     "@nuxt/fonts",
-    "nuxt-link-checker",
   ],
 
   fonts: {
@@ -61,7 +60,6 @@ export default defineNuxtConfig({
     },
   },
 
-  // nuxt-site-config, used by @nuxtjs/sitemap.
   site: {
     url: site.url,
     name: site.name,
@@ -70,14 +68,70 @@ export default defineNuxtConfig({
     trailingSlash: true,
   },
 
-  // Built from the prerendered pages, in the same form as the Gridsome sitemap.
+  seo: {
+    // Search/filter parameters do not create separate indexable blog pages.
+    canonicalQueryWhitelist: [],
+  },
+
+  robots: {
+    mergeWithRobotsTxtPath: false,
+    credits: false,
+    blockAiBots: false,
+    allow: ["/"],
+  },
+
   sitemap: {
     zeroRuntime: true,
     xsl: false,
     credits: false,
-    discoverImages: false,
+    discoverImages: true,
     discoverVideos: false,
     exclude: [notFoundRoute],
+  },
+
+  schemaOrg: {
+    identity: {
+      type: "Person",
+      "@id": `${site.url}/#identity`,
+      name: site.author.name,
+      url: `${site.url}/about/`,
+      image: `${site.url}/images/author/Muhammad-Rehan-Saeed/Logo-512x512.png`,
+      sameAs: [
+        site.author.gitHub.url,
+        site.author.linkedIn.url,
+        site.author.stackOverflow.url,
+        site.author.youtube.url,
+        site.author.twitch.url,
+      ],
+    },
+  },
+
+  ogImage: {
+    zeroRuntime: true,
+    buildCache: true,
+    defaults: { width: 1200, height: 630, extension: "png", emojis: false },
+  },
+
+  aiReady: {
+    // Pages has no request-time server, and Cloudflare caches URLs rather than Accept variants.
+    contentNegotiation: false,
+    botNegotiation: false,
+    database: false,
+    // Convert rendered content, including our build-time snippet/diagram/Markdown extensions.
+    contentSource: false,
+    llmsTxt: { pages: "sitemap", markdownLinks: true },
+    llmsFullTxt: true,
+    sitemapMd: true,
+    describedby: true,
+    contentSignal: { search: true, aiInput: true, aiTrain: true },
+  },
+
+  skewProtection: {
+    bundleAssets: true,
+    retentionDays: 30,
+    maxNumberOfVersions: 10,
+    // One shared PWA/deployment update notice owns activation and reloading.
+    reloadStrategy: false,
   },
 
   linkChecker: {
@@ -100,7 +154,9 @@ export default defineNuxtConfig({
   // of the old service worker rather than a second one. The whole site is precached for offline use.
   pwa: {
     strategies: "generateSW",
-    registerType: "autoUpdate",
+    registerType: "prompt",
+    injectRegister: false,
+    client: { registerPlugin: false },
     filename: "service-worker.js",
     manifestFilename: "manifest.webmanifest",
     scope: "/",
@@ -162,6 +218,7 @@ export default defineNuxtConfig({
       ],
     },
     workbox: {
+      clientsClaim: true,
       globPatterns: [
         "**/*.{js,json,css,html,png,jpg,jpeg,svg,gif,woff2,webp,avif}",
       ],
@@ -172,6 +229,9 @@ export default defineNuxtConfig({
         // Originals only used by the feeds and social meta. Pages use the /_ipx/ resized copies.
         "content-images/**/*",
         "images/hero/**/*",
+        // Social cards are not needed to read the complete blog offline.
+        "_og/**/*",
+        "_og-static-fonts/**/*",
         // Precached as /404 and /200, which respond 404 and would fail the whole install.
         "404.html",
         "200.html",
@@ -439,6 +499,7 @@ export default defineNuxtConfig({
       autoSubfolderIndex: true,
       crawlLinks: true,
       failOnError: true,
+      ignore: ["/404-not-found.md", "/404.md", "/200.md"],
       routes: [
         "/",
         "/flexsearch.json",

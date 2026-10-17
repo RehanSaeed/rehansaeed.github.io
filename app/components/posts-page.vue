@@ -20,12 +20,6 @@ import UAuthor from "~/components/author.vue";
 import UArrows from "~/components/shared/arrows.vue";
 import UPager from "~/components/pager.vue";
 import UPostCard from "~/components/post-card.vue";
-import {
-  authorSchema,
-  heroImagePath,
-  imageSize,
-  publisherSchema,
-} from "~/composables/use-site-head";
 import { nextUrl, previousUrl } from "~/framework/paging.js";
 
 const postsPerPage = 10;
@@ -83,9 +77,27 @@ const pageInfo = {
 
 const title = "Blog";
 const description = `Blog posts and more authored by ${site.author.name}.`;
-const image = site.url + heroImagePath;
 const url = `${site.url}${props.page === 1 ? "/" : `/${props.page}/`}`;
-const { width: imageWidth, height: imageHeight } = imageSize(image);
+useBlogOgImage(props.page === 1 ? title : `${title} - Page ${props.page}`);
+useSchemaOrg([
+  defineWebPage({ "@type": "CollectionPage", name: title }),
+  defineItemList({
+    itemListElement: posts.value.map((post) => ({
+      name: post.title,
+      url: site.url + post.permalink,
+    })),
+  }),
+  ...(props.page > 1
+    ? [
+        defineBreadcrumb({
+          itemListElement: [
+            { name: "Blog", item: `${site.url}/` },
+            { name: `Page ${props.page}`, item: url },
+          ],
+        }),
+      ]
+    : []),
+]);
 
 useHead({
   title,
@@ -104,9 +116,6 @@ useHead({
     // Open Graph
     { property: "og:title", content: title },
     { property: "og:url", content: url },
-    { property: "og:image", content: image },
-    { property: "og:image:height", content: imageHeight },
-    { property: "og:image:width", content: imageWidth },
     { property: "og:description", content: description },
     { property: "og:locale", content: site.language.replace("-", "_") },
     { property: "og:site_name", content: site.name },
@@ -116,32 +125,6 @@ useHead({
     { property: "profile:username", content: site.author.name },
     { property: "profile:gender", content: site.author.gender },
     { property: "fb:app_id", content: site.facebookAppId },
-  ],
-  script: [
-    {
-      type: "application/ld+json",
-      innerHTML: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        description,
-        url: site.url,
-        image: [
-          {
-            "@type": "ImageObject",
-            url: image,
-            width: imageWidth,
-            height: imageHeight,
-          },
-        ],
-        potentialAction: {
-          "@type": "SearchAction",
-          target: `${site.url}?search={search_term_string}`,
-          "query-input": "required name=search_term_string",
-        },
-        author: authorSchema(site, site.author.name),
-        publisher: publisherSchema(site),
-      }),
-    },
   ],
 });
 </script>

@@ -131,9 +131,38 @@ with the real measurement ID.
 Native `clamp()` replaces the fluid SCSS mixin while keeping the existing
 16–20px root typography and spacing endpoints. Responsive type remains relative
 to the user's default font size. Pagination has self-referencing canonicals;
-Article and Person schemas, modified dates, large Twitter cards and the Apple icon
-are corrected. Drafts remain routable for parity but receive `noindex, follow`;
-drafts and streaming tools are omitted from the sitemap.
+The Nuxt SEO suite owns Robots, Sitemap, Schema.org, SEO Utils, Link Checker,
+AI Ready and Skew Protection. OG Image uses Takumi to prerender branded
+1200x630 PNG cards with the existing hero, title and author. There is no
+production image-rendering server or external rendering service.
+Schema.org provides one graph per page: shared Person, Organization and WebSite
+identities, Article dates/original hero dimensions, breadcrumbs, ProfilePage and
+ordered collection ItemLists. Canonicals deliberately discard search parameters.
+Schema generation is server/build-only, following the module's production
+default; every prerendered crawler response has its own graph without shipping
+the schema resolver to readers.
+Drafts remain routable for parity but receive `noindex, follow`; drafts,
+streaming tools and error pages are excluded from sitemap/AI discovery.
+
+Public pages have static Markdown alternatives, `llms.txt`, `llms-full.txt`
+and `sitemap.md`. AI input, search and **AI training are explicitly allowed**.
+These crawler policies express preferences, not access controls or guarantees
+that crawlers comply. Markdown is converted from rendered HTML to preserve
+the custom Markdown/snippet pipeline. Request-header negotiation and an AI
+database/server are disabled: GitHub Pages cannot run their middleware.
+The build filters unlisted entries out of AI Ready's metadata-based Markdown
+sitemap as well as excluding their Markdown files and full-content exports.
+`npm run seo:verify` checks every public page's canonical, graph, social-card
+file/dimensions, Markdown canonical/discovery/full export, and noindex exclusions.
+
+The service worker and deployment-version detector share one accessible
+**Update now / Later** notice. Later neither activates the waiting worker nor
+reloads the reader; activation in another tab also does not force a reload.
+Update now activates the installed worker and reloads once. Previous hashed
+assets are bundled into subsequent static output for up to 30 days/10 versions;
+the Actions cache preserves them between main builds. The full blog remains
+precached; social-only cards are excluded. Cloudflare must not serve stale
+HTML, `service-worker.js`, `manifest.webmanifest` or `_nuxt/builds/latest.json`.
 
 ### Comparison and deployment
 
@@ -159,9 +188,17 @@ Page geometry must remain within two pixels before identical PNG canvases are co
 Screenshots and reports remain local and gitignored.
 
 `npm run parity:sw-cutover -- <archived-Gridsome-dist>` tests the original worker
-at the same origin, waits for actual controller takeover, checks old-cache cleanup
-and opens an unvisited post offline. Use a copy of the original release output,
-not a fabricated legacy worker.
+at the same origin, verifies the new worker waits while a legacy tab is open,
+closes that last legacy tab, checks takeover/old-cache cleanup, and opens an
+unvisited post offline. The old Gridsome UI cannot show the new notice; its first
+migration activates naturally once its last tab closes. Subsequent Nuxt updates
+use the shared notice. Use original release output, not a fabricated worker.
+
+For a real two-build update check, copy a successful `dist` into an ignored
+directory, build a second version, then run
+`npm run parity:update-cycle -- <previous-Nuxt-dist>`. This checks both signals,
+Later, single approved reload, cross-tab deferral, unavailable-worker fallback,
+offline navigation and byte-identical retained JS/CSS from the previous build.
 
 `npm run build` also validates every reference route, unique HTML IDs and local
 assets/maintained navigation paths case-sensitively. Outbound Markdown examples
@@ -242,13 +279,67 @@ tests. Intentional HTML-rendering sinks have local, explained rule exceptions.
 Type checking still uses TypeScript 6's JavaScript compiler API through `vue-tsc`;
 Vue Language Tools' draft v4/TypeScript 7.1 content-mapper work has no stable ETA.
 
-Nuxt Icon and Color Mode are not added solely for performance: the existing inline
-SVGs and early inline theme bootstrap already avoid external icon requests and
-theme-flash delays. The SEO suite/OG generation are not automatically adopted.
+Nuxt Icon is not added solely for performance: the existing inline SVGs already
+avoid external requests. The visual comparison retains all 25 originals and
+adds 27 stock alternatives for the non-exact/custom rows, including multiple
+choices where appropriate. Generic account symbols are not substitutes for the
+personal logo's branding. Moving to an icon module is still a separate decision.
+
+Color Mode is also not installed without approval. It can replace the custom
+bootstrap, globals/listeners and most theme-button state. Those sections currently
+contain 76 nonblank lines in total; an estimated 40-60 net handwritten lines could
+go after adding module configuration and hydration guards, while retaining
+analytics and `data-theme` CSS. This is a scoped estimate, not an implemented diff.
+Its benefits are maintained storage/system-preference handling, reactive
+consumers, forced page modes and hydration helpers, not a demonstrated speed
+improvement: both approaches still require an early inline script.
+There is an important behavior choice: today an OS theme change overrides and
+rewrites an explicit saved choice; Color Mode normally keeps explicit light/dark
+preferences until the user selects system mode. Preserving the old override
+behavior would retain custom code and reduce the maintenance saving.
+
 `nuxt-security` is deliberately omitted for this GitHub Pages deployment:
 Cloudflare owns the HTTP security headers, and Pages cannot run Nitro middleware.
 Static CSP/hash tooling can be useful on other deployments, but cannot relax an
 existing Cloudflare HTTP policy.
 
-AI-readable Markdown/`llms.txt`, new social-image generators, and a change to offline/update UX are separate
-decisions rather than automatic module additions.
+### Documentation audit and release checklist
+
+The audit read 239 Nuxt pages and 250 SEO-suite pages, with per-URL ledgers retained
+in the session's `seo-doc-audit` artifacts. Module coverage additionally includes
+Content (40), Image (51), Fonts (5), Color Mode (8), Scripts (50, including older
+documented examples), the three ESLint package guides, the installed A11y alpha's
+README, and Nuxt-relevant Vite PWA guides. Content/Image/Fonts findings survive
+as module-level summaries, not a complete per-page decision ledger. A11y's main
+branch describes features absent from the installed alpha; those are not claimed
+as shipped. Non-Nuxt PWA framework tutorials are out of scope.
+
+Source inspection and generated-output checks take precedence over generic
+recommendations: Skew Protection really does restore old files into static
+output; Content's external portfolio URLs are not internal sitemap entries; and
+schema graphs are explicitly built rather than pretending unused frontmatter
+fields are implemented. Safe Nuxt improvements include native search-result
+announcements, NuxtLink external-link handling and tagged module diagnostics.
+Experimental WebMCP/islands, server-only MCP/IndexNow infrastructure, alternate
+renderers, extra social-card formats and cosmetic navigation transitions are
+not automatically enabled. Comments/webmentions retain their immediate client
+refresh rather than silently adopting lazy hydration.
+
+Remaining release work, excluding manual code review:
+
+1. Finish exact-head build, type, lint, browser, visual, 408-route parity and
+   real-worker/two-build checks; require the GitHub build to pass.
+2. Decide whether the unavailable original CSS work is deferred or must be
+   supplied before release; decide separately whether to migrate icons/Color Mode.
+3. Approve the Pages source cutover, retain the recorded legacy rollback revision,
+   and preserve the custom domain/DNS. Merge/deploy only when authorized.
+4. Verify Cloudflare freshness for HTML/worker/manifest/latest-build metadata and
+   the enforced GA4-compatible CSP; purge stale release assets when necessary.
+5. Smoke-test the deployed revision, real 404, generated social previews,
+   public Markdown/robots/schema, immediate comments/search, both update choices,
+   legacy installed-client migration and full-blog offline behavior.
+6. Check GA4 collection/DebugView and client-side navigation pageviews with
+   `G-78Z8H7ZLS9`; the approved default remains cookies without a consent banner.
+7. Run securityheaders.io after deployment and verify the intended headers at
+   the public origin. Submit/inspect the sitemap in Google Search Console and
+   Bing Webmaster Tools, and check representative rich results/social previews.

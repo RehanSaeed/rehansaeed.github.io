@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { chromium } from "@playwright/test";
+import { chromium, expect } from "@playwright/test";
 import { once } from "node:events";
 
 const legacy = process.argv[2];
@@ -37,7 +37,7 @@ try {
         (url) => url.origin !== origin,
         (route) => route.fulfill({ contentType: "text/plain", body: "" }),
     );
-    const page = await context.newPage();
+    let page = await context.newPage();
     await start(legacy);
     await page.goto(origin);
     await page.evaluate(async () => {
@@ -67,45 +67,38 @@ try {
     );
     await stop();
     await start("dist");
+    const installing = context.waitForEvent("serviceworker", {
+        timeout: 180_000,
+    });
     await page.evaluate(async () => {
         const registration = await navigator.serviceWorker.getRegistration();
-        const previous = navigator.serviceWorker.controller;
-        await new Promise((resolve, reject) => {
-            const timeout = setTimeout(() => {
-                navigator.serviceWorker.removeEventListener(
-                    "controllerchange",
-                    changed,
-                );
-                reject(
-                    new Error(
-                        "Nuxt worker did not take control within three minutes",
-                    ),
-                );
-            }, 180_000);
-            function changed() {
-                if (navigator.serviceWorker.controller === previous) return;
-                clearTimeout(timeout);
-                navigator.serviceWorker.removeEventListener(
-                    "controllerchange",
-                    changed,
-                );
-                resolve();
-            }
-            navigator.serviceWorker.addEventListener(
-                "controllerchange",
-                changed,
-            );
-            registration.update().catch((error) => {
-                clearTimeout(timeout);
-                navigator.serviceWorker.removeEventListener(
-                    "controllerchange",
-                    changed,
-                );
-                reject(error);
+        await registration.update();
+    });
+    const worker = await installing;
+    await worker.evaluate(() => {
+        self.__activationComplete = new Promise((resolve) => {
+            self.addEventListener("activate", () => resolve(true), {
+                once: true,
             });
         });
     });
-    await page.reload();
+    await expect
+        .poll(
+            () =>
+                page.evaluate(async () =>
+                    Boolean(
+                        (await navigator.serviceWorker.getRegistration())
+                            .waiting,
+                    ),
+                ),
+            { timeout: 180_000 },
+        )
+        .toBe(true);
+    // The legacy UI cannot show the new prompt. Its last tab must close naturally.
+    await page.close();
+    await worker.evaluate(() => self.__activationComplete);
+    page = await context.newPage();
+    await page.goto(origin);
     await page.waitForFunction(() =>
         Boolean(document.querySelector("#__nuxt")),
     );
@@ -129,7 +122,7 @@ try {
     await page.goto(`${origin}/on-the-etiquette-of-pull-request-comments/`);
     await page.waitForSelector(".post__content");
     console.log(
-        "Verified original Gridsome worker takeover, old-cache cleanup and unvisited-post offline navigation.",
+        "Verified non-interrupting Gridsome worker migration after closing the last legacy tab, old-cache cleanup and unvisited-post offline navigation.",
     );
 } finally {
     await browser.close();

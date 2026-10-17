@@ -13,16 +13,6 @@ export function getImageMetadata(url) {
   };
 }
 
-export function getOpenGraphImage(url) {
-  const imageMeta = getImageMetadata(url);
-  return [
-    { property: "og:image", content: url },
-    { property: "og:image:alt", content: imageMeta.alt },
-    { property: "og:image:height", content: imageMeta.height },
-    { property: "og:image:width", content: imageMeta.width },
-  ];
-}
-
 export function getSchemaImageObject(url) {
   const imageMeta = getImageMetadata(url);
   return {

@@ -39,6 +39,14 @@ test.describe("Search", () => {
       "href",
       "https://github.com/RehanSaeed/Schema.NET",
     );
+    await expect(page.locator(".search-result__link").first()).toHaveAttribute(
+      "rel",
+      "noopener noreferrer",
+    );
+    const count = await page.locator(".search-result").count();
+    await expect(page.locator(".nuxt-announcer")).toHaveText(
+      `${count} search ${count === 1 ? "result" : "results"}.`,
+    );
   });
 
   test("Search post", async ({ page }) => {

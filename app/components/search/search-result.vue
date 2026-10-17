@@ -1,9 +1,7 @@
 <template>
   <article class="search-result">
-    <Component
-      :is="tag"
-      :href="isExternal ? searchResult.permalink : undefined"
-      :to="isExternal ? undefined : searchResult.permalink"
+    <NuxtLink
+      :to="searchResult.permalink"
       class="search-result__link"
       @click="onSelected">
       <img
@@ -21,12 +19,11 @@
       <p class="search-result__description">
         {{ searchResult.description }}
       </p>
-    </Component>
+    </NuxtLink>
   </article>
 </template>
 
 <script>
-import { NuxtLink } from "#components";
 import Heading from "~/components/shared/heading.vue";
 
 export default {
@@ -39,14 +36,6 @@ export default {
     searchResult: {
       type: Object,
       required: true,
-    },
-  },
-  computed: {
-    isExternal() {
-      return /^https?:\/\//.test(this.searchResult.permalink);
-    },
-    tag() {
-      return this.isExternal ? "a" : NuxtLink;
     },
   },
   methods: {

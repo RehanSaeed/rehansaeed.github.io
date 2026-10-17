@@ -31,6 +31,7 @@ import { contentImagesBaseURL, contentPublicDir } from "./paths";
 import { listFiles, scanContent, toPosix } from "./scan";
 import { commentSnapshots } from "./comments";
 import { readImageDimensions } from "./images";
+import { filterMarkdownSitemap } from "./seo";
 
 const postsPerPage = 10;
 
@@ -172,6 +173,10 @@ export default defineNuxtModule({
         return;
       }
       const body = content.body as Parameters<typeof timeToRead>[0];
+      if (collection.name === "posts") {
+        content.path = content.permalink;
+        if (!content.published) content.robots = "noindex, follow";
+      }
       content.comments = comments[String(content.title)] ?? {
         issue: null,
         comments: [],
@@ -207,6 +212,29 @@ export default defineNuxtModule({
     // The crawler starts at "/" and follows links; add everything that isn't linked from a published page.
     const posts = entries.filter((entry) => entry.collection === "posts");
     const publishedPosts = posts.filter((entry) => entry.data.published);
+    const unlistedRoutes = new Set([
+      ...posts
+        .filter((entry) => !entry.data.published)
+        .map((entry) => entry.data.permalink.replace(/\/$/, "")),
+      "/streaming/border",
+      "/streaming/thumbnail",
+      "/404-not-found",
+    ]);
+    nuxt.hook("ai-ready:page:markdown", (page) => {
+      if (unlistedRoutes.has(page.route.replace(/\/$/, ""))) {
+        page.markdown = "";
+      }
+    });
+    nuxt.hook("nitro:init", (nitro) => {
+      nitro.hooks.hook("prerender:generate", (route) => {
+        if (route.route !== "/sitemap.md") return;
+        if (typeof route.contents !== "string") {
+          throw new Error("AI discovery did not generate a Markdown sitemap.");
+        }
+        // AI Ready's metadata store also contains routable noindex pages.
+        route.contents = filterMarkdownSitemap(route.contents, unlistedRoutes);
+      });
+    });
     const pageCount = Math.ceil(publishedPosts.length / postsPerPage);
     const routes = new Set<string>([
       ...posts.map((entry) => entry.data.permalink),
@@ -218,6 +246,10 @@ export default defineNuxtModule({
       nitroConfig.prerender.routes = [
         ...(nitroConfig.prerender.routes ?? []),
         ...routes,
+      ];
+      nitroConfig.prerender.ignore = [
+        ...(nitroConfig.prerender.ignore ?? []),
+        ...[...unlistedRoutes].map((route) => `${route}.md`),
       ];
     });
   },

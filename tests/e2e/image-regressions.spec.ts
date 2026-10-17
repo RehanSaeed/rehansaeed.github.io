@@ -141,10 +141,20 @@ test.describe("All-pages audit regressions", () => {
       if (!alt) {
         await expect(
           page.locator('meta[property="og:image:width"]'),
-        ).toHaveAttribute("content", String(width));
+        ).toHaveAttribute("content", "1200");
         await expect(
           page.locator('meta[property="og:image:height"]'),
-        ).toHaveAttribute("content", String(height));
+        ).toHaveAttribute("content", "630");
+        const graph = JSON.parse(
+          (await page
+            .locator('script[type="application/ld+json"]')
+            .textContent())!,
+        );
+        const article = graph["@graph"].find(
+          (node: { "@type": string }) => node["@type"] === "Article",
+        );
+        expect(Number(article.image[0].width)).toBe(width);
+        expect(Number(article.image[0].height)).toBe(height);
       }
     });
   }

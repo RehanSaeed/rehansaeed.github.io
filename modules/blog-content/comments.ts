@@ -1,6 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { z } from "zod";
+import { useLogger } from "nuxt/kit";
 import site from "../../site.json";
 import {
   commentSnapshotSchema,
@@ -15,6 +16,7 @@ const cacheSchema = z.object({
   updated: z.number(),
   snapshots: z.record(z.string(), commentSnapshotSchema),
 });
+const logger = useLogger("blog-content:comments");
 
 export async function commentSnapshots(
   dataDir: string,
@@ -28,10 +30,12 @@ export async function commentSnapshots(
     }
     cached = parsed;
   } catch (error) {
-    if (
-      !(error instanceof Error && "code" in error && error.code === "ENOENT")
-    ) {
-      console.warn("[comments] Ignoring invalid snapshot cache:", error);
+    if (!(
+      error instanceof Error &&
+      "code" in error &&
+      error.code === "ENOENT"
+    )) {
+      logger.warn("Ignoring invalid snapshot cache:", error);
     }
   }
   if (cached && Date.now() - cached.updated < 60 * 60 * 1000)
@@ -67,10 +71,7 @@ export async function commentSnapshots(
         };
       } catch (error) {
         complete = false;
-        console.warn(
-          `[comments] Keeping saved comments for issue ${issue.number}:`,
-          error,
-        );
+        logger.warn(`Keeping saved comments for issue ${issue.number}:`, error);
         snapshots[title] ??= { issue, comments: [] };
       }
     }
@@ -79,8 +80,8 @@ export async function commentSnapshots(
       JSON.stringify({ updated: complete ? Date.now() : 0, snapshots }),
     );
   } catch (error) {
-    console.warn(
-      "[comments] GitHub snapshot unavailable; keeping saved comments and GitHub links:",
+    logger.warn(
+      "GitHub snapshot unavailable; keeping saved comments and GitHub links:",
       error,
     );
   }

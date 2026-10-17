@@ -11,6 +11,7 @@ const types = {
     ".json": "application/json",
     ".xml": "application/xml",
     ".txt": "text/plain",
+    ".md": "text/markdown; charset=utf-8",
     ".svg": "image/svg+xml",
     ".png": "image/png",
     ".jpg": "image/jpeg",

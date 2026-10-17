@@ -188,7 +188,6 @@ import arrows from "~/components/shared/arrows.vue";
 import card from "~/components/shared/card.vue";
 import heading from "~/components/shared/heading.vue";
 import socialLinks from "~/components/social-links.vue";
-import { heroImagePath, imageSize } from "~/composables/use-site-head";
 
 export default {
   name: "u-about",
@@ -202,9 +201,20 @@ export default {
     const metadata = useAppConfig().site;
     const title = "About";
     const description = `About ${metadata.author.name}. ${metadata.description}.`;
-    const image = metadata.url + heroImagePath;
     const url = metadata.url + "/about/";
-    const { width, height } = imageSize(image);
+    useBlogOgImage(title);
+    useSchemaOrg([
+      defineWebPage({
+        "@type": "ProfilePage",
+        mainEntity: { "@id": `${metadata.url}/#identity` },
+      }),
+      defineBreadcrumb({
+        itemListElement: [
+          { name: "Blog", item: metadata.url + "/" },
+          { name: title, item: url },
+        ],
+      }),
+    ]);
     useHead({
       title,
       link: [{ rel: "canonical", href: url }],
@@ -214,9 +224,6 @@ export default {
         // Open Graph
         { property: "og:title", content: title },
         { property: "og:url", content: url },
-        { property: "og:image", content: image },
-        { property: "og:image:height", content: height },
-        { property: "og:image:width", content: width },
         { property: "og:description", content: description },
         { property: "og:locale", content: metadata.language.replace("-", "_") },
         { property: "og:site_name", content: metadata.name },

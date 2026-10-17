@@ -19,7 +19,6 @@ import { tagPath, tagSlug } from "#shared/utils/tag";
 import UArrows from "~/components/shared/arrows.vue";
 import UHeading from "~/components/shared/heading.vue";
 import UPostCard from "~/components/post-card.vue";
-import { heroImagePath, imageSize } from "~/composables/use-site-head";
 
 const site = useAppConfig().site;
 const slug = String(useRoute().params.tag);
@@ -69,8 +68,23 @@ const title = data.value.title;
 const posts = computed(() => data.value.posts);
 const path = tagPath(title);
 const description = `Blog posts authored by ${site.author.name} about ${title}.`;
-const image = site.url + heroImagePath;
 const url = site.url + path;
+useBlogOgImage(`# ${title}`);
+useSchemaOrg([
+  defineWebPage({ "@type": "CollectionPage", name: title }),
+  defineItemList({
+    itemListElement: posts.value.map((post) => ({
+      name: post.title,
+      url: site.url + post.permalink,
+    })),
+  }),
+  defineBreadcrumb({
+    itemListElement: [
+      { name: "Blog", item: site.url + "/" },
+      { name: title, item: url },
+    ],
+  }),
+]);
 
 useHead({
   title,
@@ -81,9 +95,6 @@ useHead({
     // Open Graph
     { property: "og:title", content: title },
     { property: "og:url", content: url },
-    { property: "og:image", content: image },
-    { property: "og:image:height", content: imageSize(image).height },
-    { property: "og:image:width", content: imageSize(image).width },
     { property: "og:description", content: description },
     { property: "og:locale", content: site.language.replace("-", "_") },
     { property: "og:site_name", content: site.name },

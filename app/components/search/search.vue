@@ -70,7 +70,8 @@ export default {
     },
   },
   setup() {
-    return { inputId: `site-search-${useId()}` };
+    const { polite } = useAnnouncer();
+    return { inputId: `site-search-${useId()}`, announceResults: polite };
   },
   data() {
     return {
@@ -100,6 +101,9 @@ export default {
           .search(searchTerm, { limit: resultLimit, enrich: true, merge: true })
           .slice(0, resultLimit)
           .map((result) => result.doc);
+        this.announceResults(
+          `${this.searchResults.length} search ${this.searchResults.length === 1 ? "result" : "results"}.`,
+        );
       } catch (error) {
         console.error(error);
       }

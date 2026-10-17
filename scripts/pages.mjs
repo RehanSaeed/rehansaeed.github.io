@@ -22,6 +22,11 @@ const required = [
     "rss.xml",
     "atom.xml",
     "feed.json",
+    "sitemap.xml",
+    "sitemap.md",
+    "llms.txt",
+    "llms-full.txt",
+    "index.md",
 ];
 
 function localPath(value, page) {
@@ -300,6 +305,13 @@ async function writeDeployment(directory) {
         "/rss.xml",
         "/atom.xml",
         "/feed.json",
+        "/robots.txt",
+        "/sitemap.xml",
+        "/sitemap.md",
+        "/llms.txt",
+        "/llms-full.txt",
+        "/index.md",
+        $("meta[property='og:image']").attr("content").replace(origin, ""),
         "/manifest.webmanifest",
         "/service-worker.js",
         ...assets,

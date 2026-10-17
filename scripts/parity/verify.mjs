@@ -24,6 +24,71 @@ const correctedImageDimensions = {
         height: "640",
     },
 };
+const site = JSON.parse(await readFile("site.json", "utf8"));
+
+function verifySchema(path, expected, actual) {
+    if (path === "/404") {
+        assert.deepEqual(actual, []);
+        return;
+    }
+    assert.equal(actual.length, 1, `${path}: single JSON-LD graph`);
+    assert.equal(actual[0]["@context"], "https://schema.org");
+    const nodes = actual[0]["@graph"];
+    const ids = nodes.map((node) => node["@id"]);
+    assert.equal(new Set(ids).size, ids.length, `${path}: unique graph IDs`);
+    const person = nodes.find((node) => node["@id"] === "{origin}/#identity");
+    const publisher = nodes.find(
+        (node) => node["@id"] === "{origin}/#publisher",
+    );
+    assert.equal(person.name, site.author.name);
+    assert.equal(person.url, "{origin}/about/");
+    assert.equal(publisher.name, site.name);
+    assert.equal(publisher.url, "{origin}");
+    const logo = publisher.logo;
+    assert.equal(
+        typeof logo === "string" ? logo : logo.url,
+        "{origin}/images/schema/Publisher-600x60.png",
+    );
+    for (const schema of expected) {
+        if (schema["@type"] !== "Article") continue;
+        const article = nodes.find((node) => node["@type"] === "Article");
+        assert(article, `${path}: preserved Article`);
+        for (const field of ["headline", "description", "url"]) {
+            assert.equal(
+                article[field] ?? (field === "description" ? "" : undefined),
+                schema[field],
+                `${path}: Article ${field}`,
+            );
+        }
+        assert.equal(
+            (article.keywords ?? []).join(","),
+            schema.keywords,
+            `${path}: Article keywords`,
+        );
+        for (const field of ["datePublished", "dateModified"]) {
+            assert.equal(
+                Date.parse(article[field]),
+                Date.parse(schema[field]),
+                `${path}: Article ${field} instant`,
+            );
+        }
+        assert.deepEqual(
+            article.image.map((image) => ({
+                ...image,
+                width: String(image.width),
+                height: String(image.height),
+            })),
+            schema.image,
+            `${path}: original hero image schema`,
+        );
+        assert.equal(article.author["@id"], person["@id"]);
+        assert.equal(article.publisher["@id"], publisher["@id"]);
+        const webpage = nodes.find(
+            (node) => node["@id"] === article.mainEntityOfPage["@id"],
+        );
+        assert.equal(webpage.url, schema.url);
+    }
+}
 
 for (const file of await readdir("content/posts", { recursive: true })) {
     if (!file.endsWith("index.md")) continue;
@@ -42,7 +107,7 @@ for (const file of await readdir("content/posts", { recursive: true })) {
 }
 
 // Only the explicitly approved migration/SEO changes are applied to the reference.
-function approvedPage(path, source) {
+function approvedPage(path, source, actual) {
     const page = structuredClone(source);
     page.lang = "en-GB";
     delete page.meta["gridsome:hash"];
@@ -77,6 +142,45 @@ function approvedPage(path, source) {
             }
         }
     }
+    verifySchema(path, page.jsonLd, actual.jsonLd);
+    page.jsonLd = actual.jsonLd;
+    page.meta["og:type"] ??= "website";
+    page.meta["og:title"] ??= page.title;
+    page.meta["og:locale"] ??= "en_GB";
+    page.meta["og:site_name"] ??= site.name;
+    if (!("description" in source.meta))
+        page.meta.description ??= site.description;
+    if (!("og:description" in source.meta))
+        page.meta["og:description"] ??= page.meta.description;
+    if (path !== "/404") {
+        page.meta.robots ??=
+            "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
+        page.links.canonical ??= `{origin}${path}`;
+        page.meta["og:url"] ??= `{origin}${path}`;
+    }
+    if (source.meta["og:image"]) {
+        const image = actual.meta["og:image"];
+        assert.match(image, /^\{origin\}\/_og\/s\/o_[a-f0-9]+\.png$/);
+        const title = /^\/\d+\/$/.test(path)
+            ? `Blog - Page ${path.split("/")[1]}`
+            : path.startsWith("/tag/")
+              ? `# ${page.meta["og:title"]}`
+              : page.meta["og:title"];
+        Object.assign(page.meta, {
+            "og:image": image,
+            "og:image:width": "1200",
+            "og:image:height": "630",
+            "og:image:type": "image/png",
+            "og:image:alt": `${title} - ${site.author.name}`,
+            "twitter:image": image,
+            "twitter:image:alt": `${title} - ${site.author.name}`,
+        });
+    }
+    if (path !== "/404" && !excluded.has(path)) {
+        const markdown =
+            path === "/" ? "/index.md" : `${path.replace(/\/$/, "")}.md`;
+        page.links.alternate.push(`${markdown} | text/markdown`);
+    }
     return page;
 }
 assert.deepEqual(
@@ -87,13 +191,13 @@ assert.deepEqual(
 for (const [path, page] of Object.entries(live)) {
     assert.deepEqual(
         local[path],
-        approvedPage(path, page),
+        approvedPage(path, page, local[path]),
         `Unexpected page/head difference on ${path}`,
     );
 }
 assert.deepEqual(
     localArtifacts["/404"],
-    approvedPage("/404", liveArtifacts["/404"]),
+    approvedPage("/404", liveArtifacts["/404"], localArtifacts["/404"]),
     "404 response and head",
 );
 
@@ -134,7 +238,15 @@ assert.deepEqual(
     sitemap,
     "Sitemap URL set and content lastmod",
 );
-for (const path of ["/robots.txt", "/security.txt", "/opensearch.xml"]) {
+assert.deepEqual(
+    localArtifacts["/robots.txt"],
+    {
+        status: 200,
+        body: "User-agent: *\nAllow: /\nDisallow: \nContent-Usage: train-ai=y\nContent-Signal: ai-train=yes, search=yes, ai-input=yes\n\nSitemap: {origin}/sitemap.xml",
+    },
+    "Explicit search/input/training Robots policy",
+);
+for (const path of ["/security.txt", "/opensearch.xml"]) {
     const normalize = (value) => ({
         ...value,
         body: value.body.replaceAll("\r\n", "\n"),

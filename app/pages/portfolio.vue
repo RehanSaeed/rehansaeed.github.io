@@ -27,15 +27,13 @@
 import UArrows from "~/components/shared/arrows.vue";
 import UHeading from "~/components/shared/heading.vue";
 import UPortfolioCard from "~/components/portfolio-card.vue";
-import { heroImagePath, imageSize } from "~/composables/use-site-head";
 
 const site = useAppConfig().site;
 const title = "Portfolio";
 const description = `Portfolio of work by ${site.author.name}.`;
-const image = site.url + heroImagePath;
 const relativeUrl = "/portfolio/";
 const url = site.url + relativeUrl;
-const { width, height } = imageSize(image);
+useBlogOgImage(title);
 
 useHead({
   title,
@@ -46,9 +44,6 @@ useHead({
     // Open Graph
     { property: "og:title", content: title },
     { property: "og:url", content: url },
-    { property: "og:image", content: image },
-    { property: "og:image:height", content: height },
-    { property: "og:image:width", content: width },
     { property: "og:description", content: description },
     { property: "og:locale", content: site.language.replace("-", "_") },
     { property: "og:site_name", content: site.name },
@@ -64,6 +59,21 @@ const { data: portfolio } = await useAsyncData("portfolio", () =>
     .select("id", "title", "description", "heroImage", "permalink", "tags")
     .all(),
 );
+useSchemaOrg([
+  defineWebPage({ "@type": "CollectionPage", name: title }),
+  defineItemList({
+    itemListElement: (portfolio.value ?? []).map((project) => ({
+      name: project.title,
+      url: project.permalink,
+    })),
+  }),
+  defineBreadcrumb({
+    itemListElement: [
+      { name: "Blog", item: site.url + "/" },
+      { name: title, item: url },
+    ],
+  }),
+]);
 </script>
 
 <style lang="scss">
