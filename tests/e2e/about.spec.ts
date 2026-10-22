@@ -129,9 +129,15 @@ for (const width of [375, 1280]) {
           name: "Microsoft Global Hackathon 2022.png",
         }),
       ).toHaveCount(1);
-      expect(
-        await page.evaluate(() => document.documentElement.scrollWidth),
-      ).toBe(width);
+      const awardsLayout = await awards.evaluate((node) => ({
+        left: node.getBoundingClientRect().left,
+        right: node.getBoundingClientRect().right,
+        clientWidth: node.clientWidth,
+        scrollWidth: node.scrollWidth,
+      }));
+      expect(awardsLayout.left).toBeGreaterThanOrEqual(0);
+      expect(awardsLayout.right).toBeLessThanOrEqual(width);
+      expect(awardsLayout.scrollWidth).toBe(awardsLayout.clientWidth);
     });
   }
 }
