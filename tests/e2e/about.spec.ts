@@ -2,6 +2,7 @@ import { join } from "node:path";
 import { test as unitTest } from "@playwright/test";
 import { expect, test } from "./fixtures";
 import { readImageDimensions } from "../../modules/blog-content/images";
+import sharp from "sharp";
 
 const badges = [
   {
@@ -67,6 +68,56 @@ unitTest(
         width: filename.includes("350x300") ? 350 : 300,
         height: 300,
       });
+    }
+  },
+);
+
+unitTest(
+  "Badge canvases are transparent without removing enclosed light artwork",
+  async () => {
+    for (const { filename, lightPixel, minimumBlue } of [
+      {
+        filename: "Microsoft-MSAI-Security-Champs-Recognition-2025-300x300.png",
+        lightPixel: [150, 30],
+        minimumBlue: 200,
+      },
+      {
+        filename: "Microsoft-Global-Hackathon-2024-300x300.png",
+        lightPixel: [84, 205],
+        minimumBlue: 245,
+      },
+      {
+        filename: "Microsoft-Global-Hackathon-2023-300x300.png",
+        lightPixel: [119, 212],
+        minimumBlue: 245,
+      },
+    ] as const) {
+      const { data, info } = await sharp(
+        join(process.cwd(), "public", "images", "about", filename),
+      )
+        .ensureAlpha()
+        .raw()
+        .toBuffer({ resolveWithObject: true });
+      expect([info.width, info.height]).toEqual([300, 300]);
+      for (let i = 0; i < 300; i++) {
+        for (const [x, y] of [
+          [i, 0],
+          [i, 299],
+          [0, i],
+          [299, i],
+        ] as const) {
+          expect(data[(y * info.width + x) * 4 + 3]).toBe(0);
+        }
+      }
+      expect(data[(150 * info.width + 150) * 4 + 3]).toBe(255);
+      const pixel = (lightPixel[1] * info.width + lightPixel[0]) * 4;
+      expect(data[pixel]).toBeGreaterThanOrEqual(245);
+      expect(data[pixel + 1]).toBeGreaterThanOrEqual(235);
+      expect(data[pixel + 2]).toBeGreaterThanOrEqual(minimumBlue);
+      expect(data[pixel + 3]).toBe(255);
+      expect(
+        data.some((value, i) => i % 4 === 3 && value > 0 && value < 255),
+      ).toBe(true);
     }
   },
 );

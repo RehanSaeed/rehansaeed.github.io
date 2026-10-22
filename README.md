@@ -86,6 +86,10 @@ YouTube endpoints. No API key or runtime server is required. Like the other
 remote profile badges, these counters depend on their providers' availability
 and are not available offline.
 
+Local badge PNGs retain their issue-year filenames and intrinsic dimensions.
+Preserve transparent outer canvases and enclosed light artwork when optimizing
+them, so both themes work without blend modes or color filters.
+
 Dialogs have hydration-stable, unique heading IDs and title-specific close labels.
 Literal currency dollars in Markdown must be escaped as `\$` so they cannot be
 mistaken for math delimiters; genuine KaTeX math remains enabled.
