@@ -247,6 +247,7 @@ onUnmounted(() => {
 .site-update__message {
   grid-area: message;
   margin: 0;
+  min-inline-size: 0;
 }
 
 .site-update__actions {

@@ -201,6 +201,10 @@ for (const width of [320, 375, 1280]) {
       const search = page.getByRole("button", { name: "Open search" });
       await expect(search).toBeEnabled();
       await search.focus();
+      const documentWidth = await page.evaluate(
+        () => document.documentElement.scrollWidth,
+      );
+      if (width >= 375) expect(documentWidth).toBe(width);
       let documentNavigations = 0;
       page.on("request", (request) => {
         if (
@@ -227,8 +231,16 @@ for (const width of [320, 375, 1280]) {
       expect(bounds!.width).toBeLessThanOrEqual(400);
       expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(800 - 16);
       expect(
+        await notice.evaluate((node) => node.scrollWidth - node.clientWidth),
+      ).toBe(0);
+      expect(
+        await notice
+          .locator(".site-update__message")
+          .evaluate((node) => node.scrollWidth - node.clientWidth),
+      ).toBe(0);
+      expect(
         await page.evaluate(() => document.documentElement.scrollWidth),
-      ).toBe(width);
+      ).toBe(documentWidth);
       await search.click();
       await expect(page.getByRole("dialog", { name: "Search" })).toBeVisible();
       await page.getByRole("button", { name: "Close Search" }).click();
