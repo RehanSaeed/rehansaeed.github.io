@@ -123,15 +123,6 @@
             src="/images/about/Microsoft-Most-Valuable-Professional-750x303.png"
             quality="100" />
         </a>
-        <a :href="mvpUrl">
-          <NuxtImg
-            class="about__badge-image"
-            alt="Microsoft Most Valuable Professional (MVP) Alumni"
-            height="300"
-            width="300"
-            src="/images/about/Microsoft-Most-Valuable-Professional-Alumni-300x300.png"
-            quality="100" />
-        </a>
       </div>
       <p class="about__description">
         Here are some of the awards I have been given for my work as a software
@@ -150,10 +141,10 @@
         <a :href="credlyUrl">
           <NuxtImg
             class="about__badge-image"
-            alt="Microsoft MSAI Security Champs Recognition"
+            alt="Microsoft Global Hackathon 2026 Participant"
             height="300"
             width="300"
-            src="/images/about/Microsoft-MSAI-Security-Champs-Recognition-300x300.png"
+            src="/images/about/Microsoft-Global-Hackathon-2026-300x300.png"
             quality="100" />
         </a>
         <a :href="credlyUrl">
@@ -162,16 +153,16 @@
             alt="Microsoft MSAI Security Champs March 2026"
             height="300"
             width="300"
-            src="/images/about/Microsoft-MSAI-Security-Champs-2026-03-300x300.png"
+            src="/images/about/Microsoft-MSAI-Security-Champs-2026-300x300.png"
             quality="100" />
         </a>
         <a :href="credlyUrl">
           <NuxtImg
             class="about__badge-image"
-            alt="Microsoft Global Hackathon 2026 Participant"
+            alt="Microsoft MSAI Security Champs Recognition 2025"
             height="300"
             width="300"
-            src="/images/about/Microsoft-Global-Hackathon-2026-300x300.png"
+            src="/images/about/Microsoft-MSAI-Security-Champs-Recognition-2025-300x300.png"
             quality="100" />
         </a>
         <a :href="credlyUrl">
@@ -199,6 +190,15 @@
             height="300"
             width="300"
             src="/images/about/Microsoft-Global-Hackathon-2023-300x300.png"
+            quality="100" />
+        </a>
+        <a :href="credlyUrl">
+          <NuxtImg
+            class="about__badge-image"
+            alt="Microsoft Most Valuable Professional (MVP) Alumni"
+            height="300"
+            width="300"
+            src="/images/about/Microsoft-Most-Valuable-Professional-Alumni-2023-300x300.png"
             quality="100" />
         </a>
         <a :href="credlyUrl">

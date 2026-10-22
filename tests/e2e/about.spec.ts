@@ -5,28 +5,64 @@ import { readImageDimensions } from "../../modules/blog-content/images";
 
 const badges = [
   {
-    filename: "Microsoft-MSAI-Security-Champs-Recognition-300x300.png",
-    alt: "Microsoft MSAI Security Champs Recognition",
+    filename: "Microsoft-Global-Hackathon-2026-300x300.png",
+    alt: "Microsoft Global Hackathon 2026 Participant",
+    issuedAt: "2026-08-20",
   },
   {
-    filename: "Microsoft-MSAI-Security-Champs-2026-03-300x300.png",
+    filename: "Microsoft-MSAI-Security-Champs-2026-300x300.png",
     alt: "Microsoft MSAI Security Champs March 2026",
+    issuedAt: "2026-03-31",
   },
-  ...[2026, 2025, 2024, 2023].map((year) => ({
+  {
+    filename: "Microsoft-MSAI-Security-Champs-Recognition-2025-300x300.png",
+    alt: "Microsoft MSAI Security Champs Recognition 2025",
+    issuedAt: "2025-09-30",
+  },
+  ...[
+    [2025, "2025-08-05"],
+    [2024, "2024-08-02"],
+    [2023, "2023-08-24"],
+  ].map(([year, issuedAt]) => ({
     filename: `Microsoft-Global-Hackathon-${year}-300x300.png`,
     alt: `Microsoft Global Hackathon ${year} Participant`,
+    issuedAt: String(issuedAt),
   })),
+];
+const existingBadges = [
+  {
+    filename: "Microsoft-Most-Valuable-Professional-Alumni-2023-300x300.png",
+    issuedAt: "2023-05-18",
+  },
+  {
+    filename: "Microsoft-Global-Hackathon-2022-300x300.png",
+    issuedAt: "2022-08-25",
+  },
+  {
+    filename: "Microsoft-Global-Hackathon-2021-300x300.png",
+    issuedAt: "2021-09-02",
+  },
+  {
+    filename: "Microsoft-Global-Hackathon-2020-350x300.png",
+    issuedAt: "2020-06-22",
+  },
 ];
 
 unitTest(
-  "New Credly PNG filenames match their intrinsic 300px dimensions",
+  "Credly PNG filenames include their issue year and match their intrinsic dimensions",
   async () => {
-    for (const { filename } of badges) {
+    for (const { filename, issuedAt } of [...badges, ...existingBadges]) {
+      expect(filename).toMatch(
+        new RegExp(`-${issuedAt.slice(0, 4)}-\\d+x\\d+\\.png$`),
+      );
       expect(
         await readImageDimensions(
           join(process.cwd(), "public", "images", "about", filename),
         ),
-      ).toEqual({ width: 300, height: 300 });
+      ).toEqual({
+        width: filename.includes("350x300") ? 350 : 300,
+        height: 300,
+      });
     }
   },
 );
@@ -40,7 +76,18 @@ for (const width of [375, 1280]) {
       await page.emulateMedia({ colorScheme });
       await page.goto("/about/");
       const awards = page.locator(".about_awards-images");
-      await expect(awards.locator(".about__badge-image")).toHaveCount(9);
+      const credly = page.locator(
+        'a[href="https://www.credly.com/users/muhammad_rehan_saeed/badges"] .about__badge-image',
+      );
+      await expect(credly).toHaveCount(10);
+      const newestFirst = [...badges, ...existingBadges]
+        .sort((a, b) => b.issuedAt.localeCompare(a.issuedAt))
+        .map(({ filename }) => filename);
+      expect(
+        await credly.evaluateAll((images) =>
+          images.map((image) => image.getAttribute("src")!.split("/").at(-1)),
+        ),
+      ).toEqual(newestFirst);
       for (const { filename, alt } of badges) {
         const image = awards.getByRole("img", { name: alt, exact: true });
         await expect(image).toHaveAttribute("width", "300");
