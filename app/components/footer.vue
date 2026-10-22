@@ -46,11 +46,13 @@ export default {
 <style lang="scss">
 .footer {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--global-space-fluid-5);
 }
 
 .footer__newsletter {
   justify-self: center;
+  max-inline-size: 100%;
 }
 
 .footer__text {

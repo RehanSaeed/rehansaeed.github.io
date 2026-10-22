@@ -23,33 +23,9 @@
       <u-social-links class="about__social-links" />
       <p class="about__description">
         I am a professional Software Developer at Microsoft. Although I work for
-        Microsoft, my opinions are my own. If it’s written in C# or .NET, I have
-        probably written something using it in anger!
+        Microsoft, my opinions are my own. If it’s written in HTML/CSS/JS, C# or
+        .NET, I have probably written something using it in anger!
       </p>
-      <p class="about__description">
-        I live stream my software development escapades on
-        <a :href="youtubeUrl">Youtube</a> and
-        <a :href="twitchUrl">Twitch</a> twice a week. Feel free to join me live
-        and ask questions.
-      </p>
-      <div class="about__youtube-images">
-        <a :href="youtubeUrl">
-          <img
-            class="about__youtube-image"
-            alt="Youtube views"
-            height="58"
-            width="208"
-            :src="youtubeViewsImageUrl" />
-        </a>
-        <a :href="youtubeUrl">
-          <img
-            class="about__youtube-image"
-            alt="Youtube subscribers"
-            height="58"
-            width="208"
-            :src="youtubeSubscribersImageUrl" />
-        </a>
-      </div>
       <p class="about__description">
         You can see some of the open source projects that I have founded and
         maintained in my
@@ -59,13 +35,13 @@
         commercial projects that I cannot disclose.
       </p>
       <div class="about__github-images">
-        <a :href="gitHubSponsorsUrl">
+        <a :href="gitHubUrl">
           <img
             class="about__github-image"
-            alt="GitHub sponsors"
+            alt="GitHub stars"
             height="30"
-            width="121"
-            :src="gitHubSponsorsImageUrl" />
+            width="135"
+            :src="gitHubStarsImageUrl" />
         </a>
         <a :href="gitHubFollowersUrl">
           <img
@@ -75,13 +51,13 @@
             width="168"
             :src="gitHubFollowersImageUrl" />
         </a>
-        <a :href="gitHubUrl">
+        <a :href="gitHubSponsorsUrl">
           <img
             class="about__github-image"
-            alt="GitHub stars"
+            alt="GitHub sponsors"
             height="30"
-            width="135"
-            :src="gitHubStarsImageUrl" />
+            width="121"
+            :src="gitHubSponsorsImageUrl" />
         </a>
       </div>
       <div class="about__github-statistics">
@@ -95,33 +71,27 @@
         </a>
       </div>
       <p class="about__description">
-        I have been fairly active on StackOverflow. You can view my
-        <a :href="stackOverflowUrl">Stack Overflow profile</a> and see my
-        contribution to the community.
+        I occasionally appear on
+        <a :href="youtubeUrl">Youtube</a> and
+        <a :href="twitchUrl">Twitch</a> where you can watch my software
+        development escapades.
       </p>
-      <a :href="stackOverflowUrl">
-        <img
-          class="about__stack-overflow-image"
-          alt="Stack Overflow profile statistics"
-          height="58"
-          width="208"
-          :src="stackOverflowProfileUrl" />
-      </a>
-      <p class="about__description">
-        Before I joined Microsoft, I was a
-        <a :href="mvpUrl">Microsoft Most Valuable Professional (MVP)</a> for
-        three years. This gave me inside information into the work Microsoft was
-        doing. Once I joined Microsoft, I had to give up this award.
-      </p>
-      <div class="about__mvp-images">
-        <a :href="mvpUrl">
-          <NuxtImg
-            class="about__mvp-image"
-            alt="Microsoft Most Valuable Professional (MVP)"
-            height="84"
-            width="208"
-            src="/images/about/Microsoft-Most-Valuable-Professional-750x303.png"
-            quality="100" />
+      <div class="about__youtube-images">
+        <a :href="youtubeUrl">
+          <img
+            class="about__youtube-image"
+            alt="Youtube views"
+            height="20"
+            width="104"
+            :src="youtubeViewsImageUrl" />
+        </a>
+        <a :href="youtubeUrl">
+          <img
+            class="about__youtube-image"
+            alt="Youtube subscribers"
+            height="20"
+            width="124"
+            :src="youtubeSubscribersImageUrl" />
         </a>
       </div>
       <p class="about__description">
@@ -129,15 +99,6 @@
         engineer in open source or elsewhere:
       </p>
       <div class="about_awards-images">
-        <a href="/open-uk-honouree/">
-          <NuxtImg
-            class="about__open-uk-honours-image"
-            alt="Open UK Honours 2022"
-            height="396"
-            width="1288"
-            src="/images/about/Open-UK-Honours-2022-1288x396.jpg"
-            quality="100" />
-        </a>
         <a :href="credlyUrl">
           <NuxtImg
             class="about__badge-image"
@@ -201,6 +162,15 @@
             src="/images/about/Microsoft-Global-Hackathon-2022-300x300.png"
             quality="100" />
         </a>
+        <a href="/open-uk-honouree/">
+          <NuxtImg
+            class="about__open-uk-honours-image"
+            alt="Open UK Honours 2022"
+            height="396"
+            width="1288"
+            src="/images/about/Open-UK-Honours-2022-1288x396.jpg"
+            quality="100" />
+        </a>
         <a :href="credlyUrl">
           <NuxtImg
             class="about__badge-image"
@@ -226,6 +196,36 @@
             height="300"
             width="300"
             src="/images/about/Microsoft-Most-Valuable-Professional-Alumni-2023-300x300.png"
+            quality="100" />
+        </a>
+      </div>
+      <p class="about__description">
+        I have been fairly active on StackOverflow. You can view my
+        <a :href="stackOverflowUrl">Stack Overflow profile</a> and see my
+        contribution to the community.
+      </p>
+      <a :href="stackOverflowUrl">
+        <img
+          class="about__stack-overflow-image"
+          alt="Stack Overflow profile statistics"
+          height="58"
+          width="208"
+          :src="stackOverflowProfileUrl" />
+      </a>
+      <p class="about__description">
+        Before I joined Microsoft, I was a
+        <a :href="mvpUrl">Microsoft Most Valuable Professional (MVP)</a> for
+        three years. This gave me inside information into the work Microsoft was
+        doing. Once I joined Microsoft, I had to give up this award.
+      </p>
+      <div class="about__mvp-images">
+        <a :href="mvpUrl">
+          <NuxtImg
+            class="about__mvp-image"
+            alt="Microsoft Most Valuable Professional (MVP)"
+            height="84"
+            width="208"
+            src="/images/about/Microsoft-Most-Valuable-Professional-750x303.png"
             quality="100" />
         </a>
       </div>
@@ -344,16 +344,26 @@ export default {
       return this.metadata.author.youtube.url;
     },
     youtubeViewsImageUrl() {
-      return `https://img.shields.io/youtube/channel/views/${this.metadata.author.youtube.user}?style=social`;
+      return this.youtubeBadgeImageUrl("viewCount", "Views");
     },
     youtubeSubscribersImageUrl() {
-      return `https://img.shields.io/youtube/channel/subscribers/${this.metadata.author.youtube.user}?style=social`;
+      return this.youtubeBadgeImageUrl("subscriberCount", "Subscribers");
     },
     oppositeTheme() {
       return this.theme === "light" ? "dark" : "light";
     },
   },
   methods: {
+    youtubeBadgeImageUrl(statistic, label) {
+      const query = new URLSearchParams({
+        url: `https://api.socialcounts.org/youtube-live-subscriber-count/${this.metadata.author.youtube.user}`,
+        query: `$.counters.api.${statistic}`,
+        label,
+        logo: "youtube",
+        style: "social",
+      });
+      return `https://img.shields.io/badge/dynamic/json?${query}`;
+    },
     setTheme(e) {
       this.theme = e.detail;
     },
@@ -419,6 +429,9 @@ export default {
 .about__github-image,
 .about__youtube-image {
   block-size: 30px;
+}
+.about__youtube-image {
+  inline-size: auto;
 }
 .about__github-statistics {
   block-size: 26rem;

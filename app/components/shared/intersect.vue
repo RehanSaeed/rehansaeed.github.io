@@ -27,17 +27,19 @@ export default {
   mounted() {
     this.observer = new IntersectionObserver(
       (entries) => {
-        if (!entries[0].isIntersecting) {
-          this.$emit("leave", [entries[0]]);
-        } else {
-          this.$emit("enter", [entries[0]]);
-          if (!this.hasIntersected) {
-            this.hasIntersected = true;
-            this.$emit("enterFirstTime", [entries[0]]);
+        for (const entry of entries) {
+          if (!entry.isIntersecting) {
+            this.$emit("leave", [entry]);
+          } else {
+            this.$emit("enter", [entry]);
+            if (!this.hasIntersected) {
+              this.hasIntersected = true;
+              this.$emit("enterFirstTime", [entry]);
+            }
           }
-        }
 
-        this.$emit("change", [entries[0]]);
+          this.$emit("change", [entry]);
+        }
       },
       {
         threshold: this.threshold,

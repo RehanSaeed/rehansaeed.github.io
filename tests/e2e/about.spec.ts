@@ -79,6 +79,62 @@ for (const width of [375, 1280]) {
       await page.setViewportSize({ width, height: 900 });
       await page.emulateMedia({ colorScheme });
       await page.goto("/about/");
+      await expect(
+        page
+          .locator(".about__description")
+          .filter({ hasText: "If it’s written" }),
+      ).toContainText(
+        "If it’s written in HTML/CSS/JS, C# or .NET, I have probably written something using it in anger!",
+      );
+      await expect(
+        page
+          .locator(".about__description")
+          .filter({ hasText: "I occasionally appear" }),
+      ).toHaveText(
+        "I occasionally appear on Youtube and Twitch where you can watch my software development escapades.",
+      );
+      expect(
+        await page
+          .locator(".about__github-image")
+          .evaluateAll((images) =>
+            images.map((image) => image.getAttribute("alt")),
+          ),
+      ).toEqual(["GitHub stars", "GitHub follower count", "GitHub sponsors"]);
+      expect(
+        await page
+          .locator(
+            ".about__container > .about__github-images, .about__container > .about__youtube-images, .about__container > .about_awards-images, .about__container > .about__mvp-images",
+          )
+          .evaluateAll((sections) =>
+            sections.map((section) => section.className),
+          ),
+      ).toEqual([
+        "about__github-images",
+        "about__youtube-images",
+        "about_awards-images",
+        "about__mvp-images",
+      ]);
+      for (const [alt, statistic] of [
+        ["Youtube views", "viewCount"],
+        ["Youtube subscribers", "subscriberCount"],
+      ]) {
+        const src = await page
+          .getByRole("img", { name: alt, exact: true })
+          .getAttribute("src");
+        const url = new URL(src!);
+        expect(url.origin + url.pathname).toBe(
+          "https://img.shields.io/badge/dynamic/json",
+        );
+        expect(url.searchParams.get("url")).toBe(
+          "https://api.socialcounts.org/youtube-live-subscriber-count/UC6geox4JkY11093RqecELGA",
+        );
+        expect(url.searchParams.get("query")).toBe(
+          `$.counters.api.${statistic}`,
+        );
+      }
+      await expect
+        .poll(() => page.evaluate(() => document.documentElement.scrollWidth))
+        .toBe(width);
       const awards = page.locator(".about_awards-images");
       const credly = page.locator(
         'a[href="https://www.credly.com/users/muhammad_rehan_saeed/badges"] .about__badge-image',
@@ -92,6 +148,18 @@ for (const width of [375, 1280]) {
           images.map((image) => image.getAttribute("src")!.split("/").at(-1)),
         ),
       ).toEqual(expectedOrder);
+      const expectedAwards = expectedOrder.flatMap((filename) =>
+        filename === "Microsoft-Global-Hackathon-2022-300x300.png"
+          ? [filename, "Open-UK-Honours-2022-1288x396.jpg"]
+          : [filename],
+      );
+      expect(
+        await awards
+          .locator("img")
+          .evaluateAll((images) =>
+            images.map((image) => image.getAttribute("src")!.split("/").at(-1)),
+          ),
+      ).toEqual(expectedAwards);
       for (const { filename, alt } of badges) {
         const image = awards.getByRole("img", { name: alt, exact: true });
         await expect(image).toHaveAttribute("width", "300");

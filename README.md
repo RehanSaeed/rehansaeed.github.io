@@ -80,6 +80,12 @@ eager and high priority. Dimension changes invalidate the parsed-content cache.
 The regression suite checks all 178 Markdown images across 42 posts, delayed
 downloads, distant lazy images, incorrect hero filenames and wide/retina layouts.
 
+The About page's YouTube view/subscriber badges use Shields' dynamic JSON service
+with SocialCounts' API-reported channel statistics, replacing Shields' retired
+YouTube endpoints. No API key or runtime server is required. Like the other
+remote profile badges, these counters depend on their providers' availability
+and are not available offline.
+
 Dialogs have hydration-stable, unique heading IDs and title-specific close labels.
 Literal currency dollars in Markdown must be escaped as `\$` so they cannot be
 mistaken for math delimiters; genuine KaTeX math remains enabled.
@@ -256,8 +262,10 @@ changes Pages settings, DNS, the custom domain or Cloudflare.
 Source switching and an actual production deployment are still manual/external
 operations; local checks cannot guarantee zero downtime or substitute for the
 first successful Pages deployment and public smoke check.
-The original unchecked-in CSS work was not available in this worktree and remains
-deferred; the retained SCSS structure supports adding it later.
+The original unchecked-in CSS work was not available in this worktree. The user
+chose to skip it when planning the migration, so it remains a deferred follow-up,
+not an unresolved cutover prerequisite. The retained SCSS structure supports
+adding it later.
 
 ### Module decisions and deliberate exclusions
 
@@ -338,8 +346,8 @@ Remaining release work, excluding manual code review:
 
 1. Finish exact-head build, type, lint, browser, visual, 408-route parity and
    real-worker/two-build checks; require the GitHub build to pass.
-2. Decide whether the unavailable original CSS work is deferred or must be
-   supplied before release; decide separately whether to migrate icons/Color Mode.
+2. Keep the unavailable original CSS work deferred as agreed; icon/Color Mode
+   migrations are separate optional follow-ups, not cutover prerequisites.
 3. Approve the Pages source cutover, retain the recorded legacy rollback revision,
    and preserve the custom domain/DNS. Merge/deploy only when authorized.
 4. Verify Cloudflare freshness for HTML/worker/manifest/latest-build metadata and

@@ -28,34 +28,68 @@ const comment: GitHubComment = {
 };
 
 test.describe("Migration completion", () => {
-  test("Keeps comments in SSR and refreshes them without rebuilding", async ({
-    page,
-  }) => {
-    let requests = 0;
-    await page.route(commentsPath, (route) => {
-      requests++;
-      return route.fulfill({ json: [comment] });
-    });
-    const response = await page.goto(postPath);
-    expect(await response!.text()).toContain('class="vssue-comment"');
-    await page.locator(".comments").scrollIntoViewIfNeeded();
-    await expect(page.locator(".vssue-comment-main")).toHaveCount(1);
-    await expect(page.locator(".vssue-comment-main")).toHaveText(
-      "A new live comment.",
+  for (const batchVisibilityChanges of [false, true]) {
+    test(
+      batchVisibilityChanges
+        ? "Refreshes comments after batched visibility changes, including cached reloads"
+        : "Keeps comments in SSR and refreshes them without rebuilding",
+      async ({ page }) => {
+        if (batchVisibilityChanges) {
+          await page.addInitScript(() => {
+            const NativeObserver = window.IntersectionObserver;
+            window.IntersectionObserver = class extends NativeObserver {
+              constructor(
+                callback: IntersectionObserverCallback,
+                options?: IntersectionObserverInit,
+              ) {
+                super((entries, observer) => {
+                  const batch = entries.flatMap((entry) =>
+                    entry.target.matches(".comments") && entry.isIntersecting
+                      ? [
+                          new Proxy(entry, {
+                            get(target, property) {
+                              return property === "isIntersecting"
+                                ? false
+                                : Reflect.get(target, property, target);
+                            },
+                          }),
+                          entry,
+                        ]
+                      : [entry],
+                  );
+                  callback(batch, observer);
+                }, options);
+              }
+            };
+          });
+        }
+        let requests = 0;
+        await page.route(commentsPath, (route) => {
+          requests++;
+          return route.fulfill({ json: [comment] });
+        });
+        const response = await page.goto(postPath);
+        expect(await response!.text()).toContain('class="vssue-comment"');
+        await page.locator(".comments").scrollIntoViewIfNeeded();
+        await expect(page.locator(".vssue-comment-main")).toHaveCount(1);
+        await expect(page.locator(".vssue-comment-main")).toHaveText(
+          "A new live comment.",
+        );
+        await expect(page.locator(".comments > .vssue > a")).toHaveAttribute(
+          "href",
+          /issues\/607$/,
+        );
+        expect(requests).toBe(1);
+        await page.reload();
+        await page.locator(".comments").scrollIntoViewIfNeeded();
+        await expect(page.locator(".vssue-comment-main")).toHaveCount(1);
+        await expect(page.locator(".vssue-comment-main")).toHaveText(
+          "A new live comment.",
+        );
+        expect(requests).toBe(1);
+      },
     );
-    await expect(page.locator(".comments > .vssue > a")).toHaveAttribute(
-      "href",
-      /issues\/607$/,
-    );
-    expect(requests).toBe(1);
-    await page.reload();
-    await page.locator(".comments").scrollIntoViewIfNeeded();
-    await expect(page.locator(".vssue-comment-main")).toHaveCount(1);
-    await expect(page.locator(".vssue-comment-main")).toHaveText(
-      "A new live comment.",
-    );
-    expect(requests).toBe(1);
-  });
+  }
 
   test("Retains the static comments with an explicit message when GitHub is unavailable", async ({
     page,

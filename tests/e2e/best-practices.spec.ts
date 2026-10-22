@@ -7,6 +7,37 @@ import { timeToRead } from "../../modules/blog-content/fields";
 const postPath = "/on-the-etiquette-of-pull-request-comments/";
 
 test.describe("Nuxt best practices", () => {
+  for (const width of [375, 1280]) {
+    for (const colorScheme of ["light", "dark"] as const) {
+      test(`Footer fits ${width}px in ${colorScheme} mode before and after rendering`, async ({
+        page,
+      }) => {
+        await page.setViewportSize({ width, height: 900 });
+        await page.emulateMedia({ colorScheme });
+        await page.goto("/");
+        await expect
+          .poll(() => page.evaluate(() => document.documentElement.scrollWidth))
+          .toBe(width);
+        const newsletter = page.locator(".newsletter");
+        await newsletter.scrollIntoViewIfNeeded();
+        await newsletter
+          .getByLabel(/Stay up to date/)
+          .fill("reader@example.com");
+        for (const control of await newsletter
+          .locator('input[type="email"], button[type="submit"]')
+          .all()) {
+          const bounds = await control.boundingBox();
+          expect(bounds).not.toBeNull();
+          expect(bounds!.x).toBeGreaterThanOrEqual(0);
+          expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
+        }
+        await expect
+          .poll(() => page.evaluate(() => document.documentElement.scrollWidth))
+          .toBe(width);
+      });
+    }
+  }
+
   test("Keeps JavaScript controls disabled until their handlers are attached", async ({
     page,
   }) => {
