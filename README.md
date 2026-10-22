@@ -162,8 +162,11 @@ sitemap as well as excluding their Markdown files and full-content exports.
 file/dimensions, Markdown canonical/discovery/full export, and noindex exclusions.
 
 The service worker and deployment-version detector share one accessible
-**Update now / Later** notice. Later neither activates the waiting worker nor
-reloads the reader; activation in another tab also does not force a reload.
+**Update now / Later** notice. Its compact top-right card uses the dialogs'
+purple accent and heading style without opening a modal, moving focus or
+covering the search/theme controls. Later and the close button neither activate
+the waiting worker nor reload the reader; activation in another tab also does
+not force a reload.
 Nuxt's automatic chunk reload is disabled so Later also preserves client-side
 navigation. Missing page assets reopen the same prompt with an explicit error.
 An imported worker policy rejects Gridsome's automatic `SKIP_WAITING` messages;

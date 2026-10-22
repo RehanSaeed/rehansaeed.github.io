@@ -150,7 +150,7 @@ for (const width of [375, 1280]) {
       ).toEqual(expectedOrder);
       const expectedAwards = expectedOrder.flatMap((filename) =>
         filename === "Microsoft-Global-Hackathon-2022-300x300.png"
-          ? [filename, "Open-UK-Honours-2022-1288x396.jpg"]
+          ? ["Open-UK-Honours-2022-1288x396.jpg", filename]
           : [filename],
       );
       expect(

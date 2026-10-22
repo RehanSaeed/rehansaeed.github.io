@@ -153,15 +153,6 @@
             src="/images/about/Microsoft-Global-Hackathon-2023-300x300.png"
             quality="100" />
         </a>
-        <a :href="credlyUrl">
-          <NuxtImg
-            class="about__badge-image"
-            alt="Microsoft Global Hackathon 2022.png"
-            height="300"
-            width="300"
-            src="/images/about/Microsoft-Global-Hackathon-2022-300x300.png"
-            quality="100" />
-        </a>
         <a href="/open-uk-honouree/">
           <NuxtImg
             class="about__open-uk-honours-image"
@@ -169,6 +160,15 @@
             height="396"
             width="1288"
             src="/images/about/Open-UK-Honours-2022-1288x396.jpg"
+            quality="100" />
+        </a>
+        <a :href="credlyUrl">
+          <NuxtImg
+            class="about__badge-image"
+            alt="Microsoft Global Hackathon 2022.png"
+            height="300"
+            width="300"
+            src="/images/about/Microsoft-Global-Hackathon-2022-300x300.png"
             quality="100" />
         </a>
         <a :href="credlyUrl">

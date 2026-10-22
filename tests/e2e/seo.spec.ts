@@ -2,12 +2,31 @@ import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
 import { load } from "cheerio";
 import { expect, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
 import type { NuxtApp } from "nuxt/app";
 import { filterMarkdownSitemap } from "../../modules/blog-content/seo";
 
 type NuxtRoot = HTMLElement & {
   __vue_app__?: { config: { globalProperties: { $nuxt: NuxtApp } } };
 };
+
+async function announceUpdate(
+  page: Page,
+  id = "reader-controlled-update-test",
+) {
+  await page.waitForFunction(
+    () => !!document.querySelector<NuxtRoot>("#__nuxt")?.__vue_app__,
+  );
+  await page.evaluate(async (id) => {
+    const app =
+      document.querySelector<NuxtRoot>("#__nuxt")!.__vue_app__!.config
+        .globalProperties.$nuxt;
+    await app.hooks.callHook("app:manifest:update", {
+      id,
+      timestamp: Date.now(),
+    });
+  }, id);
+}
 
 test("The worker rejects legacy automatic activation and accepts only reader-approved update messages", () => {
   const worker = new EventTarget();
@@ -130,18 +149,7 @@ test("Later preserves client navigation after a deployment and asset failures us
     (route) => route.fulfill({ contentType: "text/plain", body: "" }),
   );
   await page.goto("/");
-  await page.waitForFunction(
-    () => !!document.querySelector<NuxtRoot>("#__nuxt")?.__vue_app__,
-  );
-  await page.evaluate(async () => {
-    const app =
-      document.querySelector<NuxtRoot>("#__nuxt")!.__vue_app__!.config
-        .globalProperties.$nuxt;
-    await app.hooks.callHook("app:manifest:update", {
-      id: "reader-controlled-update-test",
-      timestamp: Date.now(),
-    });
-  });
+  await announceUpdate(page);
   const notice = page.getByRole("region", { name: "Site update" });
   await expect(notice).toHaveCount(1);
   await notice.getByRole("button", { name: "Later", exact: true }).click();
@@ -170,4 +178,75 @@ test("Later preserves client navigation after a deployment and asset failures us
   await expect(notice).toHaveCount(1);
   await expect(notice).toContainText("This page needs an update.");
   expect(documentNavigations).toBe(0);
+  await notice.getByRole("button", { name: "Dismiss site update" }).click();
+  await expect(notice).toHaveCount(0);
+  await announceUpdate(page, "next-reader-controlled-update-test");
+  await expect(notice).toHaveCount(1);
+  expect(documentNavigations).toBe(0);
 });
+
+for (const width of [320, 375, 1280]) {
+  for (const colorScheme of ["light", "dark"] as const) {
+    test(`Update notice is compact, nonmodal and dismissible at ${width}px in ${colorScheme} mode`, async ({
+      page,
+      baseURL,
+    }) => {
+      await page.setViewportSize({ width, height: 800 });
+      await page.emulateMedia({ colorScheme });
+      await page.route(
+        (url) => url.origin !== new URL(baseURL!).origin,
+        (route) => route.fulfill({ contentType: "text/plain", body: "" }),
+      );
+      await page.goto("/about/");
+      const search = page.getByRole("button", { name: "Open search" });
+      await expect(search).toBeEnabled();
+      await search.focus();
+      let documentNavigations = 0;
+      page.on("request", (request) => {
+        if (
+          request.isNavigationRequest() &&
+          request.frame() === page.mainFrame()
+        )
+          documentNavigations++;
+      });
+      await announceUpdate(page);
+      await announceUpdate(page);
+      const notice = page.getByRole("region", { name: "Site update" });
+      await expect(notice).toHaveCount(1);
+      await expect(
+        notice.getByRole("heading", { name: "Update available" }),
+      ).toBeVisible();
+      await expect(search).toBeFocused();
+      await expect(page.getByRole("dialog")).toHaveCount(0);
+      const bounds = await notice.boundingBox();
+      expect(bounds).not.toBeNull();
+      expect(bounds!.x).toBeGreaterThanOrEqual(16);
+      expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width - 16);
+      expect(bounds!.y).toBeGreaterThanOrEqual(16);
+      expect(bounds!.y).toBeLessThanOrEqual(24);
+      expect(bounds!.width).toBeLessThanOrEqual(400);
+      expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(800 - 16);
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth),
+      ).toBe(width);
+      await search.click();
+      await expect(page.getByRole("dialog", { name: "Search" })).toBeVisible();
+      await page.getByRole("button", { name: "Close Search" }).click();
+      await expect(page.getByRole("dialog")).toHaveCount(0);
+      await notice
+        .getByRole("button", { name: "Update now", exact: true })
+        .focus();
+      await page.keyboard.press("Tab");
+      const later = notice.getByRole("button", { name: "Later", exact: true });
+      await expect(later).toBeFocused();
+      await expect(later).toHaveCSS("outline-style", "solid");
+      const dismiss =
+        colorScheme === "light"
+          ? later
+          : notice.getByRole("button", { name: "Dismiss site update" });
+      await dismiss.click();
+      await expect(notice).toHaveCount(0);
+      expect(documentNavigations).toBe(0);
+    });
+  }
+}
