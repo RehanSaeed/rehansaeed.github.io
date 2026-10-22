@@ -150,6 +150,60 @@
         <a :href="credlyUrl">
           <NuxtImg
             class="about__badge-image"
+            alt="Microsoft MSAI Security Champs Recognition"
+            height="300"
+            width="300"
+            src="/images/about/Microsoft-MSAI-Security-Champs-Recognition-300x300.png"
+            quality="100" />
+        </a>
+        <a :href="credlyUrl">
+          <NuxtImg
+            class="about__badge-image"
+            alt="Microsoft MSAI Security Champs March 2026"
+            height="300"
+            width="300"
+            src="/images/about/Microsoft-MSAI-Security-Champs-2026-03-300x300.png"
+            quality="100" />
+        </a>
+        <a :href="credlyUrl">
+          <NuxtImg
+            class="about__badge-image"
+            alt="Microsoft Global Hackathon 2026 Participant"
+            height="300"
+            width="300"
+            src="/images/about/Microsoft-Global-Hackathon-2026-300x300.png"
+            quality="100" />
+        </a>
+        <a :href="credlyUrl">
+          <NuxtImg
+            class="about__badge-image"
+            alt="Microsoft Global Hackathon 2025 Participant"
+            height="300"
+            width="300"
+            src="/images/about/Microsoft-Global-Hackathon-2025-300x300.png"
+            quality="100" />
+        </a>
+        <a :href="credlyUrl">
+          <NuxtImg
+            class="about__badge-image"
+            alt="Microsoft Global Hackathon 2024 Participant"
+            height="300"
+            width="300"
+            src="/images/about/Microsoft-Global-Hackathon-2024-300x300.png"
+            quality="100" />
+        </a>
+        <a :href="credlyUrl">
+          <NuxtImg
+            class="about__badge-image"
+            alt="Microsoft Global Hackathon 2023 Participant"
+            height="300"
+            width="300"
+            src="/images/about/Microsoft-Global-Hackathon-2023-300x300.png"
+            quality="100" />
+        </a>
+        <a :href="credlyUrl">
+          <NuxtImg
+            class="about__badge-image"
             alt="Microsoft Global Hackathon 2022.png"
             height="300"
             width="300"
