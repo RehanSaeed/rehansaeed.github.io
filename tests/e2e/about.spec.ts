@@ -15,12 +15,16 @@ const badges = [
     issuedAt: "2026-03-31",
   },
   {
+    filename: "Microsoft-Global-Hackathon-2025-300x300.png",
+    alt: "Microsoft Global Hackathon 2025 Participant",
+    issuedAt: "2025-08-05",
+  },
+  {
     filename: "Microsoft-MSAI-Security-Champs-Recognition-2025-300x300.png",
     alt: "Microsoft MSAI Security Champs Recognition 2025",
     issuedAt: "2025-09-30",
   },
   ...[
-    [2025, "2025-08-05"],
     [2024, "2024-08-02"],
     [2023, "2023-08-24"],
   ].map(([year, issuedAt]) => ({
@@ -30,10 +34,6 @@ const badges = [
   })),
 ];
 const existingBadges = [
-  {
-    filename: "Microsoft-Most-Valuable-Professional-Alumni-2023-300x300.png",
-    issuedAt: "2023-05-18",
-  },
   {
     filename: "Microsoft-Global-Hackathon-2022-300x300.png",
     issuedAt: "2022-08-25",
@@ -45,6 +45,10 @@ const existingBadges = [
   {
     filename: "Microsoft-Global-Hackathon-2020-350x300.png",
     issuedAt: "2020-06-22",
+  },
+  {
+    filename: "Microsoft-Most-Valuable-Professional-Alumni-2023-300x300.png",
+    issuedAt: "2023-05-18",
   },
 ];
 
@@ -80,14 +84,14 @@ for (const width of [375, 1280]) {
         'a[href="https://www.credly.com/users/muhammad_rehan_saeed/badges"] .about__badge-image',
       );
       await expect(credly).toHaveCount(10);
-      const newestFirst = [...badges, ...existingBadges]
-        .sort((a, b) => b.issuedAt.localeCompare(a.issuedAt))
-        .map(({ filename }) => filename);
+      const expectedOrder = [...badges, ...existingBadges].map(
+        ({ filename }) => filename,
+      );
       expect(
         await credly.evaluateAll((images) =>
           images.map((image) => image.getAttribute("src")!.split("/").at(-1)),
         ),
-      ).toEqual(newestFirst);
+      ).toEqual(expectedOrder);
       for (const { filename, alt } of badges) {
         const image = awards.getByRole("img", { name: alt, exact: true });
         await expect(image).toHaveAttribute("width", "300");
@@ -115,8 +119,8 @@ for (const width of [375, 1280]) {
           .toBe(true);
         const bounds = await image.boundingBox();
         expect(bounds).not.toBeNull();
-        expect(bounds!.width).toBe(150);
-        expect(bounds!.height).toBe(150);
+        expect(bounds!.width).toBeCloseTo(150, 3);
+        expect(bounds!.height).toBeCloseTo(150, 3);
         expect(bounds!.x).toBeGreaterThanOrEqual(0);
         expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
       }

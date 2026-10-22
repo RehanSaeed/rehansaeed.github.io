@@ -159,19 +159,19 @@
         <a :href="credlyUrl">
           <NuxtImg
             class="about__badge-image"
-            alt="Microsoft MSAI Security Champs Recognition 2025"
+            alt="Microsoft Global Hackathon 2025 Participant"
             height="300"
             width="300"
-            src="/images/about/Microsoft-MSAI-Security-Champs-Recognition-2025-300x300.png"
+            src="/images/about/Microsoft-Global-Hackathon-2025-300x300.png"
             quality="100" />
         </a>
         <a :href="credlyUrl">
           <NuxtImg
             class="about__badge-image"
-            alt="Microsoft Global Hackathon 2025 Participant"
+            alt="Microsoft MSAI Security Champs Recognition 2025"
             height="300"
             width="300"
-            src="/images/about/Microsoft-Global-Hackathon-2025-300x300.png"
+            src="/images/about/Microsoft-MSAI-Security-Champs-Recognition-2025-300x300.png"
             quality="100" />
         </a>
         <a :href="credlyUrl">
@@ -190,15 +190,6 @@
             height="300"
             width="300"
             src="/images/about/Microsoft-Global-Hackathon-2023-300x300.png"
-            quality="100" />
-        </a>
-        <a :href="credlyUrl">
-          <NuxtImg
-            class="about__badge-image"
-            alt="Microsoft Most Valuable Professional (MVP) Alumni"
-            height="300"
-            width="300"
-            src="/images/about/Microsoft-Most-Valuable-Professional-Alumni-2023-300x300.png"
             quality="100" />
         </a>
         <a :href="credlyUrl">
@@ -226,6 +217,15 @@
             height="300"
             width="350"
             src="/images/about/Microsoft-Global-Hackathon-2020-350x300.png"
+            quality="100" />
+        </a>
+        <a :href="credlyUrl">
+          <NuxtImg
+            class="about__badge-image"
+            alt="Microsoft Most Valuable Professional (MVP) Alumni"
+            height="300"
+            width="300"
+            src="/images/about/Microsoft-Most-Valuable-Professional-Alumni-2023-300x300.png"
             quality="100" />
         </a>
       </div>
