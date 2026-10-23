@@ -7,6 +7,9 @@ heroImage: "/images/hero/Elysium-Extra-1366x768.png"
 date: "2014-02-06"
 dateModified: null
 published: true
+nugetPackages:
+  - id: "Elysium.Extra"
+    label: "NuGet downloads"
 categories:
   - "Open Source"
 tags:

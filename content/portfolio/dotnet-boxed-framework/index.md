@@ -7,6 +7,17 @@ heroImage: "/images/hero/Dotnet-Boxed-1366x768.png"
 date: "2016-09-15"
 dateModified: null
 published: true
+nugetPackages:
+  - id: "Boxed.Mapping"
+    label: "Mapping"
+  - id: "Boxed.AspNetCore"
+    label: "ASP.NET Core"
+  - id: "Boxed.AspNetCore.Swagger"
+    label: "Swagger"
+  - id: "Boxed.AspNetCore.TagHelpers"
+    label: "TagHelpers"
+  - id: "Boxed.DotnetNewTest"
+    label: "DotnetNewTest"
 categories:
   - "Open Source"
 tags:

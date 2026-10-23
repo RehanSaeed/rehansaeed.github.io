@@ -57,6 +57,14 @@ export default defineContentConfig({
         repository: z.string().regex(/^[\w-]+\/[\w.-]+$/),
         stars: z.number().int().nonnegative(),
         forks: z.number().int().nonnegative(),
+        nugetPackages: z
+          .array(
+            z.object({
+              id: z.string().regex(/^[A-Za-z0-9][A-Za-z0-9_.-]*$/),
+              label: z.string().min(1),
+            }),
+          )
+          .default([]),
         sitemap: defineSitemapSchema({
           name: "portfolio",
           filter: () => false,

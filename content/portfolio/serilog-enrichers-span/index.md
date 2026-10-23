@@ -7,6 +7,9 @@ heroImage: "/images/hero/Serilog.Enrichers.Span-1366x768.png"
 date: "2020-11-20"
 dateModified: null
 published: true
+nugetPackages:
+  - id: "Serilog.Enrichers.Span"
+    label: "NuGet downloads"
 categories:
   - "Open Source"
 tags:

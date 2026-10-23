@@ -24,13 +24,13 @@
       <div
         class="portfolio-card__badges"
         role="group"
-        :aria-label="`${portfolio.title} GitHub statistics`">
+        :aria-label="`${portfolio.title} project statistics`">
         <a :href="`${portfolio.permalink}/stargazers`">
           <img
             class="portfolio-card__badge portfolio-card__stars"
             :alt="`${portfolio.title}: ${portfolio.stars} GitHub stars at last build`"
-            height="20"
-            width="104"
+            height="30"
+            width="156"
             loading="lazy"
             :src="`https://img.shields.io/github/stars/${portfolio.repository}?style=social`" />
         </a>
@@ -38,10 +38,24 @@
           <img
             class="portfolio-card__badge portfolio-card__forks"
             :alt="`${portfolio.title}: ${portfolio.forks} GitHub forks at last build`"
-            height="20"
-            width="104"
+            height="30"
+            width="156"
             loading="lazy"
             :src="`https://img.shields.io/github/forks/${portfolio.repository}?style=social`" />
+        </a>
+        <a
+          v-for="pkg of portfolio.nugetPackages"
+          :key="pkg.id"
+          class="portfolio-card__nuget"
+          :title="`${pkg.id} total NuGet downloads`"
+          :href="`https://www.nuget.org/packages/${pkg.id}`">
+          <img
+            class="portfolio-card__badge portfolio-card__downloads"
+            :alt="`${pkg.id} total NuGet downloads`"
+            height="30"
+            width="300"
+            loading="lazy"
+            :src="`https://img.shields.io/nuget/dt/${pkg.id}?style=social&logo=nuget&label=${encodeURIComponent(pkg.label)}`" />
         </a>
       </div>
       <p class="portfolio-card__description">{{ portfolio.description }}</p>
@@ -106,8 +120,14 @@ export default {
   min-inline-size: 100%;
 }
 
-.portfolio-card__title {
-  margin-block-start: 0;
+.portfolio-card__content {
+  display: grid;
+  gap: var(--global-space-fixed-4);
+}
+
+.portfolio-card__title,
+.portfolio-card__description {
+  margin-block: 0;
 }
 
 .portfolio-card__title a::after {
@@ -126,17 +146,27 @@ export default {
   z-index: 1;
 }
 
+.portfolio-card__badges a {
+  flex: 0 1 calc((100% - var(--global-space-fixed-2)) / 2);
+  min-inline-size: 0;
+  max-inline-size: 156px;
+}
+
+.portfolio-card__badges .portfolio-card__nuget {
+  flex-basis: 300px;
+  max-inline-size: 100%;
+}
+
 .portfolio-card__badge {
   display: block;
-  block-size: 20px;
-  inline-size: 104px;
-  max-inline-size: 100%;
+  block-size: 30px;
+  inline-size: 100%;
   object-fit: contain;
   object-position: left;
 }
 
 .portfolio-card__tags {
-  margin-block-start: var(--global-space-fixed-4);
+  margin-block-start: 0;
   position: relative;
   z-index: 1;
 }

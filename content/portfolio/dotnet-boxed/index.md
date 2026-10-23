@@ -7,6 +7,11 @@ heroImage: "/images/hero/Dotnet-Boxed-1366x768.png"
 date: "2014-11-13"
 dateModified: null
 published: true
+nugetPackages:
+  - id: "Boxed.Templates"
+    label: "Templates"
+  - id: "Boilerplate.Templates"
+    label: "Legacy templates"
 categories:
   - "Open Source"
 tags:

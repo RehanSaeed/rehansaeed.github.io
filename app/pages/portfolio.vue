@@ -67,6 +67,7 @@ const { data: portfolio } = await useAsyncData("portfolio", () =>
       "repository",
       "stars",
       "forks",
+      "nugetPackages",
     )
     .all(),
 );

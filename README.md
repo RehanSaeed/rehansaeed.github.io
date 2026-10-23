@@ -108,10 +108,29 @@ warning preserves previously saved counts; without a saved count the build fails
 rather than assigning a misleading zero. No token or runtime API is needed in
 the generated site.
 
+Bash Cheat Sheet uses its own terminal-style vector artwork rather than the
+generic code photograph. Its 1600x900 intrinsic dimensions are preserved by the
+same responsive-image pipeline as the other portfolio heroes.
+
 Each portfolio title is followed by linked Shields Stars/Forks badges, before
-the description. These remote images update independently of the static order,
+the description. Published packages identified in the repositories' main READMEs
+also have total NuGet download badges in that group, including the listed add-on
+packages. Templates shows the current Boxed.Templates package and the explicitly
+labelled legacy Boilerplate.Templates counter rather than conflating them.
+Elysium.Extra's README confirms its published package through a version badge;
+the portfolio adds the corresponding download statistic. Each download link and
+accessible name identifies the full package ID, while visible labels stay short.
+Build-status, version, prerelease-feed and personal Twitter badges are not usage
+statistics and are not copied into the cards.
+
+These remote images update independently of the static order,
 which changes on a subsequent build. Their accessible descriptions state the
-counts at the last build, and fixed image slots avoid badge-loading layout shifts.
+counts at the last build. Badges use 30px-high, up-to-156px-wide reserved slots
+that shrink to fit narrow cards without overflow. The card content uses CSS Grid
+`gap` for consistent title/badge/description/tag spacing rather than stacked
+paragraph and tag margins.
+NuGet slots reserve up to 300px and wrap within narrow cards, with the same 30px
+height and gap below the complete statistics group.
 Badge links remain independently clickable above the card's stretched title link.
 
 Dialogs have hydration-stable, unique heading IDs and title-specific close labels.

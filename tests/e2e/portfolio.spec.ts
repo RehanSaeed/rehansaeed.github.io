@@ -16,6 +16,27 @@ const repositories = [
   "RehanSaeed/Elysium-Extra",
   "RehanSaeed/Git-Cheat-Sheet",
 ];
+const nugetPackages: Record<string, string[]> = {
+  "Dotnet-Boxed/Templates": ["Boxed.Templates", "Boilerplate.Templates"],
+  "Dotnet-Boxed/Framework": [
+    "Boxed.Mapping",
+    "Boxed.AspNetCore",
+    "Boxed.AspNetCore.Swagger",
+    "Boxed.AspNetCore.TagHelpers",
+    "Boxed.DotnetNewTest",
+  ],
+  "RehanSaeed/Schema.NET": ["Schema.NET", "Schema.NET.Pending"],
+  "RehanSaeed/Serilog.Exceptions": [
+    "Serilog.Exceptions",
+    "Serilog.Exceptions.SqlServer",
+    "Serilog.Exceptions.MsSqlServer",
+    "Serilog.Exceptions.EntityFrameworkCore",
+    "Serilog.Exceptions.Refit",
+    "Serilog.Exceptions.Grpc",
+  ],
+  "RehanSaeed/Serilog.Enrichers.Span": ["Serilog.Enrichers.Span"],
+  "RehanSaeed/Elysium-Extra": ["Elysium.Extra"],
+};
 test("All portfolio cards and popularity ordering are present in static HTML", async ({
   request,
 }) => {
@@ -49,6 +70,32 @@ test("All portfolio cards and popularity ordering are present in static HTML", a
   );
   expect($(".portfolio-card__stars")).toHaveLength(repositories.length);
   expect($(".portfolio-card__forks")).toHaveLength(repositories.length);
+  expect($(".portfolio-card__downloads")).toHaveLength(17);
+  const bashHero = cards
+    .filter(
+      (_, card) =>
+        $(card).find(".portfolio-card__title a").attr("href") ===
+        "https://github.com/RehanSaeed/Bash-Cheat-Sheet",
+    )
+    .find(".portfolio-card__image");
+  expect(bashHero.attr("src")).toContain("Bash-Cheat-Sheet-1600x900.svg");
+  expect(bashHero.attr("width")).toBe("1600");
+  expect(bashHero.attr("height")).toBe("900");
+  cards.each((_, card) => {
+    const repository = new URL(
+      $(card).find(".portfolio-card__title a").attr("href")!,
+    ).pathname.slice(1);
+    expect(
+      $(card)
+        .find(".portfolio-card__nuget")
+        .map((_, link) => $(link).attr("href"))
+        .get(),
+    ).toEqual(
+      (nugetPackages[repository] ?? []).map(
+        (id) => `https://www.nuget.org/packages/${id}`,
+      ),
+    );
+  });
 });
 
 for (const width of [375, 1280]) {
@@ -61,6 +108,21 @@ for (const width of [375, 1280]) {
       await page.goto("/portfolio/");
       const cards = page.locator(".portfolio-card");
       await expect(cards).toHaveCount(repositories.length);
+      const bashHero = cards.getByRole("img", {
+        name: "Bash Cheat Sheet",
+        exact: true,
+      });
+      await bashHero.scrollIntoViewIfNeeded();
+      await expect
+        .poll(() =>
+          bashHero.evaluate(
+            (image: HTMLImageElement) =>
+              image.complete && image.naturalWidth > 0,
+          ),
+        )
+        .toBe(true);
+      const heroBox = await bashHero.boundingBox();
+      expect(heroBox!.width / heroBox!.height).toBeCloseTo(1600 / 900, 2);
       for (const card of await cards.all()) {
         const permalink = await card
           .locator(".portfolio-card__title a")
@@ -96,9 +158,64 @@ for (const width of [375, 1280]) {
             "href",
             `${permalink}/${destination}`,
           );
-          await expect(badge).toHaveAttribute("width", "104");
-          await expect(badge).toHaveAttribute("height", "20");
+          await expect(badge).toHaveAttribute("width", "156");
+          await expect(badge).toHaveAttribute("height", "30");
         }
+        const packages = nugetPackages[repository] ?? [];
+        await expect(card.locator(".portfolio-card__downloads")).toHaveCount(
+          packages.length,
+        );
+        for (const id of packages) {
+          const badge = card.getByRole("img", {
+            name: `${id} total NuGet downloads`,
+            exact: true,
+          });
+          const url = new URL((await badge.getAttribute("src"))!);
+          expect(url.origin).toBe("https://img.shields.io");
+          expect(url.pathname).toBe(`/nuget/dt/${id}`);
+          expect(url.searchParams.get("style")).toBe("social");
+          expect(url.searchParams.get("logo")).toBe("nuget");
+          expect(url.searchParams.get("label")).toBeTruthy();
+          await expect(badge.locator("..")).toHaveAttribute(
+            "href",
+            `https://www.nuget.org/packages/${id}`,
+          );
+          await expect(badge).toHaveAttribute("width", "300");
+          await expect(badge).toHaveAttribute("height", "30");
+        }
+        const overflow = await card
+          .locator(".portfolio-card__badges")
+          .evaluate((group) => group.scrollWidth - group.clientWidth);
+        expect(overflow).toBe(0);
+      }
+      const geometry = await cards.first().evaluate((card) => {
+        const content = card.querySelector(".portfolio-card__content")!;
+        const badges = card.querySelector(".portfolio-card__badges")!;
+        const description = card.querySelector(".portfolio-card__description")!;
+        return {
+          display: getComputedStyle(content).display,
+          gap: Number.parseFloat(getComputedStyle(content).rowGap),
+          actualGap:
+            description.getBoundingClientRect().top -
+            badges.getBoundingClientRect().bottom,
+          badgeSizes: [...badges.querySelectorAll("img")].map((badge) => ({
+            width: badge.getBoundingClientRect().width,
+            height: badge.getBoundingClientRect().height,
+            maximumWidth: badge.classList.contains("portfolio-card__downloads")
+              ? 300
+              : 156,
+          })),
+          descriptionMargin: getComputedStyle(description).marginBlockStart,
+        };
+      });
+      expect(geometry.display).toBe("grid");
+      expect(geometry.gap).toBeGreaterThan(0);
+      expect(geometry.actualGap).toBeCloseTo(geometry.gap, 1);
+      expect(geometry.descriptionMargin).toBe("0px");
+      for (const size of geometry.badgeSizes) {
+        expect(size.height).toBe(30);
+        expect(size.width).toBeGreaterThan(0);
+        expect(size.width).toBeLessThanOrEqual(size.maximumWidth);
       }
       for (const link of await cards
         .first()

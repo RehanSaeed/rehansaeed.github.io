@@ -7,6 +7,11 @@ heroImage: "/images/hero/Schema.NET-1366x768.png"
 date: "2017-06-07"
 dateModified: null
 published: true
+nugetPackages:
+  - id: "Schema.NET"
+    label: "Schema.NET"
+  - id: "Schema.NET.Pending"
+    label: "Pending"
 categories:
   - "Open Source"
 tags:
