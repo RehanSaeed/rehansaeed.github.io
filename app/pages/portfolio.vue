@@ -16,7 +16,9 @@
     <section
       class="portfolio__section portfolio__microsoft"
       aria-labelledby="portfolio-microsoft">
-      <u-heading id="portfolio-microsoft" level="2">Microsoft Work</u-heading>
+      <u-heading id="portfolio-microsoft" level="2" center
+        >Microsoft Work</u-heading
+      >
       <div class="portfolio__items">
         <u-portfolio-card
           v-for="item of microsoftProjects"
@@ -28,7 +30,9 @@
     <section
       class="portfolio__section portfolio__open-source"
       aria-labelledby="portfolio-open-source">
-      <u-heading id="portfolio-open-source" level="2">Open Source</u-heading>
+      <u-heading id="portfolio-open-source" level="2" center
+        >Open Source</u-heading
+      >
       <div class="portfolio__items">
         <u-portfolio-card
           v-for="item of openSourceProjects"

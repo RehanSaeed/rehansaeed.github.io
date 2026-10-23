@@ -212,6 +212,18 @@ for (const width of [375, 1280]) {
       await page.setViewportSize({ width, height: 900 });
       await page.emulateMedia({ colorScheme });
       await page.goto("/portfolio/");
+      for (const id of ["portfolio-microsoft", "portfolio-open-source"]) {
+        const heading = page.locator(`#${id}`);
+        await expect(heading).toHaveCSS("text-align", "center");
+        const offset = await heading.evaluate((element) => {
+          const bounds = element.getBoundingClientRect();
+          const section = element.parentElement!.getBoundingClientRect();
+          return Math.abs(
+            bounds.x + bounds.width / 2 - section.x - section.width / 2,
+          );
+        });
+        expect(offset).toBeLessThanOrEqual(1);
+      }
       const cards = page.locator(".portfolio__open-source .portfolio-card");
       await expect(cards).toHaveCount(repositories.length);
       const microsoftCards = page.locator(

@@ -105,6 +105,8 @@ new tab, and the Cortana Windows app. Each links to a verified public Microsoft
 product article, not a private repository. Descriptions reflect the author's
 stated work without inventing responsibilities, employment dates or metrics.
 These entries are excluded from GitHub/NuGet requests and have no statistics badges.
+The Microsoft Work and Open Source section headings are centered without changing
+the alignment of the card content.
 
 The open-source section retains all seven original projects and adds Bash Cheat
 Sheet, .NET Boxed Framework, Kubernetes Cheat Sheet, HttpClientSample, Helm Cheat
