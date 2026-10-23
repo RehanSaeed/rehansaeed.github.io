@@ -17,12 +17,6 @@
         densities="x1 x2"
         format="webp"
         loading="lazy" />
-      <figcaption
-        v-if="portfolio.heroImageSource"
-        class="portfolio-card__image-credit">
-        Screenshot:
-        <a :href="portfolio.heroImageSource">Microsoft</a>
-      </figcaption>
     </figure>
     <div class="portfolio-card__content">
       <u-heading
@@ -138,14 +132,6 @@ export default {
 
 .portfolio-card__image {
   min-inline-size: 100%;
-}
-
-.portfolio-card__image-credit {
-  position: relative;
-  z-index: 1;
-  padding: var(--global-space-fixed-2);
-  font-size: 0.75em;
-  text-align: center;
 }
 
 .portfolio-card__content {

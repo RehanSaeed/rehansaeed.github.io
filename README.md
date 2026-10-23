@@ -125,10 +125,11 @@ Bash Cheat Sheet uses its own terminal illustration rather than the generic code
 photograph. An editable SVG is retained alongside the 1600x900 PNG used by the
 responsive-image pipeline, avoiding SVG MIME types for the static WebP variants.
 The Microsoft cards use real Windows application screenshots downloaded from
-their linked official Microsoft articles, not illustrations or logos. Each
-credits Microsoft and links to the original full-resolution image. Original
-formats, dimensions and complete frames are preserved; PNG source optimizations
-are lossless and JPEG candidates must pass the same quality guard described above.
+their linked official Microsoft articles, not illustrations or logos. Original
+source URLs remain in the portfolio frontmatter without visible screenshot
+captions. Formats, dimensions and complete frames are preserved; PNG source
+optimizations are lossless and JPEG candidates must pass the same quality guard
+described above.
 Both automatic compression workflows exclude these four reviewed screenshots:
 palette recompression changed the Edge screenshot's transparent window edges.
 

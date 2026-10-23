@@ -28,13 +28,7 @@
     <section
       class="portfolio__section portfolio__open-source"
       aria-labelledby="portfolio-open-source">
-      <div>
-        <u-heading id="portfolio-open-source" level="2">Open Source</u-heading>
-        <p>
-          Ordered by total NuGet package downloads, then GitHub stars. Projects
-          without NuGet packages are ordered by GitHub stars.
-        </p>
-      </div>
+      <u-heading id="portfolio-open-source" level="2">Open Source</u-heading>
       <div class="portfolio__items">
         <u-portfolio-card
           v-for="item of openSourceProjects"
@@ -85,7 +79,6 @@ const { data: portfolio } = await useAsyncData("portfolio", () =>
       "title",
       "description",
       "heroImage",
-      "heroImageSource",
       "permalink",
       "tags",
       "repository",

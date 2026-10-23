@@ -45,6 +45,9 @@ test("All portfolio cards and popularity ordering are present in static HTML", a
   const $ = load(await response.text());
   const cards = $(".portfolio__open-source .portfolio-card");
   expect(cards).toHaveLength(repositories.length);
+  expect($(".portfolio__open-source").text()).not.toContain(
+    "Ordered by total NuGet package downloads",
+  );
   const popularity = cards
     .map((_, card) => ({
       downloads: Number($(card).attr("data-nuget-downloads")),
@@ -174,17 +177,8 @@ test("Microsoft work precedes open source and links to public product articles w
   expect(cards.find(".portfolio-card__description").text()).toContain(
     "People Companion",
   );
-  expect(
-    cards
-      .find(".portfolio-card__image-credit a")
-      .map((_, link) => $(link).attr("href"))
-      .get(),
-  ).toEqual([
-    "https://winblogs.thesourcemediaassets.com/sites/44/2026/02/Chromium-app-Image.png",
-    "https://microsoft.design/wp-content/uploads/2026/02/Image-1.jpg",
-    "https://blogs.windows.com/wp-content/uploads/prod/sites/33/2021/10/Picture1-2.png",
-    "https://blogs.windows.com/wp-content/uploads/prod/sites/2/2020/02/f69360e54e2a53b2505fd65896b03fd1.jpg",
-  ]);
+  expect(cards.find("figcaption")).toHaveLength(0);
+  expect(cards.text()).not.toContain("Screenshot:");
   expect(
     cards
       .find(".portfolio-card__image")
@@ -227,6 +221,7 @@ for (const width of [375, 1280]) {
       await expect(
         microsoftCards.locator(".portfolio-card__badges"),
       ).toHaveCount(0);
+      await expect(microsoftCards.locator("figcaption")).toHaveCount(0);
       for (const image of await microsoftCards
         .locator(".portfolio-card__image")
         .all()) {
