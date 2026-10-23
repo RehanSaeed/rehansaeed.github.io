@@ -30,7 +30,7 @@ In terms of software development, the courses are very high quality but they als
 
 There is also definitely still a .NET bias to the site, there aren't as many in-depth frontend JavaScript courses as I would like for example. The ones that do exist are not from the well known frontend developers in the community. Also, some of the courses can be quite old (The tech world does move so fast). You'd think you would find some decent courses on CSS for example but the courses available are pretty ancient.
 
-They have apps for all the usual platforms that let you download video offline which is a must for me, for when I travel on the London underground. The monthly cost is not prohibitive for the quantity of courses available at $35 per month. I've paid for it in the past but get it free right now as a Microsoft MVP.
+They have apps for all the usual platforms that let you download video offline which is a must for me, for when I travel on the London underground. The monthly cost is not prohibitive for the quantity of courses available at \$35 per month. I've paid for it in the past but get it free right now as a Microsoft MVP.
 
 I'd recommend this as a primary source of information when learning some new technology.
 
@@ -42,7 +42,7 @@ I was surprised at how much content they actually have. The ground is a bit thin
 
 In the end I've used LinkedIn Learning for learning Kubernetes, due to PluralSight's library being a bit thin on that subject and also GraphQL.NET where LinkedIn Learning has the only course available on the internet.
 
-It costs $25 per year to subscribe, so it's cheaper than the other offerings. Overall, I probably wouldn't pay for this service if I didn't get it for free. At best, I might subscribe for a month at $30 to view a particular course. I also feel like I should be spending more time exploring their content.
+It costs \$25 per year to subscribe, so it's cheaper than the other offerings. Overall, I probably wouldn't pay for this service if I didn't get it for free. At best, I might subscribe for a month at \$30 to view a particular course. I also feel like I should be spending more time exploring their content.
 
 # Frontend Masters
 
@@ -50,7 +50,7 @@ It costs $25 per year to subscribe, so it's cheaper than the other offerings. Ov
 
 The quality and depth of these courses is extremely high. The format is unusual in that the expert is delivering the course to an actual audience of people and there are also question/answer sections at the end of each module. This means that the courses tend to be quite long. If you're like me and you want to know every gritty detail, then that's great.
 
-The library of courses is not very large but I'd definitely recommend this service to anyone interested in frontend or GraphQL Node.js development. The price is quite steep at $39 per month, considering the smaller number of targeted courses available. I'm waiting to see if they have a sale at the end of the year to drop hard cash on this learning resource.
+The library of courses is not very large but I'd definitely recommend this service to anyone interested in frontend or GraphQL Node.js development. The price is quite steep at \$39 per month, considering the smaller number of targeted courses available. I'm waiting to see if they have a sale at the end of the year to drop hard cash on this learning resource.
 
 # Egghead.io
 
@@ -58,7 +58,7 @@ The library of courses is not very large but I'd definitely recommend this servi
 
 The content is similar to Frontend Masters i.e. it's mainly focused on the frontend, with a few forays into Node.js, ElasticSearch, Mongo and Docker. Although, they tend to have a focus on JavaScript frameworks.
 
-The cost of this service is $300 per year but if you wait until the sale at the end of the year like I did, you can bag a subscription for $100 which I think is more reasonable. I'm coming up for renewal time and I'm not sure I will renew because I've pretty much watched all of the courses that I was interested in. Because the courses are very short and fairly limited in number, you can get through them pretty quickly. That said, it was definitely worth investing in a years subscription. I might purchase a subscription again in a year or two when they add more content.
+The cost of this service is \$300 per year but if you wait until the sale at the end of the year like I did, you can bag a subscription for \$100 which I think is more reasonable. I'm coming up for renewal time and I'm not sure I will renew because I've pretty much watched all of the courses that I was interested in. Because the courses are very short and fairly limited in number, you can get through them pretty quickly. That said, it was definitely worth investing in a years subscription. I might purchase a subscription again in a year or two when they add more content.
 
 # YouTube/Vimeo/Channel9
 

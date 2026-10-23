@@ -1,0 +1,92 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--global-title-color);
+  font-family: var(--font-heading);
+  font-weight: var(--global-font-weight-normal);
+  line-height: var(--global-line-height-1);
+  margin-block-start: var(--global-space-fixed-5);
+  margin-block-end: var(--global-space-fixed-4);
+  max-inline-size: var(--global-line-length-max);
+  text-shadow: 0.01em 0.01em hsl(0 0% 70%);
+  text-wrap: balance;
+  transition: color var(--global-duration-3);
+
+  a[aria-hidden="true"] {
+    color: var(--global-link-color);
+    float: left; // Remove when browser support is good enough.
+    float: inline-start;
+    margin-inline-start: -30px;
+    opacity: 0;
+    margin-inline-end: 8px;
+    inline-size: 22px;
+    block-size: 22px;
+    text-decoration: none;
+    transition: opacity var(--global-duration-2) ease-out 100ms;
+    vertical-align: middle;
+
+    svg {
+      display: inline;
+    }
+  }
+
+  &:hover,
+  &:focus {
+    a[aria-hidden="true"] {
+      color: var(--global-link-color);
+      opacity: 1;
+      text-decoration: none;
+      transition-delay: 0;
+    }
+  }
+
+  a[aria-hidden="true"]:focus {
+    color: var(--global-link-color);
+    opacity: 1;
+    text-decoration: none;
+    transition-delay: 0;
+  }
+
+  &:target {
+    animation-name: target;
+    animation-duration: 3s;
+    animation-iteration-count: 1;
+    animation-direction: linear;
+    scroll-margin-top: 1ex;
+
+    @keyframes target {
+      from {
+        background: transparent;
+      }
+      50% {
+        background: var(--global-alternate-accent-color);
+      }
+      to {
+        background: transparent;
+      }
+    }
+  }
+}
+
+h1 {
+  font-size: var(--global-font-size-7);
+}
+
+h2 {
+  font-size: var(--global-font-size-6);
+}
+
+h3 {
+  font-size: var(--global-font-size-5);
+}
+
+h4 {
+  font-size: var(--global-font-size-4);
+}
+
+h5 {
+  font-size: var(--global-font-size-3);
+}

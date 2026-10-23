@@ -19,6 +19,8 @@ jobs:
         uses: calibreapp/image-actions@main
         with:
           compressOnly: true
+          # Preserve the reviewed screenshots; palette compression alters window-edge alpha.
+          ignorePaths: 'node_modules/**,public/images/hero/Microsoft-Copilot-Windows-3840x2160.png,public/images/hero/Microsoft-365-Companions-3072x1728.jpg,public/images/hero/Microsoft-Edge-Enterprise-1430x929.png,public/images/hero/Microsoft-Cortana-Windows-1560x880.jpg'
           jpegQuality: '90'
           jpegProgressive: false
           pngQuality: '90'

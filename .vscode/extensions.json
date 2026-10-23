@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "Vue.volar",
+    "esbenp.prettier-vscode",
+    "ms-playwright.playwright",
+    "EditorConfig.EditorConfig"
+  ]
+}
