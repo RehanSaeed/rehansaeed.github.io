@@ -105,8 +105,12 @@ new tab, and the Cortana Windows app. Each links to a verified public Microsoft
 product article, not a private repository. Descriptions reflect the author's
 stated work without inventing responsibilities, employment dates or metrics.
 These entries are excluded from GitHub/NuGet requests and have no statistics badges.
-The Microsoft Work and Open Source section headings are centered without changing
-the alignment of the card content.
+The Contributions at Microsoft and Open Source section headings are centered
+without changing the alignment of the card content. The professional cards use
+the author's supplied descriptions and Windows platform tags. Additional tags
+link to published posts: Microsoft, User Interface, Accessibility for Copilot,
+and Browser for Edge. Copilot also has the explicitly requested AI tag, whose
+generated tag page intentionally has no posts yet.
 
 The open-source section retains all seven original projects and adds Bash Cheat
 Sheet, .NET Boxed Framework, Kubernetes Cheat Sheet, HttpClientSample, Helm Cheat
@@ -116,6 +120,12 @@ distinct listed package's package-wide `DownloadCount` from NuGet's official API
 not its per-version counts or rounded Shields image values. This measures
 downloads, not unique users. Projects without packages have a known zero and
 therefore sort by stars after projects with downloads.
+
+Blog, pagination, tag listings and Portfolio share a compact card variant rather
+than changing the site-wide article layout. Desktop card text and padding are
+10% smaller, with a matching reduced card-width cap. Mobile body text stays at
+least 16px. Existing column rules and natural card heights remain unchanged;
+images keep their complete frames and descriptions and badges are not truncated.
 
 Counts are fetched at build time with one-hour local caches; changes also
 invalidate Content's parsed-file cache. If GitHub or NuGet is unavailable, an
@@ -135,16 +145,20 @@ described above.
 Both automatic compression workflows exclude these four reviewed screenshots:
 palette recompression changed the Edge screenshot's transparent window edges.
 
-Each open-source title is followed by linked Shields Stars/Forks badges, before
-the description. Published packages identified in the repositories' main READMEs
-also have total NuGet download badges on their own row below GitHub, including the listed add-on
+Each open-source title is followed by linked statistics badges, before the
+description. Published packages identified in the repositories' main READMEs
+have total NuGet download badges on their own row above GitHub Stars/Forks,
+including the listed add-on
 packages. Templates shows the current Boxed.Templates package and the explicitly
 named Boilerplate.Templates counter rather than conflating them.
 Elysium.Extra's README confirms its published package through a version badge;
 the portfolio adds the corresponding download statistic. Each download link and
 accessible name identifies the full package ID. Each compact Shields badge uses
-that complete ID as its label, never an abbreviated name. The badges wrap side by
-side rather than placing each package in a full-width bordered block. Package
+that complete ID as its label, never an abbreviated name. Both groups use flexbox
+with wrapping and a 12px gap; a 16px gap separates NuGet from GitHub. Badge images
+use their natural widths at 30px tall, rather than shrinking long labels into
+fixed-width slots. Only badges wider than their entire card scale down to fit;
+full package names remain intact. Package
 names and saved counts remain in static HTML.
 Build-status, version, prerelease-feed and personal Twitter badges are not usage
 statistics and are not copied into the cards.

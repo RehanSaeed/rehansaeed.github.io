@@ -2,6 +2,7 @@
   <u-card
     class="post-card"
     tag="article"
+    compact
     hoverable
     focusable
     :class="{ 'post-card--has-poster': post.poster }">
@@ -78,8 +79,8 @@ export default {
 
 .post-card__header {
   border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
-  margin-inline: var(--global-space-fluid--6);
-  margin-block-start: var(--global-space-fluid--6);
+  margin-inline: calc(var(--card-space) * -1);
+  margin-block-start: calc(var(--card-space) * -1);
   margin-block-end: var(--global-space-fluid-5);
   overflow: hidden;
 

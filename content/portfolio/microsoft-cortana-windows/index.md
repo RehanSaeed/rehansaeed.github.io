@@ -1,6 +1,6 @@
 ---
-title: "Cortana Windows App"
-description: "I worked on the Cortana Windows app, Microsoft's personal productivity assistant."
+title: "Cortana for Windows"
+description: "I worked on the Cortana app for Windows, Microsoft's personal productivity assistant, helping users manage tasks, access information, and stay productive through a conversational experience."
 author: "Muhammad Rehan Saeed"
 permalink: "https://blogs.windows.com/windowsexperience/2020/02/28/cortana-in-the-upcoming-windows-10-release-focused-on-your-productivity-with-enhanced-security-and-privacy/"
 heroImage: "/images/hero/Microsoft-Cortana-Windows-1560x880.jpg"
@@ -14,4 +14,6 @@ categories:
   - "Microsoft"
 tags:
   - "Windows"
+  - "Microsoft"
+  - "User Interface"
 ---

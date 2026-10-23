@@ -2,7 +2,11 @@
   <component
     class="card"
     :is="tag"
-    :class="{ 'card--hoverable': hoverable, 'card--focusable': focusable }">
+    :class="{
+      'card--compact': compact,
+      'card--hoverable': hoverable,
+      'card--focusable': focusable,
+    }">
     <slot />
   </component>
 </template>
@@ -11,6 +15,9 @@
 export default {
   name: "u-card",
   props: {
+    compact: {
+      type: Boolean,
+    },
     focusable: {
       type: Boolean,
     },
@@ -29,14 +36,25 @@ export default {
 @use "~/assets/style/abstracts/type";
 
 .card {
+  --card-space: var(--global-space-fluid-6);
+
   background-color: var(--global-content-background-color);
   border-radius: var(--global-border-radius);
   box-shadow: var(--global-shadow-1);
-  padding: var(--global-space-fluid-6);
+  padding: var(--card-space);
   transition: translate var(--global-duration-2) var(--ease-in-out-cubic);
   will-change: translate;
 
   @include type.word-wrap();
+}
+
+.card--compact {
+  --card-space: calc(var(--global-space-fluid-6) * 0.9);
+
+  font-size: max(1rem, 0.9em);
+  inline-size: 100%;
+  max-inline-size: var(--global-space-card-max-width);
+  justify-self: center;
 }
 
 .card--hoverable,

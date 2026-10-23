@@ -17,7 +17,7 @@
       class="portfolio__section portfolio__microsoft"
       aria-labelledby="portfolio-microsoft">
       <u-heading id="portfolio-microsoft" level="2" center
-        >Microsoft Work</u-heading
+        >Contributions at Microsoft</u-heading
       >
       <div class="portfolio__items">
         <u-portfolio-card

@@ -153,6 +153,9 @@
   --global-space-content-min-width: calc(
     var(--global-space-fluid-6) * 2 + var(--global-line-length-min)
   );
+  --global-space-card-max-width: calc(
+    var(--global-space-fluid-6) * 1.8 + var(--global-line-length-max)
+  );
   @include breakpoints.respond-below(sm) {
     --global-space-content-min-width: calc(var(--global-space-fluid-6) * 2);
   }

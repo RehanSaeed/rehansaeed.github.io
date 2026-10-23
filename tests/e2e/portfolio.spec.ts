@@ -148,7 +148,7 @@ test("Microsoft work precedes open source and links to public product articles w
     $(".portfolio__section h2")
       .map((_, heading) => $(heading).text())
       .get(),
-  ).toEqual(["Microsoft Work", "Open Source"]);
+  ).toEqual(["Contributions at Microsoft", "Open Source"]);
   const cards = $(".portfolio__microsoft .portfolio-card");
   expect(cards).toHaveLength(4);
   expect(
@@ -157,10 +157,10 @@ test("Microsoft work precedes open source and links to public product articles w
       .map((_, title) => $(title).text())
       .get(),
   ).toEqual([
-    "Microsoft Copilot Windows App",
+    "Microsoft Copilot for Windows",
     "Microsoft 365 Companion Apps",
     "Microsoft Edge Enterprise New Tab",
-    "Cortana Windows App",
+    "Cortana for Windows",
   ]);
   expect(cards.find(".portfolio-card__badges")).toHaveLength(0);
   expect(
@@ -174,9 +174,51 @@ test("Microsoft work precedes open source and links to public product articles w
     "https://blogs.windows.com/msedgedev/2021/10/28/microsoft-edge-features-microsoft-365-reduce-pain-context-switching/",
     "https://blogs.windows.com/windowsexperience/2020/02/28/cortana-in-the-upcoming-windows-10-release-focused-on-your-productivity-with-enhanced-security-and-privacy/",
   ]);
-  expect(cards.find(".portfolio-card__description").text()).toContain(
-    "People Companion",
+  expect(
+    cards
+      .find(".portfolio-card__description")
+      .map((_, description) => $(description).text())
+      .get(),
+  ).toEqual([
+    "I worked on Microsoft Copilot for Windows, focusing on generative experiences that enable users to create interactive web apps with AI. I also improved the app's accessibility, helping make Copilot more inclusive and usable across a wider range of needs.",
+    "I worked on the Microsoft 365 Companion apps for Windows, including People Companion. These lightweight apps provide quick access to Microsoft 365 experiences, such as finding and connecting with colleagues directly from the Windows taskbar.",
+    "I worked on the enterprise experience for the Microsoft Edge new tab page, helping users quickly discover and access relevant workplace content, tools, and resources from their browser.",
+    "I worked on the Cortana app for Windows, Microsoft's personal productivity assistant, helping users manage tasks, access information, and stay productive through a conversational experience.",
+  ]);
+  const expectedTags = [
+    ["Windows", "Microsoft", "AI", "Accessibility", "User Interface"],
+    ["Windows", "Microsoft", "User Interface"],
+    ["Windows", "Microsoft", "Browser", "User Interface"],
+    ["Windows", "Microsoft", "User Interface"],
+  ];
+  cards.each((index, card) => {
+    expect(
+      $(card)
+        .find(".tags__link")
+        .map((_, tag) => $(tag).text())
+        .get(),
+    ).toEqual(expectedTags[index]);
+  });
+  const tagLinks = new Map(
+    cards
+      .find(".tags__link")
+      .toArray()
+      .map((tag) => [$(tag).text(), $(tag).attr("href")!]),
   );
+  for (const [tag, path] of tagLinks) {
+    const tagResponse = await request.get(path);
+    expect(tagResponse.ok(), `${tag} tag page`).toBe(true);
+    const tagged = load(await tagResponse.text());
+    if (tag === "AI") {
+      expect(tagged("h1").text()).toBe("# AI");
+      expect(tagged(".post-card")).toHaveLength(0);
+    } else {
+      expect(
+        tagged(".post-card").length,
+        `${tag} has published posts`,
+      ).toBeGreaterThan(0);
+    }
+  }
   expect(cards.find("figcaption")).toHaveLength(0);
   expect(cards.text()).not.toContain("Screenshot:");
   expect(
@@ -211,6 +253,14 @@ for (const width of [375, 1280]) {
     }) => {
       await page.setViewportSize({ width, height: 900 });
       await page.emulateMedia({ colorScheme });
+      await page.route("https://img.shields.io/**", (route) => {
+        const label = new URL(route.request().url()).searchParams.get("label");
+        const badgeWidth = label ? 70 + label.length * 6 : 100;
+        return route.fulfill({
+          contentType: "image/svg+xml",
+          body: `<svg xmlns="http://www.w3.org/2000/svg" width="${badgeWidth}" height="20"><rect width="100%" height="100%" fill="#ddd"/></svg>`,
+        });
+      });
       await page.goto("/portfolio/");
       for (const id of ["portfolio-microsoft", "portfolio-open-source"]) {
         const heading = page.locator(`#${id}`);
@@ -298,7 +348,7 @@ for (const width of [375, 1280]) {
             "href",
             `${permalink}/${destination}`,
           );
-          await expect(badge).toHaveAttribute("width", "156");
+          await expect(badge).not.toHaveAttribute("width");
           await expect(badge).toHaveAttribute("height", "30");
         }
         const packages = nugetPackages[repository] ?? [];
@@ -325,7 +375,7 @@ for (const width of [375, 1280]) {
             "href",
             `https://www.nuget.org/packages/${id}`,
           );
-          await expect(badge).toHaveAttribute("width", "300");
+          await expect(badge).not.toHaveAttribute("width");
           await expect(badge).toHaveAttribute("height", "30");
           const style = await link.evaluate((element) => ({
             border: getComputedStyle(element).borderTopWidth,
@@ -336,34 +386,54 @@ for (const width of [375, 1280]) {
         }
         if (packages.length) {
           const rows = await card.evaluate((element) => ({
-            githubBottom: element
+            githubTop: element
               .querySelector(".portfolio-card__github")!
-              .getBoundingClientRect().bottom,
-            nugetTop: element
-              .querySelector(".portfolio-card__nuget-badges")!
               .getBoundingClientRect().top,
+            nugetBottom: element
+              .querySelector(".portfolio-card__nuget-badges")!
+              .getBoundingClientRect().bottom,
+            display: getComputedStyle(
+              element.querySelector(".portfolio-card__badges")!,
+            ).display,
+            direction: getComputedStyle(
+              element.querySelector(".portfolio-card__badges")!,
+            ).flexDirection,
+            gap: Number.parseFloat(
+              getComputedStyle(
+                element.querySelector(".portfolio-card__badges")!,
+              ).rowGap,
+            ),
           }));
-          expect(rows.nugetTop).toBeGreaterThan(rows.githubBottom);
+          expect(rows.display).toBe("flex");
+          expect(rows.direction).toBe("column");
+          expect(rows.gap).toBeGreaterThanOrEqual(16);
+          expect(rows.githubTop - rows.nugetBottom).toBeCloseTo(rows.gap, 1);
           const wrapping = await card
             .locator(".portfolio-card__nuget-badges")
             .evaluate((group) => ({
               display: getComputedStyle(group).display,
               wrap: getComputedStyle(group).flexWrap,
+              gap: Number.parseFloat(getComputedStyle(group).columnGap),
+              width: group.getBoundingClientRect().width,
+              widths: [...group.children].map(
+                (element) => element.getBoundingClientRect().width,
+              ),
               tops: [...group.children].map(
                 (element) => element.getBoundingClientRect().top,
               ),
             }));
           expect(wrapping.display).toBe("flex");
           expect(wrapping.wrap).toBe("wrap");
+          expect(wrapping.gap).toBeGreaterThanOrEqual(12);
           if (packages.length > 1) {
-            if (width === 1280) {
+            if (
+              wrapping.widths[0]! + wrapping.widths[1]! + wrapping.gap <=
+              wrapping.width + 1
+            ) {
               expect(wrapping.tops[1]).toBeCloseTo(wrapping.tops[0]!, 1);
             } else {
               expect(wrapping.tops[1]).toBeGreaterThan(wrapping.tops[0]!);
             }
-          }
-          if (packages.length > 2) {
-            expect(wrapping.tops.at(-1)).toBeGreaterThan(wrapping.tops[0]!);
           }
         }
         const overflow = await card
@@ -384,9 +454,7 @@ for (const width of [375, 1280]) {
           badgeSizes: [...badges.querySelectorAll("img")].map((badge) => ({
             width: badge.getBoundingClientRect().width,
             height: badge.getBoundingClientRect().height,
-            maximumWidth: badge.classList.contains("portfolio-card__downloads")
-              ? 300
-              : 156,
+            maximumWidth: badges.getBoundingClientRect().width,
           })),
           descriptionMargin: getComputedStyle(description).marginBlockStart,
         };
@@ -399,6 +467,22 @@ for (const width of [375, 1280]) {
         expect(size.height).toBe(30);
         expect(size.width).toBeGreaterThan(0);
         expect(size.width).toBeLessThanOrEqual(size.maximumWidth);
+      }
+      for (const badge of await cards.locator(".portfolio-card__badge").all()) {
+        const image = await badge.evaluate((element: HTMLImageElement) => ({
+          width: element.getBoundingClientRect().width,
+          naturalWidth: element.naturalWidth,
+          naturalHeight: element.naturalHeight,
+          available: element
+            .closest(".portfolio-card__badges")!
+            .getBoundingClientRect().width,
+        }));
+        expect(image.naturalHeight).toBe(20);
+        const largeWidth = (image.naturalWidth / image.naturalHeight) * 30;
+        expect(image.width).toBeCloseTo(
+          Math.min(largeWidth, image.available),
+          1,
+        );
       }
       for (const link of await cards
         .first()

@@ -3,6 +3,7 @@
     class="portfolio-card"
     :data-nuget-downloads="portfolio.nugetDownloads"
     tag="article"
+    compact
     hoverable
     focusable>
     <figure class="portfolio-card__header">
@@ -32,26 +33,6 @@
         class="portfolio-card__badges"
         role="group"
         :aria-label="`${portfolio.title} project statistics`">
-        <div class="portfolio-card__github">
-          <a :href="`${portfolio.permalink}/stargazers`">
-            <img
-              class="portfolio-card__badge portfolio-card__stars"
-              :alt="`${portfolio.title}: ${portfolio.stars} GitHub stars at last build`"
-              height="30"
-              width="156"
-              loading="lazy"
-              :src="`https://img.shields.io/github/stars/${portfolio.repository}?style=social`" />
-          </a>
-          <a :href="`${portfolio.permalink}/forks`">
-            <img
-              class="portfolio-card__badge portfolio-card__forks"
-              :alt="`${portfolio.title}: ${portfolio.forks} GitHub forks at last build`"
-              height="30"
-              width="156"
-              loading="lazy"
-              :src="`https://img.shields.io/github/forks/${portfolio.repository}?style=social`" />
-          </a>
-        </div>
         <div
           v-if="portfolio.nugetPackages.length"
           class="portfolio-card__nuget-badges">
@@ -66,9 +47,26 @@
               class="portfolio-card__badge portfolio-card__downloads"
               :alt="`${pkg.id}: ${pkg.downloads} total NuGet downloads at last build`"
               height="30"
-              width="300"
               loading="lazy"
               :src="`https://img.shields.io/nuget/dt/${pkg.id}?style=social&logo=nuget&label=${encodeURIComponent(pkg.id)}`" />
+          </a>
+        </div>
+        <div class="portfolio-card__github">
+          <a :href="`${portfolio.permalink}/stargazers`">
+            <img
+              class="portfolio-card__badge portfolio-card__stars"
+              :alt="`${portfolio.title}: ${portfolio.stars} GitHub stars at last build`"
+              height="30"
+              loading="lazy"
+              :src="`https://img.shields.io/github/stars/${portfolio.repository}?style=social`" />
+          </a>
+          <a :href="`${portfolio.permalink}/forks`">
+            <img
+              class="portfolio-card__badge portfolio-card__forks"
+              :alt="`${portfolio.title}: ${portfolio.forks} GitHub forks at last build`"
+              height="30"
+              loading="lazy"
+              :src="`https://img.shields.io/github/forks/${portfolio.repository}?style=social`" />
           </a>
         </div>
       </div>
@@ -120,8 +118,8 @@ export default {
 
 .portfolio-card__header {
   border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
-  margin-inline: var(--global-space-fluid--6);
-  margin-block-start: var(--global-space-fluid--6);
+  margin-inline: calc(var(--card-space) * -1);
+  margin-block-start: calc(var(--card-space) * -1);
   margin-block-end: var(--global-space-fluid-5);
   overflow: hidden;
 
@@ -137,6 +135,7 @@ export default {
 .portfolio-card__content {
   display: grid;
   gap: var(--global-space-fixed-4);
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .portfolio-card__title,
@@ -152,34 +151,25 @@ export default {
 }
 
 .portfolio-card__badges {
-  display: grid;
-  gap: var(--global-space-fixed-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--global-space-fixed-4);
   position: relative;
   z-index: 1;
 }
 
-.portfolio-card__github {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--global-space-fixed-2);
-}
-
-.portfolio-card__github a {
-  flex: 0 1 calc((100% - var(--global-space-fixed-2)) / 2);
-  min-inline-size: 0;
-  max-inline-size: 156px;
-}
-
+.portfolio-card__github,
 .portfolio-card__nuget-badges {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--global-space-fixed-2);
+  gap: var(--global-space-fixed-3);
 }
 
+.portfolio-card__github a,
 .portfolio-card__nuget {
-  flex: 0 1 300px;
+  display: flex;
+  flex: 0 1 auto;
   min-inline-size: 0;
   max-inline-size: 100%;
 }
@@ -187,7 +177,8 @@ export default {
 .portfolio-card__badge {
   display: block;
   block-size: 30px;
-  inline-size: 100%;
+  inline-size: auto;
+  max-inline-size: 100%;
   object-fit: contain;
   object-position: left;
 }
