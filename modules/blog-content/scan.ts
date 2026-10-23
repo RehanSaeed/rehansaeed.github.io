@@ -8,6 +8,8 @@ export interface FrontMatter {
   permalink: string;
   published: boolean;
   tags?: string[];
+  kind?: "open-source" | "microsoft";
+  nugetPackages?: { id: string }[];
 }
 
 export interface ContentEntry {

@@ -9,17 +9,11 @@ dateModified: null
 published: true
 nugetPackages:
   - id: "Serilog.Exceptions"
-    label: "NuGet downloads"
   - id: "Serilog.Exceptions.SqlServer"
-    label: "SqlServer"
   - id: "Serilog.Exceptions.MsSqlServer"
-    label: "MsSqlServer"
   - id: "Serilog.Exceptions.EntityFrameworkCore"
-    label: "EF Core"
   - id: "Serilog.Exceptions.Refit"
-    label: "Refit"
   - id: "Serilog.Exceptions.Grpc"
-    label: "gRPC"
 categories:
   - "Open Source"
 tags:

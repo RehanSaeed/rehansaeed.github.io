@@ -25,7 +25,10 @@ export async function portfolioSnapshots(
   entries: ContentEntry[],
 ): Promise<Record<string, z.infer<typeof popularitySchema>>> {
   const projects = entries
-    .filter((entry) => entry.collection === "portfolio")
+    .filter(
+      (entry) =>
+        entry.collection === "portfolio" && entry.data.kind !== "microsoft",
+    )
     .map(({ data }) => {
       const url = new URL(data.permalink);
       const repository = url.pathname.replace(/^\/|\/$/g, "");

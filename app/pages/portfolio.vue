@@ -5,21 +5,43 @@
         >Portfolio</u-heading
       >
       <p>
-        These are some of the open source projects that I've started and
-        maintained. There are many others I've contributed to which you can see
-        in my GitHub profile and of course there are other commercial projects
-        that I cannot disclose.
+        A selection of products I worked on at Microsoft and open source
+        projects I've started and maintained. There are many others I've
+        contributed to which you can see in my GitHub profile.
       </p>
     </header>
 
     <u-arrows class="portfolio__arrows" />
 
-    <div class="portfolio__items">
-      <u-portfolio-card
-        v-for="item of portfolio"
-        :key="item.id"
-        :portfolio="item" />
-    </div>
+    <section
+      class="portfolio__section portfolio__microsoft"
+      aria-labelledby="portfolio-microsoft">
+      <u-heading id="portfolio-microsoft" level="2">Microsoft work</u-heading>
+      <div class="portfolio__items">
+        <u-portfolio-card
+          v-for="item of microsoftProjects"
+          :key="item.id"
+          :portfolio="item" />
+      </div>
+    </section>
+
+    <section
+      class="portfolio__section portfolio__open-source"
+      aria-labelledby="portfolio-open-source">
+      <div>
+        <u-heading id="portfolio-open-source" level="2">Open source</u-heading>
+        <p>
+          Ordered by total NuGet package downloads, then GitHub stars. Projects
+          without NuGet packages are ordered by GitHub stars.
+        </p>
+      </div>
+      <div class="portfolio__items">
+        <u-portfolio-card
+          v-for="item of openSourceProjects"
+          :key="item.id"
+          :portfolio="item" />
+      </div>
+    </section>
   </div>
 </template>
 
@@ -55,6 +77,7 @@ useHead({
 const { data: portfolio } = await useAsyncData("portfolio", () =>
   queryCollection("portfolio")
     .where("published", "=", true)
+    .order("nugetDownloads", "DESC")
     .order("stars", "DESC")
     .order("title", "ASC")
     .select(
@@ -62,19 +85,34 @@ const { data: portfolio } = await useAsyncData("portfolio", () =>
       "title",
       "description",
       "heroImage",
+      "heroImageSource",
       "permalink",
       "tags",
       "repository",
       "stars",
       "forks",
       "nugetPackages",
+      "nugetDownloads",
+      "kind",
+      "position",
     )
     .all(),
+);
+const microsoftProjects = computed(() =>
+  (portfolio.value ?? [])
+    .filter((project) => project.kind === "microsoft")
+    .toSorted((a, b) => a.position - b.position),
+);
+const openSourceProjects = computed(() =>
+  (portfolio.value ?? []).filter((project) => project.kind === "open-source"),
 );
 useSchemaOrg([
   defineWebPage({ "@type": "CollectionPage", name: title }),
   defineItemList({
-    itemListElement: (portfolio.value ?? []).map((project) => ({
+    itemListElement: [
+      ...microsoftProjects.value,
+      ...openSourceProjects.value,
+    ].map((project) => ({
       name: project.title,
       url: project.permalink,
     })),
@@ -116,5 +154,14 @@ useSchemaOrg([
     )
   );
   justify-content: center;
+}
+
+.portfolio__section {
+  display: grid;
+  gap: var(--global-space-fluid-5);
+}
+
+.portfolio__section > h2 {
+  margin-block: 0;
 }
 </style>

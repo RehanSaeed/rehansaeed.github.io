@@ -54,14 +54,21 @@ export default defineContentConfig({
       type: "page",
       source: "portfolio/**/index.md",
       schema: schema.extend({
-        repository: z.string().regex(/^[\w-]+\/[\w.-]+$/),
-        stars: z.number().int().nonnegative(),
-        forks: z.number().int().nonnegative(),
+        kind: z.enum(["open-source", "microsoft"]).default("open-source"),
+        heroImageSource: z.string().url().optional(),
+        position: z.number().int().nonnegative().default(0),
+        repository: z
+          .string()
+          .regex(/^[\w-]+\/[\w.-]+$/)
+          .optional(),
+        stars: z.number().int().nonnegative().default(0),
+        forks: z.number().int().nonnegative().default(0),
+        nugetDownloads: z.number().int().nonnegative().default(0),
         nugetPackages: z
           .array(
             z.object({
               id: z.string().regex(/^[A-Za-z0-9][A-Za-z0-9_.-]*$/),
-              label: z.string().min(1),
+              downloads: z.number().int().nonnegative(),
             }),
           )
           .default([]),

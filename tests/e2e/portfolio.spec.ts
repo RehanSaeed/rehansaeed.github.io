@@ -43,22 +43,37 @@ test("All portfolio cards and popularity ordering are present in static HTML", a
   const response = await request.get("/portfolio/");
   expect(response.ok()).toBe(true);
   const $ = load(await response.text());
-  const cards = $(".portfolio-card");
+  const cards = $(".portfolio__open-source .portfolio-card");
   expect(cards).toHaveLength(repositories.length);
-  const stars = cards
-    .map((_, card) =>
-      Number(
+  const popularity = cards
+    .map((_, card) => ({
+      downloads: Number($(card).attr("data-nuget-downloads")),
+      stars: Number(
         $(card)
           .find(".portfolio-card__stars")
           .attr("alt")
           ?.match(/: (\d+) GitHub stars at last build$/)?.[1],
       ),
-    )
+      title: $(card).find(".portfolio-card__title").text(),
+    }))
     .get();
-  expect(stars.every((count) => Number.isInteger(count) && count >= 0)).toBe(
-    true,
+  expect(
+    popularity.every(
+      ({ downloads, stars }) =>
+        Number.isSafeInteger(downloads) &&
+        downloads >= 0 &&
+        Number.isSafeInteger(stars) &&
+        stars >= 0,
+    ),
+  ).toBe(true);
+  expect(popularity).toEqual(
+    [...popularity].sort(
+      (a, b) =>
+        b.downloads - a.downloads ||
+        b.stars - a.stars ||
+        a.title.localeCompare(b.title),
+    ),
   );
-  expect(stars).toEqual([...stars].sort((a, b) => b - a));
   const links = cards
     .find(".portfolio-card__title a")
     .map((_, link) => $(link).attr("href"))
@@ -95,7 +110,97 @@ test("All portfolio cards and popularity ordering are present in static HTML", a
         (id) => `https://www.nuget.org/packages/${id}`,
       ),
     );
+    const packages = $(card).find(".portfolio-card__nuget");
+    const counts = packages
+      .map((_, link) => Number($(link).attr("data-downloads")))
+      .get();
+    expect(
+      counts.every((count) => Number.isSafeInteger(count) && count >= 0),
+    ).toBe(true);
+    expect(counts.reduce((sum, count) => sum + count, 0)).toBe(
+      Number($(card).attr("data-nuget-downloads")),
+    );
+    expect(
+      packages
+        .find(".portfolio-card__package")
+        .map((_, label) => $(label).text())
+        .get(),
+    ).toEqual(nugetPackages[repository] ?? []);
   });
+});
+
+test("Microsoft work precedes open source and links to public product articles without repository badges", async ({
+  request,
+}) => {
+  const response = await request.get("/portfolio/");
+  const $ = load(await response.text());
+  expect($(".portfolio-card")).toHaveLength(17);
+  const sections = $(".portfolio__section")
+    .map((_, section) => $(section).attr("aria-labelledby"))
+    .get();
+  expect(sections).toEqual(["portfolio-microsoft", "portfolio-open-source"]);
+  const cards = $(".portfolio__microsoft .portfolio-card");
+  expect(cards).toHaveLength(4);
+  expect(
+    cards
+      .find(".portfolio-card__title")
+      .map((_, title) => $(title).text())
+      .get(),
+  ).toEqual([
+    "Microsoft Copilot Windows app",
+    "Microsoft 365 companion apps",
+    "Microsoft Edge enterprise new tab",
+    "Cortana Windows app",
+  ]);
+  expect(cards.find(".portfolio-card__badges")).toHaveLength(0);
+  expect(
+    cards
+      .find(".portfolio-card__title a")
+      .map((_, link) => $(link).attr("href"))
+      .get(),
+  ).toEqual([
+    "https://blogs.windows.com/windows-insider/2026/03/04/copilot-app-on-windows-opening-web-links-alongside-your-conversations-begins-rolling-out-to-windows-insiders/",
+    "https://microsoft.design/articles/from-incubation-to-impact-microsoft-365-companion-apps/",
+    "https://blogs.windows.com/msedgedev/2021/10/28/microsoft-edge-features-microsoft-365-reduce-pain-context-switching/",
+    "https://blogs.windows.com/windowsexperience/2020/02/28/cortana-in-the-upcoming-windows-10-release-focused-on-your-productivity-with-enhanced-security-and-privacy/",
+  ]);
+  expect(cards.find(".portfolio-card__description").text()).toContain(
+    "People Companion",
+  );
+  expect(
+    cards
+      .find(".portfolio-card__image-credit a")
+      .map((_, link) => $(link).attr("href"))
+      .get(),
+  ).toEqual([
+    "https://winblogs.thesourcemediaassets.com/sites/44/2026/02/Chromium-app-Image.png",
+    "https://microsoft.design/wp-content/uploads/2026/02/Image-1.jpg",
+    "https://blogs.windows.com/wp-content/uploads/prod/sites/33/2021/10/Picture1-2.png",
+    "https://blogs.windows.com/wp-content/uploads/prod/sites/2/2020/02/f69360e54e2a53b2505fd65896b03fd1.jpg",
+  ]);
+  expect(
+    cards
+      .find(".portfolio-card__image")
+      .map((_, image) => ({
+        width: Number($(image).attr("width")),
+        height: Number($(image).attr("height")),
+      }))
+      .get(),
+  ).toEqual([
+    { width: 3840, height: 2160 },
+    { width: 3072, height: 1728 },
+    { width: 1430, height: 929 },
+    { width: 1560, height: 880 },
+  ]);
+  const graph = JSON.parse($('script[type="application/ld+json"]').text());
+  const list = graph["@graph"].find(
+    (node: { "@type": string }) => node["@type"] === "ItemList",
+  );
+  expect(list.itemListElement.map((item: { url: string }) => item.url)).toEqual(
+    $(".portfolio-card__title a")
+      .map((_, link) => $(link).attr("href"))
+      .get(),
+  );
 });
 
 for (const width of [375, 1280]) {
@@ -106,8 +211,28 @@ for (const width of [375, 1280]) {
       await page.setViewportSize({ width, height: 900 });
       await page.emulateMedia({ colorScheme });
       await page.goto("/portfolio/");
-      const cards = page.locator(".portfolio-card");
+      const cards = page.locator(".portfolio__open-source .portfolio-card");
       await expect(cards).toHaveCount(repositories.length);
+      const microsoftCards = page.locator(
+        ".portfolio__microsoft .portfolio-card",
+      );
+      await expect(microsoftCards).toHaveCount(4);
+      await expect(
+        microsoftCards.locator(".portfolio-card__badges"),
+      ).toHaveCount(0);
+      for (const image of await microsoftCards
+        .locator(".portfolio-card__image")
+        .all()) {
+        await image.scrollIntoViewIfNeeded();
+        await expect
+          .poll(() =>
+            image.evaluate(
+              (element: HTMLImageElement) =>
+                element.complete && element.naturalWidth > 0,
+            ),
+          )
+          .toBe(true);
+      }
       const bashHero = cards.getByRole("img", {
         name: "Bash Cheat Sheet",
         exact: true,
@@ -124,6 +249,7 @@ for (const width of [375, 1280]) {
       const heroBox = await bashHero.boundingBox();
       expect(heroBox!.width / heroBox!.height).toBeCloseTo(1600 / 900, 2);
       for (const card of await cards.all()) {
+        await card.scrollIntoViewIfNeeded();
         const permalink = await card
           .locator(".portfolio-card__title a")
           .getAttribute("href");
@@ -166,22 +292,47 @@ for (const width of [375, 1280]) {
           packages.length,
         );
         for (const id of packages) {
-          const badge = card.getByRole("img", {
-            name: `${id} total NuGet downloads`,
-            exact: true,
-          });
+          const link = card
+            .locator(".portfolio-card__nuget")
+            .filter({ has: page.getByText(id, { exact: true }) });
+          await expect(link.locator(".portfolio-card__package")).toHaveText(id);
+          const badge = link.locator(".portfolio-card__downloads");
+          const count = Number(await link.getAttribute("data-downloads"));
+          await expect(badge).toHaveAttribute(
+            "alt",
+            `${id}: ${count} total NuGet downloads at last build`,
+          );
           const url = new URL((await badge.getAttribute("src"))!);
           expect(url.origin).toBe("https://img.shields.io");
           expect(url.pathname).toBe(`/nuget/dt/${id}`);
           expect(url.searchParams.get("style")).toBe("social");
           expect(url.searchParams.get("logo")).toBe("nuget");
-          expect(url.searchParams.get("label")).toBeTruthy();
+          expect(url.searchParams.get("label")).toBe("Downloads");
           await expect(badge.locator("..")).toHaveAttribute(
             "href",
             `https://www.nuget.org/packages/${id}`,
           );
-          await expect(badge).toHaveAttribute("width", "300");
+          await expect(badge).toHaveAttribute("width", "192");
           await expect(badge).toHaveAttribute("height", "30");
+          const label = await link
+            .locator(".portfolio-card__package")
+            .evaluate((element) => ({
+              fontSize: Number.parseFloat(getComputedStyle(element).fontSize),
+              overflow: element.scrollWidth - element.clientWidth,
+            }));
+          expect(label.fontSize).toBeGreaterThanOrEqual(14);
+          expect(label.overflow).toBe(0);
+        }
+        if (packages.length) {
+          const rows = await card.evaluate((element) => ({
+            githubBottom: element
+              .querySelector(".portfolio-card__github")!
+              .getBoundingClientRect().bottom,
+            nugetTop: element
+              .querySelector(".portfolio-card__nuget-badges")!
+              .getBoundingClientRect().top,
+          }));
+          expect(rows.nugetTop).toBeGreaterThan(rows.githubBottom);
         }
         const overflow = await card
           .locator(".portfolio-card__badges")
@@ -202,7 +353,7 @@ for (const width of [375, 1280]) {
             width: badge.getBoundingClientRect().width,
             height: badge.getBoundingClientRect().height,
             maximumWidth: badge.classList.contains("portfolio-card__downloads")
-              ? 300
+              ? 192
               : 156,
           })),
           descriptionMargin: getComputedStyle(description).marginBlockStart,

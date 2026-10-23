@@ -31,6 +31,7 @@ import { contentImagesBaseURL, contentPublicDir } from "./paths";
 import { listFiles, scanContent, toPosix } from "./scan";
 import { commentSnapshots } from "./comments";
 import { portfolioSnapshots } from "./portfolio";
+import { portfolioDownloads } from "./nuget";
 import { readImageDimensions } from "./images";
 import { filterMarkdownSitemap } from "./seo";
 
@@ -56,6 +57,7 @@ export default defineNuxtModule({
     const comments = await commentSnapshots(dataDir);
     const entries = await scanContent(contentDir);
     const portfolio = await portfolioSnapshots(dataDir, entries);
+    const downloads = await portfolioDownloads(dataDir, entries);
     const images = (await listFiles(contentDir))
       .filter((file) => contentImagePattern.test(file))
       .sort();
@@ -106,6 +108,7 @@ export default defineNuxtModule({
         "scan.ts",
         "comments.ts",
         "portfolio.ts",
+        "nuget.ts",
         "images.ts",
       ].map((name) =>
         readFile(
@@ -123,6 +126,7 @@ export default defineNuxtModule({
           )) +
           JSON.stringify(comments) +
           JSON.stringify(portfolio) +
+          JSON.stringify(downloads) +
           JSON.stringify(imageMetadata),
       )
       .digest("hex");
@@ -180,12 +184,13 @@ export default defineNuxtModule({
       if (collection.name === "posts") {
         content.path = content.permalink;
         if (!content.published) content.robots = "noindex, follow";
-      } else {
+      } else if (content.kind !== "microsoft") {
         const snapshot = portfolio[String(content.permalink)];
-        if (!snapshot) {
+        const packages = downloads[String(content.permalink)];
+        if (!snapshot || !packages) {
           throw new Error(`Missing portfolio popularity: ${content.permalink}`);
         }
-        Object.assign(content, snapshot);
+        Object.assign(content, snapshot, packages);
       }
       content.comments = comments[String(content.title)] ?? {
         issue: null,

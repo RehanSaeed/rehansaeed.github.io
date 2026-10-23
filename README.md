@@ -90,7 +90,7 @@ Local badge PNGs retain their issue-year filenames and intrinsic dimensions.
 Preserve transparent outer canvases and enclosed light artwork when optimizing
 them, so both themes work without blend modes or color filters.
 
-The source-image Squoosh pass processed all 301 PNGs and 28 JPEGs locally,
+The original source-image Squoosh pass processed all 301 PNGs and 28 JPEGs locally,
 preserving formats, dimensions and alpha. It retained 78 originals when a
 candidate was larger or failed the quality guard and replaced 251 files,
 saving 1,736,696 bytes (5.74%). PNG replacements have identical decoded sRGB
@@ -99,27 +99,47 @@ and maximum channel error of 48/255. The three SVGs and multi-resolution ICO
 are not supported by Squoosh and remain unchanged. Generated output and caches
 are not source inputs; Nuxt Image regenerates its static responsive variants.
 
-The portfolio retains all seven original projects and adds Bash Cheat Sheet,
-.NET Boxed Framework, Kubernetes Cheat Sheet, HttpClientSample, Helm Cheat Sheet
-and Git Cheat Sheet. Cards are ordered by GitHub stars descending, then title for
-ties. Counts are fetched at build time with a one-hour local cache; changes also
-invalidate Content's parsed-file cache. If GitHub is unavailable, an explicit
-warning preserves previously saved counts; without a saved count the build fails
-rather than assigning a misleading zero. No token or runtime API is needed in
-the generated site.
+The portfolio starts with a separate Microsoft work section: the Copilot Windows
+app, Microsoft 365 companion apps including People Companion, Edge's enterprise
+new tab, and the Cortana Windows app. Each links to a verified public Microsoft
+product article, not a private repository. Descriptions reflect the author's
+stated work without inventing responsibilities, employment dates or metrics.
+These entries are excluded from GitHub/NuGet requests and have no statistics badges.
+
+The open-source section retains all seven original projects and adds Bash Cheat
+Sheet, .NET Boxed Framework, Kubernetes Cheat Sheet, HttpClientSample, Helm Cheat
+Sheet and Git Cheat Sheet. Cards are ordered by total NuGet downloads descending,
+then GitHub stars descending, then title ascending. A project's total sums each
+distinct listed package's package-wide `DownloadCount` from NuGet's official API,
+not its per-version counts or rounded Shields image values. This measures
+downloads, not unique users. Projects without packages have a known zero and
+therefore sort by stars after projects with downloads.
+
+Counts are fetched at build time with one-hour local caches; changes also
+invalidate Content's parsed-file cache. If GitHub or NuGet is unavailable, an
+explicit warning preserves previously saved counts; without a saved count the
+build fails rather than assigning a misleading zero. No token or runtime API is
+needed in the generated site.
 
 Bash Cheat Sheet uses its own terminal illustration rather than the generic code
 photograph. An editable SVG is retained alongside the 1600x900 PNG used by the
 responsive-image pipeline, avoiding SVG MIME types for the static WebP variants.
+The Microsoft cards use real Windows application screenshots downloaded from
+their linked official Microsoft articles, not illustrations or logos. Each
+credits Microsoft and links to the original full-resolution image. Original
+formats, dimensions and complete frames are preserved; PNG source optimizations
+are lossless and JPEG candidates must pass the same quality guard described above.
 
-Each portfolio title is followed by linked Shields Stars/Forks badges, before
+Each open-source title is followed by linked Shields Stars/Forks badges, before
 the description. Published packages identified in the repositories' main READMEs
-also have total NuGet download badges in that group, including the listed add-on
+also have total NuGet download badges on their own row below GitHub, including the listed add-on
 packages. Templates shows the current Boxed.Templates package and the explicitly
-labelled legacy Boilerplate.Templates counter rather than conflating them.
+named Boilerplate.Templates counter rather than conflating them.
 Elysium.Extra's README confirms its published package through a version badge;
 the portfolio adds the corresponding download statistic. Each download link and
-accessible name identifies the full package ID, while visible labels stay short.
+accessible name identifies the full package ID. Each badge visibly includes that
+complete ID as wrapping HTML text, never an abbreviated label or an unreadably
+shrunk SVG. Package names and saved counts remain in static HTML.
 Build-status, version, prerelease-feed and personal Twitter badges are not usage
 statistics and are not copied into the cards.
 
@@ -129,9 +149,15 @@ counts at the last build. Badges use 30px-high, up-to-156px-wide reserved slots
 that shrink to fit narrow cards without overflow. The card content uses CSS Grid
 `gap` for consistent title/badge/description/tag spacing rather than stacked
 paragraph and tag margins.
-NuGet slots reserve up to 300px and wrap within narrow cards, with the same 30px
-height and gap below the complete statistics group.
+NuGet badges reserve 192x30 slots for live counters beneath the full package name.
+The GitHub and NuGet groups are separate grid rows, with gap below the complete
+statistics group. Full package names wrap without truncation on narrow cards.
 Badge links remain independently clickable above the card's stretched title link.
+
+The contact address stays obfuscated in configuration. Its recipient `mailto:`
+is created only in the browser after JavaScript runs, never during SSR.
+Regression checks scan generated HTML, JSON/Markdown/feed payloads and scripts
+without printing the address, then verify the link before and after hydration.
 
 Dialogs have hydration-stable, unique heading IDs and title-specific close labels.
 Literal currency dollars in Markdown must be escaped as `\$` so they cannot be

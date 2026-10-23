@@ -137,3 +137,20 @@ test("Portfolio repositories must be HTTPS GitHub repository URLs", async ({}, i
     ).rejects.toThrow("Invalid portfolio GitHub URL:");
   }
 });
+
+test("Microsoft work does not request or fabricate GitHub statistics", async ({}, info) => {
+  const dir = info.outputPath("portfolio-cache");
+  await mkdir(dir, { recursive: true });
+  const entry = project("example/project");
+  entry.data.kind = "microsoft";
+  entry.data.permalink = "https://blogs.windows.com/example/";
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => {
+    throw new Error("Microsoft product links must not reach the GitHub API.");
+  };
+  try {
+    expect(await portfolioSnapshots(dir, [entry])).toEqual({});
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});

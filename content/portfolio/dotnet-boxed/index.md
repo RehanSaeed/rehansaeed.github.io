@@ -9,9 +9,7 @@ dateModified: null
 published: true
 nugetPackages:
   - id: "Boxed.Templates"
-    label: "Templates"
   - id: "Boilerplate.Templates"
-    label: "Legacy templates"
 categories:
   - "Open Source"
 tags:

@@ -9,7 +9,6 @@ dateModified: null
 published: true
 nugetPackages:
   - id: "Serilog.Enrichers.Span"
-    label: "NuGet downloads"
 categories:
   - "Open Source"
 tags:

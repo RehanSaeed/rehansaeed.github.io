@@ -82,7 +82,7 @@ export default {
   },
   computed: {
     mailTo() {
-      if (!this.email) {
+      if (!import.meta.client || !this.email) {
         return undefined;
       }
       const body = encodeURIComponent(

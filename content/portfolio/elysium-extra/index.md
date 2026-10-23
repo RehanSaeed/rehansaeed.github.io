@@ -9,7 +9,6 @@ dateModified: null
 published: true
 nugetPackages:
   - id: "Elysium.Extra"
-    label: "NuGet downloads"
 categories:
   - "Open Source"
 tags:

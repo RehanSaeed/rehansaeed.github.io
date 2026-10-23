@@ -9,9 +9,7 @@ dateModified: null
 published: true
 nugetPackages:
   - id: "Schema.NET"
-    label: "Schema.NET"
   - id: "Schema.NET.Pending"
-    label: "Pending"
 categories:
   - "Open Source"
 tags:
