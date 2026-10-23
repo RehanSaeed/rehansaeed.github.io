@@ -102,7 +102,7 @@ export async function githubRequest(
     signal: signal ?? AbortSignal.timeout(15_000),
   });
   if (!response.ok) {
-    throw new Error(`GitHub comments request failed (${response.status}).`);
+    throw new Error(`GitHub request failed (${response.status}).`);
   }
   return response.json() as Promise<unknown>;
 }

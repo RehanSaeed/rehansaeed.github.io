@@ -90,6 +90,30 @@ Local badge PNGs retain their issue-year filenames and intrinsic dimensions.
 Preserve transparent outer canvases and enclosed light artwork when optimizing
 them, so both themes work without blend modes or color filters.
 
+The source-image Squoosh pass processed all 301 PNGs and 28 JPEGs locally,
+preserving formats, dimensions and alpha. It retained 78 originals when a
+candidate was larger or failed the quality guard and replaced 251 files,
+saving 1,736,696 bytes (5.74%). PNG replacements have identical decoded sRGB
+pixels and alpha; JPEG replacements use quality 90, PSNR of at least 40 dB
+and maximum channel error of 48/255. The three SVGs and multi-resolution ICO
+are not supported by Squoosh and remain unchanged. Generated output and caches
+are not source inputs; Nuxt Image regenerates its static responsive variants.
+
+The portfolio retains all seven original projects and adds Bash Cheat Sheet,
+.NET Boxed Framework, Kubernetes Cheat Sheet, HttpClientSample, Helm Cheat Sheet
+and Git Cheat Sheet. Cards are ordered by GitHub stars descending, then title for
+ties. Counts are fetched at build time with a one-hour local cache; changes also
+invalidate Content's parsed-file cache. If GitHub is unavailable, an explicit
+warning preserves previously saved counts; without a saved count the build fails
+rather than assigning a misleading zero. No token or runtime API is needed in
+the generated site.
+
+Each portfolio title is followed by linked Shields Stars/Forks badges, before
+the description. These remote images update independently of the static order,
+which changes on a subsequent build. Their accessible descriptions state the
+counts at the last build, and fixed image slots avoid badge-loading layout shifts.
+Badge links remain independently clickable above the card's stretched title link.
+
 Dialogs have hydration-stable, unique heading IDs and title-specific close labels.
 Literal currency dollars in Markdown must be escaped as `\$` so they cannot be
 mistaken for math delimiters; genuine KaTeX math remains enabled.

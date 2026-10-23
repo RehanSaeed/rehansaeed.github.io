@@ -27,6 +27,30 @@
         .NET, I have probably written something using it in anger!
       </p>
       <p class="about__description">
+        I occasionally appear on
+        <a :href="youtubeUrl">Youtube</a> and
+        <a :href="twitchUrl">Twitch</a> where you can watch my software
+        development escapades.
+      </p>
+      <div class="about__youtube-images">
+        <a :href="youtubeUrl">
+          <img
+            class="about__youtube-image"
+            alt="Youtube views"
+            height="20"
+            width="104"
+            :src="youtubeViewsImageUrl" />
+        </a>
+        <a :href="youtubeUrl">
+          <img
+            class="about__youtube-image"
+            alt="Youtube subscribers"
+            height="20"
+            width="124"
+            :src="youtubeSubscribersImageUrl" />
+        </a>
+      </div>
+      <p class="about__description">
         You can see some of the open source projects that I have founded and
         maintained in my
         <NuxtLink to="/portfolio/">portfolio</NuxtLink>. There are many others I
@@ -68,30 +92,6 @@
             height="1280"
             width="850"
             :src="gitHubStatisticsImageUrl" />
-        </a>
-      </div>
-      <p class="about__description">
-        I occasionally appear on
-        <a :href="youtubeUrl">Youtube</a> and
-        <a :href="twitchUrl">Twitch</a> where you can watch my software
-        development escapades.
-      </p>
-      <div class="about__youtube-images">
-        <a :href="youtubeUrl">
-          <img
-            class="about__youtube-image"
-            alt="Youtube views"
-            height="20"
-            width="104"
-            :src="youtubeViewsImageUrl" />
-        </a>
-        <a :href="youtubeUrl">
-          <img
-            class="about__youtube-image"
-            alt="Youtube subscribers"
-            height="20"
-            width="124"
-            :src="youtubeSubscribersImageUrl" />
         </a>
       </div>
       <p class="about__description">

@@ -21,6 +21,29 @@
         class="portfolio-card__title"
         >{{ portfolio.title }}</u-heading
       >
+      <div
+        class="portfolio-card__badges"
+        role="group"
+        :aria-label="`${portfolio.title} GitHub statistics`">
+        <a :href="`${portfolio.permalink}/stargazers`">
+          <img
+            class="portfolio-card__badge portfolio-card__stars"
+            :alt="`${portfolio.title}: ${portfolio.stars} GitHub stars at last build`"
+            height="20"
+            width="104"
+            loading="lazy"
+            :src="`https://img.shields.io/github/stars/${portfolio.repository}?style=social`" />
+        </a>
+        <a :href="`${portfolio.permalink}/forks`">
+          <img
+            class="portfolio-card__badge portfolio-card__forks"
+            :alt="`${portfolio.title}: ${portfolio.forks} GitHub forks at last build`"
+            height="20"
+            width="104"
+            loading="lazy"
+            :src="`https://img.shields.io/github/forks/${portfolio.repository}?style=social`" />
+        </a>
+      </div>
       <p class="portfolio-card__description">{{ portfolio.description }}</p>
 
       <u-tags
@@ -92,6 +115,24 @@ export default {
 
   position: absolute;
   inset: 0;
+}
+
+.portfolio-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--global-space-fixed-2);
+  position: relative;
+  z-index: 1;
+}
+
+.portfolio-card__badge {
+  display: block;
+  block-size: 20px;
+  inline-size: 104px;
+  max-inline-size: 100%;
+  object-fit: contain;
+  object-position: left;
 }
 
 .portfolio-card__tags {

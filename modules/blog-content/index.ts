@@ -30,6 +30,7 @@ import {
 import { contentImagesBaseURL, contentPublicDir } from "./paths";
 import { listFiles, scanContent, toPosix } from "./scan";
 import { commentSnapshots } from "./comments";
+import { portfolioSnapshots } from "./portfolio";
 import { readImageDimensions } from "./images";
 import { filterMarkdownSitemap } from "./seo";
 
@@ -54,6 +55,7 @@ export default defineNuxtModule({
     await mkdir(dataDir, { recursive: true });
     const comments = await commentSnapshots(dataDir);
     const entries = await scanContent(contentDir);
+    const portfolio = await portfolioSnapshots(dataDir, entries);
     const images = (await listFiles(contentDir))
       .filter((file) => contentImagePattern.test(file))
       .sort();
@@ -103,6 +105,7 @@ export default defineNuxtModule({
         "markdown.ts",
         "scan.ts",
         "comments.ts",
+        "portfolio.ts",
         "images.ts",
       ].map((name) =>
         readFile(
@@ -119,6 +122,7 @@ export default defineNuxtModule({
             "utf8",
           )) +
           JSON.stringify(comments) +
+          JSON.stringify(portfolio) +
           JSON.stringify(imageMetadata),
       )
       .digest("hex");
@@ -176,6 +180,12 @@ export default defineNuxtModule({
       if (collection.name === "posts") {
         content.path = content.permalink;
         if (!content.published) content.robots = "noindex, follow";
+      } else {
+        const snapshot = portfolio[String(content.permalink)];
+        if (!snapshot) {
+          throw new Error(`Missing portfolio popularity: ${content.permalink}`);
+        }
+        Object.assign(content, snapshot);
       }
       content.comments = comments[String(content.title)] ?? {
         issue: null,

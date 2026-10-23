@@ -54,6 +54,9 @@ export default defineContentConfig({
       type: "page",
       source: "portfolio/**/index.md",
       schema: schema.extend({
+        repository: z.string().regex(/^[\w-]+\/[\w.-]+$/),
+        stars: z.number().int().nonnegative(),
+        forks: z.number().int().nonnegative(),
         sitemap: defineSitemapSchema({
           name: "portfolio",
           filter: () => false,

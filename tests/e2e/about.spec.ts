@@ -144,6 +144,18 @@ for (const width of [375, 1280]) {
       ).toHaveText(
         "I occasionally appear on Youtube and Twitch where you can watch my software development escapades.",
       );
+      const descriptions = await page
+        .locator(".about__description")
+        .allTextContents();
+      const youtubeIndex = descriptions.findIndex((text) =>
+        text.includes("I occasionally appear"),
+      );
+      expect(youtubeIndex).toBeGreaterThanOrEqual(0);
+      expect(
+        descriptions.findIndex((text) =>
+          text.includes("open source projects that I have founded"),
+        ),
+      ).toBeGreaterThan(youtubeIndex);
       expect(
         await page
           .locator(".about__github-image")
@@ -160,8 +172,8 @@ for (const width of [375, 1280]) {
             sections.map((section) => section.className),
           ),
       ).toEqual([
-        "about__github-images",
         "about__youtube-images",
+        "about__github-images",
         "about_awards-images",
         "about__mvp-images",
       ]);

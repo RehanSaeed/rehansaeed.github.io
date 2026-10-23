@@ -55,8 +55,19 @@ useHead({
 const { data: portfolio } = await useAsyncData("portfolio", () =>
   queryCollection("portfolio")
     .where("published", "=", true)
-    .order("date", "DESC")
-    .select("id", "title", "description", "heroImage", "permalink", "tags")
+    .order("stars", "DESC")
+    .order("title", "ASC")
+    .select(
+      "id",
+      "title",
+      "description",
+      "heroImage",
+      "permalink",
+      "tags",
+      "repository",
+      "stars",
+      "forks",
+    )
     .all(),
 );
 useSchemaOrg([
