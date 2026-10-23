@@ -142,7 +142,7 @@ test("Microsoft work precedes open source and links to public product articles w
     .get();
   expect(sections).toEqual(["portfolio-microsoft", "portfolio-open-source"]);
   expect(
-    $(".portfolio__section > h2")
+    $(".portfolio__section h2")
       .map((_, heading) => $(heading).text())
       .get(),
   ).toEqual(["Microsoft Work", "Open Source"]);
