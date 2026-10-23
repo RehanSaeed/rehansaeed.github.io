@@ -122,8 +122,10 @@ test("All portfolio cards and popularity ordering are present in static HTML", a
     );
     expect(
       packages
-        .find(".portfolio-card__package")
-        .map((_, label) => $(label).text())
+        .find(".portfolio-card__downloads")
+        .map((_, image) =>
+          new URL($(image).attr("src")!).searchParams.get("label"),
+        )
         .get(),
     ).toEqual(nugetPackages[repository] ?? []);
   });
@@ -139,6 +141,11 @@ test("Microsoft work precedes open source and links to public product articles w
     .map((_, section) => $(section).attr("aria-labelledby"))
     .get();
   expect(sections).toEqual(["portfolio-microsoft", "portfolio-open-source"]);
+  expect(
+    $(".portfolio__section > h2")
+      .map((_, heading) => $(heading).text())
+      .get(),
+  ).toEqual(["Microsoft Work", "Open Source"]);
   const cards = $(".portfolio__microsoft .portfolio-card");
   expect(cards).toHaveLength(4);
   expect(
@@ -147,10 +154,10 @@ test("Microsoft work precedes open source and links to public product articles w
       .map((_, title) => $(title).text())
       .get(),
   ).toEqual([
-    "Microsoft Copilot Windows app",
-    "Microsoft 365 companion apps",
-    "Microsoft Edge enterprise new tab",
-    "Cortana Windows app",
+    "Microsoft Copilot Windows App",
+    "Microsoft 365 Companion Apps",
+    "Microsoft Edge Enterprise New Tab",
+    "Cortana Windows App",
   ]);
   expect(cards.find(".portfolio-card__badges")).toHaveLength(0);
   expect(
@@ -292,10 +299,9 @@ for (const width of [375, 1280]) {
           packages.length,
         );
         for (const id of packages) {
-          const link = card
-            .locator(".portfolio-card__nuget")
-            .filter({ has: page.getByText(id, { exact: true }) });
-          await expect(link.locator(".portfolio-card__package")).toHaveText(id);
+          const link = card.locator(
+            `.portfolio-card__nuget[href="https://www.nuget.org/packages/${id}"]`,
+          );
           const badge = link.locator(".portfolio-card__downloads");
           const count = Number(await link.getAttribute("data-downloads"));
           await expect(badge).toHaveAttribute(
@@ -307,21 +313,19 @@ for (const width of [375, 1280]) {
           expect(url.pathname).toBe(`/nuget/dt/${id}`);
           expect(url.searchParams.get("style")).toBe("social");
           expect(url.searchParams.get("logo")).toBe("nuget");
-          expect(url.searchParams.get("label")).toBe("Downloads");
+          expect(url.searchParams.get("label")).toBe(id);
           await expect(badge.locator("..")).toHaveAttribute(
             "href",
             `https://www.nuget.org/packages/${id}`,
           );
-          await expect(badge).toHaveAttribute("width", "192");
+          await expect(badge).toHaveAttribute("width", "300");
           await expect(badge).toHaveAttribute("height", "30");
-          const label = await link
-            .locator(".portfolio-card__package")
-            .evaluate((element) => ({
-              fontSize: Number.parseFloat(getComputedStyle(element).fontSize),
-              overflow: element.scrollWidth - element.clientWidth,
-            }));
-          expect(label.fontSize).toBeGreaterThanOrEqual(14);
-          expect(label.overflow).toBe(0);
+          const style = await link.evaluate((element) => ({
+            border: getComputedStyle(element).borderTopWidth,
+            padding: getComputedStyle(element).paddingTop,
+          }));
+          expect(style.border).toBe("0px");
+          expect(style.padding).toBe("0px");
         }
         if (packages.length) {
           const rows = await card.evaluate((element) => ({
@@ -333,6 +337,27 @@ for (const width of [375, 1280]) {
               .getBoundingClientRect().top,
           }));
           expect(rows.nugetTop).toBeGreaterThan(rows.githubBottom);
+          const wrapping = await card
+            .locator(".portfolio-card__nuget-badges")
+            .evaluate((group) => ({
+              display: getComputedStyle(group).display,
+              wrap: getComputedStyle(group).flexWrap,
+              tops: [...group.children].map(
+                (element) => element.getBoundingClientRect().top,
+              ),
+            }));
+          expect(wrapping.display).toBe("flex");
+          expect(wrapping.wrap).toBe("wrap");
+          if (packages.length > 1) {
+            if (width === 1280) {
+              expect(wrapping.tops[1]).toBeCloseTo(wrapping.tops[0]!, 1);
+            } else {
+              expect(wrapping.tops[1]).toBeGreaterThan(wrapping.tops[0]!);
+            }
+          }
+          if (packages.length > 2) {
+            expect(wrapping.tops.at(-1)).toBeGreaterThan(wrapping.tops[0]!);
+          }
         }
         const overflow = await card
           .locator(".portfolio-card__badges")
@@ -353,7 +378,7 @@ for (const width of [375, 1280]) {
             width: badge.getBoundingClientRect().width,
             height: badge.getBoundingClientRect().height,
             maximumWidth: badge.classList.contains("portfolio-card__downloads")
-              ? 192
+              ? 300
               : 156,
           })),
           descriptionMargin: getComputedStyle(description).marginBlockStart,

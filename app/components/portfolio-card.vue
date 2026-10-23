@@ -68,14 +68,13 @@
             :data-downloads="pkg.downloads"
             :title="`${pkg.id}: ${pkg.downloads.toLocaleString('en-GB')} total NuGet downloads at last build`"
             :href="`https://www.nuget.org/packages/${pkg.id}`">
-            <span class="portfolio-card__package">{{ pkg.id }}</span>
             <img
               class="portfolio-card__badge portfolio-card__downloads"
               :alt="`${pkg.id}: ${pkg.downloads} total NuGet downloads at last build`"
               height="30"
-              width="192"
+              width="300"
               loading="lazy"
-              :src="`https://img.shields.io/nuget/dt/${pkg.id}?style=social&logo=nuget&label=Downloads`" />
+              :src="`https://img.shields.io/nuget/dt/${pkg.id}?style=social&logo=nuget&label=${encodeURIComponent(pkg.id)}`" />
           </a>
         </div>
       </div>
@@ -187,29 +186,16 @@ export default {
 }
 
 .portfolio-card__nuget-badges {
-  display: grid;
-  gap: var(--global-space-fixed-2);
-}
-
-.portfolio-card__nuget {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--global-space-fixed-2);
-  min-inline-size: 0;
-  padding: var(--global-space-fixed-2);
-  border: var(--global-border-width-1) solid var(--global-border-color);
-  border-radius: var(--global-border-radius);
-  background-color: var(--global-background-color);
-  text-decoration: none;
 }
 
-.portfolio-card__package {
-  flex-basis: 100%;
+.portfolio-card__nuget {
+  flex: 0 1 300px;
   min-inline-size: 0;
-  font-size: 0.875em;
-  font-weight: 600;
-  overflow-wrap: anywhere;
+  max-inline-size: 100%;
 }
 
 .portfolio-card__badge {
@@ -218,11 +204,6 @@ export default {
   inline-size: 100%;
   object-fit: contain;
   object-position: left;
-}
-
-.portfolio-card__downloads {
-  inline-size: 192px;
-  max-inline-size: 100%;
 }
 
 .portfolio-card__tags {

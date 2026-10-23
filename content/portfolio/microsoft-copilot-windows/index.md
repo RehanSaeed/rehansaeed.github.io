@@ -1,5 +1,5 @@
 ---
-title: "Microsoft Copilot Windows app"
+title: "Microsoft Copilot Windows App"
 description: "I worked on the Microsoft Copilot Windows app, Microsoft's AI assistant for the Windows desktop."
 author: "Muhammad Rehan Saeed"
 permalink: "https://blogs.windows.com/windows-insider/2026/03/04/copilot-app-on-windows-opening-web-links-alongside-your-conversations-begins-rolling-out-to-windows-insiders/"

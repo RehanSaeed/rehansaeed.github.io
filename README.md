@@ -129,6 +129,8 @@ their linked official Microsoft articles, not illustrations or logos. Each
 credits Microsoft and links to the original full-resolution image. Original
 formats, dimensions and complete frames are preserved; PNG source optimizations
 are lossless and JPEG candidates must pass the same quality guard described above.
+Both automatic compression workflows exclude these four reviewed screenshots:
+palette recompression changed the Edge screenshot's transparent window edges.
 
 Each open-source title is followed by linked Shields Stars/Forks badges, before
 the description. Published packages identified in the repositories' main READMEs
@@ -137,9 +139,10 @@ packages. Templates shows the current Boxed.Templates package and the explicitly
 named Boilerplate.Templates counter rather than conflating them.
 Elysium.Extra's README confirms its published package through a version badge;
 the portfolio adds the corresponding download statistic. Each download link and
-accessible name identifies the full package ID. Each badge visibly includes that
-complete ID as wrapping HTML text, never an abbreviated label or an unreadably
-shrunk SVG. Package names and saved counts remain in static HTML.
+accessible name identifies the full package ID. Each compact Shields badge uses
+that complete ID as its label, never an abbreviated name. The badges wrap side by
+side rather than placing each package in a full-width bordered block. Package
+names and saved counts remain in static HTML.
 Build-status, version, prerelease-feed and personal Twitter badges are not usage
 statistics and are not copied into the cards.
 
@@ -149,9 +152,10 @@ counts at the last build. Badges use 30px-high, up-to-156px-wide reserved slots
 that shrink to fit narrow cards without overflow. The card content uses CSS Grid
 `gap` for consistent title/badge/description/tag spacing rather than stacked
 paragraph and tag margins.
-NuGet badges reserve 192x30 slots for live counters beneath the full package name.
+NuGet badges retain the original 300x30 slots, constrained to the card's width.
 The GitHub and NuGet groups are separate grid rows, with gap below the complete
-statistics group. Full package names wrap without truncation on narrow cards.
+statistics group. The NuGet row uses flex wrapping to flow the badges onto further
+lines when necessary, with full package names inside the badge images.
 Badge links remain independently clickable above the card's stretched title link.
 
 The contact address stays obfuscated in configuration. Its recipient `mailto:`

@@ -1,5 +1,5 @@
 ---
-title: "Cortana Windows app"
+title: "Cortana Windows App"
 description: "I worked on the Cortana Windows app, Microsoft's personal productivity assistant."
 author: "Muhammad Rehan Saeed"
 permalink: "https://blogs.windows.com/windowsexperience/2020/02/28/cortana-in-the-upcoming-windows-10-release-focused-on-your-productivity-with-enhanced-security-and-privacy/"

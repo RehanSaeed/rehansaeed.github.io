@@ -1,5 +1,5 @@
 ---
-title: "Microsoft Edge enterprise new tab"
+title: "Microsoft Edge Enterprise New Tab"
 description: "I worked on the enterprise tab of Microsoft Edge's new tab page, helping people access work content from their browser."
 author: "Muhammad Rehan Saeed"
 permalink: "https://blogs.windows.com/msedgedev/2021/10/28/microsoft-edge-features-microsoft-365-reduce-pain-context-switching/"

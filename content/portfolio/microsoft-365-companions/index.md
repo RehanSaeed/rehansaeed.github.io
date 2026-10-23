@@ -1,5 +1,5 @@
 ---
-title: "Microsoft 365 companion apps"
+title: "Microsoft 365 Companion Apps"
 description: "I worked on Microsoft's companion apps for Windows, including the People Companion app, which helps people find and connect with colleagues from the taskbar."
 author: "Muhammad Rehan Saeed"
 permalink: "https://microsoft.design/articles/from-incubation-to-impact-microsoft-365-companion-apps/"

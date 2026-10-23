@@ -16,7 +16,7 @@
     <section
       class="portfolio__section portfolio__microsoft"
       aria-labelledby="portfolio-microsoft">
-      <u-heading id="portfolio-microsoft" level="2">Microsoft work</u-heading>
+      <u-heading id="portfolio-microsoft" level="2">Microsoft Work</u-heading>
       <div class="portfolio__items">
         <u-portfolio-card
           v-for="item of microsoftProjects"
@@ -29,7 +29,7 @@
       class="portfolio__section portfolio__open-source"
       aria-labelledby="portfolio-open-source">
       <div>
-        <u-heading id="portfolio-open-source" level="2">Open source</u-heading>
+        <u-heading id="portfolio-open-source" level="2">Open Source</u-heading>
         <p>
           Ordered by total NuGet package downloads, then GitHub stars. Projects
           without NuGet packages are ordered by GitHub stars.
