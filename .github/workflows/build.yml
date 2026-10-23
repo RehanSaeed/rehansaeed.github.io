@@ -136,7 +136,7 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - name: "Download exact Pages artifact"
-        uses: actions/download-artifact@v8.0.1
+        uses: actions/download-artifact@v8.0.2
         with:
           name: github-pages
           path: pages-artifact
