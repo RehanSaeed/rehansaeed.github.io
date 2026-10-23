@@ -78,7 +78,7 @@ test("All portfolio cards and popularity ordering are present in static HTML", a
         "https://github.com/RehanSaeed/Bash-Cheat-Sheet",
     )
     .find(".portfolio-card__image");
-  expect(bashHero.attr("src")).toContain("Bash-Cheat-Sheet-1600x900.svg");
+  expect(bashHero.attr("src")).toContain("Bash-Cheat-Sheet-1600x900.png");
   expect(bashHero.attr("width")).toBe("1600");
   expect(bashHero.attr("height")).toBe("900");
   cards.each((_, card) => {

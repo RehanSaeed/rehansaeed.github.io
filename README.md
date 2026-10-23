@@ -108,9 +108,9 @@ warning preserves previously saved counts; without a saved count the build fails
 rather than assigning a misleading zero. No token or runtime API is needed in
 the generated site.
 
-Bash Cheat Sheet uses its own terminal-style vector artwork rather than the
-generic code photograph. Its 1600x900 intrinsic dimensions are preserved by the
-same responsive-image pipeline as the other portfolio heroes.
+Bash Cheat Sheet uses its own terminal illustration rather than the generic code
+photograph. An editable SVG is retained alongside the 1600x900 PNG used by the
+responsive-image pipeline, avoiding SVG MIME types for the static WebP variants.
 
 Each portfolio title is followed by linked Shields Stars/Forks badges, before
 the description. Published packages identified in the repositories' main READMEs
