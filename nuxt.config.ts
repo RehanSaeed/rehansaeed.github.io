@@ -122,6 +122,8 @@ export default defineNuxtConfig({
     // Convert rendered content, including our build-time snippet/diagram/Markdown extensions.
     contentSource: false,
     llmsTxt: { pages: "sitemap", markdownLinks: true },
+    // Static discovery must read the completed page index, not an earlier cached response.
+    llmsTxtCacheSeconds: 0,
     llmsFullTxt: true,
     sitemapMd: true,
     describedby: true,

@@ -111,6 +111,8 @@ the author's supplied descriptions and Windows platform tags. Additional tags
 link to published posts: Microsoft, User Interface, Accessibility for Copilot,
 and Browser for Edge. Copilot also has the explicitly requested AI tag, whose
 generated tag page intentionally has no posts yet.
+Static AI discovery disables response caching so its final Markdown sitemap
+includes newly generated pages rather than an earlier, incomplete page index.
 
 The open-source section retains all seven original projects and adds Bash Cheat
 Sheet, .NET Boxed Framework, Kubernetes Cheat Sheet, HttpClientSample, Helm Cheat
@@ -148,8 +150,8 @@ palette recompression changed the Edge screenshot's transparent window edges.
 Each open-source title is followed by linked statistics badges, before the
 description. Published packages identified in the repositories' main READMEs
 have total NuGet download badges on their own row above GitHub Stars/Forks,
-including the listed add-on
-packages. Templates shows the current Boxed.Templates package and the explicitly
+including the listed add-on packages. Templates shows the current Boxed.Templates
+package and the explicitly
 named Boilerplate.Templates counter rather than conflating them.
 Elysium.Extra's README confirms its published package through a version badge;
 the portfolio adds the corresponding download statistic. Each download link and
@@ -158,21 +160,18 @@ that complete ID as its label, never an abbreviated name. Both groups use flexbo
 with wrapping and a 12px gap; a 16px gap separates NuGet from GitHub. Badge images
 use their natural widths at 30px tall, rather than shrinking long labels into
 fixed-width slots. Only badges wider than their entire card scale down to fit;
-full package names remain intact. Package
-names and saved counts remain in static HTML.
+full package names remain intact. Package names and saved counts remain in
+static HTML.
 Build-status, version, prerelease-feed and personal Twitter badges are not usage
 statistics and are not copied into the cards.
 
 These remote images update independently of the static order,
 which changes on a subsequent build. Their accessible descriptions state the
-counts at the last build. Badges use 30px-high, up-to-156px-wide reserved slots
-that shrink to fit narrow cards without overflow. The card content uses CSS Grid
+counts at the last build. The card content uses CSS Grid
 `gap` for consistent title/badge/description/tag spacing rather than stacked
 paragraph and tag margins.
-NuGet badges retain the original 300x30 slots, constrained to the card's width.
-The GitHub and NuGet groups are separate grid rows, with gap below the complete
-statistics group. The NuGet row uses flex wrapping to flow the badges onto further
-lines when necessary, with full package names inside the badge images.
+The badge groups are separate rows in a vertical flex container, with gap below
+the complete statistics group as well as between the two wrapping rows.
 Badge links remain independently clickable above the card's stretched title link.
 
 The contact address stays obfuscated in configuration. Its recipient `mailto:`
