@@ -210,7 +210,7 @@ test("Microsoft work precedes open source and links to public product articles w
     expect(tagResponse.ok(), `${tag} tag page`).toBe(true);
     const tagged = load(await tagResponse.text());
     if (tag === "AI") {
-      expect(tagged("h1").text()).toBe("# AI");
+      expect(tagged(".tag-page > h1").text()).toBe("# AI");
       expect(tagged(".post-card")).toHaveLength(0);
       const sitemap = await request.get("/sitemap.md");
       expect(sitemap.ok()).toBe(true);
