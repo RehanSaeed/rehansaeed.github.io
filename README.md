@@ -147,6 +147,11 @@ source URLs remain in the portfolio frontmatter without visible screenshot
 captions. Formats, dimensions and complete frames are preserved; PNG source
 optimizations are lossless and JPEG candidates must pass the same quality guard
 described above.
+The Companion screenshot's baked-in white corner matte is filled from adjacent
+desktop/taskbar background, without cropping the frame, app UI or taskbar or
+changing its dimensions. Its JPEG uses quality 100 and 4:4:4 sampling; outside
+the four 64px corner areas, the decoded-image guard requires PSNR of at least
+50 dB and maximum channel error of 12/255.
 Both automatic compression workflows exclude these four reviewed screenshots:
 palette recompression changed the Edge screenshot's transparent window edges.
 

@@ -1,5 +1,24 @@
 import { load } from "cheerio";
+import sharp from "sharp";
 import { expect, test } from "./fixtures";
+
+async function expectFilledCompanionCorners(image: Buffer) {
+  const { data, info } = await sharp(image)
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const corners = [
+    [0, 0],
+    [info.width - 1, 0],
+    [0, info.height - 1],
+    [info.width - 1, info.height - 1],
+  ] as const;
+  for (const [x, y] of corners) {
+    const offset = (y * info.width + x) * 4;
+    expect(data[offset + 3]).toBe(255);
+    expect(Math.min(...data.subarray(offset, offset + 3))).toBeLessThan(240);
+  }
+}
 
 const repositories = [
   "Dotnet-Boxed/Templates",
@@ -240,6 +259,14 @@ test("Microsoft work precedes open source and links to public product articles w
     { width: 1430, height: 929 },
     { width: 1560, height: 880 },
   ]);
+  for (const source of [
+    "/images/hero/Microsoft-365-Companions-3072x1728.jpg",
+    cards.eq(1).find(".portfolio-card__image").attr("src")!,
+  ]) {
+    const imageResponse = await request.get(source);
+    expect(imageResponse.ok()).toBe(true);
+    await expectFilledCompanionCorners(await imageResponse.body());
+  }
   const graph = JSON.parse($('script[type="application/ld+json"]').text());
   const list = graph["@graph"].find(
     (node: { "@type": string }) => node["@type"] === "ItemList",
@@ -255,6 +282,7 @@ for (const width of [375, 1280]) {
   for (const colorScheme of ["light", "dark"] as const) {
     test(`Portfolio badges follow titles at ${width}px in ${colorScheme} mode`, async ({
       page,
+      request,
     }) => {
       await page.setViewportSize({ width, height: 900 });
       await page.emulateMedia({ colorScheme });
@@ -301,6 +329,16 @@ for (const width of [375, 1280]) {
             ),
           )
           .toBe(true);
+        if (
+          (await image.getAttribute("alt")) === "Microsoft 365 Companion Apps"
+        ) {
+          const source = await image.evaluate(
+            (element: HTMLImageElement) => element.currentSrc,
+          );
+          const imageResponse = await request.get(source);
+          expect(imageResponse.ok()).toBe(true);
+          await expectFilledCompanionCorners(await imageResponse.body());
+        }
       }
       const bashHero = cards.getByRole("img", {
         name: "Bash Cheat Sheet",
