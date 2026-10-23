@@ -157,7 +157,7 @@ Elysium.Extra's README confirms its published package through a version badge;
 the portfolio adds the corresponding download statistic. Each download link and
 accessible name identifies the full package ID. Each compact Shields badge uses
 that complete ID as its label, never an abbreviated name. Both groups use flexbox
-with wrapping and a 12px gap; a 16px gap separates NuGet from GitHub. Badge images
+with wrapping and a 0.75rem gap; a 1rem gap separates NuGet from GitHub. Badge images
 use their natural widths at 30px tall, rather than shrinking long labels into
 fixed-width slots. Only badges wider than their entire card scale down to fit;
 full package names remain intact. Package names and saved counts remain in

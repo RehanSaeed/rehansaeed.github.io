@@ -232,7 +232,9 @@ assert.deepEqual(
 
 const sitemap = liveArtifacts["/sitemap.xml"].urls
     .filter((entry) => !excluded.has(entry.loc.replace("{origin}", "")))
-    .map((entry) => ({ ...entry, lastmod: postDates.get(entry.loc) ?? null }));
+    .map((entry) => ({ ...entry, lastmod: postDates.get(entry.loc) ?? null }))
+    .concat([{ loc: "{origin}/tag/ai/", lastmod: null }])
+    .sort((a, b) => a.loc.localeCompare(b.loc));
 assert.deepEqual(
     localArtifacts["/sitemap.xml"].urls,
     sitemap,

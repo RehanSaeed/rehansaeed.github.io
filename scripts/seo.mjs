@@ -189,7 +189,12 @@ for (const url of urls) {
 const referenceRoutes = (await readFile("tests/parity/urls.txt", "utf8"))
     .trim()
     .split(/\r?\n/);
-for (const path of [...referenceRoutes, "/404-not-found/"]) {
+const additionalPublicRoutes = ["/tag/ai/"];
+for (const path of [
+    ...referenceRoutes,
+    ...additionalPublicRoutes,
+    "/404-not-found/",
+]) {
     const htmlPath =
         path === "/404-not-found/"
             ? "404.html"
@@ -224,10 +229,13 @@ assert.match(robots, /Content-Usage: train-ai=y/);
 assert.match(robots, /Content-Signal: ai-train=yes, search=yes, ai-input=yes/);
 assert.match(robots, /User-agent: \*\s+Allow: \//);
 assert(!/^Disallow:\s*\/.+/m.test(robots));
+for (const path of additionalPublicRoutes) {
+    assert(urls.includes(`${site.url}${path}`), `${path}: approved public page`);
+}
 assert.equal(
     urls.length,
-    referenceRoutes.length - 5,
-    "All and only public reference pages indexed",
+    referenceRoutes.length - 5 + additionalPublicRoutes.length,
+    "All and only public reference pages and approved additions indexed",
 );
 assert.equal(articles, 102, "Every published article has a schema graph");
 console.log(

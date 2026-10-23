@@ -51,7 +51,7 @@ export default {
 .card--compact {
   --card-space: calc(var(--global-space-fluid-6) * 0.9);
 
-  font-size: max(1rem, 0.9em);
+  font-size: max(16px, 0.9em);
   inline-size: 100%;
   max-inline-size: var(--global-space-card-max-width);
   justify-self: center;
