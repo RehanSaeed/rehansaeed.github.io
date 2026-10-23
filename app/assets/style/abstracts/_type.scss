@@ -1,0 +1,26 @@
+$font-size-minimum: 1em; // 16px
+$font-size-maximum: 1.25em; // 20px
+
+// Word wrap text
+@mixin word-wrap($hyphens: false) {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  @if ($hyphens) {
+    hyphens: auto;
+  }
+}
+
+// Don't wrap text and show an ellipses instead
+@mixin ellipsis() {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@mixin line-clamp($lines) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

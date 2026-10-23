@@ -1,0 +1,5451 @@
+{
+  "/404": {
+    "status": 404,
+    "lang": "en",
+    "title": "Not Found - Muhammad Rehan Saeed",
+    "meta": {
+      "gridsome:hash": "bcbbf2e0c50c988bc3ab86f9cb92507ff8515739",
+      "format-detection": "telephone=no",
+      "theme-color": [
+        "#6b17e8",
+        "#6b17e8",
+        "#ccbdff"
+      ],
+      "apple-mobile-web-app-capable": "yes",
+      "apple-mobile-web-app-status-bar-style": "default",
+      "apple-mobile-web-app-title": "Muhammad Rehan Saeed",
+      "application-name": "Muhammad Rehan Saeed",
+      "msapplication-TileColor": [
+        "#666600",
+        "#6b17e8"
+      ],
+      "msapplication-TileImage": [
+        "/assets/static/favicon.png-144x144.png",
+        "{origin}/favicon.png"
+      ],
+      "color-scheme": "dark light",
+      "referrer": "no-referrer-when-downgrade"
+    },
+    "links": {
+      "manifest": "/manifest.webmanifest",
+      "search": "{origin}/opensearch.xml | application/opensearchdescription+xml | Muhammad Rehan Saeed",
+      "alternate": [
+        "{origin}/atom.xml | application/atom+xml | Muhammad Rehan Saeed",
+        "{origin}/feed.json | application/json | Muhammad Rehan Saeed",
+        "{origin}/rss.xml | application/rss+xml | Muhammad Rehan Saeed"
+      ],
+      "webmention": "https://webmention.io/rehansaeed.com/webmention",
+      "pingback": "https://webmention.io/rehansaeed.com/xmlrpc"
+    },
+    "jsonLd": [],
+    "h1": [
+      "404 Not Found",
+      "Muhammad Rehan Saeed"
+    ],
+    "cards": []
+  },
+  "/rss.xml": {
+    "status": 200,
+    "title": "Muhammad Rehan Saeed",
+    "link": "{origin}",
+    "items": [
+      {
+        "title": "On the Etiquette of Pull Request Comments",
+        "link": "{origin}/on-the-etiquette-of-pull-request-comments/",
+        "guid": "{origin}/on-the-etiquette-of-pull-request-comments/",
+        "pubDate": "Tue, 02 Aug 2022 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "I Was Awarded as an Open UK Honouree",
+        "link": "{origin}/open-uk-honouree/",
+        "guid": "{origin}/open-uk-honouree/",
+        "pubDate": "Mon, 07 Feb 2022 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Live Streaming .NET",
+        "link": "{origin}/live-streaming-dotnet/",
+        "guid": "{origin}/live-streaming-dotnet/",
+        "pubDate": "Fri, 04 Feb 2022 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Optimally Configuring Open Telemetry Tracing for ASP.NET Core",
+        "link": "{origin}/optimally-configuring-open-telemetry-tracing-for-asp-net-core/",
+        "guid": "{origin}/optimally-configuring-open-telemetry-tracing-for-asp-net-core/",
+        "pubDate": "Thu, 03 Feb 2022 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "The Problem with C# 10 Implicit Usings",
+        "link": "{origin}/the-problem-with-csharp-10-implicit-usings/",
+        "guid": "{origin}/the-problem-with-csharp-10-implicit-usings/",
+        "pubDate": "Wed, 13 Oct 2021 09:24:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "The Windows Package Manager",
+        "link": "{origin}/windows-package-manager/",
+        "guid": "{origin}/windows-package-manager/",
+        "pubDate": "Tue, 12 Oct 2021 08:40:00 GMT",
+        "categories": []
+      },
+      {
+        "title": ".NET Boxed Visual Studio Integration",
+        "link": "{origin}/dotnet-boxed-visual-studio-integration/",
+        "guid": "{origin}/dotnet-boxed-visual-studio-integration/",
+        "pubDate": "Thu, 27 May 2021 11:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Code Coverage & Frontend Testing",
+        "link": "{origin}/code-coverage-and-frontend-testing/",
+        "guid": "{origin}/code-coverage-and-frontend-testing/",
+        "pubDate": "Mon, 10 May 2021 11:23:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Web Component Custom Element Gotchas",
+        "link": "{origin}/web-component-custom-element-gotchas/",
+        "guid": "{origin}/web-component-custom-element-gotchas/",
+        "pubDate": "Fri, 30 Apr 2021 12:12:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "CSS General Rules of Thumb",
+        "link": "{origin}/css-general-rules-of-thumb/",
+        "guid": "{origin}/css-general-rules-of-thumb/",
+        "pubDate": "Tue, 20 Apr 2021 12:24:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "A System for Grouping & Sorting CSS Properties",
+        "link": "{origin}/system-for-grouping-and-sorting-css-properties/",
+        "guid": "{origin}/system-for-grouping-and-sorting-css-properties/",
+        "pubDate": "Tue, 20 Apr 2021 10:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Exporting Open Telemetry Data to Jaeger",
+        "link": "{origin}/exporting-open-telemetry-data-to-jaeger/",
+        "guid": "{origin}/exporting-open-telemetry-data-to-jaeger/",
+        "pubDate": "Thu, 11 Feb 2021 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Open Telemetry for ASP.NET Core",
+        "link": "{origin}/open-telemetry-for-asp-net-core/",
+        "guid": "{origin}/open-telemetry-for-asp-net-core/",
+        "pubDate": "Mon, 01 Feb 2021 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Deep Dive into Open Telemetry for .NET",
+        "link": "{origin}/deep-dive-into-open-telemetry-for-net/",
+        "guid": "{origin}/deep-dive-into-open-telemetry-for-net/",
+        "pubDate": "Tue, 19 Jan 2021 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Automating .NET Security Updates",
+        "link": "{origin}/automating-dotnet-security-updates/",
+        "guid": "{origin}/automating-dotnet-security-updates/",
+        "pubDate": "Wed, 23 Sep 2020 15:35:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "The Fastest NuGet Package Ever Published (Probably)",
+        "link": "{origin}/the-fastest-nuget-package-ever-published-probably/",
+        "guid": "{origin}/the-fastest-nuget-package-ever-published-probably/",
+        "pubDate": "Wed, 08 Jul 2020 08:34:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "The Easiest Way to Version NuGet Packages",
+        "link": "{origin}/the-easiest-way-to-version-nuget-packages/",
+        "guid": "{origin}/the-easiest-way-to-version-nuget-packages/",
+        "pubDate": "Wed, 01 Jul 2020 16:36:29 GMT",
+        "categories": []
+      },
+      {
+        "title": "Racism in Software Development & Beyond",
+        "link": "{origin}/racism-in-software-development-and-beyond/",
+        "guid": "{origin}/racism-in-software-development-and-beyond/",
+        "pubDate": "Fri, 12 Jun 2020 16:36:29 GMT",
+        "categories": []
+      },
+      {
+        "title": "Spicing up your Browser Console",
+        "link": "{origin}/spicing-up-your-browser-console/",
+        "guid": "{origin}/spicing-up-your-browser-console/",
+        "pubDate": "Wed, 10 Jun 2020 18:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Choosing a Static Site Generator",
+        "link": "{origin}/choosing-a-static-site-generator/",
+        "guid": "{origin}/choosing-a-static-site-generator/",
+        "pubDate": "Tue, 09 Jun 2020 19:19:49 GMT",
+        "categories": []
+      },
+      {
+        "title": "ASP.NET Core Integration Testing & Mocking using Moq",
+        "link": "{origin}/asp-net-core-integration-testing-mocking-using-moq/",
+        "guid": "{origin}/asp-net-core-integration-testing-mocking-using-moq/",
+        "pubDate": "Fri, 03 Jan 2020 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "What dotnet new Could Be",
+        "link": "{origin}/what-dotnet-new-could-be/",
+        "guid": "{origin}/what-dotnet-new-could-be/",
+        "pubDate": "Tue, 31 Dec 2019 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Unit Testing dotnet new Templates",
+        "link": "{origin}/unit-testing-dotnet-new-templates/",
+        "guid": "{origin}/unit-testing-dotnet-new-templates/",
+        "pubDate": "Wed, 21 Aug 2019 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": ".gitattributes Best Practices",
+        "link": "{origin}/gitattributes-best-practices/",
+        "guid": "{origin}/gitattributes-best-practices/",
+        "pubDate": "Mon, 22 Jul 2019 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Git Cloning the Windows OS Repo",
+        "link": "{origin}/git-cloning-the-windows-os-repo/",
+        "guid": "{origin}/git-cloning-the-windows-os-repo/",
+        "pubDate": "Mon, 24 Jun 2019 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Securing ASP.NET Core in Docker",
+        "link": "{origin}/securing-asp-net-core-in-docker/",
+        "guid": "{origin}/securing-asp-net-core-in-docker/",
+        "pubDate": "Mon, 25 Mar 2019 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "A Simple and Fast Object Mapper",
+        "link": "{origin}/a-simple-and-fast-object-mapper/",
+        "guid": "{origin}/a-simple-and-fast-object-mapper/",
+        "pubDate": "Tue, 05 Mar 2019 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Is ASP.NET Core now a Mature Platform?",
+        "link": "{origin}/is-asp-net-core-now-a-mature-platform/",
+        "guid": "{origin}/is-asp-net-core-now-a-mature-platform/",
+        "pubDate": "Tue, 18 Dec 2018 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "PluralSight vs LinkedIn Learning vs FrontendMasters vs Egghead.io vs YouTube",
+        "link": "{origin}/pluralsight-vs-linkedin-learning-vs-frontendmasters-vs-egghead-io-vs-youtube/",
+        "guid": "{origin}/pluralsight-vs-linkedin-learning-vs-frontendmasters-vs-egghead-io-vs-youtube/",
+        "pubDate": "Mon, 12 Nov 2018 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Optimally Configuring ASP.NET Core HttpClientFactory",
+        "link": "{origin}/optimally-configuring-asp-net-core-httpclientfactory/",
+        "guid": "{origin}/optimally-configuring-asp-net-core-httpclientfactory/",
+        "pubDate": "Mon, 20 Aug 2018 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "ASP.NET Core Hidden Gem - QueryHelpers",
+        "link": "{origin}/asp-net-core-hidden-gem-queryhelpers/",
+        "guid": "{origin}/asp-net-core-hidden-gem-queryhelpers/",
+        "pubDate": "Sat, 14 Jul 2018 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Optimally Configuring Entity Framework Core",
+        "link": "{origin}/optimally-configuring-entity-framework-core/",
+        "guid": "{origin}/optimally-configuring-entity-framework-core/",
+        "pubDate": "Sun, 08 Jul 2018 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Migrating to Entity Framework Core Seed Data",
+        "link": "{origin}/migrating-to-entity-framework-core-seed-data/",
+        "guid": "{origin}/migrating-to-entity-framework-core-seed-data/",
+        "pubDate": "Sun, 01 Jul 2018 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": ".NET Boxed",
+        "link": "{origin}/net-boxed/",
+        "guid": "{origin}/net-boxed/",
+        "pubDate": "Sun, 13 May 2018 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "The Dotnet Watch Tool Revisited",
+        "link": "{origin}/the-dotnet-watch-tool-revisited/",
+        "guid": "{origin}/the-dotnet-watch-tool-revisited/",
+        "pubDate": "Mon, 30 Apr 2018 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Writing Code while Asleep",
+        "link": "{origin}/writing-code-asleep/",
+        "guid": "{origin}/writing-code-asleep/",
+        "pubDate": "Mon, 29 Jan 2018 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Writing your Webpack configuration in TypeScript",
+        "link": "{origin}/writing-your-webpack-configuration-in-typescript/",
+        "guid": "{origin}/writing-your-webpack-configuration-in-typescript/",
+        "pubDate": "Wed, 03 Jan 2018 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Useful Docker Images - Part 2",
+        "link": "{origin}/useful-docker-images-part2/",
+        "guid": "{origin}/useful-docker-images-part2/",
+        "pubDate": "Mon, 11 Dec 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Useful Docker Images - Part 1",
+        "link": "{origin}/useful-docker-images-part1/",
+        "guid": "{origin}/useful-docker-images-part1/",
+        "pubDate": "Thu, 30 Nov 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Docker Labels in Depth",
+        "link": "{origin}/docker-labels-depth/",
+        "guid": "{origin}/docker-labels-depth/",
+        "pubDate": "Mon, 20 Nov 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Docker Read-Only File Systems",
+        "link": "{origin}/docker-read-file-systems/",
+        "guid": "{origin}/docker-read-file-systems/",
+        "pubDate": "Mon, 13 Nov 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "ASP.NET Core Caching in Practice",
+        "link": "{origin}/asp-net-core-caching-in-practice/",
+        "guid": "{origin}/asp-net-core-caching-in-practice/",
+        "pubDate": "Fri, 20 Oct 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "A Very Generic .editorconfig File (Updated)",
+        "link": "{origin}/generic-editorconfig-file/",
+        "guid": "{origin}/generic-editorconfig-file/",
+        "pubDate": "Sun, 01 Oct 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Keeping Up With Software Development",
+        "link": "{origin}/keeping-software-development/",
+        "guid": "{origin}/keeping-software-development/",
+        "pubDate": "Sun, 13 Aug 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Structured Data using Schema.NET",
+        "link": "{origin}/structured-data-using-schema-net/",
+        "guid": "{origin}/structured-data-using-schema-net/",
+        "pubDate": "Sun, 02 Jul 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "ASP.NET Core Lazy Command Pattern",
+        "link": "{origin}/asp-net-core-lazy-command-pattern/",
+        "guid": "{origin}/asp-net-core-lazy-command-pattern/",
+        "pubDate": "Sat, 08 Apr 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "dotnet new Feature Selection",
+        "link": "{origin}/dotnet-new-feature-selection/",
+        "guid": "{origin}/dotnet-new-feature-selection/",
+        "pubDate": "Sun, 26 Mar 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Cleaning Up CSPROJ",
+        "link": "{origin}/cleaning-up-csproj/",
+        "guid": "{origin}/cleaning-up-csproj/",
+        "pubDate": "Sat, 18 Mar 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Cross-Platform DevOps for .NET Core",
+        "link": "{origin}/cross-platform-devops-net-core/",
+        "guid": "{origin}/cross-platform-devops-net-core/",
+        "pubDate": "Sat, 28 Jan 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Custom Project Templates Using dotnet new",
+        "link": "{origin}/custom-project-templates-using-dotnet-new/",
+        "guid": "{origin}/custom-project-templates-using-dotnet-new/",
+        "pubDate": "Wed, 18 Jan 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 8 - Timeouts",
+        "link": "{origin}/reactive-extensions-rx-part-8-timeouts/",
+        "guid": "{origin}/reactive-extensions-rx-part-8-timeouts/",
+        "pubDate": "Mon, 02 Jan 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "SEO Friendly URL's for ASP.NET Core",
+        "link": "{origin}/seo-friendly-urls-asp-net-core/",
+        "guid": "{origin}/seo-friendly-urls-asp-net-core/",
+        "pubDate": "Sat, 17 Dec 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Making Application Insights Fast & Secure",
+        "link": "{origin}/making-application-insights-fast-and-secure/",
+        "guid": "{origin}/making-application-insights-fast-and-secure/",
+        "pubDate": "Sun, 11 Dec 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "The Dotnet Watch Tool",
+        "link": "{origin}/the-dotnet-watch-tool/",
+        "guid": "{origin}/the-dotnet-watch-tool/",
+        "pubDate": "Sat, 10 Sep 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "NGINX for ASP.NET Core In-Depth",
+        "link": "{origin}/nginx-asp-net-core-depth/",
+        "guid": "{origin}/nginx-asp-net-core-depth/",
+        "pubDate": "Sun, 21 Aug 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "ASP.NET Core Fluent Interface Extensions",
+        "link": "{origin}/asp-net-core-fluent-interface-extensions/",
+        "guid": "{origin}/asp-net-core-fluent-interface-extensions/",
+        "pubDate": "Sun, 26 Jun 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Azure Active Directory Versus Identity Server",
+        "link": "{origin}/azure-active-directory-versus-identity-server/",
+        "guid": "{origin}/azure-active-directory-versus-identity-server/",
+        "pubDate": "Fri, 20 May 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Social TagHelpers for ASP.NET Core",
+        "link": "{origin}/social-taghelpers-for-asp-net-core/",
+        "guid": "{origin}/social-taghelpers-for-asp-net-core/",
+        "pubDate": "Sat, 19 Mar 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Subresource Integrity TagHelper Using ASP.NET Core - Part 2",
+        "link": "{origin}/subresource-integrity-taghelper-using-asp-net-core-part-2/",
+        "guid": "{origin}/subresource-integrity-taghelper-using-asp-net-core-part-2/",
+        "pubDate": "Sat, 12 Mar 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Subresource Integrity TagHelper Using ASP.NET Core - Part 1",
+        "link": "{origin}/subresource-integrity-taghelper-using-asp-net-core/",
+        "guid": "{origin}/subresource-integrity-taghelper-using-asp-net-core/",
+        "pubDate": "Sun, 06 Mar 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Colorful.Console",
+        "link": "{origin}/colorful-console/",
+        "guid": "{origin}/colorful-console/",
+        "pubDate": "Sun, 14 Feb 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Make Certificate",
+        "link": "{origin}/make-certificate/",
+        "guid": "{origin}/make-certificate/",
+        "pubDate": "Sun, 07 Feb 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Logging with Serilog.Exceptions",
+        "link": "{origin}/logging-with-serilog-exceptions/",
+        "guid": "{origin}/logging-with-serilog-exceptions/",
+        "pubDate": "Sun, 31 Jan 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": ".NET Big-O Algorithm Complexity Cheat Sheet",
+        "link": "{origin}/net-big-o-algorithm-complexity-cheat-sheet/",
+        "guid": "{origin}/net-big-o-algorithm-complexity-cheat-sheet/",
+        "pubDate": "Thu, 15 Oct 2015 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "So I've Been Awarded Microsoft MVP Status!",
+        "link": "{origin}/so-ive-been-awarded-microsoft-mvp-status/",
+        "guid": "{origin}/so-ive-been-awarded-microsoft-mvp-status/",
+        "pubDate": "Fri, 02 Oct 2015 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Dynamically Generating Sitemap.xml for ASP.NET MVC",
+        "link": "{origin}/dynamically-generating-sitemap-xml-for-asp-net-mvc/",
+        "guid": "{origin}/dynamically-generating-sitemap-xml-for-asp-net-mvc/",
+        "pubDate": "Tue, 15 Sep 2015 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Whats New in ASP.NET Core Boilerplate",
+        "link": "{origin}/whats-new-in-asp-net-5-mvc-6-boilerplate/",
+        "guid": "{origin}/whats-new-in-asp-net-5-mvc-6-boilerplate/",
+        "pubDate": "Sun, 23 Aug 2015 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Minifying HTML for ASP.NET MVC",
+        "link": "{origin}/minifying-html-for-asp-net-mvc/",
+        "guid": "{origin}/minifying-html-for-asp-net-mvc/",
+        "pubDate": "Thu, 06 Aug 2015 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Dynamically Generating Robots.txt Using ASP.NET MVC",
+        "link": "{origin}/dynamically-generating-robots-txt-using-asp-net-mvc/",
+        "guid": "{origin}/dynamically-generating-robots-txt-using-asp-net-mvc/",
+        "pubDate": "Fri, 31 Jul 2015 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Canonical URL's for ASP.NET MVC",
+        "link": "{origin}/canonical-urls-for-asp-net-mvc/",
+        "guid": "{origin}/canonical-urls-for-asp-net-mvc/",
+        "pubDate": "Tue, 14 Jul 2015 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Building RSS/Atom Feeds for ASP.NET MVC",
+        "link": "{origin}/building-rssatom-feeds-for-asp-net-mvc/",
+        "guid": "{origin}/building-rssatom-feeds-for-asp-net-mvc/",
+        "pubDate": "Fri, 26 Jun 2015 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "C# 6.0 - Saving Developers From Themselves",
+        "link": "{origin}/c-6-0-saving-developers-from-themselves/",
+        "guid": "{origin}/c-6-0-saving-developers-from-themselves/",
+        "pubDate": "Sun, 10 May 2015 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Content Security Policy (CSP) for ASP.NET MVC",
+        "link": "{origin}/content-security-policy-for-asp-net-mvc/",
+        "guid": "{origin}/content-security-policy-for-asp-net-mvc/",
+        "pubDate": "Tue, 17 Mar 2015 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "NWebSec ASP.NET MVC Security Through HTTP Headers",
+        "link": "{origin}/nwebsec-asp-net-mvc-security-through-http-headers/",
+        "guid": "{origin}/nwebsec-asp-net-mvc-security-through-http-headers/",
+        "pubDate": "Thu, 05 Feb 2015 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 7 - Sample Events",
+        "link": "{origin}/reactive-extensions-part7-sample-events/",
+        "guid": "{origin}/reactive-extensions-part7-sample-events/",
+        "pubDate": "Wed, 24 Dec 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Securing the ASP.NET MVC Web.config",
+        "link": "{origin}/securing-the-aspnet-mvc-web-config/",
+        "guid": "{origin}/securing-the-aspnet-mvc-web-config/",
+        "pubDate": "Wed, 17 Dec 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Configuration File Transforms In Visual Studio Should Be Built In",
+        "link": "{origin}/configuration-file-transforms-in-visual-studio-should-be-built-in/",
+        "guid": "{origin}/configuration-file-transforms-in-visual-studio-should-be-built-in/",
+        "pubDate": "Mon, 15 Dec 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Custom Visual Studio Project Templates",
+        "link": "{origin}/custom-visual-studio-project-templates/",
+        "guid": "{origin}/custom-visual-studio-project-templates/",
+        "pubDate": "Wed, 10 Dec 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Internet Favicon Madness (Updated)",
+        "link": "{origin}/internet-favicon-madness/",
+        "guid": "{origin}/internet-favicon-madness/",
+        "pubDate": "Mon, 24 Nov 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "ASP.NET Core Boilerplate",
+        "link": "{origin}/asp-net-mvc-boilerplate/",
+        "guid": "{origin}/asp-net-mvc-boilerplate/",
+        "pubDate": "Wed, 12 Nov 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Elysium Extra 1.1 Released",
+        "link": "{origin}/elysium-extra-1-1-released/",
+        "guid": "{origin}/elysium-extra-1-1-released/",
+        "pubDate": "Wed, 05 Nov 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Model-View-ViewModel (MVVM) - Part 4 - INotifyDataErrorInfo",
+        "link": "{origin}/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/",
+        "guid": "{origin}/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/",
+        "pubDate": "Tue, 09 Sep 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Naming Conventions",
+        "link": "{origin}/naming-conventions/",
+        "guid": "{origin}/naming-conventions/",
+        "pubDate": "Thu, 04 Sep 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Model-View-ViewModel (MVVM) - Part 3 - INotifyPropertyChanged",
+        "link": "{origin}/model-view-viewmodel-mvvm-part3-inotifypropertychanged/",
+        "guid": "{origin}/model-view-viewmodel-mvvm-part3-inotifypropertychanged/",
+        "pubDate": "Wed, 18 Jun 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Model-View-ViewModel (MVVM) - Part 2 - IDisposable",
+        "link": "{origin}/model-view-viewmodel-mvvm-part2-idisposable/",
+        "guid": "{origin}/model-view-viewmodel-mvvm-part2-idisposable/",
+        "pubDate": "Fri, 13 Jun 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Model-View-ViewModel (MVVM) - Part 1 - Overview",
+        "link": "{origin}/model-view-viewmodel-mvvm-part1-overview/",
+        "guid": "{origin}/model-view-viewmodel-mvvm-part1-overview/",
+        "pubDate": "Wed, 14 May 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Portable Class Library (PCL) version of NotificationsExtensions NuGet package",
+        "link": "{origin}/portable-class-library-version-of-notificationsextensions-nuget-package/",
+        "guid": "{origin}/portable-class-library-version-of-notificationsextensions-nuget-package/",
+        "pubDate": "Tue, 06 May 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 6 - Task ToObservable",
+        "link": "{origin}/reactive-extensions-part6-task-toobservable/",
+        "guid": "{origin}/reactive-extensions-part6-task-toobservable/",
+        "pubDate": "Fri, 25 Apr 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "GetHashCode Made Easy",
+        "link": "{origin}/gethashcode-made-easy/",
+        "guid": "{origin}/gethashcode-made-easy/",
+        "pubDate": "Mon, 14 Apr 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 5 - Awaiting Observables",
+        "link": "{origin}/reactive-extensions-part5-awaiting-observables/",
+        "guid": "{origin}/reactive-extensions-part5-awaiting-observables/",
+        "pubDate": "Thu, 27 Mar 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "WPF Metro Part 4 - Elysium Extra",
+        "link": "{origin}/wpf-metro-part4-elysium-extra/",
+        "guid": "{origin}/wpf-metro-part4-elysium-extra/",
+        "pubDate": "Wed, 19 Mar 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "WPF Metro Part 3 - Elysium",
+        "link": "{origin}/wpf-metro-part3-elysium/",
+        "guid": "{origin}/wpf-metro-part3-elysium/",
+        "pubDate": "Mon, 17 Mar 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 4 - Replacing Timers",
+        "link": "{origin}/reactive-extensions-part4-replacing-timers/",
+        "guid": "{origin}/reactive-extensions-part4-replacing-timers/",
+        "pubDate": "Tue, 11 Mar 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Windows 8.1 TouchScreen Gaming Laptops",
+        "link": "{origin}/windows-8-touchscreen-gaming-laptops/",
+        "guid": "{origin}/windows-8-touchscreen-gaming-laptops/",
+        "pubDate": "Thu, 06 Mar 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "WPF Metro Part 2 - MahApps Metro",
+        "link": "{origin}/wpf-metro-part2-mahapps-metro/",
+        "guid": "{origin}/wpf-metro-part2-mahapps-metro/",
+        "pubDate": "Sun, 02 Mar 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "WPF Metro Part 1 - Modern UI for WPF",
+        "link": "{origin}/wpf-metro-part1-modern-ui-for-wpf/",
+        "guid": "{origin}/wpf-metro-part1-modern-ui-for-wpf/",
+        "pubDate": "Wed, 19 Feb 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 3 - Naming Conventions",
+        "link": "{origin}/reactive-extensions-part3-naming-conventions/",
+        "guid": "{origin}/reactive-extensions-part3-naming-conventions/",
+        "pubDate": "Fri, 14 Feb 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 2 - Wrapping C# Events",
+        "link": "{origin}/reactive-extensions-part2-wrapping-events/",
+        "guid": "{origin}/reactive-extensions-part2-wrapping-events/",
+        "pubDate": "Thu, 13 Feb 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 1 - Replacing C# Events",
+        "link": "{origin}/reactive-extensions-part1-replacing-events/",
+        "guid": "{origin}/reactive-extensions-part1-replacing-events/",
+        "pubDate": "Tue, 11 Feb 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Stop The Brace Wars, Use StyleCop",
+        "link": "{origin}/stop-brace-wars-use-stylecop/",
+        "guid": "{origin}/stop-brace-wars-use-stylecop/",
+        "pubDate": "Sat, 08 Feb 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "ConfigureAwait in Task Parallel Library (TPL)",
+        "link": "{origin}/configureawait-task-parallel-library/",
+        "guid": "{origin}/configureawait-task-parallel-library/",
+        "pubDate": "Fri, 07 Feb 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Just Start - The First Blog Post",
+        "link": "{origin}/just-start-the-first-blog-post/",
+        "guid": "{origin}/just-start-the-first-blog-post/",
+        "pubDate": "Sat, 01 Feb 2014 00:00:00 GMT",
+        "categories": []
+      }
+    ]
+  },
+  "/feed/index.xml": {
+    "status": 200,
+    "title": "Muhammad Rehan Saeed",
+    "link": "{origin}",
+    "items": [
+      {
+        "title": "On the Etiquette of Pull Request Comments",
+        "link": "{origin}/on-the-etiquette-of-pull-request-comments/",
+        "guid": "{origin}/on-the-etiquette-of-pull-request-comments/",
+        "pubDate": "Tue, 02 Aug 2022 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "I Was Awarded as an Open UK Honouree",
+        "link": "{origin}/open-uk-honouree/",
+        "guid": "{origin}/open-uk-honouree/",
+        "pubDate": "Mon, 07 Feb 2022 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Live Streaming .NET",
+        "link": "{origin}/live-streaming-dotnet/",
+        "guid": "{origin}/live-streaming-dotnet/",
+        "pubDate": "Fri, 04 Feb 2022 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Optimally Configuring Open Telemetry Tracing for ASP.NET Core",
+        "link": "{origin}/optimally-configuring-open-telemetry-tracing-for-asp-net-core/",
+        "guid": "{origin}/optimally-configuring-open-telemetry-tracing-for-asp-net-core/",
+        "pubDate": "Thu, 03 Feb 2022 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "The Problem with C# 10 Implicit Usings",
+        "link": "{origin}/the-problem-with-csharp-10-implicit-usings/",
+        "guid": "{origin}/the-problem-with-csharp-10-implicit-usings/",
+        "pubDate": "Wed, 13 Oct 2021 09:24:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "The Windows Package Manager",
+        "link": "{origin}/windows-package-manager/",
+        "guid": "{origin}/windows-package-manager/",
+        "pubDate": "Tue, 12 Oct 2021 08:40:00 GMT",
+        "categories": []
+      },
+      {
+        "title": ".NET Boxed Visual Studio Integration",
+        "link": "{origin}/dotnet-boxed-visual-studio-integration/",
+        "guid": "{origin}/dotnet-boxed-visual-studio-integration/",
+        "pubDate": "Thu, 27 May 2021 11:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Code Coverage & Frontend Testing",
+        "link": "{origin}/code-coverage-and-frontend-testing/",
+        "guid": "{origin}/code-coverage-and-frontend-testing/",
+        "pubDate": "Mon, 10 May 2021 11:23:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Web Component Custom Element Gotchas",
+        "link": "{origin}/web-component-custom-element-gotchas/",
+        "guid": "{origin}/web-component-custom-element-gotchas/",
+        "pubDate": "Fri, 30 Apr 2021 12:12:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "CSS General Rules of Thumb",
+        "link": "{origin}/css-general-rules-of-thumb/",
+        "guid": "{origin}/css-general-rules-of-thumb/",
+        "pubDate": "Tue, 20 Apr 2021 12:24:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "A System for Grouping & Sorting CSS Properties",
+        "link": "{origin}/system-for-grouping-and-sorting-css-properties/",
+        "guid": "{origin}/system-for-grouping-and-sorting-css-properties/",
+        "pubDate": "Tue, 20 Apr 2021 10:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Exporting Open Telemetry Data to Jaeger",
+        "link": "{origin}/exporting-open-telemetry-data-to-jaeger/",
+        "guid": "{origin}/exporting-open-telemetry-data-to-jaeger/",
+        "pubDate": "Thu, 11 Feb 2021 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Open Telemetry for ASP.NET Core",
+        "link": "{origin}/open-telemetry-for-asp-net-core/",
+        "guid": "{origin}/open-telemetry-for-asp-net-core/",
+        "pubDate": "Mon, 01 Feb 2021 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Deep Dive into Open Telemetry for .NET",
+        "link": "{origin}/deep-dive-into-open-telemetry-for-net/",
+        "guid": "{origin}/deep-dive-into-open-telemetry-for-net/",
+        "pubDate": "Tue, 19 Jan 2021 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Automating .NET Security Updates",
+        "link": "{origin}/automating-dotnet-security-updates/",
+        "guid": "{origin}/automating-dotnet-security-updates/",
+        "pubDate": "Wed, 23 Sep 2020 15:35:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "The Fastest NuGet Package Ever Published (Probably)",
+        "link": "{origin}/the-fastest-nuget-package-ever-published-probably/",
+        "guid": "{origin}/the-fastest-nuget-package-ever-published-probably/",
+        "pubDate": "Wed, 08 Jul 2020 08:34:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "The Easiest Way to Version NuGet Packages",
+        "link": "{origin}/the-easiest-way-to-version-nuget-packages/",
+        "guid": "{origin}/the-easiest-way-to-version-nuget-packages/",
+        "pubDate": "Wed, 01 Jul 2020 16:36:29 GMT",
+        "categories": []
+      },
+      {
+        "title": "Racism in Software Development & Beyond",
+        "link": "{origin}/racism-in-software-development-and-beyond/",
+        "guid": "{origin}/racism-in-software-development-and-beyond/",
+        "pubDate": "Fri, 12 Jun 2020 16:36:29 GMT",
+        "categories": []
+      },
+      {
+        "title": "Spicing up your Browser Console",
+        "link": "{origin}/spicing-up-your-browser-console/",
+        "guid": "{origin}/spicing-up-your-browser-console/",
+        "pubDate": "Wed, 10 Jun 2020 18:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Choosing a Static Site Generator",
+        "link": "{origin}/choosing-a-static-site-generator/",
+        "guid": "{origin}/choosing-a-static-site-generator/",
+        "pubDate": "Tue, 09 Jun 2020 19:19:49 GMT",
+        "categories": []
+      },
+      {
+        "title": "ASP.NET Core Integration Testing & Mocking using Moq",
+        "link": "{origin}/asp-net-core-integration-testing-mocking-using-moq/",
+        "guid": "{origin}/asp-net-core-integration-testing-mocking-using-moq/",
+        "pubDate": "Fri, 03 Jan 2020 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "What dotnet new Could Be",
+        "link": "{origin}/what-dotnet-new-could-be/",
+        "guid": "{origin}/what-dotnet-new-could-be/",
+        "pubDate": "Tue, 31 Dec 2019 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Unit Testing dotnet new Templates",
+        "link": "{origin}/unit-testing-dotnet-new-templates/",
+        "guid": "{origin}/unit-testing-dotnet-new-templates/",
+        "pubDate": "Wed, 21 Aug 2019 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": ".gitattributes Best Practices",
+        "link": "{origin}/gitattributes-best-practices/",
+        "guid": "{origin}/gitattributes-best-practices/",
+        "pubDate": "Mon, 22 Jul 2019 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Git Cloning the Windows OS Repo",
+        "link": "{origin}/git-cloning-the-windows-os-repo/",
+        "guid": "{origin}/git-cloning-the-windows-os-repo/",
+        "pubDate": "Mon, 24 Jun 2019 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Securing ASP.NET Core in Docker",
+        "link": "{origin}/securing-asp-net-core-in-docker/",
+        "guid": "{origin}/securing-asp-net-core-in-docker/",
+        "pubDate": "Mon, 25 Mar 2019 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "A Simple and Fast Object Mapper",
+        "link": "{origin}/a-simple-and-fast-object-mapper/",
+        "guid": "{origin}/a-simple-and-fast-object-mapper/",
+        "pubDate": "Tue, 05 Mar 2019 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Is ASP.NET Core now a Mature Platform?",
+        "link": "{origin}/is-asp-net-core-now-a-mature-platform/",
+        "guid": "{origin}/is-asp-net-core-now-a-mature-platform/",
+        "pubDate": "Tue, 18 Dec 2018 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "PluralSight vs LinkedIn Learning vs FrontendMasters vs Egghead.io vs YouTube",
+        "link": "{origin}/pluralsight-vs-linkedin-learning-vs-frontendmasters-vs-egghead-io-vs-youtube/",
+        "guid": "{origin}/pluralsight-vs-linkedin-learning-vs-frontendmasters-vs-egghead-io-vs-youtube/",
+        "pubDate": "Mon, 12 Nov 2018 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Optimally Configuring ASP.NET Core HttpClientFactory",
+        "link": "{origin}/optimally-configuring-asp-net-core-httpclientfactory/",
+        "guid": "{origin}/optimally-configuring-asp-net-core-httpclientfactory/",
+        "pubDate": "Mon, 20 Aug 2018 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "ASP.NET Core Hidden Gem - QueryHelpers",
+        "link": "{origin}/asp-net-core-hidden-gem-queryhelpers/",
+        "guid": "{origin}/asp-net-core-hidden-gem-queryhelpers/",
+        "pubDate": "Sat, 14 Jul 2018 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Optimally Configuring Entity Framework Core",
+        "link": "{origin}/optimally-configuring-entity-framework-core/",
+        "guid": "{origin}/optimally-configuring-entity-framework-core/",
+        "pubDate": "Sun, 08 Jul 2018 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Migrating to Entity Framework Core Seed Data",
+        "link": "{origin}/migrating-to-entity-framework-core-seed-data/",
+        "guid": "{origin}/migrating-to-entity-framework-core-seed-data/",
+        "pubDate": "Sun, 01 Jul 2018 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": ".NET Boxed",
+        "link": "{origin}/net-boxed/",
+        "guid": "{origin}/net-boxed/",
+        "pubDate": "Sun, 13 May 2018 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "The Dotnet Watch Tool Revisited",
+        "link": "{origin}/the-dotnet-watch-tool-revisited/",
+        "guid": "{origin}/the-dotnet-watch-tool-revisited/",
+        "pubDate": "Mon, 30 Apr 2018 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Writing Code while Asleep",
+        "link": "{origin}/writing-code-asleep/",
+        "guid": "{origin}/writing-code-asleep/",
+        "pubDate": "Mon, 29 Jan 2018 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Writing your Webpack configuration in TypeScript",
+        "link": "{origin}/writing-your-webpack-configuration-in-typescript/",
+        "guid": "{origin}/writing-your-webpack-configuration-in-typescript/",
+        "pubDate": "Wed, 03 Jan 2018 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Useful Docker Images - Part 2",
+        "link": "{origin}/useful-docker-images-part2/",
+        "guid": "{origin}/useful-docker-images-part2/",
+        "pubDate": "Mon, 11 Dec 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Useful Docker Images - Part 1",
+        "link": "{origin}/useful-docker-images-part1/",
+        "guid": "{origin}/useful-docker-images-part1/",
+        "pubDate": "Thu, 30 Nov 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Docker Labels in Depth",
+        "link": "{origin}/docker-labels-depth/",
+        "guid": "{origin}/docker-labels-depth/",
+        "pubDate": "Mon, 20 Nov 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Docker Read-Only File Systems",
+        "link": "{origin}/docker-read-file-systems/",
+        "guid": "{origin}/docker-read-file-systems/",
+        "pubDate": "Mon, 13 Nov 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "ASP.NET Core Caching in Practice",
+        "link": "{origin}/asp-net-core-caching-in-practice/",
+        "guid": "{origin}/asp-net-core-caching-in-practice/",
+        "pubDate": "Fri, 20 Oct 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "A Very Generic .editorconfig File (Updated)",
+        "link": "{origin}/generic-editorconfig-file/",
+        "guid": "{origin}/generic-editorconfig-file/",
+        "pubDate": "Sun, 01 Oct 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Keeping Up With Software Development",
+        "link": "{origin}/keeping-software-development/",
+        "guid": "{origin}/keeping-software-development/",
+        "pubDate": "Sun, 13 Aug 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Structured Data using Schema.NET",
+        "link": "{origin}/structured-data-using-schema-net/",
+        "guid": "{origin}/structured-data-using-schema-net/",
+        "pubDate": "Sun, 02 Jul 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "ASP.NET Core Lazy Command Pattern",
+        "link": "{origin}/asp-net-core-lazy-command-pattern/",
+        "guid": "{origin}/asp-net-core-lazy-command-pattern/",
+        "pubDate": "Sat, 08 Apr 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "dotnet new Feature Selection",
+        "link": "{origin}/dotnet-new-feature-selection/",
+        "guid": "{origin}/dotnet-new-feature-selection/",
+        "pubDate": "Sun, 26 Mar 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Cleaning Up CSPROJ",
+        "link": "{origin}/cleaning-up-csproj/",
+        "guid": "{origin}/cleaning-up-csproj/",
+        "pubDate": "Sat, 18 Mar 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Cross-Platform DevOps for .NET Core",
+        "link": "{origin}/cross-platform-devops-net-core/",
+        "guid": "{origin}/cross-platform-devops-net-core/",
+        "pubDate": "Sat, 28 Jan 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Custom Project Templates Using dotnet new",
+        "link": "{origin}/custom-project-templates-using-dotnet-new/",
+        "guid": "{origin}/custom-project-templates-using-dotnet-new/",
+        "pubDate": "Wed, 18 Jan 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 8 - Timeouts",
+        "link": "{origin}/reactive-extensions-rx-part-8-timeouts/",
+        "guid": "{origin}/reactive-extensions-rx-part-8-timeouts/",
+        "pubDate": "Mon, 02 Jan 2017 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "SEO Friendly URL's for ASP.NET Core",
+        "link": "{origin}/seo-friendly-urls-asp-net-core/",
+        "guid": "{origin}/seo-friendly-urls-asp-net-core/",
+        "pubDate": "Sat, 17 Dec 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Making Application Insights Fast & Secure",
+        "link": "{origin}/making-application-insights-fast-and-secure/",
+        "guid": "{origin}/making-application-insights-fast-and-secure/",
+        "pubDate": "Sun, 11 Dec 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "The Dotnet Watch Tool",
+        "link": "{origin}/the-dotnet-watch-tool/",
+        "guid": "{origin}/the-dotnet-watch-tool/",
+        "pubDate": "Sat, 10 Sep 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "NGINX for ASP.NET Core In-Depth",
+        "link": "{origin}/nginx-asp-net-core-depth/",
+        "guid": "{origin}/nginx-asp-net-core-depth/",
+        "pubDate": "Sun, 21 Aug 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "ASP.NET Core Fluent Interface Extensions",
+        "link": "{origin}/asp-net-core-fluent-interface-extensions/",
+        "guid": "{origin}/asp-net-core-fluent-interface-extensions/",
+        "pubDate": "Sun, 26 Jun 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Azure Active Directory Versus Identity Server",
+        "link": "{origin}/azure-active-directory-versus-identity-server/",
+        "guid": "{origin}/azure-active-directory-versus-identity-server/",
+        "pubDate": "Fri, 20 May 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Social TagHelpers for ASP.NET Core",
+        "link": "{origin}/social-taghelpers-for-asp-net-core/",
+        "guid": "{origin}/social-taghelpers-for-asp-net-core/",
+        "pubDate": "Sat, 19 Mar 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Subresource Integrity TagHelper Using ASP.NET Core - Part 2",
+        "link": "{origin}/subresource-integrity-taghelper-using-asp-net-core-part-2/",
+        "guid": "{origin}/subresource-integrity-taghelper-using-asp-net-core-part-2/",
+        "pubDate": "Sat, 12 Mar 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Subresource Integrity TagHelper Using ASP.NET Core - Part 1",
+        "link": "{origin}/subresource-integrity-taghelper-using-asp-net-core/",
+        "guid": "{origin}/subresource-integrity-taghelper-using-asp-net-core/",
+        "pubDate": "Sun, 06 Mar 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Colorful.Console",
+        "link": "{origin}/colorful-console/",
+        "guid": "{origin}/colorful-console/",
+        "pubDate": "Sun, 14 Feb 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Make Certificate",
+        "link": "{origin}/make-certificate/",
+        "guid": "{origin}/make-certificate/",
+        "pubDate": "Sun, 07 Feb 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Logging with Serilog.Exceptions",
+        "link": "{origin}/logging-with-serilog-exceptions/",
+        "guid": "{origin}/logging-with-serilog-exceptions/",
+        "pubDate": "Sun, 31 Jan 2016 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": ".NET Big-O Algorithm Complexity Cheat Sheet",
+        "link": "{origin}/net-big-o-algorithm-complexity-cheat-sheet/",
+        "guid": "{origin}/net-big-o-algorithm-complexity-cheat-sheet/",
+        "pubDate": "Thu, 15 Oct 2015 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "So I've Been Awarded Microsoft MVP Status!",
+        "link": "{origin}/so-ive-been-awarded-microsoft-mvp-status/",
+        "guid": "{origin}/so-ive-been-awarded-microsoft-mvp-status/",
+        "pubDate": "Fri, 02 Oct 2015 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Dynamically Generating Sitemap.xml for ASP.NET MVC",
+        "link": "{origin}/dynamically-generating-sitemap-xml-for-asp-net-mvc/",
+        "guid": "{origin}/dynamically-generating-sitemap-xml-for-asp-net-mvc/",
+        "pubDate": "Tue, 15 Sep 2015 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Whats New in ASP.NET Core Boilerplate",
+        "link": "{origin}/whats-new-in-asp-net-5-mvc-6-boilerplate/",
+        "guid": "{origin}/whats-new-in-asp-net-5-mvc-6-boilerplate/",
+        "pubDate": "Sun, 23 Aug 2015 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Minifying HTML for ASP.NET MVC",
+        "link": "{origin}/minifying-html-for-asp-net-mvc/",
+        "guid": "{origin}/minifying-html-for-asp-net-mvc/",
+        "pubDate": "Thu, 06 Aug 2015 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Dynamically Generating Robots.txt Using ASP.NET MVC",
+        "link": "{origin}/dynamically-generating-robots-txt-using-asp-net-mvc/",
+        "guid": "{origin}/dynamically-generating-robots-txt-using-asp-net-mvc/",
+        "pubDate": "Fri, 31 Jul 2015 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Canonical URL's for ASP.NET MVC",
+        "link": "{origin}/canonical-urls-for-asp-net-mvc/",
+        "guid": "{origin}/canonical-urls-for-asp-net-mvc/",
+        "pubDate": "Tue, 14 Jul 2015 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Building RSS/Atom Feeds for ASP.NET MVC",
+        "link": "{origin}/building-rssatom-feeds-for-asp-net-mvc/",
+        "guid": "{origin}/building-rssatom-feeds-for-asp-net-mvc/",
+        "pubDate": "Fri, 26 Jun 2015 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "C# 6.0 - Saving Developers From Themselves",
+        "link": "{origin}/c-6-0-saving-developers-from-themselves/",
+        "guid": "{origin}/c-6-0-saving-developers-from-themselves/",
+        "pubDate": "Sun, 10 May 2015 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Content Security Policy (CSP) for ASP.NET MVC",
+        "link": "{origin}/content-security-policy-for-asp-net-mvc/",
+        "guid": "{origin}/content-security-policy-for-asp-net-mvc/",
+        "pubDate": "Tue, 17 Mar 2015 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "NWebSec ASP.NET MVC Security Through HTTP Headers",
+        "link": "{origin}/nwebsec-asp-net-mvc-security-through-http-headers/",
+        "guid": "{origin}/nwebsec-asp-net-mvc-security-through-http-headers/",
+        "pubDate": "Thu, 05 Feb 2015 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 7 - Sample Events",
+        "link": "{origin}/reactive-extensions-part7-sample-events/",
+        "guid": "{origin}/reactive-extensions-part7-sample-events/",
+        "pubDate": "Wed, 24 Dec 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Securing the ASP.NET MVC Web.config",
+        "link": "{origin}/securing-the-aspnet-mvc-web-config/",
+        "guid": "{origin}/securing-the-aspnet-mvc-web-config/",
+        "pubDate": "Wed, 17 Dec 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Configuration File Transforms In Visual Studio Should Be Built In",
+        "link": "{origin}/configuration-file-transforms-in-visual-studio-should-be-built-in/",
+        "guid": "{origin}/configuration-file-transforms-in-visual-studio-should-be-built-in/",
+        "pubDate": "Mon, 15 Dec 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Custom Visual Studio Project Templates",
+        "link": "{origin}/custom-visual-studio-project-templates/",
+        "guid": "{origin}/custom-visual-studio-project-templates/",
+        "pubDate": "Wed, 10 Dec 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Internet Favicon Madness (Updated)",
+        "link": "{origin}/internet-favicon-madness/",
+        "guid": "{origin}/internet-favicon-madness/",
+        "pubDate": "Mon, 24 Nov 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "ASP.NET Core Boilerplate",
+        "link": "{origin}/asp-net-mvc-boilerplate/",
+        "guid": "{origin}/asp-net-mvc-boilerplate/",
+        "pubDate": "Wed, 12 Nov 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Elysium Extra 1.1 Released",
+        "link": "{origin}/elysium-extra-1-1-released/",
+        "guid": "{origin}/elysium-extra-1-1-released/",
+        "pubDate": "Wed, 05 Nov 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Model-View-ViewModel (MVVM) - Part 4 - INotifyDataErrorInfo",
+        "link": "{origin}/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/",
+        "guid": "{origin}/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/",
+        "pubDate": "Tue, 09 Sep 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Naming Conventions",
+        "link": "{origin}/naming-conventions/",
+        "guid": "{origin}/naming-conventions/",
+        "pubDate": "Thu, 04 Sep 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Model-View-ViewModel (MVVM) - Part 3 - INotifyPropertyChanged",
+        "link": "{origin}/model-view-viewmodel-mvvm-part3-inotifypropertychanged/",
+        "guid": "{origin}/model-view-viewmodel-mvvm-part3-inotifypropertychanged/",
+        "pubDate": "Wed, 18 Jun 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Model-View-ViewModel (MVVM) - Part 2 - IDisposable",
+        "link": "{origin}/model-view-viewmodel-mvvm-part2-idisposable/",
+        "guid": "{origin}/model-view-viewmodel-mvvm-part2-idisposable/",
+        "pubDate": "Fri, 13 Jun 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Model-View-ViewModel (MVVM) - Part 1 - Overview",
+        "link": "{origin}/model-view-viewmodel-mvvm-part1-overview/",
+        "guid": "{origin}/model-view-viewmodel-mvvm-part1-overview/",
+        "pubDate": "Wed, 14 May 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Portable Class Library (PCL) version of NotificationsExtensions NuGet package",
+        "link": "{origin}/portable-class-library-version-of-notificationsextensions-nuget-package/",
+        "guid": "{origin}/portable-class-library-version-of-notificationsextensions-nuget-package/",
+        "pubDate": "Tue, 06 May 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 6 - Task ToObservable",
+        "link": "{origin}/reactive-extensions-part6-task-toobservable/",
+        "guid": "{origin}/reactive-extensions-part6-task-toobservable/",
+        "pubDate": "Fri, 25 Apr 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "GetHashCode Made Easy",
+        "link": "{origin}/gethashcode-made-easy/",
+        "guid": "{origin}/gethashcode-made-easy/",
+        "pubDate": "Mon, 14 Apr 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 5 - Awaiting Observables",
+        "link": "{origin}/reactive-extensions-part5-awaiting-observables/",
+        "guid": "{origin}/reactive-extensions-part5-awaiting-observables/",
+        "pubDate": "Thu, 27 Mar 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "WPF Metro Part 4 - Elysium Extra",
+        "link": "{origin}/wpf-metro-part4-elysium-extra/",
+        "guid": "{origin}/wpf-metro-part4-elysium-extra/",
+        "pubDate": "Wed, 19 Mar 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "WPF Metro Part 3 - Elysium",
+        "link": "{origin}/wpf-metro-part3-elysium/",
+        "guid": "{origin}/wpf-metro-part3-elysium/",
+        "pubDate": "Mon, 17 Mar 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 4 - Replacing Timers",
+        "link": "{origin}/reactive-extensions-part4-replacing-timers/",
+        "guid": "{origin}/reactive-extensions-part4-replacing-timers/",
+        "pubDate": "Tue, 11 Mar 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Windows 8.1 TouchScreen Gaming Laptops",
+        "link": "{origin}/windows-8-touchscreen-gaming-laptops/",
+        "guid": "{origin}/windows-8-touchscreen-gaming-laptops/",
+        "pubDate": "Thu, 06 Mar 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "WPF Metro Part 2 - MahApps Metro",
+        "link": "{origin}/wpf-metro-part2-mahapps-metro/",
+        "guid": "{origin}/wpf-metro-part2-mahapps-metro/",
+        "pubDate": "Sun, 02 Mar 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "WPF Metro Part 1 - Modern UI for WPF",
+        "link": "{origin}/wpf-metro-part1-modern-ui-for-wpf/",
+        "guid": "{origin}/wpf-metro-part1-modern-ui-for-wpf/",
+        "pubDate": "Wed, 19 Feb 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 3 - Naming Conventions",
+        "link": "{origin}/reactive-extensions-part3-naming-conventions/",
+        "guid": "{origin}/reactive-extensions-part3-naming-conventions/",
+        "pubDate": "Fri, 14 Feb 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 2 - Wrapping C# Events",
+        "link": "{origin}/reactive-extensions-part2-wrapping-events/",
+        "guid": "{origin}/reactive-extensions-part2-wrapping-events/",
+        "pubDate": "Thu, 13 Feb 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 1 - Replacing C# Events",
+        "link": "{origin}/reactive-extensions-part1-replacing-events/",
+        "guid": "{origin}/reactive-extensions-part1-replacing-events/",
+        "pubDate": "Tue, 11 Feb 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Stop The Brace Wars, Use StyleCop",
+        "link": "{origin}/stop-brace-wars-use-stylecop/",
+        "guid": "{origin}/stop-brace-wars-use-stylecop/",
+        "pubDate": "Sat, 08 Feb 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "ConfigureAwait in Task Parallel Library (TPL)",
+        "link": "{origin}/configureawait-task-parallel-library/",
+        "guid": "{origin}/configureawait-task-parallel-library/",
+        "pubDate": "Fri, 07 Feb 2014 00:00:00 GMT",
+        "categories": []
+      },
+      {
+        "title": "Just Start - The First Blog Post",
+        "link": "{origin}/just-start-the-first-blog-post/",
+        "guid": "{origin}/just-start-the-first-blog-post/",
+        "pubDate": "Sat, 01 Feb 2014 00:00:00 GMT",
+        "categories": []
+      }
+    ]
+  },
+  "/atom.xml": {
+    "status": 404
+  },
+  "/atom.xml.atom": {
+    "status": 200,
+    "title": "Muhammad Rehan Saeed",
+    "id": "{origin}",
+    "entries": [
+      {
+        "title": "On the Etiquette of Pull Request Comments",
+        "id": "{origin}/on-the-etiquette-of-pull-request-comments/",
+        "link": "{origin}/on-the-etiquette-of-pull-request-comments/",
+        "updated": "2022-08-02T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "I Was Awarded as an Open UK Honouree",
+        "id": "{origin}/open-uk-honouree/",
+        "link": "{origin}/open-uk-honouree/",
+        "updated": "2022-02-07T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Live Streaming .NET",
+        "id": "{origin}/live-streaming-dotnet/",
+        "link": "{origin}/live-streaming-dotnet/",
+        "updated": "2022-02-04T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Optimally Configuring Open Telemetry Tracing for ASP.NET Core",
+        "id": "{origin}/optimally-configuring-open-telemetry-tracing-for-asp-net-core/",
+        "link": "{origin}/optimally-configuring-open-telemetry-tracing-for-asp-net-core/",
+        "updated": "2022-02-03T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "The Problem with C# 10 Implicit Usings",
+        "id": "{origin}/the-problem-with-csharp-10-implicit-usings/",
+        "link": "{origin}/the-problem-with-csharp-10-implicit-usings/",
+        "updated": "2021-10-13T09:24:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "The Windows Package Manager",
+        "id": "{origin}/windows-package-manager/",
+        "link": "{origin}/windows-package-manager/",
+        "updated": "2021-10-12T08:40:00.000Z",
+        "published": ""
+      },
+      {
+        "title": ".NET Boxed Visual Studio Integration",
+        "id": "{origin}/dotnet-boxed-visual-studio-integration/",
+        "link": "{origin}/dotnet-boxed-visual-studio-integration/",
+        "updated": "2021-05-27T11:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Code Coverage & Frontend Testing",
+        "id": "{origin}/code-coverage-and-frontend-testing/",
+        "link": "{origin}/code-coverage-and-frontend-testing/",
+        "updated": "2021-05-10T11:23:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Web Component Custom Element Gotchas",
+        "id": "{origin}/web-component-custom-element-gotchas/",
+        "link": "{origin}/web-component-custom-element-gotchas/",
+        "updated": "2021-04-30T12:12:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "CSS General Rules of Thumb",
+        "id": "{origin}/css-general-rules-of-thumb/",
+        "link": "{origin}/css-general-rules-of-thumb/",
+        "updated": "2021-04-20T12:24:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "A System for Grouping & Sorting CSS Properties",
+        "id": "{origin}/system-for-grouping-and-sorting-css-properties/",
+        "link": "{origin}/system-for-grouping-and-sorting-css-properties/",
+        "updated": "2021-04-20T10:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Exporting Open Telemetry Data to Jaeger",
+        "id": "{origin}/exporting-open-telemetry-data-to-jaeger/",
+        "link": "{origin}/exporting-open-telemetry-data-to-jaeger/",
+        "updated": "2021-02-11T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Open Telemetry for ASP.NET Core",
+        "id": "{origin}/open-telemetry-for-asp-net-core/",
+        "link": "{origin}/open-telemetry-for-asp-net-core/",
+        "updated": "2021-02-01T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Deep Dive into Open Telemetry for .NET",
+        "id": "{origin}/deep-dive-into-open-telemetry-for-net/",
+        "link": "{origin}/deep-dive-into-open-telemetry-for-net/",
+        "updated": "2021-01-19T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Automating .NET Security Updates",
+        "id": "{origin}/automating-dotnet-security-updates/",
+        "link": "{origin}/automating-dotnet-security-updates/",
+        "updated": "2020-09-23T15:35:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "The Fastest NuGet Package Ever Published (Probably)",
+        "id": "{origin}/the-fastest-nuget-package-ever-published-probably/",
+        "link": "{origin}/the-fastest-nuget-package-ever-published-probably/",
+        "updated": "2020-07-08T08:34:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "The Easiest Way to Version NuGet Packages",
+        "id": "{origin}/the-easiest-way-to-version-nuget-packages/",
+        "link": "{origin}/the-easiest-way-to-version-nuget-packages/",
+        "updated": "2020-07-01T16:36:29.000Z",
+        "published": ""
+      },
+      {
+        "title": "Racism in Software Development & Beyond",
+        "id": "{origin}/racism-in-software-development-and-beyond/",
+        "link": "{origin}/racism-in-software-development-and-beyond/",
+        "updated": "2020-06-12T16:36:29.000Z",
+        "published": ""
+      },
+      {
+        "title": "Spicing up your Browser Console",
+        "id": "{origin}/spicing-up-your-browser-console/",
+        "link": "{origin}/spicing-up-your-browser-console/",
+        "updated": "2020-06-10T18:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Choosing a Static Site Generator",
+        "id": "{origin}/choosing-a-static-site-generator/",
+        "link": "{origin}/choosing-a-static-site-generator/",
+        "updated": "2020-06-09T19:19:49.000Z",
+        "published": ""
+      },
+      {
+        "title": "ASP.NET Core Integration Testing & Mocking using Moq",
+        "id": "{origin}/asp-net-core-integration-testing-mocking-using-moq/",
+        "link": "{origin}/asp-net-core-integration-testing-mocking-using-moq/",
+        "updated": "2020-01-03T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "What dotnet new Could Be",
+        "id": "{origin}/what-dotnet-new-could-be/",
+        "link": "{origin}/what-dotnet-new-could-be/",
+        "updated": "2019-12-31T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Unit Testing dotnet new Templates",
+        "id": "{origin}/unit-testing-dotnet-new-templates/",
+        "link": "{origin}/unit-testing-dotnet-new-templates/",
+        "updated": "2019-08-21T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": ".gitattributes Best Practices",
+        "id": "{origin}/gitattributes-best-practices/",
+        "link": "{origin}/gitattributes-best-practices/",
+        "updated": "2019-07-22T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Git Cloning the Windows OS Repo",
+        "id": "{origin}/git-cloning-the-windows-os-repo/",
+        "link": "{origin}/git-cloning-the-windows-os-repo/",
+        "updated": "2019-06-24T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Securing ASP.NET Core in Docker",
+        "id": "{origin}/securing-asp-net-core-in-docker/",
+        "link": "{origin}/securing-asp-net-core-in-docker/",
+        "updated": "2019-03-25T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "A Simple and Fast Object Mapper",
+        "id": "{origin}/a-simple-and-fast-object-mapper/",
+        "link": "{origin}/a-simple-and-fast-object-mapper/",
+        "updated": "2019-03-05T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Is ASP.NET Core now a Mature Platform?",
+        "id": "{origin}/is-asp-net-core-now-a-mature-platform/",
+        "link": "{origin}/is-asp-net-core-now-a-mature-platform/",
+        "updated": "2018-12-18T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "PluralSight vs LinkedIn Learning vs FrontendMasters vs Egghead.io vs YouTube",
+        "id": "{origin}/pluralsight-vs-linkedin-learning-vs-frontendmasters-vs-egghead-io-vs-youtube/",
+        "link": "{origin}/pluralsight-vs-linkedin-learning-vs-frontendmasters-vs-egghead-io-vs-youtube/",
+        "updated": "2018-11-12T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Optimally Configuring ASP.NET Core HttpClientFactory",
+        "id": "{origin}/optimally-configuring-asp-net-core-httpclientfactory/",
+        "link": "{origin}/optimally-configuring-asp-net-core-httpclientfactory/",
+        "updated": "2018-08-20T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "ASP.NET Core Hidden Gem - QueryHelpers",
+        "id": "{origin}/asp-net-core-hidden-gem-queryhelpers/",
+        "link": "{origin}/asp-net-core-hidden-gem-queryhelpers/",
+        "updated": "2018-07-14T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Optimally Configuring Entity Framework Core",
+        "id": "{origin}/optimally-configuring-entity-framework-core/",
+        "link": "{origin}/optimally-configuring-entity-framework-core/",
+        "updated": "2018-07-08T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Migrating to Entity Framework Core Seed Data",
+        "id": "{origin}/migrating-to-entity-framework-core-seed-data/",
+        "link": "{origin}/migrating-to-entity-framework-core-seed-data/",
+        "updated": "2018-07-01T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": ".NET Boxed",
+        "id": "{origin}/net-boxed/",
+        "link": "{origin}/net-boxed/",
+        "updated": "2018-05-13T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "The Dotnet Watch Tool Revisited",
+        "id": "{origin}/the-dotnet-watch-tool-revisited/",
+        "link": "{origin}/the-dotnet-watch-tool-revisited/",
+        "updated": "2018-04-30T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Writing Code while Asleep",
+        "id": "{origin}/writing-code-asleep/",
+        "link": "{origin}/writing-code-asleep/",
+        "updated": "2018-01-29T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Writing your Webpack configuration in TypeScript",
+        "id": "{origin}/writing-your-webpack-configuration-in-typescript/",
+        "link": "{origin}/writing-your-webpack-configuration-in-typescript/",
+        "updated": "2018-01-03T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Useful Docker Images - Part 2",
+        "id": "{origin}/useful-docker-images-part2/",
+        "link": "{origin}/useful-docker-images-part2/",
+        "updated": "2017-12-11T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Useful Docker Images - Part 1",
+        "id": "{origin}/useful-docker-images-part1/",
+        "link": "{origin}/useful-docker-images-part1/",
+        "updated": "2017-11-30T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Docker Labels in Depth",
+        "id": "{origin}/docker-labels-depth/",
+        "link": "{origin}/docker-labels-depth/",
+        "updated": "2017-11-20T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Docker Read-Only File Systems",
+        "id": "{origin}/docker-read-file-systems/",
+        "link": "{origin}/docker-read-file-systems/",
+        "updated": "2017-11-13T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "ASP.NET Core Caching in Practice",
+        "id": "{origin}/asp-net-core-caching-in-practice/",
+        "link": "{origin}/asp-net-core-caching-in-practice/",
+        "updated": "2017-10-20T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "A Very Generic .editorconfig File (Updated)",
+        "id": "{origin}/generic-editorconfig-file/",
+        "link": "{origin}/generic-editorconfig-file/",
+        "updated": "2017-10-01T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Keeping Up With Software Development",
+        "id": "{origin}/keeping-software-development/",
+        "link": "{origin}/keeping-software-development/",
+        "updated": "2017-08-13T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Structured Data using Schema.NET",
+        "id": "{origin}/structured-data-using-schema-net/",
+        "link": "{origin}/structured-data-using-schema-net/",
+        "updated": "2017-07-02T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "ASP.NET Core Lazy Command Pattern",
+        "id": "{origin}/asp-net-core-lazy-command-pattern/",
+        "link": "{origin}/asp-net-core-lazy-command-pattern/",
+        "updated": "2017-04-08T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "dotnet new Feature Selection",
+        "id": "{origin}/dotnet-new-feature-selection/",
+        "link": "{origin}/dotnet-new-feature-selection/",
+        "updated": "2017-03-26T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Cleaning Up CSPROJ",
+        "id": "{origin}/cleaning-up-csproj/",
+        "link": "{origin}/cleaning-up-csproj/",
+        "updated": "2017-03-18T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Cross-Platform DevOps for .NET Core",
+        "id": "{origin}/cross-platform-devops-net-core/",
+        "link": "{origin}/cross-platform-devops-net-core/",
+        "updated": "2017-01-28T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Custom Project Templates Using dotnet new",
+        "id": "{origin}/custom-project-templates-using-dotnet-new/",
+        "link": "{origin}/custom-project-templates-using-dotnet-new/",
+        "updated": "2017-01-18T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 8 - Timeouts",
+        "id": "{origin}/reactive-extensions-rx-part-8-timeouts/",
+        "link": "{origin}/reactive-extensions-rx-part-8-timeouts/",
+        "updated": "2017-01-02T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "SEO Friendly URL's for ASP.NET Core",
+        "id": "{origin}/seo-friendly-urls-asp-net-core/",
+        "link": "{origin}/seo-friendly-urls-asp-net-core/",
+        "updated": "2016-12-17T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Making Application Insights Fast & Secure",
+        "id": "{origin}/making-application-insights-fast-and-secure/",
+        "link": "{origin}/making-application-insights-fast-and-secure/",
+        "updated": "2016-12-11T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "The Dotnet Watch Tool",
+        "id": "{origin}/the-dotnet-watch-tool/",
+        "link": "{origin}/the-dotnet-watch-tool/",
+        "updated": "2016-09-10T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "NGINX for ASP.NET Core In-Depth",
+        "id": "{origin}/nginx-asp-net-core-depth/",
+        "link": "{origin}/nginx-asp-net-core-depth/",
+        "updated": "2016-08-21T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "ASP.NET Core Fluent Interface Extensions",
+        "id": "{origin}/asp-net-core-fluent-interface-extensions/",
+        "link": "{origin}/asp-net-core-fluent-interface-extensions/",
+        "updated": "2016-06-26T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Azure Active Directory Versus Identity Server",
+        "id": "{origin}/azure-active-directory-versus-identity-server/",
+        "link": "{origin}/azure-active-directory-versus-identity-server/",
+        "updated": "2016-05-20T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Social TagHelpers for ASP.NET Core",
+        "id": "{origin}/social-taghelpers-for-asp-net-core/",
+        "link": "{origin}/social-taghelpers-for-asp-net-core/",
+        "updated": "2016-03-19T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Subresource Integrity TagHelper Using ASP.NET Core - Part 2",
+        "id": "{origin}/subresource-integrity-taghelper-using-asp-net-core-part-2/",
+        "link": "{origin}/subresource-integrity-taghelper-using-asp-net-core-part-2/",
+        "updated": "2016-03-12T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Subresource Integrity TagHelper Using ASP.NET Core - Part 1",
+        "id": "{origin}/subresource-integrity-taghelper-using-asp-net-core/",
+        "link": "{origin}/subresource-integrity-taghelper-using-asp-net-core/",
+        "updated": "2016-03-06T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Colorful.Console",
+        "id": "{origin}/colorful-console/",
+        "link": "{origin}/colorful-console/",
+        "updated": "2016-02-14T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Make Certificate",
+        "id": "{origin}/make-certificate/",
+        "link": "{origin}/make-certificate/",
+        "updated": "2016-02-07T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Logging with Serilog.Exceptions",
+        "id": "{origin}/logging-with-serilog-exceptions/",
+        "link": "{origin}/logging-with-serilog-exceptions/",
+        "updated": "2016-01-31T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": ".NET Big-O Algorithm Complexity Cheat Sheet",
+        "id": "{origin}/net-big-o-algorithm-complexity-cheat-sheet/",
+        "link": "{origin}/net-big-o-algorithm-complexity-cheat-sheet/",
+        "updated": "2015-10-15T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "So I've Been Awarded Microsoft MVP Status!",
+        "id": "{origin}/so-ive-been-awarded-microsoft-mvp-status/",
+        "link": "{origin}/so-ive-been-awarded-microsoft-mvp-status/",
+        "updated": "2015-10-02T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Dynamically Generating Sitemap.xml for ASP.NET MVC",
+        "id": "{origin}/dynamically-generating-sitemap-xml-for-asp-net-mvc/",
+        "link": "{origin}/dynamically-generating-sitemap-xml-for-asp-net-mvc/",
+        "updated": "2015-09-15T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Whats New in ASP.NET Core Boilerplate",
+        "id": "{origin}/whats-new-in-asp-net-5-mvc-6-boilerplate/",
+        "link": "{origin}/whats-new-in-asp-net-5-mvc-6-boilerplate/",
+        "updated": "2015-08-23T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Minifying HTML for ASP.NET MVC",
+        "id": "{origin}/minifying-html-for-asp-net-mvc/",
+        "link": "{origin}/minifying-html-for-asp-net-mvc/",
+        "updated": "2015-08-06T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Dynamically Generating Robots.txt Using ASP.NET MVC",
+        "id": "{origin}/dynamically-generating-robots-txt-using-asp-net-mvc/",
+        "link": "{origin}/dynamically-generating-robots-txt-using-asp-net-mvc/",
+        "updated": "2015-07-31T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Canonical URL's for ASP.NET MVC",
+        "id": "{origin}/canonical-urls-for-asp-net-mvc/",
+        "link": "{origin}/canonical-urls-for-asp-net-mvc/",
+        "updated": "2015-07-14T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Building RSS/Atom Feeds for ASP.NET MVC",
+        "id": "{origin}/building-rssatom-feeds-for-asp-net-mvc/",
+        "link": "{origin}/building-rssatom-feeds-for-asp-net-mvc/",
+        "updated": "2015-06-26T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "C# 6.0 - Saving Developers From Themselves",
+        "id": "{origin}/c-6-0-saving-developers-from-themselves/",
+        "link": "{origin}/c-6-0-saving-developers-from-themselves/",
+        "updated": "2015-05-10T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Content Security Policy (CSP) for ASP.NET MVC",
+        "id": "{origin}/content-security-policy-for-asp-net-mvc/",
+        "link": "{origin}/content-security-policy-for-asp-net-mvc/",
+        "updated": "2015-03-17T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "NWebSec ASP.NET MVC Security Through HTTP Headers",
+        "id": "{origin}/nwebsec-asp-net-mvc-security-through-http-headers/",
+        "link": "{origin}/nwebsec-asp-net-mvc-security-through-http-headers/",
+        "updated": "2015-02-05T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 7 - Sample Events",
+        "id": "{origin}/reactive-extensions-part7-sample-events/",
+        "link": "{origin}/reactive-extensions-part7-sample-events/",
+        "updated": "2014-12-24T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Securing the ASP.NET MVC Web.config",
+        "id": "{origin}/securing-the-aspnet-mvc-web-config/",
+        "link": "{origin}/securing-the-aspnet-mvc-web-config/",
+        "updated": "2014-12-17T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Configuration File Transforms In Visual Studio Should Be Built In",
+        "id": "{origin}/configuration-file-transforms-in-visual-studio-should-be-built-in/",
+        "link": "{origin}/configuration-file-transforms-in-visual-studio-should-be-built-in/",
+        "updated": "2014-12-15T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Custom Visual Studio Project Templates",
+        "id": "{origin}/custom-visual-studio-project-templates/",
+        "link": "{origin}/custom-visual-studio-project-templates/",
+        "updated": "2014-12-10T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Internet Favicon Madness (Updated)",
+        "id": "{origin}/internet-favicon-madness/",
+        "link": "{origin}/internet-favicon-madness/",
+        "updated": "2014-11-24T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "ASP.NET Core Boilerplate",
+        "id": "{origin}/asp-net-mvc-boilerplate/",
+        "link": "{origin}/asp-net-mvc-boilerplate/",
+        "updated": "2014-11-12T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Elysium Extra 1.1 Released",
+        "id": "{origin}/elysium-extra-1-1-released/",
+        "link": "{origin}/elysium-extra-1-1-released/",
+        "updated": "2014-11-05T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Model-View-ViewModel (MVVM) - Part 4 - INotifyDataErrorInfo",
+        "id": "{origin}/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/",
+        "link": "{origin}/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/",
+        "updated": "2014-09-09T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Naming Conventions",
+        "id": "{origin}/naming-conventions/",
+        "link": "{origin}/naming-conventions/",
+        "updated": "2014-09-04T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Model-View-ViewModel (MVVM) - Part 3 - INotifyPropertyChanged",
+        "id": "{origin}/model-view-viewmodel-mvvm-part3-inotifypropertychanged/",
+        "link": "{origin}/model-view-viewmodel-mvvm-part3-inotifypropertychanged/",
+        "updated": "2014-06-18T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Model-View-ViewModel (MVVM) - Part 2 - IDisposable",
+        "id": "{origin}/model-view-viewmodel-mvvm-part2-idisposable/",
+        "link": "{origin}/model-view-viewmodel-mvvm-part2-idisposable/",
+        "updated": "2014-06-13T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Model-View-ViewModel (MVVM) - Part 1 - Overview",
+        "id": "{origin}/model-view-viewmodel-mvvm-part1-overview/",
+        "link": "{origin}/model-view-viewmodel-mvvm-part1-overview/",
+        "updated": "2014-05-14T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Portable Class Library (PCL) version of NotificationsExtensions NuGet package",
+        "id": "{origin}/portable-class-library-version-of-notificationsextensions-nuget-package/",
+        "link": "{origin}/portable-class-library-version-of-notificationsextensions-nuget-package/",
+        "updated": "2014-05-06T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 6 - Task ToObservable",
+        "id": "{origin}/reactive-extensions-part6-task-toobservable/",
+        "link": "{origin}/reactive-extensions-part6-task-toobservable/",
+        "updated": "2014-04-25T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "GetHashCode Made Easy",
+        "id": "{origin}/gethashcode-made-easy/",
+        "link": "{origin}/gethashcode-made-easy/",
+        "updated": "2014-04-14T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 5 - Awaiting Observables",
+        "id": "{origin}/reactive-extensions-part5-awaiting-observables/",
+        "link": "{origin}/reactive-extensions-part5-awaiting-observables/",
+        "updated": "2014-03-27T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "WPF Metro Part 4 - Elysium Extra",
+        "id": "{origin}/wpf-metro-part4-elysium-extra/",
+        "link": "{origin}/wpf-metro-part4-elysium-extra/",
+        "updated": "2014-03-19T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "WPF Metro Part 3 - Elysium",
+        "id": "{origin}/wpf-metro-part3-elysium/",
+        "link": "{origin}/wpf-metro-part3-elysium/",
+        "updated": "2014-03-17T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 4 - Replacing Timers",
+        "id": "{origin}/reactive-extensions-part4-replacing-timers/",
+        "link": "{origin}/reactive-extensions-part4-replacing-timers/",
+        "updated": "2014-03-11T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Windows 8.1 TouchScreen Gaming Laptops",
+        "id": "{origin}/windows-8-touchscreen-gaming-laptops/",
+        "link": "{origin}/windows-8-touchscreen-gaming-laptops/",
+        "updated": "2014-03-06T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "WPF Metro Part 2 - MahApps Metro",
+        "id": "{origin}/wpf-metro-part2-mahapps-metro/",
+        "link": "{origin}/wpf-metro-part2-mahapps-metro/",
+        "updated": "2014-03-02T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "WPF Metro Part 1 - Modern UI for WPF",
+        "id": "{origin}/wpf-metro-part1-modern-ui-for-wpf/",
+        "link": "{origin}/wpf-metro-part1-modern-ui-for-wpf/",
+        "updated": "2014-02-19T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 3 - Naming Conventions",
+        "id": "{origin}/reactive-extensions-part3-naming-conventions/",
+        "link": "{origin}/reactive-extensions-part3-naming-conventions/",
+        "updated": "2014-02-14T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 2 - Wrapping C# Events",
+        "id": "{origin}/reactive-extensions-part2-wrapping-events/",
+        "link": "{origin}/reactive-extensions-part2-wrapping-events/",
+        "updated": "2014-02-13T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Reactive Extensions (Rx) - Part 1 - Replacing C# Events",
+        "id": "{origin}/reactive-extensions-part1-replacing-events/",
+        "link": "{origin}/reactive-extensions-part1-replacing-events/",
+        "updated": "2014-02-11T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Stop The Brace Wars, Use StyleCop",
+        "id": "{origin}/stop-brace-wars-use-stylecop/",
+        "link": "{origin}/stop-brace-wars-use-stylecop/",
+        "updated": "2014-02-08T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "ConfigureAwait in Task Parallel Library (TPL)",
+        "id": "{origin}/configureawait-task-parallel-library/",
+        "link": "{origin}/configureawait-task-parallel-library/",
+        "updated": "2014-02-07T00:00:00.000Z",
+        "published": ""
+      },
+      {
+        "title": "Just Start - The First Blog Post",
+        "id": "{origin}/just-start-the-first-blog-post/",
+        "link": "{origin}/just-start-the-first-blog-post/",
+        "updated": "2014-02-01T00:00:00.000Z",
+        "published": ""
+      }
+    ]
+  },
+  "/feed.json": {
+    "status": 200,
+    "version": "https://jsonfeed.org/version/1",
+    "title": "Muhammad Rehan Saeed",
+    "home_page_url": "{origin}",
+    "feed_url": "{origin}/feed.json",
+    "items": [
+      {
+        "id": "{origin}/on-the-etiquette-of-pull-request-comments/",
+        "url": "{origin}/on-the-etiquette-of-pull-request-comments/",
+        "title": "On the Etiquette of Pull Request Comments",
+        "date_modified": "2022-08-02T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/open-uk-honouree/",
+        "url": "{origin}/open-uk-honouree/",
+        "title": "I Was Awarded as an Open UK Honouree",
+        "date_modified": "2022-02-07T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/live-streaming-dotnet/",
+        "url": "{origin}/live-streaming-dotnet/",
+        "title": "Live Streaming .NET",
+        "date_modified": "2022-02-04T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/optimally-configuring-open-telemetry-tracing-for-asp-net-core/",
+        "url": "{origin}/optimally-configuring-open-telemetry-tracing-for-asp-net-core/",
+        "title": "Optimally Configuring Open Telemetry Tracing for ASP.NET Core",
+        "date_modified": "2022-02-03T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/the-problem-with-csharp-10-implicit-usings/",
+        "url": "{origin}/the-problem-with-csharp-10-implicit-usings/",
+        "title": "The Problem with C# 10 Implicit Usings",
+        "date_modified": "2021-10-13T09:24:00.000Z"
+      },
+      {
+        "id": "{origin}/windows-package-manager/",
+        "url": "{origin}/windows-package-manager/",
+        "title": "The Windows Package Manager",
+        "date_modified": "2021-10-12T08:40:00.000Z"
+      },
+      {
+        "id": "{origin}/dotnet-boxed-visual-studio-integration/",
+        "url": "{origin}/dotnet-boxed-visual-studio-integration/",
+        "title": ".NET Boxed Visual Studio Integration",
+        "date_modified": "2021-05-27T11:00:00.000Z"
+      },
+      {
+        "id": "{origin}/code-coverage-and-frontend-testing/",
+        "url": "{origin}/code-coverage-and-frontend-testing/",
+        "title": "Code Coverage & Frontend Testing",
+        "date_modified": "2021-05-10T11:23:00.000Z"
+      },
+      {
+        "id": "{origin}/web-component-custom-element-gotchas/",
+        "url": "{origin}/web-component-custom-element-gotchas/",
+        "title": "Web Component Custom Element Gotchas",
+        "date_modified": "2021-04-30T12:12:00.000Z"
+      },
+      {
+        "id": "{origin}/css-general-rules-of-thumb/",
+        "url": "{origin}/css-general-rules-of-thumb/",
+        "title": "CSS General Rules of Thumb",
+        "date_modified": "2021-04-20T12:24:00.000Z"
+      },
+      {
+        "id": "{origin}/system-for-grouping-and-sorting-css-properties/",
+        "url": "{origin}/system-for-grouping-and-sorting-css-properties/",
+        "title": "A System for Grouping & Sorting CSS Properties",
+        "date_modified": "2021-04-20T10:00:00.000Z"
+      },
+      {
+        "id": "{origin}/exporting-open-telemetry-data-to-jaeger/",
+        "url": "{origin}/exporting-open-telemetry-data-to-jaeger/",
+        "title": "Exporting Open Telemetry Data to Jaeger",
+        "date_modified": "2021-02-11T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/open-telemetry-for-asp-net-core/",
+        "url": "{origin}/open-telemetry-for-asp-net-core/",
+        "title": "Open Telemetry for ASP.NET Core",
+        "date_modified": "2021-02-01T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/deep-dive-into-open-telemetry-for-net/",
+        "url": "{origin}/deep-dive-into-open-telemetry-for-net/",
+        "title": "Deep Dive into Open Telemetry for .NET",
+        "date_modified": "2021-01-19T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/automating-dotnet-security-updates/",
+        "url": "{origin}/automating-dotnet-security-updates/",
+        "title": "Automating .NET Security Updates",
+        "date_modified": "2020-09-23T15:35:00.000Z"
+      },
+      {
+        "id": "{origin}/the-fastest-nuget-package-ever-published-probably/",
+        "url": "{origin}/the-fastest-nuget-package-ever-published-probably/",
+        "title": "The Fastest NuGet Package Ever Published (Probably)",
+        "date_modified": "2020-07-08T08:34:00.000Z"
+      },
+      {
+        "id": "{origin}/the-easiest-way-to-version-nuget-packages/",
+        "url": "{origin}/the-easiest-way-to-version-nuget-packages/",
+        "title": "The Easiest Way to Version NuGet Packages",
+        "date_modified": "2020-07-01T16:36:29.000Z"
+      },
+      {
+        "id": "{origin}/racism-in-software-development-and-beyond/",
+        "url": "{origin}/racism-in-software-development-and-beyond/",
+        "title": "Racism in Software Development & Beyond",
+        "date_modified": "2020-06-12T16:36:29.000Z"
+      },
+      {
+        "id": "{origin}/spicing-up-your-browser-console/",
+        "url": "{origin}/spicing-up-your-browser-console/",
+        "title": "Spicing up your Browser Console",
+        "date_modified": "2020-06-10T18:00:00.000Z"
+      },
+      {
+        "id": "{origin}/choosing-a-static-site-generator/",
+        "url": "{origin}/choosing-a-static-site-generator/",
+        "title": "Choosing a Static Site Generator",
+        "date_modified": "2020-06-09T19:19:49.000Z"
+      },
+      {
+        "id": "{origin}/asp-net-core-integration-testing-mocking-using-moq/",
+        "url": "{origin}/asp-net-core-integration-testing-mocking-using-moq/",
+        "title": "ASP.NET Core Integration Testing & Mocking using Moq",
+        "date_modified": "2020-01-03T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/what-dotnet-new-could-be/",
+        "url": "{origin}/what-dotnet-new-could-be/",
+        "title": "What dotnet new Could Be",
+        "date_modified": "2019-12-31T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/unit-testing-dotnet-new-templates/",
+        "url": "{origin}/unit-testing-dotnet-new-templates/",
+        "title": "Unit Testing dotnet new Templates",
+        "date_modified": "2019-08-21T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/gitattributes-best-practices/",
+        "url": "{origin}/gitattributes-best-practices/",
+        "title": ".gitattributes Best Practices",
+        "date_modified": "2019-07-22T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/git-cloning-the-windows-os-repo/",
+        "url": "{origin}/git-cloning-the-windows-os-repo/",
+        "title": "Git Cloning the Windows OS Repo",
+        "date_modified": "2019-06-24T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/securing-asp-net-core-in-docker/",
+        "url": "{origin}/securing-asp-net-core-in-docker/",
+        "title": "Securing ASP.NET Core in Docker",
+        "date_modified": "2019-03-25T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/a-simple-and-fast-object-mapper/",
+        "url": "{origin}/a-simple-and-fast-object-mapper/",
+        "title": "A Simple and Fast Object Mapper",
+        "date_modified": "2019-03-05T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/is-asp-net-core-now-a-mature-platform/",
+        "url": "{origin}/is-asp-net-core-now-a-mature-platform/",
+        "title": "Is ASP.NET Core now a Mature Platform?",
+        "date_modified": "2018-12-18T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/pluralsight-vs-linkedin-learning-vs-frontendmasters-vs-egghead-io-vs-youtube/",
+        "url": "{origin}/pluralsight-vs-linkedin-learning-vs-frontendmasters-vs-egghead-io-vs-youtube/",
+        "title": "PluralSight vs LinkedIn Learning vs FrontendMasters vs Egghead.io vs YouTube",
+        "date_modified": "2018-11-12T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/optimally-configuring-asp-net-core-httpclientfactory/",
+        "url": "{origin}/optimally-configuring-asp-net-core-httpclientfactory/",
+        "title": "Optimally Configuring ASP.NET Core HttpClientFactory",
+        "date_modified": "2018-08-20T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/asp-net-core-hidden-gem-queryhelpers/",
+        "url": "{origin}/asp-net-core-hidden-gem-queryhelpers/",
+        "title": "ASP.NET Core Hidden Gem - QueryHelpers",
+        "date_modified": "2018-07-14T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/optimally-configuring-entity-framework-core/",
+        "url": "{origin}/optimally-configuring-entity-framework-core/",
+        "title": "Optimally Configuring Entity Framework Core",
+        "date_modified": "2018-07-08T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/migrating-to-entity-framework-core-seed-data/",
+        "url": "{origin}/migrating-to-entity-framework-core-seed-data/",
+        "title": "Migrating to Entity Framework Core Seed Data",
+        "date_modified": "2018-07-01T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/net-boxed/",
+        "url": "{origin}/net-boxed/",
+        "title": ".NET Boxed",
+        "date_modified": "2018-05-13T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/the-dotnet-watch-tool-revisited/",
+        "url": "{origin}/the-dotnet-watch-tool-revisited/",
+        "title": "The Dotnet Watch Tool Revisited",
+        "date_modified": "2018-04-30T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/writing-code-asleep/",
+        "url": "{origin}/writing-code-asleep/",
+        "title": "Writing Code while Asleep",
+        "date_modified": "2018-01-29T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/writing-your-webpack-configuration-in-typescript/",
+        "url": "{origin}/writing-your-webpack-configuration-in-typescript/",
+        "title": "Writing your Webpack configuration in TypeScript",
+        "date_modified": "2018-01-03T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/useful-docker-images-part2/",
+        "url": "{origin}/useful-docker-images-part2/",
+        "title": "Useful Docker Images - Part 2",
+        "date_modified": "2017-12-11T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/useful-docker-images-part1/",
+        "url": "{origin}/useful-docker-images-part1/",
+        "title": "Useful Docker Images - Part 1",
+        "date_modified": "2017-11-30T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/docker-labels-depth/",
+        "url": "{origin}/docker-labels-depth/",
+        "title": "Docker Labels in Depth",
+        "date_modified": "2017-11-20T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/docker-read-file-systems/",
+        "url": "{origin}/docker-read-file-systems/",
+        "title": "Docker Read-Only File Systems",
+        "date_modified": "2017-11-13T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/asp-net-core-caching-in-practice/",
+        "url": "{origin}/asp-net-core-caching-in-practice/",
+        "title": "ASP.NET Core Caching in Practice",
+        "date_modified": "2017-10-20T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/generic-editorconfig-file/",
+        "url": "{origin}/generic-editorconfig-file/",
+        "title": "A Very Generic .editorconfig File (Updated)",
+        "date_modified": "2017-10-01T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/keeping-software-development/",
+        "url": "{origin}/keeping-software-development/",
+        "title": "Keeping Up With Software Development",
+        "date_modified": "2017-08-13T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/structured-data-using-schema-net/",
+        "url": "{origin}/structured-data-using-schema-net/",
+        "title": "Structured Data using Schema.NET",
+        "date_modified": "2017-07-02T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/asp-net-core-lazy-command-pattern/",
+        "url": "{origin}/asp-net-core-lazy-command-pattern/",
+        "title": "ASP.NET Core Lazy Command Pattern",
+        "date_modified": "2017-04-08T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/dotnet-new-feature-selection/",
+        "url": "{origin}/dotnet-new-feature-selection/",
+        "title": "dotnet new Feature Selection",
+        "date_modified": "2017-03-26T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/cleaning-up-csproj/",
+        "url": "{origin}/cleaning-up-csproj/",
+        "title": "Cleaning Up CSPROJ",
+        "date_modified": "2017-03-18T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/cross-platform-devops-net-core/",
+        "url": "{origin}/cross-platform-devops-net-core/",
+        "title": "Cross-Platform DevOps for .NET Core",
+        "date_modified": "2017-01-28T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/custom-project-templates-using-dotnet-new/",
+        "url": "{origin}/custom-project-templates-using-dotnet-new/",
+        "title": "Custom Project Templates Using dotnet new",
+        "date_modified": "2017-01-18T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/reactive-extensions-rx-part-8-timeouts/",
+        "url": "{origin}/reactive-extensions-rx-part-8-timeouts/",
+        "title": "Reactive Extensions (Rx) - Part 8 - Timeouts",
+        "date_modified": "2017-01-02T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/seo-friendly-urls-asp-net-core/",
+        "url": "{origin}/seo-friendly-urls-asp-net-core/",
+        "title": "SEO Friendly URL's for ASP.NET Core",
+        "date_modified": "2016-12-17T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/making-application-insights-fast-and-secure/",
+        "url": "{origin}/making-application-insights-fast-and-secure/",
+        "title": "Making Application Insights Fast & Secure",
+        "date_modified": "2016-12-11T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/the-dotnet-watch-tool/",
+        "url": "{origin}/the-dotnet-watch-tool/",
+        "title": "The Dotnet Watch Tool",
+        "date_modified": "2016-09-10T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/nginx-asp-net-core-depth/",
+        "url": "{origin}/nginx-asp-net-core-depth/",
+        "title": "NGINX for ASP.NET Core In-Depth",
+        "date_modified": "2016-08-21T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/asp-net-core-fluent-interface-extensions/",
+        "url": "{origin}/asp-net-core-fluent-interface-extensions/",
+        "title": "ASP.NET Core Fluent Interface Extensions",
+        "date_modified": "2016-06-26T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/azure-active-directory-versus-identity-server/",
+        "url": "{origin}/azure-active-directory-versus-identity-server/",
+        "title": "Azure Active Directory Versus Identity Server",
+        "date_modified": "2016-05-20T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/social-taghelpers-for-asp-net-core/",
+        "url": "{origin}/social-taghelpers-for-asp-net-core/",
+        "title": "Social TagHelpers for ASP.NET Core",
+        "date_modified": "2016-03-19T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/subresource-integrity-taghelper-using-asp-net-core-part-2/",
+        "url": "{origin}/subresource-integrity-taghelper-using-asp-net-core-part-2/",
+        "title": "Subresource Integrity TagHelper Using ASP.NET Core - Part 2",
+        "date_modified": "2016-03-12T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/subresource-integrity-taghelper-using-asp-net-core/",
+        "url": "{origin}/subresource-integrity-taghelper-using-asp-net-core/",
+        "title": "Subresource Integrity TagHelper Using ASP.NET Core - Part 1",
+        "date_modified": "2016-03-06T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/colorful-console/",
+        "url": "{origin}/colorful-console/",
+        "title": "Colorful.Console",
+        "date_modified": "2016-02-14T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/make-certificate/",
+        "url": "{origin}/make-certificate/",
+        "title": "Make Certificate",
+        "date_modified": "2016-02-07T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/logging-with-serilog-exceptions/",
+        "url": "{origin}/logging-with-serilog-exceptions/",
+        "title": "Logging with Serilog.Exceptions",
+        "date_modified": "2016-01-31T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/net-big-o-algorithm-complexity-cheat-sheet/",
+        "url": "{origin}/net-big-o-algorithm-complexity-cheat-sheet/",
+        "title": ".NET Big-O Algorithm Complexity Cheat Sheet",
+        "date_modified": "2015-10-15T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/so-ive-been-awarded-microsoft-mvp-status/",
+        "url": "{origin}/so-ive-been-awarded-microsoft-mvp-status/",
+        "title": "So I've Been Awarded Microsoft MVP Status!",
+        "date_modified": "2015-10-02T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/dynamically-generating-sitemap-xml-for-asp-net-mvc/",
+        "url": "{origin}/dynamically-generating-sitemap-xml-for-asp-net-mvc/",
+        "title": "Dynamically Generating Sitemap.xml for ASP.NET MVC",
+        "date_modified": "2015-09-15T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/whats-new-in-asp-net-5-mvc-6-boilerplate/",
+        "url": "{origin}/whats-new-in-asp-net-5-mvc-6-boilerplate/",
+        "title": "Whats New in ASP.NET Core Boilerplate",
+        "date_modified": "2015-08-23T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/minifying-html-for-asp-net-mvc/",
+        "url": "{origin}/minifying-html-for-asp-net-mvc/",
+        "title": "Minifying HTML for ASP.NET MVC",
+        "date_modified": "2015-08-06T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/dynamically-generating-robots-txt-using-asp-net-mvc/",
+        "url": "{origin}/dynamically-generating-robots-txt-using-asp-net-mvc/",
+        "title": "Dynamically Generating Robots.txt Using ASP.NET MVC",
+        "date_modified": "2015-07-31T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/canonical-urls-for-asp-net-mvc/",
+        "url": "{origin}/canonical-urls-for-asp-net-mvc/",
+        "title": "Canonical URL's for ASP.NET MVC",
+        "date_modified": "2015-07-14T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/building-rssatom-feeds-for-asp-net-mvc/",
+        "url": "{origin}/building-rssatom-feeds-for-asp-net-mvc/",
+        "title": "Building RSS/Atom Feeds for ASP.NET MVC",
+        "date_modified": "2015-06-26T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/c-6-0-saving-developers-from-themselves/",
+        "url": "{origin}/c-6-0-saving-developers-from-themselves/",
+        "title": "C# 6.0 - Saving Developers From Themselves",
+        "date_modified": "2015-05-10T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/content-security-policy-for-asp-net-mvc/",
+        "url": "{origin}/content-security-policy-for-asp-net-mvc/",
+        "title": "Content Security Policy (CSP) for ASP.NET MVC",
+        "date_modified": "2015-03-17T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/nwebsec-asp-net-mvc-security-through-http-headers/",
+        "url": "{origin}/nwebsec-asp-net-mvc-security-through-http-headers/",
+        "title": "NWebSec ASP.NET MVC Security Through HTTP Headers",
+        "date_modified": "2015-02-05T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/reactive-extensions-part7-sample-events/",
+        "url": "{origin}/reactive-extensions-part7-sample-events/",
+        "title": "Reactive Extensions (Rx) - Part 7 - Sample Events",
+        "date_modified": "2014-12-24T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/securing-the-aspnet-mvc-web-config/",
+        "url": "{origin}/securing-the-aspnet-mvc-web-config/",
+        "title": "Securing the ASP.NET MVC Web.config",
+        "date_modified": "2014-12-17T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/configuration-file-transforms-in-visual-studio-should-be-built-in/",
+        "url": "{origin}/configuration-file-transforms-in-visual-studio-should-be-built-in/",
+        "title": "Configuration File Transforms In Visual Studio Should Be Built In",
+        "date_modified": "2014-12-15T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/custom-visual-studio-project-templates/",
+        "url": "{origin}/custom-visual-studio-project-templates/",
+        "title": "Custom Visual Studio Project Templates",
+        "date_modified": "2014-12-10T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/internet-favicon-madness/",
+        "url": "{origin}/internet-favicon-madness/",
+        "title": "Internet Favicon Madness (Updated)",
+        "date_modified": "2014-11-24T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/asp-net-mvc-boilerplate/",
+        "url": "{origin}/asp-net-mvc-boilerplate/",
+        "title": "ASP.NET Core Boilerplate",
+        "date_modified": "2014-11-12T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/elysium-extra-1-1-released/",
+        "url": "{origin}/elysium-extra-1-1-released/",
+        "title": "Elysium Extra 1.1 Released",
+        "date_modified": "2014-11-05T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/",
+        "url": "{origin}/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/",
+        "title": "Model-View-ViewModel (MVVM) - Part 4 - INotifyDataErrorInfo",
+        "date_modified": "2014-09-09T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/naming-conventions/",
+        "url": "{origin}/naming-conventions/",
+        "title": "Naming Conventions",
+        "date_modified": "2014-09-04T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/model-view-viewmodel-mvvm-part3-inotifypropertychanged/",
+        "url": "{origin}/model-view-viewmodel-mvvm-part3-inotifypropertychanged/",
+        "title": "Model-View-ViewModel (MVVM) - Part 3 - INotifyPropertyChanged",
+        "date_modified": "2014-06-18T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/model-view-viewmodel-mvvm-part2-idisposable/",
+        "url": "{origin}/model-view-viewmodel-mvvm-part2-idisposable/",
+        "title": "Model-View-ViewModel (MVVM) - Part 2 - IDisposable",
+        "date_modified": "2014-06-13T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/model-view-viewmodel-mvvm-part1-overview/",
+        "url": "{origin}/model-view-viewmodel-mvvm-part1-overview/",
+        "title": "Model-View-ViewModel (MVVM) - Part 1 - Overview",
+        "date_modified": "2014-05-14T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/portable-class-library-version-of-notificationsextensions-nuget-package/",
+        "url": "{origin}/portable-class-library-version-of-notificationsextensions-nuget-package/",
+        "title": "Portable Class Library (PCL) version of NotificationsExtensions NuGet package",
+        "date_modified": "2014-05-06T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/reactive-extensions-part6-task-toobservable/",
+        "url": "{origin}/reactive-extensions-part6-task-toobservable/",
+        "title": "Reactive Extensions (Rx) - Part 6 - Task ToObservable",
+        "date_modified": "2014-04-25T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/gethashcode-made-easy/",
+        "url": "{origin}/gethashcode-made-easy/",
+        "title": "GetHashCode Made Easy",
+        "date_modified": "2014-04-14T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/reactive-extensions-part5-awaiting-observables/",
+        "url": "{origin}/reactive-extensions-part5-awaiting-observables/",
+        "title": "Reactive Extensions (Rx) - Part 5 - Awaiting Observables",
+        "date_modified": "2014-03-27T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/wpf-metro-part4-elysium-extra/",
+        "url": "{origin}/wpf-metro-part4-elysium-extra/",
+        "title": "WPF Metro Part 4 - Elysium Extra",
+        "date_modified": "2014-03-19T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/wpf-metro-part3-elysium/",
+        "url": "{origin}/wpf-metro-part3-elysium/",
+        "title": "WPF Metro Part 3 - Elysium",
+        "date_modified": "2014-03-17T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/reactive-extensions-part4-replacing-timers/",
+        "url": "{origin}/reactive-extensions-part4-replacing-timers/",
+        "title": "Reactive Extensions (Rx) - Part 4 - Replacing Timers",
+        "date_modified": "2014-03-11T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/windows-8-touchscreen-gaming-laptops/",
+        "url": "{origin}/windows-8-touchscreen-gaming-laptops/",
+        "title": "Windows 8.1 TouchScreen Gaming Laptops",
+        "date_modified": "2014-03-06T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/wpf-metro-part2-mahapps-metro/",
+        "url": "{origin}/wpf-metro-part2-mahapps-metro/",
+        "title": "WPF Metro Part 2 - MahApps Metro",
+        "date_modified": "2014-03-02T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/wpf-metro-part1-modern-ui-for-wpf/",
+        "url": "{origin}/wpf-metro-part1-modern-ui-for-wpf/",
+        "title": "WPF Metro Part 1 - Modern UI for WPF",
+        "date_modified": "2014-02-19T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/reactive-extensions-part3-naming-conventions/",
+        "url": "{origin}/reactive-extensions-part3-naming-conventions/",
+        "title": "Reactive Extensions (Rx) - Part 3 - Naming Conventions",
+        "date_modified": "2014-02-14T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/reactive-extensions-part2-wrapping-events/",
+        "url": "{origin}/reactive-extensions-part2-wrapping-events/",
+        "title": "Reactive Extensions (Rx) - Part 2 - Wrapping C# Events",
+        "date_modified": "2014-02-13T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/reactive-extensions-part1-replacing-events/",
+        "url": "{origin}/reactive-extensions-part1-replacing-events/",
+        "title": "Reactive Extensions (Rx) - Part 1 - Replacing C# Events",
+        "date_modified": "2014-02-11T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/stop-brace-wars-use-stylecop/",
+        "url": "{origin}/stop-brace-wars-use-stylecop/",
+        "title": "Stop The Brace Wars, Use StyleCop",
+        "date_modified": "2014-02-08T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/configureawait-task-parallel-library/",
+        "url": "{origin}/configureawait-task-parallel-library/",
+        "title": "ConfigureAwait in Task Parallel Library (TPL)",
+        "date_modified": "2014-02-07T00:00:00.000Z"
+      },
+      {
+        "id": "{origin}/just-start-the-first-blog-post/",
+        "url": "{origin}/just-start-the-first-blog-post/",
+        "title": "Just Start - The First Blog Post",
+        "date_modified": "2014-02-01T00:00:00.000Z"
+      }
+    ]
+  },
+  "/sitemap.xml": {
+    "status": 200,
+    "urls": [
+      {
+        "loc": "{origin}/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/10/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/11/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/2/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/3/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/4/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/5/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/6/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/7/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/8/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/9/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/a-simple-and-fast-object-mapper/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/about/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/asp-net-core-caching-in-practice/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/asp-net-core-fluent-interface-extensions/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/asp-net-core-hidden-gem-queryhelpers/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/asp-net-core-integration-testing-mocking-using-moq/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/asp-net-core-lazy-command-pattern/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/asp-net-mvc-boilerplate/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/automating-dotnet-security-updates/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/azure-active-directory-versus-identity-server/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/building-rssatom-feeds-for-asp-net-mvc/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/c-6-0-saving-developers-from-themselves/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/canonical-urls-for-asp-net-mvc/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/cheat-sheet/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/choosing-a-static-site-generator/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/cleaning-up-csproj/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/code-coverage-and-frontend-testing/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/colorful-console/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/configuration-file-transforms-in-visual-studio-should-be-built-in/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/configureawait-task-parallel-library/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/content-security-policy-for-asp-net-mvc/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/cross-platform-devops-net-core/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/css-general-rules-of-thumb/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/custom-project-templates-using-dotnet-new/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/custom-visual-studio-project-templates/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/deep-dive-into-open-telemetry-for-net/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/docker-labels-depth/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/docker-read-file-systems/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/dotnet-boxed-visual-studio-integration/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/dotnet-new-feature-selection/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/dynamically-generating-robots-txt-using-asp-net-mvc/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/dynamically-generating-sitemap-xml-for-asp-net-mvc/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/elysium-extra-1-1-released/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/exporting-open-telemetry-data-to-jaeger/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/generic-editorconfig-file/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/gethashcode-made-easy/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/getting-started-with-graphql-and-asp-net-core/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/git-cloning-the-windows-os-repo/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/gitattributes-best-practices/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/internet-favicon-madness/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/is-asp-net-core-now-a-mature-platform/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/just-start-the-first-blog-post/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/keeping-software-development/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/live-streaming-dotnet/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/logging-with-serilog-exceptions/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/make-certificate/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/making-application-insights-fast-and-secure/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/migrating-to-entity-framework-core-seed-data/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/minifying-html-for-asp-net-mvc/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/model-view-viewmodel-mvvm-part1-overview/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/model-view-viewmodel-mvvm-part2-idisposable/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/model-view-viewmodel-mvvm-part3-inotifypropertychanged/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/model-view-viewmodel-mvvm-part4-inotifydataerrorinfo/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/naming-conventions/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/net-big-o-algorithm-complexity-cheat-sheet/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/net-boxed/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/nginx-asp-net-core-depth/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/nwebsec-asp-net-mvc-security-through-http-headers/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/on-the-etiquette-of-pull-request-comments/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/open-telemetry-for-asp-net-core/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/open-uk-honouree/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/optimally-configuring-asp-net-core-httpclientfactory/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/optimally-configuring-entity-framework-core/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/optimally-configuring-open-telemetry-tracing-for-asp-net-core/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/pluralsight-vs-linkedin-learning-vs-frontendmasters-vs-egghead-io-vs-youtube/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/portable-class-library-version-of-notificationsextensions-nuget-package/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/portfolio/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/racism-in-software-development-and-beyond/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/reactive-extensions-part1-replacing-events/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/reactive-extensions-part2-wrapping-events/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/reactive-extensions-part3-naming-conventions/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/reactive-extensions-part4-replacing-timers/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/reactive-extensions-part5-awaiting-observables/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/reactive-extensions-part6-task-toobservable/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/reactive-extensions-part7-sample-events/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/reactive-extensions-rx-part-8-timeouts/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/securing-asp-net-core-in-docker/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/securing-asp-net-core-kubernetes-pods/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/securing-the-aspnet-mvc-web-config/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/seo-friendly-urls-asp-net-core/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/so-ive-been-awarded-microsoft-mvp-status/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/social-taghelpers-for-asp-net-core/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/spicing-up-your-browser-console/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/stop-brace-wars-use-stylecop/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/streaming/border/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/streaming/thumbnail/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/structured-data-using-schema-net/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/subresource-integrity-taghelper-using-asp-net-core-part-2/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/subresource-integrity-taghelper-using-asp-net-core/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/system-for-grouping-and-sorting-css-properties/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/accessibility/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/active-directory/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/activity/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/algorithms/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/android/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/api/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/app-config/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/app-veyor/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/application-insights/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/ascii-art/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/ascii/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/asp-net-community-standup/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/asp-net-core-boilerplate/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/asp-net-core/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/asp-net-mvc-5/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/asp-net-mvc/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/asp-net/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/async-await/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/atom/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/autofac/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/automapper/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/awards/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/azure-active-directory/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/azure-pipelines/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/base-class-library/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/bcl/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/benchmarks/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/big-o-notation/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/bing/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/black-lives-matter/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/block-element-modifier-bem/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/bootstrap/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/brotli/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/browser/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/build/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/c-10/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/c-6-0/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/c-7-3/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/c/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/cache-control/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/caching/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/cake/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/certificates/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/channel9/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/cheat-sheet/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/cloud-native-computing-foundation-cncf/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/cloudflare/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/code-coverage/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/colorful-console/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/command-pattern/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/config/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/configuration/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/configure-await/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/connect-health/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/connection-strings/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/console/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/content-delivery-network-cdn/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/content-security-policy-csp/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/content-security-policy/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/continuous-integration/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/correlation-id/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/cross-site-scripting/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/cryptography/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/csp/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/csproj/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/css-classes/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/css/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/curriculum-vitae-cv/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/curriculum-vitae/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/cypress/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/damian-edwards/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/design-patterns/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/dev-ops/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/distributed-tracing/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/dnvm/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/docker-compose/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/docker-swarm/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/docker-visualizer/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/docker/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/dotnet-new/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/dotnet-watch/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/dotnet/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/dotnetcore/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/e-tag/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/editorconfig/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/egghead-io/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/elastic-search/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/elk-b-stack/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/elmah/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/elysium-extra/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/elysium/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/entity-framework-core/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/events/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/explicit-interface-implementation/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/favicon/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/fiddler/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/figlet-font/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/file-system/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/filebeat/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/font-awesome/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/foo/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/friendly-url/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/frontend-masters/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/gaming/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/gatsby/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/get-hash-code/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/git-hub-actions/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/git-hub/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/git-lfs/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/git/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/gitattributes/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/gitignore/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/google/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/graph-ql/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/gridsome/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/gvfs/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/heartbeat/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/html-5/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/html-helper/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/html/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/http-2-0/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/http-2/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/http-3/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/http-client-factory/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/http-client/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/http-headers/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/http/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/hugo/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/i-disposable/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/i-editable-object/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/i-notify-data-error-info/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/i-notify-property-changed/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/i-notify-property-changing/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/i-os/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/identity-server/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/identity-server4/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/if-modified-since/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/iis/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/implicit-using-statements/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/integration-testing/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/integration-tests/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/internet-information-services-iis/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/jaeger/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/java-script/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/jekyll/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/jest/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/jon-galloway/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/kestrel/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/kibana/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/kubernetes/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/labels/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/laptop/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/launch-settings-json/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/lazy/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/learning/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/lets-encrypt/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/linked-in-learning/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/live-streaming/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/logging/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/lynda-com/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/make-certificate/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/meta-tags/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/metricbeat/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/metrics/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/metro/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/microsoft-sql-server/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/microsoft/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/migrations/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/min-ver/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/minification/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/mock/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/model-view-view-model-mvvm/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/modern/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/moq/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/ms-build/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/mvc/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/mvp/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/mvvm/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/n-web-sec/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/nameof/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/naming-convention/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/naming-conventions/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/net-boxed-api/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/net-boxed/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/net-core/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/net-sdk/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/net/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/next-js/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/nginx/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/notifications-extensions/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/nu-get/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/nuxt-js/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/open-containers-initiative-oci/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/open-telemetry/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/open-uk/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/os/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/parcel-js/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/plural-sight/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/pod/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/polly/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/portable-class-library-pcl/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/portainer/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/power-shell/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/private-key/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/project-json/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/project-template/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/public-key/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/pull-request-pr/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/query-helpers/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/racism/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/razor/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/reactive-extensions/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/robots/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/rss/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/rx/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/sayed-ibrahim-hashimi/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/schema-net/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/schema-org/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/sdk/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/search-engine-optimization-seo/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/search-engines/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/security/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/seed-data/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/semantic-versioning/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/serilog-exceptions/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/serilog/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/sitemap/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/slow-cheetah/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/software-development/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/sonatype-nexus/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/space-complexity/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/span/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/sql/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/ssl/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/stack-overflow/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/standards/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/static-site-generator/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/statiq/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/structured-data/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/style-cop/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/subresource-integrity-sri/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/swagger/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/syndication-feed/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/t-sql/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/tag-helper/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/task-completion-source/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/task-parallel-library/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/thoughts/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/thread-pool/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/threads/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/time-complexity/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/timer/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/tls/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/tpl/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/tracing/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/travis-ci/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/twitch/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/two-factor-authentication/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/type-script/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/ui/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/unit-testing/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/url/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/user-interface/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/visual-studio-2017/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/visual-studio-code/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/visual-studio/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/vsix/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/vue-cli/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/vue-press/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/web-components/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/web-config/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/web-crawlers/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/web-server/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/webpack/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/win-rt/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/windows-8-1/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/windows-package-manager-winget/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/windows-phone/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/windows-presentation-foundation-wpf/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/windows-presentation-foundation/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/windows-store/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/windows/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/word-press/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/wpf/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/x-unit/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/xaml/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/xproj/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/tag/you-tube/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/the-dotnet-watch-tool-revisited/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/the-dotnet-watch-tool/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/the-easiest-way-to-version-nuget-packages/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/the-fastest-nuget-package-ever-published-probably/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/the-problem-with-csharp-10-implicit-usings/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/unit-testing-dotnet-new-templates/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/useful-docker-images-part1/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/useful-docker-images-part2/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/web-component-custom-element-gotchas/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/what-dotnet-new-could-be/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/whats-new-in-asp-net-5-mvc-6-boilerplate/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/windows-8-touchscreen-gaming-laptops/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/windows-package-manager/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/wpf-metro-part1-modern-ui-for-wpf/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/wpf-metro-part2-mahapps-metro/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/wpf-metro-part3-elysium/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/wpf-metro-part4-elysium-extra/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/writing-code-asleep/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      },
+      {
+        "loc": "{origin}/writing-your-webpack-configuration-in-typescript/",
+        "lastmod": null,
+        "changefreq": null,
+        "priority": null
+      }
+    ]
+  },
+  "/robots.txt": {
+    "status": 200,
+    "body": "User-agent: *\nAllow: /\nSitemap: {origin}/sitemap.xml\nHost: {origin}\n"
+  },
+  "/security.txt": {
+    "status": 200,
+    "body": "Contact: https://github.com/RehanSaeed\nPreferred-Languages: en-GB\nCanonical: {origin}/security.txt\n"
+  },
+  "/opensearch.xml": {
+    "status": 200,
+    "body": "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\"\n  xmlns:moz=\"http://www.mozilla.org/2006/browser/search/\">\n  <ShortName>Muhammad Rehan Saeed Search</ShortName>\n  <Description>Search Muhammad Rehan Saeed's Blog</Description>\n  <InputEncoding>UTF-8</InputEncoding>\n  <Image width=\"16\" height=\"16\" type=\"image/x-icon\">{origin}/favicon.ico</Image>\n  <Image width=\"64\" height=\"64\" type=\"image/png\">{origin}/images/author/Muhammad-Rehan-Saeed/Logo-64x64.png</Image>\n  <Url type=\"text/html\" template=\"{origin}/\">\n    <Param name=\"search\" value=\"{searchTerms}\"/>\n  </Url>\n  <moz:SearchForm>{origin}?search</moz:SearchForm>\n</OpenSearchDescription>\n"
+  },
+  "/manifest.webmanifest": {
+    "status": 200,
+    "name": "Muhammad Rehan Saeed",
+    "short_name": "Rehan",
+    "description": "Software Developer at Microsoft, YouTuber, Open Source Contributor and Blogger",
+    "lang": "en-GB",
+    "dir": "ltr",
+    "categories": [
+      "education"
+    ],
+    "start_url": "/",
+    "display": "minimal-ui",
+    "theme_color": "#6b17e8",
+    "background_color": "#f2f4f7",
+    "screenshots": [
+      {
+        "src": "/images/screenshots/screenshot1-1172x1820.png",
+        "sizes": "1172x1820",
+        "type": "image/png"
+      },
+      {
+        "src": "/images/screenshots/screenshot2-1172x1820.png",
+        "sizes": "1172x1820",
+        "type": "image/png"
+      },
+      {
+        "src": "/images/screenshots/screenshot3-1172x1820.png",
+        "sizes": "1172x1820",
+        "type": "image/png"
+      }
+    ],
+    "shortcuts": [
+      {
+        "name": "Blog",
+        "short_name": "Blog",
+        "description": "Read the latest blog posts.",
+        "url": "/",
+        "icons": [
+          {
+            "src": "/images/icons/blog.png",
+            "sizes": "192x192"
+          }
+        ]
+      },
+      {
+        "name": "Portfolio",
+        "short_name": "Portfolio",
+        "description": "View the portfolio of my projects.",
+        "url": "/portfolio/",
+        "icons": [
+          {
+            "src": "/images/icons/portfolio.png",
+            "sizes": "192x192"
+          }
+        ]
+      },
+      {
+        "name": "About",
+        "short_name": "About",
+        "description": "About Muhammad Rehan Saeed.",
+        "url": "/about/",
+        "icons": [
+          {
+            "src": "/images/icons/about.png",
+            "sizes": "192x192"
+          }
+        ]
+      }
+    ],
+    "icons": [
+      {
+        "src": "assets/static/favicon-512x512.png",
+        "type": "image/png",
+        "sizes": "512x512",
+        "purpose": "maskable any"
+      },
+      {
+        "src": "assets/static/favicon-384x384.png",
+        "type": "image/png",
+        "sizes": "384x384",
+        "purpose": "maskable any"
+      },
+      {
+        "src": "assets/static/favicon-192x192.png",
+        "type": "image/png",
+        "sizes": "192x192",
+        "purpose": "maskable any"
+      },
+      {
+        "src": "assets/static/favicon-180x180.png",
+        "type": "image/png",
+        "sizes": "180x180",
+        "purpose": "maskable any"
+      },
+      {
+        "src": "assets/static/favicon-152x152.png",
+        "type": "image/png",
+        "sizes": "152x152",
+        "purpose": "maskable any"
+      },
+      {
+        "src": "assets/static/favicon-144x144.png",
+        "type": "image/png",
+        "sizes": "144x144",
+        "purpose": "maskable any"
+      },
+      {
+        "src": "assets/static/favicon-128x128.png",
+        "type": "image/png",
+        "sizes": "128x128",
+        "purpose": "maskable any"
+      },
+      {
+        "src": "assets/static/favicon-120x120.png",
+        "type": "image/png",
+        "sizes": "120x120",
+        "purpose": "maskable any"
+      },
+      {
+        "src": "assets/static/favicon-96x96.png",
+        "type": "image/png",
+        "sizes": "96x96",
+        "purpose": "maskable any"
+      },
+      {
+        "src": "assets/static/favicon-72x72.png",
+        "type": "image/png",
+        "sizes": "72x72",
+        "purpose": "maskable any"
+      },
+      {
+        "src": "assets/static/favicon-48x48.png",
+        "type": "image/png",
+        "sizes": "48x48",
+        "purpose": "maskable any"
+      },
+      {
+        "src": "assets/static/favicon-16x16.png",
+        "type": "image/png",
+        "sizes": "16x16",
+        "purpose": "maskable any"
+      }
+    ]
+  },
+  "/service-worker.js": {
+    "status": 200,
+    "bytes": 137979
+  },
+  "/flexsearch.json": {
+    "status": 200,
+    "bytes": 613996
+  }
+}

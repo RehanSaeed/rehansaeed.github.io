@@ -77,7 +77,7 @@ Even better, the browser never even downloads the evil script in the first place
 ![Fiddler Content Security Policy Violation](./images/Fiddler-Content-Security-Policy-Violation.png)
 
 ![Fiddler No Content Security Policy Applied](./images/Fiddler-No-Content-Security-Policy-Applied.png)
- 
+
 ## Content Security Policy Directives
 
 There are a number of 'directives' that are used in the policy above. Mozilla has the full list of directives and how each is used [here](https://developer.mozilla.org/en-US/docs/Web/Security/CSP/CSP_policy_directives). Each directive controls access to a particular function in a web browser. I will not cover each one in details as they all work in the same way but I will cover the most important and unique directives below.
