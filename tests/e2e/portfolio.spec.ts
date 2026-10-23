@@ -10,7 +10,6 @@ const repositories = [
   "RehanSaeed/Serilog.Exceptions",
   "RehanSaeed/.NET-Big-O-Algorithm-Complexity-Cheat-Sheet",
   "RehanSaeed/Kubernetes-Cheat-Sheet",
-  "RehanSaeed/HttpClientSample",
   "RehanSaeed/Serilog.Enrichers.Span",
   "RehanSaeed/Helm-Cheat-Sheet",
   "RehanSaeed/Elysium-Extra",
@@ -45,6 +44,7 @@ test("All portfolio cards and popularity ordering are present in static HTML", a
   const $ = load(await response.text());
   const cards = $(".portfolio__open-source .portfolio-card");
   expect(cards).toHaveLength(repositories.length);
+  expect(cards.text()).not.toContain("HttpClientSample");
   expect($(".portfolio__open-source").text()).not.toContain(
     "Ordered by total NuGet package downloads",
   );
@@ -139,7 +139,7 @@ test("Microsoft work precedes open source and links to public product articles w
 }) => {
   const response = await request.get("/portfolio/");
   const $ = load(await response.text());
-  expect($(".portfolio-card")).toHaveLength(17);
+  expect($(".portfolio-card")).toHaveLength(repositories.length + 4);
   const sections = $(".portfolio__section")
     .map((_, section) => $(section).attr("aria-labelledby"))
     .get();

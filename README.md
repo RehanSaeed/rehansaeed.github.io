@@ -115,9 +115,11 @@ Static AI discovery disables response caching so its final Markdown sitemap
 includes newly generated pages rather than an earlier, incomplete page index.
 
 The open-source section retains all seven original projects and adds Bash Cheat
-Sheet, .NET Boxed Framework, Kubernetes Cheat Sheet, HttpClientSample, Helm Cheat
-Sheet and Git Cheat Sheet. Cards are ordered by total NuGet downloads descending,
-then GitHub stars descending, then title ascending. A project's total sums each
+Sheet, .NET Boxed Framework, Kubernetes Cheat Sheet, Helm Cheat Sheet and Git Cheat
+Sheet. HttpClientSample is not listed in the portfolio; its existing blog article
+and sample-project links remain unchanged. Cards are ordered by total NuGet
+downloads descending, then GitHub stars descending, then title ascending.
+A project's total sums each
 distinct listed package's package-wide `DownloadCount` from NuGet's official API,
 not its per-version counts or rounded Shields image values. This measures
 downloads, not unique users. Projects without packages have a known zero and
@@ -125,8 +127,9 @@ therefore sort by stars after projects with downloads.
 
 Blog, pagination, tag listings and Portfolio share a compact card variant rather
 than changing the site-wide article layout. Desktop card text and padding are
-10% smaller, with a matching reduced card-width cap. Mobile body text stays at
-least 16px. Existing column rules and natural card heights remain unchanged;
+15% smaller than the original full-size variant, with a matching reduced
+card-width cap. Mobile body text stays at least 16px. Existing column rules and
+natural card heights remain unchanged;
 images keep their complete frames and descriptions and badges are not truncated.
 
 Counts are fetched at build time with one-hour local caches; changes also

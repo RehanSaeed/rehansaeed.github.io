@@ -53,11 +53,12 @@ for (const width of [375, 1280, 1920]) {
           return result;
         });
         expect(compact.columns).toBe(original.columns);
-        expect(compact.width / original.width).toBeGreaterThanOrEqual(0.85);
-        expect(compact.width).toBeLessThanOrEqual(original.width);
+        expect(
+          Math.abs(compact.width - original.width * 0.85),
+        ).toBeLessThanOrEqual(1);
         expect(compact.height).toBeLessThan(original.height);
-        expect(compact.fontSize).toBeCloseTo(original.fontSize * 0.9, 1);
-        expect(compact.padding).toBeCloseTo(original.padding * 0.9, 1);
+        expect(compact.fontSize).toBeCloseTo(original.fontSize * 0.85, 1);
+        expect(compact.padding).toBeCloseTo(original.padding * 0.85, 1);
       }
     }
     const reference = measurements[0]!;
