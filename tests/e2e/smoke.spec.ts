@@ -1,6 +1,49 @@
+import { load } from "cheerio";
 import { expect, test } from "./fixtures";
 
 test.describe("Smoke", () => {
+  for (const { name, url } of [
+    { name: "Mastodon", url: "https://hachyderm.io/@RehanSaeed" },
+    { name: "Bluesky", url: "https://bsky.app/profile/rehansaeed.bsky.social" },
+  ]) {
+    test(`${name} social link supports profile verification before and after hydration`, async ({
+      page,
+      request,
+    }) => {
+      const response = await request.get("/");
+      expect(response.ok()).toBe(true);
+      const $ = load(await response.text());
+      const staticLink = $(`footer .social a[aria-label="${name}"]`);
+      expect(staticLink.length).toBe(1);
+      expect(staticLink.attr("href")).toBe(url);
+      expect(staticLink.attr("rel")).toBe("me");
+      expect(staticLink.find("svg title").text()).toBe(name);
+
+      await page.goto("/");
+      const link = page.locator("main .social").getByRole("link", {
+        name,
+        exact: true,
+      });
+      await expect(link).toBeVisible();
+      await expect(link).toHaveAttribute("href", url);
+      await expect(link).toHaveAttribute("rel", "me");
+
+      await page
+        .locator("nav")
+        .getByRole("link", { name: "About", exact: true })
+        .click();
+      await expect(page).toHaveURL(/\/about\/$/);
+      await expect(link).toBeVisible();
+      await expect(link).toHaveAttribute("rel", "me");
+      await expect(
+        page.locator(".about__social-links").getByRole("link", {
+          name,
+          exact: true,
+        }),
+      ).toHaveAttribute("href", url);
+    });
+  }
+
   test("Visit all pages", async ({ page }) => {
     const nav = page.locator("nav");
 
