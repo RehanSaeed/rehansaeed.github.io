@@ -20,8 +20,9 @@ does not authorise publishing the article or posting to social media.
   Read a few relevant published articles before drafting to match the author's
   voice and avoid duplicating existing coverage.
 - Treat [content.config.ts](content.config.ts) as the source of truth for front
-  matter. Use [NewPost.ps1](NewPost.ps1) as the starting scaffold, checking that
-  its target does not already exist before running it.
+  matter. Create the post directory and Markdown file directly, using relevant
+  published articles as examples. Check that the target does not already exist
+  and never overwrite an existing article when creating a new one.
 - Keep work focused on the requested article and its promotion. Do not change the
   website, install publishing integrations or require Buffer as part of drafting.
 
@@ -66,8 +67,8 @@ does not authorise publishing the article or posting to social media.
   only when the article actually belongs to a series.
 - Use an existing, relevant hero image or supply an appropriately licensed one.
   Hero images must match the schema's `/images/...-<width>x<height>.png` or JPEG
-  naming pattern, with dimensions matching the actual file. Do not leave the
-  scaffold's default image without checking its relevance.
+  naming pattern, with dimensions matching the actual file. Choose an image
+  relevant to the article rather than copying another post's image by default.
 - Put article-specific images in the post's `images` directory and reference them
   relatively, for example `![Descriptive alt text](./images/example.png)`.
   Keep captions, alt text and attribution accurate; do not fabricate screenshots.
