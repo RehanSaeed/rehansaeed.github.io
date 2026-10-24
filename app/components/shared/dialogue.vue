@@ -1,24 +1,27 @@
 <template>
-  <dialog
-    ref="dialog"
-    class="dialog"
-    :class="{ 'dialog--fullscreen': fullscreen }"
-    :aria-labelledby="titleId"
-    @close="close">
-    <div class="dialog__container">
-      <u-heading :id="titleId" level="2" class="dialog__title">{{
-        title
-      }}</u-heading>
-      <form class="dialog__form" method="dialog">
-        <u-button :aria-label="`Close ${title}`" class="dialog__close" submit>
-          <u-icon-close :size="24" />
-        </u-button>
-      </form>
-      <div class="dialog__content">
-        <slot />
+  <Transition name="dialog" @enter="open" @after-leave="hide">
+    <dialog
+      v-show="isOpen"
+      class="dialog"
+      :class="{ 'dialog--fullscreen': fullscreen }"
+      :aria-labelledby="titleId"
+      @cancel.prevent="close"
+      @close="close">
+      <div class="dialog__container">
+        <u-heading :id="titleId" level="2" class="dialog__title">{{
+          title
+        }}</u-heading>
+        <form class="dialog__form" method="dialog" @submit.prevent="close">
+          <u-button :aria-label="`Close ${title}`" class="dialog__close" submit>
+            <u-icon-close :size="24" />
+          </u-button>
+        </form>
+        <div class="dialog__content">
+          <slot />
+        </div>
       </div>
-    </div>
-  </dialog>
+    </dialog>
+  </Transition>
 </template>
 
 <script>
@@ -52,16 +55,13 @@ export default {
       type: String,
     },
   },
-  watch: {
-    isOpen() {
-      if (this.isOpen) {
-        this.$refs.dialog.showModal();
-      } else {
-        this.$refs.dialog.close();
-      }
-    },
-  },
   methods: {
+    open(dialog) {
+      dialog.showModal();
+    },
+    hide(dialog) {
+      dialog.close();
+    },
     close() {
       if (this.isOpen) {
         this.$emit("close");
@@ -99,20 +99,6 @@ export default {
     inline-size: 100%;
     block-size: var(--title-bar-height);
   }
-
-  @media (prefers-reduced-motion: no-preference) {
-    transition:
-      opacity var(--global-duration-1) var(--ease-out-cubic),
-      translate var(--global-duration-1) var(--ease-out-cubic);
-    will-change: translate;
-  }
-}
-
-.dialog:not([open]) {
-  display: block;
-  opacity: 0;
-  visibility: hidden;
-  translate: 0 30%;
 }
 
 .dialog--fullscreen {
@@ -125,6 +111,38 @@ export default {
 .dialog::backdrop {
   background: hsl(0 0% 0% / 0.2);
   backdrop-filter: blur(3px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dialog-enter-active {
+    transition:
+      opacity var(--global-duration-2) var(--ease-out-cubic),
+      translate var(--global-duration-2) var(--ease-out-cubic);
+
+    &::backdrop {
+      transition: opacity var(--global-duration-2) ease-out;
+    }
+  }
+
+  .dialog-leave-active {
+    transition:
+      opacity var(--global-duration-1) var(--ease-in-cubic),
+      translate var(--global-duration-1) var(--ease-in-cubic);
+
+    &::backdrop {
+      transition: opacity var(--global-duration-1) ease-out;
+    }
+  }
+
+  .dialog-enter-from,
+  .dialog-leave-to {
+    opacity: 0;
+    translate: 0 clamp(3rem, 8vh, 6rem);
+
+    &::backdrop {
+      opacity: 0;
+    }
+  }
 }
 
 .dialog__container {

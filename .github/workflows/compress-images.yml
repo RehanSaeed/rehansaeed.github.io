@@ -31,7 +31,7 @@ jobs:
         with:
           # Commit through Git below so optimized images retain LFS pointers.
           compressOnly: true
-          # Preserve reviewed screenshots and Squoosh profile exports; palette compression alters pixels.
+          # Preserve reviewed screenshots and truecolour profile exports; palette compression alters pixels.
           ignorePaths: 'node_modules/**,public/images/hero/Microsoft-Copilot-Windows-3840x2160.png,public/images/hero/Microsoft-365-Companions-3072x1728.jpg,public/images/hero/Microsoft-Edge-Enterprise-1430x929.png,public/images/hero/Microsoft-Cortana-Windows-1560x880.jpg,public/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg,public/images/author/Muhammad-Rehan-Saeed/Logo-*.png,public/favicon.png,public/images/icons/favicon-*.png'
           jpegQuality: "90"
           jpegProgressive: false
