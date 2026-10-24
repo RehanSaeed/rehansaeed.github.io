@@ -1,19 +1,15 @@
-# All contributions, however small are valued!
+# Contributing
 
-# Steps to contribute
+All contributions, however small, are valued!
 
- If you want to make a small change, go ahead and raise a pull request, otherwise follow these steps:
+## Pull requests
 
-1. View the [Issues](https://github.com/RehanSaeed/rehansaeed.github.io/issues) page to see a To-Do list of things to be implemented.
-2. Raise an issue or comment on an existing issue with what you want to contribute if one does not already exist.
-3. When you get the go ahead, follow the coding guidelines and raise a pull request.
-4. Include a link to the issue in your pull request.
+Open a pull request directly; you do not need to raise an issue or get approval
+before contributing. Keep changes focused and explain what changed and why.
+Link an existing issue if it provides useful context, but an issue is not required.
 
-# Coding Guidelines
+## Coding guidelines
 
-- Follow .editorconfig and use ESLint and Prettier for TypeScript, JavaScript and Vue files. Fix all lint warnings before submitting.
-- Add regression tests for behavior changes. Run `npm run build`, `npm run typecheck`, `npm run lint`, and `npm test` as documented in the README.
-
-# Special Thanks
-
-As thanks for all contributions, your username will be posted to the front page of the project with a short description of how you helped.
+- Follow [`.editorconfig`](../.editorconfig) and the existing code conventions.
+- Use ESLint for linting and Prettier for formatting.
+- Add tests for behavior changes and make sure checks pass.
