@@ -39,12 +39,12 @@ export default {
     };
   },
   setup() {
-    return { playSound: useUiSound().play };
+    return { playSoundEffect: useSoundEffect().play };
   },
   methods: {
     onOpenClick() {
       this.onOpen();
-      this.playSound("dialog-open");
+      this.playSoundEffect("dialog-open");
     },
     onOpen() {
       this.isOpen = true;

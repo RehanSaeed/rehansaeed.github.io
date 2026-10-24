@@ -28,7 +28,7 @@ export default {
     };
   },
   setup() {
-    return { playSound: useUiSound().play };
+    return { playSoundEffect: useSoundEffect().play };
   },
   computed: {
     theme() {
@@ -46,7 +46,7 @@ export default {
       window.__setPreferredTheme(this.theme);
 
       appThemeChanged(this.theme);
-      this.playSound(this.darkTheme ? "toggle-on" : "toggle-off");
+      this.playSoundEffect(this.darkTheme ? "toggle-on" : "toggle-off");
     },
   },
   mounted() {

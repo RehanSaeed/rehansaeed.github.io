@@ -1,8 +1,8 @@
 import type { Howl } from "howler";
-import type { UiSound } from "~/composables/use-ui-sound";
+import type { SoundEffect } from "~/composables/use-sound-effect";
 
 const preferenceKey = "ui-sound-enabled";
-const soundNames: UiSound[] = [
+const soundNames: SoundEffect[] = [
   "toggle-on",
   "toggle-off",
   "dialog-open",
@@ -12,7 +12,7 @@ const soundNames: UiSound[] = [
 export default defineNuxtPlugin((app) => {
   const enabled = useState("ui-sound-enabled", () => false);
   const error = useState("ui-sound-error", () => "");
-  const sounds = new Map<UiSound, Howl>();
+  const sounds = new Map<SoundEffect, Howl>();
   let engine: typeof import("howler") | undefined;
   let loading: Promise<void> | undefined;
   let disposed = false;
@@ -97,7 +97,7 @@ export default defineNuxtPlugin((app) => {
     }
   }
 
-  function play(name: UiSound) {
+  function play(name: SoundEffect) {
     if (!enabled.value || disposed) return;
     const sound = sounds.get(name);
     if (sound?.state() !== "loaded" || !engine) return;

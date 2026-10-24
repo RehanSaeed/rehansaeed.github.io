@@ -1,7 +1,7 @@
-export type UiSound =
+export type SoundEffect =
   "toggle-on" | "toggle-off" | "dialog-open" | "dialog-close";
 
-export function useUiSound() {
+export function useSoundEffect() {
   const app = useNuxtApp();
   const enabled = useState("ui-sound-enabled", () => false);
   const error = useState("ui-sound-error", () => "");
@@ -12,7 +12,7 @@ export function useUiSound() {
     setEnabled(value: boolean) {
       if (import.meta.client) app.$uiSound.setEnabled(value);
     },
-    play(sound: UiSound) {
+    play(sound: SoundEffect) {
       if (import.meta.client) app.$uiSound.play(sound);
     },
   };
