@@ -17,6 +17,14 @@
       <u-icon name="fa-brands:twitch" />
     </u-link-button>
     <u-link-button
+      v-if="metadata.author.mastodon.url"
+      class="social__link"
+      label="Mastodon"
+      :href="metadata.author.mastodon.url"
+      rel="me">
+      <u-icon name="fa-brands:mastodon" />
+    </u-link-button>
+    <u-link-button
       v-if="metadata.author.gitHub.url"
       class="social__link"
       label="GitHub"

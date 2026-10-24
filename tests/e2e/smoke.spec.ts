@@ -1,6 +1,47 @@
+import { load } from "cheerio";
 import { expect, test } from "./fixtures";
 
 test.describe("Smoke", () => {
+  test("Mastodon social link supports profile verification before and after hydration", async ({
+    page,
+    request,
+  }) => {
+    const response = await request.get("/");
+    expect(response.ok()).toBe(true);
+    const $ = load(await response.text());
+    const staticLink = $('footer .social a[aria-label="Mastodon"]');
+    expect(staticLink.length).toBe(1);
+    expect(staticLink.attr("href")).toBe("https://hachyderm.io/@RehanSaeed");
+    expect(staticLink.attr("rel")).toBe("me");
+    expect(staticLink.find("svg title").text()).toBe("Mastodon");
+
+    await page.goto("/");
+    const link = page.locator("main .social").getByRole("link", {
+      name: "Mastodon",
+      exact: true,
+    });
+    await expect(link).toBeVisible();
+    await expect(link).toHaveAttribute(
+      "href",
+      "https://hachyderm.io/@RehanSaeed",
+    );
+    await expect(link).toHaveAttribute("rel", "me");
+
+    await page
+      .locator("nav")
+      .getByRole("link", { name: "About", exact: true })
+      .click();
+    await expect(page).toHaveURL(/\/about\/$/);
+    await expect(link).toBeVisible();
+    await expect(link).toHaveAttribute("rel", "me");
+    await expect(
+      page.locator(".about__social-links").getByRole("link", {
+        name: "Mastodon",
+        exact: true,
+      }),
+    ).toHaveAttribute("href", "https://hachyderm.io/@RehanSaeed");
+  });
+
   test("Visit all pages", async ({ page }) => {
     const nav = page.locator("nav");
 

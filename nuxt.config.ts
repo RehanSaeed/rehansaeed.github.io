@@ -48,6 +48,7 @@ export default defineNuxtConfig({
         "fa-brands:facebook",
         "fa-brands:github",
         "fa-brands:linkedin",
+        "fa-brands:mastodon",
         "fa-brands:patreon",
         "fa-brands:paypal",
         "fa-brands:reddit",
