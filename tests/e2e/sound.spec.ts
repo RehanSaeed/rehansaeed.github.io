@@ -10,6 +10,7 @@ declare global {
       starts: number[];
       stops: number;
       context?: AudioContext;
+      gain?: GainNode;
     };
   }
 }
@@ -24,7 +25,7 @@ async function ready(page: Page) {
   await expect
     .poll(() => page.evaluate(() => window.soundProbe.decoded))
     .toBe(4);
-  // Loading the lazy engine is not a gesture. Unlock without producing a UI cue.
+  // Restoring a saved preference is not a gesture. Unlock without a UI cue.
   await page.mouse.click(1, 1);
   await expect
     .poll(() => page.evaluate(() => window.soundProbe.context?.state))
@@ -40,6 +41,19 @@ async function enable(page: Page) {
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     window.soundProbe = { decoded: 0, starts: [], stops: 0 };
+    const NativeAudioContext = window.AudioContext;
+    window.AudioContext = class extends NativeAudioContext {
+      constructor(options?: AudioContextOptions) {
+        super(options);
+        window.soundProbe.context = this;
+      }
+    };
+    const createGain = AudioContext.prototype.createGain;
+    AudioContext.prototype.createGain = function () {
+      const gain = createGain.call(this);
+      window.soundProbe.gain = gain;
+      return gain;
+    };
     const decode = AudioContext.prototype.decodeAudioData;
     AudioContext.prototype.decodeAudioData = function (...args) {
       const result = decode.apply(this, args);
@@ -86,6 +100,7 @@ test("Remains silent and does not request samples until explicitly enabled", asy
   await page.getByRole("button", { name: "Close Search", exact: true }).click();
   expect(requests).toEqual([]);
   expect(await playback(page)).toEqual([]);
+  expect(await page.evaluate(() => !!window.soundProbe.context)).toBe(false);
 
   await enable(page);
   expect(requests).toHaveLength(4);
@@ -103,6 +118,28 @@ test("Hydration guards the sound toggle", async ({ page }) => {
   } finally {
     await scripts.dispose();
   }
+});
+
+test("Unavailable Web Audio is reported without breaking controls", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.evaluate(() => {
+    Object.defineProperty(window, "AudioContext", { value: undefined });
+  });
+  await soundToggle(page).click();
+  await expect(page.locator(".sound-control__error")).toContainText(
+    "could not be initialized",
+  );
+  await themeToggle(page).click();
+  await page.getByRole("button", { name: "Open search", exact: true }).click();
+  await expect(
+    page.getByRole("dialog", { name: "Search", exact: true }),
+  ).toBeVisible();
+  expect(await playback(page)).toEqual([]);
+  await page.keyboard.press("Escape");
+  await soundToggle(page).click();
+  await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "false");
 });
 
 test("An early opt-in is not restarted by delayed preference restoration", async ({
@@ -150,6 +187,9 @@ test("Plays one theme cue for mouse, Enter and Space, and mutes immediately", as
 }) => {
   await page.goto("/");
   await enable(page);
+  expect(await page.evaluate(() => window.soundProbe.gain?.gain.value)).toBe(
+    0.25,
+  );
   await themeToggle(page).click();
   await expect.poll(() => playback(page)).toHaveLength(1);
   await themeToggle(page).press("Enter");
@@ -228,6 +268,36 @@ test("Blocked context resumption is reported without replaying the click", async
     "playback was blocked",
   );
   expect(await playback(page)).toEqual([]);
+});
+
+test("Playback failures are reported without blocking the action", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await enable(page);
+  await page.evaluate(() => {
+    const context = window.soundProbe.context!;
+    const createSource = context.createBufferSource;
+    context.createBufferSource = () => {
+      const source = createSource.call(context);
+      source.start = () => {
+        throw new DOMException("Playback unavailable", "InvalidStateError");
+      };
+      return source;
+    };
+  });
+  const previous = await page.locator("html").getAttribute("data-theme");
+  await themeToggle(page).click();
+  await expect(page.locator("html")).not.toHaveAttribute(
+    "data-theme",
+    previous!,
+  );
+  await expect(page.locator(".sound-control__error")).toContainText(
+    "playback failed",
+  );
+  expect(await playback(page)).toEqual([]);
+  await soundToggle(page).click();
+  await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "false");
 });
 
 test("Sounds on explicit dialog dismissal once, but not on deep links or result navigation", async ({
