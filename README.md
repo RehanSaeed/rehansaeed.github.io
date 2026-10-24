@@ -25,12 +25,19 @@ Image automation compresses files without using the action's GitHub-API commit
 path, then commits through Git so the repository's LFS filters retain image
 pointers. It checks those pointers before pushing and never force-pushes.
 Bot updates do not trigger another compression pass.
+Scheduled image compression updates one rolling pull request rather than
+opening a new timestamped branch every week.
 
 TypeScript stays on `6.0.3`, the latest compatible JavaScript-API release for
 `vue-tsc`; TypeScript 7's native compiler is not a drop-in replacement for that
 Vue checker. Nuxt Scripts stays on its existing v2 beta channel.
 Its beta.16 Nitro cache-driver path is normalized to a file URL on Windows;
 Linux configuration is unchanged.
+
+Dependabot checks npm packages and GitHub Actions daily. Retire upgrade PRs
+when their dependencies have already been upgraded or removed; do not restore
+obsolete Gridsome or Cypress dependencies to resolve those PRs. Keep action
+versions consistent across build, deployment, scanning and image workflows.
 
 `@nuxt/a11y` runs axe checks in development and exposes results in Nuxt DevTools.
 The published `1.0.0-alpha.1` release is development-only by default; it does not
