@@ -48,7 +48,6 @@
     "@nuxt/eslint": "1.17.0",
     "@nuxt/fonts": "1.0.1",
     "@playwright/test": "^1.64.1",
-    "@remy/webmention": "1.5.0",
     "@takumi-rs/core": "2.16.3",
     "@types/sanitize-html": "2.16.2",
     "cheerio": "^1.2.0",
