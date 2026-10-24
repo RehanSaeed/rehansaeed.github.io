@@ -1,0 +1,5 @@
+The WAV samples in this directory are original, mathematically synthesized tones.
+They are dedicated to the public domain under CC0 1.0 Universal:
+https://creativecommons.org/publicdomain/zero/1.0/
+
+This dedication applies only to these WAV samples, not to the rest of the repository.
