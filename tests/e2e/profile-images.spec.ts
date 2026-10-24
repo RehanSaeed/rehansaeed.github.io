@@ -22,11 +22,24 @@ unitTest(
         (match) => match[1],
       );
       expect(portrait, filename).toHaveLength(2);
+      // Expand implicit commands so lossless SVGO serialization keeps the D1 fingerprint.
+      expect(portrait[0], filename).not.toMatch(/[^MLC\d\s,.-]/);
+      const d1Commands = [...portrait[0].matchAll(/([MLC])([^MLC]*)/g)].flatMap(
+        ([, command, coordinates]) => {
+          const numbers = coordinates.match(/-?\d*\.?\d+/g)!.map(Number);
+          const arity = command === "C" ? 6 : 2;
+          expect(numbers.length % arity, filename).toBe(0);
+          return Array.from({ length: numbers.length / arity }, (_, index) => [
+            command === "M" && index > 0 ? "L" : command,
+            ...numbers.slice(index * arity, (index + 1) * arity),
+          ]);
+        },
+      );
       expect(
-        createHash("sha256").update(portrait[0]).digest("hex"),
+        createHash("sha256").update(JSON.stringify(d1Commands)).digest("hex"),
         `${filename}: unchanged D1 face, hair and shirt`,
       ).toBe(
-        "7bd0843cabb6a62d4991e016aea9e87a2394cd01154f2567316c1d0f13130895",
+        "754c884b163959c22b514afa8c029c976d0e6042fa035e9f2a332ce18ae0f216",
       );
       paths.push(JSON.stringify(portrait));
       expect(source, filename).not.toMatch(/<image\b|data:image/);
