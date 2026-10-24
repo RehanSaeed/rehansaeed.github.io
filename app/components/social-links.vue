@@ -17,6 +17,14 @@
       <u-icon-twitch />
     </u-link-button>
     <u-link-button
+      v-if="metadata.author.mastodon.url"
+      class="social__link"
+      label="Mastodon"
+      :href="metadata.author.mastodon.url"
+      rel="me">
+      <u-icon-mastodon />
+    </u-link-button>
+    <u-link-button
       v-if="metadata.author.gitHub.url"
       class="social__link"
       label="GitHub"
@@ -54,6 +62,7 @@ import linkButton from "~/components/shared/link-button.vue";
 import iconEmail from "~/components/shared/icons/icon-email.vue";
 import iconGitHub from "~/components/shared/icons/icon-github.vue";
 import iconLinkedIn from "~/components/shared/icons/icon-linkedin.vue";
+import iconMastodon from "~/components/shared/icons/icon-mastodon.vue";
 import iconRss from "~/components/shared/icons/icon-rss.vue";
 import iconStackOverflow from "~/components/shared/icons/icon-stackoverflow.vue";
 import iconTwitch from "~/components/shared/icons/icon-twitch.vue";
@@ -67,6 +76,7 @@ export default {
     "u-icon-email": iconEmail,
     "u-icon-github": iconGitHub,
     "u-icon-linkedin": iconLinkedIn,
+    "u-icon-mastodon": iconMastodon,
     "u-icon-rss": iconRss,
     "u-icon-stackoverflow": iconStackOverflow,
     "u-icon-twitch": iconTwitch,
