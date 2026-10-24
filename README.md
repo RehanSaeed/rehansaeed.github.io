@@ -26,6 +26,13 @@ path, then commits through Git so the repository's LFS filters retain image
 pointers. It checks those pointers before pushing and never force-pushes.
 Bot updates do not trigger another compression pass.
 
+The Nuxt app uses the shared DOM and code styles directly; the old
+`.markdown-body` stylesheet and unreferenced Webmention icons are removed.
+Migration parity and worker-update checks remain useful regression tools.
+Streaming thumbnail sources and editable artwork are retained even when they
+are not linked from the blog. Outgoing Webmentions run through the workflow's
+pinned `npx` command, not an installed application dependency.
+
 TypeScript stays on `6.0.3`, the latest compatible JavaScript-API release for
 `vue-tsc`; TypeScript 7's native compiler is not a drop-in replacement for that
 Vue checker. Nuxt Scripts stays on its existing v2 beta channel.
