@@ -16,6 +16,15 @@ for (const initialTheme of ["light", "dark"] as const) {
 
     const samples = await toggle.evaluate((button) => {
       const arrows = Array.from(document.querySelectorAll(".arrows__arrow"));
+      // Firefox can still be transitioning from the initial transparent body.
+      for (const animation of document.getAnimations()) {
+        if (
+          animation instanceof CSSTransition &&
+          animation.transitionProperty === "background-color"
+        ) {
+          animation.finish();
+        }
+      }
       const initialBackground = getComputedStyle(document.body).backgroundColor;
       button.click();
       const transitions = document
