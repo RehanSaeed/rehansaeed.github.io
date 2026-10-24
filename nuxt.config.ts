@@ -366,7 +366,7 @@ export default defineNuxtConfig({
 
   var darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
   darkQuery.addListener(function (e) {
-    window.__setPreferredTheme(e.matches ? "dark" : "light");
+    setTheme(e.matches ? "dark" : "light");
   });
 
   setTheme(preferredTheme || (darkQuery.matches ? "dark" : "light"));
