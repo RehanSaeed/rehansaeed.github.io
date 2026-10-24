@@ -50,18 +50,39 @@
           {{ title }}
         </div>
       </div>
-      <div style="display: flex; align-items: center; gap: 20px">
+      <div
+        style="
+          display: flex;
+          align-self: flex-start;
+          align-items: center;
+          gap: 24px;
+          padding: 20px 24px;
+          border-radius: 8px;
+          background: #ffffff;
+          color: #242424;
+        ">
         <img
           src="/images/author/Muhammad-Rehan-Saeed/Logo.svg"
           alt=""
-          width="64"
-          height="64"
-          style="border-radius: 50%" />
-        <div style="display: flex; flex-direction: column; gap: 8px">
-          <div style="font-size: 24px">{{ author }}</div>
-          <div style="font-size: 16px; color: #ccbdff">
-            Software Developer · Open Source
-          </div>
+          width="76"
+          height="76"
+          style="flex-shrink: 0; border-radius: 50%" />
+        <div
+          style="
+            width: 6px;
+            height: 76px;
+            flex-shrink: 0;
+            background: #6b17e8;
+          " />
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            line-height: 1.2;
+          ">
+          <div style="font-size: 40px">{{ author }}</div>
+          <div style="font-size: 24px; color: #6f6f6f">RehanSaeed.com</div>
         </div>
       </div>
     </div>

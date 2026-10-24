@@ -87,12 +87,12 @@ test("Rendered social cards use the post hero, title and current branding", asyn
   );
   expect($.text()).toContain(cssTitle);
   expect($.text()).toContain("RehanSaeed.com");
-  expect($.text()).toContain("Software Developer · Open Source");
+  expect($.text()).not.toContain("Software Developer");
   expect($.text()).not.toContain(".NET");
   expect($.text()).not.toContain("rehansaeed.com");
-  const branding = $("div").filter(
-    (_, element) => $(element).text().trim() === "RehanSaeed.com",
-  );
+  const branding = $("div")
+    .filter((_, element) => $(element).text().trim() === "RehanSaeed.com")
+    .first();
   const heading = branding.parent();
   expect(heading.children()).toHaveLength(2);
   expect(branding.next().text().trim()).toBe(cssTitle);
@@ -100,6 +100,20 @@ test("Rendered social cards use the post hero, title and current branding", asyn
   expect(heading.css("gap")).toBe("24px");
   expect(heading.next().text()).toContain(author);
   expect(heading.parent().css("justify-content")).toBe("space-between");
+  const panel = heading.next();
+  expect(panel.css("background")).toBe("#ffffff");
+  expect(panel.css("color")).toBe("#242424");
+  expect(panel.css("border-radius")).toBe("8px");
+  expect(panel.css("align-self")).toBe("flex-start");
+  expect(panel.children()).toHaveLength(3);
+  expect(panel.children().first().attr("width")).toBe("76");
+  expect(panel.children().eq(1).css("background")).toBe("#6b17e8");
+  expect(panel.children().eq(1).css("height")).toBe("76px");
+  const identity = panel.children().last();
+  expect(identity.children().first().text().trim()).toBe(author);
+  expect(identity.children().first().css("font-size")).toBe("40px");
+  expect(identity.children().last().text().trim()).toBe("RehanSaeed.com");
+  expect(identity.children().last().css("color")).toBe("#6f6f6f");
 });
 
 test("The CSS article and other page types advertise distinct static social cards", async ({
