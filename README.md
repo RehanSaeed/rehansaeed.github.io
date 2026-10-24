@@ -398,11 +398,11 @@ Type checking still uses TypeScript 6's JavaScript compiler API through `vue-tsc
 Vue Language Tools' draft v4/TypeScript 7.1 content-mapper work has no stable ETA.
 
 All application icons use `@nuxt/icon` in SVG mode. Font Awesome and Feather
-collections supply the standard icons; Material Symbols supplies the install
-action and Simple Icons supplies the monochrome Buy Me a Coffee brand. The
-personal logo remains original artwork in `app/assets/icons/rehan.svg`, loaded
-through the same component as `blog:rehan`. The four unused comment, heart,
-external-link and repost components were removed with the old icon factory.
+collections supply the standard icons; Lucide supplies the house-with-heart
+install action. The original personal logo and yellow Buy Me a Coffee artwork
+remain in `app/assets/icons`, loaded through the same component as `blog:rehan`
+and `blog:coffee`. The four unused comment, heart, external-link and repost
+components were removed with the old icon factory.
 
 `nuxt.config.ts` explicitly bundles the 21 used icons, including both theme states
 and icons initially hidden in dialogs. Local collection packages are build-time
@@ -411,8 +411,9 @@ dependencies; neither entire collections nor an icon server are deployed.
 dialogs and the PWA all work without Iconify requests. Add any new icon to
 `icon.clientBundle.icons`; the 48 kB uncompressed limit guards the icon bundle.
 This is a maintenance simplification, not a claim that a module outperforms the
-previous inline SVGs. Stock shapes and native padding intentionally replace
-the older customized artwork.
+previous inline SVGs. Stock shapes and native padding replace the older standard
+icons; the personal logo and multicolour coffee artwork retain their original
+shapes and colours.
 Artwork attribution and applicable license texts are deployed as
 [`icon-licenses.txt`](public/icon-licenses.txt).
 

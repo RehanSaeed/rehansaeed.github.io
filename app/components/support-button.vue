@@ -1,10 +1,7 @@
 <template>
   <div>
     <u-button bordered @click="onClick">
-      <NuxtIcon
-        name="simple-icons:buymeacoffee"
-        class="icon--inline"
-        aria-hidden="true" />
+      <NuxtIcon name="blog:coffee" class="icon--inline" aria-hidden="true" />
       Buy me a Coffee
     </u-button>
 
