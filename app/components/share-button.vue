@@ -55,7 +55,10 @@ export default {
     "u-icon-twitter": iconTwitter,
   },
   setup() {
-    return { metadata: useAppConfig().site, playSound: useUiSound().play };
+    return {
+      metadata: useAppConfig().site,
+      playSoundEffect: useSoundEffect().play,
+    };
   },
   data() {
     return {
@@ -138,7 +141,7 @@ export default {
         this.share();
       } else {
         this.open();
-        this.playSound("dialog-open");
+        this.playSoundEffect("dialog-open");
       }
     },
   },

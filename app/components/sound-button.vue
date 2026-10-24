@@ -29,7 +29,7 @@
 <script setup lang="ts">
 import UButton from "~/components/shared/button.vue";
 
-const { enabled, error, setEnabled } = useUiSound();
+const { enabled, error, setEnabled } = useSoundEffect();
 </script>
 
 <style lang="scss">

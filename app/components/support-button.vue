@@ -33,7 +33,7 @@ export default {
     };
   },
   setup() {
-    return { playSound: useUiSound().play };
+    return { playSoundEffect: useSoundEffect().play };
   },
   methods: {
     open() {
@@ -44,7 +44,7 @@ export default {
     },
     onClick() {
       this.open();
-      this.playSound("dialog-open");
+      this.playSoundEffect("dialog-open");
     },
   },
 };
