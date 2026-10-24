@@ -26,7 +26,7 @@
 
 <script lang="ts">
 import { onMounted, ref, useId, watch } from "vue";
-import { Document } from "flexsearch";
+import type { Document } from "flexsearch";
 import { z } from "zod";
 import {
   searchDocumentSchema,
@@ -39,8 +39,11 @@ let indexPromise: Promise<Document<SearchDocument>> | undefined;
 
 // Downloads the prerendered /flexsearch.json once and builds the index in the browser.
 const loadIndex = () => {
-  indexPromise ??= $fetch<unknown>("/flexsearch.json")
-    .then((response) => {
+  indexPromise ??= Promise.all([
+    $fetch<unknown>("/flexsearch.json"),
+    import("flexsearch"),
+  ])
+    .then(([response, { Document }]) => {
       const documents = z.array(searchDocumentSchema).parse(response);
       const index = new Document<SearchDocument>({
         tokenize: "forward",

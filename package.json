@@ -81,6 +81,11 @@
     "vue-tsc": "3.3.14",
     "yaml": "2.9.1"
   },
+  "overrides": {
+    "@lhci/cli": {
+      "lighthouse": "13.5.0"
+    }
+  },
   "scripts": {
     "help": "node scripts/commands.mts",
     "images:avif": "node scripts/avif-images.mts",

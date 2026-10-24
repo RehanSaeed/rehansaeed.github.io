@@ -24,3 +24,48 @@ Bug reports and improvements are welcome. Read the
 [contributing guide](./.github/CONTRIBUTING.md) and
 [code of conduct](./.github/CODE_OF_CONDUCT.md) before opening an
 [issue](https://github.com/RehanSaeed/rehansaeed.github.io/issues) or pull request.
+
+## Lighthouse CI
+
+The Build workflow audits the generated homepage, About, Portfolio and a blog
+article with Playwright's pinned Chromium. Each page is measured three times.
+Lighthouse failures block deployment, and the `lighthouse-report` Actions artifact
+retains HTML/JSON reports and assertion results for seven days, including when
+assertions fail. Reports are not sent to temporary public storage.
+
+To run the same checks locally with the Node version in `.nvmrc`:
+
+```shell
+npm ci
+npx playwright install --with-deps chromium
+npm run build
+npm run lighthouse
+```
+
+Site generation needs `GITHUB_TOKEN` for its GitHub data snapshots. To use another
+installed Chrome, set `CHROME_PATH` to its executable before running Lighthouse.
+Local reports are written to `.lighthouseci/reports`.
+
+The configuration extends the recommended assertions and requires **100** for
+accessibility, best practices and SEO. Performance scores below **90** produce
+warnings using the median of three runs; timing measurements remain warnings,
+as in the recommended preset. The following exceptions remain visible warnings:
+
+- Back/forward cache can fail with Chromium's non-actionable
+  `Internal error / IgnoreEventAndEvict`.
+- Image-delivery diagnostics can flag correctly selected high-density images;
+  regression tests check mobile candidates at 1x, 1.75x and 2x density.
+- Network-dependency diagnostics flag the same-origin stylesheet/manifest chain.
+- Unused JavaScript and non-composited animations were previously disabled;
+  they now warn rather than disappearing from the results.
+
+Lighthouse CI currently pins an older engine, so `package.json` overrides it with
+Lighthouse 13.5.0. `lighthouserc.js` explicitly excludes retired audit IDs from the
+older recommended preset; update this list when upgrading the engine.
+
+The site uses responsive mobile image candidates, WebP profile images,
+article-only KaTeX styles and an on-demand search engine. Server-rendered content
+is no longer faded out during initial hydration. Pagination omits unavailable
+links, and `robots.txt` retains the explicit search, AI-input and AI-training
+opt-ins through `Content-Signal`, without the redundant legacy `Content-Usage`
+directive that Lighthouse rejects.
