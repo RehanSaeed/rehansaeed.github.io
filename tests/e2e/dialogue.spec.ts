@@ -82,8 +82,17 @@ test.describe("Dialog transitions", () => {
             getComputedStyle(element, "::backdrop").opacity,
           ),
           display: getComputedStyle(element).display,
-          translate: getComputedStyle(element).translate,
+          translateY: Number.parseFloat(
+            getComputedStyle(element).translate.split(" ")[1]!,
+          ),
           scale: getComputedStyle(element).scale,
+          easing: animations
+            .filter(
+              (animation) =>
+                animation instanceof CSSTransition &&
+                animation.transitionProperty === "translate",
+            )
+            .map((animation) => animation.effect!.getTiming().easing),
           open: element.open,
         };
       };
@@ -109,10 +118,16 @@ test.describe("Dialog transitions", () => {
       expect(frame.backdropOpacity).toBeLessThan(1);
       expect(frame.display).not.toBe("none");
       expect(frame.open).toBe(true);
-      expect(frame.translate).not.toBe("0px");
-      expect(Number(frame.scale)).toBeGreaterThan(0.98);
-      expect(Number(frame.scale)).toBeLessThan(1);
+      expect(frame.translateY).toBeGreaterThan(5);
+      expect(frame.translateY).toBeLessThan(96);
+      expect(frame.scale).toBe("none");
     }
+    expect(frames.entrance.easing).toEqual([
+      "cubic-bezier(0.215, 0.61, 0.355, 1)",
+    ]);
+    expect(frames.exit.easing).toEqual([
+      "cubic-bezier(0.55, 0.055, 0.675, 0.19)",
+    ]);
     expect(frames.closedDisplay).toBe("none");
     expect(frames.closed).toBe(true);
   });

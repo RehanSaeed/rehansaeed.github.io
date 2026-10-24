@@ -117,8 +117,7 @@ export default {
   .dialog-enter-active {
     transition:
       opacity var(--global-duration-2) var(--ease-out-cubic),
-      translate var(--global-duration-2) var(--ease-out-cubic),
-      scale var(--global-duration-2) var(--ease-out-cubic);
+      translate var(--global-duration-2) var(--ease-out-cubic);
 
     &::backdrop {
       transition: opacity var(--global-duration-2) ease-out;
@@ -128,8 +127,7 @@ export default {
   .dialog-leave-active {
     transition:
       opacity var(--global-duration-1) var(--ease-in-cubic),
-      translate var(--global-duration-1) var(--ease-in-cubic),
-      scale var(--global-duration-1) var(--ease-in-cubic);
+      translate var(--global-duration-1) var(--ease-in-cubic);
 
     &::backdrop {
       transition: opacity var(--global-duration-1) ease-out;
@@ -139,8 +137,7 @@ export default {
   .dialog-enter-from,
   .dialog-leave-to {
     opacity: 0;
-    translate: 0 1rem;
-    scale: 0.98;
+    translate: 0 clamp(3rem, 8vh, 6rem);
 
     &::backdrop {
       opacity: 0;
