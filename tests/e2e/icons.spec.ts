@@ -82,6 +82,60 @@ test("Icons are prerendered SVGs with real artwork, including closed dialogs", a
   }
 });
 
+test("Shared icons encapsulate inline styling and decorative defaults", async ({
+  page,
+}) => {
+  await page.goto(post);
+  await ready(page);
+  const share = page.getByRole("button", { name: "Share", exact: true });
+  const inlineIcon = share.locator("svg.icon");
+  await expect(inlineIcon).toHaveCSS("display", "inline");
+  await expect(inlineIcon).toHaveAttribute("aria-hidden", "true");
+  await expect(inlineIcon).not.toHaveAttribute("inline");
+  await expect(page.locator(".theme-button svg.icon")).toHaveCSS(
+    "display",
+    "block",
+  );
+
+  await page.goto("/streaming/thumbnail/");
+  await ready(page);
+  const logo = page.locator(".thumbnail-logo svg.icon");
+  await expect(logo).toHaveCSS("inline-size", "150px");
+  await expect(logo).toHaveCSS("block-size", "150px");
+  await expect(logo).toHaveAttribute("aria-hidden", "true");
+});
+
+test("System theme changes do not save an explicit preference", async ({
+  page,
+}) => {
+  const theme = page.locator("html");
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.goto("/");
+  await ready(page);
+  await expect(theme).toHaveAttribute("data-theme", "light");
+  await page.emulateMedia({ colorScheme: "dark" });
+  await expect(theme).toHaveAttribute("data-theme", "dark");
+  expect(await page.evaluate(() => localStorage.getItem("theme"))).toBeNull();
+
+  for (const path of ["/about/", "/streaming/thumbnail/"]) {
+    await page.goto(path);
+    await ready(page);
+    await expect(theme).toHaveAttribute("data-theme", "dark");
+    expect(await page.evaluate(() => localStorage.getItem("theme"))).toBeNull();
+  }
+
+  await page.goto("/");
+  await ready(page);
+  await page.getByRole("button", { name: "Toggle dark/light" }).click();
+  await expect(theme).toHaveAttribute("data-theme", "light");
+  expect(await page.evaluate(() => localStorage.getItem("theme"))).toBe(
+    "light",
+  );
+  await page.reload();
+  await ready(page);
+  await expect(theme).toHaveAttribute("data-theme", "light");
+});
+
 test.describe("Offline icons", () => {
   test.use({ serviceWorkers: "allow" });
 

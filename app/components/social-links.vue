@@ -6,7 +6,7 @@
       label="Youtube"
       :href="metadata.author.youtube.url"
       rel="me">
-      <NuxtIcon name="fa-brands:youtube" aria-hidden="true" />
+      <u-icon name="fa-brands:youtube" />
     </u-link-button>
     <u-link-button
       v-if="metadata.author.twitch.url"
@@ -14,7 +14,7 @@
       label="Twitch"
       :href="metadata.author.twitch.url"
       rel="me">
-      <NuxtIcon name="fa-brands:twitch" aria-hidden="true" />
+      <u-icon name="fa-brands:twitch" />
     </u-link-button>
     <u-link-button
       v-if="metadata.author.gitHub.url"
@@ -22,7 +22,7 @@
       label="GitHub"
       :href="metadata.author.gitHub.url"
       rel="me authn">
-      <NuxtIcon name="fa-brands:github" aria-hidden="true" />
+      <u-icon name="fa-brands:github" />
     </u-link-button>
     <u-link-button
       v-if="metadata.author.linkedIn.url"
@@ -30,7 +30,7 @@
       label="LinkedIn"
       :href="metadata.author.linkedIn.url"
       rel="me">
-      <NuxtIcon name="fa-brands:linkedin" aria-hidden="true" />
+      <u-icon name="fa-brands:linkedin" />
     </u-link-button>
     <u-link-button
       v-if="metadata.author.stackOverflow.url"
@@ -38,30 +38,30 @@
       label="Stack Overflow"
       :href="metadata.author.stackOverflow.url"
       rel="me">
-      <NuxtIcon name="fa-brands:stack-overflow" aria-hidden="true" />
+      <u-icon name="fa-brands:stack-overflow" />
     </u-link-button>
     <u-link-button
       class="social__link"
       label="Email"
       href="#"
       @click="openEmail">
-      <NuxtIcon name="fa-regular:envelope" aria-hidden="true" />
+      <u-icon name="fa-regular:envelope" />
     </u-link-button>
     <u-link-button class="social__link" href="/rss.xml" label="RSS">
-      <NuxtIcon name="fa-solid:rss" aria-hidden="true" />
+      <u-icon name="fa-solid:rss" />
     </u-link-button>
   </div>
 </template>
 
 <script>
-import { NuxtIcon } from "#components";
+import icon from "~/components/shared/icon.vue";
 import linkButton from "~/components/shared/link-button.vue";
 import { decode } from "~/framework/obfuscate.js";
 
 export default {
   name: "u-social-links",
   components: {
-    NuxtIcon,
+    "u-icon": icon,
     "u-link-button": linkButton,
   },
   setup() {

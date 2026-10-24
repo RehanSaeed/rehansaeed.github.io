@@ -1,18 +1,18 @@
 <template>
   <u-link-button bordered :to="url">
-    <NuxtIcon name="fa-brands:github" class="icon--inline" aria-hidden="true" />
+    <u-icon name="fa-brands:github" inline />
     Edit on GitHub
   </u-link-button>
 </template>
 
 <script>
-import { NuxtIcon } from "#components";
+import icon from "~/components/shared/icon.vue";
 import linkButton from "~/components/shared/link-button.vue";
 
 export default {
   name: "u-edit-post-button",
   components: {
-    NuxtIcon,
+    "u-icon": icon,
     "u-link-button": linkButton,
   },
   props: {

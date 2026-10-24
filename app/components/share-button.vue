@@ -1,10 +1,7 @@
 <template>
   <div>
     <u-button bordered @click="onClick">
-      <NuxtIcon
-        name="fa-solid:share-alt"
-        class="icon--inline"
-        aria-hidden="true" />
+      <u-icon name="fa-solid:share-alt" inline />
       Share
     </u-button>
 
@@ -15,38 +12,23 @@
       class="share-dialogue">
       <div class="share-dialogue__links">
         <u-link-button bordered :href="facebookUrl" @click="onClose">
-          <NuxtIcon
-            name="fa-brands:facebook"
-            class="icon--inline"
-            aria-hidden="true" />
+          <u-icon name="fa-brands:facebook" inline />
           Facebook
         </u-link-button>
         <u-link-button bordered :href="twitterUrl" @click="onClose">
-          <NuxtIcon
-            name="fa-brands:twitter"
-            class="icon--inline"
-            aria-hidden="true" />
+          <u-icon name="fa-brands:twitter" inline />
           Twitter
         </u-link-button>
         <u-link-button bordered :href="redditUrl" @click="onClose">
-          <NuxtIcon
-            name="fa-brands:reddit"
-            class="icon--inline"
-            aria-hidden="true" />
+          <u-icon name="fa-brands:reddit" inline />
           Reddit
         </u-link-button>
         <u-link-button bordered :href="linkedinUrl" @click="onClose">
-          <NuxtIcon
-            name="fa-brands:linkedin"
-            class="icon--inline"
-            aria-hidden="true" />
+          <u-icon name="fa-brands:linkedin" inline />
           LinkedIn
         </u-link-button>
         <u-link-button bordered :href="mailUrl" @click="onClose">
-          <NuxtIcon
-            name="fa-regular:envelope"
-            class="icon--inline"
-            aria-hidden="true" />
+          <u-icon name="fa-regular:envelope" inline />
           Email
         </u-link-button>
       </div>
@@ -55,7 +37,7 @@
 </template>
 
 <script>
-import { NuxtIcon } from "#components";
+import icon from "~/components/shared/icon.vue";
 import button from "~/components/shared/button.vue";
 import dialogue from "~/components/shared/dialogue.vue";
 import linkButton from "~/components/shared/link-button.vue";
@@ -63,7 +45,7 @@ import linkButton from "~/components/shared/link-button.vue";
 export default {
   name: "u-share-button",
   components: {
-    NuxtIcon,
+    "u-icon": icon,
     "u-button": button,
     "u-dialogue": dialogue,
     "u-link-button": linkButton,

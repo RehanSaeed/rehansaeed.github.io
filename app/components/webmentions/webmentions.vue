@@ -12,10 +12,7 @@
       <a
         class="webmentions__help"
         href="https://en.wikipedia.org/wiki/Webmention">
-        <NuxtIcon
-          name="fa-regular:question-circle"
-          class="icon--inline"
-          aria-hidden="true" />
+        <u-icon name="fa-regular:question-circle" inline />
         What's this?
       </a>
       <div class="webmentions__container">
@@ -70,7 +67,7 @@
 </template>
 
 <script>
-import { NuxtIcon } from "#components";
+import icon from "~/components/shared/icon.vue";
 import card from "~/components/shared/card.vue";
 import heading from "~/components/shared/heading.vue";
 import intersect from "~/components/shared/intersect.vue";
@@ -84,7 +81,7 @@ import webmentionRepliesSkeleton from "~/components/webmentions/webmention-repli
 export default {
   name: "u-webmentions",
   components: {
-    NuxtIcon,
+    "u-icon": icon,
     "u-card": card,
     "u-heading": heading,
     "u-intersect": intersect,

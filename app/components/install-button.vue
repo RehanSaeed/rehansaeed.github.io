@@ -4,12 +4,12 @@
     class="install-button"
     aria-label="Install the app"
     @click.prevent="onInstall">
-    <NuxtIcon name="lucide:house-heart" aria-hidden="true" />
+    <u-icon name="lucide:house-heart" />
   </u-button>
 </template>
 
 <script>
-import { NuxtIcon } from "#components";
+import icon from "~/components/shared/icon.vue";
 import button from "~/components/shared/button.vue";
 import {
   pwaInstallPromoShown,
@@ -22,7 +22,7 @@ import {
 export default {
   name: "u-install-button",
   components: {
-    NuxtIcon,
+    "u-icon": icon,
     "u-button": button,
   },
   data() {

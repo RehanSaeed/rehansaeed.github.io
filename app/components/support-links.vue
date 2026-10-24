@@ -11,10 +11,7 @@
         bordered
         label="Patreon"
         :href="metadata.author.patreon.url">
-        <NuxtIcon
-          name="fa-brands:patreon"
-          class="icon--inline"
-          aria-hidden="true" />
+        <u-icon name="fa-brands:patreon" inline />
         Patreon
       </u-link-button>
       <u-link-button
@@ -22,7 +19,7 @@
         bordered
         label="Buy me a Coffee"
         :href="metadata.author.buyMeACoffee.url">
-        <NuxtIcon name="blog:coffee" class="icon--inline" aria-hidden="true" />
+        <u-icon name="blog:coffee" inline />
         Buy me a Coffee
       </u-link-button>
       <u-link-button
@@ -30,10 +27,7 @@
         bordered
         label="GitHub Sponsors"
         :href="metadata.author.gitHub.sponsorsUrl">
-        <NuxtIcon
-          name="fa-brands:github"
-          class="icon--inline"
-          aria-hidden="true" />
+        <u-icon name="fa-brands:github" inline />
         GitHub Sponsors
       </u-link-button>
       <u-link-button
@@ -41,10 +35,7 @@
         bordered
         label="Paypal"
         :href="metadata.author.paypal.url">
-        <NuxtIcon
-          name="fa-brands:paypal"
-          class="icon--inline"
-          aria-hidden="true" />
+        <u-icon name="fa-brands:paypal" inline />
         Paypal
       </u-link-button>
     </div>
@@ -52,13 +43,13 @@
 </template>
 
 <script>
-import { NuxtIcon } from "#components";
+import icon from "~/components/shared/icon.vue";
 import linkButton from "~/components/shared/link-button.vue";
 
 export default {
   name: "u-support-links",
   components: {
-    NuxtIcon,
+    "u-icon": icon,
     "u-link-button": linkButton,
   },
   setup() {
