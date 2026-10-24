@@ -3,24 +3,25 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { test as unitTest } from "@playwright/test";
 import sharp from "sharp";
+import { parse as parseYaml } from "yaml";
 import { expect, test } from "./fixtures";
 
 const authorDirectory = "images/author/Muhammad-Rehan-Saeed";
 const iconSizes = [16, 48, 72, 96, 120, 128, 144, 152, 180, 192, 384, 512];
 const pngPixelHashes: Record<number, string> = {
-  16: "416cc52f4308f01827f3d2b0ffe485ef044bd463b489d0e897fc80aa13d050e7",
-  48: "6e4e530c1bf59897b0180254ed1dc1d38531d81293dfe9d360e48ce174b5bbb4",
-  64: "62e7f8bf10df9a40e1be35de6fbb96e6b893049bf37bc29e0990710cf6ab4f78",
-  72: "83eef04f1583e6f9971aa24cc9aa58ea6e1bcc02b6b7ba3cc9e8c35626234ca9",
-  96: "c74f677de8501118b1eb24566eb72dc46d6b7e4b8c7aeb2730700d1f0030bda0",
-  120: "c9a58c2e559234cdccf69ffd31fb4989fc57588d7aa923c8dc547ff3038ff99a",
-  128: "75e247e1540638b2412b484fb06a39c200bdd51648e9045519c19f9011abe025",
-  144: "86684c47b76be9352f36104930271b7dabcb3df7626146ebda71d36159bb206c",
-  152: "d1bf93fe1aa2a217b17927f28b936876abfbafcff3cbc2bc23382dd36f998b51",
-  180: "7ca7ed88374176db9b699b7f4aa077ffb14e14449d924fcdea470fd061a54d20",
-  192: "fc0586e7cefa2b5bc0db2920989fb35ce8e4e308f3e51f339fc25745922b73dd",
-  384: "5fb850431056dea763c990bda1793057173a6203703e593dd0c2c33e25a623b3",
-  512: "b9f2657cb4e0f587428f07dc1fba3a387a27fed6d9fb743627c7d37216349a51",
+  16: "fb83d34d929b0e20e18b0e2d2f9bb8b841add997832fad4437769513aca9aa86",
+  48: "15d51aff8126338a8524c15a297895a8e1d64b9c938eccb0ed52d0a55d635b0b",
+  64: "587489ace3c62d6eace52b1a13db5deff48ae4fd11dc15c1220e496b57537cf0",
+  72: "2a4a083fe1a099d2406ecdd0b64e9dce077c38f5b90af6e162d7467838cc0cc1",
+  96: "5951c495e74068f25c5194f955df958469af6d60e6f45bf4dcc783d57de5a2e1",
+  120: "2acfe4c85a30f8914157f9f087596e057c327ab6f3288123328718ac272ab842",
+  128: "0cde068cc9970951c687c14379f458b89d668d2cb7841b844fe97c56d254ced1",
+  144: "d74595f50ee4e94982f24dc4b47c40873d6e8d1ec1d2e45070f013a2c5239f17",
+  152: "6a9aa8957d633e3fb67e5951847226541db1fb4c8c344460633783eed22799d8",
+  180: "f3c4306d928371227a014635310d84c650cae687e88f7f1d80a2a9e4b0096d53",
+  192: "dd3f4dfa1c106302d0dead0231ba709db756960b47515b38113c8057921e0c94",
+  384: "f2699b55b9e4878e86392e1e406a9e67df8f43c1047715c9d729b559b2ef1678",
+  512: "b982693776b546944236652c3c61c77728ba813c43de6dad0b4d1673e776ed06",
 };
 
 unitTest(
@@ -166,6 +167,9 @@ unitTest(
       expect(metadata.exif, path).toBeUndefined();
       expect(metadata.xmp, path).toBeUndefined();
       if (metadata.format === "png") {
+        expect(metadata.isPalette, `${path}: no palette quantization`).toBe(
+          false,
+        );
         const pixels = await sharp(join("public", path))
           .toColourspace("srgb")
           .ensureAlpha()
@@ -175,6 +179,16 @@ unitTest(
           createHash("sha256").update(pixels).digest("hex"),
           `${path}: lossless decoded sRGB pixels and alpha`,
         ).toBe(pngPixelHashes[width]);
+        if (width === 512) {
+          const colors = new Set<number>();
+          for (let index = 0; index < pixels.length; index += 4) {
+            colors.add(pixels.readUInt32LE(index));
+          }
+          expect(
+            colors.size,
+            `${path}: retained photographic colour detail`,
+          ).toBeGreaterThan(40_000);
+        }
       }
     }
     for (const size of [192, 512]) {
@@ -211,9 +225,47 @@ unitTest(
       const image = ico.subarray(offset, offset + length);
       const metadata = await sharp(image).metadata();
       expect([metadata.width, metadata.height]).toEqual([size, size]);
+      expect(metadata.isPalette, `${size}px ICO: no palette quantization`).toBe(
+        false,
+      );
       await sharp(image).raw().toBuffer();
+      if (iconSizes.includes(size)) {
+        expect(image).toEqual(
+          await readFile(
+            join("public", "images", "icons", `favicon-${size}x${size}.png`),
+          ),
+        );
+      }
     }
     expect(sizes).toEqual([48, 32, 16]);
+  },
+);
+
+unitTest(
+  "Both compression workflows preserve profile photo exports",
+  async () => {
+    for (const workflow of [
+      "compress-images.yml",
+      "compress-images-on-demand.yml",
+    ]) {
+      const source = await readFile(
+        join(".github", "workflows", workflow),
+        "utf8",
+      );
+      const configuration = parseYaml(source);
+      const step = configuration.jobs.build.steps.find(
+        (step: { uses?: string }) =>
+          step.uses?.startsWith("calibreapp/image-actions@"),
+      );
+      expect(step.with.ignorePaths.split(","), workflow).toEqual(
+        expect.arrayContaining([
+          `public/${authorDirectory}/Profile-320x480.jpg`,
+          `public/${authorDirectory}/Logo-*.png`,
+          "public/favicon.png",
+          "public/images/icons/favicon-*.png",
+        ]),
+      );
+    }
   },
 );
 
