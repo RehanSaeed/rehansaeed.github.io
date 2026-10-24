@@ -92,7 +92,7 @@ test("Shared icons encapsulate inline styling and decorative defaults", async ({
   await expect(inlineIcon).toHaveCSS("display", "inline");
   await expect(inlineIcon).toHaveAttribute("aria-hidden", "true");
   await expect(inlineIcon).not.toHaveAttribute("inline");
-  await expect(page.locator(".theme-button svg.icon")).toHaveCSS(
+  await expect(page.locator(".theme-button svg.icon:visible")).toHaveCSS(
     "display",
     "block",
   );
