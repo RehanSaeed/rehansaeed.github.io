@@ -9,14 +9,8 @@ export async function delayClientScripts(page: Page) {
   const pattern = "**/_nuxt/*.js";
   const handler = (route: Route) => {
     const request = (async () => {
-      // Buffer before delaying delivery, without retaining API response handles.
-      const response = await route.fetch();
-      const body = await response.body();
-      const status = response.status();
-      const headers = response.headers();
-      await response.dispose();
       await blocked;
-      await route.fulfill({ status, headers, body });
+      await route.continue();
     })();
     requests.push(request);
     return request;

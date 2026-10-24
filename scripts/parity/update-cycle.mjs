@@ -6,7 +6,11 @@ import { join } from "node:path";
 import { chromium, expect } from "@playwright/test";
 
 const previous = process.argv[2];
-assert(previous, "Usage: npm run parity:update-cycle -- <previous-Nuxt-dist>");
+const current = process.argv[3] ?? "dist";
+assert(
+    previous,
+    "Usage: npm run parity:update-cycle -- <previous-Nuxt-dist> [current-Nuxt-dist]",
+);
 const port = "8093";
 const origin = `http://localhost:${port}`;
 let server;
@@ -33,7 +37,7 @@ const oldManifest = JSON.parse(
     await readFile(join(previous, "_nuxt/builds/latest.json"), "utf8"),
 );
 const newManifest = JSON.parse(
-    await readFile("dist/_nuxt/builds/latest.json", "utf8"),
+    await readFile(join(current, "_nuxt", "builds", "latest.json"), "utf8"),
 );
 assert.notEqual(
     oldManifest.id,
@@ -46,7 +50,7 @@ for (const file of await readdir(join(previous, "_nuxt"), {
 })) {
     if (!/\.(js|css)$/.test(file)) continue;
     assert.deepEqual(
-        await readFile(join("dist", "_nuxt", file)),
+        await readFile(join(current, "_nuxt", file)),
         await readFile(join(previous, "_nuxt", file)),
         `Previous build asset must remain byte-identical: ${file}`,
     );
@@ -65,6 +69,7 @@ const isolate = (context) =>
 try {
     const context = await browser.newContext({ serviceWorkers: "allow" });
     context.setDefaultTimeout(180_000);
+    context.setDefaultNavigationTimeout(60_000);
     await isolate(context);
     const page = await context.newPage();
     page.on("pageerror", (cause) =>
@@ -102,10 +107,10 @@ try {
             };
         }),
     );
-    await page.reload();
+    await page.reload({ waitUntil: "domcontentloaded" });
     await page.waitForFunction(() => navigator.serviceWorker.controller);
     const accepted = await context.newPage();
-    await accepted.goto(page.url());
+    await accepted.goto(page.url(), { waitUntil: "domcontentloaded" });
     await accepted.waitForFunction(() => navigator.serviceWorker.controller);
     const buildId = (target) =>
         target.evaluate(
@@ -118,15 +123,21 @@ try {
     let deferredReloads = 0;
     let acceptedReloads = 0;
     page.on("request", (request) => {
-        if (request.isNavigationRequest() && request.frame() === page.mainFrame())
+        if (
+            request.isNavigationRequest() &&
+            request.frame() === page.mainFrame()
+        )
             deferredReloads++;
     });
     accepted.on("request", (request) => {
-        if (request.isNavigationRequest() && request.frame() === accepted.mainFrame())
+        if (
+            request.isNavigationRequest() &&
+            request.frame() === accepted.mainFrame()
+        )
             acceptedReloads++;
     });
     await stop();
-    await start("dist");
+    await start(current);
     console.log(
         "Installing the next build while both readers keep their old page.",
     );
@@ -201,6 +212,7 @@ try {
     await context.setOffline(true);
     await accepted.goto(
         `${origin}/optimally-configuring-open-telemetry-tracing-for-asp-net-core/`,
+        { waitUntil: "domcontentloaded" },
     );
     await accepted.locator(".post__content").waitFor();
     await context.close();
@@ -217,7 +229,7 @@ try {
         delete Object.getPrototypeOf(navigator).serviceWorker;
         delete navigator.serviceWorker;
     });
-    await unsupported.goto(origin);
+    await unsupported.goto(origin, { waitUntil: "domcontentloaded" });
     await unsupported.waitForFunction(
         () => document.querySelector("#__nuxt").__vue_app__,
     );
@@ -238,7 +250,7 @@ try {
     failedWorker.setDefaultTimeout(180_000);
     await isolate(failedWorker);
     const failed = await failedWorker.newPage();
-    await failed.goto(origin);
+    await failed.goto(origin, { waitUntil: "domcontentloaded" });
     await expect
         .poll(
             () =>
