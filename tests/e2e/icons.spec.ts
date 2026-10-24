@@ -65,7 +65,7 @@ async function capture(page: Page, name: string, target?: Locator) {
 test("Icons are prerendered SVGs with real artwork, including closed dialogs", async ({
   request,
 }) => {
-  for (const path of ["/", post, "/about/"]) {
+  for (const path of ["/", post, "/about/", "/streaming/thumbnail/"]) {
     const response = await request.get(path);
     expect(response.ok()).toBe(true);
     const $ = load(await response.text());
@@ -105,6 +105,13 @@ test("Shared icons encapsulate inline styling and decorative defaults", async ({
   expect(sizing.width).toBeCloseTo(sizing.fontSize, 1);
   expect(sizing.height).toBeCloseTo(sizing.fontSize, 1);
   await expect(blockIcon).toHaveClass(/theme-button__icon/);
+
+  await page.goto("/streaming/thumbnail/");
+  await ready(page);
+  const logo = page.locator(".thumbnail-logo svg.icon");
+  await expect(logo).toHaveCSS("inline-size", "150px");
+  await expect(logo).toHaveCSS("block-size", "150px");
+  await expect(logo).toHaveAttribute("aria-hidden", "true");
 });
 
 test.describe("Offline icons", () => {
@@ -197,6 +204,9 @@ test.describe("Offline icons", () => {
       .click();
     await expect(page).toHaveURL(/\/about\/$/);
     await expect(page.locator(".about__social-links svg.icon")).toHaveCount(7);
+    await page.goto("/streaming/thumbnail/");
+    await ready(page);
+    await expect(page.locator(".thumbnail-logo svg.icon path")).toHaveCount(2);
     expect(iconRequests).toEqual([]);
   });
 });
@@ -352,6 +362,11 @@ test.describe("Icon areas", () => {
           .getByRole("button", { name: "Dismiss site update" })
           .click();
         await expect(update).not.toBeVisible();
+
+        await page.goto("/streaming/thumbnail/?background=dark");
+        await ready(page);
+        await expect(page.locator(".thumbnail-logo svg.icon")).toBeVisible();
+        await shot("streaming-logo", page.locator(".thumbnail-logo"));
       });
     }
   }

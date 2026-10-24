@@ -31,6 +31,7 @@ unitTest(
     for (const filename of [
       join("public", "favicon.svg"),
       join("public", authorDirectory, "Logo.svg"),
+      join("app", "assets", "icons", "rehan.svg"),
     ]) {
       const source = await readFile(filename, "utf8");
       const portrait = [...source.matchAll(/<path\b[^>]*\bd="([^"]+)"/g)].map(
@@ -121,6 +122,75 @@ unitTest(
       }
     }
     expect(new Set(paths).size).toBe(1);
+  },
+);
+
+unitTest(
+  "The circle logo joins both shoulders and torso to the ring without changing the portrait",
+  async () => {
+    const source = await readFile(
+      join("public", authorDirectory, "Logo.svg"),
+      "utf8",
+    );
+    const previous = source
+      .replace(/\s*<polygon\b[^>]*\/>/, "")
+      .replace('r="108"', 'r="107.5"');
+    const render = (svg: string) =>
+      sharp(Buffer.from(svg)).resize(980, 980).ensureAlpha().raw().toBuffer();
+    const [pixels, original] = await Promise.all([
+      render(source),
+      render(previous),
+    ]);
+    expect(
+      pixels
+        .subarray(0, 720 * 980 * 4)
+        .equals(original.subarray(0, 720 * 980 * 4)),
+      "Face, hair and ear pixels above the shoulders remain identical",
+    ).toBe(true);
+    const regions = {
+      left: { checked: 0, previousGaps: 0 },
+      right: { checked: 0, previousGaps: 0 },
+      bottom: { checked: 0, previousGaps: 0 },
+      spot: { checked: 0, previousGaps: 0 },
+    };
+    for (let y = 0; y < 980; y++) {
+      for (let x = 0; x < 980; x++) {
+        const sx = (x + 0.5) / 4;
+        const sy = (y + 0.5) / 4;
+        if (Math.hypot(sx - 122.5, sy - 122.5) > 107.25) continue;
+        const region =
+          sx < 39 && sy > 206.55 - 0.48 * sx + 0.5
+            ? "left"
+            : sx > 205.5 && sy > 88.03 + 0.4616 * sx + 0.5
+              ? "right"
+              : sx > 42 && sx < 46 && sy > 188 && sy < 189
+                ? "spot"
+                : sy > 227
+                  ? "bottom"
+                  : undefined;
+        if (!region) continue;
+        const offset = (y * 980 + x) * 4;
+        regions[region].checked++;
+        if (
+          original[offset] === 249 &&
+          original[offset + 1] === 250 &&
+          original[offset + 2] === 251
+        ) {
+          regions[region].previousGaps++;
+        }
+        expect(
+          [...pixels.subarray(offset, offset + 4)],
+          `${region}: no white gap at (${sx}, ${sy})`,
+        ).toEqual([107, 23, 232, 255]);
+      }
+    }
+    for (const [region, coverage] of Object.entries(regions)) {
+      expect(coverage.checked, `${region}: coverage`).toBeGreaterThan(0);
+      expect(
+        coverage.previousGaps,
+        `${region}: detects the previous white gap`,
+      ).toBeGreaterThan(0);
+    }
   },
 );
 

@@ -127,6 +127,9 @@ test.describe("Visual @visual", () => {
 
   const overlays = {
     "streaming-border": "/streaming/border/?hue1=200&border-width=10px",
+    "streaming-thumbnail-dark": "/streaming/thumbnail/?background=dark",
+    "streaming-thumbnail-designer":
+      "/streaming/thumbnail/?title=Hello&subtitle=World&title-font-size=5&image1=/images/hero/Application-Insights-1366x768.png&image1-rotate=10&image1-x=100&no-logo",
   };
 
   for (const [name, path] of Object.entries(overlays)) {

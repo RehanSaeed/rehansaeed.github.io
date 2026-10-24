@@ -1,3 +1,4 @@
+/streaming/thumbnail/
 /streaming/border/
 /tag/app-config/
 /tag/config/

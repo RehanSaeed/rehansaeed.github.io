@@ -4,6 +4,7 @@ Third-party icon artwork
 The application uses Iconify's SVG representations of these collections.
 Icons are rendered with the site's colour and size; the original artwork is
 not redrawn. Brand names and logos remain their respective owners' trademarks.
+The personal logo is retained from the existing application.
 
 Font Awesome 5 Brands, Regular and Solid
 Author: Dave Gandy / Fonticons, Inc.

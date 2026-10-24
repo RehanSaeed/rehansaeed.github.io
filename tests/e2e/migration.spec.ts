@@ -319,7 +319,11 @@ test.describe("Migration completion", () => {
     request,
   }) => {
     const sitemap = await (await request.get("/sitemap.xml")).text();
-    for (const path of ["/cheat-sheet/", "/streaming/border/"]) {
+    for (const path of [
+      "/cheat-sheet/",
+      "/streaming/border/",
+      "/streaming/thumbnail/",
+    ]) {
       const response = await request.get(path);
       expect(response.ok()).toBe(true);
       expect(await response.text()).toMatch(
@@ -330,27 +334,50 @@ test.describe("Migration completion", () => {
     expect(sitemap).toContain("<lastmod>2022-08-02");
   });
 
-  test("The retired thumbnail designer returns 404 and is absent from discovery", async ({
-    request,
+  test("The thumbnail designer retains its query controls and live background input", async ({
+    page,
   }) => {
-    for (const path of [
-      "/streaming/thumbnail",
-      "/streaming/thumbnail/",
-      "/streaming/thumbnail/?background=dark&title=Hello",
-      "/streaming/thumbnail.md",
-    ]) {
-      expect((await request.get(path)).status(), path).toBe(404);
-    }
-    for (const path of [
-      "/sitemap.xml",
-      "/sitemap.md",
-      "/llms.txt",
-      "/llms-full.txt",
-      "/service-worker.js",
-    ]) {
-      const response = await request.get(path);
-      expect(response.ok(), path).toBe(true);
-      expect(await response.text(), path).not.toContain("/streaming/thumbnail");
-    }
+    await page.goto(
+      "/streaming/thumbnail/?background=dark&title=Hello&subtitle=World&title-font-size=5&title-align=center&title-justify=center&logo-align=end&logo-justify=start&image1=/images/hero/Application-Insights-1366x768.png&image1-width=600&image1-height=400&image1-x=120&image1-y=180&image1-rotate=10",
+    );
+    const thumbnail = page.locator(".thumbnail");
+    await expect(thumbnail).toHaveCSS("inline-size", "1920px");
+    await expect(thumbnail).toHaveCSS("block-size", "1080px");
+    await expect(thumbnail).toHaveClass(/thumbnail--background-dark/);
+    await expect(page.locator(".thumbnail-title__title")).toHaveText("Hello");
+    await expect(page.locator(".thumbnail-title__subtitle")).toHaveText(
+      "World",
+    );
+    await expect(page.locator(".thumbnail-title")).toHaveCSS(
+      "align-content",
+      "center",
+    );
+    await expect(page.locator(".thumbnail-title")).toHaveCSS(
+      "justify-items",
+      "center",
+    );
+    const logo = page.locator(".thumbnail-logo");
+    await expect(logo).toHaveCSS("align-self", "end");
+    await expect(logo).toHaveCSS("justify-self", "start");
+    await expect(logo.locator("svg")).toHaveCSS("inline-size", "150px");
+    const image = page.locator(".thumbnail__image1");
+    await expect(image).toHaveAttribute(
+      "src",
+      "/images/hero/Application-Insights-1366x768.png",
+    );
+    await expect(image).toHaveCSS("inline-size", "600px");
+    await expect(image).toHaveCSS("block-size", "400px");
+    await expect(image).toHaveCSS("inset-inline-start", "120px");
+    await expect(image).toHaveCSS("inset-block-start", "180px");
+    await expect(image).toHaveCSS("rotate", "10deg");
+    const background = page.locator(".thumbnail-options__input");
+    await expect(background).toHaveValue("dark");
+    await background.fill("light");
+    await expect(thumbnail).toHaveClass(/thumbnail--background-light/);
+
+    await page.goto("/streaming/thumbnail/?background=dark&no-logo=true");
+    await expect(page.locator(".thumbnail-logo")).toHaveCount(0);
+    await expect(page.locator(".thumbnail-title")).toHaveCount(0);
+    await expect(page.locator(".thumbnail-image")).toHaveCount(0);
   });
 });
