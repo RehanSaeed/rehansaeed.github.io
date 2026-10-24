@@ -90,7 +90,8 @@ for (const defaultFontSize of [16, 32]) {
           .poll(async () => (await measure()).root)
           .toBeCloseTo(expected, 2);
         const actual = await measure();
-        expect(actual.heading).toBeCloseTo(expected * 1.602, 2);
+        // Font and layout sizes use different subpixel precision across engines.
+        expect(Math.abs(actual.heading - expected * 1.602)).toBeLessThan(0.02);
         expect(actual.token.includes("progress(")).toBe(
           supportsProgress && !fallback,
         );
@@ -102,7 +103,7 @@ for (const defaultFontSize of [16, 32]) {
         });
         const original = await measure();
         expect(actual.root).toBeCloseTo(original.root, 2);
-        expect(actual.heading).toBeCloseTo(original.heading, 2);
+        expect(Math.abs(actual.heading - original.heading)).toBeLessThan(0.02);
         expect(Math.abs(actual.spacing - original.spacing)).toBeLessThan(0.02);
         await style.evaluate((element) => element.remove());
       }
