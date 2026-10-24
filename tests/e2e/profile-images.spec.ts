@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { test as unitTest } from "@playwright/test";
@@ -21,6 +22,12 @@ unitTest(
         (match) => match[1],
       );
       expect(portrait, filename).toHaveLength(2);
+      expect(
+        createHash("sha256").update(portrait[0]).digest("hex"),
+        `${filename}: unchanged D1 face, hair and shirt`,
+      ).toBe(
+        "7bd0843cabb6a62d4991e016aea9e87a2394cd01154f2567316c1d0f13130895",
+      );
       paths.push(JSON.stringify(portrait));
       expect(source, filename).not.toMatch(/<image\b|data:image/);
       const { data, info } = await sharp(
@@ -46,6 +53,44 @@ unitTest(
       expect(earPixels, `${filename}: restored ear contour`).toBeGreaterThan(
         25,
       );
+
+      const { data: ear, info: earInfo } = await sharp(
+        Buffer.from(
+          `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 245" width="980" height="980"><path fill="#6b17e8" fill-rule="evenodd" d="${portrait[1]}" /></svg>`,
+        ),
+      )
+        .ensureAlpha()
+        .raw()
+        .toBuffer({ resolveWithObject: true });
+      const earFilled = ear.filter(
+        (value, index) => index % 4 === 3 && value > 127,
+      );
+      expect(earFilled.length, `${filename}: fuller R6 ear`).toBeGreaterThan(
+        3_500,
+      );
+      expect(earFilled.length, `${filename}: retained ear detail`).toBeLessThan(
+        4_300,
+      );
+      for (const [x, y] of [
+        [174, 92],
+        [176, 110],
+        [173, 116],
+      ]) {
+        expect(
+          ear[(y * 4 * earInfo.width + x * 4) * 4 + 3],
+          `${filename}: filled R6 ear at (${x}, ${y})`,
+        ).toBe(255);
+      }
+      for (const [x, y] of [
+        [173, 101],
+        [170.75, 112.5],
+        [171.5, 121],
+      ]) {
+        expect(
+          ear[(y * 4 * earInfo.width + x * 4) * 4 + 3],
+          `${filename}: inner ear negative space at (${x}, ${y})`,
+        ).toBe(0);
+      }
     }
     expect(new Set(paths).size).toBe(1);
   },
