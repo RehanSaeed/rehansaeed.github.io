@@ -15,19 +15,8 @@ this effort as your own.
 
 Source for [rehansaeed.com](https://rehansaeed.com), my software engineering blog
 and portfolio. Built with [Nuxt](https://nuxt.com), [Vue](https://vuejs.org) and
-[Nuxt Content](https://content.nuxt.com), and published as a static site on
+[Nuxt Content](https://content.nuxt.com). Published as a static site on
 [GitHub Pages](https://docs.github.com/en/pages).
-
-## Repository layout
-
-| Path                        | Contents                                     |
-| --------------------------- | -------------------------------------------- |
-| [`app`](./app)               | Vue components, pages, layouts and styles.    |
-| [`content`](./content)       | Markdown blog posts and portfolio content.    |
-| [`public`](./public)         | Images, fonts and other static files.         |
-| [`scripts`](./scripts)       | Build validation and deployment tools.        |
-| [`tests`](./tests)           | Playwright tests and visual regression tests. |
-| [`.github`](./.github)       | GitHub Actions workflows and community docs.  |
 
 ## Contributing
 
