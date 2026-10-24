@@ -82,6 +82,37 @@ test("Icons are prerendered SVGs with real artwork, including closed dialogs", a
   }
 });
 
+test("System theme changes do not save an explicit preference", async ({
+  page,
+}) => {
+  const theme = page.locator("html");
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.goto("/");
+  await ready(page);
+  await expect(theme).toHaveAttribute("data-theme", "light");
+  await page.emulateMedia({ colorScheme: "dark" });
+  await expect(theme).toHaveAttribute("data-theme", "dark");
+  expect(await page.evaluate(() => localStorage.getItem("theme"))).toBeNull();
+
+  for (const path of ["/about/", "/streaming/thumbnail/"]) {
+    await page.goto(path);
+    await ready(page);
+    await expect(theme).toHaveAttribute("data-theme", "dark");
+    expect(await page.evaluate(() => localStorage.getItem("theme"))).toBeNull();
+  }
+
+  await page.goto("/");
+  await ready(page);
+  await page.getByRole("button", { name: "Toggle dark/light" }).click();
+  await expect(theme).toHaveAttribute("data-theme", "light");
+  expect(await page.evaluate(() => localStorage.getItem("theme"))).toBe(
+    "light",
+  );
+  await page.reload();
+  await ready(page);
+  await expect(theme).toHaveAttribute("data-theme", "light");
+});
+
 test.describe("Offline icons", () => {
   test.use({ serviceWorkers: "allow" });
 
