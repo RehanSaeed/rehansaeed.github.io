@@ -6,6 +6,7 @@ import { join } from "node:path";
 import { runInNewContext } from "node:vm";
 import { promisify } from "node:util";
 import { expect, test } from "@playwright/test";
+import { Renderer, type Node } from "@takumi-rs/core";
 import { load } from "cheerio";
 import sharp from "sharp";
 import ts from "typescript";
@@ -103,7 +104,8 @@ test("Rendered social cards use the post hero, title and current branding", asyn
   expect(heading).toHaveLength(1);
   expect(heading.prev()).toHaveLength(0);
   expect(heading.parent().children()).toHaveLength(2);
-  expect(heading.css("background")).toBe("#ffffff");
+  expect(heading.css("background")).toBe("rgba(255, 255, 255, 0.85)");
+  expect(heading.css("opacity")).toBeUndefined();
   expect(heading.css("color")).toBe("#000000");
   expect(heading.css("border-radius")).toBe("8px");
   expect(heading.css("padding")).toBe("20px 24px");
@@ -113,7 +115,8 @@ test("Rendered social cards use the post hero, title and current branding", asyn
   expect(heading.next().text()).toContain(author);
   expect(heading.parent().css("justify-content")).toBe("space-between");
   const panel = heading.next();
-  expect(panel.css("background")).toBe("#ffffff");
+  expect(panel.css("background")).toBe("rgba(255, 255, 255, 0.85)");
+  expect(panel.css("opacity")).toBeUndefined();
   expect(panel.css("color")).toBe("#242424");
   expect(panel.css("border-radius")).toBe("8px");
   expect(panel.css("align-self")).toBe("flex-start");
@@ -126,6 +129,106 @@ test("Rendered social cards use the post hero, title and current branding", asyn
   expect(identity.children().first().css("font-size")).toBe("40px");
   expect(identity.children().last().text().trim()).toBe("RehanSaeed.com");
   expect(identity.children().last().css("color")).toBe("#6f6f6f");
+});
+
+test("Native title backgrounds fit each wrapped line without fading the text", async () => {
+  const source = await readFile("server/utils/og-title-lines.ts", "utf8");
+  const exports: {
+    fitOgTitleLines?: typeof import("../../server/utils/og-title-lines").fitOgTitleLines;
+  } = {};
+  runInNewContext(
+    ts.transpileModule(source, {
+      compilerOptions: {
+        module: ts.ModuleKind.CommonJS,
+        target: ts.ScriptTarget.ESNext,
+      },
+    }).outputText,
+    { exports },
+  );
+  if (!exports.fitOgTitleLines) throw new Error("Missing title layout helper");
+  const renderer = new Renderer();
+  await renderer.registerFont({
+    name: "Audiowide",
+    data: await readFile(
+      "node_modules/@fontsource/audiowide/files/audiowide-latin-400-normal.woff",
+    ),
+    weight: 400,
+  });
+  for (const [title, lineCount] of [
+    ["Blog", 1],
+    [cssTitle, 2],
+    ["I Was Awarded as an Open UK Honouree", 2],
+    [
+      "Portable Class Library Version of NotificationsExtensions NuGet Package",
+      3,
+    ],
+    [
+      "A longer article title with more than eighty characters to exercise the smallest title font size",
+      3,
+    ],
+  ] as const) {
+    const root: Node = {
+      type: "container",
+      style: { width: 1200, height: 630, fontFamily: "Audiowide" },
+      children: [
+        { type: "container" },
+        {
+          type: "container",
+          children: [
+            {
+              type: "text",
+              text: title,
+              style: {
+                maxWidth: "100%",
+                boxSizing: "border-box",
+                padding: "20px 24px",
+                borderRadius: 8,
+                background: "rgba(255, 255, 255, 0.85)",
+                color: "#000000",
+                fontSize: title.length > 80 ? 42 : title.length > 50 ? 48 : 56,
+                lineHeight: 1.25,
+              },
+            },
+          ],
+        },
+      ],
+    };
+    await exports.fitOgTitleLines(
+      { type: "container", children: [root] },
+      renderer,
+    );
+    const foreground = root.children?.[1];
+    if (foreground?.type !== "container") throw new Error("Missing foreground");
+    const heading = foreground.children?.[0];
+    if (heading?.type !== "container" || !heading.children)
+      throw new Error("Missing fitted title lines");
+    expect(
+      heading.children
+        .map((line) => line.type === "text" && line.text)
+        .join(" "),
+    ).toBe(title);
+    expect(heading.style?.background).toBeUndefined();
+    expect(heading.children.length, title).toBe(lineCount);
+    for (const line of heading.children) {
+      const measured = await renderer.measure(
+        { ...line, style: { ...line.style, fontFamily: "Audiowide" } },
+        { width: 1088, height: 630 },
+      );
+      expect(measured.runs).toHaveLength(1);
+      expect(measured.width).toBeLessThanOrEqual(1088);
+      expect(measured.width - measured.runs[0]!.width).toBeGreaterThanOrEqual(
+        48,
+      );
+      expect(measured.width - measured.runs[0]!.width).toBeLessThan(49);
+      expect(line.style?.background).toBe("rgba(255, 255, 255, 0.85)");
+      expect(line.style?.opacity).toBeUndefined();
+    }
+    if (title === cssTitle) {
+      expect(Number(heading.children[1]!.style?.width)).toBeLessThan(
+        Number(heading.children[0]!.style?.width),
+      );
+    }
+  }
 });
 
 test("The CSS article and other page types advertise distinct static social cards", async ({

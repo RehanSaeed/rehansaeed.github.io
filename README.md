@@ -21,8 +21,9 @@ and portfolio. Built with [Nuxt](https://nuxt.com), [Vue](https://vuejs.org) and
 ## Social image previews
 
 Each post's social card uses its title and undimmed hero image. Listing and static pages
-use their own title with the default site hero. The black title sits in a rounded
-white panel at the top. A matching author panel at the bottom pairs the current SVG
+use their own title with the default site hero. Each line of the black title has
+its own fitted, rounded, 85%-opaque white background at the top. A matching
+semi-transparent author panel at the bottom pairs the current SVG
 avatar and a brand-purple divider with the author's name and `RehanSaeed.com`.
 
 After `npm run build`, run `npm run og:gallery` and open `.nuxt/og-images.html`

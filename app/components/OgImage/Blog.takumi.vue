@@ -34,7 +34,7 @@
           box-sizing: border-box;
           padding: 20px 24px;
           border-radius: 8px;
-          background: #ffffff;
+          background: rgba(255, 255, 255, 0.85);
           color: #000000;
         "
         :style="{
@@ -51,7 +51,7 @@
           gap: 24px;
           padding: 20px 24px;
           border-radius: 8px;
-          background: #ffffff;
+          background: rgba(255, 255, 255, 0.85);
           color: #242424;
         ">
         <img
