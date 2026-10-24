@@ -31,7 +31,6 @@ unitTest(
     for (const filename of [
       join("public", "favicon.svg"),
       join("public", authorDirectory, "Logo.svg"),
-      join("app", "components", "shared", "icons", "icon-rehan.vue"),
     ]) {
       const source = await readFile(filename, "utf8");
       const portrait = [...source.matchAll(/<path\b[^>]*\bd="([^"]+)"/g)].map(

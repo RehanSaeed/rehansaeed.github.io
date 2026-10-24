@@ -19,7 +19,7 @@
         bordered
         label="Buy me a Coffee"
         :href="metadata.author.buyMeACoffee.url">
-        <u-icon name="blog:coffee" inline />
+        <u-icon name="simple-icons:buymeacoffee" color="#ffdd00" inline />
         Buy me a Coffee
       </u-link-button>
       <u-link-button

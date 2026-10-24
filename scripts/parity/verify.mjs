@@ -11,6 +11,7 @@ const live = await load(expectedDir, "pages.json");
 const local = await load(actualDir, "pages.json");
 const liveArtifacts = await load(expectedDir, "artifacts.json");
 const localArtifacts = await load(actualDir, "artifacts.json");
+const retired = new Set(["/streaming/thumbnail/"]);
 const excluded = new Set(["/streaming/border/", "/streaming/thumbnail/"]);
 const postDates = new Map();
 const postTags = new Map();
@@ -185,10 +186,13 @@ function approvedPage(path, source, actual) {
 }
 assert.deepEqual(
     Object.keys(local).sort(),
-    Object.keys(live).sort(),
+    Object.keys(live)
+        .filter((path) => !retired.has(path))
+        .sort(),
     "Generated page URL set",
 );
 for (const [path, page] of Object.entries(live)) {
+    if (retired.has(path)) continue;
     assert.deepEqual(
         local[path],
         approvedPage(path, page, local[path]),
@@ -291,5 +295,5 @@ for (const path of ["/service-worker.js", "/flexsearch.json"]) {
     assert.ok(localArtifacts[path].bytes > 0);
 }
 console.log(
-    `Verified ${Object.keys(live).length} pages plus 404, 102-item feeds, ${sitemap.length} sitemap URLs, manifest and static artifacts; only approved differences.`,
+    `Verified ${Object.keys(local).length} pages plus 404, 102-item feeds, ${sitemap.length} sitemap URLs, manifest and static artifacts; only approved differences.`,
 );

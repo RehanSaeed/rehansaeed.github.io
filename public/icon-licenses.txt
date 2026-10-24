@@ -4,8 +4,6 @@ Third-party icon artwork
 The application uses Iconify's SVG representations of these collections.
 Icons are rendered with the site's colour and size; the original artwork is
 not redrawn. Brand names and logos remain their respective owners' trademarks.
-The personal logo and multicolour coffee artwork are retained from the
-existing application.
 
 Font Awesome 5 Brands, Regular and Solid
 Author: Dave Gandy / Fonticons, Inc.
@@ -23,6 +21,12 @@ Lucide (house-heart)
 Author: Lucide Icons and Contributors
 Source: https://github.com/lucide-icons/lucide
 License: ISC, reproduced below.
+
+Simple Icons (buymeacoffee)
+Author: Simple Icons Contributors
+Source: https://github.com/simple-icons/simple-icons
+License: Creative Commons Zero 1.0 Universal (CC0)
+https://creativecommons.org/publicdomain/zero/1.0/
 
 
 The MIT License (MIT)

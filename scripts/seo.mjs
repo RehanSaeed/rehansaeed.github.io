@@ -25,6 +25,13 @@ const urls = sitemap("url > loc")
     .get();
 assert.equal(new Set(urls).size, urls.length, "Duplicate sitemap URL");
 const full = await read("llms-full.txt");
+for (const file of [
+    "streaming/thumbnail/index.html",
+    "streaming/thumbnail.md",
+    "streaming/thumbnail/_payload.json",
+]) {
+    await assert.rejects(access(join(directory, file)), { code: "ENOENT" });
+}
 const sourceKey = (url) => new URL(url).href.replace(/\/$/, "");
 const fullSources = new Set(
     [...full.matchAll(/^- \*\*Source:\*\* (https:\/\/\S+)$/gm)].map(([, url]) =>
@@ -230,11 +237,14 @@ assert.match(robots, /Content-Signal: ai-train=yes, search=yes, ai-input=yes/);
 assert.match(robots, /User-agent: \*\s+Allow: \//);
 assert(!/^Disallow:\s*\/.+/m.test(robots));
 for (const path of additionalPublicRoutes) {
-    assert(urls.includes(`${site.url}${path}`), `${path}: approved public page`);
+    assert(
+        urls.includes(`${site.url}${path}`),
+        `${path}: approved public page`,
+    );
 }
 assert.equal(
     urls.length,
-    referenceRoutes.length - 5 + additionalPublicRoutes.length,
+    referenceRoutes.length - 4 + additionalPublicRoutes.length,
     "All and only public reference pages and approved additions indexed",
 );
 assert.equal(articles, 102, "Every published article has a schema graph");

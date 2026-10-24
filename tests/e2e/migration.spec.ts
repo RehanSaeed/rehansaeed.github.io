@@ -319,11 +319,7 @@ test.describe("Migration completion", () => {
     request,
   }) => {
     const sitemap = await (await request.get("/sitemap.xml")).text();
-    for (const path of [
-      "/cheat-sheet/",
-      "/streaming/border/",
-      "/streaming/thumbnail/",
-    ]) {
+    for (const path of ["/cheat-sheet/", "/streaming/border/"]) {
       const response = await request.get(path);
       expect(response.ok()).toBe(true);
       expect(await response.text()).toMatch(
@@ -332,5 +328,29 @@ test.describe("Migration completion", () => {
       expect(sitemap).not.toContain(`https://rehansaeed.com${path}</loc>`);
     }
     expect(sitemap).toContain("<lastmod>2022-08-02");
+  });
+
+  test("The retired thumbnail designer returns 404 and is absent from discovery", async ({
+    request,
+  }) => {
+    for (const path of [
+      "/streaming/thumbnail",
+      "/streaming/thumbnail/",
+      "/streaming/thumbnail/?background=dark&title=Hello",
+      "/streaming/thumbnail.md",
+    ]) {
+      expect((await request.get(path)).status(), path).toBe(404);
+    }
+    for (const path of [
+      "/sitemap.xml",
+      "/sitemap.md",
+      "/llms.txt",
+      "/llms-full.txt",
+      "/service-worker.js",
+    ]) {
+      const response = await request.get(path);
+      expect(response.ok(), path).toBe(true);
+      expect(await response.text(), path).not.toContain("/streaming/thumbnail");
+    }
   });
 });

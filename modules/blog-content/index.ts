@@ -232,7 +232,6 @@ export default defineNuxtModule({
         .filter((entry) => !entry.data.published)
         .map((entry) => entry.data.permalink.replace(/\/$/, "")),
       "/streaming/border",
-      "/streaming/thumbnail",
       "/404-not-found",
     ]);
     nuxt.hook("ai-ready:page:markdown", (page) => {

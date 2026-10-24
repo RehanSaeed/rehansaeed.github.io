@@ -38,14 +38,10 @@ export default defineNuxtConfig({
     // GitHub Pages and offline navigation have no runtime icon API.
     provider: "none",
     serverBundle: false,
-    customCollections: [{ prefix: "blog", dir: "./app/assets/icons" }],
     clientBundle: {
       scan: false,
-      includeCustomCollections: true,
       sizeLimitKb: 48,
       icons: [
-        "blog:coffee",
-        "blog:rehan",
         "fa-brands:facebook",
         "fa-brands:github",
         "fa-brands:linkedin",
@@ -65,6 +61,7 @@ export default defineNuxtConfig({
         "feather:sun",
         "feather:x",
         "lucide:house-heart",
+        "simple-icons:buymeacoffee",
       ],
     },
   },

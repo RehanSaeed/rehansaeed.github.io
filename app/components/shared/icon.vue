@@ -1,6 +1,7 @@
 <template>
   <NuxtIcon
     :name="name"
+    class="icon"
     :class="{ 'icon--inline': inline }"
     aria-hidden="true" />
 </template>
@@ -17,6 +18,12 @@ defineProps<{
 </script>
 
 <style scoped>
+.icon {
+  display: block;
+  inline-size: 1em;
+  block-size: 1em;
+}
+
 .icon--inline {
   display: inline;
 }

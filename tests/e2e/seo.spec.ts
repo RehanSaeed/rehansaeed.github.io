@@ -51,10 +51,10 @@ test("The worker rejects legacy automatic activation and accepts only reader-app
 
 test("Markdown discovery removes unlisted entries and empty groups, not similarly named public pages", () => {
   const sitemap =
-    '# Blog Sitemap\n\n## cheat-sheet\n- [Draft](https://rehansaeed.com/cheat-sheet.md "2020-01-01")\n\n## tag\n- [Public tag](https://rehansaeed.com/tag/cheat-sheet.md)\n\n## streaming\n- [Border](https://rehansaeed.com/streaming/border.md)\n- [Thumbnail](https://rehansaeed.com/streaming/thumbnail.md)\n';
+    '# Blog Sitemap\n\n## cheat-sheet\n- [Draft](https://rehansaeed.com/cheat-sheet.md "2020-01-01")\n\n## tag\n- [Public tag](https://rehansaeed.com/tag/cheat-sheet.md)\n\n## streaming\n- [Border](https://rehansaeed.com/streaming/border.md)\n';
   const filtered = filterMarkdownSitemap(
     sitemap,
-    new Set(["/cheat-sheet", "/streaming/border", "/streaming/thumbnail"]),
+    new Set(["/cheat-sheet", "/streaming/border"]),
   );
   expect(filtered).toContain("# Blog Sitemap");
   expect(filtered).toContain("https://rehansaeed.com/tag/cheat-sheet.md");
