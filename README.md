@@ -45,6 +45,8 @@ npm run lighthouse
 Site generation needs `GITHUB_TOKEN` for its GitHub data snapshots. To use another
 installed Chrome, set `CHROME_PATH` to its executable before running Lighthouse.
 Local reports are written to `.lighthouseci/reports`.
+On GitHub Actions only, Chromium runs with `--no-sandbox` because the hosted
+Ubuntu AppArmor policy does not allow the downloaded browser's sandbox.
 
 The configuration extends the recommended assertions and requires **100** for
 accessibility, best practices and SEO. Performance scores below **90** produce
@@ -56,6 +58,8 @@ as in the recommended preset. The following exceptions remain visible warnings:
 - Image-delivery diagnostics can flag correctly selected high-density images;
   regression tests check mobile candidates at 1x, 1.75x and 2x density.
 - Network-dependency diagnostics flag the same-origin stylesheet/manifest chain.
+- Forced-reflow diagnostics currently report browser layout as `[unattributed]`
+  without an actionable script location; they remain visible timing warnings.
 - Unused JavaScript and non-composited animations were previously disabled;
   they now warn rather than disappearing from the results.
 
