@@ -21,6 +21,7 @@ const types = {
     ".gif": "image/gif",
     ".ico": "image/x-icon",
     ".woff2": "font/woff2",
+    ".wav": "audio/wav",
     ".webmanifest": "application/manifest+json",
 };
 await stat(join(root, "404.html"));

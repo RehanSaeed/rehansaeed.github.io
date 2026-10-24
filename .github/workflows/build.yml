@@ -77,6 +77,14 @@ jobs:
       - name: "Install Playwright Dependencies"
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps firefox
+      - name: "Start Virtual Audio Output"
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install --yes --no-install-recommends pulseaudio pulseaudio-utils
+          pulseaudio --start --exit-idle-time=-1
+          pactl load-module module-null-sink sink_name=playwright
+          pactl set-default-sink playwright
+          pactl info
       - name: "Playwright Test"
         run: npm test
         env:

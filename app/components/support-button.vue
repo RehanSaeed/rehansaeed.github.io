@@ -32,6 +32,9 @@ export default {
       isDialogueOpen: false,
     };
   },
+  setup() {
+    return { playSoundEffect: useSoundEffect().play };
+  },
   methods: {
     open() {
       this.isDialogueOpen = true;
@@ -41,6 +44,7 @@ export default {
     },
     onClick() {
       this.open();
+      this.playSoundEffect("dialog-open");
     },
   },
 };

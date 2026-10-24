@@ -3,7 +3,7 @@
     <u-button
       class="search-button"
       aria-label="Open search"
-      @click.prevent="onOpen">
+      @click.prevent="onOpenClick">
       <u-icon-search v-if="!isOpen" />
     </u-button>
 
@@ -45,7 +45,14 @@ export default {
       isOpen: false,
     };
   },
+  setup() {
+    return { playSoundEffect: useSoundEffect().play };
+  },
   methods: {
+    onOpenClick() {
+      this.onOpen();
+      this.playSoundEffect("dialog-open");
+    },
     onOpen() {
       this.isOpen = true;
       searchOpened();
