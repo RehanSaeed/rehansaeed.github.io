@@ -4,7 +4,7 @@
       class="search-button"
       aria-label="Open search"
       @click.prevent="onOpen">
-      <u-icon-search v-if="!isOpen" />
+      <u-icon-search />
     </u-button>
 
     <u-dialogue
