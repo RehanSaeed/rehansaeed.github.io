@@ -11,8 +11,8 @@
 
 # Coding Guidelines
 
-- Projects use StyleCop and .editorconfig to produce style warnings. Please fix all warnings in any code you submit.
-- Write unit tests for any code written.
+- Follow .editorconfig and use ESLint and Prettier for TypeScript, JavaScript and Vue files. Fix all lint warnings before submitting.
+- Add regression tests for behavior changes. Run `npm run build`, `npm run typecheck`, `npm run lint`, and `npm test` as documented in the README.
 
 # Special Thanks
 

@@ -1,3 +1,4 @@
+@use "sass:map";
 @use "abstracts/breakpoints";
 @use "abstracts/type";
 
@@ -76,6 +77,18 @@
   --global-font-size-minimum: #{type.$font-size-minimum};
   --global-font-size-maximum: #{type.$font-size-maximum};
   --global-font-size-default: clamp(1rem, 0.859375rem + 0.390625vw, 1.25rem);
+
+  @supports (font-size: calc(1em * progress(100vw, 1em, 2em))) {
+    --global-font-size-default: calc(
+      var(--global-font-size-minimum) +
+        progress(
+          100vw,
+          #{map.get(breakpoints.$breakpoints, sm)},
+          #{map.get(breakpoints.$breakpoints, xxl)}
+        ) *
+        (var(--global-font-size-maximum) - var(--global-font-size-minimum))
+    );
+  }
 
   // Font Size
   --global-font-size-0: 0.65em;
