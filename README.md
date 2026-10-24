@@ -73,3 +73,10 @@ is no longer faded out during initial hydration. Pagination omits unavailable
 links, and `robots.txt` retains the explicit search, AI-input and AI-training
 opt-ins through `Content-Signal`, without the redundant legacy `Content-Usage`
 directive that Lighthouse rejects.
+
+About and Portfolio prioritize their above-the-fold images. Portfolio badges
+reserve image space while CSS preserves their natural proportions, and the wide
+About badge uses its correct aspect ratio. About uses a cookie-free Shields
+reputation badge instead of Stack Overflow's blocked third-party flair image;
+the profile link is unchanged, but medal counts are no longer shown. Article
+heading permalinks have accessible names and remain visible on keyboard focus.

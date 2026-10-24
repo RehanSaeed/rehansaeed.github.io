@@ -19,6 +19,8 @@
         width="320"
         sizes="320px"
         src="/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg"
+        loading="eager"
+        fetchpriority="high"
         quality="100" />
       <u-heading :id="metadata.author.name" level="2" class="about__title">{{
         metadata.author.name
@@ -261,9 +263,9 @@
         <a v-bind="trigger" :href="stackOverflowUrl">
           <img
             class="about__stack-overflow-image"
-            alt="Stack Overflow profile statistics"
-            height="58"
-            width="208"
+            alt="Stack Overflow reputation"
+            height="20"
+            width="194"
             :src="stackOverflowProfileUrl" />
         </a>
       </u-tooltip>
@@ -341,12 +343,9 @@ useHead({
 const theme = ref("light");
 const relativeUrl = "/about/";
 const stackOverflowUrl = computed(() => metadata.author.stackOverflow.url);
-const oppositeTheme = computed(() =>
-  theme.value === "light" ? "dark" : "light",
-);
 const stackOverflowProfileUrl = computed(
   () =>
-    `https://stackoverflow.com/users/flair/${metadata.author.stackOverflow.user}.png?theme=${oppositeTheme.value}`,
+    `https://img.shields.io/stackexchange/stackoverflow/r/${metadata.author.stackOverflow.user}?style=social&logo=stackoverflow`,
 );
 const gitHubUrl = computed(() => metadata.author.gitHub.url);
 const gitHubStatisticsImageUrl = computed(() => {
@@ -461,8 +460,8 @@ onUnmounted(() => {
   border-radius: var(--global-border-radius);
   display: block;
   margin-block-end: var(--global-space-fixed-5);
-  inline-size: 208px;
-  block-size: 58px;
+  inline-size: auto;
+  block-size: 30px;
 }
 
 .about__mvp-images {
@@ -485,7 +484,7 @@ onUnmounted(() => {
   block-size: 150px;
 }
 .about__badge-image--wide {
-  inline-size: 180px;
+  inline-size: 175px;
 }
 
 .about_awards-images {

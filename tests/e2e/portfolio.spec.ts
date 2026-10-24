@@ -408,7 +408,7 @@ for (const width of [375, 1280]) {
             "href",
             `${permalink}/${destination}`,
           );
-          await expect(badge).not.toHaveAttribute("width");
+          await expect(badge).toHaveAttribute("width", "135");
           await expect(badge).toHaveAttribute("height", "30");
         }
         const packages = nugetPackages[repository] ?? [];
@@ -435,7 +435,7 @@ for (const width of [375, 1280]) {
             "href",
             `https://www.nuget.org/packages/${id}`,
           );
-          await expect(badge).not.toHaveAttribute("width");
+          await expect(badge).toHaveAttribute("width", "200");
           await expect(badge).toHaveAttribute("height", "30");
           const style = await link.evaluate((element) => ({
             border: getComputedStyle(element).borderTopWidth,
