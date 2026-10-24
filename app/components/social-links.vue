@@ -6,7 +6,7 @@
       label="Youtube"
       :href="metadata.author.youtube.url"
       rel="me">
-      <u-icon-youtube />
+      <NuxtIcon name="fa-brands:youtube" aria-hidden="true" />
     </u-link-button>
     <u-link-button
       v-if="metadata.author.twitch.url"
@@ -14,7 +14,7 @@
       label="Twitch"
       :href="metadata.author.twitch.url"
       rel="me">
-      <u-icon-twitch />
+      <NuxtIcon name="fa-brands:twitch" aria-hidden="true" />
     </u-link-button>
     <u-link-button
       v-if="metadata.author.gitHub.url"
@@ -22,7 +22,7 @@
       label="GitHub"
       :href="metadata.author.gitHub.url"
       rel="me authn">
-      <u-icon-github />
+      <NuxtIcon name="fa-brands:github" aria-hidden="true" />
     </u-link-button>
     <u-link-button
       v-if="metadata.author.linkedIn.url"
@@ -30,7 +30,7 @@
       label="LinkedIn"
       :href="metadata.author.linkedIn.url"
       rel="me">
-      <u-icon-linkedin />
+      <NuxtIcon name="fa-brands:linkedin" aria-hidden="true" />
     </u-link-button>
     <u-link-button
       v-if="metadata.author.stackOverflow.url"
@@ -38,43 +38,31 @@
       label="Stack Overflow"
       :href="metadata.author.stackOverflow.url"
       rel="me">
-      <u-icon-stackoverflow />
+      <NuxtIcon name="fa-brands:stack-overflow" aria-hidden="true" />
     </u-link-button>
     <u-link-button
       class="social__link"
       label="Email"
       href="#"
       @click="openEmail">
-      <u-icon-email />
+      <NuxtIcon name="fa-regular:envelope" aria-hidden="true" />
     </u-link-button>
     <u-link-button class="social__link" href="/rss.xml" label="RSS">
-      <u-icon-rss />
+      <NuxtIcon name="fa-solid:rss" aria-hidden="true" />
     </u-link-button>
   </div>
 </template>
 
 <script>
+import { NuxtIcon } from "#components";
 import linkButton from "~/components/shared/link-button.vue";
-import iconEmail from "~/components/shared/icons/icon-email.vue";
-import iconGitHub from "~/components/shared/icons/icon-github.vue";
-import iconLinkedIn from "~/components/shared/icons/icon-linkedin.vue";
-import iconRss from "~/components/shared/icons/icon-rss.vue";
-import iconStackOverflow from "~/components/shared/icons/icon-stackoverflow.vue";
-import iconTwitch from "~/components/shared/icons/icon-twitch.vue";
-import iconYoutube from "~/components/shared/icons/icon-youtube.vue";
 import { decode } from "~/framework/obfuscate.js";
 
 export default {
   name: "u-social-links",
   components: {
+    NuxtIcon,
     "u-link-button": linkButton,
-    "u-icon-email": iconEmail,
-    "u-icon-github": iconGitHub,
-    "u-icon-linkedin": iconLinkedIn,
-    "u-icon-rss": iconRss,
-    "u-icon-stackoverflow": iconStackOverflow,
-    "u-icon-twitch": iconTwitch,
-    "u-icon-youtube": iconYoutube,
   },
   setup() {
     return { metadata: useAppConfig().site };

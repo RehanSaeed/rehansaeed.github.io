@@ -1,7 +1,11 @@
 <template>
   <div>
     <u-button bordered @click="onClick">
-      <u-icon-share inline /> Share
+      <NuxtIcon
+        name="fa-solid:share-alt"
+        class="icon--inline"
+        aria-hidden="true" />
+      Share
     </u-button>
 
     <u-dialogue
@@ -11,19 +15,39 @@
       class="share-dialogue">
       <div class="share-dialogue__links">
         <u-link-button bordered :href="facebookUrl" @click="onClose">
-          <u-icon-facebook inline /> Facebook
+          <NuxtIcon
+            name="fa-brands:facebook"
+            class="icon--inline"
+            aria-hidden="true" />
+          Facebook
         </u-link-button>
         <u-link-button bordered :href="twitterUrl" @click="onClose">
-          <u-icon-twitter inline /> Twitter
+          <NuxtIcon
+            name="fa-brands:twitter"
+            class="icon--inline"
+            aria-hidden="true" />
+          Twitter
         </u-link-button>
         <u-link-button bordered :href="redditUrl" @click="onClose">
-          <u-icon-reddit inline /> Reddit
+          <NuxtIcon
+            name="fa-brands:reddit"
+            class="icon--inline"
+            aria-hidden="true" />
+          Reddit
         </u-link-button>
         <u-link-button bordered :href="linkedinUrl" @click="onClose">
-          <u-icon-linkedin inline /> LinkedIn
+          <NuxtIcon
+            name="fa-brands:linkedin"
+            class="icon--inline"
+            aria-hidden="true" />
+          LinkedIn
         </u-link-button>
         <u-link-button bordered :href="mailUrl" @click="onClose">
-          <u-icon-email inline /> Email
+          <NuxtIcon
+            name="fa-regular:envelope"
+            class="icon--inline"
+            aria-hidden="true" />
+          Email
         </u-link-button>
       </div>
     </u-dialogue>
@@ -31,28 +55,18 @@
 </template>
 
 <script>
+import { NuxtIcon } from "#components";
 import button from "~/components/shared/button.vue";
 import dialogue from "~/components/shared/dialogue.vue";
 import linkButton from "~/components/shared/link-button.vue";
-import iconEmail from "~/components/shared/icons/icon-email.vue";
-import iconFacebook from "~/components/shared/icons/icon-facebook.vue";
-import iconLinkedIn from "~/components/shared/icons/icon-linkedin.vue";
-import iconReddit from "~/components/shared/icons/icon-reddit.vue";
-import iconShare from "~/components/shared/icons/icon-share.vue";
-import iconTwitter from "~/components/shared/icons/icon-twitter.vue";
 
 export default {
   name: "u-share-button",
   components: {
+    NuxtIcon,
     "u-button": button,
     "u-dialogue": dialogue,
     "u-link-button": linkButton,
-    "u-icon-email": iconEmail,
-    "u-icon-facebook": iconFacebook,
-    "u-icon-linkedin": iconLinkedIn,
-    "u-icon-reddit": iconReddit,
-    "u-icon-share": iconShare,
-    "u-icon-twitter": iconTwitter,
   },
   setup() {
     return { metadata: useAppConfig().site };

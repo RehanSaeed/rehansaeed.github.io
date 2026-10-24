@@ -3,16 +3,19 @@
     v-if="!noLogo"
     class="thumbnail-logo"
     :style="{ alignSelf: logoAlign, justifySelf: logoJustify }">
-    <u-icon-rehan class="thumbnail-logo__icon" />
+    <NuxtIcon
+      name="blog:rehan"
+      class="thumbnail-logo__icon"
+      aria-hidden="true" />
   </div>
 </template>
 
 <script>
-import iconRehan from "~/components/shared/icons/icon-rehan.vue";
+import { NuxtIcon } from "#components";
 
 export default {
   components: {
-    "u-icon-rehan": iconRehan,
+    NuxtIcon,
   },
   data() {
     return {

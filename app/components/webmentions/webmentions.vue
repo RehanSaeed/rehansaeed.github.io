@@ -12,7 +12,11 @@
       <a
         class="webmentions__help"
         href="https://en.wikipedia.org/wiki/Webmention">
-        <u-icon-question inline /> What's this?
+        <NuxtIcon
+          name="fa-regular:question-circle"
+          class="icon--inline"
+          aria-hidden="true" />
+        What's this?
       </a>
       <div class="webmentions__container">
         <u-webmention-faces
@@ -66,10 +70,10 @@
 </template>
 
 <script>
+import { NuxtIcon } from "#components";
 import card from "~/components/shared/card.vue";
 import heading from "~/components/shared/heading.vue";
 import intersect from "~/components/shared/intersect.vue";
-import iconQuestion from "~/components/shared/icons/icon-question.vue";
 import webmentionFaces from "~/components/webmentions/webmention-faces.vue";
 import webmentionFacesSkeleton from "~/components/webmentions/webmention-faces-skeleton.vue";
 import webmentionLink from "~/components/webmentions/webmention-link.vue";
@@ -80,10 +84,10 @@ import webmentionRepliesSkeleton from "~/components/webmentions/webmention-repli
 export default {
   name: "u-webmentions",
   components: {
+    NuxtIcon,
     "u-card": card,
     "u-heading": heading,
     "u-intersect": intersect,
-    "u-icon-question": iconQuestion,
     "u-webmention-faces": webmentionFaces,
     "u-webmention-faces-skeleton": webmentionFacesSkeleton,
     "u-webmention-link": webmentionLink,
@@ -111,14 +115,14 @@ export default {
       return `${this.likes?.length ?? 0} ${this.pluralise(
         this.likes?.length,
         "Like",
-        "Likes"
+        "Likes",
       )}`;
     },
     repostsDescription() {
       return `${this.reposts?.length ?? 0} ${this.pluralise(
         this.reposts?.length,
         "Repost",
-        "Reposts"
+        "Reposts",
       )}`;
     },
     linksDescription() {
@@ -128,7 +132,7 @@ export default {
       return `${this.replies?.length ?? 0} ${this.pluralise(
         this.replies?.length,
         "Reply",
-        "Replies"
+        "Replies",
       )}`;
     },
   },
@@ -138,7 +142,7 @@ export default {
     },
     async getMentions(page, perPage) {
       const response = await fetch(
-        `https://webmention.io/api/mentions?page=${page}&per-page=${perPage}&target=${this.url}&sort-by=published&sort-dir=up`
+        `https://webmention.io/api/mentions?page=${page}&per-page=${perPage}&target=${this.url}&sort-by=published&sort-dir=up`,
       );
       const list = await response.json();
       return list.links;
@@ -152,12 +156,14 @@ export default {
         this.links = mentions.filter(
           (x) =>
             x.activity.type === "link" &&
-            !(x.data.author && x.data.author.photo)
+            !(x.data.author && x.data.author.photo),
         );
         this.replies = mentions.filter(
           (x) =>
             x.activity.type === "reply" ||
-            (x.activity.type === "link" && x.data.author && x.data.author.photo)
+            (x.activity.type === "link" &&
+              x.data.author &&
+              x.data.author.photo),
         );
       } catch (error) {
         console.log(error);
