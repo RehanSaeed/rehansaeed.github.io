@@ -1,11 +1,28 @@
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { test as unitTest } from "@playwright/test";
 import sharp from "sharp";
+import { parse as parseYaml } from "yaml";
 import { expect, test } from "./fixtures";
 
 const authorDirectory = "images/author/Muhammad-Rehan-Saeed";
 const iconSizes = [16, 48, 72, 96, 120, 128, 144, 152, 180, 192, 384, 512];
+const pngPixelHashes: Record<number, string> = {
+  16: "fb83d34d929b0e20e18b0e2d2f9bb8b841add997832fad4437769513aca9aa86",
+  48: "15d51aff8126338a8524c15a297895a8e1d64b9c938eccb0ed52d0a55d635b0b",
+  64: "587489ace3c62d6eace52b1a13db5deff48ae4fd11dc15c1220e496b57537cf0",
+  72: "2a4a083fe1a099d2406ecdd0b64e9dce077c38f5b90af6e162d7467838cc0cc1",
+  96: "5951c495e74068f25c5194f955df958469af6d60e6f45bf4dcc783d57de5a2e1",
+  120: "2acfe4c85a30f8914157f9f087596e057c327ab6f3288123328718ac272ab842",
+  128: "0cde068cc9970951c687c14379f458b89d668d2cb7841b844fe97c56d254ced1",
+  144: "d74595f50ee4e94982f24dc4b47c40873d6e8d1ec1d2e45070f013a2c5239f17",
+  152: "6a9aa8957d633e3fb67e5951847226541db1fb4c8c344460633783eed22799d8",
+  180: "f3c4306d928371227a014635310d84c650cae687e88f7f1d80a2a9e4b0096d53",
+  192: "dd3f4dfa1c106302d0dead0231ba709db756960b47515b38113c8057921e0c94",
+  384: "f2699b55b9e4878e86392e1e406a9e67df8f43c1047715c9d729b559b2ef1678",
+  512: "b982693776b546944236652c3c61c77728ba813c43de6dad0b4d1673e776ed06",
+};
 
 unitTest(
   "Purple avatars share a vector portrait with no embedded photo",
@@ -21,6 +38,25 @@ unitTest(
         (match) => match[1],
       );
       expect(portrait, filename).toHaveLength(2);
+      // Expand implicit commands so lossless SVGO serialization keeps the D1 fingerprint.
+      expect(portrait[0], filename).not.toMatch(/[^MLC\d\s,.-]/);
+      const d1Commands = [...portrait[0].matchAll(/([MLC])([^MLC]*)/g)].flatMap(
+        ([, command, coordinates]) => {
+          const numbers = coordinates.match(/-?\d*\.?\d+/g)!.map(Number);
+          const arity = command === "C" ? 6 : 2;
+          expect(numbers.length % arity, filename).toBe(0);
+          return Array.from({ length: numbers.length / arity }, (_, index) => [
+            command === "M" && index > 0 ? "L" : command,
+            ...numbers.slice(index * arity, (index + 1) * arity),
+          ]);
+        },
+      );
+      expect(
+        createHash("sha256").update(JSON.stringify(d1Commands)).digest("hex"),
+        `${filename}: unchanged D1 face, hair and shirt`,
+      ).toBe(
+        "754c884b163959c22b514afa8c029c976d0e6042fa035e9f2a332ce18ae0f216",
+      );
       paths.push(JSON.stringify(portrait));
       expect(source, filename).not.toMatch(/<image\b|data:image/);
       const { data, info } = await sharp(
@@ -46,6 +82,44 @@ unitTest(
       expect(earPixels, `${filename}: restored ear contour`).toBeGreaterThan(
         25,
       );
+
+      const { data: ear, info: earInfo } = await sharp(
+        Buffer.from(
+          `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 245" width="980" height="980"><path fill="#6b17e8" fill-rule="evenodd" d="${portrait[1]}" /></svg>`,
+        ),
+      )
+        .ensureAlpha()
+        .raw()
+        .toBuffer({ resolveWithObject: true });
+      const earFilled = ear.filter(
+        (value, index) => index % 4 === 3 && value > 127,
+      );
+      expect(earFilled.length, `${filename}: fuller R6 ear`).toBeGreaterThan(
+        3_500,
+      );
+      expect(earFilled.length, `${filename}: retained ear detail`).toBeLessThan(
+        4_300,
+      );
+      for (const [x, y] of [
+        [174, 92],
+        [176, 110],
+        [173, 116],
+      ]) {
+        expect(
+          ear[(y * 4 * earInfo.width + x * 4) * 4 + 3],
+          `${filename}: filled R6 ear at (${x}, ${y})`,
+        ).toBe(255);
+      }
+      for (const [x, y] of [
+        [173, 101],
+        [170.75, 112.5],
+        [171.5, 121],
+      ]) {
+        expect(
+          ear[(y * 4 * earInfo.width + x * 4) * 4 + 3],
+          `${filename}: inner ear negative space at (${x}, ${y})`,
+        ).toBe(0);
+      }
     }
     expect(new Set(paths).size).toBe(1);
   },
@@ -92,6 +166,30 @@ unitTest(
       expect([metadata.width, metadata.height], path).toEqual([width, height]);
       expect(metadata.exif, path).toBeUndefined();
       expect(metadata.xmp, path).toBeUndefined();
+      if (metadata.format === "png") {
+        expect(metadata.isPalette, `${path}: no palette quantization`).toBe(
+          false,
+        );
+        const pixels = await sharp(join("public", path))
+          .toColourspace("srgb")
+          .ensureAlpha()
+          .raw()
+          .toBuffer();
+        expect(
+          createHash("sha256").update(pixels).digest("hex"),
+          `${path}: lossless decoded sRGB pixels and alpha`,
+        ).toBe(pngPixelHashes[width]);
+        if (width === 512) {
+          const colors = new Set<number>();
+          for (let index = 0; index < pixels.length; index += 4) {
+            colors.add(pixels.readUInt32LE(index));
+          }
+          expect(
+            colors.size,
+            `${path}: retained photographic colour detail`,
+          ).toBeGreaterThan(40_000);
+        }
+      }
     }
     for (const size of [192, 512]) {
       expect(
@@ -127,9 +225,47 @@ unitTest(
       const image = ico.subarray(offset, offset + length);
       const metadata = await sharp(image).metadata();
       expect([metadata.width, metadata.height]).toEqual([size, size]);
+      expect(metadata.isPalette, `${size}px ICO: no palette quantization`).toBe(
+        false,
+      );
       await sharp(image).raw().toBuffer();
+      if (iconSizes.includes(size)) {
+        expect(image).toEqual(
+          await readFile(
+            join("public", "images", "icons", `favicon-${size}x${size}.png`),
+          ),
+        );
+      }
     }
     expect(sizes).toEqual([48, 32, 16]);
+  },
+);
+
+unitTest(
+  "Both compression workflows preserve profile photo exports",
+  async () => {
+    for (const workflow of [
+      "compress-images.yml",
+      "compress-images-on-demand.yml",
+    ]) {
+      const source = await readFile(
+        join(".github", "workflows", workflow),
+        "utf8",
+      );
+      const configuration = parseYaml(source);
+      const step = configuration.jobs.build.steps.find(
+        (step: { uses?: string }) =>
+          step.uses?.startsWith("calibreapp/image-actions@"),
+      );
+      expect(step.with.ignorePaths.split(","), workflow).toEqual(
+        expect.arrayContaining([
+          `public/${authorDirectory}/Profile-320x480.jpg`,
+          `public/${authorDirectory}/Logo-*.png`,
+          "public/favicon.png",
+          "public/images/icons/favicon-*.png",
+        ]),
+      );
+    }
   },
 );
 

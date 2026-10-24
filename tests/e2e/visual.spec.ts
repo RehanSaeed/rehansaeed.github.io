@@ -27,10 +27,9 @@ const slug = (path: string) =>
 
 async function readyForScreenshot(page: Page) {
   if (!new URL(page.url()).pathname.startsWith("/streaming/")) {
-    await page
-      .locator('a[href^="mailto:"]')
-      .first()
-      .waitFor({ state: "attached" });
+    await expect(
+      page.getByRole("button", { name: "Toggle dark/light" }).first(),
+    ).toBeEnabled();
   }
   await page.evaluate(async () => {
     await document.fonts.load("16px Audiowide");

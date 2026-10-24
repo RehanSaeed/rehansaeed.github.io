@@ -40,7 +40,11 @@
       rel="me">
       <u-icon-stackoverflow />
     </u-link-button>
-    <u-link-button class="social__link" label="Email" :href="mailTo">
+    <u-link-button
+      class="social__link"
+      label="Email"
+      href="#"
+      @click="openEmail">
       <u-icon-email />
     </u-link-button>
     <u-link-button class="social__link" href="/rss.xml" label="RSS">
@@ -75,25 +79,13 @@ export default {
   setup() {
     return { metadata: useAppConfig().site };
   },
-  data() {
-    return {
-      email: undefined,
-    };
-  },
-  computed: {
-    mailTo() {
-      if (!import.meta.client || !this.email) {
-        return undefined;
-      }
+  methods: {
+    openEmail(event) {
       const body = encodeURIComponent(
         "If you have an issue with one of my GitHub projects, please raise a GitHub issue. If you need help answering a coding problem, post your question on StackOverflow where you will get quicker and better answers. Otherwise, please do feel free to contact me!",
       );
-      return `mailto:${this.email}?body=${body}`;
+      event.currentTarget.href = `mailto:${decode(this.metadata.author.email)}?body=${body}`;
     },
-  },
-  mounted() {
-    // Decoded in the browser only, so the address never appears in the static HTML.
-    this.email = decode(this.metadata.author.email);
   },
 };
 </script>

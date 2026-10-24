@@ -18,6 +18,10 @@ and portfolio. Built with [Nuxt](https://nuxt.com), [Vue](https://vuejs.org) and
 [Nuxt Content](https://content.nuxt.com). Published as a static site on
 [GitHub Pages](https://docs.github.com/en/pages).
 
+The contact address is stored encoded and decoded only when the Email link is
+activated, not during page rendering or hydration. This deters passive scraping;
+it is not encryption.
+
 ## Contributing
 
 Bug reports and improvements are welcome. Read the
@@ -80,3 +84,20 @@ About badge uses its correct aspect ratio. About uses a cookie-free Shields
 reputation badge instead of Stack Overflow's blocked third-party flair image;
 the profile link is unchanged, but medal counts are no longer shown. Article
 heading permalinks have accessible names and remain visible on keyboard focus.
+
+## Profile photo exports
+
+Regenerate the portrait, square avatars, PNG app icons and ICO favicon from the
+full-resolution, unposterized portrait, not a previously compressed square export:
+
+```powershell
+node scripts/profile-images.mjs "<full-resolution portrait.jpg>" 295
+```
+
+The second argument is the square crop's top offset in source pixels. `295` preserves
+the current framing of the 5464 x 8192 original. The script keeps the existing asset
+URLs and dimensions and leaves the purple SVG artwork unchanged.
+
+PNG photos must remain truecolour, not indexed/palette PNGs. Both image-compression
+workflows exclude these exports to prevent colour banding from palette reduction.
+The original photo stays outside the repository.
