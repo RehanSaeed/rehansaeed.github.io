@@ -18,10 +18,6 @@ and portfolio. Built with [Nuxt](https://nuxt.com), [Vue](https://vuejs.org) and
 [Nuxt Content](https://content.nuxt.com). Published as a static site on
 [GitHub Pages](https://docs.github.com/en/pages).
 
-The contact address is stored encoded and decoded only when the Email link is
-activated, not during page rendering or hydration. This deters passive scraping;
-it is not encryption.
-
 ## Contributing
 
 Bug reports and improvements are welcome. Read the
