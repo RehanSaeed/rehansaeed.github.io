@@ -21,6 +21,11 @@ export default {
   --arrow-height: 1.2rem;
 }
 
+.arrows__arrow,
+.arrows__arrow::after {
+  transition: background-color var(--global-duration-3) ease-out;
+}
+
 .arrows__arrow {
   background: var(--arrow-colour);
   block-size: var(--arrow-height);
