@@ -66,6 +66,7 @@ export default defineNuxtConfig({
         "feather:x",
         "lucide:house-heart",
         "simple-icons:buymeacoffee",
+        "simple-icons:bluesky",
       ],
     },
   },

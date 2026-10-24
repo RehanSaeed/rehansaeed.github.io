@@ -25,6 +25,14 @@
       <u-icon name="fa-brands:mastodon" />
     </u-link-button>
     <u-link-button
+      v-if="metadata.author.bluesky.url"
+      class="social__link"
+      label="Bluesky"
+      :href="metadata.author.bluesky.url"
+      rel="me">
+      <u-icon name="simple-icons:bluesky" />
+    </u-link-button>
+    <u-link-button
       v-if="metadata.author.gitHub.url"
       class="social__link"
       label="GitHub"
