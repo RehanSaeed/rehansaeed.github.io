@@ -23,6 +23,7 @@ export default defineNuxtConfig({
 
   modules: [
     "@nuxt/content",
+    "@nuxt/icon",
     "@nuxt/image",
     "@nuxt/scripts",
     "@nuxtjs/seo",
@@ -31,6 +32,42 @@ export default defineNuxtConfig({
     "@nuxt/eslint",
     "@nuxt/fonts",
   ],
+
+  icon: {
+    componentName: "NuxtIcon",
+    // GitHub Pages and offline navigation have no runtime icon API.
+    provider: "none",
+    serverBundle: false,
+    customCollections: [{ prefix: "blog", dir: "./app/assets/icons" }],
+    clientBundle: {
+      scan: false,
+      includeCustomCollections: true,
+      sizeLimitKb: 48,
+      icons: [
+        "blog:rehan",
+        "fa-brands:facebook",
+        "fa-brands:github",
+        "fa-brands:linkedin",
+        "fa-brands:patreon",
+        "fa-brands:paypal",
+        "fa-brands:reddit",
+        "fa-brands:stack-overflow",
+        "fa-brands:twitch",
+        "fa-brands:twitter",
+        "fa-brands:youtube",
+        "fa-regular:envelope",
+        "fa-regular:question-circle",
+        "fa-solid:rss",
+        "fa-solid:share-alt",
+        "feather:moon",
+        "feather:search",
+        "feather:sun",
+        "feather:x",
+        "lucide:house-heart",
+        "simple-icons:buymeacoffee",
+      ],
+    },
+  },
 
   fonts: {
     provider: "npm",

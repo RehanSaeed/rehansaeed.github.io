@@ -13,7 +13,7 @@
         }}</u-heading>
         <form class="dialog__form" method="dialog" @submit.prevent="close">
           <u-button :aria-label="`Close ${title}`" class="dialog__close" submit>
-            <u-icon-close :size="24" />
+            <u-icon name="feather:x" />
           </u-button>
         </form>
         <div class="dialog__content">
@@ -28,14 +28,14 @@
 import { useId } from "vue";
 import button from "~/components/shared/button.vue";
 import heading from "~/components/shared/heading.vue";
-import iconClose from "~/components/shared/icons/icon-close.vue";
+import icon from "~/components/shared/icon.vue";
 
 export default {
   name: "u-dialogue",
   components: {
+    "u-icon": icon,
     "u-button": button,
     "u-heading": heading,
-    "u-icon-close": iconClose,
   },
   emits: ["close"],
   setup() {

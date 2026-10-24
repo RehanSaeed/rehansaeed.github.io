@@ -230,7 +230,10 @@ assert.match(robots, /Content-Signal: ai-train=yes, search=yes, ai-input=yes/);
 assert.match(robots, /User-agent: \*\s+Allow: \//);
 assert(!/^Disallow:\s*\/.+/m.test(robots));
 for (const path of additionalPublicRoutes) {
-    assert(urls.includes(`${site.url}${path}`), `${path}: approved public page`);
+    assert(
+        urls.includes(`${site.url}${path}`),
+        `${path}: approved public page`,
+    );
 }
 assert.equal(
     urls.length,

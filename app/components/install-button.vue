@@ -4,13 +4,13 @@
     class="install-button"
     aria-label="Install the app"
     @click.prevent="onInstall">
-    <u-icon-add-home />
+    <u-icon name="lucide:house-heart" />
   </u-button>
 </template>
 
 <script>
+import icon from "~/components/shared/icon.vue";
 import button from "~/components/shared/button.vue";
-import iconAddHome from "~/components/shared/icons/icon-add-home.vue";
 import {
   pwaInstallPromoShown,
   pwaInstallPromoClicked,
@@ -22,8 +22,8 @@ import {
 export default {
   name: "u-install-button",
   components: {
+    "u-icon": icon,
     "u-button": button,
-    "u-icon-add-home": iconAddHome,
   },
   data() {
     return {

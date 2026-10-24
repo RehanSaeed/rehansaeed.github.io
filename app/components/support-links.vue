@@ -11,48 +11,46 @@
         bordered
         label="Patreon"
         :href="metadata.author.patreon.url">
-        <u-icon-patreon inline /> Patreon
+        <u-icon name="fa-brands:patreon" inline />
+        Patreon
       </u-link-button>
       <u-link-button
         v-if="metadata.author.buyMeACoffee.url"
         bordered
         label="Buy me a Coffee"
         :href="metadata.author.buyMeACoffee.url">
-        <u-icon-coffee inline /> Buy me a Coffee
+        <u-icon name="simple-icons:buymeacoffee" color="#ffdd00" inline />
+        Buy me a Coffee
       </u-link-button>
       <u-link-button
         v-if="metadata.author.gitHub.sponsorsUrl"
         bordered
         label="GitHub Sponsors"
         :href="metadata.author.gitHub.sponsorsUrl">
-        <u-icon-github inline /> GitHub Sponsors
+        <u-icon name="fa-brands:github" inline />
+        GitHub Sponsors
       </u-link-button>
       <u-link-button
         v-if="metadata.author.paypal.url"
         bordered
         label="Paypal"
         :href="metadata.author.paypal.url">
-        <u-icon-paypal inline /> Paypal
+        <u-icon name="fa-brands:paypal" inline />
+        Paypal
       </u-link-button>
     </div>
   </div>
 </template>
 
 <script>
+import icon from "~/components/shared/icon.vue";
 import linkButton from "~/components/shared/link-button.vue";
-import iconCoffee from "~/components/shared/icons/icon-coffee.vue";
-import iconGitHub from "~/components/shared/icons/icon-github.vue";
-import iconPatreon from "~/components/shared/icons/icon-patreon.vue";
-import iconPaypal from "~/components/shared/icons/icon-paypal.vue";
 
 export default {
   name: "u-support-links",
   components: {
+    "u-icon": icon,
     "u-link-button": linkButton,
-    "u-icon-coffee": iconCoffee,
-    "u-icon-github": iconGitHub,
-    "u-icon-patreon": iconPatreon,
-    "u-icon-paypal": iconPaypal,
   },
   setup() {
     return { metadata: useAppConfig().site };

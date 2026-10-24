@@ -3,16 +3,16 @@
     v-if="!noLogo"
     class="thumbnail-logo"
     :style="{ alignSelf: logoAlign, justifySelf: logoJustify }">
-    <u-icon-rehan class="thumbnail-logo__icon" />
+    <u-icon name="blog:rehan" class="thumbnail-logo__icon" />
   </div>
 </template>
 
 <script>
-import iconRehan from "~/components/shared/icons/icon-rehan.vue";
+import icon from "~/components/shared/icon.vue";
 
 export default {
   components: {
-    "u-icon-rehan": iconRehan,
+    "u-icon": icon,
   },
   data() {
     return {
@@ -35,7 +35,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .thumbnail-logo {
   background: var(--global-background-color);
   border-radius: 50%;
@@ -46,7 +46,7 @@ export default {
   z-index: 2;
 }
 
-.thumbnail-logo__icon {
+.thumbnail-logo .thumbnail-logo__icon {
   inline-size: 150px;
   block-size: 150px;
 }
