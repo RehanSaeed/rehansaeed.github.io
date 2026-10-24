@@ -16,10 +16,10 @@ export function useSoundEffect() {
     enabled: readonly(enabled),
     error: readonly(error),
     setEnabled(value: boolean) {
-      if (import.meta.client) app.$uiSound.setEnabled(value);
+      if (import.meta.client) app.$soundEffect.setEnabled(value);
     },
     play(sound: SoundEffect) {
-      if (import.meta.client) app.$uiSound.play(sound);
+      if (import.meta.client) app.$soundEffect.play(sound);
     },
   };
 }

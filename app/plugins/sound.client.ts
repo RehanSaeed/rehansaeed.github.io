@@ -1,4 +1,3 @@
-import type { Howl } from "howler";
 import { soundNames, type SoundEffect } from "~/composables/use-sound-effect";
 
 const preferenceKey = "sound-effect-enabled";
@@ -6,76 +5,106 @@ const preferenceKey = "sound-effect-enabled";
 export default defineNuxtPlugin((app) => {
   const enabled = useState("sound-effect-enabled", () => false);
   const error = useState("sound-effect-error", () => "");
-  const sounds = new Map<SoundEffect, Howl>();
-  let engine: typeof import("howler") | undefined;
-  let loading: Promise<void> | undefined;
+  const sounds = new Map<SoundEffect, AudioBuffer>();
+  const loading = new Map<SoundEffect, AbortController>();
+  let context: AudioContext | undefined;
+  let volume: GainNode | undefined;
+  let activeSource: AudioBufferSourceNode | undefined;
   let disposed = false;
   let preferenceChanged = false;
 
   function report(message: string, cause: unknown) {
-    console.warn(`[ui-sound] ${message}`, cause);
+    console.warn(`[sound-effect] ${message}`, cause);
     error.value = message;
   }
 
   function stop() {
-    for (const sound of sounds.values()) sound.stop();
+    if (!activeSource) return;
+    const source = activeSource;
+    activeSource = undefined;
+    source.onended = null;
+    source.stop();
+    source.disconnect();
   }
 
-  function prepare() {
-    if (loading) return;
-    loading = import("howler")
-      .then((module) => {
-        if (!enabled.value || disposed) return;
-        engine = module;
-        for (const name of soundNames) {
-          if (sounds.has(name)) continue;
-          const sound = new module.Howl({
-            src: [`/sounds/v1/${name}.wav`],
-            volume: 0.25,
-            autoplay: false,
-            loop: false,
-            onloaderror(_id, cause) {
-              report(
-                "Sound effects could not be loaded. Try enabling them again when online.",
-                cause,
-              );
-            },
-            onplayerror(_id, cause) {
-              report(
-                "Sound playback was blocked. Try another click or turn sound effects off.",
-                cause,
-              );
-            },
-            onplay(id) {
-              if (!enabled.value || disposed) sound.stop(id);
-            },
-          });
-          sounds.set(name, sound);
-        }
-      })
-      .catch((cause: unknown) => {
+  function abortLoads() {
+    for (const controller of loading.values()) controller.abort();
+    loading.clear();
+  }
+
+  async function load(name: SoundEffect, audio: AudioContext) {
+    const controller = new AbortController();
+    loading.set(name, controller);
+    try {
+      const response = await fetch(`/sounds/v1/${name}.wav`, {
+        signal: controller.signal,
+      });
+      if (!response.ok) {
+        throw new Error(`Loading ${name} failed with HTTP ${response.status}.`);
+      }
+      const data = await response.arrayBuffer();
+      if (controller.signal.aborted || disposed) return;
+      const buffer = await audio.decodeAudioData(data);
+      if (!controller.signal.aborted && !disposed) sounds.set(name, buffer);
+    } catch (cause) {
+      if (!controller.signal.aborted && !disposed) {
         report(
           "Sound effects could not be loaded. Try enabling them again when online.",
           cause,
         );
-      })
-      .finally(() => {
-        loading = undefined;
-      });
+      }
+    } finally {
+      if (loading.get(name) === controller) loading.delete(name);
+    }
+  }
+
+  function prepare() {
+    try {
+      if (!context) {
+        const audio = new AudioContext();
+        const gain = audio.createGain();
+        gain.gain.value = 0.25;
+        gain.connect(audio.destination);
+        context = audio;
+        volume = gain;
+      }
+      for (const name of soundNames) {
+        if (!sounds.has(name) && !loading.has(name)) void load(name, context);
+      }
+    } catch (cause) {
+      report("Sound effects could not be initialized in this browser.", cause);
+    }
+  }
+
+  function unlock() {
+    if (
+      !enabled.value ||
+      disposed ||
+      !context ||
+      context.state === "running" ||
+      context.state === "closed"
+    ) {
+      return;
+    }
+    void context.resume().catch((cause: unknown) => {
+      if (!disposed && enabled.value) {
+        report(
+          "Sound playback was blocked. Try another click or turn sound effects off.",
+          cause,
+        );
+      }
+    });
   }
 
   function setEnabled(value: boolean, persist = true) {
+    if (disposed) return;
     if (persist) preferenceChanged = true;
     enabled.value = value;
     error.value = "";
     if (value) {
-      for (const [name, sound] of sounds) {
-        if (sound.state() !== "loaded") {
-          sound.unload();
-          sounds.delete(name);
-        }
-      }
+      abortLoads();
       prepare();
+      if (persist) unlock();
     } else {
       stop();
     }
@@ -93,20 +122,32 @@ export default defineNuxtPlugin((app) => {
 
   function play(name: SoundEffect) {
     if (!enabled.value || disposed) return;
-    const sound = sounds.get(name);
-    if (sound?.state() !== "loaded" || !engine) return;
-    if (engine.Howler.usingWebAudio && engine.Howler.ctx.state !== "running") {
+    const buffer = sounds.get(name);
+    if (!buffer || !context || !volume) return;
+    if (context.state !== "running") {
       // Resume during the gesture, but never replay a stale click after unlocking.
-      void engine.Howler.ctx.resume().catch((cause: unknown) => {
-        report(
-          "Sound playback was blocked. Try another click or turn sound effects off.",
-          cause,
-        );
-      });
+      unlock();
       return;
     }
     stop();
-    sound.play();
+    let source: AudioBufferSourceNode | undefined;
+    try {
+      source = context.createBufferSource();
+      source.buffer = buffer;
+      source.connect(volume);
+      source.onended = () => {
+        source?.disconnect();
+        if (activeSource === source) activeSource = undefined;
+      };
+      source.start();
+      activeSource = source;
+    } catch (cause) {
+      source?.disconnect();
+      report(
+        "Sound playback failed. Try turning sound effects off and on.",
+        cause,
+      );
+    }
   }
 
   function storageChanged(event: StorageEvent) {
@@ -120,6 +161,7 @@ export default defineNuxtPlugin((app) => {
 
   // Async layouts can still be hydrating at app:mounted.
   onNuxtReady(() => {
+    if (disposed) return;
     try {
       // The user may interact before Nuxt's idle callback restores storage.
       if (!preferenceChanged) {
@@ -135,13 +177,25 @@ export default defineNuxtPlugin((app) => {
   });
 
   function dispose() {
+    if (disposed) return;
     disposed = true;
     window.removeEventListener("storage", storageChanged);
-    for (const sound of sounds.values()) sound.unload();
+    window.removeEventListener("pointerdown", unlock, true);
+    window.removeEventListener("keydown", unlock, true);
+    abortLoads();
+    stop();
     sounds.clear();
+    volume?.disconnect();
+    if (context && context.state !== "closed") {
+      void context.close().catch((cause: unknown) => {
+        report("Sound effects could not be released.", cause);
+      });
+    }
   }
+  window.addEventListener("pointerdown", unlock, true);
+  window.addEventListener("keydown", unlock, true);
   if (import.meta.hot) import.meta.hot.dispose(dispose);
   app.vueApp.onUnmount(dispose);
 
-  return { provide: { uiSound: { setEnabled, play } } };
+  return { provide: { soundEffect: { setEnabled, play } } };
 });
