@@ -164,9 +164,14 @@ test("A saved dark theme displays the sun before hydration", async ({
     await expect(button).toBeDisabled();
     await expect(button.locator(".theme-button__sun")).toBeVisible();
     await expect(button.locator(".theme-button__moon")).toBeHidden();
+    const initialColour = await button.evaluate(
+      (element) => getComputedStyle(element).color,
+    );
+    await expect(button).toHaveCSS("transform", "none");
     scripts.resume();
     await expect(button).toBeEnabled();
     await expectTheme(button, "dark");
+    await expect(button).toHaveCSS("color", initialColour);
     expect(
       await button.evaluate(
         (element) => element.getAnimations({ subtree: true }).length,

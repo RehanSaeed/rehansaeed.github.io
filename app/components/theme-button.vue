@@ -60,8 +60,13 @@ export default {
   display: grid;
   font-size: var(--global-font-size-4);
 
-  &.button {
+  &.button,
+  &.button--hydrating:disabled {
     color: var(--global-accent-color);
+  }
+
+  &.button--hydrating:disabled {
+    transform: none;
   }
 
   .theme-button__icon {
