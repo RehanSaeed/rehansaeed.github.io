@@ -247,6 +247,21 @@ export default defineNuxtConfig({
       navigateFallback: null,
       directoryIndex: "index.html",
       cleanupOutdatedCaches: true,
+      runtimeCaching: [
+        {
+          urlPattern: ({ url, sameOrigin }) =>
+            sameOrigin &&
+            /^\/sounds\/v1\/(?:toggle-on|toggle-off|dialog-open|dialog-close)\.wav$/.test(
+              url.pathname,
+            ),
+          handler: "CacheFirst",
+          options: {
+            cacheName: "ui-sounds-v1",
+            cacheableResponse: { statuses: [200] },
+            expiration: { maxEntries: 4, maxAgeSeconds: 60 * 60 * 24 * 365 },
+          },
+        },
+      ],
       // The feeds are around 1 MB each.
       maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
     },

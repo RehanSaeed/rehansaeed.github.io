@@ -4,12 +4,13 @@
     class="dialog"
     :class="{ 'dialog--fullscreen': fullscreen }"
     :aria-labelledby="titleId"
-    @close="close">
+    @close="close"
+    @cancel="onDismiss">
     <div class="dialog__container">
       <u-heading :id="titleId" level="2" class="dialog__title">{{
         title
       }}</u-heading>
-      <form class="dialog__form" method="dialog">
+      <form class="dialog__form" method="dialog" @submit="onDismiss">
         <u-button :aria-label="`Close ${title}`" class="dialog__close" submit>
           <u-icon-close :size="24" />
         </u-button>
@@ -36,7 +37,7 @@ export default {
   },
   emits: ["close"],
   setup() {
-    return { titleId: useId() };
+    return { titleId: useId(), playSound: useUiSound().play };
   },
   props: {
     fullscreen: {
@@ -62,6 +63,9 @@ export default {
     },
   },
   methods: {
+    onDismiss() {
+      if (this.isOpen) this.playSound("dialog-close");
+    },
     close() {
       if (this.isOpen) {
         this.$emit("close");

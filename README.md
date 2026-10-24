@@ -90,6 +90,39 @@ Local badge PNGs retain their issue-year filenames and intrinsic dimensions.
 Preserve transparent outer canvases and enclosed light artwork when optimizing
 them, so both themes work without blend modes or color filters.
 
+### Optional sound effects
+
+Sound effects are off by default. The header's **Sound effects** toggle is before
+the Search/Theme controls in tab order and persists explicit consent in local
+storage. Muting stops active effects immediately and synchronizes other tabs.
+Deferred preference restoration never overrides a choice already made in this tab.
+Theme changes and explicitly opening/closing Search, Share and Coffee dialogs
+play short, quiet cues; typing, automatic search deep links, navigation and native
+sharing remain silent. Sound never replaces visible feedback or blocks an action.
+Preference and playback failures are logged and announced in a non-interactive
+status notice that does not block the controls.
+
+`useUiSound()` exposes `enabled`, `error`, `setEnabled(boolean)` and
+`play("toggle-on" | "toggle-off" | "dialog-open" | "dialog-close")`.
+The client plugin owns a lazy Howler engine and reusable samples; browser objects
+are not serialized into Nuxt state. Effects skip unloaded or locked audio instead
+of replaying a stale click. Browser policies may require another interaction
+after enabling, restoring a saved preference, or returning to a suspended tab.
+
+The four WAV files in `public/sounds/v1/` are original, mathematically synthesized
+tones, not samples from Josh Comeau or a third-party library. They are dedicated
+to the public domain under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).
+Regenerate them with `node scripts/sounds.mjs`; use a new versioned directory when
+changing the samples. They are fetched only after opt-in and runtime-cached for
+offline reuse, not precached for every reader. A fresh offline visit can remain
+silent. The existing whole-blog PWA still precaches JavaScript chunks, including
+the lazy Howler chunk; lazy execution is not a promise of zero JS transfer.
+
+Run `npm test -- sound.spec.ts search.spec.ts` for focused
+coverage. Real-device Safari/iOS listening checks remain important for perceived
+volume, latency and gesture unlocking; the automated browser suite cannot judge
+how pleasant the samples sound.
+
 The original source-image Squoosh pass processed all 301 PNGs and 28 JPEGs locally,
 preserving formats, dimensions and alpha. It retained 78 originals when a
 candidate was larger or failed the quality guard and replaced 251 files,

@@ -26,6 +26,7 @@
       >
     </div>
     <div class="navigation__items-right">
+      <u-sound-button class="navigation__sound" />
       <u-search-button class="navigation__search" />
       <u-theme-button class="navigation__toggle-theme" />
       <u-install-button class="navigation__install" />
@@ -39,6 +40,7 @@ import linkButton from "~/components/shared/link-button.vue";
 import installButton from "~/components/install-button.vue";
 import searchButton from "~/components/search/search-button.vue";
 import themeButton from "~/components/theme-button.vue";
+import soundButton from "~/components/sound-button.vue";
 
 export default {
   name: "u-navigation",
@@ -48,6 +50,7 @@ export default {
     "u-install-button": installButton,
     "u-search-button": searchButton,
     "u-theme-button": themeButton,
+    "u-sound-button": soundButton,
   },
   computed: {
     blogPage() {
@@ -131,6 +134,7 @@ export default {
 }
 
 .navigation__search,
+.navigation__sound,
 .navigation__toggle-theme,
 .navigation__install {
   visibility: visible;
