@@ -25,6 +25,14 @@
       <u-icon-mastodon />
     </u-link-button>
     <u-link-button
+      v-if="metadata.author.bluesky.url"
+      class="social__link"
+      label="Bluesky"
+      :href="metadata.author.bluesky.url"
+      rel="me">
+      <u-icon-bluesky />
+    </u-link-button>
+    <u-link-button
       v-if="metadata.author.gitHub.url"
       class="social__link"
       label="GitHub"
@@ -59,6 +67,7 @@
 
 <script>
 import linkButton from "~/components/shared/link-button.vue";
+import iconBluesky from "~/components/shared/icons/icon-bluesky.vue";
 import iconEmail from "~/components/shared/icons/icon-email.vue";
 import iconGitHub from "~/components/shared/icons/icon-github.vue";
 import iconLinkedIn from "~/components/shared/icons/icon-linkedin.vue";
@@ -73,6 +82,7 @@ export default {
   name: "u-social-links",
   components: {
     "u-link-button": linkButton,
+    "u-icon-bluesky": iconBluesky,
     "u-icon-email": iconEmail,
     "u-icon-github": iconGitHub,
     "u-icon-linkedin": iconLinkedIn,

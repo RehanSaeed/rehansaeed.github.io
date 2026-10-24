@@ -33,6 +33,9 @@
     "mastodon": {
       "url": "https://hachyderm.io/@RehanSaeed"
     },
+    "bluesky": {
+      "url": "https://bsky.app/profile/rehansaeed.bsky.social"
+    },
     "stackOverflow": {
       "user": "1212017",
       "url": "https://stackoverflow.com/users/1212017/muhammad-rehan-saeed"
