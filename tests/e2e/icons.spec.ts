@@ -191,11 +191,29 @@ test.describe("Icon areas", () => {
       (route) =>
         route.fulfill({
           contentType: "application/json",
-          body: route.request().url().includes("webmention.io")
-            ? '{"links":[]}'
-            : "[]",
+          body:
+            new URL(route.request().url()).hostname === "webmention.io"
+              ? '{"links":[]}'
+              : "[]",
         }),
     );
+  });
+
+  test("External stubs match only the exact Webmention host", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const responses = await page.evaluate(async () =>
+      Promise.all(
+        [
+          "https://webmention.io/api/mentions",
+          "https://not-webmention.io/api/mentions",
+          "https://webmention.io.example/api/mentions",
+          "https://example.com/?source=webmention.io",
+        ].map(async (url) => (await fetch(url)).json()),
+      ),
+    );
+    expect(responses).toEqual([{ links: [] }, [], [], []]);
   });
 
   for (const [device, viewport] of Object.entries({
@@ -247,6 +265,11 @@ test.describe("Icon areas", () => {
         await expect(
           page.locator(".post__footer svg.icon:visible"),
         ).toHaveCount(3);
+        await expect(
+          page
+            .getByRole("button", { name: "Buy me a Coffee", exact: true })
+            .locator("svg.icon path[fill]"),
+        ).toHaveCSS("fill", "rgb(255, 221, 0)");
         await shot("post-actions", page.locator(".post__footer"));
         await page.getByRole("button", { name: "Share", exact: true }).click();
         const share = page.getByRole("dialog", { name: "Share", exact: true });
@@ -261,6 +284,11 @@ test.describe("Icon areas", () => {
           exact: true,
         });
         await expect(support.locator("svg.icon")).toHaveCount(5);
+        await expect(
+          support
+            .getByRole("link", { name: "Buy me a Coffee", exact: true })
+            .locator("svg.icon path[fill]"),
+        ).toHaveCSS("fill", "rgb(255, 221, 0)");
         await shot("support-dialog", support);
         await support
           .getByRole("button", { name: "Close Buy me a Coffee" })

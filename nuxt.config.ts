@@ -44,6 +44,7 @@ export default defineNuxtConfig({
       includeCustomCollections: true,
       sizeLimitKb: 48,
       icons: [
+        "blog:coffee",
         "blog:rehan",
         "fa-brands:facebook",
         "fa-brands:github",
@@ -63,8 +64,7 @@ export default defineNuxtConfig({
         "feather:search",
         "feather:sun",
         "feather:x",
-        "material-symbols:install-desktop",
-        "simple-icons:buymeacoffee",
+        "lucide:house-heart",
       ],
     },
   },

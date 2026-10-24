@@ -22,10 +22,7 @@
         bordered
         label="Buy me a Coffee"
         :href="metadata.author.buyMeACoffee.url">
-        <NuxtIcon
-          name="simple-icons:buymeacoffee"
-          class="icon--inline"
-          aria-hidden="true" />
+        <NuxtIcon name="blog:coffee" class="icon--inline" aria-hidden="true" />
         Buy me a Coffee
       </u-link-button>
       <u-link-button

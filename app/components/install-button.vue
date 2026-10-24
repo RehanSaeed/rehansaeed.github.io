@@ -4,7 +4,7 @@
     class="install-button"
     aria-label="Install the app"
     @click.prevent="onInstall">
-    <NuxtIcon name="material-symbols:install-desktop" aria-hidden="true" />
+    <NuxtIcon name="lucide:house-heart" aria-hidden="true" />
   </u-button>
 </template>
 
