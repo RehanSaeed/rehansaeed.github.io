@@ -83,6 +83,33 @@ jobs:
           compression-level: 1
           retention-days: 1
           if-no-files-found: error
+      - name: "Cache Lighthouse Browser"
+        id: playwright-cache
+        uses: actions/cache@v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-chromium-${{ hashFiles('package-lock.json') }}
+      - name: "Install Playwright Browsers"
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+      - name: "Install Playwright Dependencies"
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+      - name: "Lighthouse"
+        run: npm run lighthouse
+        timeout-minutes: 20
+        env:
+          TZ: UTC
+      - name: "Upload Lighthouse Reports"
+        uses: actions/upload-artifact@v7.0.2
+        if: ${{ !cancelled() }}
+        with:
+          name: lighthouse-report
+          path: |
+            .lighthouseci/reports
+            .lighthouseci/assertion-results.json
+          include-hidden-files: true
+          retention-days: 7
       - name: "Save Deployment Assets"
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         uses: actions/cache/save@v6.1.0

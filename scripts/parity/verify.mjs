@@ -257,7 +257,7 @@ assert.deepEqual(
     localArtifacts["/robots.txt"],
     {
         status: 200,
-        body: "User-agent: *\nAllow: /\nDisallow: \nContent-Usage: train-ai=y\nContent-Signal: ai-train=yes, search=yes, ai-input=yes\n\nSitemap: {origin}/sitemap.xml",
+        body: "User-agent: *\nAllow: /\nDisallow: \nContent-Signal: ai-train=yes, search=yes, ai-input=yes\n\nSitemap: {origin}/sitemap.xml",
     },
     "Explicit search/input/training Robots policy",
 );

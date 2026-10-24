@@ -238,7 +238,7 @@ assert.deepEqual(
     urls.map(sourceKey).sort(),
     "Full export includes only public sitemap pages",
 );
-assert.match(robots, /Content-Usage: train-ai=y/);
+assert.doesNotMatch(robots, /Content-Usage:/);
 assert.match(robots, /Content-Signal: ai-train=yes, search=yes, ai-input=yes/);
 assert.match(robots, /User-agent: \*\s+Allow: \//);
 assert(!/^Disallow:\s*\/.+/m.test(robots));

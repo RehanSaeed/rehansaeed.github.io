@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { load } from "cheerio";
 import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
@@ -53,8 +55,10 @@ test("Static discovery serves real Markdown and the explicit AI training policy"
   }
   const robots = await request.get("/robots.txt");
   expect(robots.ok()).toBe(true);
-  expect(await robots.text()).toContain("Content-Usage: train-ai=y");
-  expect(await robots.text()).toContain("Content-Signal: ai-train=yes");
+  expect(await robots.text()).not.toContain("Content-Usage:");
+  expect(await robots.text()).toContain(
+    "Content-Signal: ai-train=yes, search=yes, ai-input=yes",
+  );
   for (const path of ["/llms.txt", "/llms-full.txt", "/sitemap.md"]) {
     const response = await request.get(path);
     expect(response.ok()).toBe(true);
@@ -74,6 +78,22 @@ test("Static discovery serves real Markdown and the explicit AI training policy"
     "/404-not-found.md",
   ]) {
     expect((await request.get(path)).status()).toBe(404);
+  }
+});
+
+test("Pagination only renders links to existing pages", () => {
+  const home = load(readFileSync(join("dist", "index.html"), "utf8"));
+  const lastPage = home(".pager__info")
+    .text()
+    .match(/of (\d+)/)![1];
+  for (const path of ["", "2", lastPage]) {
+    const $ = load(readFileSync(join("dist", path, "index.html"), "utf8"));
+    const pager = $(".pager");
+    expect(pager.find("a:not([href]), a[href='']")).toHaveLength(0);
+    expect(pager.find(".pager__previous-button")).toHaveLength(path ? 1 : 0);
+    expect(pager.find(".pager__next-button")).toHaveLength(
+      path === lastPage ? 0 : 1,
+    );
   }
 });
 
