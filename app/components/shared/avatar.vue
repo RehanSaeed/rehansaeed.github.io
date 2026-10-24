@@ -54,37 +54,26 @@ export default {
 </script>
 
 <style lang="scss">
-.avatar {
-  display: inline-block;
+@use "~/assets/style/abstracts/avatar";
 
-  background-color: var(--global-content-background-color);
-  border: var(--global-border-width-3) solid transparent;
-  border-radius: 100%;
-  overflow: hidden;
-  transition:
-    border-color var(--global-duration-3) var(--ease-out-cubic),
-    scale var(--global-duration-3) var(--ease-out-cubic);
+.avatar {
+  @include avatar.frame(var(--global-border-width-3), transparent, 100%);
+
+  transition: scale var(--global-duration-3) var(--ease-out-cubic);
   inline-size: 3rem;
   block-size: 3rem;
-  will-change: border-color, scale;
 
   margin: calc(var(--global-border-width-3) * -1);
 
   &:hover,
   &:focus {
-    border: var(--global-border-width-3) solid var(--global-accent-color);
-    opacity: 1;
     outline: none;
     scale: 1.4;
     z-index: 1;
+
+    &::after {
+      border-color: var(--global-accent-color);
+    }
   }
-}
-
-.avatar__image {
-  display: block;
-
-  object-fit: cover;
-  inline-size: 100%;
-  block-size: 100%;
 }
 </style>

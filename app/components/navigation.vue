@@ -72,6 +72,7 @@ export default {
 </script>
 
 <style lang="scss">
+@use "~/assets/style/abstracts/avatar";
 @use "~/assets/style/abstracts/breakpoints";
 
 .navigation {
@@ -90,17 +91,19 @@ export default {
 }
 
 .navigation__image-container {
+  @include avatar.frame(
+    var(--global-border-width-2),
+    var(--global-title-color),
+    100%
+  );
+
   grid-area: image;
 
-  line-height: 0;
-  visibility: visible;
-}
-.navigation__image {
-  border: var(--global-border-width-2) solid var(--global-title-color);
-  border-radius: 100%;
-  transition: border-color var(--global-duration-3) ease-out;
   inline-size: 2.5rem;
   block-size: 2.5rem;
+  line-height: 0;
+  visibility: visible;
+  will-change: auto;
 }
 
 .navigation__items-left {

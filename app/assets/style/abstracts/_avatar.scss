@@ -1,0 +1,29 @@
+@mixin frame($width, $color, $radius) {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  border-radius: $radius;
+
+  // Overlay the full-bleed image so rounded edges cannot expose a background seam.
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: $width solid $color;
+    border-radius: inherit;
+    pointer-events: none;
+    transition: border-color var(--global-duration-3) ease-out;
+  }
+
+  > img {
+    display: block;
+    object-fit: cover;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  &:hover,
+  &:focus {
+    opacity: 1;
+  }
+}
