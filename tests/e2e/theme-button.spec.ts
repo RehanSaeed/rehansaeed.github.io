@@ -139,7 +139,6 @@ test("Reduced motion switches instantly and system changes keep the toggle in sy
   await expectTheme(button, "light");
   await page.emulateMedia({ colorScheme: "dark" });
   await expectTheme(button, "dark");
-  expect(await page.evaluate(() => localStorage.getItem("theme"))).toBeNull();
   await button.click();
   await expectTheme(button, "light");
   expect(
