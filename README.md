@@ -23,6 +23,7 @@ and portfolio. Built with [Nuxt](https://nuxt.com), [Vue](https://vuejs.org) and
 Each post's social card uses its title and hero image. Listing and static pages
 use their own title with the default site hero. The cards share the current SVG
 avatar, `RehanSaeed.com` branding and the `Software Developer · Open Source` tagline.
+The title sits directly below the site name, with the author block at the bottom.
 
 After `npm run build`, run `npm run og:gallery` and open `.nuxt/og-images.html`
 to inspect every generated page's `og:image`, including unlisted pages. The

@@ -90,6 +90,16 @@ test("Rendered social cards use the post hero, title and current branding", asyn
   expect($.text()).toContain("Software Developer · Open Source");
   expect($.text()).not.toContain(".NET");
   expect($.text()).not.toContain("rehansaeed.com");
+  const branding = $("div").filter(
+    (_, element) => $(element).text().trim() === "RehanSaeed.com",
+  );
+  const heading = branding.parent();
+  expect(heading.children()).toHaveLength(2);
+  expect(branding.next().text().trim()).toBe(cssTitle);
+  expect(heading.css("flex-direction")).toBe("column");
+  expect(heading.css("gap")).toBe("24px");
+  expect(heading.next().text()).toContain(author);
+  expect(heading.parent().css("justify-content")).toBe("space-between");
 });
 
 test("The CSS article and other page types advertise distinct static social cards", async ({

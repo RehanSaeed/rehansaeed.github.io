@@ -37,16 +37,18 @@
         height: 100%;
         border-bottom: 12px solid #ccbdff;
       ">
-      <div style="display: flex; font-size: 24px; color: #ccbdff">
-        RehanSaeed.com
-      </div>
-      <div
-        :style="{
-          fontSize: `${title.length > 80 ? 42 : title.length > 50 ? 48 : 56}px`,
-          lineHeight: '1.25',
-          maxWidth: '1088px',
-        }">
-        {{ title }}
+      <div style="display: flex; flex-direction: column; gap: 24px">
+        <div style="display: flex; font-size: 24px; color: #ccbdff">
+          RehanSaeed.com
+        </div>
+        <div
+          :style="{
+            fontSize: `${title.length > 80 ? 42 : title.length > 50 ? 48 : 56}px`,
+            lineHeight: '1.25',
+            maxWidth: '1088px',
+          }">
+          {{ title }}
+        </div>
       </div>
       <div style="display: flex; align-items: center; gap: 20px">
         <img
