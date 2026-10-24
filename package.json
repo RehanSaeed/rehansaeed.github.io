@@ -23,7 +23,7 @@
   "dependencies": {
     "@fontsource/audiowide": "5.3.0",
     "@nuxt/content": "3.16.2",
-    "@nuxt/image": "2.1.0",
+    "@nuxt/image": "2.2.0",
     "@nuxt/scripts": "2.0.0-beta.16",
     "@nuxtjs/seo": "6.0.1",
     "@nuxtjs/sitemap": "9.1.0",
