@@ -225,8 +225,9 @@ test.describe("All-pages audit regressions", () => {
     page,
   }) => {
     await page.goto("/");
-    for (const selector of [".navigation__image", ".author__image"]) {
-      const image = page.locator(selector);
+    const images = page.locator(".navigation__image, .author__image");
+    expect(await images.count()).toBeGreaterThanOrEqual(2);
+    for (const image of await images.all()) {
       await expect(image).toHaveAttribute("src", /\/_ipx\/f_webp/);
       await expect
         .poll(() =>
