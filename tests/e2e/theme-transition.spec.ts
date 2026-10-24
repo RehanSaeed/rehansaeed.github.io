@@ -15,6 +15,23 @@ for (const initialTheme of ["light", "dark"] as const) {
       initialTheme === "light" ? "Enable dark theme" : "Enable light theme",
     );
 
+    await page.evaluate(async () => {
+      for (const arrow of document.querySelectorAll(".arrows__arrow")) {
+        getComputedStyle(arrow).getPropertyValue("background-color");
+        getComputedStyle(arrow, "::after").getPropertyValue("background-color");
+      }
+      await Promise.all(
+        document
+          .getAnimations()
+          .filter(
+            (animation) =>
+              animation instanceof CSSTransition &&
+              animation.transitionProperty === "background-color",
+          )
+          .map((animation) => animation.finished),
+      );
+    });
+
     const samples = await toggle.evaluate((button) => {
       const arrows = Array.from(document.querySelectorAll(".arrows__arrow"));
       const initialBackground = getComputedStyle(document.body).backgroundColor;
