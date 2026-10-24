@@ -82,6 +82,8 @@ test("Rendered social cards use the post hero, title and current branding", asyn
     ),
   );
   expect($("img").first().attr("src")).toBe(cssHero);
+  expect($("img").first().parent().children()).toHaveLength(2);
+  expect($('[style*="linear-gradient"]')).toHaveLength(0);
   expect($("img").last().attr("src")).toBe(
     "/images/author/Muhammad-Rehan-Saeed/Logo.svg",
   );
@@ -90,14 +92,24 @@ test("Rendered social cards use the post hero, title and current branding", asyn
   expect($.text()).not.toContain("Software Developer");
   expect($.text()).not.toContain(".NET");
   expect($.text()).not.toContain("rehansaeed.com");
-  const branding = $("div")
-    .filter((_, element) => $(element).text().trim() === "RehanSaeed.com")
-    .first();
-  const heading = branding.parent();
-  expect(heading.children()).toHaveLength(2);
-  expect(branding.next().text().trim()).toBe(cssTitle);
-  expect(heading.css("flex-direction")).toBe("column");
-  expect(heading.css("gap")).toBe("24px");
+  expect(
+    $("div").filter(
+      (_, element) => $(element).text().trim() === "RehanSaeed.com",
+    ),
+  ).toHaveLength(1);
+  const heading = $("div").filter(
+    (_, element) => $(element).text().trim() === cssTitle,
+  );
+  expect(heading).toHaveLength(1);
+  expect(heading.prev()).toHaveLength(0);
+  expect(heading.parent().children()).toHaveLength(2);
+  expect(heading.css("background")).toBe("#ffffff");
+  expect(heading.css("color")).toBe("#000000");
+  expect(heading.css("border-radius")).toBe("8px");
+  expect(heading.css("padding")).toBe("20px 24px");
+  expect(heading.css("max-width")).toBe("100%");
+  expect(heading.css("box-sizing")).toBe("border-box");
+  expect(heading.css("align-self")).toBe("flex-start");
   expect(heading.next().text()).toContain(author);
   expect(heading.parent().css("justify-content")).toBe("space-between");
   const panel = heading.next();

@@ -18,16 +18,6 @@
       style="position: absolute; inset: 0; object-fit: cover" />
     <div
       style="
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          180deg,
-          rgba(14, 41, 58, 0.55) 0%,
-          rgba(14, 41, 58, 0.92) 100%
-        );
-      " />
-    <div
-      style="
         position: relative;
         display: flex;
         flex-direction: column;
@@ -37,18 +27,21 @@
         height: 100%;
         border-bottom: 12px solid #ccbdff;
       ">
-      <div style="display: flex; flex-direction: column; gap: 24px">
-        <div style="display: flex; font-size: 24px; color: #ccbdff">
-          RehanSaeed.com
-        </div>
-        <div
-          :style="{
-            fontSize: `${title.length > 80 ? 42 : title.length > 50 ? 48 : 56}px`,
-            lineHeight: '1.25',
-            maxWidth: '1088px',
-          }">
-          {{ title }}
-        </div>
+      <div
+        style="
+          align-self: flex-start;
+          max-width: 100%;
+          box-sizing: border-box;
+          padding: 20px 24px;
+          border-radius: 8px;
+          background: #ffffff;
+          color: #000000;
+        "
+        :style="{
+          fontSize: `${title.length > 80 ? 42 : title.length > 50 ? 48 : 56}px`,
+          lineHeight: '1.25',
+        }">
+        {{ title }}
       </div>
       <div
         style="
