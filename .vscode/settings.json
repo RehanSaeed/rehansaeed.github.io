@@ -1,5 +1,4 @@
 {
   "editor.formatOnPaste": true,
-  "editor.formatOnSave": true,
-  "prettier.disableLanguages": ["markdown"]
+  "editor.formatOnSave": true
 }
