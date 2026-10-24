@@ -5,13 +5,17 @@ on:
   schedule:
     - cron: '00 23 * * 0'
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   build:
     name: calibreapp/image-actions
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v7.0.1
         with:
           lfs: true
       - name: Compress Images
@@ -31,6 +35,6 @@ jobs:
         uses: peter-evans/create-pull-request@v8.1.1
         with:
           title: Compressed Images Nightly
-          branch-suffix: timestamp
+          branch: automation/compress-images
           commit-message: Compressed Images
           body: ${{ steps.calibre.outputs.markdown }}
