@@ -56,6 +56,7 @@ jobs:
           restore-keys: |
             skew-${{ runner.os }}-
       - name: "NPM Build"
+        id: build
         run: npm run build
         env:
           TZ: UTC
@@ -82,13 +83,15 @@ jobs:
         env:
           TZ: UTC
       - name: "Lighthouse"
+        id: lighthouse
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         run: npm run lighthouse
         timeout-minutes: 20
         env:
           TZ: UTC
       - name: "Upload Lighthouse Reports"
         uses: actions/upload-artifact@v7.0.2
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.lighthouse.outcome != 'skipped' }}
         with:
           name: lighthouse-report
           path: |
