@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { load } from "cheerio";
 import { test as unitTest } from "@playwright/test";
+import sharp from "sharp";
 import { expect, test } from "./fixtures";
 import { readImageDimensions } from "../../modules/blog-content/images";
 import { rewriteRelativeImages } from "../../modules/blog-content/fields";
@@ -240,7 +241,9 @@ test.describe("All-pages audit regressions", () => {
       const response = await page.request.get(
         await image.evaluate((image: HTMLImageElement) => image.currentSrc),
       );
-      expect(response.headers()["content-type"]).toBe("image/webp");
+      expect((await sharp(await response.body()).metadata()).format).toBe(
+        "webp",
+      );
     }
   });
 
