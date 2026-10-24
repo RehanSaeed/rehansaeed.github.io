@@ -205,7 +205,9 @@ silent. The existing whole-blog PWA still precaches JavaScript chunks, including
 the lazy Howler chunk; lazy execution is not a promise of zero JS transfer.
 
 Run `npm test -- sound.spec.ts search.spec.ts` for focused
-coverage. Real-device Safari/iOS listening checks remain important for perceived
+coverage. Headless Linux Firefox needs an audio output; CI starts PulseAudio with
+a virtual sink so the tests exercise the real Web Audio APIs without speakers.
+Real-device Safari/iOS listening checks remain important for perceived
 volume, latency and gesture unlocking; the automated browser suite cannot judge
 how pleasant the samples sound.
 
