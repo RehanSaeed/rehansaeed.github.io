@@ -161,7 +161,9 @@ test("Plays one theme cue for mouse, Enter and Space, and mutes immediately", as
   await themeToggle(page).click();
   expect(await playback(page)).toHaveLength(3);
   await expect
-    .poll(() => page.evaluate(() => localStorage.getItem("ui-sound-enabled")))
+    .poll(() =>
+      page.evaluate(() => localStorage.getItem("sound-effect-enabled")),
+    )
     .toBe("false");
 });
 
@@ -428,7 +430,7 @@ test("Original samples are small, quiet mono WAVs with click-free endpoints", as
 test.describe("Sound runtime cache", () => {
   test.use({ serviceWorkers: "allow" });
 
-  test("Fetches no samples for muted users and reuses opted-in audio offline", async ({
+  test("Fetches no samples for muted users and caches an expanding palette offline", async ({
     page,
     context,
     browserName,
@@ -463,11 +465,49 @@ test.describe("Sound runtime cache", () => {
     expect(await cachedSounds()).toEqual([]);
     await enable(page);
     await expect.poll(cachedSounds).toHaveLength(4);
+    const originalSounds = await cachedSounds();
+    const futureSounds = [
+      "/sounds/v1/future-1.wav",
+      "/sounds/v1/future-2.wav",
+      "/sounds/v1/future-3.wav",
+      "/sounds/v2/future-4.wav",
+    ];
+    const sample = await readFile(
+      join("public", "sounds", "v1", "toggle-on.wav"),
+    );
+    const futurePattern = "**/sounds/v*/future-*.wav";
+    await context.route(futurePattern, (route) =>
+      route.fulfill({ contentType: "audio/wav", body: sample }),
+    );
+    const fetchFutureSounds = () =>
+      page.evaluate(
+        (paths) =>
+          Promise.all(
+            paths.map(async (path) => {
+              const response = await fetch(path);
+              return {
+                status: response.status,
+                bytes: (await response.arrayBuffer()).byteLength,
+              };
+            }),
+          ),
+        futureSounds,
+      );
+    const expectedResponses = futureSounds.map(() => ({
+      status: 200,
+      bytes: sample.length,
+    }));
+    expect(await fetchFutureSounds()).toEqual(expectedResponses);
+    await expect
+      .poll(cachedSounds)
+      .toEqual([...originalSounds, ...futureSounds].sort());
+    await context.unroute(futurePattern);
     await context.setOffline(true);
     await page.reload();
     await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "true");
     await ready(page);
     await themeToggle(page).click();
     await expect.poll(() => playback(page)).toHaveLength(1);
+    expect(await fetchFutureSounds()).toEqual(expectedResponses);
   });
 });
