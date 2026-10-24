@@ -61,11 +61,11 @@ export default {
   font-size: var(--global-font-size-4);
 
   &.button,
-  &.button--hydrating:disabled {
+  &.button.button--hydrating:disabled {
     color: var(--global-accent-color);
   }
 
-  &.button--hydrating:disabled {
+  &.button.button--hydrating:disabled {
     transform: none;
   }
 
