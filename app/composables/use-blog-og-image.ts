@@ -6,7 +6,7 @@ export function useBlogOgImage(
   author = useAppConfig().site.author.name,
 ) {
   return defineOgImage(
-    "Blog",
+    "BlogTakumi",
     { title, author, heroImage },
     { alt: `${title} - ${author}` },
   );

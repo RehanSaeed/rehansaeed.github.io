@@ -38,7 +38,7 @@
         border-bottom: 12px solid #ccbdff;
       ">
       <div style="display: flex; font-size: 24px; color: #ccbdff">
-        rehansaeed.com
+        RehanSaeed.com
       </div>
       <div
         :style="{
@@ -50,7 +50,7 @@
       </div>
       <div style="display: flex; align-items: center; gap: 20px">
         <img
-          src="/images/author/Muhammad-Rehan-Saeed/Logo-192x192.png"
+          src="/images/author/Muhammad-Rehan-Saeed/Logo.svg"
           alt=""
           width="64"
           height="64"
@@ -58,7 +58,7 @@
         <div style="display: flex; flex-direction: column; gap: 8px">
           <div style="font-size: 24px">{{ author }}</div>
           <div style="font-size: 16px; color: #ccbdff">
-            Software Developer · Open Source · .NET
+            Software Developer · Open Source
           </div>
         </div>
       </div>

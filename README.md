@@ -18,6 +18,20 @@ and portfolio. Built with [Nuxt](https://nuxt.com), [Vue](https://vuejs.org) and
 [Nuxt Content](https://content.nuxt.com). Published as a static site on
 [GitHub Pages](https://docs.github.com/en/pages).
 
+## Social image previews
+
+Each post's social card uses its title and hero image. Listing and static pages
+use their own title with the default site hero. The cards share the current SVG
+avatar, `RehanSaeed.com` branding and the `Software Developer · Open Source` tagline.
+
+After `npm run build`, run `npm run og:gallery` and open `.nuxt/og-images.html`
+to inspect every generated page's `og:image`, including unlisted pages. The
+searchable gallery embeds compact previews so it works offline, links to the
+full-size PNGs after deployment, and flags pages without a social image.
+Pass an output filename to save it elsewhere:
+`npm run og:gallery -- path/to/gallery.html`. The gallery is a local review
+artifact, not a published site page.
+
 ## Contributing
 
 Bug reports and improvements are welcome. Read the
