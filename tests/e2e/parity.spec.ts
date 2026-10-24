@@ -83,12 +83,33 @@ test.describe("Parity", () => {
     await page.emulateMedia({ colorScheme: "light" });
     await page.goto("/");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    expect(await page.evaluate(() => localStorage.getItem("theme"))).toBeNull();
 
     await page.emulateMedia({ colorScheme: "dark" });
 
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    expect(await page.evaluate(() => localStorage.getItem("theme"))).toBeNull();
+
+    for (const path of ["/about/", "/portfolio/", "/"]) {
+      await page.goto(path);
+      await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+      expect(
+        await page.evaluate(() => localStorage.getItem("theme")),
+      ).toBeNull();
+    }
+
+    await page.getByRole("button", { name: "Toggle dark/light" }).click();
+
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     expect(await page.evaluate(() => localStorage.getItem("theme"))).toBe(
-      "dark",
+      "light",
+    );
+
+    await page.reload();
+
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    expect(await page.evaluate(() => localStorage.getItem("theme"))).toBe(
+      "light",
     );
   });
 
