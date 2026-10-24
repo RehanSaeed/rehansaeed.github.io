@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { test as unitTest } from "@playwright/test";
+import { load } from "cheerio";
 import sharp from "sharp";
 import { parse as parseYaml } from "yaml";
 import { expect, test } from "./fixtures";
@@ -122,6 +123,75 @@ unitTest(
       }
     }
     expect(new Set(paths).size).toBe(1);
+  },
+);
+
+unitTest(
+  "The thumbnail logo fills its left-shoulder spot without changing the rest of the portrait",
+  async () => {
+    const source = await readFile(
+      join("app", "assets", "icons", "rehan.svg"),
+      "utf8",
+    );
+    const previous = source.replace(/\s*<rect\b[^>]*\/>/, "");
+    const portrait = source.match(/<path\b[^>]*\bd="([^"]+)"/)?.[1];
+    if (!portrait) throw new Error("The personal icon has no portrait path");
+    const spot = portrait.slice(portrait.lastIndexOf("M"));
+    const render = (svg: string) =>
+      sharp(Buffer.from(svg.replaceAll("currentColor", "#6b17e8")))
+        .resize(980, 980)
+        .ensureAlpha()
+        .raw()
+        .toBuffer();
+    const [pixels, original, mask] = await Promise.all([
+      render(source),
+      render(previous),
+      render(
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 245"><path d="${spot}" /></svg>`,
+      ),
+    ]);
+    const sample = (200 * 4 * 980 + 29 * 4) * 4;
+    expect(
+      original[sample + 3],
+      "The original shoulder spot is transparent",
+    ).toBe(0);
+    expect([...pixels.subarray(sample, sample + 4)]).toEqual([
+      107, 23, 232, 255,
+    ]);
+    let changed = 0;
+    for (let offset = 0; offset < pixels.length; offset += 4) {
+      if (
+        pixels
+          .subarray(offset, offset + 4)
+          .equals(original.subarray(offset, offset + 4))
+      ) {
+        continue;
+      }
+      expect(
+        mask[offset + 3],
+        "Only pixels in the original shoulder spot may change",
+      ).toBeGreaterThan(0);
+      expect([...pixels.subarray(offset, offset + 4)]).toEqual([
+        107, 23, 232, 255,
+      ]);
+      changed++;
+    }
+    expect(changed, "The shoulder spot is filled").toBeGreaterThan(0);
+
+    const $ = load(
+      await readFile(
+        join("dist", "streaming", "thumbnail", "index.html"),
+        "utf8",
+      ),
+    );
+    const logo = $(".thumbnail-logo svg")
+      .attr("width", "980")
+      .attr("height", "980");
+    expect(logo).toHaveLength(1);
+    const generated = await render(logo.toString());
+    expect([...generated.subarray(sample, sample + 4)]).toEqual([
+      107, 23, 232, 255,
+    ]);
   },
 );
 
