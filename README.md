@@ -90,12 +90,6 @@ Local badge PNGs retain their issue-year filenames and intrinsic dimensions.
 Preserve transparent outer canvases and enclosed light artwork when optimizing
 them, so both themes work without blend modes or color filters.
 
-The About portrait uses the supplied tall photo at 320x480. The author logos,
-PNG favicons and multi-resolution ICO use the supplied square photo, retaining
-their existing URLs and dimensions for navigation, bylines, social cards,
-structured data, search and installed-app icons. Photo exports omit EXIF/XMP
-metadata. The illustrated SVG logos and non-photo shortcut icons are unchanged.
-
 The original source-image Squoosh pass processed all 301 PNGs and 28 JPEGs locally,
 preserving formats, dimensions and alpha. It retained 78 originals when a
 candidate was larger or failed the quality guard and replaced 251 files,

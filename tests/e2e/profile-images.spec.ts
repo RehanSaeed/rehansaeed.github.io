@@ -8,6 +8,65 @@ const authorDirectory = "images/author/Muhammad-Rehan-Saeed";
 const iconSizes = [16, 48, 72, 96, 120, 128, 144, 152, 180, 192, 384, 512];
 
 unitTest(
+  "Purple avatars share a vector portrait with no embedded photo",
+  async () => {
+    const paths: string[] = [];
+    for (const filename of [
+      join("public", "favicon.svg"),
+      join("public", authorDirectory, "Logo.svg"),
+      join("app", "components", "shared", "icons", "icon-rehan.vue"),
+    ]) {
+      const source = await readFile(filename, "utf8");
+      const portrait = [...source.matchAll(/<path\b[^>]*\bd="([^"]+)"/g)].map(
+        (match) => match[1],
+      );
+      expect(portrait, filename).toHaveLength(2);
+      paths.push(JSON.stringify(portrait));
+      expect(source, filename).not.toMatch(/<image\b|data:image/);
+      const { data, info } = await sharp(
+        Buffer.from(
+          `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 245" width="245" height="245">${portrait.map((d) => `<path fill="#6b17e8" fill-rule="evenodd" d="${d}" />`).join("")}</svg>`,
+        ),
+      )
+        .ensureAlpha()
+        .raw()
+        .toBuffer({ resolveWithObject: true });
+      expect([info.width, info.height]).toEqual([245, 245]);
+      const filled = data.filter(
+        (value, index) => index % 4 === 3 && value === 255,
+      );
+      expect(filled.length).toBeGreaterThan(12_000);
+      expect(filled.length).toBeLessThan(30_000);
+      let earPixels = 0;
+      for (let y = 90; y < 123; y++) {
+        for (let x = 173; x < 181; x++) {
+          if (data[(y * info.width + x) * 4 + 3] > 127) earPixels++;
+        }
+      }
+      expect(earPixels, `${filename}: restored ear contour`).toBeGreaterThan(
+        25,
+      );
+    }
+    expect(new Set(paths).size).toBe(1);
+  },
+);
+
+unitTest(
+  "The purple SVG favicon follows the browser color scheme",
+  async ({ page }) => {
+    const favicon = await readFile(join("public", "favicon.svg"), "utf8");
+    await page.setContent(favicon);
+    for (const [colorScheme, color] of [
+      ["light", "rgb(107, 23, 232)"],
+      ["dark", "rgb(204, 189, 255)"],
+    ] as const) {
+      await page.emulateMedia({ colorScheme });
+      await expect(page.locator(".favicon-container")).toHaveCSS("fill", color);
+    }
+  },
+);
+
+unitTest(
   "Profile photos retain their published dimensions without metadata",
   async () => {
     const images = [
