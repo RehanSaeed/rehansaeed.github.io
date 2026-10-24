@@ -9,7 +9,7 @@
       aria-label="Dismiss site update"
       :disabled="updating"
       @click="dismissed = true">
-      <u-icon-close :size="20" />
+      <NuxtIcon name="feather:x" aria-hidden="true" />
     </u-button>
     <p class="site-update__message" role="status">
       {{ error || "A new version is available. Update when you are ready." }}
@@ -30,9 +30,9 @@
 </template>
 
 <script setup lang="ts">
+import { NuxtIcon } from "#components";
 import { registerSW } from "virtual:pwa-register";
 import UButton from "~/components/shared/button.vue";
-import UIconClose from "~/components/shared/icons/icon-close.vue";
 
 const available = ref(false);
 const dismissed = ref(false);

@@ -397,11 +397,30 @@ tests. Intentional HTML-rendering sinks have local, explained rule exceptions.
 Type checking still uses TypeScript 6's JavaScript compiler API through `vue-tsc`;
 Vue Language Tools' draft v4/TypeScript 7.1 content-mapper work has no stable ETA.
 
-Nuxt Icon is not added solely for performance: the existing inline SVGs already
-avoid external requests. The visual comparison retains all 25 originals and
-adds 27 stock alternatives for the non-exact/custom rows, including multiple
-choices where appropriate. Generic account symbols are not substitutes for the
-personal logo's branding. Moving to an icon module is still a separate decision.
+All application icons use `@nuxt/icon` in SVG mode. Font Awesome and Feather
+collections supply the standard icons; Material Symbols supplies the install
+action and Simple Icons supplies the monochrome Buy Me a Coffee brand. The
+personal logo remains original artwork in `app/assets/icons/rehan.svg`, loaded
+through the same component as `blog:rehan`. The four unused comment, heart,
+external-link and repost components were removed with the old icon factory.
+
+`nuxt.config.ts` explicitly bundles the 21 used icons, including both theme states
+and icons initially hidden in dialogs. Local collection packages are build-time
+dependencies; neither entire collections nor an icon server are deployed.
+`provider: "none"` disables runtime fetching, so initial HTML, client navigation,
+dialogs and the PWA all work without Iconify requests. Add any new icon to
+`icon.clientBundle.icons`; the 48 kB uncompressed limit guards the icon bundle.
+This is a maintenance simplification, not a claim that a module outperforms the
+previous inline SVGs. Stock shapes and native padding intentionally replace
+the older customized artwork.
+Artwork attribution and applicable license texts are deployed as
+[`icon-licenses.txt`](public/icon-licenses.txt).
+
+`npm run test:chrome -- tests/e2e/icons.spec.ts` covers every icon-bearing area,
+both themes, mobile/desktop layouts, generated SVG markup and offline interactions.
+Set `ICON_SCREENSHOTS_DIR` to an output directory to capture those same areas
+for a visual comparison. External responses are stubbed and time is fixed so
+the captures are repeatable.
 
 Color Mode is also not installed without approval. It can replace the custom
 bootstrap, globals/listeners and most theme-button state. Those sections currently
@@ -450,7 +469,7 @@ Remaining release work, excluding manual code review:
 
 1. Finish exact-head build, type, lint, browser, visual, 408-route parity and
    real-worker/two-build checks; require the GitHub build to pass.
-2. Keep the unavailable original CSS work deferred as agreed; icon/Color Mode
+2. Keep the unavailable original CSS work deferred as agreed; Color Mode
    migrations are separate optional follow-ups, not cutover prerequisites.
 3. Approve the Pages source cutover, retain the recorded legacy rollback revision,
    and preserve the custom domain/DNS. Merge/deploy only when authorized.

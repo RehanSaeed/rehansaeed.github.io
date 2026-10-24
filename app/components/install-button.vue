@@ -4,13 +4,13 @@
     class="install-button"
     aria-label="Install the app"
     @click.prevent="onInstall">
-    <u-icon-add-home />
+    <NuxtIcon name="material-symbols:install-desktop" aria-hidden="true" />
   </u-button>
 </template>
 
 <script>
+import { NuxtIcon } from "#components";
 import button from "~/components/shared/button.vue";
-import iconAddHome from "~/components/shared/icons/icon-add-home.vue";
 import {
   pwaInstallPromoShown,
   pwaInstallPromoClicked,
@@ -22,8 +22,8 @@ import {
 export default {
   name: "u-install-button",
   components: {
+    NuxtIcon,
     "u-button": button,
-    "u-icon-add-home": iconAddHome,
   },
   data() {
     return {

@@ -11,7 +11,7 @@
       }}</u-heading>
       <form class="dialog__form" method="dialog">
         <u-button :aria-label="`Close ${title}`" class="dialog__close" submit>
-          <u-icon-close :size="24" />
+          <NuxtIcon name="feather:x" aria-hidden="true" />
         </u-button>
       </form>
       <div class="dialog__content">
@@ -22,17 +22,17 @@
 </template>
 
 <script>
+import { NuxtIcon } from "#components";
 import { useId } from "vue";
 import button from "~/components/shared/button.vue";
 import heading from "~/components/shared/heading.vue";
-import iconClose from "~/components/shared/icons/icon-close.vue";
 
 export default {
   name: "u-dialogue",
   components: {
+    NuxtIcon,
     "u-button": button,
     "u-heading": heading,
-    "u-icon-close": iconClose,
   },
   emits: ["close"],
   setup() {

@@ -11,48 +11,58 @@
         bordered
         label="Patreon"
         :href="metadata.author.patreon.url">
-        <u-icon-patreon inline /> Patreon
+        <NuxtIcon
+          name="fa-brands:patreon"
+          class="icon--inline"
+          aria-hidden="true" />
+        Patreon
       </u-link-button>
       <u-link-button
         v-if="metadata.author.buyMeACoffee.url"
         bordered
         label="Buy me a Coffee"
         :href="metadata.author.buyMeACoffee.url">
-        <u-icon-coffee inline /> Buy me a Coffee
+        <NuxtIcon
+          name="simple-icons:buymeacoffee"
+          class="icon--inline"
+          aria-hidden="true" />
+        Buy me a Coffee
       </u-link-button>
       <u-link-button
         v-if="metadata.author.gitHub.sponsorsUrl"
         bordered
         label="GitHub Sponsors"
         :href="metadata.author.gitHub.sponsorsUrl">
-        <u-icon-github inline /> GitHub Sponsors
+        <NuxtIcon
+          name="fa-brands:github"
+          class="icon--inline"
+          aria-hidden="true" />
+        GitHub Sponsors
       </u-link-button>
       <u-link-button
         v-if="metadata.author.paypal.url"
         bordered
         label="Paypal"
         :href="metadata.author.paypal.url">
-        <u-icon-paypal inline /> Paypal
+        <NuxtIcon
+          name="fa-brands:paypal"
+          class="icon--inline"
+          aria-hidden="true" />
+        Paypal
       </u-link-button>
     </div>
   </div>
 </template>
 
 <script>
+import { NuxtIcon } from "#components";
 import linkButton from "~/components/shared/link-button.vue";
-import iconCoffee from "~/components/shared/icons/icon-coffee.vue";
-import iconGitHub from "~/components/shared/icons/icon-github.vue";
-import iconPatreon from "~/components/shared/icons/icon-patreon.vue";
-import iconPaypal from "~/components/shared/icons/icon-paypal.vue";
 
 export default {
   name: "u-support-links",
   components: {
+    NuxtIcon,
     "u-link-button": linkButton,
-    "u-icon-coffee": iconCoffee,
-    "u-icon-github": iconGitHub,
-    "u-icon-patreon": iconPatreon,
-    "u-icon-paypal": iconPaypal,
   },
   setup() {
     return { metadata: useAppConfig().site };

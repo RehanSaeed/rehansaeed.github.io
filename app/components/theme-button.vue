@@ -3,23 +3,29 @@
     class="theme-button"
     aria-label="Toggle dark/light"
     @click.prevent="onToggleTheme">
-    <u-icon-sun v-if="darkTheme" title="Enable light theme" />
-    <u-icon-moon v-else title="Enable dark theme" />
+    <NuxtIcon
+      v-if="darkTheme"
+      name="feather:sun"
+      title="Enable light theme"
+      aria-hidden="true" />
+    <NuxtIcon
+      v-else
+      name="feather:moon"
+      title="Enable dark theme"
+      aria-hidden="true" />
   </u-button>
 </template>
 
 <script>
+import { NuxtIcon } from "#components";
 import button from "~/components/shared/button.vue";
-import iconMoon from "~/components/shared/icons/icon-moon.vue";
-import iconSun from "~/components/shared/icons/icon-sun.vue";
 import { appThemeChanged, appThemeLoaded } from "~/framework/analytics";
 
 export default {
   name: "u-theme-button",
   components: {
+    NuxtIcon,
     "u-button": button,
-    "u-icon-moon": iconMoon,
-    "u-icon-sun": iconSun,
   },
   data() {
     return {
