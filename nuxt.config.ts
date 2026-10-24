@@ -69,6 +69,12 @@ export default defineNuxtConfig({
     },
   },
 
+  vite: {
+    // Lightning CSS drops non-leading legal comments after styles are combined.
+    build: { cssMinify: "esbuild" },
+    esbuild: { legalComments: "inline" },
+  },
+
   fonts: {
     provider: "npm",
     families: [

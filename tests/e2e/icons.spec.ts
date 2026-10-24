@@ -107,7 +107,7 @@ test("Icon artwork credits ship in styles without a separate notices file", asyn
     "Lucide Icons and Contributors",
     "ISC License",
   ]) {
-    expect(shippedStyles).toContain(credit);
+    expect(shippedStyles.includes(credit), credit).toBe(true);
   }
   expect((await request.get("/icon-licenses.txt")).status()).toBe(404);
 });
