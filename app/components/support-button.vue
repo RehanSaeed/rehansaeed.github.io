@@ -1,7 +1,7 @@
 <template>
   <div>
     <u-button bordered @click="onClick">
-      <NuxtIcon name="blog:coffee" class="icon--inline" aria-hidden="true" />
+      <u-icon name="blog:coffee" inline />
       Buy me a Coffee
     </u-button>
 
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { NuxtIcon } from "#components";
+import icon from "~/components/shared/icon.vue";
 import button from "~/components/shared/button.vue";
 import dialogue from "~/components/shared/dialogue.vue";
 import supportLinks from "~/components/support-links.vue";
@@ -23,7 +23,7 @@ import supportLinks from "~/components/support-links.vue";
 export default {
   name: "u-support-button",
   components: {
-    NuxtIcon,
+    "u-icon": icon,
     "u-button": button,
     "u-dialogue": dialogue,
     "u-support-links": supportLinks,

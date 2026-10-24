@@ -82,6 +82,29 @@ test("Icons are prerendered SVGs with real artwork, including closed dialogs", a
   }
 });
 
+test("Shared icons encapsulate inline styling and decorative defaults", async ({
+  page,
+}) => {
+  await page.goto(post);
+  await ready(page);
+  const share = page.getByRole("button", { name: "Share", exact: true });
+  const inlineIcon = share.locator("svg.icon");
+  await expect(inlineIcon).toHaveCSS("display", "inline");
+  await expect(inlineIcon).toHaveAttribute("aria-hidden", "true");
+  await expect(inlineIcon).not.toHaveAttribute("inline");
+  await expect(page.locator(".theme-button svg.icon")).toHaveCSS(
+    "display",
+    "block",
+  );
+
+  await page.goto("/streaming/thumbnail/");
+  await ready(page);
+  const logo = page.locator(".thumbnail-logo svg.icon");
+  await expect(logo).toHaveCSS("inline-size", "150px");
+  await expect(logo).toHaveCSS("block-size", "150px");
+  await expect(logo).toHaveAttribute("aria-hidden", "true");
+});
+
 test("System theme changes do not save an explicit preference", async ({
   page,
 }) => {

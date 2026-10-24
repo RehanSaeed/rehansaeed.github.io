@@ -4,7 +4,7 @@
       class="search-button"
       aria-label="Open search"
       @click.prevent="onOpen">
-      <NuxtIcon v-if="!isOpen" name="feather:search" aria-hidden="true" />
+      <u-icon v-if="!isOpen" name="feather:search" />
     </u-button>
 
     <u-dialogue
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { NuxtIcon } from "#components";
+import icon from "~/components/shared/icon.vue";
 import button from "~/components/shared/button.vue";
 import dialogue from "~/components/shared/dialogue.vue";
 import search from "~/components/search/search.vue";
@@ -35,7 +35,7 @@ import {
 export default {
   name: "u-search-button",
   components: {
-    NuxtIcon,
+    "u-icon": icon,
     "u-button": button,
     "u-dialogue": dialogue,
     "u-search": search,
