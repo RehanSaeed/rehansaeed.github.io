@@ -6,11 +6,95 @@ import sharp from "sharp";
 import { expect, test } from "./fixtures";
 import { readImageDimensions } from "../../modules/blog-content/images";
 import { rewriteRelativeImages } from "../../modules/blog-content/fields";
+import { rehypeHeadingAnchors } from "../../modules/blog-content/markdown";
 
 const pricingPath =
   "/pluralsight-vs-linkedin-learning-vs-frontendmasters-vs-egghead-io-vs-youtube/";
 
 test.describe("All-pages audit regressions", () => {
+  unitTest(
+    "Heading permalinks have accessible names and decorative icons",
+    () => {
+      const tree: Parameters<ReturnType<typeof rehypeHeadingAnchors>>[0] = {
+        type: "root",
+        children: [
+          {
+            type: "element",
+            tagName: "h2",
+            properties: { id: "being-short" },
+            children: [
+              { type: "text", value: "Being " },
+              {
+                type: "element",
+                tagName: "em",
+                children: [{ type: "text", value: "Short" }],
+              },
+            ],
+          },
+        ],
+      };
+      rehypeHeadingAnchors()(tree);
+      const anchor = tree.children![0]!.children![0]!;
+      expect(anchor.properties).toEqual({
+        href: "#being-short",
+        className: ["heading-anchor"],
+        "aria-label": "Link to Being Short",
+      });
+      expect(anchor.children![0]!.properties?.["aria-hidden"]).toBe("true");
+    },
+  );
+
+  unitTest(
+    "Above-fold page images are prioritized and badges reserve space",
+    () => {
+      const about = load(
+        readFileSync(
+          join(process.cwd(), "dist", "about", "index.html"),
+          "utf8",
+        ),
+      );
+      expect(about(".about__image").attr("loading")).toBe("eager");
+      expect(about(".about__image").attr("fetchpriority")).toBe("high");
+      expect(about(".about__stack-overflow-image").attr("src")).toBe(
+        "https://img.shields.io/stackexchange/stackoverflow/r/1212017?style=social&logo=stackoverflow",
+      );
+      const portfolio = load(
+        readFileSync(
+          join(process.cwd(), "dist", "portfolio", "index.html"),
+          "utf8",
+        ),
+      );
+      const heroes = portfolio(".portfolio-card__image");
+      expect(heroes.length).toBeGreaterThan(2);
+      heroes.each((index, element) => {
+        expect(portfolio(element).attr("loading")).toBe(
+          index < 2 ? "eager" : "lazy",
+        );
+        expect(portfolio(element).attr("fetchpriority")).toBe(
+          index < 2 ? "high" : undefined,
+        );
+      });
+      const badges = portfolio(".portfolio-card__badge");
+      expect(badges.length).toBeGreaterThan(0);
+      badges.each((_, element) => {
+        expect(Number(portfolio(element).attr("width"))).toBeGreaterThan(0);
+        expect(Number(portfolio(element).attr("height"))).toBeGreaterThan(0);
+      });
+    },
+  );
+
+  test("Article permalinks remain visible and named on keyboard focus", async ({
+    page,
+  }) => {
+    await page.goto("/on-the-etiquette-of-pull-request-comments/");
+    const anchor = page.locator(".heading-anchor").first();
+    await expect(anchor).toHaveAccessibleName(/^Link to .+/);
+    await expect(anchor).not.toHaveAttribute("aria-hidden");
+    await anchor.focus();
+    await expect(anchor).toHaveCSS("opacity", "1");
+    await expect(anchor).toBeFocused();
+  });
+
   unitTest(
     "Math CSS is included on article pages rather than in the shared entry stylesheet",
     () => {

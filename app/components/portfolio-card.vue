@@ -18,7 +18,8 @@
         :height="imageMeta.height"
         :sizes="contentImageSizes"
         densities="x1 x2"
-        loading="lazy" />
+        :loading="priority ? 'eager' : 'lazy'"
+        :fetchpriority="priority ? 'high' : undefined" />
     </figure>
     <div class="portfolio-card__content">
       <u-heading
@@ -51,6 +52,7 @@
                 class="portfolio-card__badge portfolio-card__downloads"
                 :alt="`${pkg.id}: ${pkg.downloads} total NuGet downloads at last build`"
                 height="30"
+                width="200"
                 loading="lazy"
                 :src="`https://img.shields.io/nuget/dt/${pkg.id}?style=social&logo=nuget&label=${encodeURIComponent(pkg.id)}`" />
             </a>
@@ -65,6 +67,7 @@
                 class="portfolio-card__badge portfolio-card__stars"
                 :alt="`${portfolio.title}: ${portfolio.stars} GitHub stars at last build`"
                 height="30"
+                width="135"
                 loading="lazy"
                 :src="`https://img.shields.io/github/stars/${portfolio.repository}?style=social`" />
             </a>
@@ -77,6 +80,7 @@
                 class="portfolio-card__badge portfolio-card__forks"
                 :alt="`${portfolio.title}: ${portfolio.forks} GitHub forks at last build`"
                 height="30"
+                width="135"
                 loading="lazy"
                 :src="`https://img.shields.io/github/forks/${portfolio.repository}?style=social`" />
             </a>
@@ -100,6 +104,10 @@ import { contentImageSizes } from "#shared/utils/images";
 export default {
   name: "u-portfolio-card",
   props: {
+    priority: {
+      type: Boolean,
+      default: false,
+    },
     portfolio: {
       required: true,
       type: Object,
