@@ -8,11 +8,11 @@
 
 If you want to use this code for your own blog, you can do so but with proper attribution. I spent a non-trivial amount of effort building and designing this iteration of my website, and I am proud of it! All I ask of you all is to not claim this effort as your own.
 
-# Fluid Typography Investigation
+## Fluid Typography
 
 CSS `progress(value, start, end)` returns a unitless ratio, clamped between `0` and `1`. It makes fluid typography easier to express as `minimum + progress * (maximum - minimum)`. All three arguments must have compatible types: `100vw`, `500px`, and `1000px` are all lengths.
 
-## A Fluid Base and Type Scale
+### A Fluid Base and Type Scale
 
 The following example interpolates both the base font size and the ratio between steps of a modular type scale:
 
@@ -53,37 +53,40 @@ Each heading step multiplies the base by another scale factor. Changing the rati
 
 This standalone example leaves the root font size unchanged and applies the fluid base to `body`. Do not also apply the same base to the root while reusing it in headings: the `rem` terms would then resolve against the already-scaled root. Relative font units help preserve user font preferences, but page zoom, text enlargement, wrapping, and clipping still need accessibility checks.
 
-## Applying It to This Site
+### Implementation in This Site
 
-The site already has fluid typography:
+The site progressively enhances its existing fluid typography:
 
-- [`fluid-type()`](src/assets/style/abstracts/_type.scss) generates a minimum, a fluid calculation, and a maximum using media queries.
-- [`_properties.scss`](src/assets/style/_properties.scss) sets `--global-font-size-default` from `1em` to `1.25em` between viewport widths of `36em` and `100em`. With the default `16px` browser font, that means `16px` to `20px` between `576px` and `1600px`.
-- [`_root.scss`](src/assets/style/dom/_root.scss) applies that token to the root font size. Existing heading and component tokens scale with it.
+- [`_properties.scss`](app/assets/style/_properties.scss) retains the existing `clamp()` calculation as a fallback. A real-property `@supports` guard selects `progress()` in supporting browsers.
+- The enhanced calculation reuses the minimum/maximum font-size tokens and the `sm`/`xxl` Sass breakpoints. It scales from `1em` to `1.25em` between viewport widths of `36em` and `100em`. With the default `16px` browser font, that means `16px` to `20px` between `576px` and `1600px`.
+- [`_root.scss`](app/assets/style/dom/_root.scss) applies that token to the root font size. `em` lengths in this root `font-size` calculation resolve against the browser's initial font size, preserving the existing behavior when readers enlarge their default font.
 
-A behavior-preserving first adoption would retain the existing Sass output as a fallback, then add this override after it:
+The resulting CSS enhancement is equivalent to:
 
 ```css
 @supports (font-size: calc(1em * progress(100vw, 36em, 100em))) {
   :root {
     --global-font-size-default: calc(
-      1em + 0.25em * progress(100vw, 36em, 100em)
+      var(--global-font-size-minimum) +
+        progress(100vw, 36em, 100em) *
+        (var(--global-font-size-maximum) - var(--global-font-size-minimum))
     );
   }
 }
 ```
 
-Keep the current heading multipliers unless a visual redesign is intended. The shared Sass mixin also generates fluid spacing; leave that use unchanged rather than assuming the typography override should replace every mixin call. These examples are proposals only; this investigation does not change production styles.
+Heading multipliers, compact-card sizing and the separate fluid-spacing `clamp()` are unchanged. The standalone modular-scale example above is explanatory, not applied to the site: varying the heading-to-body ratio would be a separate visual redesign.
 
-## Compatibility and Checks
+### Compatibility and Checks
 
 As checked on 22 October 2026, MDN's browser compatibility data lists support for `progress()` in Chrome and Edge 138+, Firefox 155+, and Safari 26+. Retain a fallback for older browsers.
 
 Feature-detect a real property, as in the examples, not an unregistered custom property such as `@supports (--fluid: progress(...))`. Custom properties accept tokens for unsupported functions, so that test does not establish support. An unsupported function substituted through `var()` can invalidate the consuming declaration at computed-value time; an earlier declaration is not a reliable fallback without the support guard.
 
-Isolated browser checks in Edge 155 confirmed matching root and heading sizes for the existing Sass calculation and the proposed override at eight viewport widths from `320px` to `1920px`. The modular-scale example was checked below, within, and above its range, with both `16px` and `32px` root sizes. Chrome 137, which does not support `progress()`, retained the existing Sass fallback at five viewport widths. These checks do not constitute a full-site zoom or accessibility audit.
+[`fluid-typography.spec.ts`](tests/e2e/fluid-typography.spec.ts) checks the generated site below, at, between and above both breakpoints, including adjacent one-pixel widths. It verifies the active token, root and heading sizes, unchanged spacing, and parity with the original `clamp()`. Removing the enhancement's support rules exercises the fallback even in supporting browsers. Chromium also runs these checks with a `32px` browser-default font. These checks do not constitute a full-site zoom or accessibility audit.
 
 References: [MDN `progress()`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/progress), [MDN browser compatibility data](https://github.com/mdn/browser-compat-data/blob/main/css/types/progress.json), and [CSS Values and Units Level 5](https://drafts.csswg.org/css-values-5/#progress).
+
 ## Development
 
 Use Node.js 24.15 or later in the 24.x LTS line, or Node.js 26+. Run `npm ci`, then `npm run dev`. Before pushing, run
@@ -311,9 +314,10 @@ with the real measurement ID.
 
 ### Typography and SEO
 
-Native `clamp()` replaces the fluid SCSS mixin while keeping the existing
-16–20px root typography and spacing endpoints. Responsive type remains relative
-to the user's default font size. Pagination has self-referencing canonicals;
+Native `progress()` enhances the root typography while keeping the existing
+16–20px range and `clamp()` fallback; spacing keeps its independent `clamp()`.
+Responsive type remains relative to the user's default font size.
+Pagination has self-referencing canonicals;
 The Nuxt SEO suite owns Robots, Sitemap, Schema.org, SEO Utils, Link Checker,
 AI Ready and Skew Protection. OG Image uses Takumi to prerender branded
 1200x630 PNG cards with the existing hero, title and author. There is no
