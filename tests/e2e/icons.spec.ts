@@ -82,6 +82,36 @@ test("Icons are prerendered SVGs with real artwork, including closed dialogs", a
   }
 });
 
+test("Icon artwork credits ship in styles without a separate notices file", async ({
+  request,
+}) => {
+  const response = await request.get("/");
+  expect(response.ok()).toBe(true);
+  const $ = load(await response.text());
+  const styles = $("style")
+    .toArray()
+    .map((element) => $(element).html() ?? "");
+  for (const element of $("link[rel=stylesheet]").toArray()) {
+    const href = $(element).attr("href");
+    if (!href) throw new Error("Stylesheet link has no href");
+    const stylesheet = await request.get(href);
+    expect(stylesheet.ok(), href).toBe(true);
+    styles.push(await stylesheet.text());
+  }
+  const shippedStyles = styles.join("\n");
+  for (const credit of [
+    "Font Awesome 5",
+    "https://creativecommons.org/licenses/by/4.0/",
+    "Cole Bemis",
+    "Permission is hereby granted",
+    "Lucide Icons and Contributors",
+    "ISC License",
+  ]) {
+    expect(shippedStyles).toContain(credit);
+  }
+  expect((await request.get("/icon-licenses.txt")).status()).toBe(404);
+});
+
 test("Shared icons encapsulate inline styling and decorative defaults", async ({
   page,
 }) => {
