@@ -11,6 +11,29 @@ const pricingPath =
 
 test.describe("All-pages audit regressions", () => {
   unitTest(
+    "Math CSS is included on article pages rather than in the shared entry stylesheet",
+    () => {
+      const home = load(
+        readFileSync(join(process.cwd(), "dist", "index.html"), "utf8"),
+      );
+      const article = load(
+        readFileSync(
+          join(process.cwd(), "dist", "cheat-sheet", "index.html"),
+          "utf8",
+        ),
+      );
+      const sharedStyles = home('link[rel="stylesheet"]')
+        .map((_, element) => home(element).attr("href")!)
+        .get()
+        .map((path) => readFileSync(join(process.cwd(), "dist", path), "utf8"))
+        .join("");
+      expect(sharedStyles).not.toContain(".katex");
+      expect(home("style").text()).not.toContain(".katex");
+      expect(article("style").text()).toContain(".katex");
+    },
+  );
+
+  unitTest(
     "Reads real dimensions rather than trusting hero filenames",
     async () => {
       for (const [name, expected] of [
@@ -159,13 +182,13 @@ test.describe("All-pages audit regressions", () => {
     });
   }
 
-  for (const deviceScaleFactor of [1, 2]) {
+  for (const deviceScaleFactor of [1, 1.75, 2]) {
     test.describe(`Responsive images at ${deviceScaleFactor}x density`, () => {
       test.use({ deviceScaleFactor });
       test("Selects sufficient pixels for fluid cards across viewport sizes", async ({
         page,
       }) => {
-        for (const width of [375, 1280, 1600, 1920]) {
+        for (const width of [375, 412, 1280, 1600, 1920]) {
           await page.setViewportSize({ width, height: 800 });
           await page.goto("/");
           const image = page.locator(".post-card__image").first();
@@ -185,7 +208,10 @@ test.describe("All-pages audit regressions", () => {
                 );
                 const pixels = bitmap.width;
                 bitmap.close();
-                return pixels >= required - 1;
+                return (
+                  pixels >= required - 1 &&
+                  (window.innerWidth > 480 || pixels <= required * 1.5)
+                );
               }),
             )
             .toBe(true);
@@ -193,6 +219,30 @@ test.describe("All-pages audit regressions", () => {
       });
     });
   }
+
+  test("Shared profile images use WebP without changing their shape", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    for (const selector of [".navigation__image", ".author__image"]) {
+      const image = page.locator(selector);
+      await expect(image).toHaveAttribute("src", /\/_ipx\/f_webp/);
+      await expect
+        .poll(() =>
+          image.evaluate(
+            (image: HTMLImageElement) =>
+              image.complete &&
+              image.naturalWidth > 0 &&
+              image.naturalWidth === image.naturalHeight,
+          ),
+        )
+        .toBe(true);
+      const response = await page.request.get(
+        await image.evaluate((image: HTMLImageElement) => image.currentSrc),
+      );
+      expect(response.headers()["content-type"]).toBe("image/webp");
+    }
+  });
 
   test("A delayed Markdown image does not grow after decoding", async ({
     page,

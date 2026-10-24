@@ -127,7 +127,13 @@ export default defineNuxtConfig({
     llmsFullTxt: true,
     sitemapMd: true,
     describedby: true,
-    contentSignal: { search: true, aiInput: true, aiTrain: true },
+    contentSignal: {
+      search: true,
+      aiInput: true,
+      aiTrain: true,
+      // Content-Signal carries the same opt-in without the obsolete Content-Usage directive.
+      contentUsage: false,
+    },
   },
 
   skewProtection: {
@@ -256,8 +262,7 @@ export default defineNuxtConfig({
   // prose overrides are auto-registered.
   components: [{ path: "~/components/content", global: true }],
 
-  // Global, as in Gridsome's main.js, so rehype-katex output is styled on every page.
-  css: ["~/assets/style/index.scss", "katex/dist/katex.min.css"],
+  css: ["~/assets/style/index.scss"],
 
   app: {
     head: {
