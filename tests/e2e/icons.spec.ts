@@ -246,6 +246,11 @@ test.describe("Icon areas", () => {
         test.setTimeout(90_000);
         await page.setViewportSize(viewport);
         await page.emulateMedia({ colorScheme });
+        // Icon comparisons must not depend on automatic-theme persistence.
+        await page.addInitScript(
+          (theme) => localStorage.setItem("theme", theme),
+          colorScheme,
+        );
         const shot = async (name: string, target?: Locator) => {
           await expect(page.locator("html")).toHaveAttribute(
             "data-theme",
