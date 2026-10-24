@@ -15,7 +15,7 @@ h6 {
   text-wrap: balance;
   transition: color var(--global-duration-3);
 
-  a[aria-hidden="true"] {
+  a.heading-anchor {
     color: var(--global-link-color);
     float: left; // Remove when browser support is good enough.
     float: inline-start;
@@ -35,7 +35,7 @@ h6 {
 
   &:hover,
   &:focus {
-    a[aria-hidden="true"] {
+    a.heading-anchor {
       color: var(--global-link-color);
       opacity: 1;
       text-decoration: none;
@@ -43,7 +43,7 @@ h6 {
     }
   }
 
-  a[aria-hidden="true"]:focus {
+  a.heading-anchor:focus {
     color: var(--global-link-color);
     opacity: 1;
     text-decoration: none;

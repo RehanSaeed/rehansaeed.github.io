@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import "katex/dist/katex.min.css";
 import card from "~/components/shared/card.vue";
 import editPostButton from "~/components/edit-post-button.vue";
 import shareButton from "~/components/share-button.vue";

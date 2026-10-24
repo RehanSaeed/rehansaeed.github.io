@@ -4,4 +4,5 @@ export interface ImageDimensions {
 }
 
 // Conservatively covers the full-bleed images in the capped, fluid content column.
-export const contentImageSizes = "sm:100vw lg:1280px";
+export const contentImageSizes =
+  "320:100vw 480:100vw sm:100vw md:100vw lg:1280px";

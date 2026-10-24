@@ -2,14 +2,122 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { load } from "cheerio";
 import { test as unitTest } from "@playwright/test";
+import sharp from "sharp";
 import { expect, test } from "./fixtures";
 import { readImageDimensions } from "../../modules/blog-content/images";
 import { rewriteRelativeImages } from "../../modules/blog-content/fields";
+import { rehypeHeadingAnchors } from "../../modules/blog-content/markdown";
 
 const pricingPath =
   "/pluralsight-vs-linkedin-learning-vs-frontendmasters-vs-egghead-io-vs-youtube/";
 
 test.describe("All-pages audit regressions", () => {
+  unitTest(
+    "Heading permalinks have accessible names and decorative icons",
+    () => {
+      const tree: Parameters<ReturnType<typeof rehypeHeadingAnchors>>[0] = {
+        type: "root",
+        children: [
+          {
+            type: "element",
+            tagName: "h2",
+            properties: { id: "being-short" },
+            children: [
+              { type: "text", value: "Being " },
+              {
+                type: "element",
+                tagName: "em",
+                children: [{ type: "text", value: "Short" }],
+              },
+            ],
+          },
+        ],
+      };
+      rehypeHeadingAnchors()(tree);
+      const anchor = tree.children![0]!.children![0]!;
+      expect(anchor.properties).toEqual({
+        href: "#being-short",
+        className: ["heading-anchor"],
+        "aria-label": "Link to Being Short",
+      });
+      expect(anchor.children![0]!.properties?.["aria-hidden"]).toBe("true");
+    },
+  );
+
+  unitTest(
+    "Above-fold page images are prioritized and badges reserve space",
+    () => {
+      const about = load(
+        readFileSync(
+          join(process.cwd(), "dist", "about", "index.html"),
+          "utf8",
+        ),
+      );
+      expect(about(".about__image").attr("loading")).toBe("eager");
+      expect(about(".about__image").attr("fetchpriority")).toBe("high");
+      expect(about(".about__stack-overflow-image").attr("src")).toBe(
+        "https://img.shields.io/stackexchange/stackoverflow/r/1212017?style=social&logo=stackoverflow",
+      );
+      const portfolio = load(
+        readFileSync(
+          join(process.cwd(), "dist", "portfolio", "index.html"),
+          "utf8",
+        ),
+      );
+      const heroes = portfolio(".portfolio-card__image");
+      expect(heroes.length).toBeGreaterThan(2);
+      heroes.each((index, element) => {
+        expect(portfolio(element).attr("loading")).toBe(
+          index < 2 ? "eager" : "lazy",
+        );
+        expect(portfolio(element).attr("fetchpriority")).toBe(
+          index < 2 ? "high" : undefined,
+        );
+      });
+      const badges = portfolio(".portfolio-card__badge");
+      expect(badges.length).toBeGreaterThan(0);
+      badges.each((_, element) => {
+        expect(Number(portfolio(element).attr("width"))).toBeGreaterThan(0);
+        expect(Number(portfolio(element).attr("height"))).toBeGreaterThan(0);
+      });
+    },
+  );
+
+  test("Article permalinks remain visible and named on keyboard focus", async ({
+    page,
+  }) => {
+    await page.goto("/on-the-etiquette-of-pull-request-comments/");
+    const anchor = page.locator(".heading-anchor").first();
+    await expect(anchor).toHaveAccessibleName(/^Link to .+/);
+    await expect(anchor).not.toHaveAttribute("aria-hidden");
+    await anchor.focus();
+    await expect(anchor).toHaveCSS("opacity", "1");
+    await expect(anchor).toBeFocused();
+  });
+
+  unitTest(
+    "Math CSS is included on article pages rather than in the shared entry stylesheet",
+    () => {
+      const home = load(
+        readFileSync(join(process.cwd(), "dist", "index.html"), "utf8"),
+      );
+      const article = load(
+        readFileSync(
+          join(process.cwd(), "dist", "cheat-sheet", "index.html"),
+          "utf8",
+        ),
+      );
+      const sharedStyles = home('link[rel="stylesheet"]')
+        .map((_, element) => home(element).attr("href")!)
+        .get()
+        .map((path) => readFileSync(join(process.cwd(), "dist", path), "utf8"))
+        .join("");
+      expect(sharedStyles).not.toContain(".katex");
+      expect(home("style").text()).not.toContain(".katex");
+      expect(article("style").text()).toContain(".katex");
+    },
+  );
+
   unitTest(
     "Reads real dimensions rather than trusting hero filenames",
     async () => {
@@ -159,13 +267,13 @@ test.describe("All-pages audit regressions", () => {
     });
   }
 
-  for (const deviceScaleFactor of [1, 2]) {
+  for (const deviceScaleFactor of [1, 1.75, 2]) {
     test.describe(`Responsive images at ${deviceScaleFactor}x density`, () => {
       test.use({ deviceScaleFactor });
       test("Selects sufficient pixels for fluid cards across viewport sizes", async ({
         page,
       }) => {
-        for (const width of [375, 1280, 1600, 1920]) {
+        for (const width of [375, 412, 1280, 1600, 1920]) {
           await page.setViewportSize({ width, height: 800 });
           await page.goto("/");
           const image = page.locator(".post-card__image").first();
@@ -185,7 +293,10 @@ test.describe("All-pages audit regressions", () => {
                 );
                 const pixels = bitmap.width;
                 bitmap.close();
-                return pixels >= required - 1;
+                return (
+                  pixels >= required - 1 &&
+                  (window.innerWidth > 480 || pixels <= required * 1.5)
+                );
               }),
             )
             .toBe(true);
@@ -193,6 +304,33 @@ test.describe("All-pages audit regressions", () => {
       });
     });
   }
+
+  test("Shared profile images use WebP without changing their shape", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const images = page.locator(".navigation__image, .author__image");
+    expect(await images.count()).toBeGreaterThanOrEqual(2);
+    for (const image of await images.all()) {
+      await expect(image).toHaveAttribute("src", /\/_ipx\/f_webp/);
+      await expect
+        .poll(() =>
+          image.evaluate(
+            (image: HTMLImageElement) =>
+              image.complete &&
+              image.naturalWidth > 0 &&
+              image.naturalWidth === image.naturalHeight,
+          ),
+        )
+        .toBe(true);
+      const response = await page.request.get(
+        await image.evaluate((image: HTMLImageElement) => image.currentSrc),
+      );
+      expect((await sharp(await response.body()).metadata()).format).toBe(
+        "webp",
+      );
+    }
+  });
 
   test("A delayed Markdown image does not grow after decoding", async ({
     page,

@@ -381,7 +381,11 @@ export function rehypeHeadingAnchors() {
         {
           type: "element",
           tagName: "a",
-          properties: { href: `#${id}`, "aria-hidden": "true" },
+          properties: {
+            href: `#${id}`,
+            className: ["heading-anchor"],
+            "aria-label": `Link to ${mdastText(node)}`,
+          },
           children: [structuredClone(anchorIcon)],
         },
         ...(node.children ?? []),

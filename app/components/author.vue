@@ -7,7 +7,8 @@
       loading="eager"
       src="/images/author/Muhammad-Rehan-Saeed/Logo-192x192.png"
       width="120"
-      height="120" />
+      height="120"
+      format="webp" />
 
     <u-heading
       :id="headingId || metadata.name"

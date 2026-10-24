@@ -6,7 +6,8 @@
         class="navigation__image"
         src="/images/author/Muhammad-Rehan-Saeed/Logo-192x192.png"
         width="50"
-        height="50" />
+        height="50"
+        format="webp" />
     </u-link-button>
     <div class="navigation__items-left">
       <u-link-button class="navigation__item" to="/" :aria-current="blogPage"

@@ -130,6 +130,9 @@ for (const width of [375, 1280]) {
       await page.setViewportSize({ width, height: 900 });
       await page.emulateMedia({ colorScheme });
       await page.goto("/about/");
+      const wideBadge = page.locator(".about__badge-image--wide");
+      await expect(wideBadge).toHaveCSS("width", "175px");
+      await expect(wideBadge).toHaveCSS("height", "150px");
       await expect(
         page
           .locator(".about__description")

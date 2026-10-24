@@ -16,6 +16,8 @@
         height="480"
         width="320"
         src="/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg"
+        loading="eager"
+        fetchpriority="high"
         quality="100" />
       <u-heading :id="metadata.author.name" level="2" class="about__title">{{
         metadata.author.name
@@ -207,9 +209,9 @@
       <a :href="stackOverflowUrl">
         <img
           class="about__stack-overflow-image"
-          alt="Stack Overflow profile statistics"
-          height="58"
-          width="208"
+          alt="Stack Overflow reputation"
+          height="20"
+          width="194"
           :src="stackOverflowProfileUrl" />
       </a>
       <p class="about__description">
@@ -304,7 +306,7 @@ export default {
       return this.metadata.author.stackOverflow.url;
     },
     stackOverflowProfileUrl() {
-      return `https://stackoverflow.com/users/flair/${this.metadata.author.stackOverflow.user}.png?theme=${this.oppositeTheme}`;
+      return `https://img.shields.io/stackexchange/stackoverflow/r/${this.metadata.author.stackOverflow.user}?style=social&logo=stackoverflow`;
     },
     gitHubUrl() {
       return this.metadata.author.gitHub.url;
@@ -348,9 +350,6 @@ export default {
     },
     youtubeSubscribersImageUrl() {
       return this.youtubeBadgeImageUrl("subscriberCount", "Subscribers");
-    },
-    oppositeTheme() {
-      return this.theme === "light" ? "dark" : "light";
     },
   },
   methods: {
@@ -442,8 +441,8 @@ export default {
   border-radius: var(--global-border-radius);
   display: block;
   margin-block-end: var(--global-space-fixed-5);
-  inline-size: 208px;
-  block-size: 58px;
+  inline-size: auto;
+  block-size: 30px;
 }
 
 .about__mvp-images {
@@ -466,7 +465,7 @@ export default {
   block-size: 150px;
 }
 .about__badge-image--wide {
-  inline-size: 180px;
+  inline-size: 175px;
 }
 
 .about_awards-images {

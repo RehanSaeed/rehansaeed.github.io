@@ -67,6 +67,11 @@
     "vue-tsc": "3.3.13",
     "yaml": "2.9.1"
   },
+  "overrides": {
+    "@lhci/cli": {
+      "lighthouse": "13.5.0"
+    }
+  },
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt generate && node scripts/pages.mjs artifact && npm run seo:verify",
