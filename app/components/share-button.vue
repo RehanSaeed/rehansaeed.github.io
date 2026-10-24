@@ -40,7 +40,7 @@
 export default {
   name: "u-share-button",
   setup() {
-    return { metadata: useAppConfig().site };
+    return { metadata: useAppConfig().site, playSound: useUiSound().play };
   },
   data() {
     return {
@@ -123,6 +123,7 @@ export default {
         this.share();
       } else {
         this.open();
+        this.playSound("dialog-open");
       }
     },
   },

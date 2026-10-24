@@ -27,6 +27,9 @@ export default {
       darkTheme: false,
     };
   },
+  setup() {
+    return { playSound: useUiSound().play };
+  },
   computed: {
     theme() {
       return this.darkTheme ? "dark" : "light";
@@ -43,6 +46,7 @@ export default {
       window.__setPreferredTheme(this.theme);
 
       appThemeChanged(this.theme);
+      this.playSound(this.darkTheme ? "toggle-on" : "toggle-off");
     },
   },
   mounted() {

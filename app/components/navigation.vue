@@ -29,6 +29,7 @@
       >
     </div>
     <div class="navigation__items-right">
+      <u-sound-button class="navigation__sound" />
       <u-search-button class="navigation__search" />
       <u-theme-button class="navigation__toggle-theme" />
       <u-install-button class="navigation__install" />
@@ -124,6 +125,7 @@ export default {
 }
 
 .navigation__search,
+.navigation__sound,
 .navigation__toggle-theme,
 .navigation__install {
   visibility: visible;

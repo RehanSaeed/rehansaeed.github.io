@@ -5,7 +5,7 @@
         v-bind="trigger"
         class="search-button"
         aria-label="Open search"
-        @click.prevent="onOpen">
+        @click.prevent="onOpenClick">
         <u-icon name="feather:search" />
       </u-button>
     </u-tooltip>
@@ -38,7 +38,14 @@ export default {
       isOpen: false,
     };
   },
+  setup() {
+    return { playSound: useUiSound().play };
+  },
   methods: {
+    onOpenClick() {
+      this.onOpen();
+      this.playSound("dialog-open");
+    },
     onOpen() {
       this.isOpen = true;
       searchOpened();
