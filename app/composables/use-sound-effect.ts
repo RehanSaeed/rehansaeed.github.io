@@ -1,10 +1,16 @@
-export type SoundEffect =
-  "toggle-on" | "toggle-off" | "dialog-open" | "dialog-close";
+export const soundNames = [
+  "toggle-on",
+  "toggle-off",
+  "dialog-open",
+  "dialog-close",
+] as const;
+
+export type SoundEffect = (typeof soundNames)[number];
 
 export function useSoundEffect() {
   const app = useNuxtApp();
-  const enabled = useState("ui-sound-enabled", () => false);
-  const error = useState("ui-sound-error", () => "");
+  const enabled = useState("sound-effect-enabled", () => false);
+  const error = useState("sound-effect-error", () => "");
 
   return {
     enabled: readonly(enabled),

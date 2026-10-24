@@ -318,15 +318,12 @@ export default defineNuxtConfig({
       runtimeCaching: [
         {
           urlPattern: ({ url, sameOrigin }) =>
-            sameOrigin &&
-            /^\/sounds\/v1\/(?:toggle-on|toggle-off|dialog-open|dialog-close)\.wav$/.test(
-              url.pathname,
-            ),
+            sameOrigin && /^\/sounds\/v\d+\/[^/]+\.wav$/.test(url.pathname),
           handler: "CacheFirst",
           options: {
             cacheName: "ui-sounds-v1",
             cacheableResponse: { statuses: [200] },
-            expiration: { maxEntries: 4, maxAgeSeconds: 60 * 60 * 24 * 365 },
+            expiration: { maxAgeSeconds: 60 * 60 * 24 * 365 },
           },
         },
       ],

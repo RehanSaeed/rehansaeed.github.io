@@ -1,17 +1,11 @@
 import type { Howl } from "howler";
-import type { SoundEffect } from "~/composables/use-sound-effect";
+import { soundNames, type SoundEffect } from "~/composables/use-sound-effect";
 
-const preferenceKey = "ui-sound-enabled";
-const soundNames: SoundEffect[] = [
-  "toggle-on",
-  "toggle-off",
-  "dialog-open",
-  "dialog-close",
-];
+const preferenceKey = "sound-effect-enabled";
 
 export default defineNuxtPlugin((app) => {
-  const enabled = useState("ui-sound-enabled", () => false);
-  const error = useState("ui-sound-error", () => "");
+  const enabled = useState("sound-effect-enabled", () => false);
+  const error = useState("sound-effect-error", () => "");
   const sounds = new Map<SoundEffect, Howl>();
   let engine: typeof import("howler") | undefined;
   let loading: Promise<void> | undefined;
