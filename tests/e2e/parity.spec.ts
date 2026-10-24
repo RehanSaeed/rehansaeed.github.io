@@ -80,16 +80,30 @@ test.describe("Parity", () => {
   });
 
   test("Theme follows the OS colour scheme", async ({ page }) => {
+    const theme = page.locator("html");
     await page.emulateMedia({ colorScheme: "light" });
     await page.goto("/");
-    await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+    await expect(theme).toHaveAttribute("data-theme", "light");
 
     await page.emulateMedia({ colorScheme: "dark" });
+    await expect(theme).toHaveAttribute("data-theme", "dark");
+    expect(await page.evaluate(() => localStorage.getItem("theme"))).toBeNull();
 
-    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    for (const path of ["/about/", "/streaming/thumbnail/", "/"]) {
+      await page.goto(path);
+      await expect(theme).toHaveAttribute("data-theme", "dark");
+      expect(
+        await page.evaluate(() => localStorage.getItem("theme")),
+      ).toBeNull();
+    }
+
+    await page.getByRole("button", { name: "Toggle dark/light" }).click();
+    await expect(theme).toHaveAttribute("data-theme", "light");
     expect(await page.evaluate(() => localStorage.getItem("theme"))).toBe(
-      "dark",
+      "light",
     );
+    await page.reload();
+    await expect(theme).toHaveAttribute("data-theme", "light");
   });
 
   test("Stored theme is applied before first paint", async ({ page }) => {
