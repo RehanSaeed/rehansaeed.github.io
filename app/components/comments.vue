@@ -117,6 +117,7 @@ async function refresh() {
 </script>
 
 <style lang="scss">
+@use "~/assets/style/abstracts/avatar";
 @use "~/assets/style/abstracts/type";
 
 .comments {
@@ -319,14 +320,16 @@ async function refresh() {
 
 // Comment Avatar
 .vssue-comment-avatar {
-  grid-area: avatar;
+  @include avatar.frame(
+    var(--global-border-width-1),
+    var(--global-border-color),
+    var(--global-border-radius)
+  );
 
-  img {
-    border: var(--global-border-width-1) solid var(--global-border-color);
-    border-radius: var(--global-border-radius);
-    inline-size: var(--global-space-fixed-6);
-    block-size: var(--global-space-fixed-6);
-  }
+  grid-area: avatar;
+  align-self: start;
+  inline-size: var(--global-space-fixed-6);
+  block-size: var(--global-space-fixed-6);
 }
 
 // Comment Edit
