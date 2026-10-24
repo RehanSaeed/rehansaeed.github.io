@@ -173,6 +173,7 @@ export default defineNuxtConfig({
       lang: site.language,
       dir: "ltr",
       start_url: "/",
+      scope: "/",
       display: "minimal-ui",
       theme_color: "#6b17e8",
       background_color: "#f2f4f7",
@@ -192,11 +193,26 @@ export default defineNuxtConfig({
           purpose: "maskable",
         },
       ],
-      screenshots: [1, 2, 3].map((index) => ({
-        src: `/images/screenshots/screenshot${index}-1172x1820.png`,
-        sizes: "1172x1820",
-        type: "image/png",
-      })),
+      screenshots: [
+        { page: "blog", label: "Read the latest software engineering posts" },
+        { page: "portfolio", label: "Explore open-source projects" },
+        { page: "about", label: "About Muhammad Rehan Saeed" },
+      ].flatMap(({ page, label }) => [
+        {
+          src: `/images/screenshots/${page}-wide.png`,
+          sizes: "1440x900",
+          type: "image/png",
+          form_factor: "wide" as const,
+          label,
+        },
+        {
+          src: `/images/screenshots/${page}-narrow.png`,
+          sizes: "390x844",
+          type: "image/png",
+          form_factor: "narrow" as const,
+          label,
+        },
+      ]),
       shortcuts: [
         {
           name: "Blog",
