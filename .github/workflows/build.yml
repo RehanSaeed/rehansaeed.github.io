@@ -129,7 +129,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout verification scripts
-        uses: actions/checkout@v4.3.1
+        uses: actions/checkout@v4.4.0
       - name: "Setup Node"
         uses: actions/setup-node@v4.4.0
         with:
