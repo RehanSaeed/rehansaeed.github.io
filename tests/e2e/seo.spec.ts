@@ -185,6 +185,35 @@ test("Later preserves client navigation after a deployment and asset failures us
   expect(documentNavigations).toBe(0);
 });
 
+test("Update now reloads and clears the deployment notice when service workers are blocked", async ({
+  page,
+  baseURL,
+}) => {
+  await page.route(
+    (url) => url.origin !== new URL(baseURL!).origin,
+    (route) => route.fulfill({ contentType: "text/plain", body: "" }),
+  );
+  await page.goto("/about/");
+  await announceUpdate(page);
+  const notice = page.getByRole("region", { name: "Site update" });
+  await expect(notice).toBeVisible();
+  let documentNavigations = 0;
+  page.on("request", (request) => {
+    if (request.isNavigationRequest() && request.frame() === page.mainFrame())
+      documentNavigations++;
+  });
+  await Promise.all([
+    page.waitForEvent("framenavigated", {
+      predicate: (frame) => frame === page.mainFrame(),
+    }),
+    notice.getByRole("button", { name: "Update now", exact: true }).click(),
+  ]);
+  await page.waitForLoadState("networkidle");
+  await expect(notice).toHaveCount(0);
+  await expect(page).toHaveURL(/\/about\/$/);
+  expect(documentNavigations).toBe(1);
+});
+
 for (const width of [320, 375, 1280]) {
   for (const colorScheme of ["light", "dark"] as const) {
     test(`Update notice is compact, nonmodal and dismissible at ${width}px in ${colorScheme} mode`, async ({

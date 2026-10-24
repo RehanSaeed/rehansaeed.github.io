@@ -108,11 +108,19 @@ async function update() {
   error.value = "";
   try {
     if (workerChanged || !("serviceWorker" in navigator)) return reload();
+    registration ??= await navigator.serviceWorker.getRegistration();
     if (!registration) {
-      throw new Error("The service worker has not registered yet.");
+      if (!navigator.onLine) {
+        throw new Error("The site cannot be refreshed while offline.");
+      }
+      return reload();
     }
-    await registration.update();
-    if (registration.installing) await waitForInstall(registration.installing);
+    if (!registration.waiting) {
+      await registration.update();
+      if (registration.installing)
+        await waitForInstall(registration.installing);
+    }
+    if (workerChanged) return reload();
     if (registration.waiting) {
       activationTimer = setTimeout(
         () => reportError(new Error("Service worker activation timed out.")),
@@ -122,10 +130,9 @@ async function update() {
         type: "SKIP_WAITING",
         readerApproved: true,
       });
-    } else if (workerChanged || !navigator.serviceWorker.controller) {
-      reload();
     } else {
-      throw new Error("The deployment is visible but its worker is not ready.");
+      // Deployment/chunk notices do not require a new worker, and another tab may have activated it.
+      reload();
     }
   } catch (cause) {
     reportError(cause);

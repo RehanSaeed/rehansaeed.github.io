@@ -25,6 +25,15 @@ Bug reports and improvements are welcome. Read the
 [code of conduct](./.github/CODE_OF_CONDUCT.md) before opening an
 [issue](https://github.com/RehanSaeed/rehansaeed.github.io/issues) or pull request.
 
+## Site updates
+
+The update notice lets readers choose when to refresh. **Update now** activates
+an already-downloaded service worker, even offline, or checks for an update and
+reloads when no worker is waiting. Browsers without a registered worker refresh
+normally when online. Failed downloads or activation remain visible and can be
+retried; **Later** and the close button keep the current page without reloading.
+An update activated in another tab does not automatically reload this tab.
+
 ## Profile photo exports
 
 Regenerate the portrait, square avatars, PNG app icons and ICO favicon from the
