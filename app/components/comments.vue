@@ -10,20 +10,22 @@
         >GitHub Comments</u-heading
       >
       <div class="vssue">
-        <div class="comments__toolbar">
-          <h3 class="comments__count">
-            {{ current.comments.length }}
-            {{ current.comments.length === 1 ? "Comment" : "Comments" }}
-          </h3>
-          <u-link-button class="comments__github" bordered :href="issueUrl">
-            <u-icon name="fa-brands:github" inline aria-hidden="true" />
-            Comment on GitHub
-          </u-link-button>
+        <div class="comments__header">
+          <div class="comments__toolbar">
+            <h3 class="comments__count">
+              {{ current.comments.length }}
+              {{ current.comments.length === 1 ? "Comment" : "Comments" }}
+            </h3>
+            <u-link-button class="comments__github" bordered :href="issueUrl">
+              <u-icon name="fa-brands:github" inline aria-hidden="true" />
+              Comment on GitHub
+            </u-link-button>
+          </div>
+          <p v-if="unavailable" role="status">
+            Live comments unavailable; showing saved comments. You can view the
+            latest on GitHub.
+          </p>
         </div>
-        <p v-if="unavailable" role="status">
-          Live comments unavailable; showing saved comments. You can view the
-          latest on GitHub.
-        </p>
         <div class="vssue-comments">
           <article
             v-for="comment in current.comments"
@@ -85,7 +87,11 @@
                   role="img"
                   :aria-label="`${reaction.label}: ${reaction.count}`"
                   :title="`${reaction.label}: ${reaction.count}`">
-                  <span aria-hidden="true">{{ reaction.emoji }}</span>
+                  <span
+                    class="vssue-comment-reaction-emoji"
+                    aria-hidden="true"
+                    >{{ reaction.emoji }}</span
+                  >
                   <span
                     class="vssue-comment-reaction-count"
                     aria-hidden="true"
@@ -170,15 +176,24 @@ async function refresh() {
   min-inline-size: 0;
 }
 
+.comments__header {
+  display: grid;
+  gap: var(--global-space-fixed-4);
+  padding-block-end: var(--global-space-fixed-4);
+  border-block-end: var(--global-border-width-1) solid
+    var(--global-border-color);
+}
+
+.comments__header p {
+  margin: 0;
+}
+
 .comments__toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--global-space-fixed-2);
-  padding-block-end: var(--global-space-fixed-4);
-  border-block-end: var(--global-border-width-1) solid
-    var(--global-border-color);
 }
 
 .comments__count {
@@ -234,9 +249,9 @@ async function refresh() {
 }
 
 .comments__github {
-  flex: 1;
+  flex: none;
   min-inline-size: 0;
-  max-inline-size: max-content;
+  max-inline-size: 100%;
   margin-inline-start: auto;
   text-align: center;
 
@@ -274,8 +289,16 @@ async function refresh() {
   gap: var(--global-space-fixed-2);
 }
 
+.vssue-comment-reaction-emoji {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1em;
+  block-size: 1em;
+  flex: none;
+}
+
 .vssue-comment-reaction-count {
-  font-family: var(--font-heading);
   font-variant-numeric: tabular-nums;
 }
 </style>

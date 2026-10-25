@@ -104,6 +104,22 @@ test.describe("Migration completion", () => {
     await expect(page.locator(".comments [role=status]")).toContainText(
       "showing saved comments",
     );
+    const layout = await page
+      .locator(".comments__header")
+      .evaluate((header) => {
+        const toolbar = header.querySelector(".comments__toolbar")!;
+        const status = header.querySelector("[role=status]")!;
+        return {
+          toolbarBottom: toolbar.getBoundingClientRect().bottom,
+          statusTop: status.getBoundingClientRect().top,
+          statusBottom: status.getBoundingClientRect().bottom,
+          dividerTop:
+            header.getBoundingClientRect().bottom -
+            Number.parseFloat(getComputedStyle(header).borderBottomWidth),
+        };
+      });
+    expect(layout.statusTop).toBeGreaterThan(layout.toolbarBottom);
+    expect(layout.statusBottom).toBeLessThan(layout.dividerTop);
     await expect(page.locator(".vssue-comment")).toHaveCount(count);
   });
 

@@ -147,6 +147,30 @@ test.describe("GitHub comments", () => {
           reactionCountFont: getComputedStyle(
             element.querySelector(".vssue-comment-reaction-count")!,
           ).fontFamily,
+          bodyFontFamily: getComputedStyle(body).fontFamily,
+          reactions: Array.from(
+            element.querySelectorAll(".vssue-comment-reaction"),
+            (reaction) => {
+              const emoji = reaction.querySelector(
+                ".vssue-comment-reaction-emoji",
+              )!;
+              const count = reaction.querySelector(
+                ".vssue-comment-reaction-count",
+              )!;
+              const emojiBounds = emoji.getBoundingClientRect();
+              const countBounds = count.getBoundingClientRect();
+              return {
+                emojiSize: getComputedStyle(emoji).fontSize,
+                countSize: getComputedStyle(count).fontSize,
+                centerDifference: Math.abs(
+                  emojiBounds.top +
+                    emojiBounds.height / 2 -
+                    countBounds.top -
+                    countBounds.height / 2,
+                ),
+              };
+            },
+          ),
           repliesTypography: typography(
             document.querySelector(".webmentions__reply-count")!,
           ),
@@ -164,9 +188,13 @@ test.describe("GitHub comments", () => {
         };
       });
       expect(layout.rightGap).toBeLessThan(2);
-      expect(layout.inline).toBe(true);
+      expect(layout.inline).toBe(width === 1280);
       expect(layout.countTypography).toEqual(layout.repliesTypography);
-      expect(layout.reactionCountFont).toBe(layout.countTypography.fontFamily);
+      expect(layout.reactionCountFont).toBe(layout.bodyFontFamily);
+      for (const reaction of layout.reactions) {
+        expect(reaction.emojiSize).toBe(reaction.countSize);
+        expect(reaction.centerDifference).toBeLessThanOrEqual(1);
+      }
       expect(parseFloat(layout.timestampFont)).toBeLessThan(
         parseFloat(layout.bodyFont),
       );
@@ -217,7 +245,7 @@ test.describe("GitHub comments", () => {
   });
 
   for (const count of [0, 6]) {
-    test(`Keeps the shared GitHub action inline with ${count} comments on mobile`, async ({
+    test(`Wraps the shared GitHub action below ${count} comments on mobile`, async ({
       page,
     }) => {
       await page.setViewportSize({ width: 375, height: 900 });
@@ -237,7 +265,7 @@ test.describe("GitHub comments", () => {
       await expect(label).toHaveText(`${count} Comments`);
       await expect(link).toHaveCount(1);
       await expect(link).toHaveAttribute("href", /issues\/607$/);
-      const inline = await page
+      const belowCount = await page
         .locator(".comments__toolbar")
         .evaluate((toolbar) => {
           const labelBounds = toolbar
@@ -246,12 +274,9 @@ test.describe("GitHub comments", () => {
           const linkBounds = toolbar
             .querySelector(".comments__github")!
             .getBoundingClientRect();
-          return (
-            labelBounds.top < linkBounds.bottom &&
-            linkBounds.top < labelBounds.bottom
-          );
+          return linkBounds.top >= labelBounds.bottom;
         });
-      expect(inline).toBe(true);
+      expect(belowCount).toBe(true);
     });
   }
 
