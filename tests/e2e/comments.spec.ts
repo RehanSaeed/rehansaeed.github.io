@@ -351,6 +351,13 @@ test.describe("GitHub comments", () => {
             accent,
             badgeBackground: getComputedStyle(badge).backgroundColor,
             badgeBorderColor: getComputedStyle(badge).borderTopColor,
+            badgesArePills: Array.from(
+              element.querySelectorAll(".badge"),
+            ).every(
+              (badge) =>
+                parseFloat(getComputedStyle(badge).borderTopLeftRadius) >=
+                badge.getBoundingClientRect().height / 2,
+            ),
           };
         });
         expect(layout.nameDateGap).toBeLessThanOrEqual(1);
@@ -370,6 +377,7 @@ test.describe("GitHub comments", () => {
         expect(layout.badgeColor).toBe(layout.accent);
         expect(layout.badgeBackground).toBe("rgba(0, 0, 0, 0)");
         expect(layout.badgeBorderColor).toBe(layout.accent);
+        expect(layout.badgesArePills).toBe(true);
       }
     });
   }

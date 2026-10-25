@@ -12,7 +12,7 @@ defineOptions({ name: "u-badge" });
   align-items: center;
   padding: var(--global-space-fixed-1) var(--global-space-fixed-2);
   border: var(--global-border-width-1) solid currentColor;
-  border-radius: var(--global-border-radius);
+  border-radius: 999px;
   color: var(--global-accent-color);
   background-color: transparent;
   font-size: var(--global-font-size-1);
