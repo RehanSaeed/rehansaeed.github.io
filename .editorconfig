@@ -15,7 +15,7 @@ indent_size = 2
 indent_size = 2
 trim_trailing_whitespace = false
 
-[*.{htm,html,js,jsm,ts,tsx,css,sass,scss,less,svg,vue}]
+[*.{htm,html,js,jsm,mjs,ts,tsx,css,sass,scss,less,svg,vue}]
 indent_size = 2
 
 [*.{cmd,bat}]
