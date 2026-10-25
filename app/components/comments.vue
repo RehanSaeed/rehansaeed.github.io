@@ -28,7 +28,7 @@
         </div>
       </header>
       <div class="comments__list">
-        <u-github-comment
+        <u-comment
           v-for="comment in current.comments"
           :key="comment.id"
           :comment="comment" />

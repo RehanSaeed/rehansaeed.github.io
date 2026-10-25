@@ -1,59 +1,56 @@
 <template>
   <article
-    :id="`github-comment-${comment.id}`"
-    class="github-comment"
-    :class="{ 'github-comment--without-avatar': !comment.user }"
-    :aria-labelledby="`github-comment-author-${comment.id}`">
+    :id="`comment-${comment.id}`"
+    class="comment"
+    :class="{ 'comment--without-avatar': !comment.user }"
+    :aria-labelledby="`comment-author-${comment.id}`">
     <u-avatar
       v-if="comment.user"
-      class="github-comment__avatar"
+      class="comment__avatar"
       :href="comment.user.html_url"
       :label="comment.user.login"
       :alt="comment.user.login"
       :src="comment.user.avatar_url"
       loading="lazy" />
-    <div class="github-comment__body">
-      <header class="github-comment__header">
-        <div class="github-comment__identity">
+    <div class="comment__body">
+      <header class="comment__header">
+        <div class="comment__identity">
           <u-heading
-            :id="`github-comment-author-${comment.id}`"
-            class="github-comment__author"
+            :id="`comment-author-${comment.id}`"
+            class="comment__author"
             :href="comment.user?.html_url ?? comment.html_url"
             level="3"
             size="6"
             >{{ comment.user?.login ?? "Deleted user" }}</u-heading
           >
-          <u-badge v-if="association" class="github-comment__association">{{
+          <u-badge v-if="association" class="comment__association">{{
             association
           }}</u-badge>
         </div>
-        <div class="github-comment__timestamp">
+        <div class="comment__timestamp">
           <u-time :datetime="comment.created_at" />
-          <span v-if="edited" class="github-comment__edited">
+          <span v-if="edited" class="comment__edited">
             (edited <u-time :datetime="edited" />)
           </span>
         </div>
       </header>
       <!-- eslint-disable-next-line vue/no-v-html -- safeComment sanitizes both saved and refreshed GitHub markup. -->
-      <div class="github-comment__content" v-html="comment.body_html" />
-      <footer v-if="reactions.length" class="github-comment__footer">
-        <ul
-          class="github-comment__reactions"
-          aria-label="Reactions"
-          role="list">
+      <div class="comment__content" v-html="comment.body_html" />
+      <footer v-if="reactions.length" class="comment__footer">
+        <ul class="comment__reactions" aria-label="Reactions" role="list">
           <li
             v-for="reaction in reactions"
             :key="reaction.name"
-            class="github-comment__reaction-item">
+            class="comment__reaction-item">
             <u-badge
-              class="github-comment__reaction"
+              class="comment__reaction"
               role="img"
               :aria-label="`${reaction.label}: ${reaction.count}`"
               :title="`${reaction.label}: ${reaction.count}`">
-              <span class="github-comment__reaction-emoji" aria-hidden="true">{{
+              <span class="comment__reaction-emoji" aria-hidden="true">{{
                 reaction.emoji
               }}</span>
-              <span class="github-comment__reaction-count" aria-hidden="true">{{
+              <span class="comment__reaction-count" aria-hidden="true">{{
                 reaction.count
               }}</span>
             </u-badge>
@@ -86,7 +83,7 @@ const edited = computed(() =>
 <style lang="scss">
 @use "~/assets/style/abstracts/type";
 
-.github-comment {
+.comment {
   display: grid;
   column-gap: var(--global-space-fixed-4);
   grid-template-columns: auto minmax(0, 1fr);
@@ -96,29 +93,29 @@ const edited = computed(() =>
   @include type.word-wrap();
 }
 
-.github-comment--without-avatar {
+.comment--without-avatar {
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas: "body";
 }
 
-.github-comment__avatar {
+.comment__avatar {
   grid-area: avatar;
   align-self: start;
   margin: 0;
 }
 
-.github-comment__body {
+.comment__body {
   grid-area: body;
   display: grid;
   gap: var(--global-space-fixed-3);
   min-inline-size: 0;
 }
 
-.github-comment__header {
+.comment__header {
   display: grid;
 }
 
-.github-comment__identity {
+.comment__identity {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -126,20 +123,20 @@ const edited = computed(() =>
   min-inline-size: 0;
 }
 
-.github-comment__author {
+.comment__author {
   margin: 0;
   min-inline-size: 0;
 }
 
-.github-comment__timestamp {
+.comment__timestamp {
   font-size: var(--global-font-size-1);
 }
 
-.github-comment__edited {
+.comment__edited {
   display: inline-block;
 }
 
-.github-comment__content {
+.comment__content {
   display: grid;
   gap: var(--global-space-fixed-5);
   min-inline-size: 0;
@@ -168,7 +165,7 @@ const edited = computed(() =>
   }
 }
 
-.github-comment__reactions {
+.comment__reactions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--global-space-fixed-2);
@@ -177,16 +174,16 @@ const edited = computed(() =>
   list-style: none;
 }
 
-.github-comment__reaction-item {
+.comment__reaction-item {
   display: flex;
   margin: 0;
 }
 
-.github-comment__reaction {
+.comment__reaction {
   gap: var(--global-space-fixed-2);
 }
 
-.github-comment__reaction-emoji {
+.comment__reaction-emoji {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -195,7 +192,7 @@ const edited = computed(() =>
   flex: none;
 }
 
-.github-comment__reaction-count {
+.comment__reaction-count {
   font-variant-numeric: tabular-nums;
 }
 </style>
