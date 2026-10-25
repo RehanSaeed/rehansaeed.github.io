@@ -60,6 +60,7 @@ export default defineNuxtConfig({
         "fa-regular:question-circle",
         "fa-solid:rss",
         "fa-solid:share-alt",
+        "fa-solid:user",
         "feather:moon",
         "feather:search",
         "feather:sun",

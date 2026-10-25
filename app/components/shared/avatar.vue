@@ -7,19 +7,29 @@
     :href="href"
     :to="to">
     <img
+      v-if="src && !imageFailed"
       class="avatar__image"
       :alt="alt"
       :src="src"
       :width="sizeInPixels"
-      :height="sizeInPixels" />
+      :height="sizeInPixels"
+      @error="imageFailed = true" />
+    <u-icon v-else class="avatar__fallback" name="fa-solid:user" />
   </Component>
 </template>
 
 <script>
 import { NuxtLink } from "#components";
+import icon from "~/components/shared/icon.vue";
 
 export default {
   name: "u-avatar",
+  components: {
+    "u-icon": icon,
+  },
+  data() {
+    return { imageFailed: false };
+  },
   props: {
     label: {
       required: true,
@@ -40,6 +50,11 @@ export default {
     href: {
       required: false,
       type: String,
+    },
+  },
+  watch: {
+    src() {
+      this.imageFailed = false;
     },
   },
   computed: {
@@ -75,5 +90,14 @@ export default {
       border-color: var(--global-accent-color);
     }
   }
+}
+
+.avatar > .icon.avatar__fallback {
+  box-sizing: border-box;
+  inline-size: 100%;
+  block-size: 100%;
+  padding: var(--global-space-fixed-3);
+  background-color: var(--global-background-color);
+  color: var(--global-title-color);
 }
 </style>
