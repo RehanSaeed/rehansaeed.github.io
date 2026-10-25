@@ -22,17 +22,14 @@
               v-for="comment in current.comments"
               :key="comment.id"
               class="vssue-comment">
-              <a
+              <u-avatar
                 v-if="comment.user"
                 class="vssue-comment-avatar"
-                :href="comment.user.html_url">
-                <img
-                  :src="comment.user.avatar_url"
-                  :alt="comment.user.login"
-                  width="60"
-                  height="60"
-                  loading="lazy" />
-              </a>
+                :href="comment.user.html_url"
+                :label="comment.user.login"
+                :alt="comment.user.login"
+                :src="comment.user.avatar_url"
+                loading="lazy" />
               <div class="vssue-comment-body">
                 <header class="vssue-comment-header">
                   <span class="vssue-comment-author"
@@ -66,6 +63,7 @@
 </template>
 
 <script setup lang="ts">
+import UAvatar from "~/components/shared/avatar.vue";
 import UCard from "~/components/shared/card.vue";
 import UHeading from "~/components/shared/heading.vue";
 import UIntersect from "~/components/shared/intersect.vue";
@@ -117,7 +115,6 @@ async function refresh() {
 </script>
 
 <style lang="scss">
-@use "~/assets/style/abstracts/avatar";
 @use "~/assets/style/abstracts/type";
 
 .comments {
@@ -132,7 +129,6 @@ async function refresh() {
 .vssue {
   display: grid;
   gap: var(--global-space-fixed-5);
-  overflow: hidden;
 
   p {
     min-inline-size: 0;
@@ -320,16 +316,9 @@ async function refresh() {
 
 // Comment Avatar
 .vssue-comment-avatar {
-  @include avatar.frame(
-    var(--global-border-width-1),
-    var(--global-border-color),
-    var(--global-border-radius)
-  );
-
   grid-area: avatar;
   align-self: start;
-  inline-size: var(--global-space-fixed-6);
-  block-size: var(--global-space-fixed-6);
+  margin: 0;
 }
 
 // Comment Edit

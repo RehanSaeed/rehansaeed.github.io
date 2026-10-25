@@ -17,7 +17,10 @@
       </a>
       <div v-if="hasError" class="webmentions__error">
         <p role="alert">Unable to load Web Mentions. Please try again.</p>
-        <u-button bordered @click="onLoadMentions">Retry</u-button>
+        <u-button class="webmentions__retry" bordered @click="onLoadMentions">
+          <u-icon name="feather:rotate-cw" />
+          Retry
+        </u-button>
       </div>
       <div v-else class="webmentions__container">
         <u-webmention-faces
@@ -224,6 +227,13 @@ export default {
 .webmentions__container {
   display: grid;
   gap: var(--global-space-fixed-5);
+}
+
+.webmentions__retry {
+  display: flex;
+  align-items: center;
+  gap: var(--global-space-fixed-2);
+  margin-inline: auto;
 }
 
 .webmentions__count {

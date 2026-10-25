@@ -173,6 +173,23 @@ for (const failure of ["network", "http", "json", "shape"]) {
     );
     await expect(mentions).toHaveAttribute("aria-busy", "false");
     await expect(mentions.locator(".webmentions__count")).toHaveCount(0);
+    const retryButton = mentions.getByRole("button", {
+      name: "Retry",
+      exact: true,
+    });
+    const icon = retryButton.locator("svg.icon");
+    await expect(icon).toBeVisible();
+    await expect(icon).toHaveAttribute("aria-hidden", "true");
+    await expect(icon.locator("path, polyline")).not.toHaveCount(0);
+    const alignment = await retryButton.evaluate((button) => {
+      const bounds = button.getBoundingClientRect();
+      const parent = button.parentElement!.getBoundingClientRect();
+      return {
+        buttonCenter: bounds.left + bounds.width / 2,
+        parentCenter: parent.left + parent.width / 2,
+      };
+    });
+    expect(alignment.buttonCenter).toBeCloseTo(alignment.parentCenter, 1);
     try {
       await mentions
         .getByRole("button", { name: "Retry", exact: true })

@@ -13,6 +13,7 @@
       :src="src"
       :width="sizeInPixels"
       :height="sizeInPixels"
+      :loading="loading"
       @error="onImageError" />
     <u-icon v-else class="avatar__fallback" name="fa-solid:user" />
   </Component>
@@ -41,6 +42,10 @@ export default {
     },
     src: {
       required: true,
+      type: String,
+    },
+    loading: {
+      required: false,
       type: String,
     },
     to: {
