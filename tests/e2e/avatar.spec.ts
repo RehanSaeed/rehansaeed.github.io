@@ -146,9 +146,12 @@ for (const deviceScaleFactor of [1, 2]) {
                   .removeAlpha()
                   .raw()
                   .toBuffer({ resolveWithObject: true });
-                const inset = Math.ceil(
-                  (geometry.border * geometry.scale + 2) * deviceScaleFactor,
-                );
+                // Fractional screenshot bounds can add one device pixel at an edge.
+                const inset =
+                  Math.ceil(
+                    (geometry.border * geometry.scale + 2) * deviceScaleFactor,
+                  ) + 1;
+                expect(inset * 2).toBeLessThan(info.width);
                 const y = Math.floor(info.height / 2);
                 for (let x = inset; x < info.width - inset; x++) {
                   const offset = (y * info.width + x) * info.channels;
