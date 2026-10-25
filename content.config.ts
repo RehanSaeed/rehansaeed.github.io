@@ -9,7 +9,9 @@ const schema = z.object({
   author: z.string(),
   permalink: z.string(),
   // Alt text uses the file name; dimensions are read from the image during the build.
-  heroImage: z.string().regex(/^\/images\/.+-\d+x\d+\.(png|jpg)$/),
+  heroImage: z.string().regex(/^\/images\/.+-\d+x\d+\.(png|jpg|avif)$/),
+  // Computed from the authoring source for feed/social compatibility.
+  heroImageOriginal: z.string(),
   date: z.string(),
   dateModified: z.string().nullable().optional(),
   published: z.boolean(),
@@ -30,8 +32,8 @@ const schema = z.object({
       if (typeof (entry.dateModified ?? entry.date) === "string") {
         url.lastmod = String(entry.dateModified ?? entry.date);
       }
-      if (typeof entry.heroImage === "string") {
-        url.images = [{ loc: entry.heroImage }];
+      if (typeof entry.heroImageOriginal === "string") {
+        url.images = [{ loc: entry.heroImageOriginal }];
       }
     },
   }),

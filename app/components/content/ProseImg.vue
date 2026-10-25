@@ -1,7 +1,11 @@
 <template>
   <NuxtImg
-    :src="getAvifSource(src) ?? src"
-    :format="getAvifSource(src) || src.endsWith('.avif') ? 'avif' : undefined"
+    :src="src"
+    :format="
+      src.startsWith('/') && !src.startsWith('//') && src.endsWith('.avif')
+        ? 'avif'
+        : undefined
+    "
     :alt="alt"
     :width="width"
     :height="height"
@@ -11,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { contentImageSizes, getAvifSource } from "#shared/utils/images";
+import { contentImageSizes } from "#shared/utils/images";
 
 defineProps<{
   src: string;

@@ -49,6 +49,7 @@ const { data: post } = await useAsyncData(`post-${permalink}`, () =>
       "extension",
       "headings",
       "heroImage",
+      "heroImageOriginal",
       "meta",
       "path",
       "permalink",
@@ -73,12 +74,12 @@ const description = post.value.description;
 const author = post.value.author;
 const date = post.value.date;
 const dateModified = post.value.dateModified ?? date;
-const image = site.url + post.value.heroImage;
+const image = site.url + post.value.heroImageOriginal;
 const url = site.url + post.value.permalink;
 const tags = post.value.tags ?? [];
 const headings = post.value.headings ?? [];
 
-useBlogOgImage(title, post.value.heroImage, author);
+useBlogOgImage(title, post.value.heroImageOriginal, author);
 useRobotsRule(post.value.published ? true : "noindex, follow");
 useSchemaOrg([
   defineArticle({

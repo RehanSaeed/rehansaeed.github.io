@@ -6,6 +6,7 @@ import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 import remarkToc from "remark-toc";
 import { tagPath } from "../../shared/utils/tag";
+import { getAvifSource } from "../../shared/utils/images";
 import {
   contentImagePattern,
   findEmailsOutsideCode,
@@ -61,17 +62,23 @@ export default defineNuxtModule({
     const images = (await listFiles(contentDir))
       .filter((file) => contentImagePattern.test(file))
       .sort();
+    const heroImages = [
+      ...new Set(
+        entries.flatMap(({ data }) => [
+          data.heroImage,
+          getAvifSource(data.heroImage) ?? data.heroImage,
+        ]),
+      ),
+    ].sort();
     const imageFiles = [
       ...images.map((file) => ({
         url: posix.join(contentImagesBaseURL, file),
         file: join(contentDir, file),
       })),
-      ...[...new Set(entries.map((entry) => entry.data.heroImage))]
-        .sort()
-        .map((url) => ({
-          url,
-          file: join(nuxt.options.rootDir, "public", url),
-        })),
+      ...heroImages.map((url) => ({
+        url,
+        file: join(nuxt.options.rootDir, "public", url),
+      })),
     ];
     const imageMetadata = Object.fromEntries(
       await Promise.all(
@@ -86,10 +93,7 @@ export default defineNuxtModule({
       JSON.stringify(imageMetadata),
     );
     const heroMetadata = Object.fromEntries(
-      entries.map((entry) => [
-        entry.data.heroImage,
-        imageMetadata[entry.data.heroImage],
-      ]),
+      heroImages.map((url) => [url, imageMetadata[url]]),
     );
     const imageTemplate = addTemplate({
       filename: "blog-image-metadata.json",
@@ -110,6 +114,7 @@ export default defineNuxtModule({
         "portfolio.ts",
         "nuget.ts",
         "images.ts",
+        "../../shared/utils/images.ts",
       ].map((name) =>
         readFile(
           join(nuxt.options.rootDir, "modules", "blog-content", name),
@@ -196,6 +201,9 @@ export default defineNuxtModule({
         issue: null,
         comments: [],
       };
+      content.heroImageOriginal = content.heroImage;
+      content.heroImage =
+        getAvifSource(String(content.heroImage)) ?? content.heroImage;
       restoreKeptTags(body.value);
       const fileDir = posix.dirname(toPosix(relative(contentDir, file.path)));
       rewriteRelativeImages(body.value, fileDir, imageMetadata);

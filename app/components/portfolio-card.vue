@@ -12,7 +12,7 @@
         :alt="portfolio.title"
         v-if="portfolio.heroImage"
         class="portfolio-card__image"
-        :src="getAvifSource(portfolio.heroImage) ?? portfolio.heroImage"
+        :src="portfolio.heroImage"
         :width="imageMeta.width"
         :height="imageMeta.height"
         :sizes="contentImageSizes"
@@ -82,7 +82,7 @@
 
 <script>
 import { getImageMetadata } from "~/framework/images.js";
-import { contentImageSizes, getAvifSource } from "#shared/utils/images";
+import { contentImageSizes } from "#shared/utils/images";
 
 export default {
   name: "u-portfolio-card",
@@ -100,7 +100,6 @@ export default {
       return getImageMetadata(this.portfolio.heroImage);
     },
   },
-  methods: { getAvifSource },
 };
 </script>
 

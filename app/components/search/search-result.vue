@@ -9,7 +9,7 @@
         class="search-result__image"
         alt=""
         loading="lazy"
-        :src="avifSource ?? searchResult.heroImage" />
+        :src="searchResult.heroImage" />
       <u-heading
         :id="`search-result-${searchResult.id}`"
         class="search-result__title"
@@ -24,16 +24,9 @@
 </template>
 
 <script>
-import { getAvifSource } from "#shared/utils/images";
-
 export default {
   name: "u-search-result",
   emits: ["selected"],
-  computed: {
-    avifSource() {
-      return getAvifSource(this.searchResult.heroImage);
-    },
-  },
   props: {
     searchResult: {
       type: Object,

@@ -39,7 +39,7 @@ export async function createFeed(event: H3Event): Promise<Feed> {
       "description",
       "author",
       "permalink",
-      "heroImage",
+      "heroImageOriginal",
       "date",
       "tags",
       "rawbody",
@@ -77,7 +77,7 @@ export async function createFeed(event: H3Event): Promise<Feed> {
       author: [{ name: post.author, link: site.url }],
       date: new Date(post.date),
       category: post.tags.map((name) => ({ name })),
-      image: site.url + post.heroImage,
+      image: site.url + post.heroImageOriginal,
     });
   }
 

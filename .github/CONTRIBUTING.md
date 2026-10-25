@@ -26,9 +26,16 @@ AVIF files are lossy delivery sources, not archival masters. The command preserv
 the chosen source's dimensions and transparency, auto-orients photos and strips metadata.
 
 Use Nuxt Image's `NuxtImg` for responsive images, with `format="avif"` and an
-AVIF source. Use native `<img>` elements and `getAvifSource(src) ?? src` for images
-chosen at runtime (such as search results), so their pre-generated AVIF files work
-on static hosting without a runtime image server. Normal local PNG/JPG content is
+AVIF source. The content pipeline normalises Markdown image sources and collection
+`heroImage` values to AVIF once; rendering components and search results consume
+those URLs directly. Computed `heroImageOriginal` retains the authoring URL for
+feeds, social cards, structured metadata and sitemap images. Markdown image links
+and raw feed bodies also retain their original URLs.
+
+Use native `<img>` elements for runtime search results so their pre-generated
+AVIF files work on static hosting without a runtime image server. Only surfaces
+with arbitrary runtime input (avatars and thumbnail query parameters) need
+`getAvifSource(src) ?? src`. Normal local PNG/JPG content is
 delivered as AVIF only: browsers without AVIF support have no raster fallback.
 Keep SVGs and remote images in their original formats, and retain PNG/JPG URLs in feeds, social metadata,
 favicons and the web app manifest for compatibility. Originals remain deployed

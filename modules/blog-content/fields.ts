@@ -4,11 +4,10 @@ import { visit } from "unist-util-visit";
 import { keepTagPrefix } from "./markdown";
 import { contentImagesBaseURL } from "./paths";
 import { stripFrontMatter } from "./scan";
-import type { ImageDimensions } from "../../shared/utils/images";
+import { getAvifSource, type ImageDimensions } from "../../shared/utils/images";
 
 type MinimarkNode =
-  | string
-  | [string, Record<string, unknown>, ...MinimarkNode[]];
+  string | [string, Record<string, unknown>, ...MinimarkNode[]];
 
 /** Renames `keep-p`/`keep-h2` etc. (see markdown.ts) back to their real tags once MDC has compiled. */
 export function restoreKeptTags(nodes: MinimarkNode[] | undefined): void {
@@ -129,9 +128,11 @@ export function rewriteRelativeImages(
       }
     }
     if (node[0] === "img" && typeof props.src === "string") {
-      const dimensions = imageMetadata[props.src];
-      if (props.src.startsWith("/") && !dimensions) {
-        throw new Error(`Missing intrinsic image dimensions: ${props.src}`);
+      const src = getAvifSource(props.src) ?? props.src;
+      props.src = src;
+      const dimensions = imageMetadata[src];
+      if (src.startsWith("/") && !src.startsWith("//") && !dimensions) {
+        throw new Error(`Missing intrinsic image dimensions: ${src}`);
       }
       if (dimensions) {
         props.width = dimensions.width;

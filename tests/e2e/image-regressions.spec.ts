@@ -33,7 +33,7 @@ test.describe("All-pages audit regressions", () => {
         ["p", {}, ["img", { src: "./images/photo.png", alt: "Photo" }]],
       ];
       rewriteRelativeImages(body, "posts/example", {
-        "/content-images/posts/example/images/photo.png": {
+        "/content-images/posts/example/images/photo.avif": {
           width: 1024,
           height: 640,
         },
@@ -45,7 +45,7 @@ test.describe("All-pages audit regressions", () => {
           [
             "img",
             {
-              src: "/content-images/posts/example/images/photo.png",
+              src: "/content-images/posts/example/images/photo.avif",
               alt: "Photo",
               width: 1024,
               height: 640,
@@ -61,6 +61,48 @@ test.describe("All-pages audit regressions", () => {
           {},
         ),
       ).toThrow("Missing intrinsic image dimensions");
+    },
+  );
+
+  unitTest(
+    "Normalises only image sources, preserving original links, SVGs and remote URLs",
+    () => {
+      const original = "/content-images/posts/example/images/photo.jpg";
+      const avif = original.replace(".jpg", ".avif");
+      const svg = "/content-images/posts/example/images/logo.svg";
+      const remote = "https://example.com/photo.jpg";
+      const body: Parameters<typeof rewriteRelativeImages>[0] = [
+        [
+          "a",
+          { href: "./images/photo.jpg" },
+          ["img", { src: "./images/photo.jpg" }],
+        ],
+        ["img", { src: avif }],
+        ["img", { src: "./images/logo.svg" }],
+        ["img", { src: remote }],
+        ["img", { src: "//example.com/photo.png" }],
+      ];
+      const dimensions = { width: 640, height: 480 };
+      rewriteRelativeImages(body, "posts/example", {
+        [avif]: dimensions,
+        [svg]: dimensions,
+      });
+      expect(body).toEqual([
+        [
+          "a",
+          { href: original },
+          ["img", { src: avif, ...dimensions, loading: "lazy" }],
+        ],
+        ["img", { src: avif, ...dimensions, loading: "lazy" }],
+        ["img", { src: svg, ...dimensions, loading: "lazy" }],
+        ["img", { src: remote, loading: "lazy" }],
+        ["img", { src: "//example.com/photo.png", loading: "lazy" }],
+      ]);
+      expect(() =>
+        rewriteRelativeImages([["img", { src: original }]], "posts/example", {
+          [original]: dimensions,
+        }),
+      ).toThrow(`Missing intrinsic image dimensions: ${avif}`);
     },
   );
 

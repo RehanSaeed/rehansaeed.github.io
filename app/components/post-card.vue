@@ -13,7 +13,7 @@
         class="post-card__image"
         :fetchpriority="priority ? 'high' : undefined"
         :alt="imageMeta.alt"
-        :src="getAvifSource(post.heroImage) ?? post.heroImage"
+        :src="post.heroImage"
         :width="imageMeta.width"
         :height="imageMeta.height"
         :sizes="contentImageSizes"
@@ -38,7 +38,7 @@
 
 <script>
 import { getImageMetadata } from "~/framework/images.js";
-import { contentImageSizes, getAvifSource } from "#shared/utils/images";
+import { contentImageSizes } from "#shared/utils/images";
 
 export default {
   name: "u-post-card",
@@ -59,7 +59,6 @@ export default {
       return getImageMetadata(this.post.heroImage);
     },
   },
-  methods: { getAvifSource },
 };
 </script>
 

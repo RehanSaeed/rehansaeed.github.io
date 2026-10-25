@@ -5,7 +5,7 @@
         format="avif"
         v-if="post.heroImage"
         :alt="imageMeta.alt"
-        :src="getAvifSource(post.heroImage) ?? post.heroImage"
+        :src="post.heroImage"
         class="post__photo"
         fetchpriority="high"
         :width="imageMeta.width"
@@ -34,7 +34,7 @@
 
 <script>
 import { getImageMetadata } from "~/framework/images.js";
-import { contentImageSizes, getAvifSource } from "#shared/utils/images";
+import { contentImageSizes } from "#shared/utils/images";
 
 export default {
   name: "u-post",
@@ -51,7 +51,6 @@ export default {
       return getImageMetadata(this.post.heroImage);
     },
   },
-  methods: { getAvifSource },
 };
 </script>
 

@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { test as unitTest } from "@playwright/test";
 import { load } from "cheerio";
 import sharp from "sharp";
-import { listFiles } from "../../modules/blog-content/scan";
+import { listFiles, scanContent } from "../../modules/blog-content/scan";
 import { getAvifSource } from "../../shared/utils/images";
 import { expect, test } from "./fixtures";
 
@@ -96,6 +96,62 @@ unitTest(
           /\.(png|jpe?g)(?:[ ,]|$)/,
         );
         expect(image.attr("srcset"), path).toMatch(/\d+[wx]/);
+      }
+    }
+  },
+);
+
+unitTest(
+  "Content payloads and search use AVIF while feeds and metadata retain originals",
+  async () => {
+    const search: { heroImage: string; permalink: string }[] = JSON.parse(
+      await readFile(join("dist", "flexsearch.json"), "utf8"),
+    );
+    const feed = JSON.parse(await readFile(join("dist", "feed.json"), "utf8"));
+    const sitemap = await readFile(join("dist", "sitemap.xml"), "utf8");
+    const sitemapXml = load(sitemap, { xml: true });
+    const sitemapImages = sitemapXml("image\\:loc")
+      .map((_, element) => sitemapXml(element).text())
+      .get();
+    const entries = await scanContent("content");
+    for (const entry of entries) {
+      const original = entry.data.heroImage;
+      const avif = getAvifSource(original) ?? original;
+      expect(
+        search.find((item) => item.permalink === entry.data.permalink)
+          ?.heroImage,
+      ).toBe(avif);
+      if (entry.collection !== "posts") continue;
+      const $ = load(
+        await readFile(
+          join("dist", entry.data.permalink, "index.html"),
+          "utf8",
+        ),
+      );
+      expect($(".post__photo").attr("src")).toContain(avif);
+      const payload = JSON.parse(
+        await readFile(
+          join("dist", entry.data.permalink, "_payload.json"),
+          "utf8",
+        ),
+      );
+      expect(payload).toContain(avif);
+      expect(payload).toContain(original);
+      const graph = JSON.parse($('script[type="application/ld+json"]').text());
+      const article = graph["@graph"].find(
+        (node: { "@type": string }) => node["@type"] === "Article",
+      );
+      expect(article.image[0].url).toBe(`https://rehansaeed.com${original}`);
+      const item = feed.items.find(
+        (item: { url: string }) =>
+          item.url === `https://rehansaeed.com${entry.data.permalink}`,
+      );
+      if (entry.data.published) {
+        expect(item.image).toBe(`https://rehansaeed.com${original}`);
+        expect(sitemapImages).toContain(`https://rehansaeed.com${original}`);
+        expect(item.content_html).not.toMatch(/<img[^>]+src="[^"]+\.avif"/);
+      } else {
+        expect(item).toBeUndefined();
       }
     }
   },
