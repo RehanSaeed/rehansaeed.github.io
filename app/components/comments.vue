@@ -162,6 +162,10 @@ async function refresh() {
   min-inline-size: 0;
 }
 
+.vssue p {
+  min-inline-size: 0;
+}
+
 .comments__toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -212,7 +216,7 @@ async function refresh() {
 
 .vssue-comment-header {
   display: grid;
-  gap: var(--global-space-fixed-2);
+  margin-block-end: var(--global-space-fixed-3);
 }
 
 .vssue-comment-identity {
@@ -229,7 +233,14 @@ async function refresh() {
 }
 
 .vssue-comment-badge {
-  border: var(--global-border-width-1) solid var(--global-border-color);
+  color: var(--global-accent-color);
+  background-color: color-mix(
+    in srgb,
+    var(--global-accent-color) 8%,
+    transparent
+  );
+  border: var(--global-border-width-1) solid
+    color-mix(in srgb, var(--global-accent-color) 35%, transparent);
   border-radius: var(--global-border-radius);
   padding-inline: var(--global-space-fixed-2);
   font-size: var(--global-font-size-1);

@@ -221,4 +221,82 @@ test.describe("GitHub comments", () => {
       expect(inline).toBe(true);
     });
   }
+
+  for (const width of [375, 686, 1280]) {
+    test(`Keeps comment spacing, quoted text and purple badges within the card at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.route(commentsPath, (route) =>
+        route.fulfill({
+          json: [
+            {
+              ...owner,
+              body_html:
+                "<blockquote><p>Hi, thank you for the great article! One question. I have multiple C# applications: .NET Core, legacy WinForms apps. Is it possible to use OpenTelemetry in WinForms apps? How to?</p></blockquote><p>You certainly can. With ASP.NET Core, there are packages which set up some basic telemetry for you. With desktop apps, you would have to do all that yourself.</p>",
+            },
+          ],
+        }),
+      );
+      await page.goto(`${postPath}#comments`);
+      await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
+      const comment = page.locator(".vssue-comment");
+      await expect(comment).toHaveCount(1);
+      for (const theme of ["light", "dark"]) {
+        await page.evaluate((value) => {
+          document.documentElement.dataset.theme = value;
+        }, theme);
+        const layout = await comment.evaluate((element) => {
+          const identity = element
+            .querySelector(".vssue-comment-identity")!
+            .getBoundingClientRect();
+          const date = element
+            .querySelector(".vssue-comment-created-at")!
+            .getBoundingClientRect();
+          const main = element.querySelector(".vssue-comment-main")!;
+          const body = element
+            .querySelector(".vssue-comment-body")!
+            .getBoundingClientRect();
+          const card = element.closest(".comments")!;
+          const cardBounds = card.getBoundingClientRect();
+          const badge = element.querySelector(".vssue-comment-badge")!;
+          const swatch = document.createElement("span");
+          swatch.style.color = "var(--global-accent-color)";
+          element.append(swatch);
+          const accent = getComputedStyle(swatch).color;
+          swatch.remove();
+          return {
+            nameDateGap: date.top - identity.bottom,
+            dateContentGap: main.getBoundingClientRect().top - date.bottom,
+            minimumContentGap:
+              parseFloat(getComputedStyle(document.documentElement).fontSize) *
+              0.75,
+            paragraphsFit: Array.from(main.querySelectorAll("p")).every(
+              (paragraph) => {
+                const bounds = paragraph.getBoundingClientRect();
+                return (
+                  bounds.left >= body.left - 1 && bounds.right <= body.right + 1
+                );
+              },
+            ),
+            rightInset: cardBounds.right - body.right,
+            cardPadding: parseFloat(getComputedStyle(card).paddingInlineEnd),
+            badgeColor: getComputedStyle(badge).color,
+            accent,
+            badgeBackground: getComputedStyle(badge).backgroundColor,
+          };
+        });
+        expect(layout.nameDateGap).toBeLessThanOrEqual(1);
+        expect(layout.dateContentGap).toBeGreaterThanOrEqual(
+          layout.minimumContentGap - 1,
+        );
+        expect(layout.paragraphsFit).toBe(true);
+        expect(layout.rightInset).toBeGreaterThanOrEqual(
+          layout.cardPadding - 1,
+        );
+        expect(layout.badgeColor).toBe(layout.accent);
+        expect(layout.badgeBackground).not.toBe("rgba(0, 0, 0, 0)");
+      }
+    });
+  }
 });
