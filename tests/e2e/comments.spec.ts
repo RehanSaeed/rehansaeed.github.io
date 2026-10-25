@@ -110,7 +110,9 @@ test.describe("GitHub comments", () => {
       );
       const response = await page.goto(`${postPath}#comments`);
       const saved = load(await response!.text());
-      expect(saved(".vssue-comment-badge").first().text()).toBe("Owner");
+      expect(saved(".github-comment__association").first().text()).toBe(
+        "Owner",
+      );
       await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
       await refreshed;
       await expect(
@@ -120,11 +122,19 @@ test.describe("GitHub comments", () => {
           exact: true,
         }),
       ).toHaveAttribute("id", "comments");
-      const comment = page.locator(".vssue-comment");
+      const comment = page.locator(".github-comment");
       await expect(comment).toHaveCount(1);
-      await expect(comment.locator(".badge.vssue-comment-badge")).toHaveText(
-        "Owner",
-      );
+      await expect(
+        page.getByRole("region", { name: "GitHub Comments", exact: true }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("article", { name: owner.user!.login, exact: true }),
+      ).toHaveAttribute("id", `github-comment-${owner.id}`);
+      const reactions = comment.getByRole("list", { name: "Reactions" });
+      await expect(reactions.getByRole("listitem")).toHaveCount(8);
+      await expect(
+        comment.locator(".badge.github-comment__association"),
+      ).toHaveText("Owner");
       const githubLink = page.getByRole("link", { name: "Comment on GitHub" });
       await expect(githubLink).toHaveCount(1);
       await expect(githubLink).toHaveAttribute("href", /issues\/607$/);
@@ -134,14 +144,14 @@ test.describe("GitHub comments", () => {
       await expect(
         page.getByRole("heading", { level: 3, name: "1 Comment", exact: true }),
       ).toBeVisible();
-      const date = comment.locator(".vssue-comment-created-at > time");
+      const date = comment.locator(".github-comment__timestamp > time");
       await expect(date).toHaveAttribute("datetime", owner.created_at);
       await expect(date.locator("..")).not.toHaveJSProperty("tagName", "A");
       await expect(
-        comment.locator(".vssue-comment-edited time"),
+        comment.locator(".github-comment__edited time"),
       ).toHaveAttribute("datetime", owner.updated_at!);
       await expect(
-        comment.locator(".badge.vssue-comment-reaction"),
+        comment.locator(".badge.github-comment__reaction"),
       ).toHaveCount(8);
       await expect(
         comment.getByRole("img", { name: "Thumbs up: 3" }),
@@ -153,8 +163,8 @@ test.describe("GitHub comments", () => {
         const link = element.querySelector(".comments__github")!;
         const toolbar = element.querySelector(".comments__toolbar")!;
         const count = element.querySelector(".comments__count")!;
-        const timestamp = element.querySelector(".vssue-comment-created-at")!;
-        const body = element.querySelector(".vssue-comment-body")!;
+        const timestamp = element.querySelector(".github-comment__timestamp")!;
+        const body = element.querySelector(".github-comment__body")!;
         const linkBounds = link.getBoundingClientRect();
         const countBounds = count.getBoundingClientRect();
         const typography = (heading: Element) => {
@@ -171,17 +181,17 @@ test.describe("GitHub comments", () => {
         return {
           countTypography: typography(count),
           reactionCountFont: getComputedStyle(
-            element.querySelector(".vssue-comment-reaction-count")!,
+            element.querySelector(".github-comment__reaction-count")!,
           ).fontFamily,
           bodyFontFamily: getComputedStyle(body).fontFamily,
           reactions: Array.from(
-            element.querySelectorAll(".vssue-comment-reaction"),
+            element.querySelectorAll(".github-comment__reaction"),
             (reaction) => {
               const emoji = reaction.querySelector(
-                ".vssue-comment-reaction-emoji",
+                ".github-comment__reaction-emoji",
               )!;
               const count = reaction.querySelector(
-                ".vssue-comment-reaction-count",
+                ".github-comment__reaction-count",
               )!;
               const emojiBounds = emoji.getBoundingClientRect();
               const countBounds = count.getBoundingClientRect();
@@ -229,9 +239,11 @@ test.describe("GitHub comments", () => {
       await expect(githubLink).toHaveCSS("outline-style", "solid");
       await page.reload();
       await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
-      await expect(page.locator(".vssue-comment")).toHaveCount(1);
-      await expect(page.locator(".vssue-comment-badge")).toHaveText("Owner");
-      await expect(page.locator(".vssue-comment-reaction")).toHaveCount(8);
+      await expect(page.locator(".github-comment")).toHaveCount(1);
+      await expect(page.locator(".github-comment__association")).toHaveText(
+        "Owner",
+      );
+      await expect(page.locator(".github-comment__reaction")).toHaveCount(8);
     });
   }
 
@@ -259,15 +271,15 @@ test.describe("GitHub comments", () => {
     );
     await page.goto(postPath);
     await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
-    await expect(page.locator(".vssue-comment")).toHaveCount(4);
+    await expect(page.locator(".github-comment")).toHaveCount(4);
     await expect(page.locator(".comments__count")).toHaveText("4 Comments");
-    await expect(page.locator(".vssue-comment-badge")).toHaveText([
+    await expect(page.locator(".github-comment__association")).toHaveText([
       "Contributor",
       "Future reviewer",
     ]);
-    await expect(page.locator(".vssue-comment-edited")).toHaveCount(0);
-    await expect(page.locator(".vssue-comment-footer")).toHaveCount(0);
-    await expect(page.locator(".vssue-comment-author").nth(1)).toHaveText(
+    await expect(page.locator(".github-comment__edited")).toHaveCount(0);
+    await expect(page.locator(".github-comment__footer")).toHaveCount(0);
+    await expect(page.locator(".github-comment__author").nth(1)).toHaveText(
       "Deleted user",
     );
   });
@@ -287,7 +299,7 @@ test.describe("GitHub comments", () => {
       );
       await page.goto(postPath);
       await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
-      await expect(page.locator(".vssue-comment")).toHaveCount(count);
+      await expect(page.locator(".github-comment")).toHaveCount(count);
       const label = page.locator(".comments__count");
       const link = page.getByRole("link", { name: "Comment on GitHub" });
       await expect(label).toHaveText(`${count} Comments`);
@@ -305,6 +317,115 @@ test.describe("GitHub comments", () => {
           return linkBounds.top >= labelBounds.bottom;
         });
       expect(belowCount).toBe(true);
+    });
+  }
+
+  for (const width of [320, 375, 1280]) {
+    test(`Uses gap-based layouts and contains rich comments at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 });
+      const longText = "unbroken".repeat(60);
+      await page.route(commentsPath, (route) =>
+        route.fulfill({
+          json: [
+            {
+              ...owner,
+              user: { ...owner.user, login: "reader".repeat(12) },
+              body_html: `<p>${longText}</p><pre><code>${longText}</code></pre><ul><li>First point</li><li>Second point</li></ul><table><thead><tr><th>Example</th></tr></thead><tbody><tr><td>${longText}</td></tr></tbody></table><details><summary>More information</summary><p>A detail.</p></details>`,
+            },
+            {
+              ...owner,
+              id: owner.id + 1,
+              user: null,
+              body_html: "<p>A deleted user's comment.</p>",
+              reactions: {},
+            },
+          ],
+        }),
+      );
+      await page.goto(`${postPath}#comments`);
+      await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
+      const comments = page.locator(".github-comment");
+      await expect(comments).toHaveCount(2);
+      const deleted = page.getByRole("article", { name: "Deleted user" });
+      await expect(deleted).toHaveClass(/github-comment--without-avatar/);
+      await expect(deleted.locator(".github-comment__avatar")).toHaveCount(0);
+      const layout = await page.locator(".comments").evaluate((element) => {
+        const first = element.querySelector(".github-comment")!;
+        const body = first.querySelector(".github-comment__body")!;
+        const header = first.querySelector(".github-comment__header")!;
+        const content = first.querySelector(".github-comment__content")!;
+        const footer = first.querySelector(".github-comment__footer")!;
+        const deleted = element.querySelector(
+          ".github-comment--without-avatar",
+        )!;
+        const deletedBody = deleted.querySelector(".github-comment__body")!;
+        const bodyGap = parseFloat(getComputedStyle(body).rowGap);
+        return {
+          sectionDisplay: getComputedStyle(element).display,
+          commentDisplay: getComputedStyle(first).display,
+          bodyDisplay: getComputedStyle(body).display,
+          contentDisplay: getComputedStyle(content).display,
+          bodyGap,
+          headerContentGap:
+            content.getBoundingClientRect().top -
+            header.getBoundingClientRect().bottom,
+          contentFooterGap:
+            footer.getBoundingClientRect().top -
+            content.getBoundingClientRect().bottom,
+          wraps: [
+            ".comments__toolbar",
+            ".github-comment__identity",
+            ".github-comment__reactions",
+          ].every((selector) => {
+            const style = getComputedStyle(element.querySelector(selector)!);
+            return (
+              style.display === "flex" &&
+              style.flexWrap === "wrap" &&
+              parseFloat(style.gap) > 0
+            );
+          }),
+          deletedWidth: deleted.getBoundingClientRect().width,
+          deletedBodyWidth: deletedBody.getBoundingClientRect().width,
+          contentMargins: Array.from(content.children, (child) => {
+            const style = getComputedStyle(child);
+            return [style.marginBlockStart, style.marginBlockEnd];
+          }),
+          overflow:
+            document.documentElement.scrollWidth >
+            document.documentElement.clientWidth,
+        };
+      });
+      expect(layout.sectionDisplay).toBe("grid");
+      expect(layout.commentDisplay).toBe("grid");
+      expect(layout.bodyDisplay).toBe("grid");
+      expect(layout.contentDisplay).toBe("grid");
+      expect(layout.bodyGap).toBeGreaterThan(0);
+      expect(layout.headerContentGap).toBeCloseTo(layout.bodyGap, 1);
+      expect(layout.contentFooterGap).toBeCloseTo(layout.bodyGap, 1);
+      expect(layout.wraps).toBe(true);
+      expect(layout.deletedBodyWidth).toBeCloseTo(layout.deletedWidth, 1);
+      expect(
+        layout.contentMargins.every(
+          ([start, end]) => start === "0px" && end === "0px",
+        ),
+      ).toBe(true);
+      expect(layout.overflow).toBe(false);
+      await expect(
+        comments
+          .first()
+          .getByRole("listitem")
+          .filter({ hasText: "First point" }),
+      ).toHaveCount(1);
+      await expect(comments.first().getByRole("table")).toBeVisible();
+      await comments
+        .first()
+        .getByText("More information", { exact: true })
+        .click();
+      await expect(
+        comments.first().getByText("A detail.", { exact: true }),
+      ).toBeVisible();
     });
   }
 
@@ -326,7 +447,7 @@ test.describe("GitHub comments", () => {
       );
       await page.goto(`${postPath}#comments`);
       await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
-      const comment = page.locator(".vssue-comment");
+      const comment = page.locator(".github-comment");
       await expect(comment).toHaveCount(1);
       for (const theme of ["light", "dark"]) {
         await page.evaluate((value) => {
@@ -334,20 +455,20 @@ test.describe("GitHub comments", () => {
         }, theme);
         const layout = await comment.evaluate((element) => {
           const identity = element
-            .querySelector(".vssue-comment-identity")!
+            .querySelector(".github-comment__identity")!
             .getBoundingClientRect();
           const date = element
-            .querySelector(".vssue-comment-created-at")!
+            .querySelector(".github-comment__timestamp")!
             .getBoundingClientRect();
-          const main = element.querySelector(".vssue-comment-main")!;
+          const main = element.querySelector(".github-comment__content")!;
           const body = element
-            .querySelector(".vssue-comment-body")!
+            .querySelector(".github-comment__body")!
             .getBoundingClientRect();
           const card = element.closest(".comments")!;
           const cardBounds = card.getBoundingClientRect();
-          const badge = element.querySelector(".vssue-comment-badge")!;
+          const badge = element.querySelector(".github-comment__association")!;
           const avatar = element
-            .querySelector(".vssue-comment-avatar")!
+            .querySelector(".github-comment__avatar")!
             .getBoundingClientRect();
           const swatch = document.createElement("span");
           swatch.style.color = "var(--global-accent-color)";

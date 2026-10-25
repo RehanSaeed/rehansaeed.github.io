@@ -69,10 +69,10 @@ test.describe("Migration completion", () => {
           return route.fulfill({ json: [comment] });
         });
         const response = await page.goto(postPath);
-        expect(await response!.text()).toContain('class="vssue-comment"');
+        expect(await response!.text()).toContain('class="github-comment"');
         await page.locator(".comments").scrollIntoViewIfNeeded();
-        await expect(page.locator(".vssue-comment-main")).toHaveCount(1);
-        await expect(page.locator(".vssue-comment-main")).toHaveText(
+        await expect(page.locator(".github-comment__content")).toHaveCount(1);
+        await expect(page.locator(".github-comment__content")).toHaveText(
           "A new live comment.",
         );
         await expect(page.locator(".comments__github")).toHaveAttribute(
@@ -82,8 +82,8 @@ test.describe("Migration completion", () => {
         expect(requests).toBe(1);
         await page.reload();
         await page.locator(".comments").scrollIntoViewIfNeeded();
-        await expect(page.locator(".vssue-comment-main")).toHaveCount(1);
-        await expect(page.locator(".vssue-comment-main")).toHaveText(
+        await expect(page.locator(".github-comment__content")).toHaveCount(1);
+        await expect(page.locator(".github-comment__content")).toHaveText(
           "A new live comment.",
         );
         expect(requests).toBe(1);
@@ -98,7 +98,7 @@ test.describe("Migration completion", () => {
       route.fulfill({ status: 403, json: { message: "Rate limit" } }),
     );
     await page.goto(postPath);
-    const count = await page.locator(".vssue-comment").count();
+    const count = await page.locator(".github-comment").count();
     expect(count).toBeGreaterThan(0);
     await page.locator(".comments").scrollIntoViewIfNeeded();
     await expect(page.locator(".comments [role=status]")).toContainText(
@@ -120,7 +120,7 @@ test.describe("Migration completion", () => {
       });
     expect(layout.statusTop).toBeGreaterThan(layout.toolbarBottom);
     expect(layout.statusBottom).toBeLessThan(layout.dividerTop);
-    await expect(page.locator(".vssue-comment")).toHaveCount(count);
+    await expect(page.locator(".github-comment")).toHaveCount(count);
   });
 
   test("Sanitizes GitHub markup and preserves safe formatting", () => {

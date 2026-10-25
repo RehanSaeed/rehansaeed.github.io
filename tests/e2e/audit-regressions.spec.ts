@@ -131,7 +131,7 @@ for (const timezoneId of ["Europe/London", "America/New_York", "Asia/Tokyo"]) {
       try {
         await page.goto(post, { waitUntil: "commit" });
         const date = page.locator(
-          `.vssue-comment time[datetime="${timestamp}"]`,
+          `.github-comment time[datetime="${timestamp}"]`,
         );
         await expect(date).toHaveText("17 May 2022");
         scripts.resume();

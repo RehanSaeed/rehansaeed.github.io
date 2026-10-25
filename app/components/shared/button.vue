@@ -52,8 +52,7 @@ export default {
 </script>
 
 <style lang="scss">
-.button,
-.vssue-button {
+.button {
   background-color: transparent;
   border: none;
   color: var(--global-title-color);
@@ -86,8 +85,7 @@ export default {
   }
 }
 
-.button--bordered,
-.vssue-button {
+.button--bordered {
   background-color: var(--global-background-color);
   border: var(--global-border-width-1) solid var(--global-border-color);
   border-radius: var(--global-border-radius);
@@ -110,8 +108,7 @@ export default {
   }
 }
 
-.button--bordered::before,
-.vssue-button::before {
+.button--bordered::before {
   content: "";
 
   position: absolute;
@@ -125,14 +122,11 @@ export default {
 }
 
 .button--bordered:hover::before,
-.button--bordered:focus::before,
-.vssue-button:hover::before,
-.vssue-button:focus::before {
+.button--bordered:focus::before {
   opacity: 1;
 }
 
-.button--bordered:active::before,
-.vssue-button:active::before {
+.button--bordered:active::before {
   box-shadow: var(--global-shadow-1);
   opacity: 1;
 }
