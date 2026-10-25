@@ -66,6 +66,20 @@ test("Markdown discovery removes unlisted entries and empty groups, not similarl
 test("Static discovery serves real Markdown and the explicit AI training policy", async ({
   request,
 }) => {
+  const sitemap = await request.get("/sitemap.xml");
+  expect(sitemap.ok()).toBe(true);
+  const xml = load(await sitemap.text(), { xml: true });
+  const urls = xml("url > loc")
+    .map((_, node) => xml(node).text())
+    .get();
+  expect(urls.length).toBeGreaterThan(0);
+  for (const path of ["/streaming/border/", "/streaming/thumbnail/"]) {
+    const response = await request.get(path);
+    expect(response.ok()).toBe(true);
+    const page = load(await response.text());
+    expect(page('meta[name="robots"]').attr("content")).toContain("noindex");
+    expect(urls).not.toContain(`https://rehansaeed.com${path}`);
+  }
   const robots = await request.get("/robots.txt");
   expect(robots.ok()).toBe(true);
   expect(await robots.text()).toContain("Content-Usage: train-ai=y");
