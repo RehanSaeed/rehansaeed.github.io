@@ -201,7 +201,7 @@ test.describe("All-pages audit regressions", () => {
     const blocked = new Promise<void>((resolve) => {
       resume = resolve;
     });
-    await page.route("**/*New-Project.png", async (route) => {
+    await page.route("**/*New-Project.avif", async (route) => {
       await blocked;
       await route.continue();
     });
@@ -237,7 +237,7 @@ test.describe("All-pages audit regressions", () => {
   }) => {
     const requests: string[] = [];
     page.on("request", (request) => {
-      if (request.url().includes("/Border.png")) requests.push(request.url());
+      if (request.url().includes("/Border.avif")) requests.push(request.url());
     });
     await page.goto("/wpf-metro-part4-elysium-extra/");
     const image = page.locator('.post__content img[alt$="Borders"]');

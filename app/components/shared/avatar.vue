@@ -6,17 +6,15 @@
     :title="label"
     :href="href"
     :to="to">
-    <picture v-if="src && !imageFailed">
-      <source v-if="avifSource" type="image/avif" :srcset="avifSource" />
-      <img
-        class="avatar__image"
-        :alt="alt"
-        :src="src"
-        :width="sizeInPixels"
-        :height="sizeInPixels"
-        :loading="loading"
-        @error="onImageError" />
-    </picture>
+    <img
+      v-if="src && !imageFailed"
+      class="avatar__image"
+      :alt="alt"
+      :src="avifSource ?? src"
+      :width="sizeInPixels"
+      :height="sizeInPixels"
+      :loading="loading"
+      @error="onImageError" />
     <u-icon v-else class="avatar__fallback" name="fa-solid:user" />
   </Component>
 </template>

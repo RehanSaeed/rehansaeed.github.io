@@ -1,12 +1,11 @@
 <template>
   <nav class="navigation">
     <u-link-button class="navigation__image-container" label="Home" to="/">
-      <NuxtPicture
+      <NuxtImg
         format="avif"
         :alt="metadata.author.name"
-        :img-attrs="{ class: 'navigation__image' }"
-        legacy-format="png"
-        src="/images/author/Muhammad-Rehan-Saeed/Logo-192x192.png"
+        class="navigation__image"
+        src="/images/author/Muhammad-Rehan-Saeed/Logo-192x192.avif"
         width="50"
         sizes="50px"
         height="50" />

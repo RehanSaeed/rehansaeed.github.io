@@ -6,7 +6,7 @@
         <label class="thumbnail-options__label">background</label>
         <input
           class="thumbnail-options__input"
-          placeholder="none|light|dark|/images/hero/Code-1600x900.jpg"
+          placeholder="none|light|dark|/images/hero/Code-1600x900.avif"
           :value="background"
           @input="$emit('update:background', $event.target.value)" />
       </fieldset>
@@ -31,7 +31,7 @@
 
     <h2 class="thumbnail-options__title">Image 1</h2>
     <ul>
-      <li><em>image1</em> - /images/hero/Code-1600x900.jpg</li>
+      <li><em>image1</em> - /images/hero/Code-1600x900.avif</li>
       <li><em>image1-rotate</em> - 0-360</li>
       <li><em>image1-width</em> - 600</li>
       <li><em>image1-height</em> - 600</li>
@@ -41,7 +41,7 @@
 
     <h2 class="thumbnail-options__title">Image 2</h2>
     <ul>
-      <li><em>image2</em> - /images/hero/Code-1600x900.jpg</li>
+      <li><em>image2</em> - /images/hero/Code-1600x900.avif</li>
       <li><em>image2-rotate</em> - 0-360</li>
       <li><em>image2-width</em> - 600</li>
       <li><em>image2-height</em> - 600</li>

@@ -1,18 +1,7 @@
 <template>
-  <NuxtPicture
-    format="avif"
-    v-if="getAvifSource(src)"
-    :legacy-format="src.endsWith('.png') ? 'png' : 'jpg'"
-    :src="src"
-    :alt="alt"
-    :width="width"
-    :height="height"
-    :sizes="contentImageSizes"
-    densities="x1 x2"
-    loading="lazy" />
   <NuxtImg
-    v-else
-    :src="src"
+    :src="getAvifSource(src) ?? src"
+    :format="getAvifSource(src) || src.endsWith('.avif') ? 'avif' : undefined"
     :alt="alt"
     :width="width"
     :height="height"

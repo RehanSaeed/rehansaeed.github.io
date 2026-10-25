@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import { getAvifSource } from "#shared/utils/images";
+
 export default {
   data() {
     return {
@@ -28,7 +30,7 @@ export default {
     backgroundImage() {
       return this.background?.startsWith("/") ||
         this.background?.startsWith("http")
-        ? `url("${this.background}")`
+        ? `url("${getAvifSource(this.background) ?? this.background}")`
         : "";
     },
   },

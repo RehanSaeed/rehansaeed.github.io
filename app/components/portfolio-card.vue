@@ -7,13 +7,12 @@
     hoverable
     focusable>
     <figure class="portfolio-card__header">
-      <NuxtPicture
+      <NuxtImg
         format="avif"
         :alt="portfolio.title"
         v-if="portfolio.heroImage"
-        :img-attrs="{ class: 'portfolio-card__image' }"
-        :legacy-format="portfolio.heroImage.endsWith('.png') ? 'png' : 'jpg'"
-        :src="portfolio.heroImage"
+        class="portfolio-card__image"
+        :src="getAvifSource(portfolio.heroImage) ?? portfolio.heroImage"
         :width="imageMeta.width"
         :height="imageMeta.height"
         :sizes="contentImageSizes"
@@ -83,7 +82,7 @@
 
 <script>
 import { getImageMetadata } from "~/framework/images.js";
-import { contentImageSizes } from "#shared/utils/images";
+import { contentImageSizes, getAvifSource } from "#shared/utils/images";
 
 export default {
   name: "u-portfolio-card",
@@ -101,6 +100,7 @@ export default {
       return getImageMetadata(this.portfolio.heroImage);
     },
   },
+  methods: { getAvifSource },
 };
 </script>
 

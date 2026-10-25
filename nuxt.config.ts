@@ -266,15 +266,18 @@ export default defineNuxtConfig({
       clientsClaim: true,
       importScripts: ["/service-worker-update-policy.js"],
       globPatterns: [
-        "**/*.{js,json,css,html,png,jpg,jpeg,svg,gif,woff2,webp,avif}",
+        "**/*.{js,json,css,html,svg,gif,woff2,webp,avif}",
+        // Installation assets still need PNG compatibility, not browser content fallbacks.
+        "favicon.png",
+        "images/icons/**/*.png",
+        "images/screenshots/**/*.png",
       ],
       globIgnores: [
         "images/items/**/*",
         "images/reactions/**/*",
         "images/thumbnails/**/*",
-        // Originals only used by the feeds and social meta. Pages use the /_ipx/ resized copies.
+        // Markdown uses responsive copies; runtime search also needs plain hero AVIFs.
         "content-images/**/*",
-        "images/hero/**/*",
         // Social cards are not needed to read the complete blog offline.
         "_og/**/*",
         "_og-static-fonts/**/*",

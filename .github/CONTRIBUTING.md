@@ -21,16 +21,20 @@ use `.jpg`, not `.jpeg`. After adding or changing an image in `public/` or
 `content/`, run `npm run images:avif` and commit the generated `.avif` companions
 alongside the originals (for example, `photo.jpg` becomes `photo.avif`).
 When PNG and JPG originals share a basename, generate one shared AVIF from the
-PNG and retain both originals as fallbacks. The command preserves the chosen
-source's dimensions and transparency, auto-orients photos and strips metadata.
+PNG and retain both originals for authoring and compatibility. These quality-60
+AVIF files are lossy delivery sources, not archival masters. The command preserves
+the chosen source's dimensions and transparency, auto-orients photos and strips metadata.
 
-Use Nuxt Image's `NuxtPicture` for responsive images, with `format="avif"` and
-`legacy-format="png"` or `legacy-format="jpg"` matching the original.
-Use native `<picture>` elements and `getAvifSource` for images chosen at
-runtime (such as search results), so their pre-generated AVIF companions work on
-static hosting without a runtime image server. Keep SVGs and remote images in
-their original formats, and retain PNG/JPG URLs in feeds, social metadata,
-favicons and the web app manifest for compatibility.
+Use Nuxt Image's `NuxtImg` for responsive images, with `format="avif"` and an
+AVIF source. Use native `<img>` elements and `getAvifSource(src) ?? src` for images
+chosen at runtime (such as search results), so their pre-generated AVIF files work
+on static hosting without a runtime image server. Normal local PNG/JPG content is
+delivered as AVIF only: browsers without AVIF support have no raster fallback.
+Keep SVGs and remote images in their original formats, and retain PNG/JPG URLs in feeds, social metadata,
+favicons and the web app manifest for compatibility. Originals remain deployed
+where feeds, image links and compatibility consumers can require them; they are
+not precached as content fallbacks. Only PNG installation assets (favicons,
+app icons and manifest screenshots) are precached alongside AVIF content.
 
 ## Dependency updates
 

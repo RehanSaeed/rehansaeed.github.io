@@ -7,16 +7,13 @@
     focusable
     :class="{ 'post-card--has-poster': post.poster }">
     <div class="post-card__header">
-      <NuxtPicture
+      <NuxtImg
         format="avif"
         v-if="post.heroImage"
-        :img-attrs="{
-          class: 'post-card__image',
-          fetchpriority: priority ? 'high' : undefined,
-        }"
-        :legacy-format="post.heroImage.endsWith('.png') ? 'png' : 'jpg'"
+        class="post-card__image"
+        :fetchpriority="priority ? 'high' : undefined"
         :alt="imageMeta.alt"
-        :src="post.heroImage"
+        :src="getAvifSource(post.heroImage) ?? post.heroImage"
         :width="imageMeta.width"
         :height="imageMeta.height"
         :sizes="contentImageSizes"
@@ -41,7 +38,7 @@
 
 <script>
 import { getImageMetadata } from "~/framework/images.js";
-import { contentImageSizes } from "#shared/utils/images";
+import { contentImageSizes, getAvifSource } from "#shared/utils/images";
 
 export default {
   name: "u-post-card",
@@ -62,6 +59,7 @@ export default {
       return getImageMetadata(this.post.heroImage);
     },
   },
+  methods: { getAvifSource },
 };
 </script>
 

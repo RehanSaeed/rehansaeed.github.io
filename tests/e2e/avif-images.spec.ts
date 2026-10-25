@@ -74,7 +74,7 @@ unitTest(
 );
 
 unitTest(
-  "Generated responsive pictures prefer AVIF and retain PNG/JPG fallback srcsets",
+  "Generated responsive images use AVIF sources without picture fallbacks",
   async () => {
     for (const path of [
       "/",
@@ -83,22 +83,81 @@ unitTest(
       "/gitattributes-best-practices/",
     ]) {
       const $ = load(await readFile(join("dist", path, "index.html"), "utf8"));
-      const images = $("img[data-nuxt-pic]");
+      const images = $("img[data-nuxt-img]").filter((_, element) =>
+        ($(element).attr("src") ?? "").includes("f_avif"),
+      );
       expect(images.length, path).toBeGreaterThan(0);
+      expect($("picture").length, path).toBe(0);
       for (const element of images) {
         const image = $(element);
-        const source = image.parent("picture").children("source");
-        expect(source.length, path).toBe(1);
-        expect(source.attr("type"), path).toBe("image/avif");
-        expect(source.attr("srcset"), path).toContain("f_avif");
-        expect(image.attr("src"), path).toMatch(/f_(png|jpg)[,&/]/);
+        expect(image.attr("src"), path).toMatch(/f_avif[,&/]/);
+        expect(image.attr("src"), path).toMatch(/\.avif$/);
+        expect(image.attr("srcset"), path).not.toMatch(
+          /\.(png|jpe?g)(?:[ ,]|$)/,
+        );
         expect(image.attr("srcset"), path).toMatch(/\d+[wx]/);
       }
     }
   },
 );
 
-test("Browsers choose AVIF for responsive pictures", async ({ page }) => {
+unitTest(
+  "Every generated page delivers local raster content as AVIF",
+  async () => {
+    const files = await listFiles("dist");
+    let count = 0;
+    for (const file of files.filter((file) => file.endsWith(".html"))) {
+      const $ = load(await readFile(join("dist", file), "utf8"));
+      expect($("picture").length, file).toBe(0);
+      for (const element of $("img")) {
+        const image = $(element);
+        const src = image.attr("src") ?? "";
+        if (!src.startsWith("/") || src.startsWith("//")) continue;
+        expect(src, `${file}: ${src}`).not.toMatch(/\.(png|jpe?g)(?:[?#]|$)/i);
+        expect(image.attr("srcset") ?? "", file).not.toMatch(
+          /\.(png|jpe?g)(?:[ ?,]|$)/i,
+        );
+        count++;
+      }
+      for (const element of $('link[rel="preload"][as="image"]')) {
+        expect($(element).attr("href"), file).toMatch(/\.avif$/);
+        expect($(element).attr("imagesrcset"), file).not.toMatch(
+          /\.(png|jpg) /,
+        );
+      }
+    }
+    expect(count).toBeGreaterThan(1000);
+  },
+);
+
+for (const deviceScaleFactor of [1, 2]) {
+  test.describe(`Intrinsic portrait at ${deviceScaleFactor}x density`, () => {
+    test.use({ deviceScaleFactor });
+    test("Retains the former picture's intrinsic grid frame", async ({
+      page,
+    }) => {
+      await page.goto("/about/");
+      const portrait = page.locator(".about__image");
+      await expect
+        .poll(() =>
+          portrait.evaluate(
+            (image: HTMLImageElement) =>
+              image.complete && image.naturalWidth > 0,
+          ),
+        )
+        .toBe(true);
+      const dimensions = await portrait.evaluate((image: HTMLImageElement) => ({
+        width: image.getBoundingClientRect().width,
+        intrinsic: image.naturalWidth,
+      }));
+      expect(dimensions.width).toBe(Math.min(320, dimensions.intrinsic));
+    });
+  });
+}
+
+test("Browsers load responsive AVIF with hero priority preserved", async ({
+  page,
+}) => {
   await page.goto("/gitattributes-best-practices/");
   const image = page.locator(".post__photo");
   await expect
@@ -134,7 +193,7 @@ test("About award sources match their CSS widths without changing their frames",
     await expect(badge).toHaveCSS("width", `${width}px`);
     await expect(badge).toHaveCSS("height", "150px");
     await expect(badge).toHaveAttribute("sizes", `${width}px`);
-    const source = badge.locator("..").locator("source");
+    const source = badge;
     await expect(source).toHaveAttribute("sizes", `${width}px`);
     await expect(source).toHaveAttribute(
       "srcset",
@@ -148,13 +207,15 @@ test("About award sources match their CSS widths without changing their frames",
   const honours = page.locator(".about__open-uk-honours-image");
   await expect(honours).toHaveCSS("width", "322px");
   await expect(honours).toHaveAttribute("sizes", "322px");
-  await expect(honours.locator("..").locator("source")).toHaveAttribute(
+  await expect(honours).toHaveAttribute(
     "srcset",
     /s_322x99.* 322w.*s_644x198.* 644w/,
   );
 });
 
-test("Picture wrappers use block layout across the site", async ({ page }) => {
+test("Images retain block layout without picture wrappers", async ({
+  page,
+}) => {
   for (const path of [
     "/",
     "/about/",
@@ -163,10 +224,11 @@ test("Picture wrappers use block layout across the site", async ({ page }) => {
   ]) {
     await page.goto(path);
     const displays = await page
-      .locator("picture")
-      .evaluateAll((pictures) =>
-        pictures.map((picture) => getComputedStyle(picture).display),
+      .locator("img[data-nuxt-img]")
+      .evaluateAll((images) =>
+        images.map((image) => getComputedStyle(image).display),
       );
+    await expect(page.locator("picture")).toHaveCount(0);
     expect(displays.length, path).toBeGreaterThan(0);
     expect(
       displays.every((display) => display === "block"),
@@ -184,9 +246,8 @@ test("Runtime search results load pre-generated AVIF without an image server", a
     .getByRole("searchbox", { name: "Search", exact: true })
     .fill("Schema.NET");
   const image = page.locator(".search-result__image").first();
-  const picture = page.locator(".search-result__picture").first();
-  await expect(picture).toHaveCSS("display", "block");
-  await expect(picture).toHaveCSS("grid-area", "image");
+  await expect(image).toHaveCSS("display", "block");
+  await expect(image).toHaveCSS("grid-area", "image");
   await expect
     .poll(() =>
       image.evaluate(
@@ -206,7 +267,7 @@ test("Runtime search results load pre-generated AVIF without an image server", a
   expect(imageBox!.x + imageBox!.width).toBeLessThanOrEqual(titleBox!.x);
 });
 
-test("PNG/JPG thumbnail pairs share one AVIF and retain their original fallbacks", async ({
+test("PNG/JPG thumbnail inputs resolve to the same AVIF-only image", async ({
   page,
 }) => {
   const basename = "/images/thumbnails/Blank";
@@ -214,13 +275,18 @@ test("PNG/JPG thumbnail pairs share one AVIF and retain their original fallbacks
     `/streaming/thumbnail/?${new URLSearchParams({
       image1: `${basename}.png`,
       image2: `${basename}.jpg`,
+      background: "/images/hero/Code-1600x900.jpg",
     })}`,
   );
-  for (const [index, format] of ["png", "jpg"].entries()) {
+  await expect(page.locator(".thumbnail")).toHaveCSS(
+    "background-image",
+    /\/images\/hero\/Code-1600x900\.avif/,
+  );
+  for (const index of [0, 1]) {
     const image = page.locator(`img.thumbnail__image${index + 1}`);
-    await expect(image.locator("..")).toHaveCSS("display", "block");
-    await expect(image.locator("..")).toHaveCSS("grid-area", "content");
-    await expect(image).toHaveAttribute("src", `${basename}.${format}`);
+    await expect(image).toHaveCSS("display", "block");
+    await expect(image).toHaveCSS("grid-area", "content");
+    await expect(image).toHaveAttribute("src", `${basename}.avif`);
     await expect
       .poll(() =>
         image.evaluate(
@@ -235,38 +301,131 @@ test("PNG/JPG thumbnail pairs share one AVIF and retain their original fallbacks
   }
 });
 
-test.describe("Native fallback without JavaScript", () => {
+test("Runtime thumbnails preserve SVGs and third-party image URLs", async ({
+  page,
+}) => {
+  const remote = "https://example.com/photo.jpg";
+  await page.route(remote, (route) =>
+    route.fulfill({
+      contentType: "image/svg+xml",
+      body: '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><rect width="32" height="32" fill="purple"/></svg>',
+    }),
+  );
+  await page.goto(
+    `/streaming/thumbnail/?${new URLSearchParams({
+      image1: "/favicon.svg",
+      image2: remote,
+      background: remote,
+    })}`,
+  );
+  await expect(page.locator("img.thumbnail__image1")).toHaveAttribute(
+    "src",
+    "/favicon.svg",
+  );
+  const image = page.locator("img.thumbnail__image2");
+  await expect(image).toHaveAttribute("src", remote);
+  await expect
+    .poll(() =>
+      image.evaluate(
+        (element: HTMLImageElement) =>
+          element.complete && element.naturalWidth > 0,
+      ),
+    )
+    .toBe(true);
+  await expect(page.locator(".thumbnail")).toHaveCSS(
+    "background-image",
+    `url("${remote}")`,
+  );
+});
+
+test.describe("AVIF-only delivery without JavaScript", () => {
   test.use({ javaScriptEnabled: false });
-  for (const [path, format] of [
-    ["/gitattributes-best-practices/", "png"],
-    ["/on-the-etiquette-of-pull-request-comments/", "jpg"],
-  ] as const) {
-    test(`Browsers skip unsupported formats and load the ${format.toUpperCase()} fallback`, async ({
-      page,
-    }) => {
-      await page.route(`**${path}`, async (route) => {
-        const response = await route.fetch();
-        await route.fulfill({
-          response,
-          body: (await response.text()).replaceAll(
-            'type="image/avif"',
-            'type="image/unsupported"',
-          ),
-        });
-      });
+  for (const path of [
+    "/gitattributes-best-practices/",
+    "/on-the-etiquette-of-pull-request-comments/",
+  ]) {
+    test(`Loads AVIF without scripts on ${path}`, async ({ page }) => {
       await page.goto(path);
       const image = page.locator(".post__photo");
       await expect
         .poll(() =>
           image.evaluate(
-            (element: HTMLImageElement, format) =>
+            (element: HTMLImageElement) =>
               element.complete &&
               element.naturalWidth > 0 &&
-              element.currentSrc.includes(`f_${format}`),
-            format,
+              element.currentSrc.includes("f_avif"),
           ),
         )
         .toBe(true);
     });
   }
+});
+
+unitTest(
+  "Precache retains PNG installation assets but no PNG/JPG content fallbacks",
+  async () => {
+    const worker = await readFile(join("dist", "service-worker.js"), "utf8");
+    const urls = [...worker.matchAll(/\burl:"([^"]+)"/g)].map(
+      (match) => match[1]!,
+    );
+    expect(urls.length).toBeGreaterThan(1000);
+    const rasters = urls.filter((url) => /\.(png|jpe?g)$/i.test(url));
+    expect(rasters.length).toBeGreaterThan(0);
+    for (const url of rasters) {
+      expect(url).toMatch(
+        /^(?:favicon\.png|images\/(?:icons|screenshots)\/.+\.png)$/,
+      );
+    }
+    expect(urls).toContain("images/hero/Schema.NET-1366x768.avif");
+    expect(
+      urls.some((url) => url.startsWith("_ipx/") && url.includes("f_avif")),
+    ).toBe(true);
+  },
+);
+
+// Keep routing fixtures out of the real service-worker navigation check.
+unitTest.describe("Offline AVIF content", () => {
+  unitTest.use({ serviceWorkers: "allow" });
+  unitTest(
+    "A fresh offline page and runtime search need no PNG/JPG content",
+    async ({ page, context }) => {
+      test.setTimeout(120_000);
+      await page.goto("/");
+      await page.evaluate(async () => {
+        await navigator.serviceWorker.register("/service-worker.js");
+        await navigator.serviceWorker.ready;
+      });
+      await expect
+        .poll(() => page.evaluate(() => !!navigator.serviceWorker.controller))
+        .toBe(true);
+      await context.setOffline(true);
+      await page.goto("/gitattributes-best-practices/");
+      const hero = page.locator(".post__photo");
+      await expect
+        .poll(() =>
+          hero.evaluate(
+            (image: HTMLImageElement) =>
+              image.complete &&
+              image.naturalWidth > 0 &&
+              image.currentSrc.includes("f_avif"),
+          ),
+        )
+        .toBe(true);
+      await page.getByRole("button", { name: "Open search" }).click();
+      await page
+        .getByRole("searchbox", { name: "Search", exact: true })
+        .fill("Schema.NET");
+      const result = page.locator(".search-result__image").first();
+      await expect
+        .poll(() =>
+          result.evaluate(
+            (image: HTMLImageElement) =>
+              image.complete &&
+              image.naturalWidth > 0 &&
+              image.currentSrc.endsWith(".avif"),
+          ),
+        )
+        .toBe(true);
+    },
+  );
 });

@@ -1,20 +1,18 @@
 <template>
-  <picture v-if="image" class="thumbnail-image__picture">
-    <source v-if="avifSource" type="image/avif" :srcset="avifSource" />
-    <img
-      v-bind="$attrs"
-      class="thumbnail-image"
-      :src="image"
-      :style="{
-        rotate: imageRotateDegrees,
-        'inline-size': toPx(imageWidth),
-        'block-size': toPx(imageHeight),
-        'inset-inline-start': toPx(imageX),
-        'inset-block-start': toPx(imageY),
-      }"
-      :width="imageWidth"
-      :height="imageHeight" />
-  </picture>
+  <img
+    v-if="image"
+    v-bind="$attrs"
+    class="thumbnail-image"
+    :src="avifSource ?? image"
+    :style="{
+      rotate: imageRotateDegrees,
+      'inline-size': toPx(imageWidth),
+      'block-size': toPx(imageHeight),
+      'inset-inline-start': toPx(imageX),
+      'inset-block-start': toPx(imageY),
+    }"
+    :width="imageWidth"
+    :height="imageHeight" />
 </template>
 
 <script>
@@ -63,11 +61,8 @@ export default {
 </script>
 
 <style lang="scss">
-.thumbnail-image__picture {
-  grid-area: content;
-}
-
 .thumbnail-image {
+  grid-area: content;
   filter: drop-shadow(
       0 0 var(--global-space-fluid-3) var(--global-background-color)
     )

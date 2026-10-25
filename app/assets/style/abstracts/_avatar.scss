@@ -15,13 +15,7 @@
     transition: border-color var(--global-duration-3) ease-out;
   }
 
-  > picture {
-    inline-size: 100%;
-    block-size: 100%;
-  }
-
-  > img,
-  > picture > img {
+  > img {
     display: block;
     object-fit: cover;
     inline-size: 100%;
