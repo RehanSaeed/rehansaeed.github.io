@@ -10,6 +10,12 @@ test.describe("Smoke", () => {
       page,
       request,
     }) => {
+      const iconRequests: string[] = [];
+      page.on("request", (request) => {
+        if (/iconify|_nuxt_icon/.test(request.url())) {
+          iconRequests.push(request.url());
+        }
+      });
       const response = await request.get("/");
       expect(response.ok()).toBe(true);
       const $ = load(await response.text());
@@ -30,6 +36,12 @@ test.describe("Smoke", () => {
       await expect(link).toBeVisible();
       await expect(link).toHaveAttribute("href", url);
       await expect(link).toHaveAttribute("rel", "me");
+      await expect(link.locator("svg.icon")).toBeVisible();
+      await expect(link.locator("svg.icon")).toHaveAttribute(
+        "aria-hidden",
+        "true",
+      );
+      await expect(link.locator("svg.icon path")).not.toHaveCount(0);
 
       await page
         .locator("nav")
@@ -44,6 +56,8 @@ test.describe("Smoke", () => {
           exact: true,
         }),
       ).toHaveAttribute("href", url);
+      await expect(link.locator("svg.icon path")).not.toHaveCount(0);
+      expect(iconRequests).toEqual([]);
     });
   }
 
