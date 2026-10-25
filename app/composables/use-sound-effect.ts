@@ -9,7 +9,7 @@ export type SoundEffect = (typeof soundNames)[number];
 
 export function useSoundEffect() {
   const app = useNuxtApp();
-  const enabled = useState("sound-effect-enabled", () => false);
+  const enabled = useState("sound-effect-enabled", () => true);
   const error = useState("sound-effect-error", () => "");
 
   return {

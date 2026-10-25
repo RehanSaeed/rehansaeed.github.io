@@ -29,9 +29,9 @@
       >
     </div>
     <div class="navigation__items-right">
-      <u-sound-button class="navigation__sound" />
       <u-search-button class="navigation__search" />
       <u-theme-button class="navigation__toggle-theme" />
+      <u-sound-button class="navigation__sound" />
       <u-install-button class="navigation__install" />
     </div>
   </nav>

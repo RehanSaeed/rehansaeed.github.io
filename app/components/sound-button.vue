@@ -6,21 +6,12 @@
       :aria-pressed="enabled"
       :title="enabled ? 'Turn sound effects off' : 'Turn sound effects on'"
       @click="setEnabled(!enabled)">
-      <svg
-        aria-hidden="true"
-        focusable="false"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round">
-        <path d="M11 5 6 9H3v6h3l5 4z" />
-        <template v-if="enabled">
-          <path d="M15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14" />
-        </template>
-        <path v-else d="m16 9 5 6m0-6-5 6" />
-      </svg>
+      <u-icon
+        class="sound-control__icon sound-control__on"
+        name="feather:volume-2" />
+      <u-icon
+        class="sound-control__icon sound-control__off"
+        name="feather:volume-x" />
     </u-button>
     <p v-if="error" class="sound-control__error" role="status">{{ error }}</p>
   </div>
@@ -28,6 +19,7 @@
 
 <script setup lang="ts">
 import UButton from "~/components/shared/button.vue";
+import UIcon from "~/components/shared/icon.vue";
 
 const { enabled, error, setEnabled } = useSoundEffect();
 </script>
@@ -38,13 +30,60 @@ const { enabled, error, setEnabled } = useSoundEffect();
 }
 
 .sound-control__button {
-  display: block;
+  display: grid;
   font-size: var(--global-font-size-4);
 
-  svg {
-    display: block;
-    inline-size: 1em;
-    block-size: 1em;
+  &.button,
+  &.button.button--hydrating:disabled {
+    color: var(--global-accent-color);
+  }
+
+  &.button.button--hydrating:disabled {
+    transform: none;
+  }
+
+  .sound-control__icon {
+    grid-area: 1 / 1;
+  }
+
+  .sound-control__off {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.4);
+    visibility: hidden;
+  }
+}
+
+.sound-control__button[aria-pressed="false"] {
+  .sound-control__on {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.4);
+    visibility: hidden;
+  }
+
+  .sound-control__off {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+    visibility: visible;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sound-control__button .sound-control__icon {
+    transition:
+      opacity var(--global-duration-3) var(--ease-in-out-cubic),
+      transform var(--global-duration-3) var(--ease-in-out-cubic),
+      visibility var(--global-duration-3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sound-control__button.button {
+    transition: none;
+
+    &:hover,
+    &:focus {
+      transform: none;
+    }
   }
 }
 
