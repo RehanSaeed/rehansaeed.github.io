@@ -74,7 +74,9 @@ unitTest(
     for (const file of files) {
       const $ = load(readFileSync(join(root, file), "utf8"));
       expect($("main").length, file).toBe(1);
-      $("ul[role=list], ol[role=list]").each((_, list) => {
+      $(
+        "ul[role=list], ol[role=list], ul.list-unstyled, ol.list-unstyled",
+      ).each((_, list) => {
         expect(
           $(list).children(":not(li)").length,
           `${file}: list children`,
@@ -99,11 +101,12 @@ unitTest(
         expect($(pager).is('nav[aria-label="Pagination"]'), file).toBe(true);
         expect($(pager).find("a:not([href]), a[href='']").length, file).toBe(0);
       });
-      $(".posts__items, .tag-page__items, .portfolio__items, .tags").each(
-        (_, list) => {
-          expect($(list).is('ul[role="list"]'), file).toBe(true);
-        },
-      );
+      $(".posts__items, .portfolio__items, .tags").each((_, list) => {
+        expect($(list).is('ul[role="list"]'), file).toBe(true);
+      });
+      $(".tag-page__items").each((_, list) => {
+        expect($(list).is("ul.list-unstyled:not([role])"), file).toBe(true);
+      });
       $(".comments, .webmentions").each((_, region) => {
         expect($(region).is("section[aria-labelledby]"), file).toBe(true);
       });
