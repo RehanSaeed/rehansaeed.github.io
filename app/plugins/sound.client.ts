@@ -3,7 +3,7 @@ import { soundNames, type SoundEffect } from "~/composables/use-sound-effect";
 const preferenceKey = "sound-effect-enabled";
 
 export default defineNuxtPlugin((app) => {
-  const enabled = useState("sound-effect-enabled", () => false);
+  const enabled = useState("sound-effect-enabled", () => true);
   const error = useState("sound-effect-error", () => "");
   const sounds = new Map<SoundEffect, AudioBuffer>();
   const loading = new Map<SoundEffect, AbortController>();
@@ -12,6 +12,7 @@ export default defineNuxtPlugin((app) => {
   let activeSource: AudioBufferSourceNode | undefined;
   let disposed = false;
   let preferenceChanged = false;
+  let preferenceVersion = 0;
 
   function report(message: string, cause: unknown) {
     console.warn(`[sound-effect] ${message}`, cause);
@@ -58,7 +59,7 @@ export default defineNuxtPlugin((app) => {
     }
   }
 
-  function prepare() {
+  async function prepare() {
     try {
       if (!context) {
         const audio = new AudioContext();
@@ -68,9 +69,13 @@ export default defineNuxtPlugin((app) => {
         context = audio;
         volume = gain;
       }
+      const pending = [];
       for (const name of soundNames) {
-        if (!sounds.has(name) && !loading.has(name)) void load(name, context);
+        if (!sounds.has(name) && !loading.has(name)) {
+          pending.push(load(name, context));
+        }
       }
+      await Promise.all(pending);
     } catch (cause) {
       report("Sound effects could not be initialized in this browser.", cause);
     }
@@ -86,7 +91,7 @@ export default defineNuxtPlugin((app) => {
     ) {
       return;
     }
-    void context.resume().catch((cause: unknown) => {
+    return context.resume().catch((cause: unknown) => {
       if (!disposed && enabled.value) {
         report(
           "Sound playback was blocked. Try another click or turn sound effects off.",
@@ -98,13 +103,20 @@ export default defineNuxtPlugin((app) => {
 
   function setEnabled(value: boolean, persist = true) {
     if (disposed) return;
+    const confirm = persist && value && !enabled.value;
+    const version = ++preferenceVersion;
     if (persist) preferenceChanged = true;
     enabled.value = value;
     error.value = "";
     if (value) {
       abortLoads();
-      prepare();
-      if (persist) unlock();
+      const prepared = prepare();
+      const unlocked = persist ? unlock() : undefined;
+      if (confirm) {
+        void Promise.all([prepared, unlocked]).then(() => {
+          if (version === preferenceVersion) play("toggle-on");
+        });
+      }
     } else {
       stop();
     }
@@ -155,7 +167,7 @@ export default defineNuxtPlugin((app) => {
       event.storageArea === localStorage &&
       (event.key === preferenceKey || event.key === null)
     ) {
-      setEnabled(event.newValue === "true", false);
+      setEnabled(event.newValue !== "false", false);
     }
   }
 
@@ -165,9 +177,10 @@ export default defineNuxtPlugin((app) => {
     try {
       // The user may interact before Nuxt's idle callback restores storage.
       if (!preferenceChanged) {
-        setEnabled(localStorage.getItem(preferenceKey) === "true", false);
+        setEnabled(localStorage.getItem(preferenceKey) !== "false", false);
       }
     } catch (cause) {
+      setEnabled(false, false);
       report(
         "Your sound preference could not be read. Sound effects are off.",
         cause,

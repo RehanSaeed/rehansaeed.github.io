@@ -33,9 +33,28 @@ async function ready(page: Page) {
 }
 
 async function enable(page: Page) {
-  await soundToggle(page).click();
+  await expect(soundToggle(page)).toBeEnabled();
+  if ((await soundToggle(page).getAttribute("aria-pressed")) === "false") {
+    await soundToggle(page).click();
+  }
   await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "true");
   await ready(page);
+}
+
+async function expectSoundState(page: Page, enabled: boolean) {
+  const button = soundToggle(page);
+  await expect(button).toHaveAttribute("aria-pressed", String(enabled));
+  await expect(button).toHaveAttribute(
+    "title",
+    `Turn sound effects ${enabled ? "off" : "on"}`,
+  );
+  await expect(
+    button.locator(`.sound-control__${enabled ? "on" : "off"}`),
+  ).toHaveCSS("opacity", "1");
+  await expect(
+    button.locator(`.sound-control__${enabled ? "off" : "on"}`),
+  ).toBeHidden();
+  await expect(button.locator("svg:visible")).toHaveCount(1);
 }
 
 test.beforeEach(async ({ page }) => {
@@ -86,15 +105,37 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test("Remains silent and does not request samples until explicitly enabled", async ({
+test("Defaults to on without autoplay, and interaction plays a cue", async ({
   page,
 }) => {
+  await page.goto("/");
+  await expectSoundState(page, true);
+  await expect
+    .poll(() => page.evaluate(() => window.soundProbe.decoded))
+    .toBe(4);
+  expect(await playback(page)).toEqual([]);
+  expect(
+    await page.evaluate(() => localStorage.getItem("sound-effect-enabled")),
+  ).toBeNull();
+  await ready(page);
+  await themeToggle(page).click();
+  await expect.poll(() => playback(page)).toHaveLength(1);
+});
+
+test("A saved mute stays silent and requests no samples until enabled", async ({
+  page,
+}) => {
+  await page.addInitScript(() =>
+    localStorage.setItem("sound-effect-enabled", "false"),
+  );
   const requests: string[] = [];
   page.on("request", (request) => {
     if (request.url().includes("/sounds/")) requests.push(request.url());
   });
   await page.goto("/");
   await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "false");
+  await page.reload();
+  await expectSoundState(page, false);
   await themeToggle(page).click();
   await page.getByRole("button", { name: "Open search", exact: true }).click();
   await page.getByRole("button", { name: "Close Search", exact: true }).click();
@@ -104,7 +145,7 @@ test("Remains silent and does not request samples until explicitly enabled", asy
 
   await enable(page);
   expect(requests).toHaveLength(4);
-  expect(await playback(page)).toEqual([]);
+  await expect.poll(() => playback(page)).toHaveLength(1);
 });
 
 test("Hydration guards the sound toggle", async ({ page }) => {
@@ -112,7 +153,7 @@ test("Hydration guards the sound toggle", async ({ page }) => {
   try {
     await page.goto("/", { waitUntil: "commit" });
     await expect(soundToggle(page)).toBeDisabled();
-    await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "false");
+    await expectSoundState(page, true);
     scripts.resume();
     await expect(soundToggle(page)).toBeEnabled();
   } finally {
@@ -123,7 +164,11 @@ test("Hydration guards the sound toggle", async ({ page }) => {
 test("Unavailable Web Audio is reported without breaking controls", async ({
   page,
 }) => {
+  await page.addInitScript(() =>
+    localStorage.setItem("sound-effect-enabled", "false"),
+  );
   await page.goto("/");
+  await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "false");
   await page.evaluate(() => {
     Object.defineProperty(window, "AudioContext", { value: undefined });
   });
@@ -142,7 +187,7 @@ test("Unavailable Web Audio is reported without breaking controls", async ({
   await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "false");
 });
 
-test("An early opt-in is not restarted by delayed preference restoration", async ({
+test("Early preference changes are not restarted by delayed restoration", async ({
   page,
 }) => {
   await page.addInitScript(() => {
@@ -167,6 +212,7 @@ test("An early opt-in is not restarted by delayed preference restoration", async
   try {
     await page.goto("/");
     await soundToggle(page).click();
+    await soundToggle(page).click();
     await expect.poll(() => requests.length).toBe(4);
     await page.evaluate(() =>
       window.dispatchEvent(new Event("sound-test:idle")),
@@ -174,9 +220,191 @@ test("An early opt-in is not restarted by delayed preference restoration", async
     release();
     await ready(page);
     expect(requests).toHaveLength(4);
+    await expect.poll(() => playback(page)).toHaveLength(1);
     await expect(page.locator(".sound-control__error")).toBeHidden();
     await themeToggle(page).click();
+    await expect.poll(() => playback(page)).toHaveLength(2);
+  } finally {
+    release();
+  }
+});
+
+test("An early mute survives delayed preference restoration without loading audio", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const callbacks: IdleRequestCallback[] = [];
+    window.requestIdleCallback = (callback) => callbacks.push(callback);
+    window.addEventListener("sound-test:idle", () => {
+      for (const callback of callbacks.splice(0)) {
+        callback({ didTimeout: false, timeRemaining: () => 50 });
+      }
+    });
+  });
+  const requests: string[] = [];
+  page.on("request", (request) => {
+    if (request.url().includes("/sounds/")) requests.push(request.url());
+  });
+  await page.goto("/");
+  await soundToggle(page).click();
+  await expectSoundState(page, false);
+  await page.evaluate(() => window.dispatchEvent(new Event("sound-test:idle")));
+  await themeToggle(page).click();
+  await expectSoundState(page, false);
+  expect(requests).toEqual([]);
+  expect(await playback(page)).toEqual([]);
+  expect(await page.evaluate(() => !!window.soundProbe.context)).toBe(false);
+});
+
+test("Sound icons animate in both directions without replacing SVGs", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/");
+  const button = soundToggle(page);
+  await expect(button).toBeEnabled();
+  await expectSoundState(page, true);
+  const icons = await button.locator("svg").elementHandles();
+  expect(icons).toHaveLength(2);
+  for (const icon of await button.locator("svg").all()) {
+    await expect(icon).toHaveAttribute("aria-hidden", "true");
+    await expect(icon.locator("path, line, polyline")).not.toHaveCount(0);
+    expect(
+      await icon.evaluate((element) => ({
+        duration: getComputedStyle(element).transitionDuration,
+        easing: getComputedStyle(element).transitionTimingFunction,
+      })),
+    ).toEqual(
+      await page.locator(".theme-button__moon").evaluate((element) => ({
+        duration: getComputedStyle(element).transitionDuration,
+        easing: getComputedStyle(element).transitionTimingFunction,
+      })),
+    );
+  }
+  for (const enabled of [false, true]) {
+    const frame = await button.evaluate(async (element) => {
+      if (!(element instanceof HTMLButtonElement))
+        throw new Error("Expected a native sound button");
+      element.click();
+      await new Promise(requestAnimationFrame);
+      const animations = element.getAnimations({ subtree: true });
+      for (const animation of animations) {
+        animation.pause();
+        animation.currentTime =
+          Number(animation.effect!.getTiming().duration) / 2;
+      }
+      return {
+        properties: animations
+          .filter(
+            (animation): animation is CSSTransition =>
+              animation instanceof CSSTransition,
+          )
+          .map((animation) => animation.transitionProperty),
+        icons: Array.from(element.querySelectorAll("svg"), (icon) => ({
+          opacity: Number(getComputedStyle(icon).opacity),
+          transform: getComputedStyle(icon).transform,
+        })),
+      };
+    });
+    expect(frame.properties).toEqual(
+      expect.arrayContaining(["opacity", "transform"]),
+    );
+    for (const icon of frame.icons) {
+      expect(icon.opacity).toBeGreaterThan(0);
+      expect(icon.opacity).toBeLessThan(1);
+      expect(icon.transform).not.toBe("none");
+      expect(icon.transform).not.toBe("matrix(1, 0, 0, 1, 0, 0)");
+    }
+    await button.evaluate((element) => {
+      for (const animation of element.getAnimations({ subtree: true }))
+        animation.finish();
+    });
+    await expectSoundState(page, enabled);
+    for (const icon of icons) {
+      expect(await icon.evaluate((element) => element.isConnected)).toBe(true);
+    }
+  }
+});
+
+test("Rapid keyboard toggles keep focus and persist the final mute", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/");
+  const button = soundToggle(page);
+  await expect(button).toBeEnabled();
+  await button.focus();
+  await page.keyboard.press("Enter");
+  await page.keyboard.press("Space");
+  await page.keyboard.press("Enter");
+  await expectSoundState(page, false);
+  await expect(button).toBeFocused();
+  await page.reload();
+  await expectSoundState(page, false);
+});
+
+test("Reduced motion changes the sound icon instantly without animation", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  const button = soundToggle(page);
+  await expect(button).toBeEnabled();
+  for (const enabled of [false, true]) {
+    await button.click();
+    await expectSoundState(page, enabled);
+    expect(
+      await button.evaluate(
+        (element) => element.getAnimations({ subtree: true }).length,
+      ),
+    ).toBe(0);
+    await expect(button).toHaveCSS("transform", "none");
+  }
+});
+
+test("Enabling confirms once and muting never plays an extra cue", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await ready(page);
+  await soundToggle(page).click();
+  await expectSoundState(page, false);
+  expect(await playback(page)).toEqual([]);
+  await soundToggle(page).click();
+  await expect.poll(() => playback(page)).toHaveLength(1);
+  expect((await playback(page))[0]).toBeCloseTo(0.09, 2);
+  await soundToggle(page).click();
+  await expectSoundState(page, false);
+  expect(await playback(page)).toHaveLength(1);
+});
+
+test("A cold enable confirms after loading without replaying other actions", async ({
+  page,
+}) => {
+  await page.addInitScript(() =>
+    localStorage.setItem("sound-effect-enabled", "false"),
+  );
+  let release!: () => void;
+  const blocked = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  const requests: string[] = [];
+  await page.route("**/sounds/v1/*.wav", async (route) => {
+    requests.push(route.request().url());
+    await blocked;
+    await route.continue();
+  });
+  try {
+    await page.goto("/");
+    await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "false");
+    await soundToggle(page).click();
+    await expect.poll(() => requests.length).toBe(4);
+    await themeToggle(page).click();
+    expect(await playback(page)).toEqual([]);
+    release();
+    await ready(page);
     await expect.poll(() => playback(page)).toHaveLength(1);
+    expect((await playback(page))[0]).toBeCloseTo(0.09, 2);
   } finally {
     release();
   }
@@ -229,6 +457,16 @@ test("Shares preference across navigation, reloads and tabs without autoplay", a
   await soundToggle(other).click();
   await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "false");
   await themeToggle(page).click();
+  expect(await playback(page)).toEqual([]);
+  await other.evaluate(() => localStorage.removeItem("sound-effect-enabled"));
+  await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "true");
+  expect(await playback(page)).toEqual([]);
+  await other.evaluate(() => {
+    localStorage.setItem("sound-effect-enabled", "false");
+  });
+  await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "false");
+  await other.evaluate(() => localStorage.clear());
+  await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "true");
   expect(await playback(page)).toEqual([]);
   await other.close();
 });
@@ -367,6 +605,9 @@ test("Native sharing stays synchronous and silent", async ({ page }) => {
 test("Late samples do not replay clicks or sound after muting", async ({
   page,
 }) => {
+  await page.addInitScript(() =>
+    localStorage.setItem("sound-effect-enabled", "false"),
+  );
   let release!: () => void;
   const blocked = new Promise<void>((resolve) => {
     release = resolve;
@@ -377,6 +618,7 @@ test("Late samples do not replay clicks or sound after muting", async ({
   });
   try {
     await page.goto("/");
+    await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "false");
     await soundToggle(page).click();
     await themeToggle(page).click();
     await soundToggle(page).click();
@@ -394,7 +636,6 @@ test("Failed samples are reported without breaking controls and can be retried",
 }) => {
   await page.route("**/sounds/v1/*.wav", (route) => route.abort());
   await page.goto("/");
-  await soundToggle(page).click();
   await expect(page.locator(".sound-control__error")).toContainText(
     "could not be loaded",
   );
@@ -409,8 +650,9 @@ test("Failed samples are reported without breaking controls and can be retried",
   await page.unroute("**/sounds/v1/*.wav");
   await enable(page);
   await expect(page.locator(".sound-control__error")).toHaveCount(0);
-  await themeToggle(page).click();
   await expect.poll(() => playback(page)).toHaveLength(1);
+  await themeToggle(page).click();
+  await expect.poll(() => playback(page)).toHaveLength(2);
 });
 
 test("Storage failures are reported and the tab can still enable and mute", async ({
@@ -433,13 +675,13 @@ test("Storage failures are reported and the tab can still enable and mute", asyn
     "could not be saved",
   );
   await themeToggle(page).click();
-  await expect.poll(() => playback(page)).toHaveLength(1);
+  await expect.poll(() => playback(page)).toHaveLength(2);
   await soundToggle(page).click();
   await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "false");
 });
 
 for (const width of [375, 1280]) {
-  test(`Header control fits both themes at ${width}px and precedes sound actions`, async ({
+  test(`Header control fits both themes at ${width}px below the theme toggle`, async ({
     page,
   }) => {
     await page.setViewportSize({ width, height: 900 });
@@ -450,17 +692,23 @@ for (const width of [375, 1280]) {
       }, theme);
       await expect(soundToggle(page)).toBeVisible();
       const box = await soundToggle(page).boundingBox();
+      const themeBox = await themeToggle(page).boundingBox();
       expect(box!.x).toBeGreaterThanOrEqual(0);
       expect(box!.x + box!.width).toBeLessThanOrEqual(width);
+      expect(box!.y).toBeGreaterThanOrEqual(themeBox!.y + themeBox!.height);
+      expect(box!.x + box!.width / 2).toBeCloseTo(
+        themeBox!.x + themeBox!.width / 2,
+        1,
+      );
       expect(
         await page.evaluate(() => document.documentElement.scrollWidth),
       ).toBe(width);
     }
-    await soundToggle(page).focus();
+    await themeToggle(page).focus();
     await page.keyboard.press("Tab");
-    await expect(
-      page.getByRole("button", { name: "Open search", exact: true }),
-    ).toBeFocused();
+    await expect(soundToggle(page)).toBeFocused();
+    await page.keyboard.press("Shift+Tab");
+    await expect(themeToggle(page)).toBeFocused();
   });
 }
 
@@ -510,6 +758,11 @@ test.describe("Sound runtime cache", () => {
       "Firefox offline emulation bypasses service workers.",
     );
     test.slow();
+    await page.addInitScript(() => {
+      if (localStorage.getItem("sound-effect-enabled") === null) {
+        localStorage.setItem("sound-effect-enabled", "false");
+      }
+    });
     const cdp = await context.newCDPSession(page);
     await cdp.send("Network.setCacheDisabled", { cacheDisabled: true });
     await page.goto("/");

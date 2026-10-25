@@ -67,6 +67,8 @@ export default defineNuxtConfig({
         "feather:rotate-cw",
         "feather:search",
         "feather:sun",
+        "feather:volume-2",
+        "feather:volume-x",
         "feather:x",
         "lucide:house-heart",
         "simple-icons:bluesky",
