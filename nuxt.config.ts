@@ -25,6 +25,13 @@ export default defineNuxtConfig({
     strict: true,
   },
 
+  vue: {
+    compilerOptions: {
+      // Vue 3's native HTML tag list predates the search element.
+      isCustomElement: (tag) => tag === "search",
+    },
+  },
+
   modules: [
     "@nuxt/content",
     "@nuxt/icon",

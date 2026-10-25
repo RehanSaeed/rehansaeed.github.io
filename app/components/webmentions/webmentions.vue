@@ -1,6 +1,10 @@
 <template>
   <u-intersect @enterFirstTime="onLoadMentions">
-    <u-card class="webmentions" :aria-busy="isLoading">
+    <u-card
+      class="webmentions"
+      tag="section"
+      aria-labelledby="webmentions"
+      :aria-busy="isLoading">
       <u-heading
         id="webmentions"
         class="webmentions__title"
@@ -50,12 +54,15 @@
           <h3 class="webmentions__count webmentions__link-count">
             {{ linksDescription }}
           </h3>
-          <div v-if="!isLoading" class="webmentions__links-container">
-            <u-webmention-link
-              v-for="link of links"
-              :key="link.id"
-              :link="link" />
-          </div>
+          <ul
+            v-if="!isLoading"
+            class="webmentions__links-container"
+            aria-label="Links"
+            role="list">
+            <li v-for="link of links" :key="link.id">
+              <u-webmention-link :link="link" />
+            </li>
+          </ul>
           <u-webmention-links-skeleton v-else />
         </div>
 
@@ -63,12 +70,15 @@
           <h3 class="webmentions__count webmentions__reply-count">
             {{ repliesDescription }}
           </h3>
-          <div v-if="!isLoading" class="webmentions__replies-container">
-            <u-webmention-reply
-              v-for="reply of replies"
-              :key="reply.id"
-              :reply="reply" />
-          </div>
+          <ol
+            v-if="!isLoading"
+            class="webmentions__replies-container"
+            aria-label="Replies"
+            role="list">
+            <li v-for="reply of replies" :key="reply.id">
+              <u-webmention-reply :reply="reply" />
+            </li>
+          </ol>
           <u-webmention-replies-skeleton v-else />
         </div>
       </div>

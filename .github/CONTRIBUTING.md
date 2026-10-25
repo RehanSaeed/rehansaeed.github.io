@@ -20,6 +20,22 @@ Link an existing issue if it provides useful context, but an issue is not requir
   `npx playwright test <test-file> --repeat-each=10 --retries=0` to investigate
   suspected timing or rendering issues without retries hiding failures.
 
+### Semantic HTML
+
+Use native HTML elements for navigation, actions, search, article sections and
+collections. Keep `div` and `span` for neutral layout wrappers, rather than adding
+sectioning elements without a meaningful section. Use labelled landmarks and
+headings that reflect the content hierarchy, not the desired font size.
+Cards default to a neutral wrapper; set `tag="article"` or `tag="section"`
+explicitly when the content warrants it.
+
+Unstyled UI lists use `ul` or `ol` with `li` children and `role="list"` to retain
+list semantics in Safari. Their shared reset leaves article list typography
+unchanged. The Markdown pipeline nests article headings below the page title
+while preserving their fragment IDs and visual sizes. Run
+`npm run test:chrome -- semantic-html.spec.ts card-sizing.spec.ts` after
+`npm run build` when changing these structures.
+
 ## Images
 
 Keep PNG originals for images with transparency and JPG originals for photographs;

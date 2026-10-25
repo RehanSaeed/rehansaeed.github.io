@@ -5,6 +5,7 @@
       v-bind="$attrs"
       :alt="typeof $attrs.alt === 'string' ? $attrs.alt : ''"
       class="thumbnail-image"
+      alt=""
       :src="image"
       :style="{
         rotate: imageRotateDegrees,

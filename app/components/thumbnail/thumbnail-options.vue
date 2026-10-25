@@ -1,19 +1,20 @@
 <template>
   <aside class="thumbnail-options">
     <h2 class="thumbnail-options__title">General</h2>
-    <section class="thumbnail-options__section">
-      <fieldset class="thumbnail-options__fieldset">
+    <div class="thumbnail-options__section">
+      <div class="thumbnail-options__field">
         <label class="thumbnail-options__label" for="thumbnail-background"
           >background</label
         >
         <input
-          class="thumbnail-options__input"
           id="thumbnail-background"
+          name="background"
+          class="thumbnail-options__input"
           placeholder="none|light|dark|/images/hero/Code-1600x900.jpg"
           :value="background"
           @input="onBackgroundInput" />
-      </fieldset>
-    </section>
+      </div>
+    </div>
 
     <h2 class="thumbnail-options__title">Title</h2>
     <ul>
@@ -70,7 +71,7 @@ defineProps({
 </script>
 
 <style lang="scss">
-.thumbnail-options__fieldset {
+.thumbnail-options__field {
   display: flex;
   gap: var(--global-space-fluid-2);
 }

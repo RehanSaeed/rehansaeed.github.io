@@ -42,7 +42,7 @@
       :id="props.headingId || metadata.name"
       class="author__site-title"
       link-class="u-url u-uid p-name"
-      level="1"
+      :level="props.headingLevel"
       :href="metadata.url"
       center
       >{{ metadata.name }}</u-heading
@@ -59,6 +59,10 @@ defineOptions({ name: "u-author" });
 const props = defineProps({
   /** Fragment identifier for the author heading. */ headingId: {
     type: String,
+  },
+  /** Semantic level of the author heading. */ headingLevel: {
+    type: String,
+    default: "1",
   },
 });
 const metadata = useAppConfig().site;
@@ -122,6 +126,7 @@ const winkGradientId = `${useId()}-wink-skin`;
 
 .author__site-title {
   font-size: var(--global-font-size-8);
+  margin-block-start: 0;
 }
 
 .author__description {

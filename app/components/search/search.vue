@@ -1,6 +1,6 @@
 <template>
-  <section class="search" aria-label="site">
-    <form class="search__form" role="search" @submit.prevent>
+  <search class="search" aria-label="Site">
+    <form class="search__form" @submit.prevent>
       <label class="search__label" :for="inputId">Search</label>
       <!-- Opening search deliberately moves focus to its input. -->
       <!-- eslint-disable vuejs-accessibility/no-autofocus -->
@@ -11,17 +11,16 @@
         v-model="searchTerm"
         placeholder="Search"
         inputmode="search"
+        name="search"
         type="search" />
       <!-- eslint-enable vuejs-accessibility/no-autofocus -->
     </form>
-    <div class="search__results">
-      <u-search-result
-        v-for="searchResult of searchResults"
-        :key="searchResult.id"
-        :searchResult="searchResult"
-        @selected="onSelected" />
-    </div>
-  </section>
+    <ul class="search__results" aria-label="Search results" role="list">
+      <li v-for="searchResult of searchResults" :key="searchResult.id">
+        <u-search-result :searchResult="searchResult" @selected="onSelected" />
+      </li>
+    </ul>
+  </search>
 </template>
 
 <script lang="ts">
