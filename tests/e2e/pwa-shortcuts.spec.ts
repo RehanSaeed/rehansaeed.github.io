@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import sharp from "sharp";
+import { parse as parseYaml } from "yaml";
 import { expect, test } from "@playwright/test";
 
 const shortcuts = [
@@ -8,6 +9,26 @@ const shortcuts = [
   { name: "Portfolio", slug: "portfolio", url: "/portfolio/" },
   { name: "About", slug: "about", url: "/about/" },
 ];
+
+test("Compression workflows preserve lossless shortcut exports", async () => {
+  for (const workflow of [
+    "compress-images.yml",
+    "compress-images-on-demand.yml",
+  ]) {
+    const configuration = parseYaml(
+      await readFile(join(".github", "workflows", workflow), "utf8"),
+    );
+    const step = configuration.jobs.build.steps.find(
+      (step: { uses?: string }) =>
+        step.uses?.startsWith("calibreapp/image-actions@"),
+    );
+    expect(step.with.ignorePaths.split(","), workflow).toEqual(
+      expect.arrayContaining(
+        shortcuts.map(({ slug }) => `public/images/icons/${slug}.png`),
+      ),
+    );
+  }
+});
 
 test("PWA shortcut PNGs match their branded SVG sources", async () => {
   for (const { slug } of shortcuts) {
