@@ -1,6 +1,91 @@
-import { expect, test } from "./fixtures";
+import { delayClientScripts, expect, test } from "./fixtures";
 
 test.use({ reducedMotion: "no-preference" });
+
+for (const theme of ["light", "dark"] as const) {
+  for (const saved of [false, true]) {
+    test(`${saved ? "Saved" : "System"} ${theme} theme is applied before body parsing on load and refresh`, async ({
+      page,
+    }) => {
+      await page.emulateMedia({
+        colorScheme: saved ? (theme === "dark" ? "light" : "dark") : theme,
+      });
+      if (saved) {
+        await page.addInitScript(
+          (theme) => localStorage.setItem("theme", theme),
+          theme,
+        );
+      }
+      await page.route(
+        (url) => url.pathname === "/",
+        async (route) => {
+          const response = await route.fetch();
+          // Sample during parsing, before a body script or hydration can repair the theme.
+          const body = (await response.text()).replace(
+            "</head>",
+            `<script>document.documentElement.setAttribute("data-initial-theme", document.documentElement.getAttribute("data-theme") || "missing");</script></head>`,
+          );
+          await route.fulfill({ response, body });
+        },
+      );
+      const scripts = await delayClientScripts(page);
+      try {
+        for (const refresh of [false, true]) {
+          if (refresh) {
+            await page.reload({ waitUntil: "commit" });
+          } else {
+            await page.goto("/", { waitUntil: "commit" });
+          }
+          const html = page.locator("html");
+          await expect(html).toHaveAttribute("data-initial-theme", theme);
+          await expect(html).toHaveAttribute("data-theme", theme);
+          await expect(
+            page.getByRole("button", { name: "Toggle dark/light" }),
+          ).toBeDisabled();
+          const initial = await page.locator("body").evaluate((body) => {
+            const script = Array.from(
+              document.head.querySelectorAll("script"),
+            ).find((script) =>
+              script.textContent?.includes("window.__setPreferredTheme"),
+            );
+            const styles = Array.from(
+              document.head.querySelectorAll('style, link[rel="stylesheet"]'),
+            );
+            return {
+              themeBeforeStyles:
+                !!script &&
+                styles.length > 0 &&
+                styles.every(
+                  (style) =>
+                    !!(
+                      script.compareDocumentPosition(style) &
+                      Node.DOCUMENT_POSITION_FOLLOWING
+                    ),
+                ),
+              background: getComputedStyle(body).backgroundColor,
+              transitions: document
+                .getAnimations()
+                .filter((animation) => animation instanceof CSSTransition)
+                .map((animation) => animation.transitionProperty),
+            };
+          });
+          expect(initial.themeBeforeStyles).toBe(true);
+          expect(initial.background).toBe(
+            theme === "dark" ? "rgb(14, 38, 58)" : "rgb(249, 250, 251)",
+          );
+          expect(initial.transitions).toEqual([]);
+        }
+        scripts.resume();
+        await expect(
+          page.getByRole("button", { name: "Toggle dark/light" }),
+        ).toBeEnabled();
+        await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
+      } finally {
+        await scripts.dispose();
+      }
+    });
+  }
+}
 
 for (const initialTheme of ["light", "dark"] as const) {
   test(`Chevron backgrounds stay in sync when switching from ${initialTheme}`, async ({
