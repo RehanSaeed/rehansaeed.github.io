@@ -1,5 +1,5 @@
 <template>
-  <u-intersect @enterFirstTime="loadMentions">
+  <u-intersect @enterFirstTime="onLoadMentions">
     <u-card class="webmentions" :aria-busy="isLoading">
       <u-heading
         id="webmentions"
@@ -17,7 +17,7 @@
       </a>
       <div v-if="hasError" class="webmentions__error">
         <p role="alert">Unable to load Web Mentions. Please try again.</p>
-        <u-button bordered @click="loadMentions">Retry</u-button>
+        <u-button bordered @click="onLoadMentions">Retry</u-button>
       </div>
       <div v-else class="webmentions__container">
         <u-webmention-faces
@@ -159,7 +159,7 @@ export default {
       }
       return list.links;
     },
-    async loadMentions() {
+    async onLoadMentions() {
       try {
         this.isLoading = true;
         this.hasError = false;
