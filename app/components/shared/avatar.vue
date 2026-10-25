@@ -11,7 +11,8 @@
       :alt="alt"
       :src="src"
       :width="sizeInPixels"
-      :height="sizeInPixels" />
+      :height="sizeInPixels"
+      :loading="loading" />
   </Component>
 </template>
 
@@ -31,6 +32,10 @@ export default {
     },
     src: {
       required: true,
+      type: String,
+    },
+    loading: {
+      required: false,
       type: String,
     },
     to: {
