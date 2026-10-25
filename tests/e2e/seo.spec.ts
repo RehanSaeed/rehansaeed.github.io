@@ -180,7 +180,7 @@ test("Nuxt recovers a chunk navigation failure with its built-in reload", async 
   );
 });
 
-test("Update now reloads and clears the deployment notice when service workers are blocked", async ({
+test("A package update without a worker does not force a document reload", async ({
   page,
   baseURL,
 }) => {
@@ -197,16 +197,13 @@ test("Update now reloads and clears the deployment notice when service workers a
     if (request.isNavigationRequest() && request.frame() === page.mainFrame())
       documentNavigations++;
   });
-  await Promise.all([
-    page.waitForEvent("framenavigated", {
-      predicate: (frame) => frame === page.mainFrame(),
-    }),
-    notice.getByRole("button", { name: "Update now", exact: true }).click(),
-  ]);
-  await page.waitForLoadState("networkidle");
-  await expect(notice).toHaveCount(0);
+  await notice.getByRole("button", { name: "Update now", exact: true }).click();
+  await expect(
+    notice.getByRole("button", { name: "Update now", exact: true }),
+  ).toBeEnabled();
+  await expect(notice).toBeVisible();
   await expect(page).toHaveURL(/\/about\/$/);
-  expect(documentNavigations).toBe(1);
+  expect(documentNavigations).toBe(0);
 });
 
 for (const width of [320, 375, 1280]) {
