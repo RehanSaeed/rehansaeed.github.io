@@ -3,12 +3,12 @@
     <div class="webmention-faces__content"><slot></slot></div>
     <u-avatar
       class="webmention-faces__face"
-      v-for="{ mention, label } of mentionsDisplay"
+      v-for="{ mention, name, photo, label } of mentionsDisplay"
       :key="mention.id"
       :href="mention.data.url"
       :label="label"
-      :alt="mention.data.author.name"
-      :src="mention.data.author.photo" />
+      :alt="name"
+      :src="photo" />
   </div>
 </template>
 
@@ -24,21 +24,24 @@ export default {
     },
   },
   methods: {
-    getLabel(mention) {
+    getLabel(mention, name) {
       if (mention.data.published) {
-        return `${mention.data.author.name} - ${getDisplayDateFromString(
-          mention.data.published,
-        )}`;
+        return `${name} - ${getDisplayDateFromString(mention.data.published)}`;
       }
-      return mention.data.author.name;
+      return name;
     },
   },
   computed: {
     mentionsDisplay() {
-      return this.mentions.map((mention) => ({
-        mention,
-        label: this.getLabel(mention),
-      }));
+      return this.mentions.map((mention) => {
+        const name = mention.data.author?.name?.trim() || "Anonymous";
+        return {
+          mention,
+          name,
+          photo: mention.data.author?.photo?.trim() || "",
+          label: this.getLabel(mention, name),
+        };
+      });
     },
   },
 };
