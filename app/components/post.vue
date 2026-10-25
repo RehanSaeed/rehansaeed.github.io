@@ -1,18 +1,19 @@
 <template>
   <u-card class="post" tag="article">
     <header class="post__header">
-      <NuxtImg
+      <NuxtPicture
+        format="avif"
         v-if="post.heroImage"
         :alt="imageMeta.alt"
         :src="post.heroImage"
-        class="post__photo"
+        class="site-image"
+        :img-attrs="{ class: 'post__photo', fetchpriority: 'high' }"
+        :legacy-format="post.heroImage.endsWith('.png') ? 'png' : 'jpg'"
         :width="imageMeta.width"
         :height="imageMeta.height"
         :sizes="contentImageSizes"
         densities="x1 x2"
-        format="webp"
         loading="eager"
-        fetchpriority="high"
         :preload="{ fetchPriority: 'high' }" />
     </header>
 

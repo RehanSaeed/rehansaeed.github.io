@@ -10,11 +10,15 @@
     <u-arrows class="about__arrows" />
 
     <u-card class="about__container" tag="article">
-      <NuxtImg
-        class="about__image"
+      <NuxtPicture
+        format="avif"
+        class="site-image"
+        :img-attrs="{ class: 'about__image' }"
+        legacy-format="jpg"
         alt="Muhammad Rehan Saeed"
         height="480"
         width="320"
+        sizes="320px"
         src="/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg"
         quality="100" />
       <u-heading :id="metadata.author.name" level="2" class="about__title">{{
@@ -100,101 +104,147 @@
       </p>
       <div class="about_awards-images">
         <a :href="credlyUrl">
-          <NuxtImg
-            class="about__badge-image"
+          <NuxtPicture
+            format="avif"
+            class="site-image"
+            :img-attrs="{ class: 'about__badge-image' }"
+            legacy-format="png"
             alt="Microsoft Global Hackathon 2026 Participant"
             height="300"
             width="300"
+            sizes="300px"
             src="/images/about/Microsoft-Global-Hackathon-2026-300x300.png"
             quality="100" />
         </a>
         <a :href="credlyUrl">
-          <NuxtImg
-            class="about__badge-image"
+          <NuxtPicture
+            format="avif"
+            class="site-image"
+            :img-attrs="{ class: 'about__badge-image' }"
+            legacy-format="png"
             alt="Microsoft MSAI Security Champs March 2026"
             height="300"
             width="300"
+            sizes="300px"
             src="/images/about/Microsoft-MSAI-Security-Champs-2026-300x300.png"
             quality="100" />
         </a>
         <a :href="credlyUrl">
-          <NuxtImg
-            class="about__badge-image"
+          <NuxtPicture
+            format="avif"
+            class="site-image"
+            :img-attrs="{ class: 'about__badge-image' }"
+            legacy-format="png"
             alt="Microsoft Global Hackathon 2025 Participant"
             height="300"
             width="300"
+            sizes="300px"
             src="/images/about/Microsoft-Global-Hackathon-2025-300x300.png"
             quality="100" />
         </a>
         <a :href="credlyUrl">
-          <NuxtImg
-            class="about__badge-image"
+          <NuxtPicture
+            format="avif"
+            class="site-image"
+            :img-attrs="{ class: 'about__badge-image' }"
+            legacy-format="png"
             alt="Microsoft MSAI Security Champs Recognition 2025"
             height="300"
             width="300"
+            sizes="300px"
             src="/images/about/Microsoft-MSAI-Security-Champs-Recognition-2025-300x300.png"
             quality="100" />
         </a>
         <a :href="credlyUrl">
-          <NuxtImg
-            class="about__badge-image"
+          <NuxtPicture
+            format="avif"
+            class="site-image"
+            :img-attrs="{ class: 'about__badge-image' }"
+            legacy-format="png"
             alt="Microsoft Global Hackathon 2024 Participant"
             height="300"
             width="300"
+            sizes="300px"
             src="/images/about/Microsoft-Global-Hackathon-2024-300x300.png"
             quality="100" />
         </a>
         <a :href="credlyUrl">
-          <NuxtImg
-            class="about__badge-image"
+          <NuxtPicture
+            format="avif"
+            class="site-image"
+            :img-attrs="{ class: 'about__badge-image' }"
+            legacy-format="png"
             alt="Microsoft Global Hackathon 2023 Participant"
             height="300"
             width="300"
+            sizes="300px"
             src="/images/about/Microsoft-Global-Hackathon-2023-300x300.png"
             quality="100" />
         </a>
         <a href="/open-uk-honouree/">
-          <NuxtImg
-            class="about__open-uk-honours-image"
+          <NuxtPicture
+            format="avif"
+            class="site-image"
+            :img-attrs="{ class: 'about__open-uk-honours-image' }"
+            legacy-format="jpg"
             alt="Open UK Honours 2022"
             height="396"
             width="1288"
+            sizes="sm:100vw lg:1288px"
             src="/images/about/Open-UK-Honours-2022-1288x396.jpg"
             quality="100" />
         </a>
         <a :href="credlyUrl">
-          <NuxtImg
-            class="about__badge-image"
+          <NuxtPicture
+            format="avif"
+            class="site-image"
+            :img-attrs="{ class: 'about__badge-image' }"
+            legacy-format="png"
             alt="Microsoft Global Hackathon 2022.png"
             height="300"
             width="300"
+            sizes="300px"
             src="/images/about/Microsoft-Global-Hackathon-2022-300x300.png"
             quality="100" />
         </a>
         <a :href="credlyUrl">
-          <NuxtImg
-            class="about__badge-image"
+          <NuxtPicture
+            format="avif"
+            class="site-image"
+            :img-attrs="{ class: 'about__badge-image' }"
+            legacy-format="png"
             alt="Microsoft Global Hackathon 2021.png"
             height="300"
             width="300"
+            sizes="300px"
             src="/images/about/Microsoft-Global-Hackathon-2021-300x300.png"
             quality="100" />
         </a>
         <a :href="credlyUrl">
-          <NuxtImg
-            class="about__badge-image about__badge-image--wide"
+          <NuxtPicture
+            format="avif"
+            class="site-image"
+            :img-attrs="{
+              class: 'about__badge-image about__badge-image--wide',
+            }"
+            legacy-format="png"
             alt="Microsoft Global Hackathon 2020.png"
             height="300"
             width="350"
+            sizes="350px"
             src="/images/about/Microsoft-Global-Hackathon-2020-350x300.png"
             quality="100" />
         </a>
         <a :href="credlyUrl">
-          <NuxtImg
-            class="about__badge-image"
+          <NuxtPicture
+            format="avif"
+            class="site-image"
+            :img-attrs="{ class: 'about__badge-image' }"
+            legacy-format="png"
             alt="Microsoft Most Valuable Professional (MVP) Alumni"
             height="300"
             width="300"
+            sizes="300px"
             src="/images/about/Microsoft-Most-Valuable-Professional-Alumni-2023-300x300.png"
             quality="100" />
         </a>
@@ -220,11 +270,15 @@
       </p>
       <div class="about__mvp-images">
         <a :href="mvpUrl">
-          <NuxtImg
-            class="about__mvp-image"
+          <NuxtPicture
+            format="avif"
+            class="site-image"
+            :img-attrs="{ class: 'about__mvp-image' }"
+            legacy-format="png"
             alt="Microsoft Most Valuable Professional (MVP)"
             height="84"
             width="208"
+            sizes="208px"
             src="/images/about/Microsoft-Most-Valuable-Professional-750x303.png"
             quality="100" />
         </a>

@@ -9,7 +9,7 @@ const schema = z.object({
   author: z.string(),
   permalink: z.string(),
   // Alt text uses the file name; dimensions are read from the image during the build.
-  heroImage: z.string().regex(/^\/images\/.+-\d+x\d+\.(png|jpe?g)$/),
+  heroImage: z.string().regex(/^\/images\/.+-\d+x\d+\.(png|jpg)$/),
   date: z.string(),
   dateModified: z.string().nullable().optional(),
   published: z.boolean(),

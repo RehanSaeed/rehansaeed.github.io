@@ -1,11 +1,15 @@
 <template>
   <nav class="navigation">
     <u-link-button class="navigation__image-container" label="Home" to="/">
-      <NuxtImg
+      <NuxtPicture
+        format="avif"
         :alt="metadata.author.name"
-        class="navigation__image"
+        class="site-image"
+        :img-attrs="{ class: 'navigation__image' }"
+        legacy-format="png"
         src="/images/author/Muhammad-Rehan-Saeed/Logo-192x192.png"
         width="50"
+        sizes="50px"
         height="50" />
     </u-link-button>
     <div class="navigation__items-left">
@@ -34,7 +38,7 @@
 </template>
 
 <script>
-import { NuxtImg } from "#components";
+import { NuxtPicture } from "#components";
 import linkButton from "~/components/shared/link-button.vue";
 import installButton from "~/components/install-button.vue";
 import searchButton from "~/components/search/search-button.vue";
@@ -43,7 +47,7 @@ import themeButton from "~/components/theme-button.vue";
 export default {
   name: "u-navigation",
   components: {
-    NuxtImg,
+    NuxtPicture,
     "u-link-button": linkButton,
     "u-install-button": installButton,
     "u-search-button": searchButton,

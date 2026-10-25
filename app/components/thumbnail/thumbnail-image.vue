@@ -1,21 +1,27 @@
 <template>
-  <img
-    v-if="image"
-    class="thumbnail-image"
-    :src="image"
-    :style="{
-      rotate: imageRotateDegrees,
-      'inline-size': toPx(imageWidth),
-      'block-size': toPx(imageHeight),
-      'inset-inline-start': toPx(imageX),
-      'inset-block-start': toPx(imageY),
-    }"
-    :width="imageWidth"
-    :height="imageHeight" />
+  <picture v-if="image" class="site-image">
+    <source v-if="avifSource" type="image/avif" :srcset="avifSource" />
+    <img
+      v-bind="$attrs"
+      class="thumbnail-image"
+      :src="image"
+      :style="{
+        rotate: imageRotateDegrees,
+        'inline-size': toPx(imageWidth),
+        'block-size': toPx(imageHeight),
+        'inset-inline-start': toPx(imageX),
+        'inset-block-start': toPx(imageY),
+      }"
+      :width="imageWidth"
+      :height="imageHeight" />
+  </picture>
 </template>
 
 <script>
+import { getAvifSource } from "#shared/utils/images";
+
 export default {
+  inheritAttrs: false,
   data() {
     return {
       image: "",
@@ -33,6 +39,9 @@ export default {
     },
   },
   computed: {
+    avifSource() {
+      return getAvifSource(this.image);
+    },
     imageRotateDegrees() {
       return this.imageRotate ? `${this.imageRotate}deg` : undefined;
     },

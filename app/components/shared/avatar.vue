@@ -6,18 +6,22 @@
     :title="label"
     :href="href"
     :to="to">
-    <img
-      class="avatar__image"
-      :alt="alt"
-      :src="src"
-      :width="sizeInPixels"
-      :height="sizeInPixels"
-      :loading="loading" />
+    <picture class="site-image">
+      <source v-if="avifSource" type="image/avif" :srcset="avifSource" />
+      <img
+        class="avatar__image"
+        :alt="alt"
+        :src="src"
+        :width="sizeInPixels"
+        :height="sizeInPixels"
+        :loading="loading" />
+    </picture>
   </Component>
 </template>
 
 <script>
 import { NuxtLink } from "#components";
+import { getAvifSource } from "#shared/utils/images";
 
 export default {
   name: "u-avatar",
@@ -48,6 +52,9 @@ export default {
     },
   },
   computed: {
+    avifSource() {
+      return getAvifSource(this.src);
+    },
     sizeInPixels() {
       return this.size === "medium" ? "50" : "60";
     },

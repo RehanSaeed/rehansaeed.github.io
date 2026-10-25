@@ -14,6 +14,24 @@ Link an existing issue if it provides useful context, but an issue is not requir
 - Use ESLint for linting and Prettier for formatting.
 - Add tests for behavior changes and make sure checks pass.
 
+## Images
+
+Keep PNG originals for images with transparency and JPG originals for photographs;
+use `.jpg`, not `.jpeg`. After adding or changing an image in `public/` or
+`content/`, run `npm run images:avif` and commit the generated `.avif` companions
+alongside the originals (for example, `photo.jpg.avif`). Keeping the original
+extension avoids collisions between PNG and JPG versions of the same image.
+The command preserves dimensions and transparency, auto-orients photos and
+strips metadata.
+
+Use Nuxt Image's `NuxtPicture` for responsive images, with `format="avif"` and
+`legacy-format="png"` or `legacy-format="jpg"` matching the original.
+Use native `<picture>` elements and `getAvifSource` for images chosen at
+runtime (such as search results), so their pre-generated AVIF companions work on
+static hosting without a runtime image server. Keep SVGs and remote images in
+their original formats, and retain PNG/JPG URLs in feeds, social metadata,
+favicons and the web app manifest for compatibility.
+
 ## Dependency updates
 
 Commit `package.json` and its regenerated `package-lock.json` together. Run

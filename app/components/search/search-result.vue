@@ -4,12 +4,14 @@
       :to="searchResult.permalink"
       class="search-result__link"
       @click="onSelected">
-      <img
-        v-if="searchResult.heroImage"
-        class="search-result__image"
-        alt=""
-        loading="lazy"
-        :src="searchResult.heroImage" />
+      <picture v-if="searchResult.heroImage" class="site-image">
+        <source v-if="avifSource" type="image/avif" :srcset="avifSource" />
+        <img
+          class="search-result__image"
+          alt=""
+          loading="lazy"
+          :src="searchResult.heroImage" />
+      </picture>
       <u-heading
         :id="`search-result-${searchResult.id}`"
         class="search-result__title"
@@ -25,6 +27,7 @@
 
 <script>
 import Heading from "~/components/shared/heading.vue";
+import { getAvifSource } from "#shared/utils/images";
 
 export default {
   name: "u-search-result",
@@ -32,6 +35,11 @@ export default {
     "u-heading": Heading,
   },
   emits: ["selected"],
+  computed: {
+    avifSource() {
+      return getAvifSource(this.searchResult.heroImage);
+    },
+  },
   props: {
     searchResult: {
       type: Object,

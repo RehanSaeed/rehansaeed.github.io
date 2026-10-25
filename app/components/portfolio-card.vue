@@ -7,16 +7,18 @@
     hoverable
     focusable>
     <figure class="portfolio-card__header">
-      <NuxtImg
+      <NuxtPicture
+        format="avif"
         :alt="portfolio.title"
         v-if="portfolio.heroImage"
-        class="portfolio-card__image"
+        class="site-image"
+        :img-attrs="{ class: 'portfolio-card__image' }"
+        :legacy-format="portfolio.heroImage.endsWith('.png') ? 'png' : 'jpg'"
         :src="portfolio.heroImage"
         :width="imageMeta.width"
         :height="imageMeta.height"
         :sizes="contentImageSizes"
         densities="x1 x2"
-        format="webp"
         loading="lazy" />
     </figure>
     <div class="portfolio-card__content">

@@ -7,18 +7,22 @@
     focusable
     :class="{ 'post-card--has-poster': post.poster }">
     <div class="post-card__header">
-      <NuxtImg
+      <NuxtPicture
+        format="avif"
         v-if="post.heroImage"
-        class="post-card__image"
+        class="site-image"
+        :img-attrs="{
+          class: 'post-card__image',
+          fetchpriority: priority ? 'high' : undefined,
+        }"
+        :legacy-format="post.heroImage.endsWith('.png') ? 'png' : 'jpg'"
         :alt="imageMeta.alt"
         :src="post.heroImage"
         :width="imageMeta.width"
         :height="imageMeta.height"
         :sizes="contentImageSizes"
         densities="x1 x2"
-        format="webp"
-        :loading="priority ? 'eager' : 'lazy'"
-        :fetchpriority="priority ? 'high' : undefined" />
+        :loading="priority ? 'eager' : 'lazy'" />
     </div>
     <div class="post-card__content">
       <u-heading

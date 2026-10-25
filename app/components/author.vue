@@ -1,12 +1,16 @@
 <template>
   <!-- Added webmention markup (See https://indiewebify.me/validate-h-card/?url=https%3A%2F%2Frehansaeed.com) -->
   <section class="author h-card" :aria-label="metadata.name">
-    <NuxtImg
-      class="author__image u-photo"
+    <NuxtPicture
+      format="avif"
+      class="site-image"
+      :img-attrs="{ class: 'author__image u-photo' }"
+      legacy-format="png"
       :alt="metadata.name"
       loading="eager"
       src="/images/author/Muhammad-Rehan-Saeed/Logo-192x192.png"
       width="120"
+      sizes="120px"
       height="120" />
 
     <u-heading
@@ -26,14 +30,14 @@
 </template>
 
 <script>
-import { NuxtImg } from "#components";
+import { NuxtPicture } from "#components";
 import heading from "~/components/shared/heading.vue";
 import socialLinks from "~/components/social-links.vue";
 
 export default {
   name: "u-author",
   components: {
-    NuxtImg,
+    NuxtPicture,
     "u-heading": heading,
     "u-social-links": socialLinks,
   },
