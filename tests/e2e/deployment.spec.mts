@@ -121,7 +121,7 @@ test("Deployment is main-only, gated by successful build/tests/preflight and pre
     const condition =
         "github.event_name != 'pull_request' && github.ref == 'refs/heads/main'";
     expect(workflow.jobs.deploy.if).toBe(condition);
-    expect(workflow.jobs.deploy.needs).toBe("build");
+    expect(workflow.jobs.deploy.needs).toEqual(["build", "test"]);
     expect(workflow.jobs.deploy.permissions).toEqual({
         contents: "read",
         pages: "write",
@@ -136,11 +136,7 @@ test("Deployment is main-only, gated by successful build/tests/preflight and pre
     const upload = steps.findIndex(
         (step: { name: string }) => step.name === "Upload Pages Artifact",
     );
-    expect(
-        steps.findIndex(
-            (step: { name: string }) => step.name === "Playwright Test",
-        ),
-    ).toBeLessThan(check);
+    expect(check).toBeGreaterThan(-1);
     expect(check).toBeLessThan(upload);
     expect(steps[check].if).toBe(condition);
     expect(steps[upload].if).toBe(condition);
@@ -160,6 +156,82 @@ test("Deployment is main-only, gated by successful build/tests/preflight and pre
             step.run?.includes("npm ci"),
         ),
     ).toBe(false);
+});
+
+test("Browser suites run in parallel against one complete build without dropping coverage", () => {
+    const workflow = parse(readFileSync(".github/workflows/build.yml", "utf8"));
+    const build = workflow.jobs.build;
+    const browserTests = workflow.jobs.test;
+    expect(build.name).toBe("Generate");
+    expect(workflow.jobs.checks).toEqual({
+        name: "Build",
+        if: "always() && (github.event_name != 'pull_request' || !github.event.pull_request.draft)",
+        needs: ["build", "test"],
+        "runs-on": "ubuntu-latest",
+        steps: [
+            {
+                name: "Require Generation and All Browsers",
+                run: 'test "$BUILD_RESULT" = success && test "$TEST_RESULT" = success',
+                env: {
+                    BUILD_RESULT: "${{ needs.build.result }}",
+                    TEST_RESULT: "${{ needs.test.result }}",
+                },
+            },
+        ],
+    });
+    expect(browserTests.needs).toBe("build");
+    expect(browserTests.strategy).toEqual({
+        "fail-fast": false,
+        matrix: { browser: ["chrome", "edge", "firefox"] },
+    });
+    expect(build.steps).toContainEqual({
+        name: "Package Browser Test Site",
+        run: "tar -cf playwright-site.tar dist .data/blog-image-metadata.json",
+    });
+    const upload = build.steps.find(
+        (step: { name: string }) => step.name === "Upload Browser Test Site",
+    );
+    const download = browserTests.steps.find(
+        (step: { name: string }) => step.name === "Download Browser Test Site",
+    );
+    expect(upload.with.name).toBe("playwright-site");
+    expect(upload.with.path).toBe("playwright-site.tar");
+    expect(upload.with["if-no-files-found"]).toBe("error");
+    expect(download.with.name).toBe(upload.with.name);
+    const steps = browserTests.steps;
+    const extract = steps.findIndex(
+        (step: { name: string }) => step.name === "Extract Browser Test Site",
+    );
+    const run = steps.findIndex(
+        (step: { name: string }) => step.name === "Playwright Test",
+    );
+    expect(extract).toBeGreaterThan(
+        steps.findIndex(
+            (step: { name: string }) => step.name === "NPM Install",
+        ),
+    );
+    expect(extract).toBeLessThan(run);
+    expect(steps[extract].run).toBe("tar -xf playwright-site.tar");
+    expect(steps[run].run).toBe(
+        "npx playwright test --project=${{ matrix.browser }}",
+    );
+    expect(
+        steps.some((step: { run?: string }) => step.run === "npm run build"),
+    ).toBe(false);
+    for (const name of [
+        "Cache Playwright Browsers",
+        "Install Playwright Browsers",
+        "Install Playwright Dependencies",
+    ]) {
+        expect(
+            steps.find((step: { name: string }) => step.name === name).if,
+        ).toContain("matrix.browser == 'firefox'");
+    }
+    const report = steps.find(
+        (step: { name: string }) => step.name === "Upload Playwright Report",
+    );
+    expect(report.if).toBe("failure()");
+    expect(report.with.name).toBe("playwright-report-${{ matrix.browser }}");
 });
 
 test("Post-deployment verification detects stale releases, assets and statuses without changing hosting", async () => {
