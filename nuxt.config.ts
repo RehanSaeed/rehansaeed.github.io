@@ -129,7 +129,7 @@ export default defineNuxtConfig({
     credits: false,
     discoverImages: true,
     discoverVideos: false,
-    exclude: [notFoundRoute],
+    exclude: [notFoundRoute, "/streaming/border", "/streaming/thumbnail"],
   },
 
   schemaOrg: {
