@@ -93,16 +93,18 @@
   </u-card>
 </template>
 
-<script>
-import { getImageMetadata } from "~/framework/images.js";
+<script lang="ts">
+import type { PropType } from "vue";
+import type { PortfolioCard } from "~/types/content";
+import { getImageMetadata } from "~/framework/images";
 import { contentImageSizes } from "#shared/utils/images";
 
-export default {
+export default defineComponent({
   name: "u-portfolio-card",
   props: {
     portfolio: {
       required: true,
-      type: Object,
+      type: Object as PropType<PortfolioCard>,
     },
   },
   computed: {
@@ -113,7 +115,7 @@ export default {
       return getImageMetadata(this.portfolio.heroImage);
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

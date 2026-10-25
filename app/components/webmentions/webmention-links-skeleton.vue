@@ -7,10 +7,10 @@
   </u-skeleton>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+export default defineComponent({
   name: "u-webmention-links-skeleton",
-};
+});
 </script>
 
 <style lang="scss">

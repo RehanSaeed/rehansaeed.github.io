@@ -9,7 +9,7 @@ import {
     checkPagesSettings,
     verifyArtifact,
     verifyPublished,
-} from "../../scripts/pages.mjs";
+} from "../../scripts/pages.mts";
 
 const oldPolicy =
     "default-src 'self'; script-src 'self' https://www.google-analytics.com/analytics.js 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.github.com https://webmention.io https://www.google-analytics.com; font-src 'self' data:; frame-src 'self' https://www.youtube-nocookie.com; img-src 'self' data: https:; worker-src 'self'";

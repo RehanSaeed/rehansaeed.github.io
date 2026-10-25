@@ -327,8 +327,8 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+export default defineComponent({
   name: "u-about",
   setup() {
     const metadata = useAppConfig().site;
@@ -433,7 +433,7 @@ export default {
     },
   },
   methods: {
-    youtubeBadgeImageUrl(statistic, label) {
+    youtubeBadgeImageUrl(statistic: string, label: string) {
       const query = new URLSearchParams({
         url: `https://api.socialcounts.org/youtube-live-subscriber-count/${this.metadata.author.youtube.user}`,
         query: `$.counters.api.${statistic}`,
@@ -443,8 +443,8 @@ export default {
       });
       return `https://img.shields.io/badge/dynamic/json?${query}`;
     },
-    setTheme(e) {
-      this.theme = e.detail;
+    setTheme(event: CustomEvent<"light" | "dark">) {
+      this.theme = event.detail;
     },
   },
   mounted() {
@@ -458,7 +458,7 @@ export default {
       window.removeEventListener("__themeChanged", this.setTheme);
     }
   },
-};
+});
 </script>
 
 <style lang="scss">

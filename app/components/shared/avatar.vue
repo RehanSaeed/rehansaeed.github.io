@@ -23,11 +23,12 @@
   </u-tooltip>
 </template>
 
-<script>
+<script lang="ts">
 import { NuxtLink } from "#components";
 import { getAvifSource } from "#shared/utils/images";
+import type { PropType } from "vue";
 
-export default {
+export default defineComponent({
   name: "u-avatar",
   inheritAttrs: false,
   data() {
@@ -48,7 +49,7 @@ export default {
     },
     loading: {
       required: false,
-      type: String,
+      type: String as PropType<"eager" | "lazy">,
     },
     to: {
       required: false,
@@ -74,13 +75,13 @@ export default {
       return getAvifSource(this.src);
     },
     sizeInPixels() {
-      return this.size === "medium" ? "50" : "60";
+      return "60";
     },
     tag() {
       return this.to ? NuxtLink : "a";
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

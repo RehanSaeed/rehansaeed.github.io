@@ -4,6 +4,6 @@
   </main>
 </template>
 
-<script>
-export default {};
+<script lang="ts">
+export default defineComponent({});
 </script>

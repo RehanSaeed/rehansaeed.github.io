@@ -113,23 +113,25 @@
   </div>
 </template>
 
-<script>
-import { decode } from "~/framework/obfuscate.js";
+<script lang="ts">
+import { decode } from "~/framework/obfuscate";
 
-export default {
+export default defineComponent({
   name: "u-social-links",
   setup() {
     return { metadata: useAppConfig().site };
   },
   methods: {
-    openEmail(event) {
+    openEmail(event: MouseEvent) {
       const body = encodeURIComponent(
         "If you have an issue with one of my GitHub projects, please raise a GitHub issue. If you need help answering a coding problem, post your question on StackOverflow where you will get quicker and better answers. Otherwise, please do feel free to contact me!",
       );
-      event.currentTarget.href = `mailto:${decode(this.metadata.author.email)}?body=${body}`;
+      if (event.currentTarget instanceof HTMLAnchorElement) {
+        event.currentTarget.href = `mailto:${decode(this.metadata.author.email)}?body=${body}`;
+      }
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

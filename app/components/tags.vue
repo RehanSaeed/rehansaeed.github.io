@@ -11,10 +11,11 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import type { PropType } from "vue";
 import { tagPath } from "#shared/utils/tag";
 
-export default {
+export default defineComponent({
   name: "u-tags",
   setup() {
     return { tagPath };
@@ -22,10 +23,10 @@ export default {
   props: {
     tags: {
       required: true,
-      type: Array,
+      type: Array as PropType<string[]>,
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

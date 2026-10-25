@@ -2,7 +2,7 @@
   <u-posts-page :page="page" />
 </template>
 
-<script setup>
+<script setup lang="ts">
 // A regex param, so post permalinks like /my-post/ fall through to [...slug].vue. Page 1 is "/".
 definePageMeta({
   path: "/:page(\\d+)",

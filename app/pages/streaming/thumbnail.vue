@@ -14,8 +14,10 @@
     @update:background="background = $event" />
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { queryString } from "~/utils/query";
+
+export default defineComponent({
   data() {
     return {
       background: "dark",
@@ -36,12 +38,12 @@ export default {
     document.body.style.backgroundColor = "transparent";
     const { background } = this.$route.query;
 
-    this.background = background;
+    this.background = queryString(background) ?? "";
   },
-};
+});
 </script>
 
-<script setup>
+<script setup lang="ts">
 definePageMeta({ layout: "empty" });
 useHead({ meta: [{ name: "robots", content: "noindex, follow" }] });
 </script>

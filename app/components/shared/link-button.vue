@@ -15,10 +15,10 @@
   </Component>
 </template>
 
-<script>
+<script lang="ts">
 import { NuxtLink } from "#components";
 
-export default {
+export default defineComponent({
   name: "u-link-button",
   props: {
     bordered: {
@@ -48,7 +48,7 @@ export default {
       return this.to ? NuxtLink : "a";
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

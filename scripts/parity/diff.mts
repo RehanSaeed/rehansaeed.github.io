@@ -1,5 +1,5 @@
-// Diffs two parity snapshots (see snapshot.mjs) and prints every difference.
-// Usage: node scripts/parity/diff.mjs tests/parity/baseline .parity/local [--ignore meta.gridsome:hash,...]
+// Diffs two parity snapshots (see snapshot.mts) and prints every difference.
+// Usage: node scripts/parity/diff.mts tests/parity/baseline .parity/local [--ignore meta.gridsome:hash,...]
 // Exits with code 1 when differences are found.
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -16,7 +16,7 @@ const { values: args, positionals } = parseArgs({
 const [expectedDir, actualDir] = positionals;
 if (!expectedDir || !actualDir) {
     console.error(
-        "Usage: node scripts/parity/diff.mjs <expected-dir> <actual-dir>",
+        "Usage: node scripts/parity/diff.mts <expected-dir> <actual-dir>",
     );
     process.exit(2);
 }
@@ -32,16 +32,19 @@ const ignores = [
             `^${pattern.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, ".+")}$`,
         ),
 );
-const ignored = (path) => ignores.some((regex) => regex.test(path));
+const ignored = (path: string) => ignores.some((regex) => regex.test(path));
 
-const load = async (dir, file) =>
+const load = async (
+    dir: string,
+    file: string,
+): Promise<Record<string, unknown>> =>
     JSON.parse(await readFile(join(dir, file), "utf8"));
 
-const differences = [];
-const compare = (path, expected, actual) => {
+const differences: { path: string; expected: unknown; actual: unknown }[] = [];
+const compare = (path: string, expected: unknown, actual: unknown) => {
     if (ignored(path) || isDeepStrictEqual(expected, actual)) return;
-    const isObject = (value) =>
-        value && typeof value === "object" && !Array.isArray(value);
+    const isObject = (value: unknown): value is Record<string, unknown> =>
+        value !== null && typeof value === "object" && !Array.isArray(value);
     if (isObject(expected) && isObject(actual)) {
         for (const key of new Set([
             ...Object.keys(expected),
@@ -68,13 +71,13 @@ for (const file of ["pages.json", "artifacts.json"]) {
     }
 }
 
-const show = (value) => {
+const show = (value: unknown) => {
     const json = JSON.stringify(value);
     return json && json.length > 300 ? `${json.slice(0, 300)}…` : json;
 };
 
 if (args.summary) {
-    const counts = {};
+    const counts: Record<string, number> = {};
     for (const { path } of differences) {
         const field = path.split(".").slice(1).join(".") || "(page)";
         counts[field] = (counts[field] ?? 0) + 1;

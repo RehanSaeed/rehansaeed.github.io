@@ -9,7 +9,7 @@
     <div class="post-card__header">
       <NuxtPicture
         format="avif"
-        v-if="post.heroImage"
+        v-if="post.heroImage && imageMeta"
         :img-attrs="{
           class: 'post-card__image',
           fetchpriority: priority ? 'high' : undefined,
@@ -39,11 +39,13 @@
   </u-card>
 </template>
 
-<script>
-import { getImageMetadata } from "~/framework/images.js";
+<script lang="ts">
+import type { PropType } from "vue";
+import type { PostCard } from "~/types/content";
+import { getImageMetadata } from "~/framework/images";
 import { contentImageSizes } from "#shared/utils/images";
 
-export default {
+export default defineComponent({
   name: "u-post-card",
   props: {
     priority: {
@@ -51,7 +53,8 @@ export default {
       default: false,
     },
     post: {
-      type: Object,
+      type: Object as PropType<PostCard>,
+      required: true,
     },
   },
   computed: {
@@ -59,10 +62,12 @@ export default {
       return contentImageSizes;
     },
     imageMeta() {
-      return getImageMetadata(this.post.heroImage);
+      return this.post.heroImage
+        ? getImageMetadata(this.post.heroImage)
+        : undefined;
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

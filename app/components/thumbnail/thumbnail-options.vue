@@ -8,7 +8,7 @@
           class="thumbnail-options__input"
           placeholder="none|light|dark|/images/hero/Code-1600x900.jpg"
           :value="background"
-          @input="$emit('update:background', $event.target.value)" />
+          @input="onBackgroundInput" />
       </fieldset>
     </section>
 
@@ -51,8 +51,8 @@
   </aside>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+export default defineComponent({
   emits: ["update:background"],
   props: {
     background: {
@@ -60,7 +60,14 @@ export default {
       type: String,
     },
   },
-};
+  methods: {
+    onBackgroundInput(event: Event) {
+      if (event.target instanceof HTMLInputElement) {
+        this.$emit("update:background", event.target.value);
+      }
+    },
+  },
+});
 </script>
 
 <style lang="scss">

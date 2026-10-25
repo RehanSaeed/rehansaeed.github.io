@@ -1,20 +1,26 @@
-<script>
-export default {
+<script lang="ts">
+import type { PropType } from "vue";
+
+export default defineComponent({
   name: "u-intersect",
   emits: ["change", "destroyed", "enter", "enterFirstTime", "leave"],
-  data() {
+  data(): {
+    hasIntersected: boolean;
+    observer: IntersectionObserver | undefined;
+  } {
     return {
       hasIntersected: false,
+      observer: undefined,
     };
   },
   props: {
     threshold: {
-      type: Array,
+      type: Array as PropType<number[]>,
       required: false,
       default: () => [0, 0.2],
     },
     root: {
-      type: typeof HTMLElement !== "undefined" ? HTMLElement : Object,
+      type: Object as PropType<Element | Document | null>,
       required: false,
       default: () => null,
     },
@@ -56,16 +62,16 @@ export default {
         return;
       }
 
-      this.observer.observe(this.$el);
+      this.observer?.observe(this.$el);
     });
   },
   unmounted() {
     this.$emit("destroyed");
-    this.observer.disconnect();
+    this.observer?.disconnect();
   },
   render() {
     const nodes = this.$slots.default?.() ?? [];
     return nodes[0] ?? null;
   },
-};
+});
 </script>

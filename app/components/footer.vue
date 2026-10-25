@@ -25,13 +25,13 @@
   </footer>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+export default defineComponent({
   name: "u-footer",
   setup() {
     return { metadata: useAppConfig().site };
   },
-};
+});
 </script>
 
 <style lang="scss">

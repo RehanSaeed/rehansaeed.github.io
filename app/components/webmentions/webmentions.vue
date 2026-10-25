@@ -73,10 +73,19 @@
   </u-intersect>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import type { Webmention } from "~/types/webmentions";
+
+export default defineComponent({
   name: "u-webmentions",
-  data() {
+  data(): {
+    isLoading: boolean;
+    hasError: boolean;
+    likes: Webmention[];
+    reposts: Webmention[];
+    links: Webmention[];
+    replies: Webmention[];
+  } {
     return {
       isLoading: true,
       hasError: false,
@@ -119,17 +128,17 @@ export default {
     },
   },
   methods: {
-    pluralise(count, one, many) {
+    pluralise(count: number, one: string, many: string) {
       return count === 1 ? one : many;
     },
-    async getMentions(page, perPage) {
+    async getMentions(page: number, perPage: number) {
       const response = await fetch(
         `https://webmention.io/api/mentions?page=${page}&per-page=${perPage}&target=${this.url}&sort-by=published&sort-dir=up`,
       );
       if (!response.ok) {
         throw new Error(`Unable to load Web Mentions: HTTP ${response.status}`);
       }
-      const list = await response.json();
+      const list: { links: Webmention[] } = await response.json();
       if (!Array.isArray(list.links)) {
         throw new Error(
           "Invalid Web Mentions response: expected a links array",
@@ -164,7 +173,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

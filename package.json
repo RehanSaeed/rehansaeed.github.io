@@ -79,10 +79,10 @@
   "scripts": {
     "images:avif": "node scripts/avif-images.mjs",
     "dev": "nuxt dev",
-    "build": "nuxt generate && node scripts/pages.mjs artifact && npm run seo:verify",
-    "start": "node scripts/serve.mjs",
+    "build": "nuxt generate && node scripts/pages.mts artifact && npm run seo:verify",
+    "start": "node scripts/serve.mts",
     "analyze": "nuxt analyze",
-    "typecheck": "nuxt typecheck",
+    "typecheck": "nuxt typecheck && tsc --project tsconfig.scripts.json",
     "lint": "eslint . --max-warnings=0",
     "lint:fix": "eslint . --fix --max-warnings=0",
     "postinstall": "nuxt prepare",
@@ -95,15 +95,15 @@
     "test:visual": "playwright test --project=visual",
     "lighthouse": "lhci autorun",
     "pwa:screenshots": "node scripts/pwa-screenshots.mjs",
-    "parity:snapshot": "node scripts/parity/snapshot.mjs",
-    "parity:diff": "node scripts/parity/diff.mjs tests/parity/baseline .parity/local",
-    "parity:verify": "node scripts/parity/verify.mjs",
-    "parity:sw-cutover": "node scripts/parity/sw-cutover.mjs",
-    "parity:update-cycle": "node scripts/parity/update-cycle.mjs",
-    "seo:verify": "node scripts/seo.mjs",
-    "og:gallery": "node scripts/og-images.mjs",
-    "pages:preflight": "node scripts/pages.mjs preflight",
-    "pages:verify": "node scripts/pages.mjs verify"
+    "parity:snapshot": "node scripts/parity/snapshot.mts",
+    "parity:diff": "node scripts/parity/diff.mts tests/parity/baseline .parity/local",
+    "parity:verify": "node scripts/parity/verify.mts",
+    "parity:sw-cutover": "node scripts/parity/sw-cutover.mts",
+    "parity:update-cycle": "node scripts/parity/update-cycle.mts",
+    "seo:verify": "node scripts/seo.mts",
+    "og:gallery": "node scripts/og-images.mts",
+    "pages:preflight": "node scripts/pages.mts preflight",
+    "pages:verify": "node scripts/pages.mts verify"
   },
   "browserslist": [
     "defaults"

@@ -1,5 +1,5 @@
-<script>
-export default {
+<script lang="ts">
+export default defineComponent({
   name: "u-scroll-custom-property",
   data() {
     return {
@@ -29,7 +29,7 @@ export default {
         return;
       }
 
-      element.style.setProperty("--scroll", this.scroll);
+      element.style.setProperty("--scroll", String(this.scroll));
 
       if (this.scroll > this.previousScroll) {
         element.classList.add("scroll-down");
@@ -45,5 +45,5 @@ export default {
     const nodes = this.$slots.default?.() ?? [];
     return nodes.length === 1 ? nodes[0] : nodes;
   },
-};
+});
 </script>

@@ -11,10 +11,10 @@
   </u-skeleton>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+export default defineComponent({
   name: "u-webmention-faces-skeleton",
-  data() {
+  data(): { resizeObserver: ResizeObserver | undefined; width: number } {
     return {
       resizeObserver: undefined,
       width: 0,
@@ -45,7 +45,7 @@ export default {
     },
   },
   methods: {
-    getXPosition(n) {
+    getXPosition(n: number) {
       const x = n * (this.radius * 2) - this.radius;
       const nOverlap = n * this.overlap;
       const offset = this.overlap;
@@ -54,16 +54,17 @@ export default {
   },
   mounted() {
     this.resizeObserver = new ResizeObserver((entries) => {
-      this.width = Math.floor(entries[0].contentRect.width);
+      if (entries[0]) this.width = Math.floor(entries[0].contentRect.width);
     });
     this.$nextTick(() => {
-      this.resizeObserver.observe(this.$refs.skeleton.$el);
+      const skeleton = this.$refs.skeleton as { $el: Element };
+      this.resizeObserver?.observe(skeleton.$el);
     });
   },
   unmounted() {
-    this.resizeObserver.disconnect();
+    this.resizeObserver?.disconnect();
   },
-};
+});
 </script>
 
 <style lang="scss">

@@ -16,10 +16,10 @@
   </u-tooltip>
 </template>
 
-<script>
+<script lang="ts">
 import { appThemeChanged, appThemeLoaded } from "~/framework/analytics";
 
-export default {
+export default defineComponent({
   name: "u-theme-button",
   inheritAttrs: false,
   data() {
@@ -54,7 +54,7 @@ export default {
   beforeUnmount() {
     window.removeEventListener("__themeChanged", this.setTheme);
   },
-};
+});
 </script>
 
 <style lang="scss">

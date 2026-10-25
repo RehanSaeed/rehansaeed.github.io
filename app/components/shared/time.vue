@@ -10,13 +10,13 @@
   </u-tooltip>
 </template>
 
-<script>
+<script lang="ts">
 import {
   getAbsoluteDisplayDateFromString,
   getDisplayDateFromString,
-} from "~/framework/date.js";
+} from "~/framework/date";
 
-export default {
+export default defineComponent({
   name: "u-time",
   inheritAttrs: false,
   props: {
@@ -42,5 +42,5 @@ export default {
   mounted() {
     this.isMounted = true;
   },
-};
+});
 </script>

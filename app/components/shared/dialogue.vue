@@ -33,10 +33,10 @@
   </Transition>
 </template>
 
-<script>
+<script lang="ts">
 import { useId } from "vue";
 
-export default {
+export default defineComponent({
   name: "u-dialogue",
   emits: ["close"],
   setup() {
@@ -57,11 +57,11 @@ export default {
     },
   },
   methods: {
-    open(dialog) {
-      dialog.showModal();
+    open(dialog: Element) {
+      if (dialog instanceof HTMLDialogElement) dialog.showModal();
     },
-    hide(dialog) {
-      dialog.close();
+    hide(dialog: Element) {
+      if (dialog instanceof HTMLDialogElement) dialog.close();
     },
     onNativeClose(event) {
       // A queued close event can arrive after the dialog has reopened.
@@ -75,7 +75,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

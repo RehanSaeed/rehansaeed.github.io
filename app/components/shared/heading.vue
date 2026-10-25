@@ -18,11 +18,11 @@
   </Component>
 </template>
 
-<script>
+<script lang="ts">
 import { NuxtLink } from "#components";
 import { headingId } from "#shared/utils/headings";
 
-export default {
+export default defineComponent({
   name: "u-heading",
   props: {
     id: {
@@ -75,7 +75,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style lang="scss">
