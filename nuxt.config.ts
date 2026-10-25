@@ -175,8 +175,6 @@ export default defineNuxtConfig({
     bundleAssets: true,
     retentionDays: 30,
     maxNumberOfVersions: 10,
-    // One shared PWA/deployment update notice owns activation and reloading.
-    reloadStrategy: false,
   },
 
   linkChecker: {
@@ -201,7 +199,7 @@ export default defineNuxtConfig({
     strategies: "generateSW",
     registerType: "prompt",
     injectRegister: false,
-    client: { registerPlugin: false },
+    client: { installPrompt: true },
     filename: "service-worker.js",
     manifestFilename: "manifest.webmanifest",
     scope: "/",
@@ -214,6 +212,7 @@ export default defineNuxtConfig({
       lang: site.language,
       dir: "ltr",
       start_url: "/",
+      scope: "/",
       display: "minimal-ui",
       theme_color: "#6b17e8",
       background_color: "#f2f4f7",
@@ -233,11 +232,26 @@ export default defineNuxtConfig({
           purpose: "maskable",
         },
       ],
-      screenshots: [1, 2, 3].map((index) => ({
-        src: `/images/screenshots/screenshot${index}-1172x1820.png`,
-        sizes: "1172x1820",
-        type: "image/png",
-      })),
+      screenshots: [
+        { page: "blog", label: "Read the latest software engineering posts" },
+        { page: "portfolio", label: "Explore open-source projects" },
+        { page: "about", label: "About Muhammad Rehan Saeed" },
+      ].flatMap(({ page, label }) => [
+        {
+          src: `/images/screenshots/${page}-wide.png`,
+          sizes: "1440x900",
+          type: "image/png",
+          form_factor: "wide" as const,
+          label,
+        },
+        {
+          src: `/images/screenshots/${page}-narrow.png`,
+          sizes: "390x844",
+          type: "image/png",
+          form_factor: "narrow" as const,
+          label,
+        },
+      ]),
       shortcuts: [
         {
           name: "Blog",
@@ -264,7 +278,6 @@ export default defineNuxtConfig({
     },
     workbox: {
       clientsClaim: true,
-      importScripts: ["/service-worker-update-policy.js"],
       globPatterns: [
         "**/*.{js,json,css,html,png,jpg,jpeg,svg,gif,woff2,webp,avif}",
       ],
@@ -536,8 +549,6 @@ export default defineNuxtConfig({
   },
 
   experimental: {
-    // Keep Nuxt's chunk recovery from bypassing the reader-controlled update prompt.
-    emitRouteChunkError: "manual",
     defaults: {
       nuxtLink: {
         trailingSlash: "append",

@@ -91,6 +91,7 @@
     "test:firefox": "playwright test --project=firefox",
     "test:visual": "playwright test --project=visual",
     "lighthouse": "lhci autorun",
+    "pwa:screenshots": "node scripts/pwa-screenshots.mjs",
     "parity:snapshot": "node scripts/parity/snapshot.mjs",
     "parity:diff": "node scripts/parity/diff.mjs tests/parity/baseline .parity/local",
     "parity:verify": "node scripts/parity/verify.mjs",

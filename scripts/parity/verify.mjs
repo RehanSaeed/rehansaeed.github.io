@@ -268,9 +268,34 @@ for (const path of ["/security.txt", "/opensearch.xml"]) {
 }
 const { icons: oldIcons, ...oldManifest } =
     liveArtifacts["/manifest.webmanifest"];
-const { icons, scope, id, ...manifest } =
+delete oldManifest.screenshots;
+const { icons, scope, id, screenshots, ...manifest } =
     localArtifacts["/manifest.webmanifest"];
 assert.deepEqual(manifest, oldManifest, "Preserved PWA manifest fields");
+assert.deepEqual(
+    screenshots.map(({ src, sizes, type, form_factor }) => ({
+        src,
+        sizes,
+        type,
+        form_factor,
+    })),
+    ["blog", "portfolio", "about"].flatMap((page) => [
+        {
+            src: `/images/screenshots/${page}-wide.png`,
+            sizes: "1440x900",
+            type: "image/png",
+            form_factor: "wide",
+        },
+        {
+            src: `/images/screenshots/${page}-narrow.png`,
+            sizes: "390x844",
+            type: "image/png",
+            form_factor: "narrow",
+        },
+    ]),
+    "Refreshed PWA install previews",
+);
+assert.ok(screenshots.every(({ label }) => label), "PWA preview labels");
 assert.equal(scope, "/");
 assert.equal(id, "/");
 assert.deepEqual(

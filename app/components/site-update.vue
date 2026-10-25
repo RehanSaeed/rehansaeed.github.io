@@ -1,6 +1,6 @@
 <template>
   <section
-    v-if="available && !dismissed"
+    v-if="$pwa?.needRefresh"
     class="site-update"
     aria-label="Site update">
     <h2 class="site-update__title">Update available</h2>
@@ -8,7 +8,7 @@
       class="site-update__close"
       aria-label="Dismiss site update"
       :disabled="updating"
-      @click="dismissed = true">
+      @click="$pwa.cancelPrompt()">
       <u-icon name="feather:x" />
     </u-button>
     <p class="site-update__message" role="status">
@@ -22,7 +22,7 @@
         @click="update">
         {{ updating ? "Updating..." : "Update now" }}
       </u-button>
-      <u-button bordered :disabled="updating" @click="dismissed = true">
+      <u-button bordered :disabled="updating" @click="$pwa.cancelPrompt()">
         Later
       </u-button>
     </div>
@@ -30,138 +30,23 @@
 </template>
 
 <script setup lang="ts">
-import { registerSW } from "virtual:pwa-register";
-
-const available = ref(false);
-const dismissed = ref(false);
+const { $pwa } = useNuxtApp();
 const updating = ref(false);
 const error = ref("");
-let registration: ServiceWorkerRegistration | undefined;
-let latestVersion: string | undefined;
-let workerChanged = false;
-let reloading = false;
-let activationTimer: ReturnType<typeof setTimeout> | undefined;
-
-function reload() {
-  if (reloading) return;
-  reloading = true;
-  clearTimeout(activationTimer);
-  window.location.reload();
-}
-
-function reportError(cause: unknown) {
-  console.error("[site-update] Could not apply the site update.", cause);
-  error.value = "The update is not ready. Please try again when online.";
-  updating.value = false;
-  clearTimeout(activationTimer);
-}
-
-const { onAppOutdated, onCurrentChunksOutdated } = useSkewProtection();
-onCurrentChunksOutdated(() => {
-  available.value = true;
-});
-onAppOutdated((manifest) => {
-  if (latestVersion && latestVersion !== manifest?.id) dismissed.value = false;
-  latestVersion = manifest?.id;
-  available.value = true;
-  if (navigator.onLine) void registration?.update().catch(reportError);
-});
-const removeChunkError = useNuxtApp().hook(
-  "app:chunkError",
-  ({ error: cause }) => {
-    console.error("[site-update] A page asset could not be loaded.", cause);
-    error.value = "This page needs an update. Choose Update now to continue.";
-    available.value = true;
-    dismissed.value = false;
-  },
-);
-
-function waitForInstall(worker: ServiceWorker) {
-  return new Promise<void>((resolve, reject) => {
-    const timer = setTimeout(() => {
-      cleanup();
-      reject(new Error("Service worker installation timed out."));
-    }, 30000);
-    const cleanup = () => {
-      clearTimeout(timer);
-      worker.removeEventListener("statechange", changed);
-    };
-    const changed = () => {
-      if (worker.state === "installed" || worker.state === "activated") {
-        cleanup();
-        resolve();
-      } else if (worker.state === "redundant") {
-        cleanup();
-        reject(new Error("Service worker installation failed."));
-      }
-    };
-    worker.addEventListener("statechange", changed);
-    changed();
-  });
-}
 
 async function update() {
-  if (updating.value) return;
+  if (!$pwa || updating.value) return;
   updating.value = true;
   error.value = "";
   try {
-    if (workerChanged || !("serviceWorker" in navigator)) return reload();
-    registration ??= await navigator.serviceWorker.getRegistration();
-    if (!registration) {
-      if (!navigator.onLine) {
-        throw new Error("The site cannot be refreshed while offline.");
-      }
-      return reload();
-    }
-    if (!registration.waiting) {
-      await registration.update();
-      if (registration.installing)
-        await waitForInstall(registration.installing);
-    }
-    if (workerChanged) return reload();
-    if (registration.waiting) {
-      activationTimer = setTimeout(
-        () => reportError(new Error("Service worker activation timed out.")),
-        30000,
-      );
-      registration.waiting.postMessage({
-        type: "SKIP_WAITING",
-        readerApproved: true,
-      });
-    } else {
-      // Deployment/chunk notices do not require a new worker, and another tab may have activated it.
-      reload();
-    }
+    await $pwa.updateServiceWorker();
   } catch (cause) {
-    reportError(cause);
+    console.error("[site-update] Could not apply the site update.", cause);
+    error.value = "The update is not ready. Please try again when online.";
+  } finally {
+    updating.value = false;
   }
 }
-
-onMounted(() => {
-  registerSW({
-    immediate: true,
-    onNeedRefresh() {
-      available.value = true;
-    },
-    onNeedReload() {
-      workerChanged = true;
-      available.value = true;
-      // Another tab can activate the worker; only a reader-approved update reloads this tab.
-      if (updating.value) reload();
-    },
-    onRegisteredSW(_url, value) {
-      registration = value;
-    },
-    onRegisterError(cause) {
-      console.error("[site-update] Service worker registration failed.", cause);
-    },
-  });
-});
-
-onUnmounted(() => {
-  clearTimeout(activationTimer);
-  removeChunkError();
-});
 </script>
 
 <style lang="scss">
