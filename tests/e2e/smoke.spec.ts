@@ -2,9 +2,17 @@ import { load } from "cheerio";
 import { expect, test } from "./fixtures";
 
 test.describe("Smoke", () => {
-  for (const { name, url } of [
-    { name: "Mastodon", url: "https://hachyderm.io/@RehanSaeed" },
-    { name: "Bluesky", url: "https://bsky.app/profile/rehansaeed.bsky.social" },
+  for (const { name, url, previous } of [
+    {
+      name: "Bluesky",
+      url: "https://bsky.app/profile/rehansaeed.bsky.social",
+      previous: "Stack Overflow",
+    },
+    {
+      name: "Mastodon",
+      url: "https://hachyderm.io/@RehanSaeed",
+      previous: "Bluesky",
+    },
   ]) {
     test(`${name} social link supports profile verification before and after hydration`, async ({
       page,
@@ -23,6 +31,7 @@ test.describe("Smoke", () => {
       expect(staticLink.length).toBe(1);
       expect(staticLink.attr("href")).toBe(url);
       expect(staticLink.attr("rel")).toBe("me");
+      expect(staticLink.prev().attr("aria-label")).toBe(previous);
       const staticIcon = staticLink.find("svg.icon");
       expect(staticIcon.length).toBe(1);
       expect(staticIcon.attr("aria-hidden")).toBe("true");
@@ -36,6 +45,9 @@ test.describe("Smoke", () => {
       await expect(link).toBeVisible();
       await expect(link).toHaveAttribute("href", url);
       await expect(link).toHaveAttribute("rel", "me");
+      await expect(
+        page.locator(`main .social a[aria-label="${previous}"] + a`),
+      ).toHaveAttribute("aria-label", name);
       await expect(link.locator("svg.icon")).toBeVisible();
       await expect(link.locator("svg.icon")).toHaveAttribute(
         "aria-hidden",
@@ -56,6 +68,9 @@ test.describe("Smoke", () => {
           exact: true,
         }),
       ).toHaveAttribute("href", url);
+      await expect(
+        page.locator(`.about__social-links a[aria-label="${previous}"] + a`),
+      ).toHaveAttribute("aria-label", name);
       await expect(link.locator("svg.icon path")).not.toHaveCount(0);
       expect(iconRequests).toEqual([]);
     });
