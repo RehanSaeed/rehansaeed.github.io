@@ -120,6 +120,40 @@ test("Browsers choose AVIF for responsive pictures", async ({ page }) => {
   );
 });
 
+test("About award sources match their CSS widths without changing their frames", async ({
+  page,
+}) => {
+  await page.goto("/about/");
+  const badges = page.locator(".about__badge-image");
+  await expect(badges).toHaveCount(10);
+  for (const badge of await badges.all()) {
+    const wide = (await badge.getAttribute("class"))?.includes(
+      "about__badge-image--wide",
+    );
+    const width = wide ? 180 : 150;
+    await expect(badge).toHaveCSS("width", `${width}px`);
+    await expect(badge).toHaveCSS("height", "150px");
+    await expect(badge).toHaveAttribute("sizes", `${width}px`);
+    const source = badge.locator("..").locator("source");
+    await expect(source).toHaveAttribute("sizes", `${width}px`);
+    await expect(source).toHaveAttribute(
+      "srcset",
+      new RegExp(`s_${width}x\\d+.* ${width}w`),
+    );
+    await expect(source).toHaveAttribute(
+      "srcset",
+      new RegExp(`s_${width * 2}x\\d+.* ${width * 2}w`),
+    );
+  }
+  const honours = page.locator(".about__open-uk-honours-image");
+  await expect(honours).toHaveCSS("width", "322px");
+  await expect(honours).toHaveAttribute("sizes", "322px");
+  await expect(honours.locator("..").locator("source")).toHaveAttribute(
+    "srcset",
+    /s_322x99.* 322w.*s_644x198.* 644w/,
+  );
+});
+
 test("Picture wrappers use block layout across the site", async ({ page }) => {
   for (const path of [
     "/",

@@ -110,7 +110,8 @@
             alt="Microsoft Global Hackathon 2026 Participant"
             height="300"
             width="300"
-            sizes="300px"
+            sizes="150px"
+            densities="x1 x2"
             src="/images/about/Microsoft-Global-Hackathon-2026-300x300.png"
             quality="100" />
         </a>
@@ -122,7 +123,8 @@
             alt="Microsoft MSAI Security Champs March 2026"
             height="300"
             width="300"
-            sizes="300px"
+            sizes="150px"
+            densities="x1 x2"
             src="/images/about/Microsoft-MSAI-Security-Champs-2026-300x300.png"
             quality="100" />
         </a>
@@ -134,7 +136,8 @@
             alt="Microsoft Global Hackathon 2025 Participant"
             height="300"
             width="300"
-            sizes="300px"
+            sizes="150px"
+            densities="x1 x2"
             src="/images/about/Microsoft-Global-Hackathon-2025-300x300.png"
             quality="100" />
         </a>
@@ -146,7 +149,8 @@
             alt="Microsoft MSAI Security Champs Recognition 2025"
             height="300"
             width="300"
-            sizes="300px"
+            sizes="150px"
+            densities="x1 x2"
             src="/images/about/Microsoft-MSAI-Security-Champs-Recognition-2025-300x300.png"
             quality="100" />
         </a>
@@ -158,7 +162,8 @@
             alt="Microsoft Global Hackathon 2024 Participant"
             height="300"
             width="300"
-            sizes="300px"
+            sizes="150px"
+            densities="x1 x2"
             src="/images/about/Microsoft-Global-Hackathon-2024-300x300.png"
             quality="100" />
         </a>
@@ -170,7 +175,8 @@
             alt="Microsoft Global Hackathon 2023 Participant"
             height="300"
             width="300"
-            sizes="300px"
+            sizes="150px"
+            densities="x1 x2"
             src="/images/about/Microsoft-Global-Hackathon-2023-300x300.png"
             quality="100" />
         </a>
@@ -182,7 +188,8 @@
             alt="Open UK Honours 2022"
             height="396"
             width="1288"
-            sizes="sm:100vw lg:1288px"
+            sizes="322px"
+            densities="x1 x2"
             src="/images/about/Open-UK-Honours-2022-1288x396.jpg"
             quality="100" />
         </a>
@@ -194,7 +201,8 @@
             alt="Microsoft Global Hackathon 2022.png"
             height="300"
             width="300"
-            sizes="300px"
+            sizes="150px"
+            densities="x1 x2"
             src="/images/about/Microsoft-Global-Hackathon-2022-300x300.png"
             quality="100" />
         </a>
@@ -206,7 +214,8 @@
             alt="Microsoft Global Hackathon 2021.png"
             height="300"
             width="300"
-            sizes="300px"
+            sizes="150px"
+            densities="x1 x2"
             src="/images/about/Microsoft-Global-Hackathon-2021-300x300.png"
             quality="100" />
         </a>
@@ -220,7 +229,8 @@
             alt="Microsoft Global Hackathon 2020.png"
             height="300"
             width="350"
-            sizes="350px"
+            sizes="180px"
+            densities="x1 x2"
             src="/images/about/Microsoft-Global-Hackathon-2020-350x300.png"
             quality="100" />
         </a>
@@ -232,7 +242,8 @@
             alt="Microsoft Most Valuable Professional (MVP) Alumni"
             height="300"
             width="300"
-            sizes="300px"
+            sizes="150px"
+            densities="x1 x2"
             src="/images/about/Microsoft-Most-Valuable-Professional-Alumni-2023-300x300.png"
             quality="100" />
         </a>
