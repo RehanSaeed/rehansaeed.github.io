@@ -129,7 +129,6 @@ async function refresh() {
 .vssue {
   display: grid;
   gap: var(--global-space-fixed-5);
-  overflow: hidden;
 
   p {
     min-inline-size: 0;
@@ -319,6 +318,7 @@ async function refresh() {
 .vssue-comment-avatar {
   grid-area: avatar;
   align-self: start;
+  margin: 0;
 }
 
 // Comment Edit

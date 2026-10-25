@@ -62,6 +62,13 @@ for (const colorScheme of ["light", "dark"] as const) {
       await expect(avatar).toHaveCSS("border-radius", "100%");
       await expect(avatar).toHaveCSS("scale", "none");
       const bounds = await avatar.boundingBox();
+      const headerBounds = await comment
+        .locator(".vssue-comment-header")
+        .boundingBox();
+      expect(bounds!.y, "Avatar aligns with the comment header").toBeCloseTo(
+        headerBounds!.y,
+        1,
+      );
       expect(bounds!.width).toBe(bounds!.height);
       const expectedSize = await avatar.evaluate(
         () =>
@@ -80,6 +87,19 @@ for (const colorScheme of ["light", "dark"] as const) {
         }
         await expect(avatar).toHaveCSS("scale", "1.4");
         await expect(avatar).toHaveCSS("opacity", "1");
+        const unclippedEdges = await avatar.evaluate((element) => {
+          const bounds = element.getBoundingClientRect();
+          return [
+            [bounds.left + 2, bounds.top + bounds.height / 2],
+            [bounds.right - 2, bounds.top + bounds.height / 2],
+            [bounds.left + bounds.width / 2, bounds.top + 2],
+            [bounds.left + bounds.width / 2, bounds.bottom - 2],
+          ].map(([x, y]) => element.contains(document.elementFromPoint(x, y)));
+        });
+        expect(
+          unclippedEdges,
+          `${interaction}: avatar edges are not clipped`,
+        ).toEqual([true, true, true, true]);
         const frame = await avatar.evaluate((element) => {
           const style = getComputedStyle(element);
           const border = getComputedStyle(element, "::after");
