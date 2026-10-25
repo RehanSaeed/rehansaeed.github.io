@@ -1,7 +1,10 @@
 import { expect, test } from "./fixtures";
 import { load } from "cheerio";
 import { commentSchema, type GitHubComment } from "../../shared/utils/comments";
-import { commentReactions } from "../../app/utils/comment-presentation";
+import {
+  commentAssociation,
+  commentReactions,
+} from "../../app/utils/comment-presentation";
 
 const postPath =
   "/optimally-configuring-open-telemetry-tracing-for-asp-net-core/";
@@ -68,6 +71,29 @@ test.describe("GitHub comments", () => {
       }),
     ).toEqual([]);
     expect(commentReactions({ ...owner, reactions: undefined })).toEqual([]);
+  });
+
+  test("Formats API associations without a fixed list and validates their format", () => {
+    for (const [value, label] of [
+      ["OWNER", "Owner"],
+      ["FIRST_TIMER", "First timer"],
+      ["FIRST_TIME_CONTRIBUTOR", "First time contributor"],
+      ["FUTURE_REVIEWER", "Future reviewer"],
+    ]) {
+      expect(
+        commentSchema.parse({ ...owner, author_association: value })
+          .author_association,
+      ).toBe(value);
+      expect(commentAssociation(value)).toBe(label);
+    }
+    expect(commentAssociation("NONE")).toBeUndefined();
+    expect(commentAssociation(undefined)).toBeUndefined();
+    for (const value of ["", "owner", "<script>", " OWNER "]) {
+      expect(
+        commentSchema.safeParse({ ...owner, author_association: value })
+          .success,
+      ).toBe(false);
+    }
   });
 
   for (const width of [375, 1280]) {
@@ -227,16 +253,18 @@ test.describe("GitHub comments", () => {
           reader,
           { ...legacy, id: 987654322, user: null },
           { ...reader, id: 987654323, author_association: "CONTRIBUTOR" },
+          { ...reader, id: 987654324, author_association: "FUTURE_REVIEWER" },
         ],
       }),
     );
     await page.goto(postPath);
     await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
-    await expect(page.locator(".vssue-comment")).toHaveCount(3);
-    await expect(page.locator(".comments__count")).toHaveText("3 Comments");
-    await expect(page.locator(".vssue-comment-badge")).toHaveText(
+    await expect(page.locator(".vssue-comment")).toHaveCount(4);
+    await expect(page.locator(".comments__count")).toHaveText("4 Comments");
+    await expect(page.locator(".vssue-comment-badge")).toHaveText([
       "Contributor",
-    );
+      "Future reviewer",
+    ]);
     await expect(page.locator(".vssue-comment-edited")).toHaveCount(0);
     await expect(page.locator(".vssue-comment-footer")).toHaveCount(0);
     await expect(page.locator(".vssue-comment-author").nth(1)).toHaveText(

@@ -1,14 +1,12 @@
 import type { GitHubComment } from "../../shared/utils/comments";
 
-export const commentAssociations = {
-  COLLABORATOR: "Collaborator",
-  CONTRIBUTOR: "Contributor",
-  FIRST_TIMER: "First timer",
-  FIRST_TIME_CONTRIBUTOR: "First-time contributor",
-  MANNEQUIN: "Mannequin",
-  MEMBER: "Member",
-  OWNER: "Owner",
-};
+export function commentAssociation(
+  association: GitHubComment["author_association"],
+) {
+  if (!association || association === "NONE") return undefined;
+  const label = association.toLowerCase().replaceAll("_", " ");
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
 
 const reactionTypes = [
   { name: "+1", emoji: "👍", label: "Thumbs up" },

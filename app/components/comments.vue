@@ -52,13 +52,10 @@
                     >{{ comment.user?.login ?? "Deleted user" }}</u-heading
                   >
                   <u-badge
-                    v-if="
-                      comment.author_association &&
-                      comment.author_association !== 'NONE'
-                    "
+                    v-if="commentAssociation(comment.author_association)"
                     class="vssue-comment-badge"
                     >{{
-                      commentAssociations[comment.author_association]
+                      commentAssociation(comment.author_association)
                     }}</u-badge
                   >
                 </div>
@@ -109,7 +106,7 @@
 
 <script setup lang="ts">
 import {
-  commentAssociations,
+  commentAssociation,
   commentReactions,
 } from "~/utils/comment-presentation";
 import type { CommentSnapshot } from "#shared/utils/comments";

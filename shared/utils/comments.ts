@@ -31,16 +31,8 @@ export const commentSchema = z.object({
   created_at: z.string().datetime(),
   updated_at: z.string().datetime().optional(),
   author_association: z
-    .enum([
-      "COLLABORATOR",
-      "CONTRIBUTOR",
-      "FIRST_TIMER",
-      "FIRST_TIME_CONTRIBUTOR",
-      "MANNEQUIN",
-      "MEMBER",
-      "NONE",
-      "OWNER",
-    ])
+    .string()
+    .regex(/^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*$/)
     .optional(),
   user: z
     .object({
