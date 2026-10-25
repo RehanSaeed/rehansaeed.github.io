@@ -1,6 +1,6 @@
 <template>
   <div class="post-page h-entry">
-    <div class="post-page__title-container">
+    <header class="post-page__title-container">
       <u-heading
         :id="titleId"
         class="p-name u-url"
@@ -10,11 +10,14 @@
         >{{ title }}</u-heading
       >
       <u-post-meta :meta="post" />
-    </div>
+    </header>
 
     <u-arrows class="post-page__arrows" />
 
-    <u-post class="post-page__content" :post="post" />
+    <u-post
+      class="post-page__content"
+      :post="post"
+      :aria-labelledby="titleId" />
 
     <u-post-navigation v-if="post.published" :permalink="post.permalink" />
 

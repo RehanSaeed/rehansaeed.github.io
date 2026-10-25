@@ -25,7 +25,7 @@ export default {
       type: Boolean,
     },
     tag: {
-      default: "section",
+      default: "div",
       type: String,
     },
   },

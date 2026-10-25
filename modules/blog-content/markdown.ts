@@ -234,7 +234,7 @@ function youTubeEmbed(src: string): string {
   return `<div class="youtube-embed">
     <div style="width: 100%; margin: 0 auto;">
         <div style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
-            <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube-nocookie.com/embed/${src}" allow="autoplay; encrypted-media" allowfullscreen="">
+            <iframe title="YouTube video player" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube-nocookie.com/embed/${src}" allow="autoplay; encrypted-media" allowfullscreen="">
             </iframe>
         </div>
     </div>
@@ -363,7 +363,7 @@ export function remarkHeadingIds() {
   };
 }
 
-/** remark-autolink-headings: a prepended anchor icon link to the id set by remarkHeadingIds. */
+/** Article sections sit below the page title, retaining their IDs and visual sizes. */
 export function rehypeHeadingAnchors() {
   return (tree: Node) => {
     walk(tree, (node) => {
@@ -375,7 +375,13 @@ export function rehypeHeadingAnchors() {
         return;
       }
       const id = String(node.properties.id);
-      node.tagName = `${keepTagPrefix}${node.tagName}`;
+      const level = Number(node.tagName!.slice(1));
+      const classes = node.properties.className;
+      node.properties.className = [
+        ...(Array.isArray(classes) ? classes : classes ? [classes] : []),
+        `post-heading--${level}`,
+      ];
+      node.tagName = `${keepTagPrefix}h${Math.min(level + 1, 6)}`;
       node.children = [
         {
           type: "element",

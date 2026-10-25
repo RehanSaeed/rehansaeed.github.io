@@ -1,6 +1,6 @@
 <template>
   <u-intersect @enterFirstTime="refresh">
-    <u-card class="comments" aria-labelledby="comments">
+    <u-card class="comments" tag="section" aria-labelledby="comments">
       <header class="comments__header">
         <u-heading
           id="comments"
@@ -31,12 +31,15 @@
           </p>
         </div>
       </header>
-      <div v-if="current.comments.length" class="comments__list">
-        <u-comment
-          v-for="comment in current.comments"
-          :key="comment.id"
-          :comment="comment" />
-      </div>
+      <ol
+        v-if="current.comments.length"
+        class="comments__list"
+        aria-label="Comments"
+        role="list">
+        <li v-for="comment in current.comments" :key="comment.id">
+          <u-comment :comment="comment" />
+        </li>
+      </ol>
     </u-card>
   </u-intersect>
 </template>

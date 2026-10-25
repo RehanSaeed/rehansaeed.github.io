@@ -5,7 +5,7 @@
       :id="id"
       :href="url"
       rel="ugc nofollow"
-      level="3"
+      level="4"
       size="6"
       >{{ name }}</u-heading
     >

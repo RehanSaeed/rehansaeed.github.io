@@ -4,13 +4,11 @@
 
     <u-arrows class="tag-page__arrows" />
 
-    <div class="tag-page__items">
-      <u-post-card
-        v-for="(post, index) of posts"
-        :key="post.id"
-        :post="post"
-        :priority="index === 0" />
-    </div>
+    <ul class="tag-page__items" aria-label="Blog posts" role="list">
+      <li v-for="(post, index) of posts" :key="post.id">
+        <u-post-card :post="post" :priority="index === 0" />
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -123,5 +121,9 @@ useHead({
     )
   );
   justify-content: center;
+}
+
+.tag-page__items > li {
+  display: grid;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <article class="border" :style="style"></article>
+  <div class="border" :style="style" aria-hidden="true"></div>
 </template>
 
 <script setup>

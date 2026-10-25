@@ -21,6 +21,13 @@ export default defineNuxtConfig({
   compatibilityDate: "2026-07-01",
   ssr: true,
 
+  vue: {
+    compilerOptions: {
+      // Vue 3's native HTML tag list predates the search element.
+      isCustomElement: (tag) => tag === "search",
+    },
+  },
+
   modules: [
     "@nuxt/content",
     "@nuxt/icon",

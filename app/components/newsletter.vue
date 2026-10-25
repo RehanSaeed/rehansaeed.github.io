@@ -1,5 +1,5 @@
 <template>
-  <u-card class="newsletter">
+  <u-card class="newsletter" tag="section" aria-labelledby="newsletter">
     <form
       class="newsletter__form"
       method="post"
@@ -23,8 +23,10 @@
         placeholder="youremail@example.com"
         required
         type="email"
+        autocomplete="email"
         autocapitalize="off"
-        autocorrect="off" />
+        autocorrect="off"
+        spellcheck="false" />
       <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
       <input
         aria-hidden="true"
