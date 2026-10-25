@@ -113,6 +113,9 @@ test.describe("GitHub comments", () => {
       expect(saved(".github-comment__association").first().text()).toBe(
         "Owner",
       );
+      expect(saved(".comments__list > article.github-comment").length).toBe(
+        saved(".github-comment").length,
+      );
       await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
       await refreshed;
       await expect(
@@ -124,6 +127,9 @@ test.describe("GitHub comments", () => {
       ).toHaveAttribute("id", "comments");
       const comment = page.locator(".github-comment");
       await expect(comment).toHaveCount(1);
+      await expect(
+        page.locator(".comments__list > article.github-comment"),
+      ).toHaveCount(1);
       await expect(
         page.getByRole("region", { name: "GitHub Comments", exact: true }),
       ).toBeVisible();
@@ -246,6 +252,70 @@ test.describe("GitHub comments", () => {
       await expect(page.locator(".github-comment__reaction")).toHaveCount(8);
     });
   }
+
+  test("Updates presentation when refreshing a saved comment with the same ID", async ({
+    page,
+    request,
+  }) => {
+    const response = await request.get(postPath);
+    const saved = load(await response.text());
+    const id = Number(
+      saved(".github-comment")
+        .first()
+        .attr("id")!
+        .replace("github-comment-", ""),
+    );
+    expect(id).toBeGreaterThan(0);
+    let release!: () => void;
+    const pending = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    await page.route(commentsPath, async (route) => {
+      await pending;
+      await route.fulfill({
+        json: [
+          {
+            ...owner,
+            id,
+            user: null,
+            author_association: "CONTRIBUTOR",
+            updated_at: owner.created_at,
+            reactions: { heart: 2 },
+          },
+        ],
+      });
+    });
+    try {
+      const refreshed = page.waitForRequest((request) =>
+        request.url().includes("/issues/607/comments"),
+      );
+      await page.goto(`${postPath}#comments`);
+      await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
+      await refreshed;
+      const comment = page.locator(`#github-comment-${id}`);
+      const article = await comment.elementHandle();
+      release();
+      await expect(page.locator(".github-comment")).toHaveCount(1);
+      await expect(comment).toHaveAccessibleName("Deleted user");
+      await expect(comment.locator(".github-comment__avatar")).toHaveCount(0);
+      await expect(comment.locator(".github-comment__association")).toHaveText(
+        "Contributor",
+      );
+      await expect(comment.locator(".github-comment__edited")).toHaveCount(0);
+      await expect(comment.locator(".github-comment__content")).toHaveText(
+        "A helpful reply.",
+      );
+      await expect(comment.locator(".github-comment__reaction")).toHaveCount(1);
+      await expect(comment.getByRole("img", { name: "Heart: 2" })).toHaveText(
+        "❤️2",
+      );
+      expect(
+        await comment.evaluate((element, saved) => element === saved, article),
+      ).toBe(true);
+    } finally {
+      release();
+    }
+  });
 
   test("Does not infer ownership from usernames or show empty metadata", async ({
     page,
