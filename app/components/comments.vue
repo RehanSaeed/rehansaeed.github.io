@@ -1,16 +1,16 @@
 <template>
   <u-intersect @enterFirstTime="refresh">
-    <u-card class="comments">
-      <u-heading
-        id="comments"
-        class="comments__title"
-        center
-        level="2"
-        href="#comments"
-        >GitHub Comments</u-heading
-      >
-      <div class="vssue">
-        <div class="comments__header">
+    <u-card class="comments" aria-labelledby="comments">
+      <header class="comments__header">
+        <u-heading
+          id="comments"
+          class="comments__title"
+          center
+          level="2"
+          href="#comments"
+          >GitHub Comments</u-heading
+        >
+        <div class="comments__summary">
           <div class="comments__toolbar">
             <h3 class="comments__count">
               {{ current.comments.length }}
@@ -21,84 +21,84 @@
               Comment on GitHub
             </u-link-button>
           </div>
-          <p v-if="unavailable" role="status">
+          <p v-if="unavailable" class="comments__status" role="status">
             Live comments unavailable; showing saved comments. You can view the
             latest on GitHub.
           </p>
         </div>
-        <div class="vssue-comments">
-          <article
-            v-for="comment in current.comments"
-            :id="`github-comment-${comment.id}`"
-            :key="comment.id"
-            class="vssue-comment">
-            <u-avatar
-              v-if="comment.user"
-              class="vssue-comment-avatar"
-              :href="comment.user.html_url"
-              :label="comment.user.login"
-              :alt="comment.user.login"
-              :src="comment.user.avatar_url"
-              loading="lazy" />
-            <div class="vssue-comment-body">
-              <header class="vssue-comment-header">
-                <div class="vssue-comment-identity">
-                  <u-heading
-                    :id="`github-comment-author-${comment.id}`"
-                    class="vssue-comment-author"
-                    :href="comment.user?.html_url ?? comment.html_url"
-                    level="3"
-                    size="6"
-                    >{{ comment.user?.login ?? "Deleted user" }}</u-heading
-                  >
-                  <u-badge
-                    v-if="commentAssociation(comment.author_association)"
-                    class="vssue-comment-badge"
-                    >{{
-                      commentAssociation(comment.author_association)
-                    }}</u-badge
-                  >
-                </div>
-                <div class="vssue-comment-created-at">
-                  <u-time :datetime="comment.created_at" />
-                  <span
-                    v-if="
-                      comment.updated_at &&
-                      comment.updated_at !== comment.created_at
-                    "
-                    class="vssue-comment-edited">
-                    (edited <u-time :datetime="comment.updated_at" />)
-                  </span>
-                </div>
-              </header>
-              <!-- eslint-disable-next-line vue/no-v-html -- safeComment sanitizes both saved and refreshed GitHub markup. -->
-              <div class="vssue-comment-main" v-html="comment.body_html" />
-              <footer
-                v-if="commentReactions(comment).length"
-                class="vssue-comment-footer"
-                aria-label="Reactions">
+      </header>
+      <div class="comments__list">
+        <article
+          v-for="{ comment, association, reactions, edited } in comments"
+          :id="`github-comment-${comment.id}`"
+          :key="comment.id"
+          class="github-comment"
+          :class="{ 'github-comment--without-avatar': !comment.user }"
+          :aria-labelledby="`github-comment-author-${comment.id}`">
+          <u-avatar
+            v-if="comment.user"
+            class="github-comment__avatar"
+            :href="comment.user.html_url"
+            :label="comment.user.login"
+            :alt="comment.user.login"
+            :src="comment.user.avatar_url"
+            loading="lazy" />
+          <div class="github-comment__body">
+            <header class="github-comment__header">
+              <div class="github-comment__identity">
+                <u-heading
+                  :id="`github-comment-author-${comment.id}`"
+                  class="github-comment__author"
+                  :href="comment.user?.html_url ?? comment.html_url"
+                  level="3"
+                  size="6"
+                  >{{ comment.user?.login ?? "Deleted user" }}</u-heading
+                >
                 <u-badge
-                  v-for="reaction in commentReactions(comment)"
+                  v-if="association"
+                  class="github-comment__association"
+                  >{{ association }}</u-badge
+                >
+              </div>
+              <div class="github-comment__timestamp">
+                <u-time :datetime="comment.created_at" />
+                <span v-if="edited" class="github-comment__edited">
+                  (edited <u-time :datetime="edited" />)
+                </span>
+              </div>
+            </header>
+            <!-- eslint-disable-next-line vue/no-v-html -- safeComment sanitizes both saved and refreshed GitHub markup. -->
+            <div class="github-comment__content" v-html="comment.body_html" />
+            <footer v-if="reactions.length" class="github-comment__footer">
+              <ul
+                class="github-comment__reactions"
+                aria-label="Reactions"
+                role="list">
+                <li
+                  v-for="reaction in reactions"
                   :key="reaction.name"
-                  class="vssue-comment-reaction"
-                  role="img"
-                  :aria-label="`${reaction.label}: ${reaction.count}`"
-                  :title="`${reaction.label}: ${reaction.count}`">
-                  <span
-                    class="vssue-comment-reaction-emoji"
-                    aria-hidden="true"
-                    >{{ reaction.emoji }}</span
-                  >
-                  <span
-                    class="vssue-comment-reaction-count"
-                    aria-hidden="true"
-                    >{{ reaction.count }}</span
-                  >
-                </u-badge>
-              </footer>
-            </div>
-          </article>
-        </div>
+                  class="github-comment__reaction-item">
+                  <u-badge
+                    class="github-comment__reaction"
+                    role="img"
+                    :aria-label="`${reaction.label}: ${reaction.count}`"
+                    :title="`${reaction.label}: ${reaction.count}`">
+                    <span
+                      class="github-comment__reaction-emoji"
+                      aria-hidden="true"
+                      >{{ reaction.emoji }}</span
+                    >
+                    <span
+                      class="github-comment__reaction-count"
+                      aria-hidden="true"
+                      >{{ reaction.count }}</span
+                    >
+                  </u-badge>
+                </li>
+              </ul>
+            </footer>
+          </div>
+        </article>
       </div>
     </u-card>
   </u-intersect>
@@ -114,6 +114,17 @@ import type { CommentSnapshot } from "#shared/utils/comments";
 defineOptions({ name: "BlogComments" });
 const props = defineProps<{ title: string; snapshot: CommentSnapshot }>();
 const current = shallowRef(props.snapshot);
+const comments = computed(() =>
+  current.value.comments.map((comment) => ({
+    comment,
+    association: commentAssociation(comment.author_association),
+    reactions: commentReactions(comment),
+    edited:
+      comment.updated_at !== comment.created_at
+        ? comment.updated_at
+        : undefined,
+  })),
+);
 const unavailable = ref(false);
 const repository = useAppConfig().site.repository;
 const controller = new AbortController();
@@ -151,26 +162,29 @@ async function refresh() {
 @use "~/assets/style/abstracts/type";
 
 .comments {
+  display: grid;
+  gap: var(--global-space-fixed-5);
+  min-inline-size: 0;
   content-visibility: auto;
   contain-intrinsic-size: 427px;
 }
 
 .comments__title {
-  margin-block-start: 0;
+  margin-block: 0;
 }
 
-.vssue,
-.vssue-comments {
+.comments__list {
   display: grid;
   gap: var(--global-space-fixed-5);
   min-inline-size: 0;
 }
 
-.vssue p {
-  min-inline-size: 0;
+.comments__header {
+  display: grid;
+  gap: var(--global-space-fixed-4);
 }
 
-.comments__header {
+.comments__summary {
   display: grid;
   gap: var(--global-space-fixed-4);
   padding-block-end: var(--global-space-fixed-4);
@@ -178,50 +192,58 @@ async function refresh() {
     var(--global-border-color);
 }
 
-.comments__header p {
+.comments__status {
   margin: 0;
+  min-inline-size: 0;
 }
 
 .comments__toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: var(--global-space-fixed-2);
 }
 
 .comments__count {
+  flex-grow: 1;
   margin: 0;
   min-inline-size: 0;
 }
 
-.vssue-comment {
+.github-comment {
   display: grid;
   column-gap: var(--global-space-fixed-4);
   grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: "avatar body";
   scroll-margin-block-start: var(--global-space-fixed-6);
 
   @include type.word-wrap();
 }
 
-.vssue-comment-avatar {
-  grid-column: 1;
-  grid-row: 1;
+.github-comment--without-avatar {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "body";
+}
+
+.github-comment__avatar {
+  grid-area: avatar;
   align-self: start;
   margin: 0;
 }
 
-.vssue-comment-body {
-  grid-column: 2;
+.github-comment__body {
+  grid-area: body;
+  display: grid;
+  gap: var(--global-space-fixed-3);
   min-inline-size: 0;
 }
 
-.vssue-comment-header {
+.github-comment__header {
   display: grid;
-  margin-block-end: var(--global-space-fixed-3);
 }
 
-.vssue-comment-identity {
+.github-comment__identity {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -229,16 +251,16 @@ async function refresh() {
   min-inline-size: 0;
 }
 
-.vssue-comment-author {
+.github-comment__author {
   margin: 0;
   min-inline-size: 0;
 }
 
-.vssue-comment-created-at {
+.github-comment__timestamp {
   font-size: var(--global-font-size-1);
 }
 
-.vssue-comment-edited {
+.github-comment__edited {
   display: inline-block;
 }
 
@@ -246,7 +268,6 @@ async function refresh() {
   flex: none;
   min-inline-size: 0;
   max-inline-size: 100%;
-  margin-inline-start: auto;
   text-align: center;
 
   &:focus-visible {
@@ -264,26 +285,54 @@ async function refresh() {
   }
 }
 
-.vssue-comment-main {
-  display: flow-root;
+.github-comment__content {
+  display: grid;
+  gap: var(--global-space-fixed-5);
+  min-inline-size: 0;
 
-  > :last-child {
+  > * {
+    margin-block: 0;
+    min-inline-size: 0;
+  }
+
+  p {
+    min-inline-size: 0;
+  }
+
+  > :is(ul, ol) > li:first-child > :first-child {
+    margin-block-start: 0;
+  }
+
+  > :is(ul, ol) > li:last-child,
+  > :is(ul, ol) > li:last-child > :last-child {
     margin-block-end: 0;
+  }
+
+  pre {
+    max-inline-size: 100%;
+    overflow: auto;
   }
 }
 
-.vssue-comment-footer {
+.github-comment__reactions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--global-space-fixed-2);
-  margin-block-start: var(--global-space-fixed-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.vssue-comment-reaction {
+.github-comment__reaction-item {
+  display: flex;
+  margin: 0;
+}
+
+.github-comment__reaction {
   gap: var(--global-space-fixed-2);
 }
 
-.vssue-comment-reaction-emoji {
+.github-comment__reaction-emoji {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -292,7 +341,7 @@ async function refresh() {
   flex: none;
 }
 
-.vssue-comment-reaction-count {
+.github-comment__reaction-count {
   font-variant-numeric: tabular-nums;
 }
 </style>
