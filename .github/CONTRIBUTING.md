@@ -19,10 +19,10 @@ Link an existing issue if it provides useful context, but an issue is not requir
 Keep PNG originals for images with transparency and JPG originals for photographs;
 use `.jpg`, not `.jpeg`. After adding or changing an image in `public/` or
 `content/`, run `npm run images:avif` and commit the generated `.avif` companions
-alongside the originals (for example, `photo.jpg.avif`). Keeping the original
-extension avoids collisions between PNG and JPG versions of the same image.
-The command preserves dimensions and transparency, auto-orients photos and
-strips metadata.
+alongside the originals (for example, `photo.jpg` becomes `photo.avif`).
+When PNG and JPG originals share a basename, generate one shared AVIF from the
+PNG and retain both originals as fallbacks. The command preserves the chosen
+source's dimensions and transparency, auto-orients photos and strips metadata.
 
 Use Nuxt Image's `NuxtPicture` for responsive images, with `format="avif"` and
 `legacy-format="png"` or `legacy-format="jpg"` matching the original.

@@ -17,7 +17,16 @@ async function images(directory) {
   return files;
 }
 
-const files = [...(await images("public")), ...(await images("content"))];
+const sources = [...(await images("public")), ...(await images("content"))];
+const outputPath = (file) => file.replace(/\.(png|jpg)$/i, ".avif");
+const preferredSources = new Map();
+for (const file of sources.sort()) {
+  const output = outputPath(file);
+  if (!preferredSources.has(output) || /\.png$/i.test(file)) {
+    preferredSources.set(output, file);
+  }
+}
+const files = [...preferredSources.values()];
 let sourceBytes = 0;
 let avifBytes = 0;
 // Bound simultaneous encodes: AVIF encoders use several threads per image.
@@ -28,7 +37,7 @@ await Promise.all(
       const image = sharp(file).autoOrient();
       const output = await image
         .avif({ quality: 60, effort: 4, chromaSubsampling: "4:4:4" })
-        .toFile(`${file}.avif`);
+        .toFile(outputPath(file));
       sourceBytes += (await stat(file)).size;
       avifBytes += output.size;
       console.log(`${file}: ${output.size} AVIF bytes`);

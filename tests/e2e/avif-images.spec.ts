@@ -8,18 +8,25 @@ import { getAvifSource } from "../../shared/utils/images";
 import { expect, test } from "./fixtures";
 
 unitTest(
-  "Every PNG/JPG has a decodable AVIF companion with the same dimensions and alpha",
+  "Every PNG/JPG has a plain AVIF companion, preferring PNG for shared basenames",
   async () => {
     unitTest.setTimeout(120_000);
     let count = 0;
     let originalBytes = 0;
     let avifBytes = 0;
     for (const directory of ["public", "content"]) {
-      for (const file of await listFiles(directory)) {
+      const files = await listFiles(directory);
+      const checked = new Set<string>();
+      for (const file of files) {
         expect(file).not.toMatch(/\.jpeg$/i);
+        expect(file).not.toMatch(/\.(png|jpg)\.avif$/i);
         if (!/\.(png|jpg)$/.test(file)) continue;
-        const original = await readFile(join(directory, file));
-        const avif = await readFile(join(directory, `${file}.avif`));
+        const basename = file.replace(/\.(png|jpg)$/, "");
+        const preferredSource = files.includes(`${basename}.png`)
+          ? `${basename}.png`
+          : file;
+        const original = await readFile(join(directory, preferredSource));
+        const avif = await readFile(join(directory, `${basename}.avif`));
         const source = await sharp(original).metadata();
         const encoded = await sharp(avif).metadata();
         expect(encoded.format, file).toBe("heif");
@@ -29,8 +36,19 @@ unitTest(
         expect(encoded.exif, file).toBeUndefined();
         expect(encoded.xmp, file).toBeUndefined();
         await sharp(avif).raw().toBuffer();
-        originalBytes += original.length;
-        avifBytes += avif.length;
+        if (!checked.has(basename)) {
+          originalBytes += original.length;
+          avifBytes += avif.length;
+          checked.add(basename);
+        }
+        if (file.endsWith(".jpg") && preferredSource.endsWith(".png")) {
+          expect(avif, `${file}: shared AVIF encoded from PNG`).toEqual(
+            await sharp(original)
+              .autoOrient()
+              .avif({ quality: 60, effort: 4, chromaSubsampling: "4:4:4" })
+              .toBuffer(),
+          );
+        }
         count++;
       }
     }
@@ -40,14 +58,10 @@ unitTest(
 );
 
 unitTest(
-  "Static sources distinguish PNG/JPG collisions and leave external images alone",
+  "Static sources share plain AVIF URLs for PNG/JPG pairs and leave external images alone",
   () => {
-    expect(getAvifSource("/images/example.png")).toBe(
-      "/images/example.png.avif",
-    );
-    expect(getAvifSource("/images/example.jpg")).toBe(
-      "/images/example.jpg.avif",
-    );
+    expect(getAvifSource("/images/example.png")).toBe("/images/example.avif");
+    expect(getAvifSource("/images/example.jpg")).toBe("/images/example.avif");
     for (const src of [
       "https://example.com/photo.jpg",
       "//example.com/photo.jpg",
@@ -121,11 +135,38 @@ test("Runtime search results load pre-generated AVIF without an image server", a
         (element: HTMLImageElement) =>
           element.complete &&
           element.naturalWidth > 0 &&
-          element.currentSrc.endsWith(".png.avif") &&
+          element.currentSrc.endsWith("/Schema.NET-1366x768.avif") &&
           !element.currentSrc.includes("/_ipx/"),
       ),
     )
     .toBe(true);
+});
+
+test("PNG/JPG thumbnail pairs share one AVIF and retain their original fallbacks", async ({
+  page,
+}) => {
+  const basename = "/images/thumbnails/Blank";
+  await page.goto(
+    `/streaming/thumbnail/?${new URLSearchParams({
+      image1: `${basename}.png`,
+      image2: `${basename}.jpg`,
+    })}`,
+  );
+  for (const [index, format] of ["png", "jpg"].entries()) {
+    const image = page.locator(`img.thumbnail__image${index + 1}`);
+    await expect(image).toHaveAttribute("src", `${basename}.${format}`);
+    await expect
+      .poll(() =>
+        image.evaluate(
+          (element: HTMLImageElement, basename) =>
+            element.complete &&
+            element.naturalWidth > 0 &&
+            new URL(element.currentSrc).pathname === `${basename}.avif`,
+          basename,
+        ),
+      )
+      .toBe(true);
+  }
 });
 
 test.describe("Native fallback without JavaScript", () => {
