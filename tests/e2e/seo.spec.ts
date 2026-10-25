@@ -1,5 +1,3 @@
-import { readFileSync } from "node:fs";
-import { runInNewContext } from "node:vm";
 import { load } from "cheerio";
 import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
@@ -10,44 +8,17 @@ type NuxtRoot = HTMLElement & {
   __vue_app__?: { config: { globalProperties: { $nuxt: NuxtApp } } };
 };
 
-async function announceUpdate(
-  page: Page,
-  id = "reader-controlled-update-test",
-) {
+async function announceUpdate(page: Page) {
   await page.waitForFunction(
     () => !!document.querySelector<NuxtRoot>("#__nuxt")?.__vue_app__,
   );
-  await page.evaluate(async (id) => {
+  await page.evaluate(() => {
     const app =
       document.querySelector<NuxtRoot>("#__nuxt")!.__vue_app__!.config
         .globalProperties.$nuxt;
-    await app.hooks.callHook("app:manifest:update", {
-      id,
-      timestamp: Date.now(),
-    });
-  }, id);
-}
-
-test("The worker rejects legacy automatic activation and accepts only reader-approved update messages", () => {
-  const worker = new EventTarget();
-  runInNewContext(
-    readFileSync("public/service-worker-update-policy.js", "utf8"),
-    { self: worker },
-  );
-  const received: unknown[] = [];
-  worker.addEventListener("message", (event) => {
-    received.push((event as MessageEvent).data);
+    app.$pwa!.needRefresh = true;
   });
-  worker.dispatchEvent(
-    new MessageEvent("message", { data: { type: "SKIP_WAITING" } }),
-  );
-  expect(received).toEqual([]);
-  const approved = { type: "SKIP_WAITING", readerApproved: true };
-  worker.dispatchEvent(new MessageEvent("message", { data: approved }));
-  const unrelated = { type: "CACHE_URLS" };
-  worker.dispatchEvent(new MessageEvent("message", { data: unrelated }));
-  expect(received).toEqual([approved, unrelated]);
-});
+}
 
 test("Markdown discovery removes unlisted entries and empty groups, not similarly named public pages", () => {
   const sitemap =
@@ -66,6 +37,20 @@ test("Markdown discovery removes unlisted entries and empty groups, not similarl
 test("Static discovery serves real Markdown and the explicit AI training policy", async ({
   request,
 }) => {
+  const sitemap = await request.get("/sitemap.xml");
+  expect(sitemap.ok()).toBe(true);
+  const xml = load(await sitemap.text(), { xml: true });
+  const urls = xml("url > loc")
+    .map((_, node) => xml(node).text())
+    .get();
+  expect(urls.length).toBeGreaterThan(0);
+  for (const path of ["/streaming/border/", "/streaming/thumbnail/"]) {
+    const response = await request.get(path);
+    expect(response.ok()).toBe(true);
+    const page = load(await response.text());
+    expect(page('meta[name="robots"]').attr("content")).toContain("noindex");
+    expect(urls).not.toContain(`https://rehansaeed.com${path}`);
+  }
   const robots = await request.get("/robots.txt");
   expect(robots.ok()).toBe(true);
   expect(await robots.text()).toContain("Content-Usage: train-ai=y");
@@ -140,7 +125,7 @@ test("Client-side pagination preserves one canonical and its crawler response ha
   expect(ids).not.toContain("https://rehansaeed.com/#webpage");
 });
 
-test("Later preserves client navigation after a deployment and asset failures use the same update prompt", async ({
+test("Later dismisses the package update prompt without interrupting client navigation", async ({
   page,
   baseURL,
 }) => {
@@ -167,25 +152,49 @@ test("Later preserves client navigation after a deployment and asset failures us
   );
   expect(documentNavigations).toBe(0);
   await expect(notice).toHaveCount(0);
-  await page.evaluate(async () => {
-    const app =
-      document.querySelector<NuxtRoot>("#__nuxt")!.__vue_app__!.config
-        .globalProperties.$nuxt;
-    await app.hooks.callHook("app:chunkError", {
-      error: new Error("Test unavailable page asset"),
-    });
-  });
-  await expect(notice).toHaveCount(1);
-  await expect(notice).toContainText("This page needs an update.");
-  expect(documentNavigations).toBe(0);
-  await notice.getByRole("button", { name: "Dismiss site update" }).click();
-  await expect(notice).toHaveCount(0);
-  await announceUpdate(page, "next-reader-controlled-update-test");
+  await announceUpdate(page);
   await expect(notice).toHaveCount(1);
   expect(documentNavigations).toBe(0);
 });
 
-test("Update now reloads and clears the deployment notice when service workers are blocked", async ({
+test("Nuxt recovers a chunk navigation failure with its built-in reload", async ({
+  page,
+  baseURL,
+}) => {
+  await page.route(
+    (url) => url.origin !== new URL(baseURL!).origin,
+    (route) => route.fulfill({ contentType: "text/plain", body: "" }),
+  );
+  await page.goto("/");
+  await expect(page.getByRole("button", { name: "Open search" })).toBeEnabled();
+  const navigation = page.waitForRequest(
+    (request) =>
+      request.isNavigationRequest() &&
+      request.frame() === page.mainFrame() &&
+      new URL(request.url()).pathname === "/about/",
+  );
+  await page.evaluate(() => {
+    const app =
+      document.querySelector<NuxtRoot>("#__nuxt")!.__vue_app__!.config
+        .globalProperties.$nuxt;
+    app.$router.beforeEach(async () => {
+      const error = new Error("Test unavailable page chunk");
+      await app.hooks.callHook("app:chunkError", { error });
+      throw error;
+    });
+    void app.$router.push("/about/").catch(() => {
+      // The synthetic navigation fails; Nuxt's error hook owns recovery.
+    });
+  });
+  await navigation;
+  await expect(page).toHaveURL(/\/about\/$/);
+  await expect(page.getByRole("button", { name: "Open search" })).toBeEnabled();
+  await expect(page.getByRole("region", { name: "Site update" })).toHaveCount(
+    0,
+  );
+});
+
+test("A package update without a worker does not force a document reload", async ({
   page,
   baseURL,
 }) => {
@@ -202,16 +211,13 @@ test("Update now reloads and clears the deployment notice when service workers a
     if (request.isNavigationRequest() && request.frame() === page.mainFrame())
       documentNavigations++;
   });
-  await Promise.all([
-    page.waitForEvent("framenavigated", {
-      predicate: (frame) => frame === page.mainFrame(),
-    }),
-    notice.getByRole("button", { name: "Update now", exact: true }).click(),
-  ]);
-  await page.waitForLoadState("networkidle");
-  await expect(notice).toHaveCount(0);
+  await notice.getByRole("button", { name: "Update now", exact: true }).click();
+  await expect(
+    notice.getByRole("button", { name: "Update now", exact: true }),
+  ).toBeEnabled();
+  await expect(notice).toBeVisible();
   await expect(page).toHaveURL(/\/about\/$/);
-  expect(documentNavigations).toBe(1);
+  expect(documentNavigations).toBe(0);
 });
 
 for (const width of [320, 375, 1280]) {
