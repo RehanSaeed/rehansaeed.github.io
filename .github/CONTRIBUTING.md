@@ -14,16 +14,6 @@ Link an existing issue if it provides useful context, but an issue is not requir
 - Use ESLint for linting and Prettier for formatting.
 - Add tests for behavior changes and make sure checks pass.
 
-## CI checks
-
-The Generate job generates and verifies the static site once, then shares that
-artifact with parallel Chrome, Edge and Firefox Playwright jobs. Each browser
-tests the same `dist` output and build-time image metadata; no browser job
-rebuilds the site. Firefox dependencies are installed only in its own job.
-Deployment waits for both Generate and all three browser jobs to pass. The Build
-check aggregates these results, preserving the existing branch-protection gate
-and failing when generation or any browser fails.
-
 ## Dependency updates
 
 Commit `package.json` and its regenerated `package-lock.json` together. Run
