@@ -1,29 +1,31 @@
 <template>
   <u-intersect @enterFirstTime="refresh">
     <u-card class="comments" aria-labelledby="comments">
-      <u-heading
-        id="comments"
-        class="comments__title"
-        center
-        level="2"
-        href="#comments"
-        >GitHub Comments</u-heading
-      >
       <header class="comments__header">
-        <div class="comments__toolbar">
-          <h3 class="comments__count">
-            {{ current.comments.length }}
-            {{ current.comments.length === 1 ? "Comment" : "Comments" }}
-          </h3>
-          <u-link-button class="comments__github" bordered :href="issueUrl">
-            <u-icon name="fa-brands:github" inline aria-hidden="true" />
-            Comment on GitHub
-          </u-link-button>
+        <u-heading
+          id="comments"
+          class="comments__title"
+          center
+          level="2"
+          href="#comments"
+          >GitHub Comments</u-heading
+        >
+        <div class="comments__summary">
+          <div class="comments__toolbar">
+            <h3 class="comments__count">
+              {{ current.comments.length }}
+              {{ current.comments.length === 1 ? "Comment" : "Comments" }}
+            </h3>
+            <u-link-button class="comments__github" bordered :href="issueUrl">
+              <u-icon name="fa-brands:github" inline aria-hidden="true" />
+              Comment on GitHub
+            </u-link-button>
+          </div>
+          <p v-if="unavailable" class="comments__status" role="status">
+            Live comments unavailable; showing saved comments. You can view the
+            latest on GitHub.
+          </p>
         </div>
-        <p v-if="unavailable" class="comments__status" role="status">
-          Live comments unavailable; showing saved comments. You can view the
-          latest on GitHub.
-        </p>
       </header>
       <div class="comments__list">
         <article
@@ -180,6 +182,11 @@ async function refresh() {
 .comments__header {
   display: grid;
   gap: var(--global-space-fixed-4);
+}
+
+.comments__summary {
+  display: grid;
+  gap: var(--global-space-fixed-4);
   padding-block-end: var(--global-space-fixed-4);
   border-block-end: var(--global-border-width-1) solid
     var(--global-border-color);
@@ -292,6 +299,15 @@ async function refresh() {
     min-inline-size: 0;
   }
 
+  > :is(ul, ol) > li:first-child > :first-child {
+    margin-block-start: 0;
+  }
+
+  > :is(ul, ol) > li:last-child,
+  > :is(ul, ol) > li:last-child > :last-child {
+    margin-block-end: 0;
+  }
+
   pre {
     max-inline-size: 100%;
     overflow: auto;
@@ -308,6 +324,7 @@ async function refresh() {
 }
 
 .github-comment__reaction-item {
+  display: flex;
   margin: 0;
 }
 

@@ -332,7 +332,7 @@ test.describe("GitHub comments", () => {
             {
               ...owner,
               user: { ...owner.user, login: "reader".repeat(12) },
-              body_html: `<p>${longText}</p><pre><code>${longText}</code></pre><ul><li>First point</li><li>Second point</li></ul><table><thead><tr><th>Example</th></tr></thead><tbody><tr><td>${longText}</td></tr></tbody></table><details><summary>More information</summary><p>A detail.</p></details>`,
+              body_html: `<p>${longText}</p><pre><code>${longText}</code></pre><ul><li><p>First point</p></li><li><p>Second point</p></li></ul><table><thead><tr><th>Example</th></tr></thead><tbody><tr><td>${longText}</td></tr></tbody></table><details><summary>More information</summary><p>A detail.</p></details>`,
             },
             {
               ...owner,
@@ -362,7 +362,32 @@ test.describe("GitHub comments", () => {
         )!;
         const deletedBody = deleted.querySelector(".github-comment__body")!;
         const bodyGap = parseFloat(getComputedStyle(body).rowGap);
+        const sectionHeader = element.querySelector(".comments__header")!;
+        const title = element.querySelector(".comments__title")!;
+        const summary = element.querySelector(".comments__summary")!;
+        const list = content.querySelector("ul")!;
+        const firstParagraph = list.querySelector("li:first-child > p")!;
+        const lastParagraph = list.querySelector("li:last-child > p")!;
         return {
+          titleGap:
+            summary.getBoundingClientRect().top -
+            title.getBoundingClientRect().bottom,
+          expectedTitleGap: parseFloat(getComputedStyle(sectionHeader).rowGap),
+          listStartGap:
+            firstParagraph.getBoundingClientRect().top -
+            list.getBoundingClientRect().top,
+          listEndGap:
+            list.getBoundingClientRect().bottom -
+            lastParagraph.getBoundingClientRect().bottom,
+          reactionsFitItems: Array.from(
+            element.querySelectorAll(".github-comment__reaction-item"),
+          ).every(
+            (item) =>
+              Math.abs(
+                item.getBoundingClientRect().height -
+                  item.querySelector(".badge")!.getBoundingClientRect().height,
+              ) < 0.1,
+          ),
           sectionDisplay: getComputedStyle(element).display,
           commentDisplay: getComputedStyle(first).display,
           bodyDisplay: getComputedStyle(body).display,
@@ -398,6 +423,10 @@ test.describe("GitHub comments", () => {
         };
       });
       expect(layout.sectionDisplay).toBe("grid");
+      expect(layout.titleGap).toBeCloseTo(layout.expectedTitleGap, 1);
+      expect(layout.listStartGap).toBeCloseTo(0, 1);
+      expect(layout.listEndGap).toBeCloseTo(0, 1);
+      expect(layout.reactionsFitItems).toBe(true);
       expect(layout.commentDisplay).toBe("grid");
       expect(layout.bodyDisplay).toBe("grid");
       expect(layout.contentDisplay).toBe("grid");
