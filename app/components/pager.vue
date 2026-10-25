@@ -26,7 +26,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
 import { previousUrl, nextUrl } from "~/framework/paging.js";
 

@@ -4,11 +4,15 @@ import { join } from "node:path";
 import { load } from "cheerio";
 import sharp from "sharp";
 import { parse } from "yaml";
+import type { SchemaGraph } from "./parity/types.mts";
+import type siteConfiguration from "../site.json";
 
 const directory = process.argv[2] ?? "dist";
-const site = JSON.parse(await readFile("site.json", "utf8"));
-const read = (file) => readFile(join(directory, file), "utf8");
-const localFile = (url) => {
+const site: typeof siteConfiguration = JSON.parse(
+    await readFile("site.json", "utf8"),
+);
+const read = (file: string) => readFile(join(directory, file), "utf8");
+const localFile = (url: string) => {
     const parsed = new URL(url, site.url);
     assert.equal(
         parsed.origin,
@@ -17,7 +21,7 @@ const localFile = (url) => {
     );
     return decodeURIComponent(parsed.pathname).replace(/^\//, "");
 };
-const markdownPath = (path) =>
+const markdownPath = (path: string) =>
     path === "/" ? "index.md" : `${path.replace(/\/$/, "").slice(1)}.md`;
 const sitemap = load(await read("sitemap.xml"), { xml: true });
 const urls = sitemap("url > loc")
@@ -25,7 +29,7 @@ const urls = sitemap("url > loc")
     .get();
 assert.equal(new Set(urls).size, urls.length, "Duplicate sitemap URL");
 const full = await read("llms-full.txt");
-const sourceKey = (url) => new URL(url).href.replace(/\/$/, "");
+const sourceKey = (url: string) => new URL(url).href.replace(/\/$/, "");
 const fullSources = new Set(
     [...full.matchAll(/^- \*\*Source:\*\* (https:\/\/\S+)$/gm)].map(([, url]) =>
         sourceKey(url),
@@ -33,7 +37,7 @@ const fullSources = new Set(
 );
 const discovery = await read("llms.txt");
 const markdownSitemap = await read("sitemap.md");
-const markdownLinks = (text) =>
+const markdownLinks = (text: string) =>
     new Set(
         [
             ...text.matchAll(
@@ -49,7 +53,7 @@ let articles = 0;
 for (const url of urls) {
     const path = new URL(url).pathname;
     const $ = load(await read(join(localFile(url), "index.html")));
-    const meta = (name) =>
+    const meta = (name: string) =>
         $(`meta[property="${name}"],meta[name="${name}"]`).attr("content");
     assert.equal(
         $("link[rel=canonical]").length,
@@ -62,6 +66,7 @@ for (const url of urls) {
         `${path}: indexed noindex page`,
     );
     const image = meta("og:image");
+    assert(image, `${path}: missing social image`);
     assert.match(
         image,
         /^https:\/\/rehansaeed\.com\/_og\/s\/o_[a-f0-9]+\.png$/,
@@ -91,7 +96,7 @@ for (const url of urls) {
 
     const scripts = $('script[type="application/ld+json"]');
     assert.equal(scripts.length, 1, `${path}: coherent schema graph`);
-    const graph = JSON.parse(scripts.text());
+    const graph: SchemaGraph = JSON.parse(scripts.text());
     assert.equal(graph["@context"], "https://schema.org");
     const nodes = graph["@graph"];
     const ids = nodes.map((node) => node["@id"]);
@@ -100,7 +105,7 @@ for (const url of urls) {
         ids.length,
         `${path}: duplicate schema IDs`,
     );
-    const find = (id) => {
+    const find = (id: string) => {
         const node = nodes.find((node) => node["@id"] === id);
         assert(node, `${path}: missing graph reference ${id}`);
         return node;
@@ -108,6 +113,8 @@ for (const url of urls) {
     const webpage = find(`${url}#webpage`);
     assert.equal(webpage.url, url);
     const website = find(`${site.url}/#website`);
+    assert.equal(website["@type"], "WebSite");
+    assert(website["@type"] === "WebSite");
     assert.equal(website.publisher["@id"], `${site.url}/#publisher`);
     assert.equal(website.author["@id"], `${site.url}/#identity`);
     assert.equal(find(website.publisher["@id"])["@type"], "Organization");
@@ -125,11 +132,11 @@ for (const url of urls) {
         assert.equal(article.publisher["@id"], `${site.url}/#publisher`);
         assert.equal(
             Date.parse(article.datePublished),
-            Date.parse(meta("article:published_time")),
+            Date.parse(meta("article:published_time") ?? ""),
         );
         assert.equal(
             Date.parse(article.dateModified),
-            Date.parse(meta("article:modified_time")),
+            Date.parse(meta("article:modified_time") ?? ""),
         );
         assert(article.image[0].caption);
         const hero = $(".post__photo");
@@ -144,6 +151,7 @@ for (const url of urls) {
     }
     if (path === "/about/") {
         assert([webpage["@type"]].flat().includes("ProfilePage"));
+        assert("mainEntity" in webpage && webpage.mainEntity);
         assert.equal(webpage.mainEntity["@id"], `${site.url}/#identity`);
     }
     const list = nodes.find((node) => node["@type"] === "ItemList");
@@ -152,7 +160,11 @@ for (const url of urls) {
             assert.equal(item.position, index + 1),
         );
         const cards = $(".post-card__title a, .portfolio-card__title a")
-            .map((_, a) => new URL($(a).attr("href"), site.url).href)
+            .map((_, a) => {
+                const href = $(a).attr("href");
+                assert(href, `${path}: missing card link`);
+                return new URL(href, site.url).href;
+            })
             .get();
         if (cards.length) {
             assert.deepEqual(
@@ -166,9 +178,9 @@ for (const url of urls) {
             (node) => node["@type"] === "BreadcrumbList",
         );
         assert(breadcrumb, `${path}: missing breadcrumbs`);
+        const first = breadcrumb.itemListElement[0].item;
         assert.equal(
-            breadcrumb.itemListElement[0].item["@id"] ??
-                breadcrumb.itemListElement[0].item,
+            typeof first === "string" ? first : first["@id"],
             `${site.url}/`,
         );
     }
@@ -183,13 +195,11 @@ for (const url of urls) {
         `${path}: empty Markdown`,
     );
     const mdUrl = `${site.url}/${mdPath}`;
-    assert.equal(
-        new URL(
-            $('link[rel=alternate][type="text/markdown"]').attr("href"),
-            site.url,
-        ).href,
-        mdUrl,
+    const markdownHref = $('link[rel=alternate][type="text/markdown"]').attr(
+        "href",
     );
+    assert(markdownHref, `${path}: missing Markdown alternate`);
+    assert.equal(new URL(markdownHref, site.url).href, mdUrl);
     assert(discoveryLinks.has(mdUrl), `${path}: llms discovery`);
     assert(sitemapLinks.has(mdUrl), `${path}: Markdown sitemap`);
     assert(fullSources.has(sourceKey(url)), `${path}: full export`);

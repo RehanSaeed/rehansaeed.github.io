@@ -27,8 +27,8 @@
   </div>
 </template>
 
-<script setup>
-import { getSchemaImageObject } from "~/framework/images.js";
+<script setup lang="ts">
+import { getSchemaImageObject } from "~/framework/images";
 import { pageHeadingId } from "#shared/utils/headings";
 
 const site = useAppConfig().site;

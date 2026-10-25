@@ -11,7 +11,7 @@ import {
     checkPagesSettings,
     verifyArtifact,
     verifyPublished,
-} from "../../scripts/pages.mjs";
+} from "../../scripts/pages.mts";
 
 const deploymentStepSchema =
     workflowSchema.shape.jobs.valueType.shape.steps.element.extend({

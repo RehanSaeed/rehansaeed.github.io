@@ -26,7 +26,7 @@ unitTest(
           "--input-type=module",
           "-e",
           `
-      import { getAbsoluteDisplayDateFromString } from './app/framework/date.js';
+      import { getAbsoluteDisplayDateFromString } from './app/framework/date.ts';
       console.log(JSON.stringify(['2022-05-17T23:08:49Z', '2022-05-17T01:08:49Z']
         .map(getAbsoluteDisplayDateFromString)));
     `,

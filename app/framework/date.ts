@@ -19,7 +19,7 @@ const prerenderDateTimeFormat = new Intl.DateTimeFormat("en-GB", {
   timeZone: "UTC",
 });
 
-export function getDisplayDate(date) {
+export function getDisplayDate(date: Date) {
   const now = new Date();
   if (differenceInDays(now, date) <= 30) {
     return formatDistance(date, now, { addSuffix: true });
@@ -30,7 +30,7 @@ export function getDisplayDate(date) {
   }
 }
 
-export function getDisplayDateFromString(date) {
+export function getDisplayDateFromString(date?: string | null) {
   if (date) {
     return getDisplayDate(new Date(date));
   }
@@ -38,7 +38,7 @@ export function getDisplayDateFromString(date) {
 }
 
 // The server renders this, as relative dates would be frozen at build time.
-export function getAbsoluteDisplayDateFromString(date) {
+export function getAbsoluteDisplayDateFromString(date?: string | null) {
   if (date) {
     return prerenderDateTimeFormat.format(new Date(date));
   }

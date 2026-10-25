@@ -23,7 +23,7 @@
   </u-tooltip>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
 import { NuxtLink } from "#components";
 import { getAvifSource } from "#shared/utils/images";
