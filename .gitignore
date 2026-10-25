@@ -5,6 +5,7 @@ node_modules/
 .data/
 .cache
 dist/
+.husky/_/
 
 # Local configuration
 .env
