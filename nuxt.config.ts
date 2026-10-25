@@ -1,5 +1,5 @@
 import { mkdirSync } from "node:fs";
-import { isAbsolute } from "node:path";
+import { dirname, isAbsolute } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { contentPublicDir } from "./modules/blog-content/paths";
 import site from "./site.json";
@@ -534,6 +534,17 @@ export default defineNuxtConfig({
   },
 
   nitro: {
+    serverAssets: [
+      {
+        baseName: "og-font",
+        dir: dirname(
+          fileURLToPath(
+            import.meta
+              .resolve("@fontsource/audiowide/files/audiowide-latin-400-normal.woff"),
+          ),
+        ),
+      },
+    ],
     output: {
       // Static output in ./dist so CI (upload-pages-artifact), Lighthouse and `npm start` keep working.
       publicDir: fileURLToPath(new URL("./dist", import.meta.url)),

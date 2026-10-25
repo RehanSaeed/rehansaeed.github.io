@@ -97,6 +97,7 @@
     "parity:sw-cutover": "node scripts/parity/sw-cutover.mjs",
     "parity:update-cycle": "node scripts/parity/update-cycle.mjs",
     "seo:verify": "node scripts/seo.mjs",
+    "og:gallery": "node scripts/og-images.mjs",
     "pages:preflight": "node scripts/pages.mjs preflight",
     "pages:verify": "node scripts/pages.mjs verify"
   },

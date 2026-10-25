@@ -18,16 +18,6 @@
       style="position: absolute; inset: 0; object-fit: cover" />
     <div
       style="
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          180deg,
-          rgba(14, 41, 58, 0.55) 0%,
-          rgba(14, 41, 58, 0.92) 100%
-        );
-      " />
-    <div
-      style="
         position: relative;
         display: flex;
         flex-direction: column;
@@ -37,29 +27,55 @@
         height: 100%;
         border-bottom: 12px solid #ccbdff;
       ">
-      <div style="display: flex; font-size: 24px; color: #ccbdff">
-        rehansaeed.com
-      </div>
       <div
+        style="
+          align-self: flex-start;
+          max-width: 100%;
+          box-sizing: border-box;
+          padding: 20px 24px;
+          border-radius: 8px;
+          background: rgba(255, 255, 255, 0.85);
+          color: #000000;
+        "
         :style="{
           fontSize: `${title.length > 80 ? 42 : title.length > 50 ? 48 : 56}px`,
           lineHeight: '1.25',
-          maxWidth: '1088px',
         }">
         {{ title }}
       </div>
-      <div style="display: flex; align-items: center; gap: 20px">
+      <div
+        style="
+          display: flex;
+          align-self: flex-start;
+          align-items: center;
+          gap: 24px;
+          padding: 20px 24px;
+          border-radius: 8px;
+          background: rgba(255, 255, 255, 0.85);
+          color: #242424;
+        ">
         <img
-          src="/images/author/Muhammad-Rehan-Saeed/Logo-192x192.png"
+          src="/images/author/Muhammad-Rehan-Saeed/Logo.svg"
           alt=""
-          width="64"
-          height="64"
-          style="border-radius: 50%" />
-        <div style="display: flex; flex-direction: column; gap: 8px">
-          <div style="font-size: 24px">{{ author }}</div>
-          <div style="font-size: 16px; color: #ccbdff">
-            Software Developer · Open Source · .NET
-          </div>
+          width="76"
+          height="76"
+          style="flex-shrink: 0; border-radius: 50%" />
+        <div
+          style="
+            width: 6px;
+            height: 76px;
+            flex-shrink: 0;
+            background: #6b17e8;
+          " />
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            line-height: 1.2;
+          ">
+          <div style="font-size: 40px">{{ author }}</div>
+          <div style="font-size: 24px; color: #6f6f6f">RehanSaeed.com</div>
         </div>
       </div>
     </div>

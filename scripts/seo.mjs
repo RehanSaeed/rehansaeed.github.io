@@ -70,7 +70,16 @@ for (const url of urls) {
     assert.equal(meta("og:image:height"), "630");
     assert.equal(meta("twitter:image"), image);
     assert.equal(meta("twitter:card"), "summary_large_image");
-    assert(meta("og:image:alt"), `${path}: missing social image alt`);
+    const title = path.startsWith("/tag/")
+        ? `# ${meta("og:title")}`
+        : /^\/\d+\/$/.test(path)
+          ? `Blog - Page ${path.split("/")[1]}`
+          : meta("og:title");
+    assert.equal(
+        meta("og:image:alt"),
+        `${title} - ${meta("author")}`,
+        `${path}: social image title and author`,
+    );
     if (!images.has(image)) {
         images.set(
             image,
@@ -241,6 +250,11 @@ assert.equal(
     "All and only public reference pages and approved additions indexed",
 );
 assert.equal(articles, 102, "Every published article has a schema graph");
+assert.equal(
+    images.size,
+    urls.length,
+    "Every public page has a distinct social card, not the homepage card",
+);
 console.log(
     `Verified ${urls.length} public SEO/Markdown pages, ${articles} articles, ${images.size} 1200x630 social cards and explicit AI training policy.`,
 );
