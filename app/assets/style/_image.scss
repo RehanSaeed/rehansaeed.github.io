@@ -1,0 +1,4 @@
+// Keep picture wrappers from changing the image's grid, flex or inline layout.
+picture.site-image {
+  display: contents;
+}
