@@ -295,6 +295,7 @@ export default defineNuxtConfig({
 
   components: [
     { path: "~/components/content", global: true },
+    { path: "~/components/OgImage", island: true },
     {
       path: "~/components",
       prefix: "U",

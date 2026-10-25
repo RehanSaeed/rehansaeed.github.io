@@ -40,8 +40,9 @@ authorise publishing the article or posting to social media.
 - Keep Nuxt Content components in `app/components/content` globally registered
   under their unprefixed names so Markdown rendering can resolve them. Do not
   globally register ordinary application components.
-- Leave `app/components/OgImage` to the OG image module's own component discovery;
-  do not apply the application `U` prefix to its templates.
+- Scan `app/components/OgImage` separately as server-only islands before the
+  application component directory, without the application `U` prefix. Nuxt skips
+  later scans inside an already scanned parent, even when files were ignored.
 - Retain explicit imports when script logic needs a component object, such as
   `NuxtLink` used in a computed value for `<component :is="...">`, or when a
   component is outside Nuxt's configured scan directories. Auto-importing is
