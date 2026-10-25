@@ -25,7 +25,7 @@ tags:
 ---
 
 ::: tip Update (2026-10-25)
-Replaced the incomplete `ConfigureServices` example with a complete .NET 8 `Program.cs`, pinned the OpenTelemetry package versions and updated the trace output. Modern applications configure services through `builder.Services`; `AddOpenTelemetryTracing` was removed in OpenTelemetry 1.4.0.
+Updated the setup for .NET 10 and OpenTelemetry 1.20.0. The complete `Program.cs` below also works on .NET 8 and replaces the incomplete `ConfigureServices` example. The original trace output and discussion are retained below for reference.
 :::
 
 1. [Open Telemetry - Deep Dive into Open Telemetry for .NET](/deep-dive-into-open-telemetry-for-net/)
@@ -35,7 +35,7 @@ Replaced the incomplete `ConfigureServices` example with a complete .NET 8 `Prog
 
 Configuring Open Telemetry for ASP.NET Core is a fairly simple process. In this post, I'll show you the simplest setup for tracing Open Telemetry in ASP.NET Core and then move to a more fully featured example.
 
-To begin with, we'll just be exporting our Open Telemetry traces to the console so we can see what is being recorded. I'll cover exporting to Jaeger in another post where we can see nice visualisations of our traces.
+To begin with, we'll just be exporting our Open Telemetry traces to the debug output so we can see what is being recorded but we'll soon move on to exporting to Jaeger in another post where we can see nice visualisations of our traces.
 
 # The Simplest Setup
 
@@ -45,19 +45,20 @@ You can optionally add packages beginning with `OpenTelemetry.Instrumentation.*`
 
 You can also optionally add packages beginning with `OpenTelemetry.Exporter.*` to export trace data e.g. the `OpenTelemetry.Exporter.Console` package exports all trace data to the console or debug output of your application.
 
-The following example targets **.NET 8** and uses **OpenTelemetry 1.20.0**. You'll need the .NET 8 SDK, or a newer SDK that supports targeting .NET 8, and the ASP.NET Core 8 runtime to run it. Create a new empty web application and install these specific package versions:
+For a .NET 10 application created with `dotnet new web --framework net10.0`, add these package references to the project's `.csproj` file:
 
-```powershell
-dotnet new web --name OpenTelemetryExample --framework net8.0
-cd OpenTelemetryExample
-dotnet add package OpenTelemetry.Exporter.Console --version 1.20.0
-dotnet add package OpenTelemetry.Extensions.Hosting --version 1.20.0
-dotnet add package OpenTelemetry.Instrumentation.AspNetCore --version 1.20.0
+```xml
+<ItemGroup Label="Package References">
+  <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.20.0" />
+  <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.20.0" />
+  <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.20.0" />
+</ItemGroup>
 ```
 
-Replace the entire contents of `Program.cs` with the following:
+Replace `Program.cs` with the complete example below. Modern ASP.NET Core templates use top-level statements: register services through `builder.Services` before `builder.Build()`, rather than adding a `public virtual ConfigureServices` method directly to the file. `AddOpenTelemetry().WithTracing(...)` replaces the `AddOpenTelemetryTracing` API [removed in OpenTelemetry 1.4.0](https://github.com/open-telemetry/opentelemetry-dotnet/blob/main/src/OpenTelemetry.Extensions.Hosting/CHANGELOG.md#140).
 
 ```cs
+using OpenTelemetry.Exporter;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
@@ -73,7 +74,8 @@ builder.Services
 
         if (builder.Environment.IsDevelopment())
         {
-            tracing.AddConsoleExporter();
+            tracing.AddConsoleExporter(
+                options => options.Targets = ConsoleExporterOutputTargets.Debug);
         }
     });
 
@@ -84,61 +86,44 @@ app.MapGet("/", () => "Hello, OpenTelemetry!");
 app.Run();
 ```
 
-There is no `ConfigureServices` method to add or call in this example. Modern ASP.NET Core templates use top-level statements in `Program.cs`, so I register services through `builder.Services` before calling `builder.Build()`. The original example omitted the enclosing class and hosting setup: pasting its `public virtual` method directly into `Program.cs` does not compile.
-
-The OpenTelemetry registration API has also changed. `AddOpenTelemetryTracing` was [removed in OpenTelemetry 1.4.0](https://github.com/open-telemetry/opentelemetry-dotnet/blob/main/src/OpenTelemetry.Extensions.Hosting/CHANGELOG.md#140); the replacement is `AddOpenTelemetry().WithTracing(...)`, as shown in the [official ASP.NET Core getting-started guide](https://opentelemetry.io/docs/languages/dotnet/traces/getting-started-aspnetcore/).
-
 The `ConfigureResource` method is your opportunity to add a set of common attributes to all spans created in the application. In the above case, we've added an application name.
 
 The `AddAspNetCoreInstrumentation` method is where we enable collection of attributes relating to ASP.NET Core requests and responses.
 
-Finally, we use `AddConsoleExporter` to export the trace data to the terminal. Note that we only do this if we are running in the development environment. If you prefer the IDE's debug output, use `tracing.AddConsoleExporter(options => options.Targets = OpenTelemetry.Exporter.ConsoleExporterOutputTargets.Debug)` instead. The console exporter is useful for local inspection; in production, configure an exporter for your telemetry backend.
+Finally, we use `AddConsoleExporter` to export the trace data to the debug output. You could also output to the console but there is a lot of trace data and the console is already outputting log information which results in duplication, so I prefer not to do that. Note that we only do this if we are running in the development environment.
 
-Build and run the application with the development environment explicitly enabled. `--no-launch-profile` avoids relying on the template's launch settings:
-
-```powershell
-dotnet build
-dotnet run --no-launch-profile -- --environment Development --urls http://localhost:5080
-```
-
-In another terminal, make a request:
-
-```powershell
-curl.exe http://localhost:5080/
-```
-
-The response should be `Hello, OpenTelemetry!`. Once the request completes, look in the application's terminal for the exported server span. Stop the application with `Ctrl+C`. If you run in a different environment, this example deliberately does not export traces to the console.
+Run the application in the `Development` environment from your IDE and request `/` to see a server span in its debug output. To inspect traces in a terminal instead, change `ConsoleExporterOutputTargets.Debug` to `ConsoleExporterOutputTargets.Console`.
 
 # The Trace Output
 
-The console output includes fields like these. IDs, timestamps, ports and other attributes depend on the request and runtime:
+The output and discussion below are from the original 2021 packages. Current versions use updated attribute names, such as `http.request.method` instead of `http.method`, and show resource attributes separately. `telemetry.sdk.version` identifies the SDK version, not the protocol version.
 
-```text
-Activity.DisplayName:        GET /
-Activity.Kind:               Server
-Activity.Tags:
-    server.address: localhost
-    server.port: 5080
-    http.request.method: GET
-    url.scheme: http
-    url.path: /
-    network.protocol.version: 1.1
-    http.route: /
-    http.response.status_code: 200
-Instrumentation scope (ActivitySource):
-    Name: Microsoft.AspNetCore
-Resource associated with Activity:
-    service.name: OpenTelemetryExample
+```
+Activity.Id:          00-dde96d459fee4144a83818e054e221b1-cac69896c1bcd14f-01
+Activity.DisplayName: /favicon-32x32.png
+Activity.Kind:        Server
+Activity.StartTime:   2021-02-01T10:28:25.4637044Z
+Activity.Duration:    00:00:00.0086712
+Activity.TagObjects:
+    http.host: localhost:5001
+    http.method: GET
+    http.path: /favicon-32x32.png
+    http.url: https://localhost:5001/favicon-32x32.png
+    http.user_agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36
+    http.status_code: 200
+    otel.status_code: UNSET
+    service.name: ApiTemplate
+    service.instance.id: defe9269-04f2-4b49-a05c-ebddf2112993
     telemetry.sdk.name: opentelemetry
     telemetry.sdk.language: dotnet
-    telemetry.sdk.version: 1.20.0
+    telemetry.sdk.version: 1.0.0.0
 ```
 
-The full output also includes the trace ID, span ID, start time and duration of the span. Under `Activity.Tags` we can see attributes assigned to the span.
+The first few lines give us some basic information about the span, including the span ID, start time and duration of the span. Under TagObjects is where we can see all attributes assigned to the span.
 
-The `http.*`, `url.*`, `server.*` and `network.*` attributes describe the request and response, while the resource's `service.*` attributes describe the application itself. The default resource also includes a unique `service.instance.id`, which can be useful if we are running multiple instances of the application in Kubernetes or Docker Swarm, for example. Older versions used different attribute names, such as `http.method` rather than `http.request.method`.
+All attributes starting with `http` tell us about the request and response while the attributes starting with `service` tell us about the application itself. This includes a unique identifier for the current instance of the application. This can be useful if we were running multiple instances of the application in Kubernetes or Docker Swarm for example.
 
-Finally, the resource includes information about the Open Telemetry SDK used to collect the data. `telemetry.sdk.version` identifies the SDK version, not the version of the Open Telemetry Protocol.
+Finally, we also get quite a lot of information about the Open Telemetry library used to collect the information. It may eventually be useful when multiple versions of the Open Telemetry protocol are released and there is some feature difference between them but as of now, it's not very useful. I haven't been able to find a way to turn it off, since it's a fair amount of information to send in absolutely every trace message.
 
 # Up Next
 

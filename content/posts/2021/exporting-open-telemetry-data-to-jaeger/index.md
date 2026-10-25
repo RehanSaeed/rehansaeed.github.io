@@ -5,7 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/exporting-open-telemetry-data-to-jaeger/"
 heroImage: "/images/hero/Open-Telemetry-1600x900.png"
 date: "2021-02-11"
-dateModified: "2026-10-25"
+dateModified: null
 published: true
 series: "Open Telemetry"
 seriesOrder: 3
@@ -24,10 +24,6 @@ tags:
   - "Activity"
   - "Jaeger"
 ---
-
-::: tip Update (2026-10-25)
-Added a version warning: the examples below describe the 2021 packages and Jaeger image, not a current setup. For a complete .NET 8 `Program.cs` using OpenTelemetry 1.20.0, start with the [updated configuration example](/open-telemetry-for-asp-net-core/). `AddOpenTelemetryTracing` has been replaced by `AddOpenTelemetry().WithTracing(...)`; the historical Jaeger container command below is not part of that updated example.
-:::
 
 1. [Open Telemetry - Deep Dive into Open Telemetry for .NET](/deep-dive-into-open-telemetry-for-net/)
 2. [Open Telemetry - Configuring Open Telemetry for ASP.NET Core](/open-telemetry-for-asp-net-core/)
