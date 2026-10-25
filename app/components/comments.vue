@@ -7,19 +7,17 @@
         center
         level="2"
         href="#comments"
-        >Comments</u-heading
+        >GitHub Comments</u-heading
       >
       <div class="vssue">
         <div class="comments__toolbar">
-          <p class="comments__count">
-            <span class="comments__count-value">{{
-              current.comments.length
-            }}</span>
-            {{ current.comments.length === 1 ? "comment" : "comments" }}
-          </p>
+          <h3 class="comments__count">
+            {{ current.comments.length }}
+            {{ current.comments.length === 1 ? "Comment" : "Comments" }}
+          </h3>
           <u-link-button class="comments__github" bordered :href="issueUrl">
             <u-icon name="fa-brands:github" inline aria-hidden="true" />
-            View on GitHub
+            Comment on GitHub
           </u-link-button>
         </div>
         <p v-if="unavailable" role="status">
@@ -51,13 +49,15 @@
                     size="6"
                     >{{ comment.user?.login ?? "Deleted user" }}</u-heading
                   >
-                  <span
+                  <u-badge
                     v-if="
                       comment.author_association &&
                       comment.author_association !== 'NONE'
                     "
                     class="vssue-comment-badge"
-                    >{{ commentAssociations[comment.author_association] }}</span
+                    >{{
+                      commentAssociations[comment.author_association]
+                    }}</u-badge
                   >
                 </div>
                 <div class="vssue-comment-created-at">
@@ -78,7 +78,7 @@
                 v-if="commentReactions(comment).length"
                 class="vssue-comment-footer"
                 aria-label="Reactions">
-                <span
+                <u-badge
                   v-for="reaction in commentReactions(comment)"
                   :key="reaction.name"
                   class="vssue-comment-reaction"
@@ -86,8 +86,12 @@
                   :aria-label="`${reaction.label}: ${reaction.count}`"
                   :title="`${reaction.label}: ${reaction.count}`">
                   <span aria-hidden="true">{{ reaction.emoji }}</span>
-                  <span aria-hidden="true">{{ reaction.count }}</span>
-                </span>
+                  <span
+                    class="vssue-comment-reaction-count"
+                    aria-hidden="true"
+                    >{{ reaction.count }}</span
+                  >
+                </u-badge>
               </footer>
             </div>
           </article>
@@ -171,31 +175,20 @@ async function refresh() {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--global-space-fixed-3);
+  gap: var(--global-space-fixed-2);
   padding-block-end: var(--global-space-fixed-4);
   border-block-end: var(--global-border-width-1) solid
     var(--global-border-color);
 }
 
 .comments__count {
-  display: flex;
-  align-items: baseline;
-  gap: var(--global-space-fixed-2);
   margin: 0;
   min-inline-size: 0;
-  color: var(--global-title-color);
-  font-family: var(--font-heading);
-  font-size: var(--global-font-size-2);
-}
-
-.comments__count-value {
-  color: var(--global-accent-color);
-  font-variant-numeric: tabular-nums;
 }
 
 .vssue-comment {
   display: grid;
-  gap: var(--global-space-fixed-3);
+  column-gap: var(--global-space-fixed-4);
   grid-template-columns: auto minmax(0, 1fr);
   scroll-margin-block-start: var(--global-space-fixed-6);
 
@@ -232,20 +225,6 @@ async function refresh() {
   min-inline-size: 0;
 }
 
-.vssue-comment-badge {
-  color: var(--global-accent-color);
-  background-color: color-mix(
-    in srgb,
-    var(--global-accent-color) 8%,
-    transparent
-  );
-  border: var(--global-border-width-1) solid
-    color-mix(in srgb, var(--global-accent-color) 35%, transparent);
-  border-radius: var(--global-border-radius);
-  padding-inline: var(--global-space-fixed-2);
-  font-size: var(--global-font-size-1);
-}
-
 .vssue-comment-created-at {
   font-size: var(--global-font-size-1);
 }
@@ -255,6 +234,9 @@ async function refresh() {
 }
 
 .comments__github {
+  flex: 1;
+  min-inline-size: 0;
+  max-inline-size: max-content;
   margin-inline-start: auto;
   text-align: center;
 
@@ -289,13 +271,11 @@ async function refresh() {
 }
 
 .vssue-comment-reaction {
-  display: inline-flex;
-  align-items: center;
   gap: var(--global-space-fixed-2);
-  padding: var(--global-space-fixed-1) var(--global-space-fixed-2);
-  border: var(--global-border-width-1) solid var(--global-border-color);
-  border-radius: var(--global-border-radius);
-  font-size: var(--global-font-size-1);
+}
+
+.vssue-comment-reaction-count {
+  font-family: var(--font-heading);
   font-variant-numeric: tabular-nums;
 }
 </style>

@@ -1,4 +1,5 @@
 import { expect, test } from "./fixtures";
+import { load } from "cheerio";
 import { commentSchema, type GitHubComment } from "../../shared/utils/comments";
 import { commentReactions } from "../../app/utils/comment-presentation";
 
@@ -82,28 +83,40 @@ test.describe("GitHub comments", () => {
           response.url().includes("/issues/607/comments") && response.ok(),
       );
       const response = await page.goto(`${postPath}#comments`);
-      expect(await response!.text()).toContain(
-        'class="vssue-comment-badge">Owner</span>',
-      );
+      const saved = load(await response!.text());
+      expect(saved(".vssue-comment-badge").first().text()).toBe("Owner");
       await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
       await refreshed;
+      await expect(
+        page.getByRole("heading", {
+          level: 2,
+          name: "GitHub Comments",
+          exact: true,
+        }),
+      ).toHaveAttribute("id", "comments");
       const comment = page.locator(".vssue-comment");
       await expect(comment).toHaveCount(1);
-      await expect(comment.locator(".vssue-comment-badge")).toHaveText("Owner");
-      const githubLink = page.getByRole("link", { name: "View on GitHub" });
+      await expect(comment.locator(".badge.vssue-comment-badge")).toHaveText(
+        "Owner",
+      );
+      const githubLink = page.getByRole("link", { name: "Comment on GitHub" });
       await expect(githubLink).toHaveCount(1);
       await expect(githubLink).toHaveAttribute("href", /issues\/607$/);
       await expect(
-        comment.getByRole("link", { name: "View on GitHub" }),
+        comment.getByRole("link", { name: "Comment on GitHub" }),
       ).toHaveCount(0);
-      await expect(page.locator(".comments__count")).toHaveText("1 comment");
+      await expect(
+        page.getByRole("heading", { level: 3, name: "1 Comment", exact: true }),
+      ).toBeVisible();
       const date = comment.locator(".vssue-comment-created-at > time");
       await expect(date).toHaveAttribute("datetime", owner.created_at);
       await expect(date.locator("..")).not.toHaveJSProperty("tagName", "A");
       await expect(
         comment.locator(".vssue-comment-edited time"),
       ).toHaveAttribute("datetime", owner.updated_at!);
-      await expect(comment.locator(".vssue-comment-reaction")).toHaveCount(8);
+      await expect(
+        comment.locator(".badge.vssue-comment-reaction"),
+      ).toHaveCount(8);
       await expect(
         comment.getByRole("img", { name: "Thumbs up: 3" }),
       ).toHaveText("👍3");
@@ -118,7 +131,25 @@ test.describe("GitHub comments", () => {
         const body = element.querySelector(".vssue-comment-body")!;
         const linkBounds = link.getBoundingClientRect();
         const countBounds = count.getBoundingClientRect();
+        const typography = (heading: Element) => {
+          const style = getComputedStyle(heading);
+          return {
+            fontSize: style.fontSize,
+            fontFamily: style.fontFamily,
+            fontWeight: style.fontWeight,
+            lineHeight: style.lineHeight,
+            color: style.color,
+            textShadow: style.textShadow,
+          };
+        };
         return {
+          countTypography: typography(count),
+          reactionCountFont: getComputedStyle(
+            element.querySelector(".vssue-comment-reaction-count")!,
+          ).fontFamily,
+          repliesTypography: typography(
+            document.querySelector(".webmentions__reply-count")!,
+          ),
           rightGap: Math.abs(
             linkBounds.right - toolbar.getBoundingClientRect().right,
           ),
@@ -134,6 +165,8 @@ test.describe("GitHub comments", () => {
       });
       expect(layout.rightGap).toBeLessThan(2);
       expect(layout.inline).toBe(true);
+      expect(layout.countTypography).toEqual(layout.repliesTypography);
+      expect(layout.reactionCountFont).toBe(layout.countTypography.fontFamily);
       expect(parseFloat(layout.timestampFont)).toBeLessThan(
         parseFloat(layout.bodyFont),
       );
@@ -172,7 +205,7 @@ test.describe("GitHub comments", () => {
     await page.goto(postPath);
     await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
     await expect(page.locator(".vssue-comment")).toHaveCount(3);
-    await expect(page.locator(".comments__count")).toHaveText("3 comments");
+    await expect(page.locator(".comments__count")).toHaveText("3 Comments");
     await expect(page.locator(".vssue-comment-badge")).toHaveText(
       "Contributor",
     );
@@ -200,8 +233,8 @@ test.describe("GitHub comments", () => {
       await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
       await expect(page.locator(".vssue-comment")).toHaveCount(count);
       const label = page.locator(".comments__count");
-      const link = page.getByRole("link", { name: "View on GitHub" });
-      await expect(label).toHaveText(`${count} comments`);
+      const link = page.getByRole("link", { name: "Comment on GitHub" });
+      await expect(label).toHaveText(`${count} Comments`);
       await expect(link).toHaveCount(1);
       await expect(link).toHaveAttribute("href", /issues\/607$/);
       const inline = await page
@@ -260,6 +293,9 @@ test.describe("GitHub comments", () => {
           const card = element.closest(".comments")!;
           const cardBounds = card.getBoundingClientRect();
           const badge = element.querySelector(".vssue-comment-badge")!;
+          const avatar = element
+            .querySelector(".vssue-comment-avatar")!
+            .getBoundingClientRect();
           const swatch = document.createElement("span");
           swatch.style.color = "var(--global-accent-color)";
           element.append(swatch);
@@ -267,6 +303,11 @@ test.describe("GitHub comments", () => {
           swatch.remove();
           return {
             nameDateGap: date.top - identity.bottom,
+            avatarGap: identity.left - avatar.right,
+            avatarColumnGap: parseFloat(getComputedStyle(element).columnGap),
+            minimumAvatarGap:
+              parseFloat(getComputedStyle(document.documentElement).fontSize) *
+              0.75,
             dateContentGap: main.getBoundingClientRect().top - date.bottom,
             minimumContentGap:
               parseFloat(getComputedStyle(document.documentElement).fontSize) *
@@ -284,9 +325,16 @@ test.describe("GitHub comments", () => {
             badgeColor: getComputedStyle(badge).color,
             accent,
             badgeBackground: getComputedStyle(badge).backgroundColor,
+            badgeBorderColor: getComputedStyle(badge).borderTopColor,
           };
         });
         expect(layout.nameDateGap).toBeLessThanOrEqual(1);
+        expect(layout.avatarGap).toBeGreaterThanOrEqual(
+          layout.minimumAvatarGap - 1,
+        );
+        expect(layout.avatarColumnGap).toBeGreaterThanOrEqual(
+          layout.minimumAvatarGap / 0.75 - 1,
+        );
         expect(layout.dateContentGap).toBeGreaterThanOrEqual(
           layout.minimumContentGap - 1,
         );
@@ -295,7 +343,8 @@ test.describe("GitHub comments", () => {
           layout.cardPadding - 1,
         );
         expect(layout.badgeColor).toBe(layout.accent);
-        expect(layout.badgeBackground).not.toBe("rgba(0, 0, 0, 0)");
+        expect(layout.badgeBackground).toBe("rgba(0, 0, 0, 0)");
+        expect(layout.badgeBorderColor).toBe(layout.accent);
       }
     });
   }
