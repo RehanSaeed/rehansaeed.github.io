@@ -37,21 +37,8 @@
 </template>
 
 <script>
-import { NuxtPicture } from "#components";
-import linkButton from "~/components/shared/link-button.vue";
-import installButton from "~/components/install-button.vue";
-import searchButton from "~/components/search/search-button.vue";
-import themeButton from "~/components/theme-button.vue";
-
 export default {
   name: "u-navigation",
-  components: {
-    NuxtPicture,
-    "u-link-button": linkButton,
-    "u-install-button": installButton,
-    "u-search-button": searchButton,
-    "u-theme-button": themeButton,
-  },
   computed: {
     blogPage() {
       return this.getIsCurrentPage("/");

@@ -21,17 +21,8 @@
 </template>
 
 <script>
-import avatar from "~/components/shared/avatar.vue";
-import heading from "~/components/shared/heading.vue";
-import time from "~/components/shared/time.vue";
-
 export default {
   name: "u-webmention-reply",
-  components: {
-    "u-avatar": avatar,
-    "u-heading": heading,
-    "u-time": time,
-  },
   props: {
     reply: {
       required: true,

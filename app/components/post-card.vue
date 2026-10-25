@@ -40,21 +40,11 @@
 </template>
 
 <script>
-import card from "~/components/shared/card.vue";
-import heading from "~/components/shared/heading.vue";
-import postMeta from "~/components/post-meta.vue";
-import tags from "~/components/tags.vue";
 import { getImageMetadata } from "~/framework/images.js";
 import { contentImageSizes } from "#shared/utils/images";
 
 export default {
   name: "u-post-card",
-  components: {
-    "u-card": card,
-    "u-heading": heading,
-    "u-post-meta": postMeta,
-    "u-tags": tags,
-  },
   props: {
     priority: {
       type: Boolean,

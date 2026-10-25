@@ -18,24 +18,6 @@
   </u-scroll-custom-property>
 </template>
 
-<script>
-import scrollCustomProperty from "~/components/shared/scroll-custom-property.vue";
-import scrollIndicator from "~/components/shared/scroll-indicator.vue";
-import skipLink from "~/components/shared/skip-link.vue";
-import footer from "~/components/footer.vue";
-import navigation from "~/components/navigation.vue";
-
-export default {
-  components: {
-    "u-scroll-custom-property": scrollCustomProperty,
-    "u-scroll-indicator": scrollIndicator,
-    "u-skip-link": skipLink,
-    "u-footer": footer,
-    "u-navigation": navigation,
-  },
-};
-</script>
-
 <style lang="scss">
 @use "~/assets/style/abstracts/breakpoints";
 

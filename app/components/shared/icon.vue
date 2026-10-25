@@ -7,8 +7,6 @@
 </template>
 
 <script setup lang="ts">
-import { NuxtIcon } from "#components";
-
 defineOptions({ name: "u-icon" });
 
 defineProps<{

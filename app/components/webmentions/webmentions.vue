@@ -1,6 +1,6 @@
 <template>
-  <u-intersect @enterFirstTime="onEnterFirstTime">
-    <u-card class="webmentions">
+  <u-intersect @enterFirstTime="onLoadMentions">
+    <u-card class="webmentions" :aria-busy="isLoading">
       <u-heading
         id="webmentions"
         class="webmentions__title"
@@ -15,7 +15,14 @@
         <u-icon name="fa-regular:question-circle" inline />
         What's this?
       </a>
-      <div class="webmentions__container">
+      <div v-if="hasError" class="webmentions__error">
+        <p role="alert">Unable to load Web Mentions. Please try again.</p>
+        <u-button class="webmentions__retry" bordered @click="onLoadMentions">
+          <u-icon name="feather:rotate-cw" />
+          Retry
+        </u-button>
+      </div>
+      <div v-else class="webmentions__container">
         <u-webmention-faces
           v-if="!isLoading"
           class="webmentions__like-faces"
@@ -67,34 +74,12 @@
 </template>
 
 <script>
-import icon from "~/components/shared/icon.vue";
-import card from "~/components/shared/card.vue";
-import heading from "~/components/shared/heading.vue";
-import intersect from "~/components/shared/intersect.vue";
-import webmentionFaces from "~/components/webmentions/webmention-faces.vue";
-import webmentionFacesSkeleton from "~/components/webmentions/webmention-faces-skeleton.vue";
-import webmentionLink from "~/components/webmentions/webmention-link.vue";
-import webmentionLinksSkeleton from "~/components/webmentions/webmention-links-skeleton.vue";
-import webmentionReply from "~/components/webmentions/webmention-reply.vue";
-import webmentionRepliesSkeleton from "~/components/webmentions/webmention-replies-skeleton.vue";
-
 export default {
   name: "u-webmentions",
-  components: {
-    "u-icon": icon,
-    "u-card": card,
-    "u-heading": heading,
-    "u-intersect": intersect,
-    "u-webmention-faces": webmentionFaces,
-    "u-webmention-faces-skeleton": webmentionFacesSkeleton,
-    "u-webmention-link": webmentionLink,
-    "u-webmention-links-skeleton": webmentionLinksSkeleton,
-    "u-webmention-reply": webmentionReply,
-    "u-webmention-replies-skeleton": webmentionRepliesSkeleton,
-  },
   data() {
     return {
       isLoading: true,
+      hasError: false,
       likes: [],
       reposts: [],
       links: [],
@@ -141,12 +126,21 @@ export default {
       const response = await fetch(
         `https://webmention.io/api/mentions?page=${page}&per-page=${perPage}&target=${this.url}&sort-by=published&sort-dir=up`,
       );
+      if (!response.ok) {
+        throw new Error(`Unable to load Web Mentions: HTTP ${response.status}`);
+      }
       const list = await response.json();
+      if (!Array.isArray(list.links)) {
+        throw new Error(
+          "Invalid Web Mentions response: expected a links array",
+        );
+      }
       return list.links;
     },
-    async onEnterFirstTime() {
+    async onLoadMentions() {
       try {
         this.isLoading = true;
+        this.hasError = false;
         const mentions = await this.getMentions(0, 999);
         this.likes = mentions.filter((x) => x.activity.type === "like");
         this.reposts = mentions.filter((x) => x.activity.type === "repost");
@@ -163,7 +157,8 @@ export default {
               x.data.author.photo),
         );
       } catch (error) {
-        console.log(error);
+        this.hasError = true;
+        console.error("Unable to load Web Mentions", error);
       } finally {
         this.isLoading = false;
       }
@@ -207,6 +202,13 @@ export default {
 .webmentions__container {
   display: grid;
   gap: var(--global-space-fixed-5);
+}
+
+.webmentions__retry {
+  display: flex;
+  align-items: center;
+  gap: var(--global-space-fixed-2);
+  margin-inline: auto;
 }
 
 .webmentions__count {

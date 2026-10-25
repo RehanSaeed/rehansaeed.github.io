@@ -5,13 +5,11 @@
     <NuxtPage />
   </NuxtLayout>
   <ClientOnly>
-    <SiteUpdate />
+    <u-site-update />
   </ClientOnly>
 </template>
 
 <script setup lang="ts">
-import SiteUpdate from "~/components/site-update.vue";
-
 const site = useAppConfig().site;
 useSchemaOrg([
   defineWebSite({

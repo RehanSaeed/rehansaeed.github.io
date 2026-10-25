@@ -26,14 +26,10 @@
 </template>
 
 <script>
-import Heading from "~/components/shared/heading.vue";
 import { getAvifSource } from "#shared/utils/images";
 
 export default {
   name: "u-search-result",
-  components: {
-    "u-heading": Heading,
-  },
   emits: ["selected"],
   computed: {
     avifSource() {

@@ -60,7 +60,9 @@ export default defineNuxtConfig({
         "fa-regular:question-circle",
         "fa-solid:rss",
         "fa-solid:share-alt",
+        "fa-solid:user",
         "feather:moon",
+        "feather:rotate-cw",
         "feather:search",
         "feather:sun",
         "feather:x",
@@ -291,9 +293,16 @@ export default defineNuxtConfig({
     },
   },
 
-  // Components are imported explicitly with their u- names, as in Gridsome. Only the Nuxt Content
-  // prose overrides are auto-registered.
-  components: [{ path: "~/components/content", global: true }],
+  components: [
+    { path: "~/components/content", global: true },
+    { path: "~/components/OgImage", island: true },
+    {
+      path: "~/components",
+      prefix: "U",
+      pathPrefix: false,
+      ignore: ["**/content/**", "**/OgImage/**"],
+    },
+  ],
 
   // Global, as in Gridsome's main.js, so rehype-katex output is styled on every page.
   css: ["~/assets/style/index.scss", "katex/dist/katex.min.css"],

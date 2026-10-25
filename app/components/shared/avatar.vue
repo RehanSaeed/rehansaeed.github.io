@@ -6,7 +6,7 @@
     :title="label"
     :href="href"
     :to="to">
-    <picture>
+    <picture v-if="src && !imageFailed">
       <source v-if="avifSource" type="image/avif" :srcset="avifSource" />
       <img
         class="avatar__image"
@@ -14,8 +14,10 @@
         :src="src"
         :width="sizeInPixels"
         :height="sizeInPixels"
-        :loading="loading" />
+        :loading="loading"
+        @error="onImageError" />
     </picture>
+    <u-icon v-else class="avatar__fallback" name="fa-solid:user" />
   </Component>
 </template>
 
@@ -25,6 +27,9 @@ import { getAvifSource } from "#shared/utils/images";
 
 export default {
   name: "u-avatar",
+  data() {
+    return { imageFailed: false };
+  },
   props: {
     label: {
       required: true,
@@ -49,6 +54,16 @@ export default {
     href: {
       required: false,
       type: String,
+    },
+  },
+  watch: {
+    src() {
+      this.imageFailed = false;
+    },
+  },
+  methods: {
+    onImageError() {
+      this.imageFailed = true;
     },
   },
   computed: {
@@ -87,5 +102,13 @@ export default {
       border-color: var(--global-accent-color);
     }
   }
+}
+
+.avatar > .icon.avatar__fallback {
+  inline-size: 100%;
+  block-size: 100%;
+  padding: var(--global-space-fixed-3);
+  background-color: var(--global-background-color);
+  color: var(--global-title-color);
 }
 </style>

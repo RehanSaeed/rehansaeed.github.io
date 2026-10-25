@@ -31,8 +31,6 @@
 
 <script setup lang="ts">
 import { registerSW } from "virtual:pwa-register";
-import UButton from "~/components/shared/button.vue";
-import UIcon from "~/components/shared/icon.vue";
 
 const available = ref(false);
 const dismissed = ref(false);

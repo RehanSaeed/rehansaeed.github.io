@@ -8,12 +8,7 @@
 </template>
 
 <script>
-import icon from "~/components/shared/icon.vue";
-
 export default {
-  components: {
-    "u-icon": icon,
-  },
   data() {
     return {
       noLogo: false,
