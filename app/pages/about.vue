@@ -238,19 +238,8 @@
 </template>
 
 <script>
-import arrows from "~/components/shared/arrows.vue";
-import card from "~/components/shared/card.vue";
-import heading from "~/components/shared/heading.vue";
-import socialLinks from "~/components/social-links.vue";
-
 export default {
   name: "u-about",
-  components: {
-    "u-arrows": arrows,
-    "u-card": card,
-    "u-heading": heading,
-    "u-social-links": socialLinks,
-  },
   setup() {
     const metadata = useAppConfig().site;
     const title = "About";

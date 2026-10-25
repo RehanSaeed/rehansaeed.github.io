@@ -74,33 +74,8 @@
 </template>
 
 <script>
-import icon from "~/components/shared/icon.vue";
-import button from "~/components/shared/button.vue";
-import card from "~/components/shared/card.vue";
-import heading from "~/components/shared/heading.vue";
-import intersect from "~/components/shared/intersect.vue";
-import webmentionFaces from "~/components/webmentions/webmention-faces.vue";
-import webmentionFacesSkeleton from "~/components/webmentions/webmention-faces-skeleton.vue";
-import webmentionLink from "~/components/webmentions/webmention-link.vue";
-import webmentionLinksSkeleton from "~/components/webmentions/webmention-links-skeleton.vue";
-import webmentionReply from "~/components/webmentions/webmention-reply.vue";
-import webmentionRepliesSkeleton from "~/components/webmentions/webmention-replies-skeleton.vue";
-
 export default {
   name: "u-webmentions",
-  components: {
-    "u-icon": icon,
-    "u-button": button,
-    "u-card": card,
-    "u-heading": heading,
-    "u-intersect": intersect,
-    "u-webmention-faces": webmentionFaces,
-    "u-webmention-faces-skeleton": webmentionFacesSkeleton,
-    "u-webmention-link": webmentionLink,
-    "u-webmention-links-skeleton": webmentionLinksSkeleton,
-    "u-webmention-reply": webmentionReply,
-    "u-webmention-replies-skeleton": webmentionRepliesSkeleton,
-  },
   data() {
     return {
       isLoading: true,

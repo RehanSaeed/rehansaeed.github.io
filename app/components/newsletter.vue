@@ -39,17 +39,8 @@
 </template>
 
 <script>
-import button from "~/components/shared/button.vue";
-import card from "~/components/shared/card.vue";
-import heading from "~/components/shared/heading.vue";
-
 export default {
   name: "u-newsletter",
-  components: {
-    "u-button": button,
-    "u-card": card,
-    "u-heading": heading,
-  },
   setup() {
     return { metadata: useAppConfig().site };
   },

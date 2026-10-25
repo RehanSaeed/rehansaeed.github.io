@@ -16,10 +16,6 @@
 </template>
 
 <script setup>
-import UAuthor from "~/components/author.vue";
-import UArrows from "~/components/shared/arrows.vue";
-import UPager from "~/components/pager.vue";
-import UPostCard from "~/components/post-card.vue";
 import { nextUrl, previousUrl } from "~/framework/paging.js";
 
 const postsPerPage = 10;

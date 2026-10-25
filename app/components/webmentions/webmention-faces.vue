@@ -13,14 +13,10 @@
 </template>
 
 <script>
-import avatar from "~/components/shared/avatar.vue";
 import { getDisplayDateFromString } from "~/framework/date.js";
 
 export default {
   name: "u-webmention-faces",
-  components: {
-    "u-avatar": avatar,
-  },
   props: {
     mentions: {
       required: true,

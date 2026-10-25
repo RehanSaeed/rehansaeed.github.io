@@ -43,15 +43,8 @@
 </template>
 
 <script>
-import icon from "~/components/shared/icon.vue";
-import linkButton from "~/components/shared/link-button.vue";
-
 export default {
   name: "u-support-links",
-  components: {
-    "u-icon": icon,
-    "u-link-button": linkButton,
-  },
   setup() {
     return { metadata: useAppConfig().site };
   },

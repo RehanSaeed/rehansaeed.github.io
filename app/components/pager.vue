@@ -27,14 +27,10 @@
 </template>
 
 <script>
-import linkButton from "~/components/shared/link-button.vue";
 import { previousUrl, nextUrl } from "~/framework/paging.js";
 
 export default {
   name: "BlogPager",
-  components: {
-    "u-link-button": linkButton,
-  },
   props: {
     pageInfo: {
       required: true,

@@ -26,17 +26,9 @@
 
 <script>
 import { useId } from "vue";
-import button from "~/components/shared/button.vue";
-import heading from "~/components/shared/heading.vue";
-import icon from "~/components/shared/icon.vue";
 
 export default {
   name: "u-dialogue",
-  components: {
-    "u-icon": icon,
-    "u-button": button,
-    "u-heading": heading,
-  },
   emits: ["close"],
   setup() {
     return { titleId: useId() };

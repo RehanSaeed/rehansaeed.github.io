@@ -6,15 +6,8 @@
 </template>
 
 <script>
-import icon from "~/components/shared/icon.vue";
-import linkButton from "~/components/shared/link-button.vue";
-
 export default {
   name: "u-edit-post-button",
-  components: {
-    "u-icon": icon,
-    "u-link-button": linkButton,
-  },
   props: {
     post: {
       type: Object,

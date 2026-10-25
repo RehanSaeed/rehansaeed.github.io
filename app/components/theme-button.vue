@@ -10,16 +10,10 @@
 </template>
 
 <script>
-import icon from "~/components/shared/icon.vue";
-import button from "~/components/shared/button.vue";
 import { appThemeChanged, appThemeLoaded } from "~/framework/analytics";
 
 export default {
   name: "u-theme-button",
-  components: {
-    "u-icon": icon,
-    "u-button": button,
-  },
   data() {
     return {
       darkTheme: false,

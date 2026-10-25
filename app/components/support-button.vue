@@ -15,19 +15,8 @@
 </template>
 
 <script>
-import icon from "~/components/shared/icon.vue";
-import button from "~/components/shared/button.vue";
-import dialogue from "~/components/shared/dialogue.vue";
-import supportLinks from "~/components/support-links.vue";
-
 export default {
   name: "u-support-button",
-  components: {
-    "u-icon": icon,
-    "u-button": button,
-    "u-dialogue": dialogue,
-    "u-support-links": supportLinks,
-  },
   data() {
     return {
       isDialogueOpen: false,

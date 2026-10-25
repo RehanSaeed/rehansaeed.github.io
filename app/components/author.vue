@@ -26,17 +26,8 @@
 </template>
 
 <script>
-import { NuxtImg } from "#components";
-import heading from "~/components/shared/heading.vue";
-import socialLinks from "~/components/social-links.vue";
-
 export default {
   name: "u-author",
-  components: {
-    NuxtImg,
-    "u-heading": heading,
-    "u-social-links": socialLinks,
-  },
   props: {
     headingId: {
       type: String,

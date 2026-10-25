@@ -26,12 +26,6 @@
 </template>
 
 <script setup>
-import UArrows from "~/components/shared/arrows.vue";
-import UHeading from "~/components/shared/heading.vue";
-import UComments from "~/components/comments.vue";
-import UPost from "~/components/post.vue";
-import UPostMeta from "~/components/post-meta.vue";
-import UWebmentions from "~/components/webmentions/webmentions.vue";
 import { getSchemaImageObject } from "~/framework/images.js";
 import { pageHeadingId } from "#shared/utils/headings";
 

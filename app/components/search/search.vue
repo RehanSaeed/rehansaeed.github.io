@@ -25,7 +25,6 @@
 <script>
 import { Document } from "flexsearch";
 import { useId } from "vue";
-import SearchResult from "~/components/search/search-result.vue";
 
 const minimumSearchTermLength = 3;
 const resultLimit = 8;
@@ -57,9 +56,6 @@ function loadIndex() {
 
 export default {
   name: "u-search",
-  components: {
-    "u-search-result": SearchResult,
-  },
   emits: ["selected"],
   props: {
     isOpen: {

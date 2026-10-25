@@ -33,23 +33,11 @@
 </template>
 
 <script>
-import card from "~/components/shared/card.vue";
-import editPostButton from "~/components/edit-post-button.vue";
-import shareButton from "~/components/share-button.vue";
-import supportButton from "~/components/support-button.vue";
-import tags from "~/components/tags.vue";
 import { getImageMetadata } from "~/framework/images.js";
 import { contentImageSizes } from "#shared/utils/images";
 
 export default {
   name: "u-post",
-  components: {
-    "u-card": card,
-    "u-edit-post-button": editPostButton,
-    "u-share-button": shareButton,
-    "u-support-button": supportButton,
-    "u-tags": tags,
-  },
   props: {
     post: {
       type: Object,

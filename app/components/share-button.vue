@@ -37,19 +37,8 @@
 </template>
 
 <script>
-import icon from "~/components/shared/icon.vue";
-import button from "~/components/shared/button.vue";
-import dialogue from "~/components/shared/dialogue.vue";
-import linkButton from "~/components/shared/link-button.vue";
-
 export default {
   name: "u-share-button",
-  components: {
-    "u-icon": icon,
-    "u-button": button,
-    "u-dialogue": dialogue,
-    "u-link-button": linkButton,
-  },
   setup() {
     return { metadata: useAppConfig().site };
   },

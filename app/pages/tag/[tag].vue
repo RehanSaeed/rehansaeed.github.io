@@ -16,9 +16,6 @@
 
 <script setup>
 import { tagPath, tagSlug } from "#shared/utils/tag";
-import UArrows from "~/components/shared/arrows.vue";
-import UHeading from "~/components/shared/heading.vue";
-import UPostCard from "~/components/post-card.vue";
 
 const site = useAppConfig().site;
 const slug = String(useRoute().params.tag);

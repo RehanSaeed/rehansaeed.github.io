@@ -15,13 +15,8 @@
 </template>
 
 <script>
-import time from "~/components/shared/time.vue";
-
 export default {
   name: "u-post-meta",
-  components: {
-    "u-time": time,
-  },
   props: {
     meta: {
       type: Object,

@@ -63,11 +63,6 @@
 </template>
 
 <script setup lang="ts">
-import UAvatar from "~/components/shared/avatar.vue";
-import UCard from "~/components/shared/card.vue";
-import UHeading from "~/components/shared/heading.vue";
-import UIntersect from "~/components/shared/intersect.vue";
-import UTime from "~/components/shared/time.vue";
 import type { CommentSnapshot, GitHubComment } from "#shared/utils/comments";
 
 defineOptions({ name: "BlogComments" });
