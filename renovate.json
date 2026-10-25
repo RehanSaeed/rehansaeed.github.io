@@ -1,8 +1,13 @@
 {
-  "extends": [
-    "config:base"
-  ],
-  "labels": [
-    "dependencies"
+  "extends": ["config:base"],
+  "labels": ["dependencies"],
+  "skipInstalls": false,
+  "packageRules": [
+    {
+      "description": "Keep the TypeScript 6 compiler API until vue-tsc supports TypeScript 7.",
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "<7.0.0"
+    }
   ]
 }

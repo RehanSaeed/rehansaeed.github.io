@@ -8,6 +8,10 @@ updates:
     open-pull-requests-limit: 10
     schedule:
       interval: "daily"
+    ignore:
+      # vue-tsc still requires the TypeScript 6 JavaScript compiler API.
+      - dependency-name: "typescript"
+        versions: [">=7"]
   - package-ecosystem: "github-actions"
     directory: "/"
     open-pull-requests-limit: 10
