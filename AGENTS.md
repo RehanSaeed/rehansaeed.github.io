@@ -7,9 +7,10 @@ details in relevant documentation or code comments, not the README.
 
 ## Blog and Social Media Authoring
 
-These instructions apply to agents working in this repository. Draft articles and
-their social announcements as separate, reviewable deliverables. Finishing a draft
-does not authorise publishing the article or posting to social media.
+These instructions apply to agents working in this repository. The author writes
+the article text; agents help with requested corrections and prepare social
+announcements as a separate, reviewable deliverable. Finishing a draft does not
+authorise publishing the article or posting to social media.
 
 ## Repository Conventions
 
@@ -27,7 +28,15 @@ does not authorise publishing the article or posting to social media.
 - Keep work focused on the requested article and its promotion. Do not change the
   website, install publishing integrations or require Buffer as part of drafting.
 
-## Drafting a New Blog Post
+## Authoring and Correcting Blog Posts
+
+The author writes the article text. Do not independently draft, expand or rewrite
+an article unless explicitly asked. When asked for corrections, make focused edits
+for spelling, grammar, clarity or technical accuracy within the requested scope.
+Preserve the author's voice, meaning, structure and opinions; flag substantive
+uncertainties rather than inventing replacement claims.
+
+When explicitly asked to help draft an article, follow these guidelines:
 
 1. Establish the topic, intended reader, problem being solved and main takeaway
    from the user's brief. Ask about missing decisions that materially change the
@@ -37,7 +46,7 @@ does not authorise publishing the article or posting to social media.
    supporting sources and relevant existing articles using their permalinks.
 3. Organise the article around a clear introduction, practical explanation,
    examples, trade-offs and a useful conclusion. Show an outline for approval
-   when the user requests one; otherwise proceed with the draft.
+   when the user requests one; otherwise work within the requested drafting scope.
 4. Write in the author's first-person voice using British English. Be direct,
    technically precise and approachable, with restrained humour where appropriate.
    Avoid marketing filler, clickbait and generic AI phrasing. Never invent personal
@@ -76,6 +85,30 @@ does not authorise publishing the article or posting to social media.
 - Do not manually populate generated fields such as `rawbody`, `headings` or
   `timeToRead`.
 
+### Updating Published Posts
+
+- Retain the original `date` and `permalink`. For substantive changes to a
+  published post, set `dateModified` to the actual update date and add a short
+  dated note at the top of the article body, immediately after the front matter
+  and before the introduction or series links.
+- Use the existing tip-container convention with an unambiguous ISO date:
+
+  ```markdown
+  ::: tip Update (2026-10-25)
+  Updated the configuration example for the new API and explained the migration steps.
+  :::
+  ```
+
+- Describe what actually changed and any important effect on readers. The date
+  must match `dateModified` (the calendar date when it contains a timestamp).
+  Use the real update date, not the example date.
+- Keep earlier update notes and their dates, placing the newest first. Combine
+  changes from the same update into one note rather than adding duplicate notes.
+- Minor spelling, grammar or formatting corrections do not need an update note
+  or a changed `dateModified` unless the author requests one. Unpublished drafts
+  do not need a published-post update history.
+- Updating an article does not authorise publishing new social announcements.
+
 ### Validation and Review
 
 - Follow the existing Markdown style. Check links, image paths, front matter and
@@ -102,19 +135,19 @@ and front matter. Only `index.md` is collected as the article. The promotion pac
 is still visible in the public repository, so it must not contain credentials,
 private account details or confidential review notes.
 
-Include the article title, canonical URL (`https://rehansaeed.com` plus
+Include the article title, canonical URL (<https://rehansaeed.com> plus
 `permalink`), an explicit `Draft - not approved for posting` status, and a separate
 copy-ready section for each destination below. Keep notes outside the copy-ready
 text. Use the canonical URL by default; do not invent tracking parameters,
 account handles or publication dates.
 
-| Destination         | Draft requirements                                                                                                                                                                                                                  |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Mastodon            | Explain the problem and one useful finding, include the link and a few relevant hashtags. Check the target instance's current character limit.                                                                                      |
-| Bluesky             | Lead with a concise takeaway and include the link. Check the current character limit; only propose a thread when needed, with each part separately reviewable.                                                                      |
-| LinkedIn            | Explain the practical professional relevance, include concrete takeaways and the link. Keep the author's voice rather than adopting a sales pitch.                                                                                  |
-| Reddit profile      | Prepare a straightforward title and announcement for `u/<username>`. Posting directly to a profile is distinct from submitting to a subreddit; confirm the actual account before posting.                                           |
-| Selected subreddits | Create a separate title and body for each user-selected community, tailored to its audience and allowed post type. Provide useful substance without requiring a click, disclose authorship and include the link only where allowed. |
+| Destination         | Draft requirements                                                                                                                                                                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mastodon            | Explain the problem and one useful finding, include the link and a few relevant hashtags. Check the target instance's current character limit.                                                                                                          |
+| Bluesky             | Lead with a concise takeaway and include the link. Check the current character limit; only propose a thread when needed, with each part separately reviewable.                                                                                          |
+| LinkedIn            | Explain the practical professional relevance, include concrete takeaways and the link. Keep the author's voice rather than adopting a sales pitch.                                                                                                      |
+| Reddit profile      | Prepare a straightforward title and announcement for [u/muhammadrehansaeed](https://www.reddit.com/user/muhammadrehansaeed/). Posting directly to this profile is distinct from submitting to a subreddit; verify the signed-in account before posting. |
+| Selected subreddits | Create a separate title and body for each user-selected community, tailored to its audience and allowed post type. Provide useful substance without requiring a click, disclose authorship and include the link only where allowed.                     |
 
 - If subreddit destinations are not specified, propose a small, relevant shortlist
   for approval rather than treating it as an authorised distribution list.
