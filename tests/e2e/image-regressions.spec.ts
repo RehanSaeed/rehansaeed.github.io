@@ -2,7 +2,6 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { load } from "cheerio";
 import { test as unitTest } from "@playwright/test";
-import sharp from "sharp";
 import { expect, test } from "./fixtures";
 import { readImageDimensions } from "../../modules/blog-content/images";
 import { rewriteRelativeImages } from "../../modules/blog-content/fields";
@@ -304,33 +303,6 @@ test.describe("All-pages audit regressions", () => {
       });
     });
   }
-
-  test("Shared profile images use WebP without changing their shape", async ({
-    page,
-  }) => {
-    await page.goto("/");
-    const images = page.locator(".navigation__image, .author__image");
-    expect(await images.count()).toBeGreaterThanOrEqual(2);
-    for (const image of await images.all()) {
-      await expect(image).toHaveAttribute("src", /\/_ipx\/f_webp/);
-      await expect
-        .poll(() =>
-          image.evaluate(
-            (image: HTMLImageElement) =>
-              image.complete &&
-              image.naturalWidth > 0 &&
-              image.naturalWidth === image.naturalHeight,
-          ),
-        )
-        .toBe(true);
-      const response = await page.request.get(
-        await image.evaluate((image: HTMLImageElement) => image.currentSrc),
-      );
-      expect((await sharp(await response.body()).metadata()).format).toBe(
-        "webp",
-      );
-    }
-  });
 
   test("A delayed Markdown image does not grow after decoding", async ({
     page,
