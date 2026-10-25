@@ -263,7 +263,6 @@ test.describe("Nuxt best practices", () => {
     for (const [file, job] of [
       ["build.yml", "build"],
       ["codeql-analysis.yml", "analyze"],
-      ["compress-images.yml", "build"],
     ] as const) {
       const workflow = parse(
         readFileSync(join(process.cwd(), ".github", "workflows", file), "utf8"),
@@ -275,9 +274,7 @@ test.describe("Nuxt best practices", () => {
         "ready_for_review",
       ]);
       expect(workflow.jobs[job].if).toBe(
-        file === "compress-images.yml"
-          ? "github.event.pull_request.head.repo.full_name == github.repository && !github.event.pull_request.draft && github.actor != 'github-actions[bot]'"
-          : "github.event_name != 'pull_request' || !github.event.pull_request.draft",
+        "github.event_name != 'pull_request' || !github.event.pull_request.draft",
       );
     }
   });
