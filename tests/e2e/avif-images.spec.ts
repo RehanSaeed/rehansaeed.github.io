@@ -120,6 +120,27 @@ test("Browsers choose AVIF for responsive pictures", async ({ page }) => {
   );
 });
 
+test("Picture wrappers use block layout across the site", async ({ page }) => {
+  for (const path of [
+    "/",
+    "/about/",
+    "/portfolio/",
+    "/asp-net-mvc-boilerplate/",
+  ]) {
+    await page.goto(path);
+    const displays = await page
+      .locator("picture")
+      .evaluateAll((pictures) =>
+        pictures.map((picture) => getComputedStyle(picture).display),
+      );
+    expect(displays.length, path).toBeGreaterThan(0);
+    expect(
+      displays.every((display) => display === "block"),
+      path,
+    ).toBe(true);
+  }
+});
+
 test("Runtime search results load pre-generated AVIF without an image server", async ({
   page,
 }) => {
@@ -129,6 +150,9 @@ test("Runtime search results load pre-generated AVIF without an image server", a
     .getByRole("searchbox", { name: "Search", exact: true })
     .fill("Schema.NET");
   const image = page.locator(".search-result__image").first();
+  const picture = page.locator(".search-result__picture").first();
+  await expect(picture).toHaveCSS("display", "block");
+  await expect(picture).toHaveCSS("grid-area", "image");
   await expect
     .poll(() =>
       image.evaluate(
@@ -140,6 +164,12 @@ test("Runtime search results load pre-generated AVIF without an image server", a
       ),
     )
     .toBe(true);
+  const imageBox = await image.boundingBox();
+  const titleBox = await page
+    .locator(".search-result__title")
+    .first()
+    .boundingBox();
+  expect(imageBox!.x + imageBox!.width).toBeLessThanOrEqual(titleBox!.x);
 });
 
 test("PNG/JPG thumbnail pairs share one AVIF and retain their original fallbacks", async ({
@@ -154,6 +184,8 @@ test("PNG/JPG thumbnail pairs share one AVIF and retain their original fallbacks
   );
   for (const [index, format] of ["png", "jpg"].entries()) {
     const image = page.locator(`img.thumbnail__image${index + 1}`);
+    await expect(image.locator("..")).toHaveCSS("display", "block");
+    await expect(image.locator("..")).toHaveCSS("grid-area", "content");
     await expect(image).toHaveAttribute("src", `${basename}.${format}`);
     await expect
       .poll(() =>

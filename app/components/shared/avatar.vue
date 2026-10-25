@@ -6,7 +6,7 @@
     :title="label"
     :href="href"
     :to="to">
-    <picture class="site-image">
+    <picture>
       <source v-if="avifSource" type="image/avif" :srcset="avifSource" />
       <img
         class="avatar__image"

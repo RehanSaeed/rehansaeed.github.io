@@ -11,7 +11,6 @@
         format="avif"
         :alt="portfolio.title"
         v-if="portfolio.heroImage"
-        class="site-image"
         :img-attrs="{ class: 'portfolio-card__image' }"
         :legacy-format="portfolio.heroImage.endsWith('.png') ? 'png' : 'jpg'"
         :src="portfolio.heroImage"

@@ -6,7 +6,6 @@
         v-if="post.heroImage"
         :alt="imageMeta.alt"
         :src="post.heroImage"
-        class="site-image"
         :img-attrs="{ class: 'post__photo', fetchpriority: 'high' }"
         :legacy-format="post.heroImage.endsWith('.png') ? 'png' : 'jpg'"
         :width="imageMeta.width"

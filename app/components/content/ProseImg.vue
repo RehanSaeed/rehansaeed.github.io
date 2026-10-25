@@ -2,7 +2,6 @@
   <NuxtPicture
     format="avif"
     v-if="getAvifSource(src)"
-    class="site-image"
     :legacy-format="src.endsWith('.png') ? 'png' : 'jpg'"
     :src="src"
     :alt="alt"

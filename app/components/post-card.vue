@@ -10,7 +10,6 @@
       <NuxtPicture
         format="avif"
         v-if="post.heroImage"
-        class="site-image"
         :img-attrs="{
           class: 'post-card__image',
           fetchpriority: priority ? 'high' : undefined,

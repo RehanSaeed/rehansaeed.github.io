@@ -1,5 +1,5 @@
 <template>
-  <picture v-if="image" class="site-image">
+  <picture v-if="image" class="thumbnail-image__picture">
     <source v-if="avifSource" type="image/avif" :srcset="avifSource" />
     <img
       v-bind="$attrs"
@@ -63,6 +63,10 @@ export default {
 </script>
 
 <style lang="scss">
+.thumbnail-image__picture {
+  grid-area: content;
+}
+
 .thumbnail-image {
   filter: drop-shadow(
       0 0 var(--global-space-fluid-3) var(--global-background-color)

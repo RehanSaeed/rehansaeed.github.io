@@ -3,7 +3,6 @@
   <section class="author h-card" :aria-label="metadata.name">
     <NuxtPicture
       format="avif"
-      class="site-image"
       :img-attrs="{ class: 'author__image u-photo' }"
       legacy-format="png"
       :alt="metadata.name"

@@ -12,7 +12,6 @@
     <u-card class="about__container" tag="article">
       <NuxtPicture
         format="avif"
-        class="site-image"
         :img-attrs="{ class: 'about__image' }"
         legacy-format="jpg"
         alt="Muhammad Rehan Saeed"
@@ -106,7 +105,6 @@
         <a :href="credlyUrl">
           <NuxtPicture
             format="avif"
-            class="site-image"
             :img-attrs="{ class: 'about__badge-image' }"
             legacy-format="png"
             alt="Microsoft Global Hackathon 2026 Participant"
@@ -119,7 +117,6 @@
         <a :href="credlyUrl">
           <NuxtPicture
             format="avif"
-            class="site-image"
             :img-attrs="{ class: 'about__badge-image' }"
             legacy-format="png"
             alt="Microsoft MSAI Security Champs March 2026"
@@ -132,7 +129,6 @@
         <a :href="credlyUrl">
           <NuxtPicture
             format="avif"
-            class="site-image"
             :img-attrs="{ class: 'about__badge-image' }"
             legacy-format="png"
             alt="Microsoft Global Hackathon 2025 Participant"
@@ -145,7 +141,6 @@
         <a :href="credlyUrl">
           <NuxtPicture
             format="avif"
-            class="site-image"
             :img-attrs="{ class: 'about__badge-image' }"
             legacy-format="png"
             alt="Microsoft MSAI Security Champs Recognition 2025"
@@ -158,7 +153,6 @@
         <a :href="credlyUrl">
           <NuxtPicture
             format="avif"
-            class="site-image"
             :img-attrs="{ class: 'about__badge-image' }"
             legacy-format="png"
             alt="Microsoft Global Hackathon 2024 Participant"
@@ -171,7 +165,6 @@
         <a :href="credlyUrl">
           <NuxtPicture
             format="avif"
-            class="site-image"
             :img-attrs="{ class: 'about__badge-image' }"
             legacy-format="png"
             alt="Microsoft Global Hackathon 2023 Participant"
@@ -184,7 +177,6 @@
         <a href="/open-uk-honouree/">
           <NuxtPicture
             format="avif"
-            class="site-image"
             :img-attrs="{ class: 'about__open-uk-honours-image' }"
             legacy-format="jpg"
             alt="Open UK Honours 2022"
@@ -197,7 +189,6 @@
         <a :href="credlyUrl">
           <NuxtPicture
             format="avif"
-            class="site-image"
             :img-attrs="{ class: 'about__badge-image' }"
             legacy-format="png"
             alt="Microsoft Global Hackathon 2022.png"
@@ -210,7 +201,6 @@
         <a :href="credlyUrl">
           <NuxtPicture
             format="avif"
-            class="site-image"
             :img-attrs="{ class: 'about__badge-image' }"
             legacy-format="png"
             alt="Microsoft Global Hackathon 2021.png"
@@ -223,7 +213,6 @@
         <a :href="credlyUrl">
           <NuxtPicture
             format="avif"
-            class="site-image"
             :img-attrs="{
               class: 'about__badge-image about__badge-image--wide',
             }"
@@ -238,7 +227,6 @@
         <a :href="credlyUrl">
           <NuxtPicture
             format="avif"
-            class="site-image"
             :img-attrs="{ class: 'about__badge-image' }"
             legacy-format="png"
             alt="Microsoft Most Valuable Professional (MVP) Alumni"
@@ -272,7 +260,6 @@
         <a :href="mvpUrl">
           <NuxtPicture
             format="avif"
-            class="site-image"
             :img-attrs="{ class: 'about__mvp-image' }"
             legacy-format="png"
             alt="Microsoft Most Valuable Professional (MVP)"

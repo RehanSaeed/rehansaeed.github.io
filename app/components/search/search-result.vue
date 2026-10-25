@@ -4,7 +4,7 @@
       :to="searchResult.permalink"
       class="search-result__link"
       @click="onSelected">
-      <picture v-if="searchResult.heroImage" class="site-image">
+      <picture v-if="searchResult.heroImage" class="search-result__picture">
         <source v-if="avifSource" type="image/avif" :srcset="avifSource" />
         <img
           class="search-result__image"
@@ -63,11 +63,13 @@ export default {
     "image description";
   text-decoration: none;
 }
-.search-result__image {
+.search-result__picture {
   grid-area: image;
+  margin-inline-end: var(--global-space-fixed-5);
+}
+.search-result__image {
   border: var(--global-border-width-2) solid var(--global-border-color);
   border-radius: var(--global-border-radius);
-  margin-inline-end: var(--global-space-fixed-5);
   min-inline-size: 8rem;
   inline-size: 8rem;
 }

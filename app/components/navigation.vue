@@ -4,7 +4,6 @@
       <NuxtPicture
         format="avif"
         :alt="metadata.author.name"
-        class="site-image"
         :img-attrs="{ class: 'navigation__image' }"
         legacy-format="png"
         src="/images/author/Muhammad-Rehan-Saeed/Logo-192x192.png"
