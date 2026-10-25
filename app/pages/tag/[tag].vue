@@ -4,7 +4,7 @@
 
     <u-arrows class="tag-page__arrows" />
 
-    <ul class="tag-page__items" aria-label="Blog posts" role="list">
+    <ul class="tag-page__items list-unstyled" aria-label="Blog posts">
       <li v-for="(post, index) of posts" :key="post.id">
         <u-post-card :post="post" :priority="index === 0" />
       </li>

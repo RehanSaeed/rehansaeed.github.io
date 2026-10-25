@@ -1,4 +1,4 @@
-ol:where(:not([role="list"])) {
+ol:where(:not([role="list"], .list-unstyled)) {
   list-style-type: decimal;
   margin-inline-start: var(--global-space-fixed-5);
   margin-block-end: var(--global-space-fixed-5);

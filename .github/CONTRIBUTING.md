@@ -29,9 +29,11 @@ headings that reflect the content hierarchy, not the desired font size.
 Cards default to a neutral wrapper; set `tag="article"` or `tag="section"`
 explicitly when the content warrants it.
 
-Unstyled UI lists use `ul` or `ol` with `li` children and `role="list"` to retain
-list semantics in Safari. Their shared reset leaves article list typography
-unchanged. The Markdown pipeline nests article headings below the page title
+Unstyled UI lists use `ul` or `ol` with `li` children. The `list-unstyled` class
+applies their shared reset without an explicit role, leaving article list
+typography unchanged. Lists with `role="list"` also receive this reset; that role
+retains unstyled list semantics in Safari where needed.
+The Markdown pipeline nests article headings below the page title
 while preserving their fragment IDs and visual sizes. Run
 `npm run test:chrome -- semantic-html.spec.ts card-sizing.spec.ts` after
 `npm run build` when changing these structures.
