@@ -17,7 +17,6 @@ const required = [
     "CNAME",
     "robots.txt",
     "service-worker.js",
-    "service-worker-update-policy.js",
     "manifest.webmanifest",
     "flexsearch.json",
     "rss.xml",
@@ -315,7 +314,6 @@ async function writeDeployment(directory) {
         $("meta[property='og:image']").attr("content").replace(origin, ""),
         "/manifest.webmanifest",
         "/service-worker.js",
-        "/service-worker-update-policy.js",
         ...assets,
     ]);
     const files = [];

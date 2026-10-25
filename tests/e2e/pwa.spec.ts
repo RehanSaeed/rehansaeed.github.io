@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
+import type { NuxtApp } from "nuxt/app";
 
 async function announcePrompt(
   page: Page,
@@ -14,13 +15,16 @@ async function announcePrompt(
           root.dataset.promptCalls = String(
             Number(root.dataset.promptCalls ?? 0) + 1,
           );
-          if (outcome === "error") throw new Error("Install prompt failed");
         },
-        userChoice: Promise.resolve({
-          outcome: outcome === "accepted" ? "accepted" : "dismissed",
-        }),
       },
     );
+    Object.defineProperty(event, "userChoice", {
+      get() {
+        return outcome === "error"
+          ? Promise.reject(new Error("Install prompt failed"))
+          : Promise.resolve({ outcome });
+      },
+    });
     window.dispatchEvent(event);
     return event.defaultPrevented;
   }, outcome);
@@ -85,23 +89,30 @@ test("Manifest preserves install identity and serves valid desktop and mobile pr
   }
 });
 
-test("Chrome reports no PWA installability errors", async ({
+test("Chrome reports no manifest installability errors", async ({
   page,
+  context,
   browserName,
 }) => {
   test.skip(browserName !== "chromium", "Chrome DevTools protocol is required");
   await page.goto("/");
-  const session = await page.context().newCDPSession(page);
-  await session.send("Page.enable");
-  await expect
-    .poll(async () => {
-      const { installabilityErrors } = await session.send(
-        "Page.getInstallabilityErrors",
-      );
-      return installabilityErrors;
-    })
-    .toEqual([]);
-  await session.detach();
+  const session = await context.newCDPSession(page);
+  try {
+    await session.send("Page.enable");
+    await expect
+      .poll(async () => {
+        const { installabilityErrors } = await session.send(
+          "Page.getInstallabilityErrors",
+        );
+        // Playwright's isolated context is intentionally incognito.
+        return installabilityErrors.filter(
+          ({ errorId }) => errorId !== "in-incognito",
+        );
+      })
+      .toEqual([]);
+  } finally {
+    await session.detach();
+  }
 });
 
 test("Install button waits for browser eligibility and consumes each prompt once", async ({
@@ -122,7 +133,6 @@ test("Install button waits for browser eligibility and consumes each prompt once
   await expect(button).toBeHidden();
   await expect(page.locator("html")).toHaveAttribute("data-prompt-calls", "2");
   await page.evaluate(() => window.dispatchEvent(new Event("appinstalled")));
-  await announcePrompt(page);
   await expect(button).toBeHidden();
 });
 
@@ -212,3 +222,47 @@ test("Installed display modes do not offer another installation", async ({
     page.getByRole("button", { name: "Install the app" }),
   ).toBeHidden();
 });
+
+for (const fails of [false, true]) {
+  test(`Update notice delegates to the package${fails ? " and reports failures" : ""}`, async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await expect(
+      page.getByRole("button", { name: "Open search" }),
+    ).toBeEnabled();
+    await page.evaluate((fails) => {
+      const root = document.querySelector<
+        HTMLElement & {
+          __vue_app__: { config: { globalProperties: { $nuxt: NuxtApp } } };
+        }
+      >("#__nuxt")!;
+      const pwa = root.__vue_app__.config.globalProperties.$nuxt.$pwa!;
+      pwa.needRefresh = true;
+      pwa.updateServiceWorker = async () => {
+        document.documentElement.dataset.packageUpdateCalls = "1";
+        if (fails) throw new Error("Test package update failure");
+        pwa.needRefresh = false;
+      };
+    }, fails);
+    const notice = page.getByRole("region", { name: "Site update" });
+    await expect(notice).toBeVisible();
+    await notice
+      .getByRole("button", { name: "Update now", exact: true })
+      .click();
+    await expect(page.locator("html")).toHaveAttribute(
+      "data-package-update-calls",
+      "1",
+    );
+    if (fails) {
+      await expect(notice).toContainText(
+        "The update is not ready. Please try again when online.",
+      );
+      await expect(
+        notice.getByRole("button", { name: "Update now", exact: true }),
+      ).toBeEnabled();
+    } else {
+      await expect(notice).toHaveCount(0);
+    }
+  });
+}

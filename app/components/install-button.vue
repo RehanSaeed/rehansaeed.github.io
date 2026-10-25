@@ -1,6 +1,6 @@
 <template>
   <u-button
-    v-show="hydrated && available"
+    v-show="hydrated && $pwa?.showInstallPrompt && !$pwa.isPWAInstalled"
     class="install-button"
     aria-label="Install the app"
     @click.prevent="install">
@@ -9,10 +9,29 @@
 </template>
 
 <script setup lang="ts">
-import button from "~/components/shared/button.vue";
-const UButton = button;
-const { available, install } = useNuxtApp().$pwaInstall;
+import {
+  pwaInstallPromoShown,
+  pwaInstallPromoClicked,
+} from "~/framework/analytics";
+const { $pwa } = useNuxtApp();
 const hydrated = ref(false);
+watch(
+  () => $pwa?.showInstallPrompt,
+  (visible) => {
+    if (visible && !$pwa?.isPWAInstalled) pwaInstallPromoShown();
+  },
+  { immediate: true },
+);
+async function install() {
+  try {
+    const choice: unknown = await $pwa?.install();
+    if (choice && typeof choice === "object" && "outcome" in choice) {
+      pwaInstallPromoClicked("install-button", choice.outcome === "accepted");
+    }
+  } catch (error) {
+    console.error("PWA installation failed:", error);
+  }
+}
 onMounted(() => {
   hydrated.value = true;
 });
