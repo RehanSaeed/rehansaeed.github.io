@@ -4,6 +4,7 @@
 
 Do not modify README.md unless the user explicitly requests it. Put implementation
 details in relevant documentation or code comments, not the README.
+
 ## Blog and Social Media Authoring
 
 These instructions apply to agents working in this repository. Draft articles and
