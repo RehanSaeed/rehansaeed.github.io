@@ -63,8 +63,6 @@ const timestamp = computed(() => webMentionTimestamp(props.reply));
 </script>
 
 <style lang="scss">
-@use "~/assets/style/abstracts/breakpoints";
-
 .webmention-reply {
   display: grid;
   column-gap: var(--global-space-fixed-3);
@@ -72,13 +70,15 @@ const timestamp = computed(() => webMentionTimestamp(props.reply));
     "avatar author"
     "avatar timestamp"
     "avatar content";
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto minmax(0, 1fr);
+}
 
-  @include breakpoints.respond-above(md) {
+@container webmentions (width > 30em) {
+  .webmention-reply {
     grid-template-areas:
       "avatar author timestamp"
       "avatar content content";
-    grid-template-columns: auto auto 1fr;
+    grid-template-columns: auto auto minmax(0, 1fr);
   }
 }
 

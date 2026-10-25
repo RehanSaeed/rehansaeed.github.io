@@ -20,6 +20,18 @@ Link an existing issue if it provides useful context, but an issue is not requir
   `npx playwright test <test-file> --repeat-each=10 --retries=0` to investigate
   suspected timing or rendering issues without retries hiding failures.
 
+### Responsive layouts
+
+Use named inline-size container queries for width-dependent layouts. The default
+layout's `.site-shell` provides the `site` container for navigation and page
+spacing. It uses the browser's initial font size so the existing `em` breakpoints
+retain their meaning; `#app` restores the site's fluid typography.
+
+Newsletter and webmention cards provide their own named containers. Their
+contents switch to wider layouts above `30em` of available content width, not
+viewport width. Keep print and user-preference media queries as media queries.
+Test both viewport resizing and constrained containers on a wide viewport.
+
 ## Images
 
 Keep PNG originals for images with transparency and JPG originals for photographs;

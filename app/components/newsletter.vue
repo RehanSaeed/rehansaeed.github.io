@@ -46,9 +46,9 @@ const metadata = useAppConfig().site;
 </script>
 
 <style lang="scss">
-@use "~/assets/style/abstracts/breakpoints";
-
 .newsletter {
+  container: newsletter / inline-size;
+  inline-size: min(100%, var(--global-space-content-max-width));
   content-visibility: auto;
   contain-intrinsic-size: 354px;
 }
@@ -57,18 +57,20 @@ const metadata = useAppConfig().site;
   display: grid;
   gap: var(--global-space-fluid-3);
   grid-template-areas:
-    "title title title title"
-    "label label label label"
-    ". input button .";
-  grid-template-columns: 1fr auto auto 1fr;
+    "title title title"
+    "label label label"
+    ". input ."
+    ". button .";
+  grid-template-columns: 1fr minmax(0, auto) 1fr;
+}
 
-  @include breakpoints.respond-below(md) {
+@container newsletter (width > 30em) {
+  .newsletter__form {
     grid-template-areas:
-      "title title title"
-      "label label label"
-      ". input ."
-      ". button .";
-    grid-template-columns: 1fr auto 1fr;
+      "title title title title"
+      "label label label label"
+      ". input button .";
+    grid-template-columns: 1fr auto auto 1fr;
   }
 }
 
@@ -87,6 +89,8 @@ const metadata = useAppConfig().site;
 
 .newsletter__input {
   grid-area: input;
+  min-inline-size: 0;
+  max-inline-size: 100%;
 }
 
 .newsletter__button {

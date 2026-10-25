@@ -119,7 +119,7 @@ const getIsCurrentPage = (path: string) => {
   visibility: visible;
 }
 
-@include breakpoints.respond-above(xl) {
+@include breakpoints.container-above(site, xl) {
   .navigation {
     grid-template-areas:
       "image . right"
