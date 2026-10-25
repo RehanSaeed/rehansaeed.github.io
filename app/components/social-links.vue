@@ -70,16 +70,10 @@
 </template>
 
 <script>
-import icon from "~/components/shared/icon.vue";
-import linkButton from "~/components/shared/link-button.vue";
 import { decode } from "~/framework/obfuscate.js";
 
 export default {
   name: "u-social-links",
-  components: {
-    "u-icon": icon,
-    "u-link-button": linkButton,
-  },
   setup() {
     return { metadata: useAppConfig().site };
   },

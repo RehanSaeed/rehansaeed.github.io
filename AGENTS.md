@@ -28,6 +28,25 @@ authorise publishing the article or posting to social media.
 - Keep work focused on the requested article and its promotion. Do not change the
   website, install publishing integrations or require Buffer as part of drafting.
 
+## Nuxt Components
+
+- Use Nuxt's build-time component auto-imports for template usage instead of
+  explicit imports and Options API `components` registrations. Auto-imports
+  include only used components and add no runtime registration overhead compared
+  with equivalent explicit imports.
+- Application components use the `U` prefix without directory prefixes, as
+  configured in `nuxt.config.ts`: `shared/heading.vue` is `<u-heading>` (or
+  `<UHeading>`). Keep filenames unique across application component directories.
+- Keep Nuxt Content components in `app/components/content` globally registered
+  under their unprefixed names so Markdown rendering can resolve them. Do not
+  globally register ordinary application components.
+- Leave `app/components/OgImage` to the OG image module's own component discovery;
+  do not apply the application `U` prefix to its templates.
+- Retain explicit imports when script logic needs a component object, such as
+  `NuxtLink` used in a computed value for `<component :is="...">`, or when a
+  component is outside Nuxt's configured scan directories. Auto-importing is
+  separate from lazy loading and delayed hydration; preserve those behaviours.
+
 ## Authoring and Correcting Blog Posts
 
 The author writes the article text. Do not independently draft, expand or rewrite

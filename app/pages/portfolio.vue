@@ -44,10 +44,6 @@
 </template>
 
 <script setup>
-import UArrows from "~/components/shared/arrows.vue";
-import UHeading from "~/components/shared/heading.vue";
-import UPortfolioCard from "~/components/portfolio-card.vue";
-
 const site = useAppConfig().site;
 const title = "Portfolio";
 const description = `Portfolio of work by ${site.author.name}.`;

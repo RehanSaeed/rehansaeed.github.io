@@ -24,13 +24,8 @@
 </template>
 
 <script>
-import Heading from "~/components/shared/heading.vue";
-
 export default {
   name: "u-search-result",
-  components: {
-    "u-heading": Heading,
-  },
   emits: ["selected"],
   props: {
     searchResult: {

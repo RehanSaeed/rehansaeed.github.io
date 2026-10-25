@@ -14,11 +14,6 @@
 </template>
 
 <script setup>
-import UArrows from "~/components/shared/arrows.vue";
-import UCard from "~/components/shared/card.vue";
-import ULinkButton from "~/components/shared/link-button.vue";
-import UHeading from "~/components/shared/heading.vue";
-
 defineProps({
   error: {
     type: Object,

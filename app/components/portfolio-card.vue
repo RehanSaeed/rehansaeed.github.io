@@ -81,19 +81,11 @@
 </template>
 
 <script>
-import card from "~/components/shared/card.vue";
-import heading from "~/components/shared/heading.vue";
-import tags from "~/components/tags.vue";
 import { getImageMetadata } from "~/framework/images.js";
 import { contentImageSizes } from "#shared/utils/images";
 
 export default {
   name: "u-portfolio-card",
-  components: {
-    "u-card": card,
-    "u-heading": heading,
-    "u-tags": tags,
-  },
   props: {
     portfolio: {
       required: true,

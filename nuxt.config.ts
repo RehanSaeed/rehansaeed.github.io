@@ -291,9 +291,15 @@ export default defineNuxtConfig({
     },
   },
 
-  // Components are imported explicitly with their u- names, as in Gridsome. Only the Nuxt Content
-  // prose overrides are auto-registered.
-  components: [{ path: "~/components/content", global: true }],
+  components: [
+    { path: "~/components/content", global: true },
+    {
+      path: "~/components",
+      prefix: "U",
+      pathPrefix: false,
+      ignore: ["**/content/**", "**/OgImage/**"],
+    },
+  ],
 
   // Global, as in Gridsome's main.js, so rehype-katex output is styled on every page.
   css: ["~/assets/style/index.scss", "katex/dist/katex.min.css"],

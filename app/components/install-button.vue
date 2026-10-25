@@ -9,8 +9,6 @@
 </template>
 
 <script>
-import icon from "~/components/shared/icon.vue";
-import button from "~/components/shared/button.vue";
 import {
   pwaInstallPromoShown,
   pwaInstallPromoClicked,
@@ -21,10 +19,6 @@ import {
 
 export default {
   name: "u-install-button",
-  components: {
-    "u-icon": icon,
-    "u-button": button,
-  },
   data() {
     return {
       deferredPrompt: undefined,

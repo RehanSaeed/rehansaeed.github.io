@@ -12,13 +12,8 @@
 </template>
 
 <script>
-import skeleton from "~/components/shared/skeleton.vue";
-
 export default {
   name: "u-webmention-faces-skeleton",
-  components: {
-    "u-skeleton": skeleton,
-  },
   data() {
     return {
       resizeObserver: undefined,

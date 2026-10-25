@@ -8,13 +8,8 @@
 </template>
 
 <script>
-import skeleton from "~/components/shared/skeleton.vue";
-
 export default {
   name: "u-webmention-links-skeleton",
-  components: {
-    "u-skeleton": skeleton,
-  },
 };
 </script>
 

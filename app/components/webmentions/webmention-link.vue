@@ -13,15 +13,8 @@
 </template>
 
 <script>
-import heading from "~/components/shared/heading.vue";
-import time from "~/components/shared/time.vue";
-
 export default {
   name: "u-webmention-link",
-  components: {
-    "u-heading": heading,
-    "u-time": time,
-  },
   props: {
     link: {
       required: true,

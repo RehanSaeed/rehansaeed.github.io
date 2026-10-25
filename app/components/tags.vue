@@ -13,13 +13,9 @@
 
 <script>
 import { tagPath } from "#shared/utils/tag";
-import linkButton from "~/components/shared/link-button.vue";
 
 export default {
   name: "u-tags",
-  components: {
-    "u-link-button": linkButton,
-  },
   setup() {
     return { tagPath };
   },

@@ -26,17 +26,8 @@
 </template>
 
 <script>
-import arrows from "~/components/shared/arrows.vue";
-import author from "~/components/author.vue";
-import newsletter from "~/components/newsletter.vue";
-
 export default {
   name: "u-footer",
-  components: {
-    "u-arrows": arrows,
-    "u-author": author,
-    "u-newsletter": newsletter,
-  },
   setup() {
     return { metadata: useAppConfig().site };
   },

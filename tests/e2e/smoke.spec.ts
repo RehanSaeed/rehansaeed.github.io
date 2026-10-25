@@ -2,6 +2,34 @@ import { load } from "cheerio";
 import { expect, test } from "./fixtures";
 
 test.describe("Smoke", () => {
+  test("Auto-imported components render without unresolved custom elements", async ({
+    request,
+  }) => {
+    for (const path of [
+      "/",
+      "/2/",
+      "/about/",
+      "/portfolio/",
+      "/on-the-etiquette-of-pull-request-comments/",
+      "/streaming/thumbnail/",
+      "/404-not-found/",
+    ]) {
+      const response = await request.get(path);
+      expect(response.status()).toBe(path === "/404-not-found/" ? 404 : 200);
+      const $ = load(await response.text());
+      const unresolved = $("*")
+        .toArray()
+        .map((element) => element.tagName)
+        .filter((tag) => tag.startsWith("u-"));
+      expect(unresolved, path).toEqual([]);
+      expect(
+        $(path === "/streaming/thumbnail/" ? ".thumbnail__logo svg" : "h1")
+          .length,
+        path,
+      ).toBeGreaterThan(0);
+    }
+  });
+
   for (const { name, url, previous } of [
     {
       name: "Bluesky",
@@ -77,6 +105,12 @@ test.describe("Smoke", () => {
   }
 
   test("Visit all pages", async ({ page }) => {
+    const unresolved: string[] = [];
+    page.on("console", (message) => {
+      if (message.text().includes("Failed to resolve component")) {
+        unresolved.push(message.text());
+      }
+    });
     const nav = page.locator("nav");
 
     await page.goto("/");
@@ -97,6 +131,7 @@ test.describe("Smoke", () => {
     await page.locator(".tags__link").first().click();
     await expect(page).toHaveURL(/\/tag\//);
     await expect(page.locator("h1").first()).toContainText("#");
+    expect(unresolved).toEqual([]);
   });
 
   test("404 Page", async ({ page }) => {

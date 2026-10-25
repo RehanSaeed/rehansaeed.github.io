@@ -15,18 +15,7 @@
 </template>
 
 <script>
-import thumbnailImage from "~/components/thumbnail/thumbnail-image.vue";
-import thumbnailLogo from "~/components/thumbnail/thumbnail-logo.vue";
-import thumbnailOptions from "~/components/thumbnail/thumbnail-options.vue";
-import thumbnailTitle from "~/components/thumbnail/thumbnail-title.vue";
-
 export default {
-  components: {
-    "u-thumbnail-image": thumbnailImage,
-    "u-thumbnail-logo": thumbnailLogo,
-    "u-thumbnail-options": thumbnailOptions,
-    "u-thumbnail-title": thumbnailTitle,
-  },
   data() {
     return {
       background: "dark",
