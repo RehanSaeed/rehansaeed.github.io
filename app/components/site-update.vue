@@ -9,7 +9,7 @@
       aria-label="Dismiss site update"
       :disabled="updating"
       @click="dismissed = true">
-      <u-icon-close :size="20" />
+      <u-icon name="feather:x" />
     </u-button>
     <p class="site-update__message" role="status">
       {{ error || "A new version is available. Update when you are ready." }}
@@ -32,7 +32,7 @@
 <script setup lang="ts">
 import { registerSW } from "virtual:pwa-register";
 import UButton from "~/components/shared/button.vue";
-import UIconClose from "~/components/shared/icons/icon-close.vue";
+import UIcon from "~/components/shared/icon.vue";
 
 const available = ref(false);
 const dismissed = ref(false);

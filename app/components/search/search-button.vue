@@ -4,7 +4,7 @@
       class="search-button"
       aria-label="Open search"
       @click.prevent="onOpen">
-      <u-icon-search />
+      <u-icon name="feather:search" />
     </u-button>
 
     <u-dialogue
@@ -22,9 +22,9 @@
 </template>
 
 <script>
+import icon from "~/components/shared/icon.vue";
 import button from "~/components/shared/button.vue";
 import dialogue from "~/components/shared/dialogue.vue";
-import iconSearch from "~/components/shared/icons/icon-search.vue";
 import search from "~/components/search/search.vue";
 import {
   searchOpened,
@@ -35,9 +35,9 @@ import {
 export default {
   name: "u-search-button",
   components: {
+    "u-icon": icon,
     "u-button": button,
     "u-dialogue": dialogue,
-    "u-icon-search": iconSearch,
     "u-search": search,
   },
   data() {

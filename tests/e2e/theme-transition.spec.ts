@@ -10,9 +10,27 @@ for (const initialTheme of ["light", "dark"] as const) {
     await page.goto("/");
     const toggle = page.getByRole("button", { name: "Toggle dark/light" });
     await expect(toggle).toBeEnabled();
-    await expect(toggle.locator("title")).toHaveText(
+    await expect(toggle).toHaveAttribute(
+      "title",
       initialTheme === "light" ? "Enable dark theme" : "Enable light theme",
     );
+
+    await page.evaluate(async () => {
+      for (const arrow of document.querySelectorAll(".arrows__arrow")) {
+        getComputedStyle(arrow).getPropertyValue("background-color");
+        getComputedStyle(arrow, "::after").getPropertyValue("background-color");
+      }
+      await Promise.all(
+        document
+          .getAnimations()
+          .filter(
+            (animation) =>
+              animation instanceof CSSTransition &&
+              animation.transitionProperty === "background-color",
+          )
+          .map((animation) => animation.finished),
+      );
+    });
 
     const samples = await toggle.evaluate((button) => {
       const arrows = Array.from(document.querySelectorAll(".arrows__arrow"));

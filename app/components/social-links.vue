@@ -6,7 +6,7 @@
       label="Youtube"
       :href="metadata.author.youtube.url"
       rel="me">
-      <u-icon-youtube />
+      <u-icon name="fa-brands:youtube" />
     </u-link-button>
     <u-link-button
       v-if="metadata.author.twitch.url"
@@ -14,7 +14,7 @@
       label="Twitch"
       :href="metadata.author.twitch.url"
       rel="me">
-      <u-icon-twitch />
+      <u-icon name="fa-brands:twitch" />
     </u-link-button>
     <u-link-button
       v-if="metadata.author.gitHub.url"
@@ -22,7 +22,7 @@
       label="GitHub"
       :href="metadata.author.gitHub.url"
       rel="me authn">
-      <u-icon-github />
+      <u-icon name="fa-brands:github" />
     </u-link-button>
     <u-link-button
       v-if="metadata.author.linkedIn.url"
@@ -30,7 +30,7 @@
       label="LinkedIn"
       :href="metadata.author.linkedIn.url"
       rel="me">
-      <u-icon-linkedin />
+      <u-icon name="fa-brands:linkedin" />
     </u-link-button>
     <u-link-button
       v-if="metadata.author.stackOverflow.url"
@@ -38,43 +38,31 @@
       label="Stack Overflow"
       :href="metadata.author.stackOverflow.url"
       rel="me">
-      <u-icon-stackoverflow />
+      <u-icon name="fa-brands:stack-overflow" />
     </u-link-button>
     <u-link-button
       class="social__link"
       label="Email"
       href="#"
       @click="openEmail">
-      <u-icon-email />
+      <u-icon name="fa-regular:envelope" />
     </u-link-button>
     <u-link-button class="social__link" href="/rss.xml" label="RSS">
-      <u-icon-rss />
+      <u-icon name="fa-solid:rss" />
     </u-link-button>
   </div>
 </template>
 
 <script>
+import icon from "~/components/shared/icon.vue";
 import linkButton from "~/components/shared/link-button.vue";
-import iconEmail from "~/components/shared/icons/icon-email.vue";
-import iconGitHub from "~/components/shared/icons/icon-github.vue";
-import iconLinkedIn from "~/components/shared/icons/icon-linkedin.vue";
-import iconRss from "~/components/shared/icons/icon-rss.vue";
-import iconStackOverflow from "~/components/shared/icons/icon-stackoverflow.vue";
-import iconTwitch from "~/components/shared/icons/icon-twitch.vue";
-import iconYoutube from "~/components/shared/icons/icon-youtube.vue";
 import { decode } from "~/framework/obfuscate.js";
 
 export default {
   name: "u-social-links",
   components: {
+    "u-icon": icon,
     "u-link-button": linkButton,
-    "u-icon-email": iconEmail,
-    "u-icon-github": iconGitHub,
-    "u-icon-linkedin": iconLinkedIn,
-    "u-icon-rss": iconRss,
-    "u-icon-stackoverflow": iconStackOverflow,
-    "u-icon-twitch": iconTwitch,
-    "u-icon-youtube": iconYoutube,
   },
   setup() {
     return { metadata: useAppConfig().site };
