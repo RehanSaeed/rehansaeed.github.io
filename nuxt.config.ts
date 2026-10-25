@@ -380,9 +380,10 @@ export default defineNuxtConfig({
       ],
       script: [
         {
-          // Dark / light detection that runs before Vue loads, so there is no flash of the wrong
-          // theme. Borrowed from overreacted.io.
-          tagPosition: "bodyOpen",
+          // Resolve the theme before stylesheets and body parsing, not just before Vue loads.
+          // Otherwise the initial colour change can trigger the theme transitions.
+          tagPosition: "head",
+          tagPriority: 0,
           innerHTML: `(function () {
   function setTheme(newTheme) {
     window.__theme = newTheme;
