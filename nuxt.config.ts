@@ -21,6 +21,10 @@ export default defineNuxtConfig({
   compatibilityDate: "2026-07-01",
   ssr: true,
 
+  typescript: {
+    strict: true,
+  },
+
   modules: [
     "@nuxt/content",
     "@nuxt/icon",
