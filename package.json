@@ -113,7 +113,7 @@
       "eslint --fix --max-warnings=0",
       "prettier --write"
     ],
-    "*.{json,css,scss,sass}": "prettier --write"
+    "*.{json,css,scss,sass,md}": "prettier --write"
   },
   "engines": {
     "node": "^24.15.0 || >=26.0.0"

@@ -12,6 +12,9 @@ Link an existing issue if it provides useful context, but an issue is not requir
 
 - Follow [`.editorconfig`](../.editorconfig) and the existing code conventions.
 - Use ESLint for linting and Prettier for formatting.
+- The pre-commit hook formats staged Markdown, JSON and stylesheet files with
+  Prettier, and runs ESLint fixes and Prettier on staged JavaScript, TypeScript
+  and Vue files.
 - Add tests for behavior changes and make sure checks pass.
 
 ## Dependency updates
