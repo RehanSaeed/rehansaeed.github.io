@@ -41,6 +41,22 @@
       <u-icon name="fa-brands:stack-overflow" />
     </u-link-button>
     <u-link-button
+      v-if="metadata.author.bluesky.url"
+      class="social__link"
+      label="Bluesky"
+      :href="metadata.author.bluesky.url"
+      rel="me">
+      <u-icon name="simple-icons:bluesky" />
+    </u-link-button>
+    <u-link-button
+      v-if="metadata.author.mastodon.url"
+      class="social__link"
+      label="Mastodon"
+      :href="metadata.author.mastodon.url"
+      rel="me">
+      <u-icon name="fa-brands:mastodon" />
+    </u-link-button>
+    <u-link-button
       class="social__link"
       label="Email"
       href="#"
