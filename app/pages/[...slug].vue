@@ -16,6 +16,29 @@
 
     <u-post class="post-page__content" :post="post" />
 
+    <u-card
+      v-if="previousPost || nextPost"
+      class="post-page__navigation"
+      tag="nav"
+      aria-label="Post navigation">
+      <NuxtLink
+        v-if="previousPost"
+        class="post-page__previous"
+        :to="previousPost.permalink"
+        rel="prev">
+        <strong>Previous post</strong>
+        <span>{{ previousPost.title }}</span>
+      </NuxtLink>
+      <NuxtLink
+        v-if="nextPost"
+        class="post-page__next"
+        :to="nextPost.permalink"
+        rel="next">
+        <strong>Next post</strong>
+        <span>{{ nextPost.title }}</span>
+      </NuxtLink>
+    </u-card>
+
     <u-webmentions class="post-page__webmentions" :url="url" />
 
     <u-comments
@@ -66,6 +89,32 @@ if (!post.value) {
     fatal: true,
   });
 }
+
+const { data: surroundingPosts, error: navigationError } = await useAsyncData(
+  `post-navigation-${permalink}`,
+  async () => {
+    if (!post.value.published) return [null, null];
+    const posts = await queryCollection("posts")
+      .where("published", "=", true)
+      .order("date", "ASC")
+      .order("permalink", "ASC")
+      .select("title", "permalink")
+      .all();
+    const index = posts.findIndex((item) => item.permalink === permalink);
+    if (index === -1) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: "Published post missing from post navigation",
+      });
+    }
+    return [posts[index - 1] ?? null, posts[index + 1] ?? null];
+  },
+);
+if (navigationError.value) {
+  throw createError(navigationError.value);
+}
+const previousPost = computed(() => surroundingPosts.value?.[0]);
+const nextPost = computed(() => surroundingPosts.value?.[1]);
 
 const title = post.value.title;
 const titleId = pageHeadingId(title, post.value.body.value);
@@ -134,6 +183,8 @@ useHead({
 </script>
 
 <style lang="scss">
+@use "~/assets/style/abstracts/breakpoints";
+
 .post-page {
   display: grid;
   gap: var(--global-space-fluid-5);
@@ -159,5 +210,28 @@ useHead({
   margin-inline-start: 50%;
   translate: -50%;
   width: 100vw;
+}
+
+.post-page__navigation {
+  display: grid;
+  gap: var(--global-space-fluid-4);
+
+  a {
+    display: grid;
+    gap: var(--global-space-fixed-2);
+    min-inline-size: 0;
+  }
+
+  @include breakpoints.respond-above(sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.post-page__next {
+  text-align: end;
+
+  @include breakpoints.respond-above(sm) {
+    grid-column: 2;
+  }
 }
 </style>
