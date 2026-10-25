@@ -67,8 +67,8 @@ Lighthouse CI currently pins an older engine, so `package.json` overrides it wit
 Lighthouse 13.5.0. `lighthouserc.js` explicitly excludes retired audit IDs from the
 older recommended preset; update this list when upgrading the engine.
 
-The site uses responsive mobile image candidates, WebP profile images,
-article-only KaTeX styles and an on-demand search engine. Server-rendered content
+The site uses responsive mobile image candidates, article-only KaTeX styles and
+an on-demand search engine. Server-rendered content
 is no longer faded out during initial hydration. Pagination omits unavailable
 links, and `robots.txt` retains the explicit search, AI-input and AI-training
 opt-ins through `Content-Signal`, without the redundant legacy `Content-Usage`
