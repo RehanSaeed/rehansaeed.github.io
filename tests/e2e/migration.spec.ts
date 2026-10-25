@@ -75,7 +75,7 @@ test.describe("Migration completion", () => {
         await expect(page.locator(".vssue-comment-main")).toHaveText(
           "A new live comment.",
         );
-        await expect(page.locator(".comments > .vssue > a")).toHaveAttribute(
+        await expect(page.locator(".comments__github")).toHaveAttribute(
           "href",
           /issues\/607$/,
         );

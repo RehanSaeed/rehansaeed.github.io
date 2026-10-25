@@ -81,21 +81,22 @@ test.describe("GitHub comments", () => {
         (response) =>
           response.url().includes("/issues/607/comments") && response.ok(),
       );
-      const response = await page.goto(postPath);
+      const response = await page.goto(`${postPath}#comments`);
       expect(await response!.text()).toContain(
         'class="vssue-comment-badge">Owner</span>',
       );
-      await page.locator(".comments").scrollIntoViewIfNeeded();
+      await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
       await refreshed;
       const comment = page.locator(".vssue-comment");
       await expect(comment).toHaveCount(1);
       await expect(comment.locator(".vssue-comment-badge")).toHaveText("Owner");
-      await expect(
-        page.getByRole("link", { name: "Join the discussion on GitHub" }),
-      ).toHaveAttribute("href", /issues\/607$/);
+      const githubLink = page.getByRole("link", { name: "View on GitHub" });
+      await expect(githubLink).toHaveCount(1);
+      await expect(githubLink).toHaveAttribute("href", /issues\/607$/);
       await expect(
         comment.getByRole("link", { name: "View on GitHub" }),
-      ).toHaveAttribute("href", owner.html_url);
+      ).toHaveCount(0);
+      await expect(page.locator(".comments__count")).toHaveText("1 comment");
       const date = comment.locator(".vssue-comment-created-at > time");
       await expect(date).toHaveAttribute("datetime", owner.created_at);
       await expect(date.locator("..")).not.toHaveJSProperty("tagName", "A");
@@ -109,15 +110,21 @@ test.describe("GitHub comments", () => {
       await expect(comment.getByRole("img", { name: "Heart: 1" })).toHaveText(
         "❤️1",
       );
-      const layout = await comment.evaluate((element) => {
-        const link = element.querySelector(".vssue-comment-github")!;
+      const layout = await page.locator(".comments").evaluate((element) => {
+        const link = element.querySelector(".comments__github")!;
+        const toolbar = element.querySelector(".comments__toolbar")!;
+        const count = element.querySelector(".comments__count")!;
         const timestamp = element.querySelector(".vssue-comment-created-at")!;
         const body = element.querySelector(".vssue-comment-body")!;
         const linkBounds = link.getBoundingClientRect();
+        const countBounds = count.getBoundingClientRect();
         return {
           rightGap: Math.abs(
-            linkBounds.right - body.getBoundingClientRect().right,
+            linkBounds.right - toolbar.getBoundingClientRect().right,
           ),
+          inline:
+            countBounds.top < linkBounds.bottom &&
+            linkBounds.top < countBounds.bottom,
           timestampFont: getComputedStyle(timestamp).fontSize,
           bodyFont: getComputedStyle(body).fontSize,
           overflow:
@@ -126,16 +133,15 @@ test.describe("GitHub comments", () => {
         };
       });
       expect(layout.rightGap).toBeLessThan(2);
+      expect(layout.inline).toBe(true);
       expect(parseFloat(layout.timestampFont)).toBeLessThan(
         parseFloat(layout.bodyFont),
       );
       expect(layout.overflow).toBe(false);
-      await comment.getByRole("link", { name: "View on GitHub" }).focus();
-      await expect(
-        comment.getByRole("link", { name: "View on GitHub" }),
-      ).toHaveCSS("outline-style", "solid");
+      await githubLink.focus();
+      await expect(githubLink).toHaveCSS("outline-style", "solid");
       await page.reload();
-      await page.locator(".comments").scrollIntoViewIfNeeded();
+      await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
       await expect(page.locator(".vssue-comment")).toHaveCount(1);
       await expect(page.locator(".vssue-comment-badge")).toHaveText("Owner");
       await expect(page.locator(".vssue-comment-reaction")).toHaveCount(8);
@@ -164,8 +170,9 @@ test.describe("GitHub comments", () => {
       }),
     );
     await page.goto(postPath);
-    await page.locator(".comments").scrollIntoViewIfNeeded();
+    await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
     await expect(page.locator(".vssue-comment")).toHaveCount(3);
+    await expect(page.locator(".comments__count")).toHaveText("3 comments");
     await expect(page.locator(".vssue-comment-badge")).toHaveText(
       "Contributor",
     );
@@ -175,4 +182,43 @@ test.describe("GitHub comments", () => {
       "Deleted user",
     );
   });
+
+  for (const count of [0, 6]) {
+    test(`Keeps the shared GitHub action inline with ${count} comments on mobile`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 375, height: 900 });
+      await page.route(commentsPath, (route) =>
+        route.fulfill({
+          json: Array.from({ length: count }, (_, index) => ({
+            ...owner,
+            id: owner.id + index,
+          })),
+        }),
+      );
+      await page.goto(postPath);
+      await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
+      await expect(page.locator(".vssue-comment")).toHaveCount(count);
+      const label = page.locator(".comments__count");
+      const link = page.getByRole("link", { name: "View on GitHub" });
+      await expect(label).toHaveText(`${count} comments`);
+      await expect(link).toHaveCount(1);
+      await expect(link).toHaveAttribute("href", /issues\/607$/);
+      const inline = await page
+        .locator(".comments__toolbar")
+        .evaluate((toolbar) => {
+          const labelBounds = toolbar
+            .querySelector(".comments__count")!
+            .getBoundingClientRect();
+          const linkBounds = toolbar
+            .querySelector(".comments__github")!
+            .getBoundingClientRect();
+          return (
+            labelBounds.top < linkBounds.bottom &&
+            linkBounds.top < labelBounds.bottom
+          );
+        });
+      expect(inline).toBe(true);
+    });
+  }
 });

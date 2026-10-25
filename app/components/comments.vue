@@ -10,8 +10,18 @@
         >Comments</u-heading
       >
       <div class="vssue">
-        <a :href="issueUrl">Join the discussion on GitHub</a>
-        <p class="comments__count">{{ current.comments.length }} Comments</p>
+        <div class="comments__toolbar">
+          <p class="comments__count">
+            <span class="comments__count-value">{{
+              current.comments.length
+            }}</span>
+            {{ current.comments.length === 1 ? "comment" : "comments" }}
+          </p>
+          <u-link-button class="comments__github" bordered :href="issueUrl">
+            <u-icon name="fa-brands:github" inline aria-hidden="true" />
+            View on GitHub
+          </u-link-button>
+        </div>
         <p v-if="unavailable" role="status">
           Live comments unavailable; showing saved comments. You can view the
           latest on GitHub.
@@ -61,13 +71,6 @@
                     (edited <u-time :datetime="comment.updated_at" />)
                   </span>
                 </div>
-                <u-link-button
-                  class="vssue-comment-github"
-                  bordered
-                  :href="comment.html_url">
-                  <u-icon name="fa-brands:github" inline aria-hidden="true" />
-                  View on GitHub
-                </u-link-button>
               </header>
               <!-- eslint-disable-next-line vue/no-v-html -- safeComment sanitizes both saved and refreshed GitHub markup. -->
               <div class="vssue-comment-main" v-html="comment.body_html" />
@@ -139,7 +142,6 @@ async function refresh() {
 
 <style lang="scss">
 @use "~/assets/style/abstracts/type";
-@use "~/assets/style/abstracts/breakpoints";
 
 .comments {
   content-visibility: auto;
@@ -160,8 +162,31 @@ async function refresh() {
   min-inline-size: 0;
 }
 
+.comments__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--global-space-fixed-3);
+  padding-block-end: var(--global-space-fixed-4);
+  border-block-end: var(--global-border-width-1) solid
+    var(--global-border-color);
+}
+
 .comments__count {
+  display: flex;
+  align-items: baseline;
+  gap: var(--global-space-fixed-2);
   margin: 0;
+  min-inline-size: 0;
+  color: var(--global-title-color);
+  font-family: var(--font-heading);
+  font-size: var(--global-font-size-2);
+}
+
+.comments__count-value {
+  color: var(--global-accent-color);
+  font-variant-numeric: tabular-nums;
 }
 
 .vssue-comment {
@@ -187,23 +212,10 @@ async function refresh() {
 
 .vssue-comment-header {
   display: grid;
-  gap: var(--global-space-fixed-2) var(--global-space-fixed-3);
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-areas:
-    "identity identity"
-    "timestamp timestamp"
-    ". github";
-  align-items: center;
-
-  @include breakpoints.respond-above(md) {
-    grid-template-areas:
-      "identity github"
-      "timestamp github";
-  }
+  gap: var(--global-space-fixed-2);
 }
 
 .vssue-comment-identity {
-  grid-area: identity;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -224,7 +236,6 @@ async function refresh() {
 }
 
 .vssue-comment-created-at {
-  grid-area: timestamp;
   font-size: var(--global-font-size-1);
 }
 
@@ -232,9 +243,8 @@ async function refresh() {
   display: inline-block;
 }
 
-.vssue-comment-github {
-  grid-area: github;
-  justify-self: end;
+.comments__github {
+  margin-inline-start: auto;
   text-align: center;
 
   &:focus-visible {
