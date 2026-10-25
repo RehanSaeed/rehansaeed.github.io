@@ -163,9 +163,6 @@ async function refresh() {
 .vssue-comments {
   display: grid;
   gap: var(--global-space-fixed-5);
-  p {
-    min-inline-size: 0;
-  }
   min-inline-size: 0;
 }
 
