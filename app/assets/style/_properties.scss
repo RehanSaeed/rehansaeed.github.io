@@ -118,9 +118,6 @@
   --global-line-length-min: 45ch;
   --global-line-length-ideal: 66ch;
   --global-line-length-max: 75ch;
-  @include breakpoints.respond-below(sm) {
-    --global-line-length-min: 0;
-  }
 
   // Content Width
   --global-content-width-maximum: 45rem;
@@ -157,9 +154,6 @@
   --global-space-fixed-7: calc(var(--global-space-fixed-6) * 2);
 
   --global-space-main: calc(var(--global-space-fluid-6) * 2.7);
-  @include breakpoints.respond-below(sm) {
-    --global-space-main: 0;
-  }
 
   --global-space-content-max-width: calc(
     var(--global-space-fluid-6) * 2 + var(--global-line-length-max)
@@ -170,9 +164,6 @@
   --global-space-card-max-width: calc(
     var(--global-space-fluid-6) * 1.7 + var(--global-line-length-max)
   );
-  @include breakpoints.respond-below(sm) {
-    --global-space-content-min-width: calc(var(--global-space-fluid-6) * 2);
-  }
 }
 
 // Light theme

@@ -40,8 +40,6 @@ export default {
 </script>
 
 <style lang="scss">
-@use "~/assets/style/abstracts/breakpoints";
-
 .webmention-link {
   display: grid;
   column-gap: var(--global-space-fixed-3);
@@ -49,8 +47,10 @@ export default {
     "author"
     "timestamp";
   grid-template-columns: 1fr;
+}
 
-  @include breakpoints.respond-above(md) {
+@container webmentions (width > 30em) {
+  .webmention-link {
     grid-template-areas: "author timestamp";
     grid-template-columns: auto 1fr;
   }
