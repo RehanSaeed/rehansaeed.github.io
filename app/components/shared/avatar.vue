@@ -13,7 +13,7 @@
       :src="src"
       :width="sizeInPixels"
       :height="sizeInPixels"
-      @error="imageFailed = true" />
+      @error="onImageError" />
     <u-icon v-else class="avatar__fallback" name="fa-solid:user" />
   </Component>
 </template>
@@ -57,6 +57,11 @@ export default {
       this.imageFailed = false;
     },
   },
+  methods: {
+    onImageError() {
+      this.imageFailed = true;
+    },
+  },
   computed: {
     sizeInPixels() {
       return this.size === "medium" ? "50" : "60";
@@ -93,7 +98,6 @@ export default {
 }
 
 .avatar > .icon.avatar__fallback {
-  box-sizing: border-box;
   inline-size: 100%;
   block-size: 100%;
   padding: var(--global-space-fixed-3);
