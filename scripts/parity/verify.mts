@@ -323,6 +323,7 @@ delete oldManifest.screenshots;
 const { icons, scope, id, screenshots, ...manifest } =
     localArtifacts["/manifest.webmanifest"];
 assert.deepEqual(manifest, oldManifest, "Preserved PWA manifest fields");
+assert.ok(screenshots, "PWA install previews must be present");
 assert.deepEqual(
     screenshots.map(({ src, sizes, type, form_factor }) => ({
         src,
@@ -346,7 +347,10 @@ assert.deepEqual(
     ]),
     "Refreshed PWA install previews",
 );
-assert.ok(screenshots.every(({ label }) => label), "PWA preview labels");
+assert.ok(
+    screenshots.every(({ label }) => label),
+    "PWA preview labels",
+);
 assert.equal(scope, "/");
 assert.equal(id, "/");
 assert.deepEqual(

@@ -156,8 +156,8 @@ try {
                 const registration =
                     await navigator.serviceWorker.getRegistration();
                 const app =
-                    document.querySelector<NuxtRoot>("#__nuxt")?.__vue_app__?.config
-                        .globalProperties.$nuxt;
+                    document.querySelector<NuxtRoot>("#__nuxt")?.__vue_app__
+                        ?.config.globalProperties.$nuxt;
                 return {
                     buildId: app?.$config.app.buildId,
                     needRefresh: app?.$pwa?.needRefresh,
