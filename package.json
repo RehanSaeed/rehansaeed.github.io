@@ -21,6 +21,7 @@
     "url": "git+https://github.com/RehanSaeed/rehansaeed.github.io.git"
   },
   "dependencies": {
+    "@fontsource-variable/cascadia-code": "5.3.0",
     "@fontsource/audiowide": "5.3.0",
     "@nuxt/content": "3.16.2",
     "@nuxt/icon": "2.6.1",

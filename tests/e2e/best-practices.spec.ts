@@ -122,7 +122,8 @@ test.describe("Nuxt best practices", () => {
     expect(html).not.toContain("fonts.gstatic.com");
 
     const files = readdirSync(join(process.cwd(), "dist", "_nuxt", "fonts"));
-    expect(files).toEqual([href!.split("/").at(-1)]);
+    expect(files).toContain(href!.split("/").at(-1));
+    expect(files).toHaveLength(3);
     expect(readFileSync(join(process.cwd(), "dist", href!.slice(1)))).toEqual(
       readFileSync(
         join(
@@ -147,6 +148,75 @@ test.describe("Nuxt best practices", () => {
         ),
       ),
     ).toBe(true);
+  });
+
+  test("Self-hosts variable code fonts with normal, bold and italic support", async ({
+    page,
+  }) => {
+    const fontRequests: string[] = [];
+    page.on("request", (request) => {
+      if (request.resourceType() === "font") {
+        fontRequests.push(request.url());
+      }
+    });
+    await page.goto("/cheat-sheet/");
+    const code = page.locator('pre[class*="language-"] code').first();
+    await expect(code).toBeVisible();
+    expect(
+      await code.evaluate((element) => getComputedStyle(element).fontFamily),
+    ).toMatch(/^"Cascadia Code Variable"/);
+    const faces = await page.evaluate(async () => {
+      for (const style of ["normal 400", "normal 700", "italic 400"]) {
+        const loaded = await document.fonts.load(
+          `${style} 16px "Cascadia Code Variable"`,
+          "const example = 123;",
+        );
+        if (loaded.length === 0) {
+          throw new Error(`Cascadia Code did not resolve for ${style}.`);
+        }
+      }
+      return [...document.fonts]
+        .filter((face) => face.family === "Cascadia Code Variable")
+        .map((face) => ({
+          style: face.style,
+          weight: face.weight,
+          status: face.status,
+        }));
+    });
+    expect(faces).toEqual(
+      expect.arrayContaining(
+        ["normal", "italic"].map((style) => ({
+          style,
+          weight: "200 700",
+          status: "loaded",
+        })),
+      ),
+    );
+    expect(fontRequests.length).toBeGreaterThanOrEqual(3);
+    for (const url of fontRequests) {
+      expect(new URL(url).origin).toBe(new URL(page.url()).origin);
+      expect(new URL(url).pathname).toMatch(
+        /^\/_nuxt\/(?:fonts\/)?[^/]+\.woff2$/,
+      );
+    }
+    const files = readdirSync(
+      join(process.cwd(), "dist", "_nuxt", "fonts"),
+    ).map((file) =>
+      readFileSync(join(process.cwd(), "dist", "_nuxt", "fonts", file)),
+    );
+    for (const style of ["normal", "italic"]) {
+      const source = readFileSync(
+        join(
+          process.cwd(),
+          "node_modules",
+          "@fontsource-variable",
+          "cascadia-code",
+          "files",
+          `cascadia-code-latin-wght-${style}.woff2`,
+        ),
+      );
+      expect(files.some((file) => file.equals(source))).toBe(true);
+    }
   });
 
   test("Runs lint in CI and before committing supported source files", () => {
