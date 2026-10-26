@@ -38,7 +38,7 @@ Duis aliquet ex eu scelerisque ultricies. Nam ac sagittis ligula. Vestibulum vel
 # Links
 
 [Link](https://example.com)
-[Empty Link]()
+[Empty Link](<>)
 
 # Horizontal Rule
 
@@ -182,13 +182,42 @@ docker image build --tag foo:1.0.0 --label "build"="123" --label "changeset"="0d
 // Code Title, Line Numbers, Line Highlight
 // Code Title, Line Numbers, Line Highlight
 export default {
-  data () {
+  data() {
     return {
-      msg: 'All'
-    }
-  }
-}
+      msg: "All",
+    };
+  },
+};
 ```
+
+```js [Wrapped code] wrap line-numbers
+const message =
+  "This deliberately long line demonstrates optional wrapping without changing the copied source, its indentation, or its build-time syntax highlighting.";
+```
+
+::: code-group
+
+```bash [Bash]
+printf '%s\n' "Hello <world> & friends"
+```
+
+```powershell [PowerShell]
+Write-Output "Hello <world> & friends"
+```
+
+:::
+
+::: code-group
+
+```bash [npm]
+npm install nuxt
+```
+
+```bash [pnpm]
+pnpm add nuxt
+```
+
+:::
 
 # Math
 

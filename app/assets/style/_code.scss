@@ -76,6 +76,75 @@ pre[class*="language-"] {
 }
 
 // Code Title
+.code-block {
+  min-inline-size: 0;
+  margin-block: 1.275rem;
+
+  pre[class*="language-"] {
+    margin-block: 0.5rem 0;
+  }
+
+  .code-title {
+    margin-block: 0.5rem 0;
+  }
+}
+
+.code-block__toolbar,
+.code-block__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--global-font-size-1);
+
+  button {
+    min-block-size: 2.75rem;
+    padding: 0.4rem 0.75rem;
+    border: var(--global-border-width-1) solid var(--global-border-color);
+    border-radius: var(--global-border-radius);
+    background: var(--global-content-background-color);
+    color: var(--global-title-color);
+    font: inherit;
+    cursor: pointer;
+
+    &:hover,
+    &[aria-selected="true"],
+    &[aria-pressed="true"] {
+      border-color: var(--global-accent-color);
+      color: var(--global-accent-color);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--global-accent-color);
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      cursor: progress;
+    }
+  }
+}
+
+.code-block__tabs {
+  margin-block-end: 0.5rem;
+}
+
+.code-block--wrapped pre[class*="language-"],
+.code-block--wrapped code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.code-block--wrapped .line {
+  display: inline;
+}
+
+// Keep source newlines without adding block-level breaks when lines wrap.
+.code-block--wrapped .shiki .line.highlight {
+  display: inline;
+  box-decoration-break: clone;
+}
+
 .code-title {
   font-family: var(--global-font-family-monospace);
   font-size: var(--global-font-size-1);
