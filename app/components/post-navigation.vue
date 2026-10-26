@@ -3,28 +3,67 @@
     v-if="previous || next"
     class="post-navigation"
     aria-label="Post navigation">
-    <u-card class="post-navigation__card">
-      <NuxtLink
-        v-if="previous"
-        class="post-navigation__link"
-        :to="previous.permalink"
-        rel="prev">
-        <span class="post-navigation__label">Previous post</span>
-        <span>{{ previous.title }}</span>
-      </NuxtLink>
-      <NuxtLink
-        v-if="next"
-        class="post-navigation__link post-navigation__link--next"
-        :to="next.permalink"
-        rel="next">
-        <span class="post-navigation__label">Next post</span>
-        <span>{{ next.title }}</span>
-      </NuxtLink>
-    </u-card>
+    <ul class="post-navigation__list" role="list">
+      <u-card
+        v-for="item in neighbours"
+        :key="item.rel"
+        class="post-navigation__card"
+        :class="`post-navigation__card--${item.rel}`"
+        tag="li"
+        hoverable
+        focusable>
+        <NuxtLink
+          class="post-navigation__link"
+          :to="item.post.permalink"
+          :rel="item.rel"
+          :aria-labelledby="`post-navigation-${item.rel}-label post-navigation-${item.rel}-title`"
+          :aria-describedby="`post-navigation-${item.rel}-time`">
+          <NuxtImg
+            class="post-navigation__image"
+            :src="item.post.heroImage"
+            :width="item.image.width"
+            :height="item.image.height"
+            :sizes="contentImageSizes"
+            densities="x1 x2"
+            format="webp"
+            loading="lazy"
+            alt="" />
+          <div class="post-navigation__caption">
+            <p class="post-navigation__meta">
+              <span
+                class="post-navigation__direction"
+                :id="`post-navigation-${item.rel}-label`">
+                <u-icon
+                  class="post-navigation__arrow"
+                  :name="
+                    item.rel === 'prev'
+                      ? 'feather:arrow-left'
+                      : 'feather:arrow-right'
+                  " />
+                {{ item.label }}
+              </span>
+              <time
+                :id="`post-navigation-${item.rel}-time`"
+                :datetime="`PT${item.post.timeToRead}M`">
+                {{ item.post.timeToRead }} min read
+              </time>
+            </p>
+            <h2
+              class="post-navigation__title"
+              :id="`post-navigation-${item.rel}-title`">
+              {{ item.post.title }}
+            </h2>
+          </div>
+        </NuxtLink>
+      </u-card>
+    </ul>
   </nav>
 </template>
 
 <script setup lang="ts">
+import { getImageMetadata } from "~/framework/images.js";
+import { contentImageSizes } from "#shared/utils/images";
+
 const props = defineProps<{ permalink: string }>();
 
 const { data: posts } = await useAsyncData("post-navigation", () =>
@@ -33,7 +72,7 @@ const { data: posts } = await useAsyncData("post-navigation", () =>
     .order("date", "ASC")
     // Keep navigation stable when multiple posts share a publication date.
     .order("permalink", "ASC")
-    .select("title", "permalink")
+    .select("title", "permalink", "heroImage", "timeToRead")
     .all(),
 );
 
@@ -47,34 +86,143 @@ const previous = computed(() =>
 const next = computed(() =>
   index.value >= 0 ? posts.value?.[index.value + 1] : undefined,
 );
+const neighbours = computed(() =>
+  [
+    { post: previous.value, rel: "prev", label: "Previous post" },
+    { post: next.value, rel: "next", label: "Next post" },
+  ].flatMap((item) =>
+    item.post
+      ? [
+          {
+            ...item,
+            post: item.post,
+            image: getImageMetadata(item.post.heroImage),
+          },
+        ]
+      : [],
+  ),
+);
 </script>
 
 <style lang="scss">
 @use "~/assets/style/abstracts/breakpoints";
 
-.post-navigation__card {
+.post-navigation {
+  container-type: inline-size;
+}
+
+.post-navigation__list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--global-space-fluid-5);
+  align-items: start;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 
-  @include breakpoints.respond-below(sm) {
+  @container (max-width: 640px) {
     grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
   }
 }
 
-.post-navigation__link {
-  display: grid;
-  align-content: start;
-  gap: var(--global-space-fluid-3);
+.post-navigation__card {
   min-inline-size: 0;
+  margin-block: 0;
+  padding: 0;
 }
 
-.post-navigation__link--next {
+.post-navigation__card--next {
   grid-column: -2 / -1;
   text-align: end;
 }
 
-.post-navigation__label {
+.post-navigation__link {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto;
+  min-inline-size: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  color: var(--global-title-color);
+  text-decoration: none;
+}
+
+.post-navigation__link:focus-visible {
+  outline: 3px solid var(--global-accent-color);
+  outline-offset: 4px;
+}
+
+.post-navigation__image {
+  grid-area: 1 / 1;
+  align-self: start;
+  inline-size: 100%;
+  block-size: auto;
+}
+
+.post-navigation__caption {
+  grid-area: 1 / 1;
+  position: relative;
+  align-self: end;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-inline-size: 0;
+  gap: 10px;
+  padding: 16px 24px;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--global-content-background-color) 82%, transparent),
+    color-mix(in srgb, var(--global-content-background-color) 97%, transparent)
+      35%,
+    var(--global-content-background-color)
+  );
+
+  @include breakpoints.respond-below(sm) {
+    padding-inline: 20px;
+  }
+}
+
+.post-navigation__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-inline-size: 0;
+  margin: 0;
+  font-size: 0.8em;
+  white-space: nowrap;
+}
+
+.post-navigation__direction {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-block-size: 24px;
+  color: var(--global-accent-color);
   font-weight: var(--global-font-weight-bold);
+  line-height: 1.25;
+}
+
+.post-navigation__card--next .post-navigation__meta,
+.post-navigation__card--next .post-navigation__direction {
+  flex-direction: row-reverse;
+}
+
+.post-navigation__arrow {
+  display: block;
+  flex: 0 0 20px;
+  font-size: 20px;
+}
+
+.post-navigation__title {
+  margin: 0;
+  font-size: 1em;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+
+  @include breakpoints.respond-below(sm) {
+    font-size: 0.95em;
+  }
 }
 </style>

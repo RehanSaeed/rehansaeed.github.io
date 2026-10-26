@@ -30,6 +30,8 @@ authorise publishing the article or posting to social media.
 
 ## Nuxt Components
 
+- Do not use inline styles (`style` attributes or Vue `:style` bindings). Put
+  styling in component stylesheets and use intrinsic HTML sizing where suitable.
 - Use Nuxt's build-time component auto-imports for template usage instead of
   explicit imports and Options API `components` registrations. Auto-imports
   include only used components and add no runtime registration overhead compared

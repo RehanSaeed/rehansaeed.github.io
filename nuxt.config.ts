@@ -61,6 +61,8 @@ export default defineNuxtConfig({
         "fa-solid:rss",
         "fa-solid:share-alt",
         "fa-solid:user",
+        "feather:arrow-left",
+        "feather:arrow-right",
         "feather:moon",
         "feather:rotate-cw",
         "feather:search",
