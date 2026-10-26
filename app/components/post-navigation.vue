@@ -108,6 +108,8 @@ const neighbours = computed(() =>
 @use "~/assets/style/abstracts/breakpoints";
 
 .post-navigation {
+  --post-navigation-caption-offset: 64px;
+
   container-type: inline-size;
 }
 
@@ -159,6 +161,7 @@ const neighbours = computed(() =>
   align-self: start;
   inline-size: 100%;
   block-size: auto;
+  margin-block-end: var(--post-navigation-caption-offset);
 }
 
 .post-navigation__caption {
@@ -172,10 +175,11 @@ const neighbours = computed(() =>
   padding: 16px 24px;
   background: linear-gradient(
     to bottom,
-    color-mix(in srgb, var(--global-content-background-color) 82%, transparent),
-    color-mix(in srgb, var(--global-content-background-color) 97%, transparent)
-      35%,
+    color-mix(in srgb, var(--global-content-background-color) 65%, transparent),
+    color-mix(in srgb, var(--global-content-background-color) 88%, transparent)
+      calc((100% - var(--post-navigation-caption-offset)) * 0.35),
     var(--global-content-background-color)
+      calc(100% - var(--post-navigation-caption-offset))
   );
 
   @include breakpoints.respond-below(sm) {
@@ -223,6 +227,32 @@ const neighbours = computed(() =>
 
   @include breakpoints.respond-below(sm) {
     font-size: 0.95em;
+  }
+}
+
+@container (width > 640px) {
+  .post-navigation__list {
+    grid-template-rows: minmax(0, 1fr) auto;
+    row-gap: 0;
+    align-items: stretch;
+  }
+
+  .post-navigation__card,
+  .post-navigation__link {
+    display: grid;
+    grid-row: span 2;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+  }
+
+  .post-navigation__image {
+    grid-area: 1 / 1 / 3 / 2;
+  }
+
+  .post-navigation__caption {
+    grid-area: 2 / 1;
+    align-self: stretch;
+    align-content: start;
   }
 }
 </style>

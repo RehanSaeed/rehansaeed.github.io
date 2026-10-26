@@ -205,8 +205,17 @@ for (const width of [1280, 768, 375, 320]) {
             const box = link.getBoundingClientRect();
             const directionBox = direction.getBoundingClientRect();
             const timeBox = time.getBoundingClientRect();
+            const captionBox = caption.getBoundingClientRect();
+            const imageBox = image.getBoundingClientRect();
             return {
-              ratio: box.width / box.height,
+              top: box.top,
+              captionTop: captionBox.top,
+              captionHeight: captionBox.height,
+              captionBackground: getComputedStyle(caption).backgroundImage,
+              surfaceColor: getComputedStyle(link.parentElement!)
+                .backgroundColor,
+              extension: box.height - imageBox.height,
+              ratio: imageBox.width / imageBox.height,
               // Resized image variants round pixels; layout uses source dimensions.
               imageRatio:
                 Number(image.getAttribute("width")) /
@@ -238,6 +247,17 @@ for (const width of [1280, 768, 375, 320]) {
           expect(card.sameRow).toBe(true);
           expect(card.opposite).toBe(true);
           expect(card.captionFits).toBe(true);
+          expect(card.extension).toBeCloseTo(64, 0);
+          expect(card.captionBackground).toContain("/ 0.65");
+          expect(card.captionBackground).toContain("/ 0.88");
+          expect(card.captionBackground).toContain(card.surfaceColor);
+        }
+        if (Math.abs(cards[0]!.top - cards[1]!.top) < 1) {
+          expect(cards[0]!.captionTop).toBeCloseTo(cards[1]!.captionTop, 1);
+          expect(cards[0]!.captionHeight).toBeCloseTo(
+            cards[1]!.captionHeight,
+            1,
+          );
         }
       }
       await previous.focus();
