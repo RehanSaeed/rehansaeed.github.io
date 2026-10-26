@@ -53,8 +53,10 @@ configuration fails the build.
   rather than publishing misleading zero-filled histories. Pagination retrieves
   all report rows. Blockers, consent choices and collection configuration can
   still cause undercounting; verify hard loads and Nuxt client navigation in GA4.
-- The chart provides a keyboard/touch month slider and an expandable semantic
-  data table. Its SVG and axis labels are decorative equivalents of that data.
+- The chart appears below GitHub comments, with monthly point tooltips available
+  by pointer, touch or keyboard focus. Tab enters the point group; arrow keys,
+  Home and End inspect months, and Escape dismisses the tooltip. Each point has
+  an accessible date and count. The info icon reveals source and coverage notes.
   No charting library or third-party browser request is needed.
 
 ## Refresh and failures

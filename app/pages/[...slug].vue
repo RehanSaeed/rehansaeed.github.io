@@ -18,18 +18,18 @@
 
     <u-post-navigation v-if="post.published" :permalink="post.permalink" />
 
-    <u-post-traffic
-      v-if="post.published"
-      class="post-page__traffic"
-      :permalink="post.permalink"
-      :published="post.date" />
-
     <u-webmentions class="post-page__webmentions" :url="url" />
 
     <u-comments
       class="post-page__comments"
       :title="title"
       :snapshot="post.comments" />
+
+    <u-post-traffic
+      v-if="post.published"
+      class="post-page__traffic"
+      :permalink="post.permalink"
+      :published="post.date" />
   </div>
 </template>
 
