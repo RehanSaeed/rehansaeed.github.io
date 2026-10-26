@@ -207,7 +207,10 @@ for (const width of [1280, 768, 375, 320]) {
             const timeBox = time.getBoundingClientRect();
             return {
               ratio: box.width / box.height,
-              imageRatio: image.naturalWidth / image.naturalHeight,
+              // Resized image variants round pixels; layout uses source dimensions.
+              imageRatio:
+                Number(image.getAttribute("width")) /
+                Number(image.getAttribute("height")),
               sameRow:
                 Math.abs(
                   directionBox.top +
