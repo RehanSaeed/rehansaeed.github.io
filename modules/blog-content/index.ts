@@ -34,6 +34,8 @@ import { portfolioSnapshots } from "./portfolio";
 import { portfolioDownloads } from "./nuget";
 import { readImageDimensions } from "./images";
 import { filterMarkdownSitemap } from "./seo";
+import { postTrafficSnapshot } from "./traffic";
+import site from "../../site.json";
 
 const postsPerPage = 10;
 
@@ -56,6 +58,13 @@ export default defineNuxtModule({
     await mkdir(dataDir, { recursive: true });
     const comments = await commentSnapshots(dataDir);
     const entries = await scanContent(contentDir);
+    const traffic = await postTrafficSnapshot(dataDir, entries, site.url);
+    const trafficDir = join(dataDir, "traffic-public");
+    await mkdir(trafficDir, { recursive: true });
+    await writeFile(
+      join(trafficDir, "post-traffic.json"),
+      JSON.stringify(traffic),
+    );
     const portfolio = await portfolioSnapshots(dataDir, entries);
     const downloads = await portfolioDownloads(dataDir, entries);
     const images = (await listFiles(contentDir))
@@ -261,6 +270,8 @@ export default defineNuxtModule({
       ...Array.from({ length: pageCount - 1 }, (_, i) => `/${i + 2}/`),
     ]);
     nuxt.hook("nitro:config", (nitroConfig) => {
+      nitroConfig.publicAssets ||= [];
+      nitroConfig.publicAssets.push({ dir: trafficDir, maxAge: 0 });
       nitroConfig.prerender ||= {};
       nitroConfig.prerender.routes = [
         ...(nitroConfig.prerender.routes ?? []),
