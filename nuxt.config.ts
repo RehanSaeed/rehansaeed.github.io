@@ -76,6 +76,18 @@ export default defineNuxtConfig({
   fonts: {
     provider: "npm",
     families: [
+      ...(["normal", "italic"] as const).map((style) => ({
+        name: "Cascadia Code Variable",
+        src: import.meta.resolve(
+          `@fontsource-variable/cascadia-code/files/cascadia-code-latin-wght-${style}.woff2`,
+        ),
+        weight: "200 700",
+        style,
+        display: "swap" as const,
+        // The shared --global-font-family-monospace variable is not auto-detected.
+        global: true,
+        preload: false,
+      })),
       {
         name: "Audiowide",
         weights: [400],
