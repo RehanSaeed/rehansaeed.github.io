@@ -16,6 +16,8 @@
 
     <u-post class="post-page__content" :post="post" />
 
+    <u-post-navigation v-if="post.published" :permalink="post.permalink" />
+
     <u-webmentions class="post-page__webmentions" :url="url" />
 
     <u-comments
