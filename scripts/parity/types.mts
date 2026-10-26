@@ -133,6 +133,13 @@ export interface ArtifactSnapshots<Schema> {
         icons: { purpose?: string; sizes: string }[];
         scope?: string;
         id?: string;
+        screenshots?: {
+            src: string;
+            sizes: string;
+            type: string;
+            form_factor?: "wide" | "narrow";
+            label?: string;
+        }[];
     };
     "/service-worker.js": { status: number; bytes: number };
     "/flexsearch.json": { status: number; bytes: number };
