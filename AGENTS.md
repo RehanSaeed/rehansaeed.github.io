@@ -28,6 +28,20 @@ authorise publishing the article or posting to social media.
 - Keep work focused on the requested article and its promotion. Do not change the
   website, install publishing integrations or require Buffer as part of drafting.
 
+## Image Optimisation
+
+- Optimise new or modified raster images before committing, preferably using
+  [Squoosh](https://squoosh.app/). Do not recompress unrelated existing images.
+- Resize images to appropriate display dimensions and compare the optimised
+  output with the original. Preserve acceptable visual quality, transparency and
+  any required metadata. Keep filenames and declared dimensions accurate.
+- Preserve lossless output where exact pixels matter, including reviewed
+  screenshots, logos and shortcut icons; do not apply lossy or palette-reducing
+  compression to these assets without explicit approval.
+- Keep images covered by `.gitattributes` tracked with Git LFS.
+- If compression tooling is unavailable, report that explicitly rather than
+  claiming the image was optimised.
+
 ## Nuxt Components
 
 - Use Nuxt's build-time component auto-imports for template usage instead of

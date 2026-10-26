@@ -4,7 +4,6 @@ import { join } from "node:path";
 import { test as unitTest } from "@playwright/test";
 import { load } from "cheerio";
 import sharp from "sharp";
-import { parse as parseYaml } from "yaml";
 import { expect, test } from "./fixtures";
 
 const authorDirectory = "images/author/Muhammad-Rehan-Saeed";
@@ -377,34 +376,6 @@ unitTest(
       }
     }
     expect(sizes).toEqual([48, 32, 16]);
-  },
-);
-
-unitTest(
-  "Both compression workflows preserve profile photo exports",
-  async () => {
-    for (const workflow of [
-      "compress-images.yml",
-      "compress-images-on-demand.yml",
-    ]) {
-      const source = await readFile(
-        join(".github", "workflows", workflow),
-        "utf8",
-      );
-      const configuration = parseYaml(source);
-      const step = configuration.jobs.build.steps.find(
-        (step: { uses?: string }) =>
-          step.uses?.startsWith("calibreapp/image-actions@"),
-      );
-      expect(step.with.ignorePaths.split(","), workflow).toEqual(
-        expect.arrayContaining([
-          `public/${authorDirectory}/Profile-320x480.jpg`,
-          `public/${authorDirectory}/Logo-*.png`,
-          "public/favicon.png",
-          "public/images/icons/favicon-*.png",
-        ]),
-      );
-    }
   },
 );
 
