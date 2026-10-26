@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <title>Article Traffic design playground</title>
+    <script>
+      (() => {
+        const param = new URLSearchParams(window.location.search).get(
+          "scoutTheme",
+        );
+        const theme =
+          param ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
+    <style>
+      :root {
+        color-scheme: light;
+        --cp-bg: #f7f4ef;
+        --cp-bg-elevated: #fcfbf8;
+        --cp-surface: #ffffff;
+        --cp-surface-soft: #f5f5f5;
+        --cp-border: #dedede;
+        --cp-border-strong: #919191;
+        --cp-text: #242424;
+        --cp-text-muted: #5c5c5c;
+        --cp-text-soft: #6f6f6f;
+        --cp-accent: #b11f4b;
+        --cp-accent-hover: #9a1a41;
+        --cp-accent-soft: rgba(177, 31, 75, 0.08);
+        --cp-accent-fg: #ffffff;
+        --cp-success: #16a34a;
+        --cp-danger: #dc2626;
+        --cp-warning: #f59e0b;
+        --cp-link: #0078d4;
+        --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+        --cp-overlay: rgba(255, 255, 255, 0.8);
+        --cp-panel: rgba(255, 255, 255, 0.86);
+        --cp-panel-strong: rgba(255, 255, 255, 0.96);
+        --cp-sheen: rgba(255, 255, 255, 0.55);
+        --cp-highlight: rgba(177, 31, 75, 0.12);
+      }
+      html[data-theme="dark"] {
+        color-scheme: dark;
+        --cp-bg: #3d3b3a;
+        --cp-bg-elevated: #343231;
+        --cp-surface: #292929;
+        --cp-surface-soft: #2e2e2e;
+        --cp-border: #474747;
+        --cp-border-strong: #5f5f5f;
+        --cp-text: #dedede;
+        --cp-text-muted: #919191;
+        --cp-text-soft: #b0b0b0;
+        --cp-accent: #fd8ea1;
+        --cp-accent-hover: #fb7b91;
+        --cp-accent-soft: rgba(253, 142, 161, 0.14);
+        --cp-accent-fg: #1a1a1a;
+        --cp-success: #4ade80;
+        --cp-danger: #f87171;
+        --cp-warning: #fbbf24;
+        --cp-link: #4da6ff;
+        --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+        --cp-overlay: rgba(41, 41, 41, 0.88);
+        --cp-panel: rgba(41, 41, 41, 0.72);
+        --cp-panel-strong: rgba(41, 41, 41, 0.96);
+        --cp-sheen: rgba(255, 255, 255, 0.04);
+        --cp-highlight: rgba(253, 142, 161, 0.12);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 24px;
+        background: var(--cp-bg);
+        color: var(--cp-text);
+        font-family:
+          "Segoe UI",
+          Aptos,
+          Calibri,
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        line-height: 1.5;
+      }
+      main {
+        max-width: 1440px;
+        margin: auto;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(24px, 4vw, 36px);
+      }
+      h2 {
+        margin: 0;
+        font-size: 20px;
+      }
+      p {
+        margin: 0 0 16px;
+        color: var(--cp-text-muted);
+      }
+      button,
+      select,
+      input {
+        font: inherit;
+        accent-color: var(--cp-accent);
+      }
+      select,
+      button {
+        border: 1px solid var(--cp-border);
+        border-radius: 10px;
+        background: var(--cp-surface);
+        color: var(--cp-text);
+        padding: 8px 12px;
+      }
+      button {
+        cursor: pointer;
+        text-align: left;
+      }
+      button:hover {
+        border-color: var(--cp-accent);
+      }
+      button[aria-pressed="true"] {
+        background: var(--cp-accent-soft);
+        border-color: var(--cp-accent);
+      }
+      :focus-visible {
+        outline: 2px solid var(--cp-accent);
+        outline-offset: 3px;
+      }
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px 24px;
+        padding: 16px;
+        margin-block: 20px;
+        border: 1px solid var(--cp-border);
+        border-radius: 16px;
+        background: var(--cp-surface);
+      }
+      label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      input[type="range"] {
+        width: 120px;
+      }
+      .workspace {
+        display: grid;
+        grid-template-columns: 300px minmax(0, 1fr);
+        gap: 24px;
+        align-items: start;
+      }
+      .samples {
+        display: grid;
+        gap: 8px;
+      }
+      .samples strong,
+      .samples small {
+        display: block;
+      }
+      small {
+        color: var(--cp-text-muted);
+      }
+      .preview {
+        min-width: 0;
+      }
+      .frame-wrap {
+        width: 100%;
+        max-width: 840px;
+        margin: 12px auto 24px;
+        border: 1px solid var(--cp-border);
+        border-radius: 16px;
+        overflow: hidden;
+        background: var(--cp-surface);
+      }
+      iframe {
+        display: block;
+        width: 100%;
+        height: 600px;
+        border: 0;
+      }
+      [data-width="mobile"] .frame-wrap {
+        max-width: 375px;
+      }
+      .comparison {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 375px), 1fr));
+        gap: 20px;
+        margin-block-start: 32px;
+      }
+      .comparison[hidden] {
+        display: none;
+      }
+      .comparison article {
+        min-width: 0;
+      }
+      .comparison .frame-wrap {
+        margin-block-end: 0;
+      }
+      output {
+        min-width: 3ch;
+      }
+      @media (max-width: 800px) {
+        body {
+          padding: 16px;
+        }
+        .workspace {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .samples {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Article Traffic design playground</h1>
+      <p>
+        Twelve experimental treatments of the real Vue card. All counts,
+        engagement and update dates below are synthetic. The previews retain the
+        blog's own purple palette and Audiowide typography; these experiments do
+        not change the production chart.
+      </p>
+      <div class="controls" aria-label="Preview controls">
+        <label
+          >Theme
+          <select id="theme" aria-label="Theme">
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select></label
+        >
+        <label
+          >Width
+          <select id="width" aria-label="Width">
+            <option value="desktop">Desktop</option>
+            <option value="mobile">Mobile (375px)</option>
+          </select></label
+        >
+        <label
+          >Fill
+          <select id="fill" aria-label="Fill">
+            <option value="preset">Use sample treatment</option>
+            <option value="none">None</option>
+            <option value="solid">Translucent purple</option>
+            <option value="gradient">Purple fade</option>
+          </select></label
+        >
+        <label
+          >Opacity
+          <input id="opacity" type="range" min="5" max="40" value="18" /><output
+            for="opacity"
+            >18%</output
+          ></label
+        >
+        <label><input id="points" type="checkbox" checked /> Points</label>
+        <label><input id="grid" type="checkbox" checked /> Grid</label>
+        <label
+          >Update label
+          <select id="annotation" aria-label="Update label">
+            <option value="below">Below chart</option>
+            <option value="inside">Beside update line</option>
+          </select></label
+        >
+        <label
+          >Engagement
+          <select id="engagement" aria-label="Engagement">
+            <option value="overlay">Same chart</option>
+            <option value="separate">Separate charts</option>
+          </select></label
+        >
+        <label><input id="compare" type="checkbox" /> Show all twelve</label>
+      </div>
+      <div class="workspace">
+        <div class="samples" role="group" aria-label="Chart treatments"></div>
+        <section class="preview" aria-labelledby="selected-title">
+          <h2 id="selected-title"></h2>
+          <p id="selected-description"></p>
+          <div class="frame-wrap">
+            <iframe
+              id="selected"
+              title="Selected article traffic treatment"></iframe>
+          </div>
+          <p>
+            Try the date presets and point tooltips inside each sample. Dotted
+            lines identify the latest update. The help tooltip explains coverage
+            and engagement.
+          </p>
+        </section>
+      </div>
+      <section
+        class="comparison"
+        aria-label="All twelve treatments"
+        hidden></section>
+    </main>
+    <script>
+      const preview = __TRAFFIC_PREVIEW__;
+      const samples = [
+        [
+          "classic",
+          "Classic line",
+          "The current left-total, right-date layout; no area fill.",
+          "none",
+        ],
+        [
+          "area",
+          "Translucent area",
+          "A consistent purple wash underneath the monthly line.",
+          "solid",
+        ],
+        [
+          "fade",
+          "Fading area",
+          "Purple is strongest near the line and fades towards the baseline.",
+          "gradient",
+        ],
+        [
+          "center",
+          "Centred statistics",
+          "Centre the total, engagement and dates above a filled chart.",
+          "solid",
+        ],
+        [
+          "split",
+          "Date capsule",
+          "Keep the total prominent and contain the date range in a quiet outlined block.",
+          "gradient",
+        ],
+        [
+          "inline",
+          "Compact headline",
+          "Put the count and page-view label on one line, reducing the statistics' height.",
+          "none",
+        ],
+        [
+          "footer-dates",
+          "Footer dates",
+          "Keep the statistics above the controls and move the date range below the chart.",
+          "solid",
+        ],
+        [
+          "compact",
+          "Low-profile card",
+          "A shorter chart and smaller count for a less dominant footer.",
+          "gradient",
+        ],
+        [
+          "tall",
+          "Room to breathe",
+          "A taller plot makes the individual monthly changes easier to inspect.",
+          "solid",
+        ],
+        [
+          "tiles",
+          "Framed statistics",
+          "Give the total and coverage their own small outlined panels.",
+          "gradient",
+        ],
+        [
+          "clean",
+          "Quiet plot",
+          "A bolder line without horizontal gridlines, retaining numeric axis labels.",
+          "none",
+        ],
+        [
+          "step",
+          "Stepped months",
+          "A geometric alternative that emphasises discrete monthly buckets.",
+          "solid",
+        ],
+      ];
+      const byId = (id) => document.getElementById(id);
+      let selected = 2;
+      byId("theme").value = document.documentElement.dataset.theme;
+      function configuration(index) {
+        const sample = samples[index];
+        return {
+          type: "traffic-preview-config",
+          theme: byId("theme").value,
+          layout: sample[0],
+          fill:
+            byId("fill").value === "preset" ? sample[3] : byId("fill").value,
+          opacity: Number(byId("opacity").value) / 100,
+          points: byId("points").checked,
+          grid: byId("grid").checked,
+          annotation: byId("annotation").value,
+          engagement: byId("engagement").value,
+        };
+      }
+      function send(frame) {
+        frame.contentWindow?.postMessage(
+          configuration(Number(frame.dataset.sample)),
+          "*",
+        );
+      }
+      function mount(frame, index) {
+        frame.dataset.sample = String(index);
+        frame.srcdoc = `<!doctype html><html lang="en" data-theme="${byId("theme").value}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><style>${preview.css}</style></head><body><div id="app"></div><script type="module">${preview.js.replaceAll("</script", "<\\/script")}<\/script></body></html>`;
+      }
+      function choose(index) {
+        selected = index;
+        document
+          .querySelectorAll(".samples button")
+          .forEach((button, position) =>
+            button.setAttribute("aria-pressed", String(position === index)),
+          );
+        byId("selected-title").textContent =
+          `${index + 1}. ${samples[index][1]}`;
+        byId("selected-description").textContent = samples[index][2];
+        if (!byId("selected").srcdoc) mount(byId("selected"), index);
+        else {
+          byId("selected").dataset.sample = String(index);
+          send(byId("selected"));
+        }
+      }
+      samples.forEach((sample, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        const title = document.createElement("strong");
+        title.textContent = `${index + 1}. ${sample[1]}`;
+        const description = document.createElement("small");
+        description.textContent = sample[2];
+        button.append(title, description);
+        button.addEventListener("click", () => choose(index));
+        document.querySelector(".samples").append(button);
+      });
+      function update() {
+        document.documentElement.dataset.theme = byId("theme").value;
+        document.body.dataset.width = byId("width").value;
+        document.querySelector("output").value = `${byId("opacity").value}%`;
+        const comparison = document.querySelector(".comparison");
+        comparison.hidden = !byId("compare").checked;
+        if (!comparison.hidden && !comparison.children.length) {
+          samples.forEach((sample, index) => {
+            const article = document.createElement("article");
+            const title = document.createElement("h2");
+            title.textContent = `${index + 1}. ${sample[1]}`;
+            const wrapper = document.createElement("div");
+            wrapper.className = "frame-wrap";
+            const frame = document.createElement("iframe");
+            frame.title = sample[1];
+            wrapper.append(frame);
+            article.append(title, wrapper);
+            comparison.append(article);
+            mount(frame, index);
+          });
+        }
+        document.querySelectorAll("iframe").forEach(send);
+      }
+      document
+        .querySelectorAll(".controls input, .controls select")
+        .forEach((input) => input.addEventListener("input", update));
+      window.addEventListener("message", (event) => {
+        const frame = [...document.querySelectorAll("iframe")].find(
+          (item) => item.contentWindow === event.source,
+        );
+        if (!frame) return;
+        if (event.data?.type === "traffic-preview-ready") send(frame);
+        if (
+          event.data?.type === "traffic-preview-height" &&
+          Number.isFinite(event.data.height)
+        ) {
+          const height = `${Math.max(100, Math.min(4000, event.data.height))}px`;
+          if (frame.style.height !== height) frame.style.height = height;
+        }
+      });
+      choose(selected);
+      update();
+    </script>
+  </body>
+</html>

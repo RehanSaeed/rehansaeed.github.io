@@ -6,6 +6,10 @@ import type { ContentEntry } from "../../modules/blog-content/scan";
 import {
   trafficHistorySchema,
   trafficMonths,
+  selectTrafficRange,
+  trafficDays,
+  trafficDailyStart,
+  formatTrafficDuration,
 } from "../../shared/utils/traffic";
 
 const keys = generateKeyPairSync("rsa", { modulusLength: 2048 });
@@ -25,13 +29,21 @@ const entry = (permalink = "/example/", date = "2020-01-01"): ContentEntry => ({
     date,
   },
 });
-const row = (path: string, month: string, views: string) => ({
+const row = (
+  path: string,
+  month: string,
+  views: string,
+  engagementSeconds = "60",
+) => ({
   dimensionValues: [{ value: month }, { value: path }],
-  metricValues: [{ value: views }],
+  metricValues: [{ value: views }, { value: engagementSeconds }],
 });
 const report = (rows = [row("/example/", "20240115", "12")]) => ({
   dimensionHeaders: [{ name: "date" }, { name: "pagePath" }],
-  metricHeaders: [{ name: "screenPageViews" }],
+  metricHeaders: [
+    { name: "screenPageViews" },
+    { name: "userEngagementDuration" },
+  ],
   rows,
   rowCount: rows.length,
   metadata: { timeZone: "Europe/London" },
@@ -89,6 +101,10 @@ test("Exports complete monthly history and signs a read-only OAuth assertion", a
     }
     expect(String(input)).toContain("/properties/123456:runReport");
     const body = JSON.parse(String(init?.body));
+    expect(body.metrics).toEqual([
+      { name: "screenPageViews" },
+      { name: "userEngagementDuration" },
+    ]);
     expect(body.dateRanges[0]).toEqual({
       startDate: "2024-01-15",
       endDate: new Date(Date.now() - 4 * 86_400_000).toISOString().slice(0, 10),
@@ -99,9 +115,9 @@ test("Exports complete monthly history and signs a read-only OAuth assertion", a
     });
     return Response.json(
       report([
-        row("/example/", "20240115", "12"),
-        row("/example", "20240115", "3"),
-        row("/example/", "20240301", "5"),
+        row("/example/", "20240115", "12", "120.5"),
+        row("/example", "20240115", "3", "30.25"),
+        row("/example/", "20240301", "5", "2e2"),
         row("/draft/", "20240115", "999"),
         row("/about/", "20240115", "999"),
       ]),
@@ -117,9 +133,9 @@ test("Exports complete monthly history and signs a read-only OAuth assertion", a
   expect(Object.keys(snapshot!.posts)).toEqual(["/example/"]);
   expect(snapshot!.timeZone).toBe("Europe/London");
   expect(snapshot!.posts["/example/"]!.months.slice(0, 3)).toEqual([
-    { month: "2024-01", views: 15 },
-    { month: "2024-02", views: 0 },
-    { month: "2024-03", views: 5 },
+    { month: "2024-01", views: 15, engagementSeconds: 150.75 },
+    { month: "2024-02", views: 0, engagementSeconds: 0 },
+    { month: "2024-03", views: 5, engagementSeconds: 200 },
   ]);
   expect(snapshot!.posts["/example/"]!.startDate).toBe("2024-01-15");
   const cache = await readFile(
@@ -181,6 +197,7 @@ test("Starts at publication for newer posts and omits posts outside the processe
   expect(snapshot!.posts["/newer/"]!.months[0]).toEqual({
     month: "2024-02",
     views: 5,
+    engagementSeconds: 60,
   });
 });
 
@@ -234,6 +251,10 @@ for (const failure of [
   "thresholded",
   "other-row",
   "invalid-count",
+  "invalid-engagement",
+  "missing-engagement",
+  "wrong-metric",
+  "overflow",
   "incomplete-pagination",
 ]) {
   test(`Rejects ${failure} reports rather than inventing zero traffic`, async ({}, info) => {
@@ -251,11 +272,32 @@ for (const failure of [
                 "/example/",
                 "20240115",
                 failure === "invalid-count" ? "-1" : "12",
+                failure === "invalid-engagement"
+                  ? "NaN"
+                  : failure === "overflow"
+                    ? "1e30"
+                    : "60",
               ),
             ],
       );
       return Response.json({
         ...response,
+        ...(failure === "missing-engagement"
+          ? {
+              rows: response.rows.map((item) => ({
+                ...item,
+                metricValues: item.metricValues.slice(0, 1),
+              })),
+            }
+          : {}),
+        ...(failure === "wrong-metric"
+          ? {
+              metricHeaders: [
+                { name: "screenPageViews" },
+                { name: "activeUsers" },
+              ],
+            }
+          : {}),
         ...(failure === "incomplete-pagination" ? { rowCount: 1 } : {}),
         metadata: {
           ...response.metadata,
@@ -392,4 +434,187 @@ test("Processing cutoff leaves more than 48 hours even at UTC midnight for weste
     return Response.json(report([]));
   };
   await postTrafficSnapshot(dir, [entry()], "https://rehansaeed.com");
+});
+
+test("Engagement requires complete finite nonnegative totals but accepts old view-only snapshots", () => {
+  const history = {
+    startDate: "2024-01-15",
+    endDate: "2024-02-29",
+    months: [
+      { month: "2024-01", views: 2, engagementSeconds: 20.5 },
+      { month: "2024-02", views: 0, engagementSeconds: 0 },
+    ],
+  };
+  expect(trafficHistorySchema.safeParse(history).success).toBe(true);
+  for (const engagementSeconds of [
+    -1,
+    NaN,
+    Infinity,
+    Number.MAX_VALUE,
+    undefined,
+  ]) {
+    expect(
+      trafficHistorySchema.safeParse({
+        ...history,
+        months: [
+          history.months[0],
+          { ...history.months[1], engagementSeconds },
+        ],
+      }).success,
+    ).toBe(false);
+  }
+  expect(
+    trafficHistorySchema.safeParse({
+      ...history,
+      months: history.months.map(({ month, views }) => ({ month, views })),
+    }).success,
+  ).toBe(true);
+});
+
+test("A fresh view-only cache is upgraded instead of hiding engagement for a day", async ({}, info) => {
+  const dir = info.outputPath("cache");
+  await mkdir(dir, { recursive: true });
+  let calls = 0;
+  globalThis.fetch = async (input) => {
+    calls++;
+    return Response.json(
+      String(input).includes("oauth2") ? { access_token: "test" } : report(),
+    );
+  };
+  await postTrafficSnapshot(dir, [entry()], "https://rehansaeed.com");
+  const file = info.outputPath("cache", "blog-traffic.json");
+  const saved = JSON.parse(await readFile(file, "utf8"));
+  for (const month of saved.snapshot.posts["/example/"].months)
+    delete month.engagementSeconds;
+  delete saved.snapshot.posts["/example/"].days;
+  await writeFile(file, JSON.stringify(saved));
+  const updated = await postTrafficSnapshot(
+    dir,
+    [entry()],
+    "https://rehansaeed.com",
+  );
+  expect(calls).toBe(4);
+  expect(updated!.posts["/example/"]!.months[0]!.engagementSeconds).toBe(60);
+});
+
+test("Date presets select monthly or daily data relative to the reporting cutoff", () => {
+  const history = {
+    startDate: "2020-01-15",
+    endDate: "2024-02-29",
+    months: trafficMonths("2020-01-15", "2024-02-29").map((month, index) => ({
+      month,
+      views: index + 1,
+      engagementSeconds: (index + 1) * 10,
+    })),
+  };
+  expect(selectTrafficRange(history, 0).points).toHaveLength(
+    history.months.length,
+  );
+  const year = selectTrafficRange(history, 12);
+  expect(year.startDate).toBe("2023-03-01");
+  expect(year.endDate).toBe("2024-02-29");
+  expect(year.interval).toBe("month");
+  expect(year.points.map((point) => point.date)).toEqual(
+    history.months.slice(-12).map((point) => `${point.month}-01`),
+  );
+  expect(year.points.reduce((sum, item) => sum + item.views, 0)).toBe(534);
+  const short = {
+    ...history,
+    startDate: "2023-03-15",
+    months: history.months.slice(-12),
+  };
+  expect(selectTrafficRange(short, 12).startDate).toBe("2023-03-15");
+  expect(() => selectTrafficRange(history, 30)).toThrow(
+    "Daily traffic is unavailable",
+  );
+  const days = trafficDays("2024-01-31", "2024-02-29").map((date) => ({
+    date,
+    views: 1,
+    engagementSeconds: 10,
+  }));
+  const daily = selectTrafficRange({ ...history, days }, 30);
+  expect(daily.interval).toBe("day");
+  expect(daily.points).toEqual(days);
+  expect(daily.startDate).toBe("2024-01-31");
+  expect(daily.endDate).toBe("2024-02-29");
+  expect(trafficDailyStart("2024-02-20", "2024-02-29")).toBe("2024-02-20");
+  expect(trafficDays("2024-02-20", "2024-02-29")).toHaveLength(10);
+  expect(formatTrafficDuration(59.5)).toBe("1m 0s");
+});
+
+test("Exports exactly the last 30 processed days without another GA4 query", async ({}, info) => {
+  Date.now = () => Date.parse("2024-03-04T12:00:00Z");
+  const dir = info.outputPath("cache");
+  await mkdir(dir, { recursive: true });
+  globalThis.fetch = async (input) =>
+    Response.json(
+      String(input).includes("oauth2")
+        ? { access_token: "test" }
+        : report([
+            row("/example/", "20240130", "100", "1000"),
+            row("/example/", "20240131", "3", "30"),
+            row("/example", "20240131", "2", "20"),
+            row("/example/", "20240201", "5", "50"),
+            row("/example/", "20240229", "7", "70"),
+          ]),
+    );
+  const snapshot = await postTrafficSnapshot(
+    dir,
+    [entry()],
+    "https://rehansaeed.com",
+  );
+  const history = snapshot!.posts["/example/"]!;
+  expect(history.days).toHaveLength(30);
+  expect(history.days![0]).toEqual({
+    date: "2024-01-31",
+    views: 5,
+    engagementSeconds: 50,
+  });
+  expect(history.days!.at(-1)).toEqual({
+    date: "2024-02-29",
+    views: 7,
+    engagementSeconds: 70,
+  });
+  expect(history.days![2]).toEqual({
+    date: "2024-02-02",
+    views: 0,
+    engagementSeconds: 0,
+  });
+  expect(history.days!.reduce((sum, day) => sum + day.views, 0)).toBe(17);
+  expect(history.months[0]!.views).toBe(105);
+});
+
+test("Daily coverage is shortened at publication and inconsistent totals are rejected", () => {
+  const history = {
+    startDate: "2024-02-28",
+    endDate: "2024-02-29",
+    months: [{ month: "2024-02", views: 5, engagementSeconds: 50 }],
+    days: [
+      { date: "2024-02-28", views: 2, engagementSeconds: 20 },
+      { date: "2024-02-29", views: 3, engagementSeconds: 30 },
+    ],
+  };
+  expect(trafficHistorySchema.safeParse(history).success).toBe(true);
+  expect(
+    trafficHistorySchema.safeParse({ ...history, days: history.days.slice(1) })
+      .success,
+  ).toBe(false);
+  expect(
+    trafficHistorySchema.safeParse({
+      ...history,
+      days: [history.days[0], { ...history.days[1], date: "2024-03-01" }],
+    }).success,
+  ).toBe(false);
+  expect(
+    trafficHistorySchema.safeParse({
+      ...history,
+      days: [history.days[0], { ...history.days[1], views: 100 }],
+    }).success,
+  ).toBe(false);
+  expect(
+    trafficHistorySchema.safeParse({
+      ...history,
+      days: [history.days[0], { ...history.days[1], views: 1 }],
+    }).success,
+  ).toBe(false);
 });

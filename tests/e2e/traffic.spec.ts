@@ -1,6 +1,10 @@
 import { expect, test } from "./fixtures";
 import type { TrafficSnapshot } from "../../shared/utils/traffic";
-import { trafficMonths } from "../../shared/utils/traffic";
+import {
+  trafficMonths,
+  trafficDays,
+  formatTrafficDuration,
+} from "../../shared/utils/traffic";
 
 const path = "/optimally-configuring-open-telemetry-tracing-for-asp-net-core/";
 const snapshot: TrafficSnapshot = {
@@ -42,6 +46,9 @@ for (const width of [375, 1280]) {
     await expect(chart.locator(".post-traffic__total span")).toHaveText(
       "page views",
     );
+    await expect(chart.locator(".post-traffic__engagement")).toHaveText(
+      "Unavailable average engagement per view",
+    );
     await expect(chart.locator("h2")).toHaveCSS("text-align", "center");
     await expect(chart.locator(".post-traffic__total strong")).toHaveCSS(
       "font-family",
@@ -52,6 +59,17 @@ for (const width of [375, 1280]) {
     if (width === 375)
       expect(range!.y).toBeGreaterThanOrEqual(total!.y + total!.height);
     else expect(range!.x).toBeGreaterThan(total!.x + total!.width);
+    const summary = await chart.locator(".post-traffic__summary").boundingBox();
+    const controls = await chart
+      .locator(".post-traffic__controls")
+      .boundingBox();
+    const plotBounds = await chart.locator(".post-traffic__plot").boundingBox();
+    expect(controls!.y).toBeGreaterThanOrEqual(summary!.y + summary!.height);
+    expect(plotBounds!.y).toBeGreaterThan(controls!.y + controls!.height);
+    expect(plotBounds!.width).toBeGreaterThan(summary!.width * 0.65);
+    await expect(
+      chart.getByRole("button", { name: "Last month", exact: true }),
+    ).toBeDisabled();
     expect(
       await chart.evaluate((element) =>
         element.previousElementSibling?.classList.contains("comments"),
@@ -66,12 +84,25 @@ for (const width of [375, 1280]) {
     });
     await expect(infoButton.locator("svg > *")).not.toHaveCount(0);
     await expect(source).toBeHidden();
-    await infoButton.click();
-    await expect(infoButton).toHaveAttribute("aria-expanded", "true");
+    const beforeHelp = await chart.locator(".post-traffic__plot").boundingBox();
+    await infoButton.hover();
     await expect(source).toBeVisible();
+    await expect(source).toHaveAttribute("role", "tooltip");
+    expect(await infoButton.getAttribute("aria-expanded")).toBeNull();
     await expect(source).toContainText("not unique visitors");
     await expect(source).toContainText("Europe/London");
-    await infoButton.click();
+    const afterHelp = await chart.locator(".post-traffic__plot").boundingBox();
+    expect(afterHelp!.y).toBe(beforeHelp!.y);
+    await source.hover();
+    await expect(source).toBeVisible();
+    const helpBounds = await source.boundingBox();
+    expect(helpBounds!.x).toBeGreaterThanOrEqual(0);
+    expect(helpBounds!.x + helpBounds!.width).toBeLessThanOrEqual(width + 1);
+    await page.keyboard.press("Escape");
+    await expect(source).toBeHidden();
+    await infoButton.focus();
+    await expect(source).toBeVisible();
+    await infoButton.press("Escape");
     await expect(source).toBeHidden();
     await expect(chart.getByRole("slider")).toHaveCount(0);
     await expect(chart.getByRole("table")).toHaveCount(0);
@@ -108,6 +139,16 @@ for (const width of [375, 1280]) {
     await expect(point).toBeFocused();
     await point.press("Escape");
     await expect(chart.getByRole("tooltip")).toHaveCount(0);
+    await point.press("ArrowRight");
+    await chart.locator(".post-traffic__point:focus").press("Escape");
+    await chart.locator(".post-traffic__point:focus").press("ArrowRight");
+    await expect(
+      chart.getByRole("button", {
+        name: "Mar 2024: 240 page views",
+        exact: true,
+      }),
+    ).toBeFocused();
+    await chart.locator(".post-traffic__point:focus").press("Escape");
     const polyline = chart.locator("polyline");
     expect(await polyline.getAttribute("points")).not.toMatch(/NaN|Infinity/);
     const bounds = await chart.boundingBox();
@@ -118,6 +159,7 @@ for (const width of [375, 1280]) {
       "true",
     );
     await infoButton.focus();
+    await infoButton.press("Escape");
     await point.hover();
     await expect(chart.getByRole("tooltip")).toHaveText(
       "Jan 2024: 120 page views",
@@ -166,6 +208,9 @@ test("A single zero month has a valid point and nonduplicated date labels", asyn
   await page.goto(path, { waitUntil: "domcontentloaded" });
   const chart = page.locator(".post-traffic");
   await expect(chart.locator(".post-traffic__total strong")).toHaveText("0");
+  await expect(chart.locator(".post-traffic__engagement strong")).toHaveText(
+    "Unavailable",
+  );
   await expect(chart.getByRole("slider")).toHaveCount(0);
   await expect(chart.locator("polyline")).toHaveAttribute("points", "300,196");
   await expect(chart.locator(".post-traffic__dates span")).toHaveCount(1);
@@ -197,6 +242,193 @@ test.describe("Touch traffic inspection", () => {
     );
     await chart.getByRole("button", { name: "About article traffic" }).tap();
     await expect(chart.locator(".post-traffic__source")).toBeVisible();
+    await chart
+      .getByRole("heading", { name: "Article Traffic", exact: true })
+      .tap();
+    await expect(chart.locator(".post-traffic__source")).toBeHidden();
+  });
+
+  test("Date presets update the plot, dates, totals and weighted engagement", async ({
+    page,
+  }) => {
+    const months = trafficMonths("2022-02-03", "2026-10-22").map(
+      (month, index) => ({
+        month,
+        views: 1000 + index,
+        engagementSeconds: (1000 + index) * (30 + (index % 30)),
+      }),
+    );
+    const days = trafficDays("2026-09-23", "2026-10-22").map((date, index) => ({
+      date,
+      views: index + 1,
+      engagementSeconds: (index + 1) * (index + 10),
+    }));
+    const october = days.filter((day) => day.date.startsWith("2026-10"));
+    months[56] = {
+      month: "2026-10",
+      views: october.reduce((sum, day) => sum + day.views, 0),
+      engagementSeconds: october.reduce(
+        (sum, day) => sum + day.engagementSeconds,
+        0,
+      ),
+    };
+    await page.route("**/post-traffic.json", (route) =>
+      route.fulfill({
+        json: {
+          ...snapshot,
+          posts: {
+            [path]: {
+              startDate: "2022-02-03",
+              endDate: "2026-10-22",
+              months,
+              days,
+            },
+          },
+        },
+      }),
+    );
+    await page.goto(path, { waitUntil: "domcontentloaded" });
+    const chart = page.locator(".post-traffic");
+    await expect(chart.locator(".post-traffic__point")).toHaveCount(57);
+    await expect(chart.locator(".post-traffic__annotation")).toHaveCount(0);
+    await expect(chart.locator(".post-traffic__events")).toHaveCount(0);
+    for (const [name, size, start] of [
+      ["Last year", 12, "2025-11-01"],
+      ["Last month", 30, "2026-09-23"],
+      ["All time", 57, "2022-02-03"],
+    ] as const) {
+      const button = chart.getByRole("button", { name, exact: true });
+      await button.click();
+      await expect(button).toHaveAttribute("aria-pressed", "true");
+      await expect(
+        chart
+          .getByRole("group", { name: "Traffic date range" })
+          .locator('[aria-pressed="true"]'),
+      ).toHaveCount(1);
+      await expect(chart.locator(".post-traffic__point")).toHaveCount(size);
+      await expect(
+        chart.locator(".post-traffic__range time").first(),
+      ).toHaveAttribute("datetime", start);
+      const selected = name === "Last month" ? days : months.slice(-size);
+      const total = selected.reduce((sum, item) => sum + item.views, 0);
+      await expect(chart.locator(".post-traffic__total strong")).toHaveText(
+        new Intl.NumberFormat("en-GB").format(total),
+      );
+      const seconds = Math.round(
+        selected.reduce((sum, item) => sum + item.engagementSeconds, 0) / total,
+      );
+      await expect(
+        chart.locator(".post-traffic__engagement strong"),
+      ).toHaveText(formatTrafficDuration(seconds));
+      await expect(chart.locator(".post-traffic__annotation")).toHaveCount(0);
+      await expect(chart.locator(".post-traffic__plot")).toHaveAttribute(
+        "aria-label",
+        new RegExp(name === "Last month" ? "^Daily" : "^Monthly"),
+      );
+      await expect(chart.getByRole("tooltip")).toHaveCount(0);
+    }
+  });
+
+  test("Only the latest update is annotated using real article metadata", async ({
+    page,
+  }) => {
+    const article = "/gethashcode-made-easy/";
+    const startDate = "2014-04-14";
+    const endDate = "2026-10-22";
+    await page.route("**/post-traffic.json", (route) =>
+      route.fulfill({
+        json: {
+          ...snapshot,
+          posts: {
+            [article]: {
+              startDate,
+              endDate,
+              months: trafficMonths(startDate, endDate).map((month) => ({
+                month,
+                views: 10,
+              })),
+            },
+          },
+        },
+      }),
+    );
+    await page.goto(article, { waitUntil: "domcontentloaded" });
+    const chart = page.locator(".post-traffic");
+    await expect(chart.locator(".post-traffic__annotation")).toHaveCount(1);
+    await expect(chart.locator(".post-traffic__events")).not.toContainText(
+      "Published",
+    );
+    await expect(chart.locator(".post-traffic__events")).toContainText(
+      "Latest update 12 Jun 2019",
+    );
+    await expect(chart.locator(".post-traffic__engagement strong")).toHaveText(
+      "Unavailable",
+    );
+    const updated = chart.getByRole("button", {
+      name: "Jun 2019: 10 page views. Latest update 12 Jun 2019",
+      exact: true,
+    });
+    await updated.focus();
+    await expect(chart.getByRole("tooltip")).toHaveText(
+      "Jun 2019: 10 page views. Latest update 12 Jun 2019",
+    );
+    await chart.getByRole("button", { name: "Last year", exact: true }).click();
+    await expect(chart.locator(".post-traffic__annotation")).toHaveCount(0);
+    await expect(chart.locator(".post-traffic__events")).toHaveCount(0);
+  });
+
+  test("Engagement can share the views chart or use a separate chart without bridging missing averages", async ({
+    page,
+  }) => {
+    await page.route("**/post-traffic.json", (route) =>
+      route.fulfill({
+        json: {
+          ...snapshot,
+          posts: {
+            [path]: {
+              ...snapshot.posts[path],
+              months: [
+                { month: "2024-01", views: 120, engagementSeconds: 1200 },
+                { month: "2024-02", views: 0, engagementSeconds: 0 },
+                { month: "2024-03", views: 240, engagementSeconds: 21600 },
+              ],
+            },
+          },
+        },
+      }),
+    );
+    await page.goto(path, { waitUntil: "domcontentloaded" });
+    const card = page.locator(".post-traffic");
+    await expect(card.locator(".post-traffic__engagement strong")).toHaveText(
+      "1m 3s",
+    );
+    await expect(card.locator(".post-traffic__chart")).toHaveCount(1);
+    await expect(
+      card.locator(".post-traffic__scale--secondary span"),
+    ).toHaveCount(5);
+    const pathData = await card
+      .locator(".post-traffic__engagement-line")
+      .getAttribute("d");
+    expect(pathData!.match(/M /g)).toHaveLength(2);
+    expect(pathData).not.toContain("L ");
+    await card
+      .getByRole("combobox", { name: "Engagement chart layout" })
+      .selectOption("separate");
+    await expect(card.locator(".post-traffic__chart")).toHaveCount(2);
+    await expect(card.locator(".post-traffic__scale--secondary")).toHaveCount(
+      0,
+    );
+    const engagementChart = card.locator(".post-traffic__chart").nth(1);
+    await expect(
+      engagementChart.locator(".post-traffic__engagement-line"),
+    ).toHaveAttribute("d", pathData!);
+    await expect(
+      engagementChart.locator(".post-traffic__point--missing"),
+    ).toHaveCount(1);
+    await engagementChart.locator(".post-traffic__point").first().focus();
+    await expect(engagementChart.getByRole("tooltip")).toHaveText(
+      "Jan 2024: 120 page views. 10s average engagement per view",
+    );
   });
 });
 
