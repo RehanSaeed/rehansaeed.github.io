@@ -76,6 +76,7 @@
     "yaml": "2.9.1"
   },
   "scripts": {
+    "images:avif": "node scripts/avif-images.mjs",
     "dev": "nuxt dev",
     "build": "nuxt generate && node scripts/pages.mjs artifact && npm run seo:verify",
     "start": "node scripts/serve.mjs",

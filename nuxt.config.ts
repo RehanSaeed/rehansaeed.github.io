@@ -299,7 +299,7 @@ export default defineNuxtConfig({
         "images/thumbnails/**/*",
         // Originals only used by the feeds and social meta. Pages use the /_ipx/ resized copies.
         "content-images/**/*",
-        "images/hero/**/*",
+        "images/hero/**/*.{png,jpg,jpeg}",
         // Social cards are not needed to read the complete blog offline.
         "_og/**/*",
         "_og-static-fonts/**/*",
@@ -517,7 +517,24 @@ export default defineNuxtConfig({
           for (const entry of entries) {
             entry.url = entry.url.replace(/\/index\.html$/, "/");
           }
-          return { manifest: entries };
+          return {
+            manifest: entries.filter((entry) => {
+              const url = decodeURIComponent(entry.url);
+              if (url.startsWith("_ipx/")) {
+                return (
+                  !/\.(png|jpe?g|webp|avif)$/i.test(url) ||
+                  /^_ipx\/[^/]*\bf_avif(?:[,/&]|$)/.test(url)
+                );
+              }
+              // Icons and installation screenshots still need their PNG URLs.
+              return (
+                !/\.(png|jpe?g|webp)$/i.test(url) ||
+                url === "favicon.png" ||
+                url.startsWith("images/icons/") ||
+                url.startsWith("images/screenshots/")
+              );
+            }),
+          };
         },
         ...(options.workbox.manifestTransforms ?? []),
       ];

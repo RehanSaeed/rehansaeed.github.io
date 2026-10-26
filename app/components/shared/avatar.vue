@@ -6,28 +6,27 @@
     :title="label"
     :href="href"
     :to="to">
-    <img
-      v-if="src && !imageFailed"
-      class="avatar__image"
-      :alt="alt"
-      :src="src"
-      :width="sizeInPixels"
-      :height="sizeInPixels"
-      :loading="loading"
-      @error="onImageError" />
+    <picture v-if="src && !imageFailed">
+      <source v-if="avifSource" type="image/avif" :srcset="avifSource" />
+      <img
+        class="avatar__image"
+        :alt="alt"
+        :src="src"
+        :width="sizeInPixels"
+        :height="sizeInPixels"
+        :loading="loading"
+        @error="onImageError" />
+    </picture>
     <u-icon v-else class="avatar__fallback" name="fa-solid:user" />
   </Component>
 </template>
 
 <script>
 import { NuxtLink } from "#components";
-import icon from "~/components/shared/icon.vue";
+import { getAvifSource } from "#shared/utils/images";
 
 export default {
   name: "u-avatar",
-  components: {
-    "u-icon": icon,
-  },
   data() {
     return { imageFailed: false };
   },
@@ -68,6 +67,9 @@ export default {
     },
   },
   computed: {
+    avifSource() {
+      return getAvifSource(this.src);
+    },
     sizeInPixels() {
       return this.size === "medium" ? "50" : "60";
     },

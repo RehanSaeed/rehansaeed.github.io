@@ -1,12 +1,15 @@
 <template>
   <!-- Added webmention markup (See https://indiewebify.me/validate-h-card/?url=https%3A%2F%2Frehansaeed.com) -->
   <section class="author h-card" :aria-label="metadata.name">
-    <NuxtImg
-      class="author__image u-photo"
+    <NuxtPicture
+      format="avif"
+      :img-attrs="{ class: 'author__image u-photo' }"
+      legacy-format="png"
       :alt="metadata.name"
       loading="eager"
       src="/images/author/Muhammad-Rehan-Saeed/Logo-192x192.png"
       width="120"
+      sizes="120px"
       height="120" />
 
     <u-heading

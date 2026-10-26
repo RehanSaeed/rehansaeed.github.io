@@ -4,12 +4,14 @@
       :to="searchResult.permalink"
       class="search-result__link"
       @click="onSelected">
-      <img
-        v-if="searchResult.heroImage"
-        class="search-result__image"
-        alt=""
-        loading="lazy"
-        :src="searchResult.heroImage" />
+      <picture v-if="searchResult.heroImage" class="search-result__picture">
+        <source v-if="avifSource" type="image/avif" :srcset="avifSource" />
+        <img
+          class="search-result__image"
+          alt=""
+          loading="lazy"
+          :src="searchResult.heroImage" />
+      </picture>
       <u-heading
         :id="`search-result-${searchResult.id}`"
         class="search-result__title"
@@ -24,9 +26,16 @@
 </template>
 
 <script>
+import { getAvifSource } from "#shared/utils/images";
+
 export default {
   name: "u-search-result",
   emits: ["selected"],
+  computed: {
+    avifSource() {
+      return getAvifSource(this.searchResult.heroImage);
+    },
+  },
   props: {
     searchResult: {
       type: Object,
@@ -50,11 +59,13 @@ export default {
     "image description";
   text-decoration: none;
 }
-.search-result__image {
+.search-result__picture {
   grid-area: image;
+  margin-inline-end: var(--global-space-fixed-5);
+}
+.search-result__image {
   border: var(--global-border-width-2) solid var(--global-border-color);
   border-radius: var(--global-border-radius);
-  margin-inline-end: var(--global-space-fixed-5);
   min-inline-size: 8rem;
   inline-size: 8rem;
 }

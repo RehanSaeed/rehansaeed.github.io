@@ -1,21 +1,27 @@
 <template>
-  <img
-    v-if="image"
-    class="thumbnail-image"
-    :src="image"
-    :style="{
-      rotate: imageRotateDegrees,
-      'inline-size': toPx(imageWidth),
-      'block-size': toPx(imageHeight),
-      'inset-inline-start': toPx(imageX),
-      'inset-block-start': toPx(imageY),
-    }"
-    :width="imageWidth"
-    :height="imageHeight" />
+  <picture v-if="image" class="thumbnail-image__picture">
+    <source v-if="avifSource" type="image/avif" :srcset="avifSource" />
+    <img
+      v-bind="$attrs"
+      class="thumbnail-image"
+      :src="image"
+      :style="{
+        rotate: imageRotateDegrees,
+        'inline-size': toPx(imageWidth),
+        'block-size': toPx(imageHeight),
+        'inset-inline-start': toPx(imageX),
+        'inset-block-start': toPx(imageY),
+      }"
+      :width="imageWidth"
+      :height="imageHeight" />
+  </picture>
 </template>
 
 <script>
+import { getAvifSource } from "#shared/utils/images";
+
 export default {
+  inheritAttrs: false,
   data() {
     return {
       image: "",
@@ -33,6 +39,9 @@ export default {
     },
   },
   computed: {
+    avifSource() {
+      return getAvifSource(this.image);
+    },
     imageRotateDegrees() {
       return this.imageRotate ? `${this.imageRotate}deg` : undefined;
     },
@@ -54,6 +63,10 @@ export default {
 </script>
 
 <style lang="scss">
+.thumbnail-image__picture {
+  grid-area: content;
+}
+
 .thumbnail-image {
   filter: drop-shadow(
       0 0 var(--global-space-fluid-3) var(--global-background-color)
