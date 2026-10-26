@@ -29,7 +29,8 @@
       v-if="post.published"
       class="post-page__traffic"
       :permalink="post.permalink"
-      :published="post.date" />
+      :published="post.date"
+      :modified="post.dateModified" />
   </div>
 </template>
 

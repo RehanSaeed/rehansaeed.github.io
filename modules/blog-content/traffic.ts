@@ -5,6 +5,8 @@ import { useLogger } from "nuxt/kit";
 import { z } from "zod";
 import {
   trafficDateSchema,
+  trafficDailyStart,
+  trafficDays,
   trafficMonths,
   trafficSnapshotSchema,
   type TrafficSnapshot,
@@ -12,6 +14,19 @@ import {
 import type { ContentEntry } from "./scan";
 
 const logger = useLogger("blog-content:traffic");
+type TrafficTotals = { views: number; engagementSeconds: number };
+function addCounts(
+  counts: Map<string, TrafficTotals>,
+  period: string,
+  totals: TrafficTotals,
+) {
+  const previous = counts.get(period);
+  counts.set(period, {
+    views: (previous?.views ?? 0) + totals.views,
+    engagementSeconds:
+      (previous?.engagementSeconds ?? 0) + totals.engagementSeconds,
+  });
+}
 const settingsSchema = z.object({
   propertyId: z.string().regex(/^\d+$/),
   startDate: trafficDateSchema,
@@ -37,17 +52,22 @@ const reportSchema = z.object({
     .array(
       z.object({
         dimensionValues: z.array(z.object({ value: z.string() })).length(2),
-        metricValues: z
-          .array(
-            z.object({
-              value: z
-                .string()
-                .regex(/^\d+$/)
-                .transform(Number)
-                .pipe(z.number().int().nonnegative().safe()),
-            }),
-          )
-          .length(1),
+        metricValues: z.tuple([
+          z.object({
+            value: z
+              .string()
+              .regex(/^\d+$/)
+              .transform(Number)
+              .pipe(z.number().int().nonnegative().safe()),
+          }),
+          z.object({
+            value: z
+              .string()
+              .regex(/^\d+(?:\.\d+)?(?:[eE][+-]?\d+)?$/)
+              .transform(Number)
+              .pipe(z.number().nonnegative().max(Number.MAX_SAFE_INTEGER)),
+          }),
+        ]),
       }),
     )
     .default([]),
@@ -186,7 +206,11 @@ export async function postTrafficSnapshot(
         date > endDate ||
         (history?.startDate ===
           (date > settings.startDate ? date : settings.startDate) &&
-          history.endDate === endDate)
+          history.endDate === endDate &&
+          history.days?.every((day) => day.engagementSeconds !== undefined) &&
+          history.months.every(
+            (month) => month.engagementSeconds !== undefined,
+          ))
       );
     })
   ) {
@@ -195,7 +219,9 @@ export async function postTrafficSnapshot(
   let snapshot: TrafficSnapshot;
   try {
     const token = await accessToken(settings.credentials);
-    const counts = new Map<string, Map<string, number>>();
+    const counts = new Map<string, Map<string, TrafficTotals>>();
+    const recentCounts = new Map<string, Map<string, TrafficTotals>>();
+    const recentStart = trafficDailyStart(settings.startDate, endDate);
     const published = new Map(
       posts.map(({ permalink, date }) => [permalink, date]),
     );
@@ -215,7 +241,10 @@ export async function postTrafficSnapshot(
             body: JSON.stringify({
               dateRanges: [{ startDate: settings.startDate, endDate }],
               dimensions: [{ name: "date" }, { name: "pagePath" }],
-              metrics: [{ name: "screenPageViews" }],
+              metrics: [
+                { name: "screenPageViews" },
+                { name: "userEngagementDuration" },
+              ],
               dimensionFilter: {
                 filter: {
                   fieldName: "hostName",
@@ -236,7 +265,7 @@ export async function postTrafficSnapshot(
         report.dimensionHeaders.map(({ name }) => name).join() !==
           "date,pagePath" ||
         report.metricHeaders.map(({ name }) => name).join() !==
-          "screenPageViews" ||
+          "screenPageViews,userEngagementDuration" ||
         report.metadata.dataLossFromOtherRow ||
         report.metadata.subjectToThresholding ||
         report.metadata.samplingMetadatas?.length ||
@@ -263,12 +292,20 @@ export async function postTrafficSnapshot(
         const permalink = path.endsWith("/") ? path : `${path}/`;
         const publicationDate = published.get(permalink);
         if (!publicationDate || date < publicationDate) continue;
-        const months = counts.get(permalink) ?? new Map<string, number>();
-        months.set(
-          month,
-          (months.get(month) ?? 0) + row.metricValues[0]!.value,
-        );
+        const months =
+          counts.get(permalink) ?? new Map<string, TrafficTotals>();
+        const totals = {
+          views: row.metricValues[0].value,
+          engagementSeconds: row.metricValues[1].value,
+        };
+        addCounts(months, month, totals);
         counts.set(permalink, months);
+        if (date >= recentStart) {
+          const days =
+            recentCounts.get(permalink) ?? new Map<string, TrafficTotals>();
+          addCounts(days, date, totals);
+          recentCounts.set(permalink, days);
+        }
       }
       offset += report.rows.length;
       if (offset > rowCount) {
@@ -294,7 +331,20 @@ export async function postTrafficSnapshot(
                 endDate,
                 months: trafficMonths(startDate, endDate).map((month) => ({
                   month,
-                  views: counts.get(permalink)?.get(month) ?? 0,
+                  ...(counts.get(permalink)?.get(month) ?? {
+                    views: 0,
+                    engagementSeconds: 0,
+                  }),
+                })),
+                days: trafficDays(
+                  trafficDailyStart(startDate, endDate),
+                  endDate,
+                ).map((date) => ({
+                  date,
+                  ...(recentCounts.get(permalink)?.get(date) ?? {
+                    views: 0,
+                    engagementSeconds: 0,
+                  }),
                 })),
               },
             ],
