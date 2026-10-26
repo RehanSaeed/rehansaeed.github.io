@@ -113,7 +113,10 @@ for (const width of [375, 1280]) {
     const bounds = await chart.boundingBox();
     expect(bounds!.x).toBeGreaterThanOrEqual(0);
     expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width + 1);
-    await expect(chart.locator("svg")).toHaveAttribute("aria-hidden", "true");
+    await expect(chart.locator(".post-traffic__plot svg")).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
     await infoButton.focus();
     await point.hover();
     await expect(chart.getByRole("tooltip")).toHaveText(
