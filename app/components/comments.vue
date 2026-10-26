@@ -1,69 +1,44 @@
 <template>
   <u-intersect @enterFirstTime="refresh">
-    <u-card class="comments">
-      <u-heading
-        id="comments"
-        class="comments__title"
-        center
-        level="2"
-        href="#comments"
-        >Comment</u-heading
-      >
-      <div class="vssue">
-        <a :href="issueUrl">Leave and View Directly on GitHub.com</a>
-        <p class="comments__count">{{ current.comments.length }} Comments</p>
-        <p v-if="unavailable" role="status">
-          Live comments unavailable; showing saved comments. You can view the
-          latest on GitHub.
-        </p>
-        <div class="vssue-comments">
-          <div>
-            <article
-              v-for="comment in current.comments"
-              :key="comment.id"
-              class="vssue-comment">
-              <u-avatar
-                v-if="comment.user"
-                class="vssue-comment-avatar"
-                :href="comment.user.html_url"
-                :label="comment.user.login"
-                :alt="comment.user.login"
-                :src="comment.user.avatar_url"
-                loading="lazy" />
-              <div class="vssue-comment-body">
-                <header class="vssue-comment-header">
-                  <span class="vssue-comment-author"
-                    ><a :href="comment.user?.html_url ?? comment.html_url">{{
-                      comment.user?.login ?? "Deleted user"
-                    }}</a></span
-                  >
-                  <a class="vssue-comment-created-at" :href="comment.html_url"
-                    ><u-time :datetime="comment.created_at"
-                  /></a>
-                </header>
-                <!-- eslint-disable-next-line vue/no-v-html -- safeComment sanitizes both saved and refreshed GitHub markup. -->
-                <div class="vssue-comment-main" v-html="comment.body_html" />
-                <footer
-                  class="vssue-comment-footer"
-                  v-if="reactionCounts(comment).length">
-                  <span
-                    v-for="reaction in reactionCounts(comment)"
-                    :key="reaction.name"
-                    class="vssue-comment-reaction"
-                    >{{ reaction.name }} {{ reaction.count }}</span
-                  >
-                </footer>
-              </div>
-            </article>
+    <u-card class="comments" aria-labelledby="comments">
+      <header class="comments__header">
+        <u-heading
+          id="comments"
+          class="comments__title"
+          center
+          level="2"
+          href="#comments"
+          >GitHub Comments</u-heading
+        >
+        <div class="comments__summary">
+          <div class="comments__toolbar">
+            <h3 class="comments__count">
+              {{ current.comments.length }}
+              {{ current.comments.length === 1 ? "Comment" : "Comments" }}
+            </h3>
+            <u-link-button class="comments__github" bordered :href="issueUrl">
+              <u-icon name="fa-brands:github" inline aria-hidden="true" />
+              Comment on GitHub
+            </u-link-button>
           </div>
+          <p v-if="unavailable" class="comments__status" role="status">
+            Live comments unavailable; showing saved comments. You can view the
+            latest on GitHub.
+          </p>
         </div>
+      </header>
+      <div class="comments__list">
+        <u-comment
+          v-for="comment in current.comments"
+          :key="comment.id"
+          :comment="comment" />
       </div>
     </u-card>
   </u-intersect>
 </template>
 
 <script setup lang="ts">
-import type { CommentSnapshot, GitHubComment } from "#shared/utils/comments";
+import type { CommentSnapshot } from "#shared/utils/comments";
 
 defineOptions({ name: "BlogComments" });
 const props = defineProps<{ title: string; snapshot: CommentSnapshot }>();
@@ -81,14 +56,6 @@ const issueUrl = computed(() => {
     current.value.issue?.html_url ?? `${repository.url}/issues/new?${query}`
   );
 });
-function reactionCounts(comment: GitHubComment) {
-  return Object.entries(comment.reactions ?? {})
-    .filter(
-      ([name, count]) =>
-        name !== "total_count" && typeof count === "number" && count > 0,
-    )
-    .map(([name, count]) => ({ name, count }));
-}
 async function refresh() {
   try {
     const { refreshComments } = await import("~/utils/comments");
@@ -110,337 +77,74 @@ async function refresh() {
 </script>
 
 <style lang="scss">
-@use "~/assets/style/abstracts/type";
-
 .comments {
+  display: grid;
+  gap: var(--global-space-fixed-5);
+  min-inline-size: 0;
   content-visibility: auto;
   contain-intrinsic-size: 427px;
 }
 
 .comments__title {
-  margin-block-start: 0;
+  margin-block: 0;
 }
 
-.vssue {
+.comments__list {
   display: grid;
   gap: var(--global-space-fixed-5);
-
-  p {
-    min-inline-size: 0;
-  }
+  min-inline-size: 0;
 }
 
-.vssue-header-comments-count {
-  span::before {
-    content: "Leave and View";
-  }
-
-  span::after {
-    content: "Directly on GitHub.com";
-  }
-}
-
-// Comment Count, Powered By
-.vssue-header-powered-by {
-  display: none;
-}
-
-// Icon
-.vssue .vssue-icon {
-  inline-size: 1rem;
-  block-size: 1rem;
-  vertical-align: -0.15rem;
-  fill: var(--global-accent-color);
-  overflow: hidden;
-}
-.vssue .vssue-icon-loading {
-  animation: vssue-keyframe-rotation 1s linear infinite;
-}
-@-webkit-keyframes vssue-keyframe-rotation {
-  from {
-    rotate: 0deg;
-  }
-  to {
-    rotate: 360deg;
-  }
-}
-@keyframes vssue-keyframe-rotation {
-  from {
-    rotate: 0deg;
-  }
-  to {
-    rotate: 360deg;
-  }
-}
-
-// Transitions
-.vssue .fade-enter-active,
-.vssue .fade-appear-active {
-  transition: all 0.3s ease;
-}
-.vssue .fade-leave-active {
-  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
-}
-.vssue .fade-enter-from,
-.vssue .fade-leave-to,
-.vssue .fade-appear {
-  opacity: 0;
-}
-
-// Notice
-.vssue .vssue-notice {
-  position: relative;
-  z-index: 100;
-  translate: 0 -11px;
-}
-.vssue .vssue-notice .vssue-alert {
-  position: absolute;
-  inset-block-start: 0;
-  z-index: 101;
-
-  cursor: pointer;
-  padding: var(--global-space-fixed-3) var(--global-space-fixed-4);
-  inline-size: 100%;
-  color: var(--global-accent-color);
-  border: var(--global-border-width-1) solid var(--global-accent-color);
-  border-radius: var(--global-border-radius);
-  background-color: var(--global-background-color);
-}
-.vssue .vssue-notice .vssue-progress {
-  position: absolute;
-  inset-inline-start: 0;
-  inset-block-start: 0;
-  block-size: 2px;
-  background-color: var(--global-accent-color);
-}
-.vssue .vssue-status {
-  text-align: center;
-  padding-block-start: var(--global-space-fixed-4);
-  padding-block-end: var(--global-space-fixed-3);
-  color: var(--global-accent-color);
-}
-.vssue .vssue-status .vssue-status-info {
-  margin-block: var(--global-space-fixed-3);
-}
-
-// Body
-.vssue-body {
+.comments__header {
   display: grid;
   gap: var(--global-space-fixed-4);
-  grid-template-columns: 1fr;
 }
 
-// New Comment
-.vssue-new-comment {
+.comments__summary {
+  display: grid;
+  gap: var(--global-space-fixed-4);
+  padding-block-end: var(--global-space-fixed-4);
   border-block-end: var(--global-border-width-1) solid
     var(--global-border-color);
-  padding-block-end: var(--global-space-fixed-5);
+}
 
-  display: grid;
-  gap: var(--global-space-fixed-3);
-  grid-template-columns: auto 1fr;
-  grid-template-areas:
-    "avatar body"
-    "avatar footer";
+.comments__status {
+  margin: 0;
+  min-inline-size: 0;
+}
 
-  // Disable New Comment Functionality - Hide new comment text box.
-  display: none;
+.comments__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--global-space-fixed-2);
+}
 
-  .vssue-comment-avatar {
-    grid-area: avatar;
+.comments__count {
+  flex-grow: 1;
+  margin: 0;
+  min-inline-size: 0;
+}
 
-    .vssue-icon {
-      cursor: pointer;
-      padding: 5px;
-      inline-size: var(--global-space-fixed-6);
-      block-size: var(--global-space-fixed-6);
-      fill: var(--global-body-color);
+.comments__github {
+  flex: none;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  text-align: center;
+
+  &:focus-visible {
+    outline: var(--global-border-width-2) solid var(--global-accent-color);
+    outline-offset: var(--global-space-fixed-1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &:hover,
+    &:focus {
+      transform: none;
     }
   }
-}
-.vssue-new-comment-body {
-  grid-area: body;
-}
-.vssue-new-comment-loading {
-  position: absolute;
-  inset-inline-start: 50%;
-  inset-block-start: 50%;
-  translate:
-    -50%,
-    -50%;
-}
-.vssue-new-comment-footer {
-  grid-area: footer;
-
-  display: grid;
-  gap: var(--global-space-fixed-3);
-  grid-template-columns: 1fr auto;
-  grid-template-areas: "user operations";
-}
-.vssue-current-user {
-  grid-area: user;
-  align-self: center;
-}
-.vssue-current-user span {
-  display: none;
-}
-.vssue-new-comment-operations {
-  grid-area: operations;
-}
-
-// Comment Input
-.vssue-new-comment-input {
-  resize: none;
-  inline-size: 100%;
-}
-
-// Comment
-.vssue-comments > div {
-  display: grid;
-  gap: var(--global-space-fixed-4);
-  grid-template-columns: 1fr;
-}
-.vssue-comment {
-  display: grid;
-  gap: var(--global-space-fixed-3);
-  grid-template-columns: auto 1fr;
-  grid-template-areas: "avatar body";
-
-  @include type.word-wrap();
-}
-
-// Comment Avatar
-.vssue-comment-avatar {
-  grid-area: avatar;
-  align-self: start;
-  margin: 0;
-}
-
-// Comment Edit
-.vssue
-  .vssue-comments
-  .vssue-comment.vssue-comment-edit-mode
-  .vssue-comment-main {
-  border-color: var(--global-accent-color);
-  box-shadow: var(--global-shadow-2);
-
-  textarea:focus {
-    border: none;
-    box-shadow: none;
-  }
-}
-.vssue .vssue-comments .vssue-comment.vssue-comment-disabled {
-  pointer-events: none;
-}
-
-// Comment Body
-.vssue-comment-body {
-  grid-area: body;
-}
-.vssue-comment-body .vssue-comment.vssue-comment-disabled {
-  background-color: var(--global-disabled-color);
-}
-
-// Comment Header
-.vssue-comment-header {
-  border: var(--global-border-width-1) solid var(--global-border-color);
-  border-block-end: none;
-  border-start-start-radius: var(--global-border-radius);
-  border-start-end-radius: var(--global-border-radius);
-  overflow: hidden;
-  padding: var(--global-space-fixed-3) var(--global-space-fixed-4);
-}
-.vssue-comment-author a {
-  color: var(--global-title-color);
-  font-family: var(--font-heading);
-  text-decoration: none;
-}
-.vssue-comment-created-at {
-  float: right; // Remove when browser support is good enough.
-  float: inline-end;
-}
-
-// Comment Main
-.vssue-comment-main {
-  border: var(--global-border-width-1) solid var(--global-border-color);
-  padding: var(--global-space-fixed-4);
-}
-.vssue-comment-main .vssue-edit-comment-input {
-  background: transparent;
-  border: none;
-  resize: none;
-  outline: none;
-  inline-size: 100%;
-  padding: var(--global-space-fixed--4);
-}
-
-// Comment Footer
-.vssue-comment-footer {
-  border: var(--global-border-width-1) solid var(--global-border-color);
-  border-bottom-left-radius: var(--global-border-radius);
-  border-bottom-right-radius: var(--global-border-radius);
-  border-block-start: none;
-  overflow: hidden;
-  padding: var(--global-space-fixed-3) var(--global-space-fixed-4);
-
-  display: grid;
-  grid-template-columns: auto auto;
-}
-.vssue-comment-hint {
-  color: var(--global-placeholder-color);
-}
-.vssue-comment-reactions {
-  display: flex;
-}
-.vssue-comment-reaction {
-  display: flex;
-  gap: var(--global-space-fixed-2);
-
-  color: var(--global-accent-color);
-  cursor: pointer;
-  line-height: 1;
-  margin-inline-end: var(--global-space-fixed-4);
-
-  // Disable New Comment Functionality - Disable click on buttons.
-  cursor: default;
-  pointer-events: none;
-}
-.vssue-comment-operations {
-  color: var(--global-accent-color);
-  justify-self: end;
-
-  // Disable New Comment Functionality - Hide reply button.
-  display: none;
-}
-.vssue
-  .vssue-comments
-  .vssue-comment
-  .vssue-comment-footer
-  .vssue-comment-operations
-  .vssue-comment-operation {
-  cursor: pointer;
-  margin-inline-start: var(--global-space-fixed-4);
-}
-.vssue
-  .vssue-comments
-  .vssue-comment
-  .vssue-comment-footer
-  .vssue-comment-operations
-  .vssue-comment-operation.vssue-comment-operation-muted {
-  color: var(--global-placeholder-color);
-}
-.vssue
-  .vssue-comments
-  .vssue-comment
-  .vssue-comment-footer
-  .vssue-comment-operations
-  .vssue-comment-operation.vssue-comment-operation-muted
-  .vssue-icon {
-  fill: var(--global-placeholder-color);
-}
-
-// Pagination
-.vssue .vssue-pagination {
-  display: none;
 }
 </style>

@@ -29,6 +29,11 @@ export const commentSchema = z.object({
   html_url: githubUrl,
   body_html: z.string(),
   created_at: z.string().datetime(),
+  updated_at: z.string().datetime().optional(),
+  author_association: z
+    .string()
+    .regex(/^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*$/)
+    .optional(),
   user: z
     .object({
       login: z.string(),

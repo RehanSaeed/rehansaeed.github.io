@@ -243,8 +243,9 @@ for (const width of [375, 1280]) {
             image.evaluate(
               (node: HTMLImageElement) =>
                 node.complete &&
-                node.naturalWidth === 300 &&
-                node.naturalHeight === 300,
+                node.naturalWidth > 0 &&
+                node.naturalWidth === node.naturalHeight &&
+                node.currentSrc.includes("f_avif"),
             ),
           )
           .toBe(true);

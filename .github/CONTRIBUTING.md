@@ -12,6 +12,9 @@ Link an existing issue if it provides useful context, but an issue is not requir
 
 - Follow [`.editorconfig`](../.editorconfig) and the existing code conventions.
 - Use ESLint for linting and Prettier for formatting.
+- The pre-commit hook formats staged Markdown, JSON and stylesheet files with
+  Prettier, and runs ESLint fixes and Prettier on staged JavaScript, TypeScript
+  and Vue files.
 - Add tests for behavior changes and make sure checks pass.
 
 ## Images
@@ -31,6 +34,12 @@ runtime (such as search results), so their pre-generated AVIF companions work on
 static hosting without a runtime image server. Keep SVGs and remote images in
 their original formats, and retain PNG/JPG URLs in feeds, social metadata,
 favicons and the web app manifest for compatibility.
+
+The PWA precaches AVIF content images only, including the plain hero companions
+used by offline search. PNG/JPG fallbacks remain available online but are not
+downloaded during offline installation. PNG app icons and installation screenshots
+are retained for compatibility. Browsers without AVIF support cannot display
+uncached content images offline.
 
 ## Dependency updates
 

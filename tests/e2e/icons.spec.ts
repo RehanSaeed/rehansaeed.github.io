@@ -353,14 +353,11 @@ test.describe("Icon areas", () => {
         );
         await shot("about-social", page.locator(".about__social-links"));
         await page.evaluate(() => window.scrollTo(0, 0));
-        await page.evaluate(async () => {
+        await page.evaluate(() => {
           const app =
             document.querySelector<NuxtRoot>("#__nuxt")!.__vue_app__!.config
               .globalProperties.$nuxt;
-          await app.hooks.callHook("app:manifest:update", {
-            id: "icon-comparison-update",
-            timestamp: Date.now(),
-          });
+          app.$pwa!.needRefresh = true;
         });
         const update = page.getByRole("region", { name: "Site update" });
         await expect(update.locator("svg.icon")).toHaveCount(1);

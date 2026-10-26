@@ -39,9 +39,9 @@ for (const colorScheme of ["light", "dark"] as const) {
       await expect(page.locator(".comments [role=status]")).toContainText(
         "showing saved comments",
       );
-      const comment = page.locator(".vssue-comment").first();
-      const avatar = comment.locator(".vssue-comment-avatar");
-      const author = comment.locator(".vssue-comment-author a");
+      const comment = page.locator(".comment").first();
+      const avatar = comment.locator(".comment__avatar");
+      const author = comment.locator(".comment__author a");
       const login = (await author.textContent())!.trim();
       await expect(avatar).toHaveClass(/\bavatar\b/);
       await expect(avatar).toHaveAttribute(
@@ -63,7 +63,7 @@ for (const colorScheme of ["light", "dark"] as const) {
       await expect(avatar).toHaveCSS("scale", "none");
       const bounds = await avatar.boundingBox();
       const headerBounds = await comment
-        .locator(".vssue-comment-header")
+        .locator(".comment__header")
         .boundingBox();
       expect(bounds!.y, "Avatar aligns with the comment header").toBeCloseTo(
         headerBounds!.y,
@@ -146,9 +146,9 @@ test("Refreshed comments retain lazy shared avatars and omit deleted-user avatar
   );
   await page.goto(postPath);
   await page.locator(".comments").scrollIntoViewIfNeeded();
-  const comments = page.locator(".vssue-comment");
+  const comments = page.locator(".comment");
   await expect(comments).toHaveCount(2);
-  const avatar = comments.first().locator(".vssue-comment-avatar.avatar");
+  const avatar = comments.first().locator(".comment__avatar.avatar");
   await expect(avatar).toHaveAccessibleName("reader");
   await expect(avatar).toHaveAttribute("href", comment.user.html_url);
   await expect(avatar.locator("img")).toHaveAttribute(
@@ -156,8 +156,8 @@ test("Refreshed comments retain lazy shared avatars and omit deleted-user avatar
     comment.user.avatar_url,
   );
   await expect(avatar.locator("img")).toHaveAttribute("loading", "lazy");
-  await expect(comments.last().locator(".vssue-comment-avatar")).toHaveCount(0);
-  await expect(comments.last().locator(".vssue-comment-author")).toHaveText(
+  await expect(comments.last().locator(".comment__avatar")).toHaveCount(0);
+  await expect(comments.last().locator(".comment__author")).toHaveText(
     "Deleted user",
   );
 });

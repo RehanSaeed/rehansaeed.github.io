@@ -8,7 +8,7 @@ const avatars = [
   ".navigation__image-container",
   ".webmention-faces__face",
   ".webmention-reply__avatar",
-  ".vssue-comment-avatar",
+  ".comment__avatar",
 ];
 
 for (const deviceScaleFactor of [1, 2]) {
@@ -67,9 +67,7 @@ for (const deviceScaleFactor of [1, 2]) {
           await page.locator(".webmentions").scrollIntoViewIfNeeded();
           await expect(page.locator(".webmention-faces__face")).toBeVisible();
           await page.locator(".comments").scrollIntoViewIfNeeded();
-          await expect(
-            page.locator(".vssue-comment-avatar").first(),
-          ).toBeVisible();
+          await expect(page.locator(".comment__avatar").first()).toBeVisible();
 
           for (const selector of avatars) {
             const avatar = page.locator(selector).first();

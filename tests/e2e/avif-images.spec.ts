@@ -42,12 +42,27 @@ unitTest(
           checked.add(basename);
         }
         if (file.endsWith(".jpg") && preferredSource.endsWith(".png")) {
-          expect(avif, `${file}: shared AVIF encoded from PNG`).toEqual(
+          // AVIF bitstreams can differ between platform-specific encoder builds.
+          const expected = await sharp(
             await sharp(original)
               .autoOrient()
               .avif({ quality: 60, effort: 4, chromaSubsampling: "4:4:4" })
               .toBuffer(),
-          );
+          )
+            .ensureAlpha()
+            .raw()
+            .toBuffer();
+          const actual = await sharp(avif).ensureAlpha().raw().toBuffer();
+          expect(actual.length, file).toBe(expected.length);
+          const meanError =
+            actual.reduce(
+              (sum, value, index) => sum + Math.abs(value - expected[index]!),
+              0,
+            ) / actual.length;
+          expect(
+            meanError,
+            `${file}: shared AVIF matches the PNG-derived image`,
+          ).toBeLessThan(3);
         }
         count++;
       }
@@ -69,6 +84,35 @@ unitTest(
       "/images/logo.svg",
     ]) {
       expect(getAvifSource(src)).toBeUndefined();
+    }
+  },
+);
+
+unitTest(
+  "Offline precaching keeps AVIF content, compatibility PNGs and runtime search heroes",
+  async () => {
+    const worker = await readFile(join("dist", "service-worker.js"), "utf8");
+    const urls = [...worker.matchAll(/\burl:"((?:[^"\\]|\\.)*)"/g)].map(
+      (match) => JSON.parse(`"${match[1]}"`) as string,
+    );
+    expect(urls.length).toBeGreaterThan(500);
+    expect(urls.some((url) => /^_ipx\/.*\bf_avif[,&/]/.test(url))).toBe(true);
+    expect(
+      urls.some((url) => url === "images/hero/Schema.NET-1366x768.avif"),
+    ).toBe(true);
+    expect(urls).toContain("images/icons/favicon-192x192.png");
+    expect(urls).toContain("images/screenshots/blog-wide.png");
+    for (const url of urls) {
+      if (url.startsWith("_ipx/") && /\.(png|jpe?g|webp|avif)$/i.test(url)) {
+        expect(
+          url,
+          "responsive content is AVIF regardless of URL extension",
+        ).toMatch(/^_ipx\/[^/]*\bf_avif(?:[,/&]|$)/);
+      } else if (/\.(png|jpe?g|webp)$/i.test(url)) {
+        expect(url, "only compatibility PNGs are precached").toMatch(
+          /^(favicon\.png|images\/(?:icons|screenshots)\/.*\.png)$/,
+        );
+      }
     }
   },
 );
@@ -253,6 +297,67 @@ test.describe("Native fallback without JavaScript", () => {
             'type="image/unsupported"',
           ),
         });
+
+        unitTest(
+          "Offline pages and search load AVIF without downloading content fallbacks",
+          async ({ browser, baseURL }) => {
+            unitTest.setTimeout(180_000);
+            const context = await browser.newContext({
+              baseURL,
+              serviceWorkers: "allow",
+            });
+            try {
+              const page = await context.newPage();
+              await page.goto("/", { waitUntil: "domcontentloaded" });
+              await page.evaluate(async () => {
+                await navigator.serviceWorker.register("/service-worker.js");
+                await navigator.serviceWorker.ready;
+              });
+              await page.waitForFunction(
+                () => !!navigator.serviceWorker.controller,
+              );
+              await context.setOffline(true);
+              for (const path of ["/about/", "/asp-net-mvc-boilerplate/"]) {
+                await page.goto(path, { waitUntil: "domcontentloaded" });
+                await expect(
+                  page.getByRole("button", { name: "Open search" }),
+                ).toBeEnabled();
+                const images = page.locator("img[data-nuxt-pic]");
+                expect(await images.count()).toBeGreaterThan(0);
+                for (const image of await images.all()) {
+                  await image.scrollIntoViewIfNeeded();
+                  await expect
+                    .poll(() =>
+                      image.evaluate(
+                        (node: HTMLImageElement) =>
+                          node.complete &&
+                          node.naturalWidth > 0 &&
+                          node.currentSrc.includes("f_avif"),
+                      ),
+                    )
+                    .toBe(true);
+                }
+              }
+              await page.getByRole("button", { name: "Open search" }).click();
+              await page
+                .getByRole("searchbox", { name: "Search", exact: true })
+                .fill("Schema.NET");
+              const hero = page.locator(".search-result__image").first();
+              await expect
+                .poll(() =>
+                  hero.evaluate(
+                    (image: HTMLImageElement) =>
+                      image.complete &&
+                      image.naturalWidth > 0 &&
+                      image.currentSrc.endsWith("/Schema.NET-1366x768.avif"),
+                  ),
+                )
+                .toBe(true);
+            } finally {
+              await context.close();
+            }
+          },
+        );
       });
       await page.goto(path);
       const image = page.locator(".post__photo");

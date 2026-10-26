@@ -69,21 +69,21 @@ test.describe("Migration completion", () => {
           return route.fulfill({ json: [comment] });
         });
         const response = await page.goto(postPath);
-        expect(await response!.text()).toContain('class="vssue-comment"');
+        expect(await response!.text()).toContain('class="comment"');
         await page.locator(".comments").scrollIntoViewIfNeeded();
-        await expect(page.locator(".vssue-comment-main")).toHaveCount(1);
-        await expect(page.locator(".vssue-comment-main")).toHaveText(
+        await expect(page.locator(".comment__content")).toHaveCount(1);
+        await expect(page.locator(".comment__content")).toHaveText(
           "A new live comment.",
         );
-        await expect(page.locator(".comments > .vssue > a")).toHaveAttribute(
+        await expect(page.locator(".comments__github")).toHaveAttribute(
           "href",
           /issues\/607$/,
         );
         expect(requests).toBe(1);
         await page.reload();
         await page.locator(".comments").scrollIntoViewIfNeeded();
-        await expect(page.locator(".vssue-comment-main")).toHaveCount(1);
-        await expect(page.locator(".vssue-comment-main")).toHaveText(
+        await expect(page.locator(".comment__content")).toHaveCount(1);
+        await expect(page.locator(".comment__content")).toHaveText(
           "A new live comment.",
         );
         expect(requests).toBe(1);
@@ -98,13 +98,29 @@ test.describe("Migration completion", () => {
       route.fulfill({ status: 403, json: { message: "Rate limit" } }),
     );
     await page.goto(postPath);
-    const count = await page.locator(".vssue-comment").count();
+    const count = await page.locator(".comment").count();
     expect(count).toBeGreaterThan(0);
     await page.locator(".comments").scrollIntoViewIfNeeded();
     await expect(page.locator(".comments [role=status]")).toContainText(
       "showing saved comments",
     );
-    await expect(page.locator(".vssue-comment")).toHaveCount(count);
+    const layout = await page
+      .locator(".comments__header")
+      .evaluate((header) => {
+        const toolbar = header.querySelector(".comments__toolbar")!;
+        const status = header.querySelector("[role=status]")!;
+        return {
+          toolbarBottom: toolbar.getBoundingClientRect().bottom,
+          statusTop: status.getBoundingClientRect().top,
+          statusBottom: status.getBoundingClientRect().bottom,
+          dividerTop:
+            header.getBoundingClientRect().bottom -
+            Number.parseFloat(getComputedStyle(header).borderBottomWidth),
+        };
+      });
+    expect(layout.statusTop).toBeGreaterThan(layout.toolbarBottom);
+    expect(layout.statusBottom).toBeLessThan(layout.dividerTop);
+    await expect(page.locator(".comment")).toHaveCount(count);
   });
 
   test("Sanitizes GitHub markup and preserves safe formatting", () => {

@@ -52,8 +52,7 @@ export default {
 </script>
 
 <style lang="scss">
-.link-button,
-.vssue-logout {
+.link-button {
   animation: none;
   color: var(--global-title-color);
   font-family: var(--font-heading);
@@ -78,8 +77,7 @@ export default {
   }
 }
 
-.link-button--bordered,
-.vssue-logout {
+.link-button--bordered {
   background-color: var(--global-background-color);
   border: var(--global-border-width-1) solid var(--global-border-color);
   border-radius: var(--global-border-radius);
@@ -107,8 +105,7 @@ export default {
   }
 }
 
-.link-button--bordered::before,
-.vssue-logout::before {
+.link-button--bordered::before {
   content: "";
 
   position: absolute;
@@ -122,14 +119,11 @@ export default {
 }
 
 .link-button--bordered:hover::before,
-.link-button--bordered:focus::before,
-.vssue-logout:hover::before,
-.vssue-logout:focus::before {
+.link-button--bordered:focus::before {
   opacity: 1;
 }
 
-.link-button--bordered:active::before,
-.vssue-logout:active::before {
+.link-button--bordered:active::before {
   box-shadow: var(--global-shadow-1);
   opacity: 1;
 }
