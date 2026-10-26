@@ -65,6 +65,8 @@ test("Every published post has the correct static chronological neighbours", asy
       );
       if (neighbour.post) {
         expect(link.hasClass("post-navigation__link")).toBe(true);
+        expect(link.children().length).toBe(3);
+        expect(link.find("div").length).toBe(0);
         expect(
           link
             .parent()
@@ -85,10 +87,7 @@ test("Every published post has the correct static chronological neighbours", asy
             .split(" ")
             .map((id) => link.find(`#${id}`).text().trim()),
         ).toEqual([neighbour.label, neighbour.post.title]);
-        expect(
-          link.find("> .post-navigation__caption > h2.post-navigation__title")
-            .length,
-        ).toBe(1);
+        expect(link.children("h2.post-navigation__title").length).toBe(1);
         const image = link.find("img");
         expect(image.attr("alt")).toBe("");
         expect(image.attr("loading")).toBe("lazy");
@@ -111,11 +110,7 @@ test("Every published post has the correct static chronological neighbours", asy
           link.find("svg.icon path, svg.icon line, svg.icon polyline").length,
         ).toBeGreaterThan(0);
         expect(link.find("time").attr("datetime")).toMatch(/^PT\d+M$/);
-        expect(
-          link.find(
-            "> .post-navigation__caption > p.post-navigation__meta > time",
-          ).length,
-        ).toBe(1);
+        expect(link.find("> p.post-navigation__meta > time").length).toBe(1);
         neighbourTimes.push({
           permalink: neighbour.post.permalink,
           text: link
@@ -237,22 +232,32 @@ for (const width of [1280, 768, 375, 320]) {
             )!;
             const meta = link.querySelector(".post-navigation__meta")!;
             const time = meta.lastElementChild!;
-            const caption = link.querySelector(".post-navigation__caption")!;
             const title = link.querySelector("h2")!;
             const box = link.getBoundingClientRect();
             const directionBox = direction.getBoundingClientRect();
             const timeBox = time.getBoundingClientRect();
-            const captionBox = caption.getBoundingClientRect();
+            const metaBox = meta.getBoundingClientRect();
+            const titleBox = title.getBoundingClientRect();
             const imageBox = image.getBoundingClientRect();
             return {
               top: box.top,
-              captionTop: captionBox.top,
-              captionHeight: captionBox.height,
-              captionBackground: getComputedStyle(caption).backgroundImage,
+              captionTop: metaBox.top,
+              captionHeight: titleBox.bottom - metaBox.top,
+              titleTop: titleBox.top,
+              captionBackground: getComputedStyle(link, "::before")
+                .backgroundImage,
               pictureDisplay: getComputedStyle(image.parentElement!).display,
               surfaceColor: getComputedStyle(link.parentElement!)
                 .backgroundColor,
               extension: box.height - imageBox.height,
+              expectedExtension:
+                4 *
+                Number.parseFloat(
+                  getComputedStyle(document.documentElement).fontSize,
+                ),
+              gridAreas: getComputedStyle(link).gridTemplateAreas,
+              metadataDisplay: getComputedStyle(meta).display,
+              directionDisplay: getComputedStyle(direction).display,
               ratio: imageBox.width / imageBox.height,
               // Resized image variants round pixels; layout uses source dimensions.
               imageRatio:
@@ -268,7 +273,7 @@ for (const width of [1280, 768, 375, 320]) {
                 link.rel === "prev"
                   ? directionBox.right < timeBox.left
                   : timeBox.right < directionBox.left,
-              captionFits: [caption, title, meta].every((element) => {
+              captionFits: [title, meta].every((element) => {
                 const rect = element.getBoundingClientRect();
                 return (
                   rect.top >= box.top - 1 &&
@@ -286,13 +291,17 @@ for (const width of [1280, 768, 375, 320]) {
           expect(card.opposite).toBe(true);
           expect(card.captionFits).toBe(true);
           expect(card.pictureDisplay).toBe("block");
-          expect(card.extension).toBeCloseTo(64, 0);
+          expect(card.extension).toBeCloseTo(card.expectedExtension, 0);
+          expect(card.gridAreas).toBe('"picture" "meta" "title"');
+          expect(card.metadataDisplay).toBe("grid");
+          expect(card.directionDisplay).toBe("grid");
           expect(card.captionBackground).toContain("/ 0.65");
           expect(card.captionBackground).toContain("/ 0.88");
           expect(card.captionBackground).toContain(card.surfaceColor);
         }
         if (Math.abs(cards[0]!.top - cards[1]!.top) < 1) {
           expect(cards[0]!.captionTop).toBeCloseTo(cards[1]!.captionTop, 1);
+          expect(cards[0]!.titleTop).toBeCloseTo(cards[1]!.titleTop, 1);
           expect(cards[0]!.captionHeight).toBeCloseTo(
             cards[1]!.captionHeight,
             1,
