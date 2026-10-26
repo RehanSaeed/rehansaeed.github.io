@@ -1,8 +1,17 @@
+import type { Page } from "@playwright/test";
 import { expect, test } from "./fixtures";
 import { prerenderCodeBlocks } from "../../modules/blog-content/fields";
 import { remarkContainers } from "../../modules/blog-content/markdown";
 
 const path = "/cheat-sheet/";
+
+async function stubClipboard(page: Page) {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText: async () => {} },
+    });
+  });
+}
 
 test.beforeEach(async ({ page }) => {
   await page.route(
@@ -13,6 +22,155 @@ test.beforeEach(async ({ page }) => {
         body: "<!doctype html><title>Video placeholder</title>",
       }),
   );
+});
+
+test("Icon controls overlay the top right, reveal on hover/focus and have dismissible tooltips", async ({
+  page,
+}) => {
+  await page.goto(path, { waitUntil: "domcontentloaded" });
+  const block = page.locator(".code-block").first();
+  const toolbar = block.locator(".code-block__toolbar");
+  const copy = block.getByRole("button", { name: "Copy code", exact: true });
+  const wrap = block.getByRole("button", { name: "Wrap lines", exact: true });
+  await expect(copy).toBeAttached();
+  await block.scrollIntoViewIfNeeded();
+  await page.mouse.move(0, 0);
+  await expect(toolbar).toHaveCSS("opacity", "0");
+  const before = await block.boundingBox();
+  await block.hover();
+  await expect(toolbar).toHaveCSS("opacity", "1");
+  const after = await block.boundingBox();
+  expect(after!.width).toBe(before!.width);
+  expect(after!.height).toBe(before!.height);
+  const positions = await toolbar.evaluate((element) => {
+    const code = element.parentElement!.getBoundingClientRect();
+    const toolbar = element.getBoundingClientRect();
+    return { top: toolbar.top - code.top, right: code.right - toolbar.right };
+  });
+  expect(positions.top).toBeGreaterThanOrEqual(0);
+  expect(positions.top).toBeLessThan(16);
+  expect(positions.right).toBeGreaterThanOrEqual(0);
+  expect(positions.right).toBeLessThan(16);
+  await expect(copy).toHaveText("");
+  await expect(wrap).toHaveText("");
+  await expect(copy.locator("svg")).toHaveCount(2);
+  await expect(wrap.locator("svg")).toHaveCount(2);
+  await copy.hover();
+  const tip = block.getByRole("tooltip", { name: "Copy code", exact: true });
+  await expect(tip).toBeVisible();
+  await expect(copy).toHaveAttribute(
+    "aria-describedby",
+    (await tip.getAttribute("id"))!,
+  );
+  await copy.focus();
+  await page.keyboard.press("Escape");
+  await expect(tip).toBeHidden();
+  await wrap.focus();
+  await page.mouse.move(0, 0);
+  await expect(toolbar).toHaveCSS("opacity", "1");
+  await expect(
+    block.getByRole("tooltip", { name: "Wrap lines", exact: true }),
+  ).toBeVisible();
+});
+
+test("Copy and wrap icons animate in both directions and respect reduced motion", async ({
+  page,
+}) => {
+  await stubClipboard(page);
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto(path, { waitUntil: "domcontentloaded" });
+  const block = page.locator(".code-block").first();
+  await block.hover();
+  const wrap = block.getByRole("button", { name: "Wrap lines", exact: true });
+  const copy = block.locator(".code-block__toolbar button").last();
+  const icons = await block.locator(".code-block__icon").elementHandles();
+
+  for (const button of [wrap, wrap, copy]) {
+    const sample = await button.evaluate(async (element) => {
+      if (!(element instanceof HTMLButtonElement))
+        throw new Error("Expected a code control button.");
+      element.click();
+      await new Promise(requestAnimationFrame);
+      await new Promise(requestAnimationFrame);
+      const animations = element.getAnimations({ subtree: true });
+      for (const animation of animations) {
+        animation.pause();
+        animation.currentTime =
+          Number(animation.effect!.getTiming().duration) / 2;
+      }
+      return {
+        properties: animations
+          .filter(
+            (animation): animation is CSSTransition =>
+              animation instanceof CSSTransition,
+          )
+          .map((animation) => animation.transitionProperty),
+        opacities: [...element.querySelectorAll("svg")].map((icon) =>
+          Number(getComputedStyle(icon).opacity),
+        ),
+      };
+    });
+    expect(sample.properties).toEqual(
+      expect.arrayContaining(["opacity", "transform"]),
+    );
+    for (const opacity of sample.opacities) {
+      expect(opacity).toBeGreaterThan(0);
+      expect(opacity).toBeLessThan(1);
+    }
+    await button.evaluate((element) => {
+      for (const animation of element.getAnimations({ subtree: true }))
+        animation.finish();
+    });
+    await expect(button.locator("svg:visible")).toHaveCount(1);
+    await expect(button.locator(".code-block__icon--active")).toHaveCSS(
+      "opacity",
+      "1",
+    );
+  }
+  await expect(
+    block.getByRole("button", { name: "Copied!", exact: true }),
+  ).toBeVisible();
+  await expect(copy).toHaveAttribute("aria-label", "Copy code");
+  await expect(copy.locator("svg:visible")).toHaveCount(1);
+  for (const icon of icons)
+    expect(await icon.evaluate((element) => element.isConnected)).toBe(true);
+
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await wrap.click();
+  expect(
+    await wrap.evaluate(
+      (element) => element.getAnimations({ subtree: true }).length,
+    ),
+  ).toBe(0);
+  await copy.click();
+  await expect(
+    block.getByRole("button", { name: "Copied!", exact: true }),
+  ).toBeVisible();
+  expect(
+    await block
+      .getByRole("button", { name: "Copied!", exact: true })
+      .evaluate((element) => element.getAnimations({ subtree: true }).length),
+  ).toBe(0);
+});
+
+test.describe("Touch controls", () => {
+  test.skip(
+    ({ browserName }) => browserName === "firefox",
+    "Firefox does not support touch emulation.",
+  );
+  test.use({ hasTouch: true, viewport: { width: 390, height: 844 } });
+  test("Controls remain discoverable without hover", async ({ page }) => {
+    await page.goto(path, { waitUntil: "domcontentloaded" });
+    const block = page.locator(".code-block").first();
+    await expect(block.locator(".code-block__toolbar")).toHaveCSS(
+      "opacity",
+      "1",
+    );
+    const wrap = block.getByRole("button", { name: "Wrap lines", exact: true });
+    expect((await wrap.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+    await wrap.tap();
+    await expect(wrap).toHaveAttribute("aria-pressed", "true");
+  });
 });
 
 test("Copies source exactly, announces success, resets and reports clipboard errors", async ({
@@ -33,6 +191,7 @@ test("Copies source exactly, announces success, resets and reports clipboard err
     .locator(".code-block")
     .filter({ has: page.locator("pre.line-numbers") })
     .first();
+  await block.hover();
   const source = await block.locator("code").textContent();
   expect(source).toContain("\n");
   await block.getByRole("button", { name: "Copy code", exact: true }).click();
@@ -155,6 +314,7 @@ for (const colorScheme of ["light", "dark"] as const) {
     const block = page
       .locator(".code-block")
       .filter({ hasText: "Wrapped code" });
+    await block.hover();
     const code = block.locator("code");
     const source = await code.textContent();
     const markup = await code.innerHTML();
@@ -181,6 +341,7 @@ for (const colorScheme of ["light", "dark"] as const) {
     const numbered = page
       .locator(".code-block")
       .filter({ has: page.locator(".has-highlighted-lines pre.line-numbers") });
+    await numbered.hover();
     await numbered.getByRole("button", { name: "Wrap lines" }).click();
     await expect(numbered.locator("code")).toHaveCSS("white-space", "pre-wrap");
     await expect(numbered.locator(".line.highlight").first()).toBeVisible();

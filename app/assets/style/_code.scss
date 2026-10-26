@@ -1,4 +1,5 @@
 @use "abstracts/type";
+@use "abstracts/visually-hidden";
 
 // Code blocks are highlighted at build time by Shiki (see nuxt.config.ts and ProsePre.vue):
 // <div class="code-title"><span>Title</span></div>
@@ -75,7 +76,6 @@ pre[class*="language-"] {
   text-decoration: var(--shiki-default-text-decoration);
 }
 
-// Code Title
 .code-block {
   min-inline-size: 0;
   margin-block: 1.275rem;
@@ -86,6 +86,10 @@ pre[class*="language-"] {
 
   .code-title {
     margin-block: 0.5rem 0;
+  }
+
+  .line-highlight {
+    position: relative;
   }
 }
 
@@ -129,6 +133,112 @@ pre[class*="language-"] {
   margin-block-end: 0.5rem;
 }
 
+.code-block__toolbar {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 0.4rem;
+  inset-inline-end: 0.4rem;
+  gap: 0.25rem;
+  flex-wrap: nowrap;
+  opacity: 0;
+  pointer-events: none;
+
+  button {
+    display: grid;
+    place-items: center;
+    inline-size: 2.25rem;
+    min-block-size: 2.25rem;
+    padding: 0;
+    font-size: 1rem;
+    box-shadow: var(--global-shadow-1);
+  }
+}
+
+.code-block:hover .code-block__toolbar,
+.code-block:focus-within .code-block__toolbar {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.code-block__action {
+  position: relative;
+}
+
+.code-block__icon {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  transform: rotate(-45deg) scale(0.5);
+
+  &--active {
+    opacity: 1;
+    visibility: visible;
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+.code-block__tooltip {
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline-end: 0;
+  padding: 0.35rem 0.55rem;
+  border: var(--global-border-width-1) solid var(--global-border-color);
+  border-radius: var(--global-border-radius);
+  background: var(--global-content-background-color);
+  color: var(--global-title-color);
+  box-shadow: var(--global-shadow-1);
+  font-family: var(--global-font-family-sans-serif);
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.code-block__action:not(.code-block__action--dismissed) {
+  &:hover,
+  &:focus-within {
+    .code-block__tooltip {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+}
+
+.code-block__status {
+  display: block;
+  margin-block-start: 0.5rem;
+  font-size: var(--global-font-size-1);
+
+  &--hidden {
+    @include visually-hidden.visually-hidden();
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .code-block__toolbar {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .code-block__toolbar button {
+    inline-size: 2.75rem;
+    min-block-size: 2.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .code-block__toolbar,
+  .code-block__tooltip {
+    transition: opacity var(--global-duration-1) ease-out;
+  }
+
+  .code-block__icon {
+    transition:
+      opacity var(--global-duration-2) var(--ease-in-out-cubic),
+      transform var(--global-duration-2) var(--ease-in-out-cubic),
+      visibility var(--global-duration-2);
+  }
+}
+
 .code-block--wrapped pre[class*="language-"],
 .code-block--wrapped code {
   white-space: pre-wrap;
@@ -145,6 +255,7 @@ pre[class*="language-"] {
   box-decoration-break: clone;
 }
 
+// Code Title
 .code-title {
   font-family: var(--global-font-family-monospace);
   font-size: var(--global-font-size-1);

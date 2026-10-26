@@ -3,7 +3,12 @@
 Fenced code blocks keep their build-time Shiki highlighting. Existing language,
 `[Title]`, `{2,4-5}` highlighted-line and `line-numbers` options still work.
 
-After JavaScript loads, each block has **Copy code** and **Wrap lines** buttons.
+After JavaScript loads, each block has icon-only **Copy code** and **Wrap lines**
+controls overlaid at its top right. They appear on hover or keyboard focus and
+remain visible on touch screens. Both have tooltips (dismissible with Escape).
+The copy icon animates into a check mark on success; the wrap control animates
+between wrapping and horizontal-line icons. Reduced-motion preferences disable
+these animations.
 Copying preserves the rendered source, including indentation and newlines, without
 titles, line numbers or controls. Success is announced briefly; clipboard errors
 show a manual-copy instruction. Clipboard access requires a secure context

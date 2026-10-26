@@ -20,15 +20,6 @@
         {{ block.filename || block.language || `Alternative ${index + 1}` }}
       </button>
     </div>
-    <div v-show="hydrated" class="code-block__toolbar">
-      <button type="button" :aria-pressed="wrapped" @click="wrap = !wrapped">
-        Wrap lines
-      </button>
-      <button type="button" :disabled="copying" @click="copy">
-        {{ copied ? "Copied!" : "Copy code" }}
-      </button>
-      <span role="status" aria-live="polite">{{ message }}</span>
-    </div>
     <div
       v-for="(block, index) in blocks"
       :id="`${id}-panel-${index}`"
@@ -57,8 +48,73 @@
             preClass(block)
           "><code :class="`language-${block.language || 'text'}`" v-html="block.html || ''" /></pre>
         <!-- eslint-enable vue/no-v-html -->
+        <div v-show="hydrated" class="code-block__toolbar">
+          <div
+            class="code-block__action"
+            :class="{ 'code-block__action--dismissed': dismissTooltips }"
+            @pointerenter="dismissTooltips = false"
+            @focusin="dismissTooltips = false"
+            @keydown.esc="dismissTooltips = true">
+            <button
+              type="button"
+              aria-label="Wrap lines"
+              :aria-describedby="`${id}-wrap-tip-${index}`"
+              :aria-pressed="wrapped"
+              @click="wrap = !wrapped">
+              <u-icon
+                name="lucide:wrap-text"
+                class="code-block__icon"
+                :class="{ 'code-block__icon--active': !wrapped }" />
+              <u-icon
+                name="lucide:move-right"
+                class="code-block__icon"
+                :class="{ 'code-block__icon--active': wrapped }" />
+            </button>
+            <span
+              :id="`${id}-wrap-tip-${index}`"
+              class="code-block__tooltip"
+              role="tooltip">
+              {{ wrapped ? "Unwrap lines" : "Wrap lines" }}
+            </span>
+          </div>
+          <div
+            class="code-block__action"
+            :class="{ 'code-block__action--dismissed': dismissTooltips }"
+            @pointerenter="dismissTooltips = false"
+            @focusin="dismissTooltips = false"
+            @keydown.esc="dismissTooltips = true">
+            <button
+              type="button"
+              :aria-label="copied ? 'Copied!' : 'Copy code'"
+              :aria-describedby="`${id}-copy-tip-${index}`"
+              :disabled="copying"
+              @click="copy">
+              <u-icon
+                name="lucide:copy"
+                class="code-block__icon"
+                :class="{ 'code-block__icon--active': !copied }" />
+              <u-icon
+                name="lucide:check"
+                class="code-block__icon"
+                :class="{ 'code-block__icon--active': copied }" />
+            </button>
+            <span
+              :id="`${id}-copy-tip-${index}`"
+              class="code-block__tooltip"
+              role="tooltip">
+              {{ copied ? "Copied!" : "Copy code" }}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
+    <span
+      class="code-block__status"
+      :class="{ 'code-block__status--hidden': copied || !message }"
+      role="status"
+      aria-live="polite"
+      >{{ message }}</span
+    >
   </div>
 </template>
 
@@ -74,6 +130,7 @@ const wrap = ref<boolean>();
 const copied = ref(false);
 const copying = ref(false);
 const message = ref("");
+const dismissTooltips = ref(false);
 let reset: ReturnType<typeof setTimeout> | undefined;
 const blocks = computed(() =>
   props.alternatives?.length ? props.alternatives : [props],
