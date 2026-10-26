@@ -43,6 +43,8 @@ test("Every published post has the correct static chronological neighbours", asy
     const $ = load(await response.text());
     const nav = $('nav[aria-label="Post navigation"]');
     expect(nav.length, post.permalink).toBe(1);
+    expect(nav.hasClass("post-navigation")).toBe(true);
+    expect(nav.children("ul.post-navigation__list").length).toBe(1);
     expect(nav.find("> ul > li > a").length).toBe(nav.find("a").length);
     for (const element of nav.find("[style]")) {
       expect($(element).attr("style")).toBe("");
@@ -62,10 +64,31 @@ test("Every published post has the correct static chronological neighbours", asy
         neighbour.post ? 1 : 0,
       );
       if (neighbour.post) {
+        expect(link.hasClass("post-navigation__link")).toBe(true);
+        expect(
+          link
+            .parent()
+            .is(
+              `li.post-navigation__card.post-navigation__card--${neighbour.rel}`,
+            ),
+        ).toBe(true);
+        expect(
+          link.find("a, button, input, select, textarea, [tabindex]").length,
+        ).toBe(0);
         expect(link.attr("href")).toBe(neighbour.post.permalink);
         expect(link.text()).toContain(neighbour.label);
         expect(link.text()).toContain(neighbour.post.title);
         expect(link.find("h2").text().trim()).toBe(neighbour.post.title);
+        expect(
+          link
+            .attr("aria-labelledby")!
+            .split(" ")
+            .map((id) => link.find(`#${id}`).text().trim()),
+        ).toEqual([neighbour.label, neighbour.post.title]);
+        expect(
+          link.find("> .post-navigation__caption > h2.post-navigation__title")
+            .length,
+        ).toBe(1);
         const image = link.find("img");
         expect(image.attr("alt")).toBe("");
         expect(image.attr("loading")).toBe("lazy");
@@ -88,6 +111,11 @@ test("Every published post has the correct static chronological neighbours", asy
           link.find("svg.icon path, svg.icon line, svg.icon polyline").length,
         ).toBeGreaterThan(0);
         expect(link.find("time").attr("datetime")).toMatch(/^PT\d+M$/);
+        expect(
+          link.find(
+            "> .post-navigation__caption > p.post-navigation__meta > time",
+          ).length,
+        ).toBe(1);
         neighbourTimes.push({
           permalink: neighbour.post.permalink,
           text: link

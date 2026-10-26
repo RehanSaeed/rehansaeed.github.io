@@ -22,9 +22,7 @@
             class="post-navigation__picture"
             :img-attrs="{ class: 'post-navigation__image' }"
             format="avif"
-            :legacy-format="
-              item.post.heroImage.endsWith('.png') ? 'png' : 'jpg'
-            "
+            :legacy-format="getLegacyImageFormat(item.post.heroImage)"
             :src="item.post.heroImage"
             :width="item.image.width"
             :height="item.image.height"
@@ -37,13 +35,7 @@
               <span
                 class="post-navigation__direction"
                 :id="`post-navigation-${item.rel}-label`">
-                <u-icon
-                  class="post-navigation__arrow"
-                  :name="
-                    item.rel === 'prev'
-                      ? 'feather:arrow-left'
-                      : 'feather:arrow-right'
-                  " />
+                <u-icon class="post-navigation__arrow" :name="item.icon" />
                 {{ item.label }}
               </span>
               <time
@@ -90,10 +82,25 @@ const previous = computed(() =>
 const next = computed(() =>
   index.value >= 0 ? posts.value?.[index.value + 1] : undefined,
 );
+
+function getLegacyImageFormat(src: string): "png" | "jpg" {
+  return src.endsWith(".png") ? "png" : "jpg";
+}
+
 const neighbours = computed(() =>
   [
-    { post: previous.value, rel: "prev", label: "Previous post" },
-    { post: next.value, rel: "next", label: "Next post" },
+    {
+      post: previous.value,
+      rel: "prev",
+      label: "Previous post",
+      icon: "feather:arrow-left",
+    },
+    {
+      post: next.value,
+      rel: "next",
+      label: "Next post",
+      icon: "feather:arrow-right",
+    },
   ].flatMap((item) =>
     item.post
       ? [
