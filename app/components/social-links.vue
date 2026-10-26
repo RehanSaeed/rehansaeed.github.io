@@ -98,4 +98,12 @@ export default {
 
   font-size: var(--global-font-size-7);
 }
+
+.social .social__link {
+  transition-timing-function: ease;
+
+  &:hover {
+    transform: scale(1.5);
+  }
+}
 </style>
