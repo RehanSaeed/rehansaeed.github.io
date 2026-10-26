@@ -16,6 +16,8 @@
 
     <u-post class="post-page__content" :post="post" />
 
+    <u-post-navigation :previous-post="previousPost" :next-post="nextPost" />
+
     <u-webmentions class="post-page__webmentions" :url="url" />
 
     <u-comments
@@ -66,6 +68,32 @@ if (!post.value) {
     fatal: true,
   });
 }
+
+const { data: surroundingPosts, error: navigationError } = await useAsyncData(
+  `post-navigation-${permalink}`,
+  async () => {
+    if (!post.value.published) return [null, null];
+    const posts = await queryCollection("posts")
+      .where("published", "=", true)
+      .order("date", "ASC")
+      .order("permalink", "ASC")
+      .select("title", "permalink")
+      .all();
+    const index = posts.findIndex((item) => item.permalink === permalink);
+    if (index === -1) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: "Published post missing from post navigation",
+      });
+    }
+    return [posts[index - 1] ?? null, posts[index + 1] ?? null];
+  },
+);
+if (navigationError.value) {
+  throw createError(navigationError.value);
+}
+const previousPost = computed(() => surroundingPosts.value?.[0]);
+const nextPost = computed(() => surroundingPosts.value?.[1]);
 
 const title = post.value.title;
 const titleId = pageHeadingId(title, post.value.body.value);
