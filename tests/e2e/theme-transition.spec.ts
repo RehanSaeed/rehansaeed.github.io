@@ -95,8 +95,8 @@ for (const initialTheme of ["light", "dark"] as const) {
     await page.goto("/");
     const toggle = page.getByRole("button", { name: "Toggle dark/light" });
     await expect(toggle).toBeEnabled();
-    await expect(toggle).toHaveAttribute(
-      "title",
+    await toggle.focus();
+    await expect(toggle).toHaveAccessibleDescription(
       initialTheme === "light" ? "Enable dark theme" : "Enable light theme",
     );
 

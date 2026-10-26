@@ -37,20 +37,24 @@
         <div
           v-if="portfolio.nugetPackages.length"
           class="portfolio-card__nuget-badges">
-          <a
+          <u-tooltip
             v-for="pkg of portfolio.nugetPackages"
             :key="pkg.id"
-            class="portfolio-card__nuget"
-            :data-downloads="pkg.downloads"
-            :title="`${pkg.id}: ${pkg.downloads.toLocaleString('en-GB')} total NuGet downloads at last build`"
-            :href="`https://www.nuget.org/packages/${pkg.id}`">
-            <img
-              class="portfolio-card__badge portfolio-card__downloads"
-              :alt="`${pkg.id}: ${pkg.downloads} total NuGet downloads at last build`"
-              height="30"
-              loading="lazy"
-              :src="`https://img.shields.io/nuget/dt/${pkg.id}?style=social&logo=nuget&label=${encodeURIComponent(pkg.id)}`" />
-          </a>
+            v-slot="{ trigger }"
+            :text="`${pkg.id}: ${pkg.downloads.toLocaleString('en-GB')} total NuGet downloads at last build`">
+            <a
+              v-bind="trigger"
+              class="portfolio-card__nuget"
+              :data-downloads="pkg.downloads"
+              :href="`https://www.nuget.org/packages/${pkg.id}`">
+              <img
+                class="portfolio-card__badge portfolio-card__downloads"
+                :alt="`${pkg.id}: ${pkg.downloads} total NuGet downloads at last build`"
+                height="30"
+                loading="lazy"
+                :src="`https://img.shields.io/nuget/dt/${pkg.id}?style=social&logo=nuget&label=${encodeURIComponent(pkg.id)}`" />
+            </a>
+          </u-tooltip>
         </div>
         <div class="portfolio-card__github">
           <a :href="`${portfolio.permalink}/stargazers`">

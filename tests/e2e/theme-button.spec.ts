@@ -14,10 +14,7 @@ async function settle(button: Locator) {
 async function expectTheme(button: Locator, theme: "light" | "dark") {
   const active = theme === "dark" ? "sun" : "moon";
   const inactive = theme === "dark" ? "moon" : "sun";
-  await expect(button).toHaveAttribute(
-    "title",
-    `Enable ${theme === "dark" ? "light" : "dark"} theme`,
-  );
+  await expect(button).not.toHaveAttribute("title");
   await expect(button.locator(`.theme-button__${active}`)).toHaveCSS(
     "opacity",
     "1",
