@@ -26,10 +26,10 @@
           <time :datetime="data.updated">{{ date(data.updated) }}</time
           >. Repeat views are included; these are not unique visitors.
           Engagement is recorded foreground time per view, not reading
-          completion, and uses its own scale. Presets end at the reporting
-          cutoff; Last month shows the last 30 processed days. Monthly buckets
-          may be partial. Blockers and consent choices can reduce recorded
-          traffic.
+          completion. Switch metrics to see views or seconds per view. Presets
+          end at the reporting cutoff; Last month shows the last 30 processed
+          days. Monthly buckets may be partial. Blockers and consent choices can
+          reduce recorded traffic.
         </p>
       </div>
     </div>
@@ -71,15 +71,18 @@
             {{ option.label }}
           </u-button>
         </div>
-        <label v-if="hasEngagement" class="post-traffic__mode">
-          Engagement
-          <select
-            v-model="engagementLayout"
-            aria-label="Engagement chart layout">
-            <option value="overlay">Same chart</option>
-            <option value="separate">Separate charts</option>
-          </select>
-        </label>
+        <div class="post-traffic__mode" role="group" aria-label="Chart metric">
+          <u-button
+            :aria-pressed="metric === 'views'"
+            @click="metric = 'views'">
+            Traffic
+          </u-button>
+          <u-button
+            :aria-pressed="metric === 'engagement'"
+            @click="metric = 'engagement'">
+            Engagement
+          </u-button>
+        </div>
       </div>
       <p v-if="!availableHistory?.days" class="post-traffic__coverage">
         Daily history is unavailable in this saved snapshot.
@@ -92,15 +95,17 @@
         class="post-traffic__coverage">
         Traffic before {{ date(availableHistory.startDate) }} is unavailable.
       </p>
+      <p
+        v-if="metric === 'engagement' && !hasEngagement"
+        class="post-traffic__coverage"
+        role="status">
+        Engagement is unavailable for this date range.
+      </p>
       <u-post-traffic-chart
+        v-else
+        :key="metric"
         :series="history"
-        metric="views"
-        :overlay="hasEngagement && engagementLayout === 'overlay'"
-        :annotations="annotations" />
-      <u-post-traffic-chart
-        v-if="hasEngagement && engagementLayout === 'separate'"
-        :series="history"
-        metric="engagement"
+        :metric="metric"
         :annotations="annotations" />
       <ul v-if="annotations.length" class="post-traffic__events">
         <li v-for="event in annotations" :key="event.label">
@@ -139,7 +144,7 @@ const ranges = [
   { value: 30, label: "Last month" },
 ] as const;
 const range = ref<0 | 12 | 30>(0);
-const engagementLayout = ref("overlay");
+const metric = ref<"views" | "engagement">("views");
 const availableHistory = computed(() => data.value?.posts[props.permalink]);
 watch(
   availableHistory,
@@ -291,7 +296,7 @@ onBeforeUnmount(() => {
   margin-block-start: var(--global-space-fixed-4);
 }
 .post-traffic__ranges button,
-.post-traffic__mode select {
+.post-traffic__mode button {
   padding: var(--global-space-fixed-2) var(--global-space-fixed-3);
   border: 1px solid var(--global-border-color);
   border-radius: var(--global-border-radius);
@@ -300,18 +305,14 @@ onBeforeUnmount(() => {
 .post-traffic__mode {
   font-size: var(--global-font-size-1);
 }
-.post-traffic__mode select {
-  background: var(--global-content-background-color);
-  color: var(--global-title-color);
-  font: inherit;
-}
-.post-traffic__ranges button[aria-pressed="true"] {
+.post-traffic__ranges button[aria-pressed="true"],
+.post-traffic__mode button[aria-pressed="true"] {
   border-color: var(--global-accent-color);
   background: var(--global-accent-color);
   color: var(--global-content-background-color);
 }
 .post-traffic__ranges button:focus-visible,
-.post-traffic__mode select:focus-visible {
+.post-traffic__mode button:focus-visible {
   outline: 2px solid var(--global-accent-color);
   outline-offset: 2px;
 }

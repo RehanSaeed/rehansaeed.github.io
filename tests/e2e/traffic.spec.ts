@@ -84,15 +84,19 @@ for (const width of [375, 1280]) {
     });
     await expect(infoButton.locator("svg > *")).not.toHaveCount(0);
     await expect(source).toBeHidden();
-    const beforeHelp = await chart.locator(".post-traffic__plot").boundingBox();
+    const plotOffset = () =>
+      chart.evaluate((card) => {
+        const plot = card.querySelector(".post-traffic__plot")!;
+        return plot.getBoundingClientRect().y - card.getBoundingClientRect().y;
+      });
+    const beforeHelp = await plotOffset();
     await infoButton.hover();
     await expect(source).toBeVisible();
     await expect(source).toHaveAttribute("role", "tooltip");
     expect(await infoButton.getAttribute("aria-expanded")).toBeNull();
     await expect(source).toContainText("not unique visitors");
     await expect(source).toContainText("Europe/London");
-    const afterHelp = await chart.locator(".post-traffic__plot").boundingBox();
-    expect(afterHelp!.y).toBe(beforeHelp!.y);
+    expect(await plotOffset()).toBeCloseTo(beforeHelp, 5);
     await source.hover();
     await expect(source).toBeVisible();
     const helpBounds = await source.boundingBox();
@@ -326,6 +330,22 @@ test.describe("Touch traffic inspection", () => {
         new RegExp(name === "Last month" ? "^Daily" : "^Monthly"),
       );
       await expect(chart.getByRole("tooltip")).toHaveCount(0);
+      await chart
+        .getByRole("button", { name: "Engagement", exact: true })
+        .click();
+      await expect(chart.locator(".post-traffic__chart")).toHaveCount(1);
+      await expect(chart.locator(".post-traffic__point")).toHaveCount(size);
+      await expect(chart.locator(".post-traffic__plot")).toHaveAttribute(
+        "aria-label",
+        new RegExp(
+          `^${name === "Last month" ? "Daily" : "Monthly"} average engagement per view`,
+        ),
+      );
+      await expect(button).toHaveAttribute("aria-pressed", "true");
+      await expect(
+        chart.locator(".post-traffic__range time").first(),
+      ).toHaveAttribute("datetime", start);
+      await chart.getByRole("button", { name: "Traffic", exact: true }).click();
     }
   });
 
@@ -377,7 +397,7 @@ test.describe("Touch traffic inspection", () => {
     await expect(chart.locator(".post-traffic__events")).toHaveCount(0);
   });
 
-  test("Engagement can share the views chart or use a separate chart without bridging missing averages", async ({
+  test("Traffic and Engagement toggle a single chart without bridging missing averages", async ({
     page,
   }) => {
     await page.route("**/post-traffic.json", (route) =>
@@ -403,32 +423,91 @@ test.describe("Touch traffic inspection", () => {
       "1m 3s",
     );
     await expect(card.locator(".post-traffic__chart")).toHaveCount(1);
-    await expect(
-      card.locator(".post-traffic__scale--secondary span"),
-    ).toHaveCount(5);
+    const metrics = card.getByRole("group", { name: "Chart metric" });
+    const traffic = metrics.getByRole("button", {
+      name: "Traffic",
+      exact: true,
+    });
+    const engagement = metrics.getByRole("button", {
+      name: "Engagement",
+      exact: true,
+    });
+    await expect(traffic).toHaveAttribute("aria-pressed", "true");
+    await expect(card.locator(".post-traffic__engagement-line")).toHaveCount(0);
+    await engagement.focus();
+    await engagement.press("Enter");
+    await expect(engagement).toHaveAttribute("aria-pressed", "true");
+    await expect(metrics.locator('[aria-pressed="true"]')).toHaveCount(1);
+    await expect(card.locator(".post-traffic__chart")).toHaveCount(1);
+    await expect(card.locator("polyline.post-traffic__line")).toHaveCount(0);
+    await expect(card.locator(".post-traffic__scale span")).toHaveCount(5);
+    await expect(card.locator(".post-traffic__scale span").first()).toHaveText(
+      formatTrafficDuration(120),
+    );
     const pathData = await card
       .locator(".post-traffic__engagement-line")
       .getAttribute("d");
     expect(pathData!.match(/M /g)).toHaveLength(2);
     expect(pathData).not.toContain("L ");
-    await card
-      .getByRole("combobox", { name: "Engagement chart layout" })
-      .selectOption("separate");
-    await expect(card.locator(".post-traffic__chart")).toHaveCount(2);
-    await expect(card.locator(".post-traffic__scale--secondary")).toHaveCount(
-      0,
-    );
-    const engagementChart = card.locator(".post-traffic__chart").nth(1);
-    await expect(
-      engagementChart.locator(".post-traffic__engagement-line"),
-    ).toHaveAttribute("d", pathData!);
-    await expect(
-      engagementChart.locator(".post-traffic__point--missing"),
-    ).toHaveCount(1);
-    await engagementChart.locator(".post-traffic__point").first().focus();
-    await expect(engagementChart.getByRole("tooltip")).toHaveText(
+    await expect(card.locator(".post-traffic__point--missing")).toHaveCount(1);
+    await card.locator(".post-traffic__point").first().focus();
+    await expect(card.getByRole("tooltip")).toHaveText(
       "Jan 2024: 120 page views. 10s average engagement per view",
     );
+    await traffic.focus();
+    await traffic.press("Space");
+    await expect(traffic).toHaveAttribute("aria-pressed", "true");
+    await expect(metrics.locator('[aria-pressed="true"]')).toHaveCount(1);
+    await expect(card.locator(".post-traffic__engagement-line")).toHaveCount(0);
+    await expect(card.locator("polyline.post-traffic__line")).toHaveCount(1);
+    await expect(card.locator(".post-traffic__tooltip")).toHaveCount(0);
+  });
+
+  test("Missing engagement and zero-view ranges are explicit without resetting the metric", async ({
+    page,
+  }) => {
+    for (const zeroViews of [false, true]) {
+      await page.route("**/post-traffic.json", (route) =>
+        route.fulfill({
+          json: zeroViews
+            ? {
+                ...snapshot,
+                posts: {
+                  [path]: {
+                    ...snapshot.posts[path],
+                    months: snapshot.posts[path]!.months.map((month) => ({
+                      ...month,
+                      views: 0,
+                      engagementSeconds: 0,
+                    })),
+                  },
+                },
+              }
+            : snapshot,
+        }),
+      );
+      await page.goto(path, { waitUntil: "domcontentloaded" });
+      const card = page.locator(".post-traffic");
+      const engagement = card.getByRole("button", {
+        name: "Engagement",
+        exact: true,
+      });
+      await engagement.click();
+      await expect(engagement).toHaveAttribute("aria-pressed", "true");
+      await expect(card.getByRole("status")).toHaveText(
+        "Engagement is unavailable for this date range.",
+      );
+      await expect(card.locator(".post-traffic__chart")).toHaveCount(0);
+      await card
+        .getByRole("button", { name: "Last year", exact: true })
+        .click();
+      await expect(engagement).toHaveAttribute("aria-pressed", "true");
+      await expect(card.getByRole("status")).toBeVisible();
+      await card.getByRole("button", { name: "Traffic", exact: true }).click();
+      await expect(card.locator(".post-traffic__point")).toHaveCount(3);
+      await expect(card.getByRole("status")).toHaveCount(0);
+      await page.unroute("**/post-traffic.json");
+    }
   });
 });
 
