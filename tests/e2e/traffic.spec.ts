@@ -64,7 +64,7 @@ for (const width of [375, 1280]) {
     const infoButton = chart.getByRole("button", {
       name: "About article traffic",
     });
-    await expect(infoButton.locator("svg")).not.toBeEmpty();
+    await expect(infoButton.locator("svg > *")).not.toHaveCount(0);
     await expect(source).toBeHidden();
     await infoButton.click();
     await expect(infoButton).toHaveAttribute("aria-expanded", "true");

@@ -141,7 +141,7 @@ test("Browser suites run in parallel against one complete build without dropping
     expect(build.name).toBe("Generate");
     expect(workflow.jobs.checks).toEqual({
         name: "Build",
-        if: "always() && (github.event_name != 'pull_request' || !github.event.pull_request.draft)",
+        if: "always() && (github.event_name != 'pull_request' || !github.event.pull_request.draft) && (github.event_name != 'schedule' || vars.GA4_PROPERTY_ID != '')",
         needs: ["build", "test"],
         "runs-on": "ubuntu-latest",
         steps: [
