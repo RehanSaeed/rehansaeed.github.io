@@ -27,7 +27,10 @@ for (const width of [375, 1280]) {
     await page.route("**/post-traffic.json", (route) =>
       route.fulfill({ json: snapshot }),
     );
-    await page.goto(path, { waitUntil: "domcontentloaded" });
+    await Promise.all([
+      page.waitForResponse("**/post-traffic.json"),
+      page.goto(path, { waitUntil: "domcontentloaded" }),
+    ]);
     const chart = page.locator(".post-traffic");
     await expect(
       chart.getByRole("heading", { name: "Article traffic" }),
