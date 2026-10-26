@@ -33,50 +33,96 @@ for (const width of [375, 1280]) {
     ]);
     const chart = page.locator(".post-traffic");
     await expect(
-      chart.getByRole("heading", { name: "Article traffic" }),
+      chart.getByRole("heading", { name: "Article Traffic", exact: true }),
     ).toBeVisible();
     await chart.scrollIntoViewIfNeeded();
-    await expect(chart).toContainText("360 page views");
+    await expect(chart.locator(".post-traffic__total strong")).toHaveText(
+      "360",
+    );
+    await expect(chart.locator(".post-traffic__total span")).toHaveText(
+      "page views",
+    );
+    await expect(chart.locator("h2")).toHaveCSS("text-align", "center");
+    await expect(chart.locator(".post-traffic__total strong")).toHaveCSS(
+      "font-family",
+      /Audiowide/,
+    );
+    const total = await chart.locator(".post-traffic__total").boundingBox();
+    const range = await chart.locator(".post-traffic__range").boundingBox();
+    if (width === 375)
+      expect(range!.y).toBeGreaterThanOrEqual(total!.y + total!.height);
+    else expect(range!.x).toBeGreaterThan(total!.x + total!.width);
+    expect(
+      await chart.evaluate((element) =>
+        element.previousElementSibling?.classList.contains("comments"),
+      ),
+    ).toBe(true);
     await expect(chart).toContainText(
       "Traffic before 15 Jan 2024 is unavailable.",
     );
-    await expect(chart).toContainText("not unique visitors");
-    await expect(chart).toContainText("Europe/London");
-    const slider = chart.getByRole("slider", { name: "Inspect a month" });
-    await expect(slider).toHaveAttribute(
-      "aria-valuetext",
-      "Mar 2024: 240 page views",
+    const source = chart.locator(".post-traffic__source");
+    const infoButton = chart.getByRole("button", {
+      name: "About article traffic",
+    });
+    await expect(infoButton.locator("svg")).not.toBeEmpty();
+    await expect(source).toBeHidden();
+    await infoButton.click();
+    await expect(infoButton).toHaveAttribute("aria-expanded", "true");
+    await expect(source).toBeVisible();
+    await expect(source).toContainText("not unique visitors");
+    await expect(source).toContainText("Europe/London");
+    await infoButton.click();
+    await expect(source).toBeHidden();
+    await expect(chart.getByRole("slider")).toHaveCount(0);
+    await expect(chart.getByRole("table")).toHaveCount(0);
+    await expect(chart.locator("figcaption")).toHaveCount(0);
+    await expect(chart.locator(".post-traffic__scale span")).toHaveCount(5);
+    await expect(chart.locator(".post-traffic__dates span")).toHaveCount(3);
+    await expect(chart.locator(".post-traffic__axes")).toHaveAttribute(
+      "d",
+      "M 4 4 V 196 H 596",
     );
-    await slider.focus();
-    await slider.press("Home");
-    await expect(slider).toHaveAttribute(
-      "aria-valuetext",
+    const point = chart.getByRole("button", {
+      name: "Jan 2024: 120 page views",
+      exact: true,
+    });
+    await point.focus();
+    await expect(chart.getByRole("tooltip")).toHaveText(
       "Jan 2024: 120 page views",
     );
-    await slider.press("ArrowRight");
-    await expect(slider).toHaveAttribute(
-      "aria-valuetext",
+    await point.press("ArrowRight");
+    await expect(
+      chart.getByRole("button", {
+        name: "Feb 2024: 0 page views",
+        exact: true,
+      }),
+    ).toBeFocused();
+    await expect(chart.getByRole("tooltip")).toHaveText(
       "Feb 2024: 0 page views",
     );
-    await chart.locator("summary").click();
-    const table = chart.getByRole("table", {
-      name: "Monthly page views for this article",
-    });
-    await expect(table.getByRole("row")).toHaveCount(4);
-    await expect(table.getByRole("row").nth(2)).toContainText("Feb 2024");
-    await expect(table.getByRole("row").nth(2)).toContainText("0");
+    await chart.locator(".post-traffic__point:focus").press("End");
+    await expect(chart.getByRole("tooltip")).toHaveText(
+      "Mar 2024: 240 page views",
+    );
+    await chart.locator(".post-traffic__point:focus").press("Home");
+    await expect(point).toBeFocused();
+    await point.press("Escape");
+    await expect(chart.getByRole("tooltip")).toHaveCount(0);
     const polyline = chart.locator("polyline");
     expect(await polyline.getAttribute("points")).not.toMatch(/NaN|Infinity/);
     const bounds = await chart.boundingBox();
     expect(bounds!.x).toBeGreaterThanOrEqual(0);
     expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width + 1);
     await expect(chart.locator("svg")).toHaveAttribute("aria-hidden", "true");
-    const plot = await chart.locator("svg").boundingBox();
-    await page.mouse.move(plot!.x + 1, plot!.y + 20);
-    await expect(slider).toHaveAttribute(
-      "aria-valuetext",
+    await infoButton.focus();
+    await point.hover();
+    await expect(chart.getByRole("tooltip")).toHaveText(
       "Jan 2024: 120 page views",
     );
+    await chart.getByRole("tooltip").hover();
+    await expect(chart.getByRole("tooltip")).toBeVisible();
+    await page.mouse.move(0, 0);
+    await expect(chart.getByRole("tooltip")).toHaveCount(0);
     await chart.screenshot({ path: info.outputPath("traffic-chart.png") });
   });
 }
@@ -97,7 +143,7 @@ test("Missing configuration or an untracked article leaves no empty traffic card
   }
 });
 
-test("A single zero month has a valid plot without an unnecessary slider", async ({
+test("A single zero month has a valid point and nonduplicated date labels", async ({
   page,
 }) => {
   await page.route("**/post-traffic.json", (route) =>
@@ -116,10 +162,39 @@ test("A single zero month has a valid plot without an unnecessary slider", async
   );
   await page.goto(path, { waitUntil: "domcontentloaded" });
   const chart = page.locator(".post-traffic");
-  await expect(chart).toContainText("0 page views");
+  await expect(chart.locator(".post-traffic__total strong")).toHaveText("0");
   await expect(chart.getByRole("slider")).toHaveCount(0);
   await expect(chart.locator("polyline")).toHaveAttribute("points", "300,196");
-  await expect(chart.locator("circle")).toHaveAttribute("cx", "300");
+  await expect(chart.locator(".post-traffic__dates span")).toHaveCount(1);
+  await chart
+    .getByRole("button", { name: "Jan 2024: 0 page views", exact: true })
+    .focus();
+  await expect(chart.getByRole("tooltip")).toHaveText("Jan 2024: 0 page views");
+});
+
+test.describe("Touch traffic inspection", () => {
+  test.use({ hasTouch: true, viewport: { width: 375, height: 900 } });
+
+  test("Tapping a point reveals its monthly traffic", async ({ page }) => {
+    await page.route("**/post-traffic.json", (route) =>
+      route.fulfill({ json: snapshot }),
+    );
+    await Promise.all([
+      page.waitForResponse("**/post-traffic.json"),
+      page.goto(path, { waitUntil: "domcontentloaded" }),
+    ]);
+    const chart = page.locator(".post-traffic");
+    const point = chart.getByRole("button", {
+      name: "Mar 2024: 240 page views",
+      exact: true,
+    });
+    await point.tap();
+    await expect(chart.getByRole("tooltip")).toHaveText(
+      "Mar 2024: 240 page views",
+    );
+    await chart.getByRole("button", { name: "About article traffic" }).tap();
+    await expect(chart.locator(".post-traffic__source")).toBeVisible();
+  });
 });
 
 test("Unavailable or malformed snapshots show an explicit error, not fake counts", async ({
@@ -179,18 +254,17 @@ test("A decade of traffic remains usable on a narrow dark-theme screen", async (
   );
   await page.goto(oldestPath, { waitUntil: "domcontentloaded" });
   const chart = page.locator(".post-traffic");
-  const slider = chart.getByRole("slider");
-  await expect(slider).toHaveAttribute("max", String(months.length - 1));
-  await slider.focus();
-  await slider.press("End");
-  await expect(slider).toHaveAttribute(
-    "aria-valuetext",
+  const points = chart.locator(".post-traffic__point");
+  await expect(points).toHaveCount(months.length);
+  await points.first().focus();
+  await points.first().press("End");
+  await expect(points.last()).toBeFocused();
+  await expect(chart.getByRole("tooltip")).toHaveText(
     "Oct 2026: 15,200 page views",
   );
-  await chart.locator("summary").click();
-  await expect(chart.getByRole("table").getByRole("row")).toHaveCount(
-    months.length + 1,
-  );
+  const tooltip = await chart.getByRole("tooltip").boundingBox();
+  expect(tooltip!.x).toBeGreaterThanOrEqual(0);
+  expect(tooltip!.x + tooltip!.width).toBeLessThanOrEqual(376);
   const bounds = await chart.boundingBox();
   expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(376);
   await chart.screenshot({ path: info.outputPath("traffic-history-dark.png") });
