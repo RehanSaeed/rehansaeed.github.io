@@ -35,6 +35,20 @@ If all reporting settings are absent, the build logs that reporting is disabled,
 publishes a null snapshot, and shows no traffic cards. Partial or invalid
 configuration fails the build.
 
+### Identifiers and credentials
+
+The numeric GA4 property ID identifies the property; it does not authorise
+reporting access. Keep it in `GA4_PROPERTY_ID` rather than hardcoding it.
+It is not included in the public traffic snapshot. The browser's `G-`
+measurement ID is intentionally public and is not a reporting credential.
+Neither ID grants access to private GA4 reports.
+
+The service-account JSON contains a private key and must remain an Actions
+**secret**. Never publish it, access tokens or Measurement Protocol API secrets.
+Other identifiers and API keys must be assessed individually, not assumed safe
+because they are called an ID. The per-article counts and engagement aggregates
+in `/post-traffic.json` are intentionally public.
+
 ## Coverage and accuracy
 
 - Only published article permalinks are exported. Hostname filtering excludes
@@ -67,12 +81,14 @@ configuration fails the build.
   duration. It is unavailable when there are no recorded views or when a
   last-good snapshot predates engagement reporting. Decimal seconds are retained
   during aggregation.
-- Engagement is plotted over time, either on the **Same chart** with a labelled
-  right-hand seconds-per-view axis and a contrasting dashed line, or in
-  **Separate charts**. Both views use the same date buckets. The weighted
-  summary is retained; each plotted value is that bucket's foreground seconds
-  divided by its views. Zero-view buckets have no average and leave gaps in
-  the engagement line, rather than becoming invented zero-second observations.
+- **Traffic / Engagement** buttons select one metric at a time, defaulting to
+  Traffic. The chart uses page-view counts or average foreground seconds per
+  view on its y-axis, retaining the selected date range and update annotations.
+  The weighted summary is retained; each engagement point is that bucket's
+  foreground seconds divided by its views. Zero-view buckets have no average
+  and leave gaps in the engagement line, rather than becoming invented
+  zero-second observations. Missing engagement or a zero-view range shows an
+  explicit unavailable message without resetting the selected metric or range.
 - Dotted vertical annotations mark only the latest substantive update recorded
   in `dateModified`, when it falls within displayed coverage. Its exact date
   appears below the chart and in the relevant point tooltip. In a monthly view
@@ -131,8 +147,9 @@ or additional dependencies are needed.
 The twelve treatments explore line/area fills, statistics placement, chart
 height and framing. Controls compare light/dark themes, desktop/mobile widths,
 fill opacity, points and gridlines; **Show all twelve** displays every treatment
-at once. Additional controls compare engagement on one versus two charts and
-the latest-update label below versus beside its line inside the plot.
+at once. Each card's Traffic / Engagement buttons switch the plotted metric;
+the update-label control compares a label below versus beside its line inside
+the plot. Area fills and stepped treatments work with either metric.
 The blog's own styles are isolated inside preview frames. Experimental
 styles are not shipped as article options or a public design-lab route.
 

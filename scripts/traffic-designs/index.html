@@ -270,13 +270,6 @@
             <option value="inside">Beside update line</option>
           </select></label
         >
-        <label
-          >Engagement
-          <select id="engagement" aria-label="Engagement">
-            <option value="overlay">Same chart</option>
-            <option value="separate">Separate charts</option>
-          </select></label
-        >
         <label><input id="compare" type="checkbox" /> Show all twelve</label>
       </div>
       <div class="workspace">
@@ -392,7 +385,6 @@
           points: byId("points").checked,
           grid: byId("grid").checked,
           annotation: byId("annotation").value,
-          engagement: byId("engagement").value,
         };
       }
       function send(frame) {

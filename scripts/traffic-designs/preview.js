@@ -36,7 +36,6 @@ body { padding: 16px; margin: 0; background: var(--global-background-color); }
 [data-fill="none"] .post-traffic__preview-area { display: none; }
 [data-fill="gradient"] .post-traffic__preview-area { fill: url(#preview-fill); opacity: 1; }
 [data-points="false"] .post-traffic__point:not(:focus-visible):not(.post-traffic__point--selected)::after { opacity: 0; }
-[data-points="false"] .post-traffic__engagement-dot { display: none; }
 [data-grid="false"] .post-traffic__gridline { opacity: 0; }
 [data-layout="center"] .post-traffic__summary { flex-direction: column; text-align: center; }
 [data-layout="center"] .post-traffic__range { margin-inline: 0; }
@@ -82,35 +81,51 @@ function decorate() {
     svg.prepend(definitions);
   }
   const original = line.getAttribute("points");
-  const points = original
-    .split(" ")
-    .map((point) => point.split(",").map(Number));
-  const stepped = points
-    .flatMap(([x, y], index) =>
+  const segments = original
+    ? [original.split(" ").map((point) => point.split(",").map(Number))]
+    : line
+        .getAttribute("d")
+        .split("M ")
+        .filter(Boolean)
+        .map((segment) =>
+          segment
+            .trim()
+            .split(" L ")
+            .map((point) => point.trim().split(/\s+/).map(Number)),
+        );
+  const path = (points) =>
+    points.map(([x, y], index) => `${index ? "L" : "M"} ${x} ${y}`).join(" ");
+  const stepped = (points) =>
+    points.flatMap(([x, y], index) =>
       index
         ? [
             [x, points[index - 1][1]],
             [x, y],
           ]
         : [[x, y]],
-    )
-    .map((point) => point.join(","))
-    .join(" ");
+    );
   for (const [className, value] of [
-    ["post-traffic__preview-step", stepped],
+    [
+      "post-traffic__preview-step",
+      segments.map((points) => path(stepped(points))).join(" "),
+    ],
     [
       "post-traffic__preview-area",
-      `${points[0][0]},196 ${document.body.dataset.layout === "step" ? stepped : original} ${points.at(-1)[0]},196`,
+      segments
+        .map(
+          (points) =>
+            `M ${points[0][0]} 196 ${path(document.body.dataset.layout === "step" ? stepped(points) : points).replace(/^M/, "L")} L ${points.at(-1)[0]} 196 Z`,
+        )
+        .join(" "),
     ],
   ]) {
     let polygon = svg.querySelector(`.${className}`);
     if (!polygon) {
-      polygon = document.createElementNS(svg.namespaceURI, "polyline");
+      polygon = document.createElementNS(svg.namespaceURI, "path");
       polygon.classList.add(className);
       svg.insertBefore(polygon, line);
     }
-    if (polygon.getAttribute("points") !== value)
-      polygon.setAttribute("points", value);
+    if (polygon.getAttribute("d") !== value) polygon.setAttribute("d", value);
   }
   const source = document.querySelector(".post-traffic__events");
   for (const plot of document.querySelectorAll(".post-traffic__plot")) {
@@ -154,14 +169,13 @@ observer.observe(document.querySelector("#app"), {
   childList: true,
   characterData: true,
   attributes: true,
-  attributeFilter: ["points", "aria-pressed"],
+  attributeFilter: ["points", "d", "aria-pressed"],
 });
 new ResizeObserver(reportHeight).observe(document.body);
 window.addEventListener("message", (event) => {
   if (event.source !== parent || event.data?.type !== "traffic-preview-config")
     return;
-  const { theme, layout, fill, opacity, points, grid, annotation, engagement } =
-    event.data;
+  const { theme, layout, fill, opacity, points, grid, annotation } = event.data;
   if (
     !["light", "dark"].includes(theme) ||
     ![
@@ -180,8 +194,7 @@ window.addEventListener("message", (event) => {
     ].includes(layout) ||
     !["none", "solid", "gradient"].includes(fill) ||
     !Number.isFinite(opacity) ||
-    !["below", "inside"].includes(annotation) ||
-    !["overlay", "separate"].includes(engagement)
+    !["below", "inside"].includes(annotation)
   )
     return;
   document.documentElement.dataset.theme = theme;
@@ -196,11 +209,6 @@ window.addEventListener("message", (event) => {
     "--preview-opacity",
     String(Math.max(0, Math.min(0.4, opacity))),
   );
-  const select = document.querySelector(".post-traffic__mode select");
-  if (select && select.value !== engagement) {
-    select.value = engagement;
-    select.dispatchEvent(new Event("change", { bubbles: true }));
-  }
   decorate();
   reportHeight();
 });

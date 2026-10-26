@@ -21,6 +21,7 @@ test("Twelve real-component treatments and their controls work without external 
   ).toBeVisible();
   const treatments = page.locator(".samples button");
   await expect(treatments).toHaveCount(12);
+  await expect(frame.locator(".post-traffic__axis-labels")).toHaveCount(0);
   const layouts = [
     "classic",
     "area",
@@ -84,13 +85,28 @@ test("Twelve real-component treatments and their controls work without external 
   await expect(frame.locator(".post-traffic__preview-event")).toHaveText(
     "Latest update 12 Jun 2025",
   );
-  await page.getByLabel("Engagement", { exact: true }).selectOption("separate");
-  await expect(frame.locator(".post-traffic__chart")).toHaveCount(2);
-  await expect(frame.locator(".post-traffic__preview-event")).toHaveCount(2);
+  await frame.getByRole("button", { name: "Engagement", exact: true }).click();
+  await expect(frame.locator(".post-traffic__axis-labels")).toHaveText(
+    "Avg. engagement / view",
+  );
+  await expect(frame.locator(".post-traffic__chart")).toHaveCount(1);
+  await expect(frame.locator(".post-traffic__preview-event")).toHaveCount(1);
+  for (const [index, layout] of layouts.entries()) {
+    await treatments.nth(index).click();
+    await expect(frame.locator("body")).toHaveAttribute("data-layout", layout);
+    await expect(frame.locator(".post-traffic__engagement-line")).toHaveCount(
+      1,
+    );
+    await expect(frame.locator(".post-traffic__preview-area")).toHaveAttribute(
+      "d",
+      /^M [\d.]+ 196 L [\d.]+ [\d.]+/,
+    );
+    await expect(frame.locator(".post-traffic__preview-event")).toHaveCount(1);
+  }
   await page.getByLabel("Update label").selectOption("below");
   await expect(frame.locator(".post-traffic__events")).toBeVisible();
   await expect(frame.locator(".post-traffic__preview-event")).toHaveCount(0);
-  await page.getByLabel("Engagement", { exact: true }).selectOption("overlay");
+  await frame.getByRole("button", { name: "Traffic", exact: true }).click();
   await page.getByLabel("Show all twelve").check();
   const comparisons = page.locator(".comparison iframe");
   await expect(comparisons).toHaveCount(12);
@@ -133,6 +149,12 @@ test("Mobile samples retain working presets, annotations and a non-expanding hel
   await expect(chart.locator(".post-traffic__plot")).toHaveAttribute(
     "aria-label",
     /^Daily/,
+  );
+  await chart.getByRole("button", { name: "Engagement", exact: true }).click();
+  await expect(chart.locator(".post-traffic__point")).toHaveCount(30);
+  await expect(chart.locator(".post-traffic__plot")).toHaveAttribute(
+    "aria-label",
+    /^Daily average engagement per view/,
   );
   const plotOffset = () =>
     chart.evaluate((card) => {

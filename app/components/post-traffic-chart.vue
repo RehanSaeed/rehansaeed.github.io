@@ -1,12 +1,10 @@
 <template>
-  <div
-    class="post-traffic__chart"
-    :class="{ 'post-traffic__chart--overlay': overlay }">
-    <div class="post-traffic__axis-labels" aria-hidden="true">
-      <span :class="{ 'post-traffic__views-label': metric === 'views' }">{{
-        metric === "views" ? "Page views" : "Avg. engagement / view"
-      }}</span>
-      <span v-if="overlay">Avg. engagement / view</span>
+  <div class="post-traffic__chart">
+    <div
+      v-if="metric === 'engagement'"
+      class="post-traffic__axis-labels"
+      aria-hidden="true">
+      <span>Avg. engagement / view</span>
     </div>
     <div class="post-traffic__scale" aria-hidden="true">
       <span
@@ -29,7 +27,6 @@
       @keydown="navigate">
       <svg viewBox="0 0 600 200" preserveAspectRatio="none" aria-hidden="true">
         <path class="post-traffic__axes" d="M 4 4 V 196 H 596" />
-        <path v-if="overlay" class="post-traffic__axes" d="M 596 4 V 196" />
         <path
           v-for="tick in ticks.slice(0, -1)"
           :key="tick"
@@ -45,21 +42,10 @@
           class="post-traffic__line"
           :points="points" />
         <path
-          v-if="overlay || metric === 'engagement'"
-          class="post-traffic__engagement-line"
+          v-else
+          class="post-traffic__line post-traffic__engagement-line"
           :d="engagementPath" />
       </svg>
-      <template v-if="overlay">
-        <span
-          v-for="point in engagementPoints"
-          :key="point.index"
-          class="post-traffic__engagement-dot"
-          aria-hidden="true"
-          :style="{
-            left: `${x(point.index) / 6}%`,
-            top: `${engagementY(point.value) / 2}%`,
-          }" />
-      </template>
       <button
         v-for="(item, index) in series.points"
         :key="item.date"
@@ -69,7 +55,6 @@
           'post-traffic__point--selected': selectedIndex === index,
           'post-traffic__point--missing':
             metric === 'engagement' && average(index) === null,
-          'post-traffic__point--engagement': metric === 'engagement',
         }"
         :style="{ left: `${x(index) / 6}%`, top: `${pointY(index) / 2}%` }"
         :tabindex="index === (selectedIndex ?? 0) ? 0 : -1"
@@ -91,17 +76,6 @@
         {{ pointText(selectedIndex) }}
       </div>
     </div>
-    <div
-      v-if="overlay"
-      class="post-traffic__scale post-traffic__scale--secondary"
-      aria-hidden="true">
-      <span
-        v-for="tick in engagementTicks"
-        :key="tick"
-        :style="{ top: `${engagementY(tick) / 2}%` }">
-        {{ formatTrafficDuration(tick) }}
-      </span>
-    </div>
     <div class="post-traffic__dates" aria-hidden="true">
       <span v-for="index in dateLabels" :key="index">{{
         axisDate(series.points[index]!.date)
@@ -119,7 +93,6 @@ import {
 const props = defineProps<{
   series: TrafficSeries;
   metric: "views" | "engagement";
-  overlay?: boolean;
   annotations: { date: string; label: string }[];
 }>();
 const id = useId();
@@ -180,12 +153,7 @@ const maximum = computed(() =>
 const ticks = computed(() =>
   [4, 3, 2, 1, 0].map((value) => (value * maximum.value) / 4),
 );
-const engagementTicks = computed(() =>
-  [4, 3, 2, 1, 0].map((value) => (value * engagementMaximum.value) / 4),
-);
 const y = (value: number) => 196 - (value / maximum.value) * 192;
-const engagementY = (value: number) =>
-  196 - (value / engagementMaximum.value) * 192;
 const x = (index: number) =>
   props.series.points.length === 1
     ? 300
@@ -193,7 +161,7 @@ const x = (index: number) =>
 const pointY = (index: number) =>
   props.metric === "views"
     ? y(props.series.points[index]!.views)
-    : engagementY(average(index) ?? 0);
+    : y(average(index) ?? 0);
 const points = computed(() =>
   props.series.points
     .map((item, index) => `${x(index)},${y(item.views)}`)
@@ -205,7 +173,7 @@ const engagementPath = computed(() => {
     .map((point) => {
       const command = point.index === previous + 1 ? "L" : "M";
       previous = point.index;
-      return `${command} ${x(point.index)} ${engagementY(point.value)}`;
+      return `${command} ${x(point.index)} ${y(point.value)}`;
     })
     .join(" ");
 });
@@ -315,9 +283,6 @@ onBeforeUnmount(() => document.removeEventListener("keydown", dismiss));
   min-inline-size: 0;
   font-size: var(--global-font-size-1);
 }
-.post-traffic__chart--overlay {
-  grid-template-columns: max-content minmax(0, 1fr) max-content;
-}
 .post-traffic__axis-labels {
   grid-column: 1 / -1;
   display: flex;
@@ -325,12 +290,6 @@ onBeforeUnmount(() => document.removeEventListener("keydown", dismiss));
   gap: var(--global-space-fixed-3);
   margin-block-end: var(--global-space-fixed-2);
   font-size: var(--global-font-size-1);
-}
-.post-traffic__views-label {
-  color: var(--global-accent-color);
-}
-.post-traffic__axis-labels span:last-child {
-  text-align: end;
 }
 .post-traffic__scale {
   position: relative;
@@ -345,10 +304,6 @@ onBeforeUnmount(() => document.removeEventListener("keydown", dismiss));
   position: relative;
   display: block;
   inline-size: max-content;
-}
-.post-traffic__scale--secondary span {
-  inset-inline-end: auto;
-  inset-inline-start: 0;
 }
 .post-traffic__plot {
   position: relative;
@@ -377,22 +332,6 @@ onBeforeUnmount(() => document.removeEventListener("keydown", dismiss));
   stroke-width: 2;
   vector-effect: non-scaling-stroke;
 }
-.post-traffic__engagement-line {
-  fill: none;
-  stroke: var(--global-title-color);
-  stroke-width: 1.5;
-  stroke-dasharray: 5 4;
-  vector-effect: non-scaling-stroke;
-}
-.post-traffic__engagement-dot {
-  position: absolute;
-  translate: -50% -50%;
-  inline-size: 5px;
-  block-size: 5px;
-  border-radius: 50%;
-  background: var(--global-title-color);
-  pointer-events: none;
-}
 .post-traffic__annotation {
   fill: none;
   stroke: var(--global-accent-color);
@@ -420,9 +359,6 @@ onBeforeUnmount(() => document.removeEventListener("keydown", dismiss));
   block-size: 5px;
   border-radius: 50%;
   background: var(--global-accent-color);
-}
-.post-traffic__point--engagement::after {
-  background: var(--global-title-color);
 }
 .post-traffic__point--missing::after {
   display: none;
