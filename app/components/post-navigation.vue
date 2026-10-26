@@ -18,14 +18,18 @@
           :rel="item.rel"
           :aria-labelledby="`post-navigation-${item.rel}-label post-navigation-${item.rel}-title`"
           :aria-describedby="`post-navigation-${item.rel}-time`">
-          <NuxtImg
-            class="post-navigation__image"
+          <NuxtPicture
+            class="post-navigation__picture"
+            :img-attrs="{ class: 'post-navigation__image' }"
+            format="avif"
+            :legacy-format="
+              item.post.heroImage.endsWith('.png') ? 'png' : 'jpg'
+            "
             :src="item.post.heroImage"
             :width="item.image.width"
             :height="item.image.height"
             :sizes="contentImageSizes"
             densities="x1 x2"
-            format="webp"
             loading="lazy"
             alt="" />
           <div class="post-navigation__caption">
@@ -156,12 +160,17 @@ const neighbours = computed(() =>
   outline-offset: 4px;
 }
 
-.post-navigation__image {
+.post-navigation__picture {
   grid-area: 1 / 1;
   align-self: start;
+  display: block;
+  margin-block-end: var(--post-navigation-caption-offset);
+}
+
+.post-navigation__image {
+  display: block;
   inline-size: 100%;
   block-size: auto;
-  margin-block-end: var(--post-navigation-caption-offset);
 }
 
 .post-navigation__caption {
@@ -245,7 +254,7 @@ const neighbours = computed(() =>
     row-gap: 0;
   }
 
-  .post-navigation__image {
+  .post-navigation__picture {
     grid-area: 1 / 1 / 3 / 2;
   }
 

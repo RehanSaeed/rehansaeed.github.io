@@ -76,6 +76,13 @@ test("Every published post has the correct static chronological neighbours", asy
         expect(Number(image.attr("height"))).toBeGreaterThan(0);
         expect(image.attr("srcset")).toBeTruthy();
         expect(image.attr("sizes")).toBeTruthy();
+        const picture = image.parent("picture");
+        expect(picture.hasClass("post-navigation__picture")).toBe(true);
+        expect(picture.children("source").attr("type")).toBe("image/avif");
+        expect(picture.children("source").attr("srcset")).toContain("f_avif");
+        expect(image.attr("src")).toContain(
+          neighbour.post.heroImage.endsWith(".png") ? "f_png" : "f_jpg",
+        );
         expect(link.find('svg.icon[aria-hidden="true"]').length).toBe(1);
         expect(
           link.find("svg.icon path, svg.icon line, svg.icon polyline").length,
@@ -166,6 +173,7 @@ for (const width of [1280, 768, 375, 320]) {
       await expect(nav.getByRole("listitem")).toHaveCount(2);
       await expect(nav.getByRole("heading", { level: 2 })).toHaveCount(2);
       await expect(nav.locator("svg.icon")).toHaveCount(2);
+      await expect(nav.locator("picture")).toHaveCount(2);
       for (const link of [previous, next]) {
         const box = await link.boundingBox();
         expect(box).not.toBeNull();
@@ -182,7 +190,8 @@ for (const width of [1280, 768, 375, 320]) {
                 (image) =>
                   image instanceof HTMLImageElement &&
                   image.complete &&
-                  image.naturalWidth > 0,
+                  image.naturalWidth > 0 &&
+                  image.currentSrc.includes("f_avif"),
               ),
             ),
         )
@@ -212,6 +221,7 @@ for (const width of [1280, 768, 375, 320]) {
               captionTop: captionBox.top,
               captionHeight: captionBox.height,
               captionBackground: getComputedStyle(caption).backgroundImage,
+              pictureDisplay: getComputedStyle(image.parentElement!).display,
               surfaceColor: getComputedStyle(link.parentElement!)
                 .backgroundColor,
               extension: box.height - imageBox.height,
@@ -247,6 +257,7 @@ for (const width of [1280, 768, 375, 320]) {
           expect(card.sameRow).toBe(true);
           expect(card.opposite).toBe(true);
           expect(card.captionFits).toBe(true);
+          expect(card.pictureDisplay).toBe("block");
           expect(card.extension).toBeCloseTo(64, 0);
           expect(card.captionBackground).toContain("/ 0.65");
           expect(card.captionBackground).toContain("/ 0.88");
