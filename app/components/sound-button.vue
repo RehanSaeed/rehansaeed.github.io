@@ -18,9 +18,6 @@
 </template>
 
 <script setup lang="ts">
-import UButton from "~/components/shared/button.vue";
-import UIcon from "~/components/shared/icon.vue";
-
 const { enabled, error, setEnabled } = useSoundEffect();
 </script>
 
