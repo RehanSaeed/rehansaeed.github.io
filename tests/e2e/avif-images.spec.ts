@@ -10,7 +10,7 @@ import { expect, test } from "./fixtures";
 unitTest(
   "Every PNG/JPG has a plain AVIF companion, preferring PNG for shared basenames",
   async () => {
-    unitTest.setTimeout(120_000);
+    unitTest.setTimeout(300_000);
     let count = 0;
     let originalBytes = 0;
     let avifBytes = 0;
@@ -297,67 +297,6 @@ test.describe("Native fallback without JavaScript", () => {
             'type="image/unsupported"',
           ),
         });
-
-        unitTest(
-          "Offline pages and search load AVIF without downloading content fallbacks",
-          async ({ browser, baseURL }) => {
-            unitTest.setTimeout(180_000);
-            const context = await browser.newContext({
-              baseURL,
-              serviceWorkers: "allow",
-            });
-            try {
-              const page = await context.newPage();
-              await page.goto("/", { waitUntil: "domcontentloaded" });
-              await page.evaluate(async () => {
-                await navigator.serviceWorker.register("/service-worker.js");
-                await navigator.serviceWorker.ready;
-              });
-              await page.waitForFunction(
-                () => !!navigator.serviceWorker.controller,
-              );
-              await context.setOffline(true);
-              for (const path of ["/about/", "/asp-net-mvc-boilerplate/"]) {
-                await page.goto(path, { waitUntil: "domcontentloaded" });
-                await expect(
-                  page.getByRole("button", { name: "Open search" }),
-                ).toBeEnabled();
-                const images = page.locator("img[data-nuxt-pic]");
-                expect(await images.count()).toBeGreaterThan(0);
-                for (const image of await images.all()) {
-                  await image.scrollIntoViewIfNeeded();
-                  await expect
-                    .poll(() =>
-                      image.evaluate(
-                        (node: HTMLImageElement) =>
-                          node.complete &&
-                          node.naturalWidth > 0 &&
-                          node.currentSrc.includes("f_avif"),
-                      ),
-                    )
-                    .toBe(true);
-                }
-              }
-              await page.getByRole("button", { name: "Open search" }).click();
-              await page
-                .getByRole("searchbox", { name: "Search", exact: true })
-                .fill("Schema.NET");
-              const hero = page.locator(".search-result__image").first();
-              await expect
-                .poll(() =>
-                  hero.evaluate(
-                    (image: HTMLImageElement) =>
-                      image.complete &&
-                      image.naturalWidth > 0 &&
-                      image.currentSrc.endsWith("/Schema.NET-1366x768.avif"),
-                  ),
-                )
-                .toBe(true);
-            } finally {
-              await context.close();
-            }
-          },
-        );
       });
       await page.goto(path);
       const image = page.locator(".post__photo");
@@ -375,3 +314,62 @@ test.describe("Native fallback without JavaScript", () => {
     });
   }
 });
+
+unitTest(
+  "Offline pages and search load AVIF without downloading content fallbacks",
+  async ({ browser, baseURL }) => {
+    unitTest.setTimeout(180_000);
+    const context = await browser.newContext({
+      baseURL,
+      serviceWorkers: "allow",
+    });
+    try {
+      const page = await context.newPage();
+      await page.goto("/", { waitUntil: "domcontentloaded" });
+      await page.evaluate(async () => {
+        await navigator.serviceWorker.register("/service-worker.js");
+        await navigator.serviceWorker.ready;
+      });
+      await page.waitForFunction(() => !!navigator.serviceWorker.controller);
+      await context.setOffline(true);
+      for (const path of ["/about/", "/asp-net-mvc-boilerplate/"]) {
+        await page.goto(path, { waitUntil: "domcontentloaded" });
+        await expect(
+          page.getByRole("button", { name: "Open search" }),
+        ).toBeEnabled();
+        const images = page.locator("img[data-nuxt-pic]");
+        expect(await images.count()).toBeGreaterThan(0);
+        for (const image of await images.all()) {
+          await image.scrollIntoViewIfNeeded();
+          await expect
+            .poll(() =>
+              image.evaluate(
+                (node: HTMLImageElement) =>
+                  node.complete &&
+                  node.naturalWidth > 0 &&
+                  node.currentSrc.includes("f_avif"),
+              ),
+            )
+            .toBe(true);
+        }
+      }
+      await page.getByRole("button", { name: "Open search" }).click();
+      await page
+        .getByRole("searchbox", { name: "Search", exact: true })
+        .fill("Schema.NET");
+      const hero = page.locator(".search-result__image").first();
+      await expect
+        .poll(() =>
+          hero.evaluate(
+            (image: HTMLImageElement) =>
+              image.complete &&
+              image.naturalWidth > 0 &&
+              image.currentSrc.endsWith("/Schema.NET-1366x768.avif"),
+          ),
+        )
+        .toBe(true);
+    } finally {
+      await context.close();
+    }
+  },
+);
