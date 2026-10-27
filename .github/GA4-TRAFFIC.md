@@ -64,7 +64,8 @@ in `/post-traffic.json` are intentionally public.
   history is labelled unavailable. GA4 cannot reconstruct traffic from before
   collection began, and this does not import Universal Analytics archives.
   Articles published before that start date show the site's standard warning
-  callout explaining that **All time** covers only recorded history, not the
+  callout above the statistics, naming Google Analytics and explaining that
+  **All time** covers only recorded history, not the
   article's full lifetime. Changing the selected range does not hide it.
 - Daily report rows before an article's publication date are excluded, including
   rows in its first month. Only aggregated counts and foreground seconds are
@@ -80,7 +81,8 @@ in `/post-traffic.json` are intentionally public.
   with daily points, respectively. The buttons sit below the statistics row and
   above the chart. Presets end at the snapshot's reporting cutoff, not today's
   date, and never split a monthly aggregate or invent earlier coverage. The
-  displayed dates, total, engagement and plot update together. Short histories
+  chart's date labels, total, engagement and plot update together. There is no
+  separate date-range summary above the chart. Short histories
   retain their real start date. A legacy snapshot without daily data explicitly
   disables Last month until refreshed.
 - **Average engagement per view** is total GA4 `userEngagementDuration`
@@ -100,7 +102,8 @@ in `/post-traffic.json` are intentionally public.
   explicit unavailable message without resetting the selected metric or range.
   Page views and weighted engagement use the shared `UStatistic` component:
   semantic description lists with matching large values and labels below,
-  wrapping when space is limited. The parent formats and calculates the
+  left-aligned in a two-column grid with a 3rem column gap and stacking with a
+  1.5rem row gap on small screens. The parent formats and calculates the
   values. Date and metric controls use `UButton`'s bordered and filled-purple
   primary variants, retaining native pressed states and shared focus styling.
   Neither chart has a visible plot title; engagement axis ticks retain their

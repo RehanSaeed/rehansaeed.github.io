@@ -24,6 +24,16 @@ const snapshot: TrafficSnapshot = {
   },
 };
 
+async function expectAlignedScale(chart: Locator) {
+  const edges = await chart
+    .locator(".post-traffic__scale span")
+    .evaluateAll((ticks) =>
+      ticks.map((tick) => tick.getBoundingClientRect().right),
+    );
+  expect(edges).toHaveLength(5);
+  expect(Math.max(...edges) - Math.min(...edges)).toBeLessThan(0.5);
+}
+
 async function expectPointTooltip(
   chart: Locator,
   date: string,
@@ -68,10 +78,10 @@ for (const width of [375, 1280]) {
     await chart.scrollIntoViewIfNeeded();
     await expect(chart.locator(".post-traffic__total dd")).toHaveText("360");
     await expect(chart.locator(".post-traffic__total dt")).toHaveText(
-      "page views",
+      "Page views",
     );
     await expect(chart.locator(".post-traffic__engagement dt")).toHaveText(
-      "average engagement per view",
+      "Average engagement per view",
     );
     await expect(chart.locator(".post-traffic__engagement dd")).toHaveText(
       "Unavailable",
@@ -110,11 +120,36 @@ for (const width of [375, 1280]) {
       );
     }
     const total = await chart.locator(".post-traffic__total").boundingBox();
-    const range = await chart.locator(".post-traffic__range").boundingBox();
+    const metrics = chart.locator(".post-traffic__metrics");
+    await expect(metrics).toHaveCSS("display", "grid");
+    await expect(metrics).toHaveCSS("text-align", "start");
+    const spacing = await metrics.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return {
+        columnGap: parseFloat(style.columnGap),
+        rowGap: parseFloat(style.rowGap),
+        fontSize: parseFloat(
+          getComputedStyle(document.documentElement).fontSize,
+        ),
+      };
+    });
+    expect(spacing.columnGap).toBeCloseTo(spacing.fontSize * 3, 2);
+    expect(spacing.rowGap).toBeCloseTo(spacing.fontSize * 1.5, 2);
+    const engagementBounds = await chart
+      .locator(".post-traffic__engagement")
+      .boundingBox();
     if (width === 375)
-      expect(range!.y).toBeGreaterThanOrEqual(total!.y + total!.height);
-    else expect(range!.x).toBeGreaterThan(total!.x + total!.width);
-    const summary = await chart.locator(".post-traffic__summary").boundingBox();
+      expect(engagementBounds!.y - total!.y - total!.height).toBeCloseTo(
+        spacing.rowGap,
+        2,
+      );
+    else
+      expect(engagementBounds!.x - total!.x - total!.width).toBeCloseTo(
+        spacing.columnGap,
+        2,
+      );
+    await expect(chart.locator(".post-traffic__range")).toHaveCount(0);
+    const summary = await metrics.boundingBox();
     const controls = await chart
       .locator(".post-traffic__controls")
       .boundingBox();
@@ -134,6 +169,24 @@ for (const width of [375, 1280]) {
       "Traffic before 15 Jan 2024 is unavailable.",
     );
     const warning = chart.locator(".post-traffic__warning");
+    await expect(warning).toContainText(
+      "This article predates the available Google Analytics history.",
+    );
+    await expect(warning).not.toContainText("GA4");
+    const warningBounds = await warning.boundingBox();
+    const metricsBounds = await metrics.boundingBox();
+    expect(warningBounds!.y + warningBounds!.height).toBeLessThanOrEqual(
+      metricsBounds!.y,
+    );
+    expect(
+      await warning.evaluate((element) =>
+        Boolean(
+          element.compareDocumentPosition(
+            element.parentElement!.querySelector(".post-traffic__metrics")!,
+          ) & Node.DOCUMENT_POSITION_FOLLOWING,
+        ),
+      ),
+    ).toBe(true);
     await expect(warning).toHaveClass(/custom-block warning/);
     await expect(warning).toHaveAttribute("role", "note");
     await expect(warning.locator(".custom-block-title")).toHaveText(
@@ -184,6 +237,7 @@ for (const width of [375, 1280]) {
     await expect(chart.locator("figcaption")).toHaveCount(0);
     await expect(chart.locator(".post-traffic__axis-labels")).toHaveCount(0);
     await expect(chart.locator(".post-traffic__scale span")).toHaveCount(5);
+    await expectAlignedScale(chart);
     await expect(chart.locator(".post-traffic__dates span")).toHaveCount(3);
     await expect(chart.locator(".post-traffic__axes")).toHaveAttribute(
       "d",
@@ -301,6 +355,10 @@ test("A single zero month has a valid point and nonduplicated date labels", asyn
   );
   await expect(chart.getByRole("slider")).toHaveCount(0);
   await expect(chart.locator("polyline")).toHaveAttribute("points", "300,196");
+  await expect(chart.locator(".post-traffic__scale span").first()).toHaveText(
+    "4",
+  );
+  await expectAlignedScale(chart);
   await expect(chart.locator(".post-traffic__dates span")).toHaveCount(1);
   await chart
     .getByRole("button", { name: "Jan 2024: 0 page views", exact: true })
@@ -408,10 +466,10 @@ test.describe("Touch traffic inspection", () => {
     await expect(chart.locator(".post-traffic__point")).toHaveCount(57);
     await expect(chart.locator(".post-traffic__annotation")).toHaveCount(0);
     await expect(chart.locator(".post-traffic__events")).toHaveCount(0);
-    for (const [name, size, start] of [
-      ["Last year", 12, "2025-11-01"],
-      ["Last month", 30, "2026-09-23"],
-      ["All time", 57, "2022-02-03"],
+    for (const [name, size, firstDate, lastDate] of [
+      ["Last year", 12, "Nov 2025", "Oct 2026"],
+      ["Last month", 30, "23 Sept", "22 Oct"],
+      ["All time", 57, "Feb 2022", "Oct 2026"],
     ] as const) {
       const button = chart.getByRole("button", { name, exact: true });
       await button.click();
@@ -422,9 +480,13 @@ test.describe("Touch traffic inspection", () => {
           .locator('[aria-pressed="true"]'),
       ).toHaveCount(1);
       await expect(chart.locator(".post-traffic__point")).toHaveCount(size);
+      await expect(chart.locator(".post-traffic__range")).toHaveCount(0);
       await expect(
-        chart.locator(".post-traffic__range time").first(),
-      ).toHaveAttribute("datetime", start);
+        chart.locator(".post-traffic__dates span").first(),
+      ).toHaveText(firstDate);
+      await expect(
+        chart.locator(".post-traffic__dates span").last(),
+      ).toHaveText(lastDate);
       const selected = name === "Last month" ? days : months.slice(-size);
       const total = selected.reduce((sum, item) => sum + item.views, 0);
       await expect(chart.locator(".post-traffic__total dd")).toHaveText(
@@ -458,10 +520,14 @@ test.describe("Touch traffic inspection", () => {
           `^${name === "Last month" ? "Daily" : "Monthly"} average engagement per view`,
         ),
       );
+      await expectAlignedScale(chart);
       await expect(button).toHaveAttribute("aria-pressed", "true");
       await expect(
-        chart.locator(".post-traffic__range time").first(),
-      ).toHaveAttribute("datetime", start);
+        chart.locator(".post-traffic__dates span").first(),
+      ).toHaveText(firstDate);
+      await expect(
+        chart.locator(".post-traffic__dates span").last(),
+      ).toHaveText(lastDate);
       await chart.getByRole("button", { name: "Traffic", exact: true }).click();
     }
   });

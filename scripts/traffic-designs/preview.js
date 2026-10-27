@@ -39,27 +39,23 @@ body { padding: 16px; margin: 0; background: var(--global-background-color); }
 [data-fill="gradient"] .post-traffic__preview-area { fill: url(#preview-fill); opacity: 1; }
 [data-points="false"] .post-traffic__point:not(:focus-visible):not(.post-traffic__point--selected)::after { opacity: 0; }
 [data-grid="false"] .post-traffic__gridline { opacity: 0; }
-[data-layout="center"] .post-traffic__summary { flex-direction: column; text-align: center; }
-[data-layout="center"] .post-traffic__range { margin-inline: 0; }
-[data-layout="split"] .post-traffic__range { padding: 12px; border: 1px solid var(--global-border-color); border-radius: var(--global-border-radius); font-size: .85em; }
+[data-layout="center"] .post-traffic__metrics { justify-content: center; text-align: center; }
+[data-layout="split"] .post-traffic__metrics { padding: 12px; border: 1px solid var(--global-border-color); border-radius: var(--global-border-radius); }
 [data-layout="inline"] .post-traffic__total,
 [data-layout="inline"] .post-traffic__engagement { display: flex; flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 8px; }
 [data-layout="inline"] .post-traffic__total dd,
 [data-layout="inline"] .post-traffic__engagement dd { font-size: 2rem; }
-[data-layout="footer-dates"] .post-traffic { display: flex; flex-direction: column; }
-[data-layout="footer-dates"] .post-traffic__summary { display: contents; }
-[data-layout="footer-dates"] .post-traffic__metrics { order: 1; }
-[data-layout="footer-dates"] .post-traffic__controls { order: 2; }
-[data-layout="footer-dates"] .post-traffic__coverage { order: 3; }
-[data-layout="footer-dates"] .post-traffic__chart { order: 4; }
-[data-layout="footer-dates"] .post-traffic__range { order: 5; margin-block-start: 16px; }
-[data-layout="footer-dates"] .post-traffic__events { order: 6; }
+[data-layout="footer-stats"] .post-traffic { display: flex; flex-direction: column; }
+[data-layout="footer-stats"] .post-traffic__metrics { order: 5; margin-block-start: 16px; }
+[data-layout="footer-stats"] .post-traffic__controls { order: 2; }
+[data-layout="footer-stats"] .post-traffic__coverage { order: 3; }
+[data-layout="footer-stats"] .post-traffic__chart { order: 4; }
+[data-layout="footer-stats"] .post-traffic__events { order: 6; }
 [data-layout="compact"] .post-traffic__plot { block-size: 8rem; }
 [data-layout="compact"] .post-traffic__total dd,
 [data-layout="compact"] .post-traffic__engagement dd { font-size: 2rem; }
 [data-layout="tall"] .post-traffic__plot { block-size: 17rem; }
-[data-layout="tiles"] .post-traffic__metrics,
-[data-layout="tiles"] .post-traffic__range { padding: 16px; border: 1px solid var(--global-border-color); border-radius: var(--global-border-radius); }
+[data-layout="tiles"] .post-traffic__metrics { padding: 16px; border: 1px solid var(--global-border-color); border-radius: var(--global-border-radius); }
 [data-layout="clean"] .post-traffic__gridline { opacity: 0; }
 [data-layout="clean"] .post-traffic__line { stroke-width: 3; }
 [data-layout="step"] .post-traffic__line { visibility: hidden; }
@@ -190,7 +186,7 @@ window.addEventListener("message", (event) => {
       "center",
       "split",
       "inline",
-      "footer-dates",
+      "footer-stats",
       "compact",
       "tall",
       "tiles",

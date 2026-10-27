@@ -323,6 +323,7 @@ onBeforeUnmount(() => document.removeEventListener("keydown", dismiss));
   position: relative;
   display: block;
   inline-size: max-content;
+  margin-inline-start: auto;
 }
 .post-traffic__plot {
   position: relative;

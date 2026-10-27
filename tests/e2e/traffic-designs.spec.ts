@@ -22,6 +22,7 @@ test("Twelve real-component treatments and their controls work without external 
   const treatments = page.locator(".samples button");
   await expect(treatments).toHaveCount(12);
   await expect(frame.locator(".post-traffic__axis-labels")).toHaveCount(0);
+  await expect(frame.locator(".post-traffic__range")).toHaveCount(0);
   const layouts = [
     "classic",
     "area",
@@ -29,7 +30,7 @@ test("Twelve real-component treatments and their controls work without external 
     "center",
     "split",
     "inline",
-    "footer-dates",
+    "footer-stats",
     "compact",
     "tall",
     "tiles",
@@ -51,7 +52,7 @@ test("Twelve real-component treatments and their controls work without external 
           getComputedStyle(card.querySelector(selector)!).getPropertyValue(key);
         return JSON.stringify({
           total: bounds(".post-traffic__total"),
-          range: bounds(".post-traffic__range"),
+          engagement: bounds(".post-traffic__engagement"),
           plot: bounds(".post-traffic__plot"),
           fill: property(".post-traffic__preview-area", "fill"),
           fillDisplay: property(".post-traffic__preview-area", "display"),
