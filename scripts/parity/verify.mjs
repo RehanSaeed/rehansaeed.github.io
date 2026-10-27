@@ -240,6 +240,12 @@ const sitemap = liveArtifacts["/sitemap.xml"].urls
             changefreq: null,
             priority: null,
         },
+        {
+            loc: "{origin}/tag/artificial-intelligence-ai/",
+            lastmod: null,
+            changefreq: null,
+            priority: null,
+        },
     ])
     .sort((a, b) => a.loc.localeCompare(b.loc));
 assert.deepEqual(

@@ -111,10 +111,18 @@ When explicitly asked to help draft an article, follow these guidelines:
   updates, retain the original date and permalink and update `dateModified`.
 - Reuse appropriate category and tag names. Add `series` and numeric `seriesOrder`
   only when the article actually belongs to a series.
+- Use full, descriptive tag names, including an acronym in parentheses where
+  useful: for example, `Artificial Intelligence (AI)` rather than `AI`.
+  Prefer an existing full-name tag over introducing an acronym-only variant.
 - Use an existing, relevant hero image or supply an appropriately licensed one.
   Hero images must match the schema's `/images/...-<width>x<height>.png` or JPEG
   naming pattern, with dimensions matching the actual file. Choose an image
   relevant to the article rather than copying another post's image by default.
+- For new posts, use a **1600x900** hero image, the larger of the two common
+  formats in this repository; **1366x768** is the older format. Prefer a source
+  image at least that large, preserve its aspect ratio and avoid cropping
+  important content. Enlarging a small source does not add detail. Do not resize
+  unrelated existing heroes.
 - Put article-specific images in the post's `images` directory and reference them
   relatively, for example `![Descriptive alt text](./images/example.png)`.
   Keep captions, alt text and attribution accurate; do not fabricate screenshots.
@@ -172,18 +180,46 @@ is still visible in the public repository, so it must not contain credentials,
 private account details or confidential review notes.
 
 Include the article title, canonical URL (<https://rehansaeed.com> plus
-`permalink`), an explicit `Draft - not approved for posting` status, and a separate
-copy-ready section for each destination below. Keep notes outside the copy-ready
-text. Use the canonical URL by default; do not invent tracking parameters,
-account handles or publication dates.
+`permalink`), and a separate copy-ready section for each destination below. Use
+distinct emoji in section headings to make destinations and supporting sections
+easy to scan. Keep source attribution and destination choices outside the
+copy-ready text. Do not add `Review notes` sections; report posting blockers in
+the conversation instead. Do not add routine character-count notes,
+publication-status labels,
+approval boilerplate or posting logs that require maintaining the file after
+publication. Still check character limits and obtain posting approval as
+described below. Use the canonical URL by default; do not invent tracking
+parameters, account handles or publication dates.
 
-| Destination         | Draft requirements                                                                                                                                                                                                                                      |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Mastodon            | Explain the problem and one useful finding, include the link and a few relevant hashtags. Check the target instance's current character limit.                                                                                                          |
-| Bluesky             | Lead with a concise takeaway and include the link. Check the current character limit; only propose a thread when needed, with each part separately reviewable.                                                                                          |
-| LinkedIn            | Explain the practical professional relevance, include concrete takeaways and the link. Keep the author's voice rather than adopting a sales pitch.                                                                                                      |
-| Reddit profile      | Prepare a straightforward title and announcement for [u/muhammadrehansaeed](https://www.reddit.com/user/muhammadrehansaeed/). Posting directly to this profile is distinct from submitting to a subreddit; verify the signed-in account before posting. |
-| Selected subreddits | Create a separate title and body for each user-selected community, tailored to its audience and allowed post type. Provide useful substance without requiring a click, disclose authorship and include the link only where allowed.                     |
+For short-form platforms such as Mastodon and Bluesky, keep announcements simple:
+
+```text
+Just blogged "<Blog Title>"
+
+<Canonical URL>
+
+#RelevantTag1 #RelevantTag2 #RelevantTag3
+@RelevantPerson1 @RelevantPerson2
+```
+
+Replace placeholders with the actual title, URL and relevant hashtags. Include
+mentions only when the people are relevant and their platform-specific handles
+have been verified; otherwise omit the mentions line. Respect each platform's
+current character limit, including its treatment of URLs and mentions.
+
+On platforms allowing longer messages, such as LinkedIn and Reddit, add one
+concise paragraph about the post in addition to the announcement and link.
+Keep the paragraph in the author's voice and tailor it to the audience. Adapt
+hashtags and mentions to the destination rather than forcing them into Reddit
+posts or communities where they are inappropriate.
+
+| Destination         | Draft requirements                                                                                                                                                                                                                                                                    |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Mastodon            | Use the short announcement template, with the link, relevant hashtags and optional verified mentions. Check the target instance's current character limit.                                                                                                                            |
+| Bluesky             | Use the short announcement template as a single post, with the link, relevant hashtags and optional verified mentions. Check the current character limit.                                                                                                                             |
+| LinkedIn            | Use the announcement, one paragraph about the post, the link, relevant hashtags and optional verified mentions. Keep the author's voice rather than adopting a sales pitch.                                                                                                           |
+| Reddit profile      | Prepare a straightforward title, announcement and one paragraph about the post for [u/muhammadrehansaeed](https://www.reddit.com/user/muhammadrehansaeed/). Posting directly to this profile is distinct from submitting to a subreddit; verify the signed-in account before posting. |
+| Selected subreddits | Create a separate title and body for each user-selected community, tailored to its audience and allowed post type. Provide useful substance without requiring a click, disclose authorship and include the link only where allowed.                                                   |
 
 - If subreddit destinations are not specified, propose a small, relevant shortlist
   for approval rather than treating it as an authorised distribution list.
@@ -195,9 +231,10 @@ account handles or publication dates.
   of links, and leave space for any approved additions. Do not blindly truncate.
 - Include an image suggestion and alt text where useful. Do not claim an image,
   link preview or attachment has been checked unless it actually has.
-- Keep all claims supported by the article. Tailor the wording rather than
-  blasting identical copy everywhere. Avoid engagement bait, unnecessary mentions
-  and promises to answer questions that the author has not agreed to.
+- Keep all claims supported by the article. Keep the short announcement formula
+  consistent, tailoring longer paragraphs, hashtags and mentions to each
+  destination. Avoid engagement bait, unnecessary mentions and promises to answer
+  questions that the author has not agreed to.
 
 ## Approval and Optional Browser Posting
 
@@ -215,9 +252,10 @@ account handles or publication dates.
   account is the intended one, and the composer contains the approved text,
   visibility, link, images and flair. Stop for approval if a material change is
   needed or community rules disallow the submission.
-- After each submission, verify the published result and record its URL and
-  destination in the promotion pack with its status. Distinguish confirmed posts,
-  failures, pending moderation and uncertain submissions.
-- Check existing records and the platform before retrying an uncertain
+- After each submission, verify the published result and report its URL,
+  destination and outcome in the conversation, not a posting log in `social.md`.
+  Distinguish confirmed posts, failures, pending moderation and uncertain
+  submissions.
+- Check previous conversation results and the platform before retrying an uncertain
   submission. Never duplicate posts on a retry or treat an article edit as
   permission to repost.
