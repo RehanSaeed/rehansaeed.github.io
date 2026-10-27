@@ -55,6 +55,13 @@ jobs:
           key: skew-${{ runner.os }}-${{ github.sha }}
           restore-keys: |
             skew-${{ runner.os }}-
+      - name: "Cache Responsive Images"
+        uses: actions/cache@v6.1.0
+        with:
+          path: .cache/nuxt-images
+          key: ipx-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json', 'nuxt.config.ts', 'modules/image-cache/**', 'modules/blog-content/paths.ts', 'public/**', 'content/**/*.png', 'content/**/*.jpg', 'content/**/*.jpeg', 'content/**/*.gif', 'content/**/*.svg', 'content/**/*.webp', 'content/**/*.avif') }}-${{ github.sha }}
+          restore-keys: |
+            ipx-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('package-lock.json', 'nuxt.config.ts', 'modules/image-cache/**', 'modules/blog-content/paths.ts', 'public/**', 'content/**/*.png', 'content/**/*.jpg', 'content/**/*.jpeg', 'content/**/*.gif', 'content/**/*.svg', 'content/**/*.webp', 'content/**/*.avif') }}-
       - name: "NPM Build"
         run: npm run build
         env:
