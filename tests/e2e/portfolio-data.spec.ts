@@ -24,7 +24,11 @@ test("Portfolio popularity refreshes expired counts and reuses fresh counts", as
   globalThis.fetch = async () => {
     calls++;
     return new Response(
-      JSON.stringify({ stargazers_count: stars, forks_count: 3 }),
+      JSON.stringify({
+        stargazers_count: stars,
+        forks_count: 3,
+        created_at: "2016-01-01T00:00:00Z",
+      }),
     );
   };
   try {
@@ -33,6 +37,7 @@ test("Portfolio popularity refreshes expired counts and reuses fresh counts", as
       repository: "example/project",
       stars: 20,
       forks: 3,
+      createdAt: "2016-01-01T00:00:00Z",
     });
     stars = 30;
     expect(await portfolioSnapshots(dir, [entry])).toEqual(snapshots);
@@ -77,7 +82,13 @@ test("A newly added project cannot be omitted by a fresh popularity cache", asyn
   );
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async () =>
-    new Response(JSON.stringify({ stargazers_count: 50, forks_count: 4 }));
+    new Response(
+      JSON.stringify({
+        stargazers_count: 50,
+        forks_count: 4,
+        created_at: "2016-01-01T00:00:00Z",
+      }),
+    );
   try {
     const snapshots = await portfolioSnapshots(dir, [first, second]);
     expect(Object.keys(snapshots)).toHaveLength(2);

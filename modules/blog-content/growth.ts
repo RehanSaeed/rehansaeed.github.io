@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { measureCounterGrowth } from "../../shared/utils/ticker";
+import { lifetimeCounterGrowth } from "../../shared/utils/ticker";
 import { cacheSchema as popularitySchema } from "./portfolio";
 import { cacheSchema as downloadsSchema } from "./nuget";
 import type { ContentEntry } from "./scan";
@@ -21,58 +21,34 @@ export async function portfolioGrowth(
       downloadsSchema.parse(JSON.parse(text)),
     ),
   ]);
-  const repositories = [...new Set(projects.map(({ data }) => data.permalink))];
-  const ids = [
-    ...new Set(
-      projects.flatMap(({ data }) =>
-        (data.nugetPackages ?? []).map(({ id }) => id.toLowerCase()),
-      ),
-    ),
-  ];
-  function starCount(snapshots: typeof popularity.snapshots) {
-    const counts = new Map<string, number>();
-    for (const permalink of repositories) {
-      const snapshot = snapshots[permalink];
-      if (!snapshot) return undefined;
-      const repository = new URL(permalink).pathname.slice(1).toLowerCase();
-      if (snapshot.repository.toLowerCase() !== repository) return undefined;
-      counts.set(repository, snapshot.stars);
+  const repositories = new Map<string, { count: number; createdAt?: string }>();
+  const packages = new Map<string, { count: number; createdAt?: string }>();
+  for (const { data } of projects) {
+    const repository = new URL(data.permalink).pathname.slice(1).toLowerCase();
+    const snapshot = popularity.snapshots[data.permalink];
+    if (!snapshot || snapshot.repository.toLowerCase() !== repository) {
+      throw new Error(
+        `Missing current portfolio growth observation: ${repository}.`,
+      );
     }
-    return [...counts.values()].reduce((sum, count) => sum + count, 0);
-  }
-  function downloadCount(snapshots: typeof downloads.snapshots) {
-    let total = 0;
-    for (const id of ids) {
-      const snapshot = snapshots[id];
-      if (!snapshot || snapshot.id.toLowerCase() !== id) return undefined;
-      total += snapshot.downloads;
+    repositories.set(repository, {
+      count: snapshot.stars,
+      createdAt: snapshot.createdAt,
+    });
+    for (const { id } of data.nugetPackages ?? []) {
+      const key = id.toLowerCase();
+      const pkg = downloads.snapshots[key];
+      if (!pkg || pkg.id.toLowerCase() !== key) {
+        throw new Error(`Missing current portfolio growth observation: ${id}.`);
+      }
+      packages.set(key, { count: pkg.downloads, createdAt: pkg.createdAt });
     }
-    return total;
   }
-  const stars = starCount(popularity.snapshots);
-  const packages = downloadCount(downloads.snapshots);
-  if (stars === undefined || packages === undefined) {
-    throw new Error("Missing current portfolio growth observations.");
-  }
-  const previousStars =
-    popularity.previous && starCount(popularity.previous.snapshots);
-  const previousDownloads =
-    downloads.previous && downloadCount(downloads.previous.snapshots);
   return {
-    stars: measureCounterGrowth(
-      stars,
+    stars: lifetimeCounterGrowth(
+      [...repositories.values()],
       popularity.updated,
-      previousStars !== undefined && popularity.previous
-        ? { count: previousStars, observedAt: popularity.previous.updated }
-        : undefined,
-      true,
     ),
-    downloads: measureCounterGrowth(
-      packages,
-      downloads.updated,
-      previousDownloads !== undefined && downloads.previous
-        ? { count: previousDownloads, observedAt: downloads.previous.updated }
-        : undefined,
-    ),
+    downloads: lifetimeCounterGrowth([...packages.values()], downloads.updated),
   };
 }

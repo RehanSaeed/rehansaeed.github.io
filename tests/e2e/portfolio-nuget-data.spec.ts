@@ -21,7 +21,7 @@ const project = (...ids: string[]): ContentEntry => ({
 });
 const response = (id: string, downloads: string | number) =>
   new Response(
-    `<feed xmlns:d="urn:data"><entry><d:Id>${id}</d:Id><d:DownloadCount>${downloads}</d:DownloadCount><d:VersionDownloadCount>2</d:VersionDownloadCount></entry><entry><d:Id>${id}</d:Id><d:DownloadCount>${downloads}</d:DownloadCount></entry></feed>`,
+    `<feed xmlns:d="urn:data"><entry><d:Id>${id}</d:Id><d:DownloadCount>${downloads}</d:DownloadCount><d:Created>2016-01-01T00:00:00Z</d:Created><d:VersionDownloadCount>2</d:VersionDownloadCount></entry><entry><d:Id>${id}</d:Id><d:DownloadCount>${downloads}</d:DownloadCount></entry></feed>`,
   );
 
 test("NuGet sums package-wide counts once and refreshes only expired snapshots", async ({}, info) => {
@@ -35,6 +35,7 @@ test("NuGet sums package-wide counts once and refreshes only expired snapshots",
     const url = new URL(String(input));
     expect(url.origin).toBe("https://www.nuget.org");
     expect(url.searchParams.get("semVerLevel")).toBe("2.0.0");
+    expect(url.searchParams.get("$orderby")).toBe("Created asc");
     const id = url.searchParams.get("id")!.replaceAll("'", "");
     return response(id, id === "example.first" ? firstCount : 50);
   };

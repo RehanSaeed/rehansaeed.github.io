@@ -139,9 +139,9 @@ test("Portfolio and About totals are in static HTML and match the listed project
   expect(totals).toHaveLength(1);
   expect(totals.attr("data-downloads")).toBe(String(downloads));
   expect(totals.attr("data-stars")).toBe(String(stars));
-  const tickers = totals.find(".count-ticker");
+  const tickers = totals.find(".number-ticker");
   expect(tickers).toHaveLength(2);
-  expect(tickers.last().find(".count-ticker__verified strong").text()).toBe(
+  expect(tickers.last().find(".number-ticker__accessible").text()).toBe(
     stars.toLocaleString("en-GB"),
   );
   expect(totals.text()).toContain(
@@ -161,13 +161,13 @@ test("Portfolio and About totals are in static HTML and match the listed project
       timeZone: "UTC",
     }).format(new Date(timestamp)),
   );
-  expect(tickers.first().find(".count-ticker__verified strong").text()).toBe(
+  expect(tickers.first().find(".number-ticker__accessible").text()).toBe(
     downloads.toLocaleString("en-GB"),
   );
   tickers.each((_, ticker) => {
-    expect($(ticker).attr("data-state")).toBe("snapshot");
-    expect($(ticker).text()).toContain("Estimates, not a live feed.");
-    expect($(ticker).find(".count-ticker__value").attr("aria-live")).toBe(
+    expect($(ticker).attr("data-state")).toBe("paused");
+    expect($(ticker).find("h3, p")).toHaveLength(2);
+    expect($(ticker).find(".number-ticker__value").attr("aria-live")).toBe(
       "off",
     );
   });
@@ -182,7 +182,7 @@ test("Portfolio and About totals are in static HTML and match the listed project
   );
 });
 
-for (const width of [375, 1280]) {
+for (const width of [320, 375, 1280]) {
   for (const colorScheme of ["light", "dark"] as const) {
     test(`Shared statistics render and navigate at ${width}px in ${colorScheme} mode`, async ({
       page,
@@ -201,13 +201,23 @@ for (const width of [375, 1280]) {
       await expect(totals).toBeVisible();
       await expect(totals).toHaveAttribute("data-downloads", downloads!);
       await expect(totals).toHaveAttribute("data-stars", stars!);
-      await expect(totals.locator(".count-ticker__label")).toHaveText([
-        "Lifetime NuGet downloads",
+      await expect(totals.locator(".number-ticker__title")).toHaveText([
+        "NuGet downloads",
         "GitHub stars",
       ]);
-      for (const ticker of await totals.locator(".count-ticker").all()) {
-        await expect(ticker).toHaveAttribute("data-state", "snapshot");
-        const digits = ticker.locator(".count-ticker__digits");
+      const cards = totals.locator(".number-ticker");
+      const first = (await cards.nth(0).boundingBox())!;
+      const second = (await cards.nth(1).boundingBox())!;
+      expect(second.y).toBe(first.y);
+      expect(second.x).toBeGreaterThan(first.x);
+      for (const ticker of await cards.all()) {
+        await expect(ticker).toHaveAttribute("data-state", "paused");
+        expect(
+          await ticker
+            .locator("h3")
+            .evaluate((heading) => getComputedStyle(heading).fontFamily),
+        ).toContain("Audiowide");
+        const digits = ticker.locator(".number-ticker__digits");
         const before = await digits.textContent();
         await page.clock.runFor(2100);
         expect(await digits.textContent()).toBe(before);
@@ -221,3 +231,33 @@ for (const width of [375, 1280]) {
     });
   }
 }
+
+test("Portfolio uses real lifetime rates to animate the shared odometers and can pause both", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  const now = Date.now();
+  await page.clock.install({ time: new Date(now - 10_000) });
+  await page.clock.pauseAt(new Date(now));
+  await page.addInitScript(() => {
+    Math.random = () => 0.5;
+  });
+  await page.goto("/portfolio/");
+  const downloads = page.locator(".number-ticker").first();
+  await expect(downloads).toHaveAttribute("data-state", "running");
+  const value = Number(await downloads.getAttribute("data-value"));
+  const rate = Number(await downloads.getAttribute("data-rate"));
+  expect(rate).toBeGreaterThan(0);
+  await page.clock.runFor(20_000);
+  await expect(downloads).toHaveAttribute(
+    "data-value",
+    String(value + Math.trunc(20 * rate)),
+  );
+  await page.getByRole("button", { name: "Pause estimates" }).click();
+  await expect(page.locator(".number-ticker[data-state='paused']")).toHaveCount(
+    2,
+  );
+  const paused = await downloads.getAttribute("data-value");
+  await page.clock.runFor(5000);
+  await expect(downloads).toHaveAttribute("data-value", paused!);
+});
