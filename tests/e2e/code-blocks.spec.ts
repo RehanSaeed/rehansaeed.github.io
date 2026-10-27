@@ -369,7 +369,7 @@ test("The cheat sheet documents accessible Bash/PowerShell tabs and copies only 
   await expect(string).toHaveCSS("color", "rgb(230, 219, 116)");
   await expect(panel.locator("pre")).toHaveCSS(
     "background-color",
-    "rgb(1, 37, 86)",
+    "rgb(1, 36, 86)",
   );
   await group.getByRole("button", { name: "Copy code", exact: true }).click();
   expect(await page.evaluate(() => sessionStorage.getItem("copied-code"))).toBe(
