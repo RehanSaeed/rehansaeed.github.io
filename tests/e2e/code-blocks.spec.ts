@@ -278,6 +278,33 @@ test("The cheat sheet documents accessible Bash/PowerShell tabs and copies only 
     page.getByRole("tab", { name: "pnpm", exact: true }),
   ).toHaveCount(0);
   await expect(bash).toHaveAttribute("aria-selected", "true");
+  await expect(bash).toHaveJSProperty("tagName", "BUTTON");
+  await expect(group.getByRole("tablist")).toHaveAttribute(
+    "aria-orientation",
+    "horizontal",
+  );
+  await expect(bash).toHaveAttribute("tabindex", "0");
+  await expect(powershell).toHaveAttribute("tabindex", "-1");
+  const tabEdge = await group.evaluate((element) => {
+    const tabs = element
+      .querySelector('[role="tablist"]')!
+      .getBoundingClientRect();
+    const code = element
+      .querySelector('[role="tabpanel"]:not([hidden]) pre')!
+      .getBoundingClientRect();
+    return {
+      gap: code.top - tabs.bottom,
+      left: code.left - tabs.left,
+      right: code.right - tabs.right,
+    };
+  });
+  expect(Math.abs(tabEdge.gap)).toBeLessThanOrEqual(1);
+  expect(Math.abs(tabEdge.left)).toBeLessThanOrEqual(1);
+  expect(Math.abs(tabEdge.right)).toBeLessThanOrEqual(1);
+  await expect(bash).toHaveCSS(
+    "border-bottom-color",
+    await bash.evaluate((element) => getComputedStyle(element).backgroundColor),
+  );
   await expect(group.getByRole("tabpanel")).toHaveCount(1);
   await bash.focus();
   await page.keyboard.press("ArrowLeft");

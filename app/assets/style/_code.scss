@@ -132,7 +132,39 @@ pre[class*="language-"] {
 }
 
 .code-block__tabs {
-  margin-block-end: 0.5rem;
+  gap: 0;
+  align-items: stretch;
+  border-block-end: var(--global-border-width-1) solid
+    var(--global-border-color);
+
+  button {
+    margin-block-end: calc(-1 * var(--global-border-width-1));
+    border-color: transparent;
+    border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
+    background: transparent;
+
+    &:hover {
+      border-color: transparent;
+    }
+
+    &[aria-selected="true"] {
+      border-color: var(--global-border-color);
+      border-block-end-color: var(--global-content-background-color);
+      background: var(--global-content-background-color);
+    }
+
+    &:focus-visible {
+      outline-offset: -3px;
+    }
+  }
+}
+
+.code-block--group pre[class*="language-"] {
+  margin-block-start: 0;
+  border-color: var(--global-border-color);
+  border-block-start: 0;
+  border-start-start-radius: 0;
+  border-start-end-radius: 0;
 }
 
 .code-block__toolbar {
