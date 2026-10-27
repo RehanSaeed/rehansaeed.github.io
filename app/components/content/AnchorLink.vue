@@ -12,19 +12,30 @@ defineProps<{ href: string; label: string }>();
 
 <style lang="scss" scoped>
 .anchor-link {
+  --heading-anchor-size: var(--global-space-fixed-4);
+  --heading-anchor-gap: var(--global-space-fixed-2);
+  --heading-anchor-offset: min(
+    calc(var(--heading-anchor-size) + var(--heading-anchor-gap)),
+    var(--card-space, var(--global-space-fluid-6))
+  );
+
   color: var(--global-link-color);
   float: inline-start;
-  margin-inline-start: -30px;
+  margin-inline-start: calc(-1 * var(--heading-anchor-offset));
   opacity: 0;
-  margin-inline-end: 8px;
-  inline-size: 22px;
-  block-size: 22px;
+  margin-inline-end: calc(
+    var(--heading-anchor-offset) - var(--heading-anchor-size)
+  );
+  inline-size: var(--heading-anchor-size);
+  block-size: var(--heading-anchor-size);
   text-decoration: none;
   transition: opacity var(--global-duration-2) ease-out 100ms;
   vertical-align: middle;
 
   :slotted(svg) {
     display: inline;
+    inline-size: 100%;
+    block-size: 100%;
   }
 
   :is(h1, h2, h3, h4, h5, h6):hover &,
