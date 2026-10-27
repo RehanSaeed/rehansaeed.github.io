@@ -23,7 +23,7 @@ for (const colorScheme of ["light", "dark"] as const) {
       document.body.append(probe);
       const accent = getComputedStyle(probe).color;
       probe.remove();
-      const arrow = getComputedStyle(element, "::before");
+      const arrow = getComputedStyle(element.querySelector(".tooltip__arrow")!);
       return {
         background: style.backgroundColor,
         pageBackground: getComputedStyle(document.body).backgroundColor,
@@ -48,7 +48,12 @@ for (const colorScheme of ["light", "dark"] as const) {
     await page.keyboard.press("Escape");
     await expect(tooltip).toBeHidden();
     await page.mouse.move(0, 0);
-    await search.focus();
+    await search.evaluate((element) => {
+      element.focus();
+      element.dispatchEvent(
+        new PointerEvent("pointerleave", { pointerType: "mouse" }),
+      );
+    });
     await expect(tooltip).toBeVisible();
     await page.keyboard.press("Escape");
     await expect(tooltip).toBeHidden();
@@ -100,13 +105,8 @@ test("Tooltips flip, clamp, track resizing and stay above dialogs", async ({
   await expect(tooltip).toBeHidden();
   const dialog = page.getByRole("dialog", { name: "Search", exact: true });
   await expect(dialog).toBeVisible();
-  // Move an existing trigger into the modal to exercise the shared component's top layer.
-  const theme = page.getByRole("button", { name: "Toggle dark/light" });
-  await theme.evaluate((element) => {
-    document.querySelector("dialog[open] .dialog__content")!.append(element);
-  });
-  await theme.focus();
-  const modalTooltip = page.getByRole("tooltip");
+  await dialog.getByRole("button", { name: "Close Search" }).focus();
+  const modalTooltip = page.getByRole("tooltip", { name: "Close Search" });
   await expect(modalTooltip).toBeVisible();
   expect(
     await modalTooltip.evaluate((element) => {
@@ -174,5 +174,168 @@ test("Tooltip triggers retain native layout and touch activation", async ({
   await expect(
     page.getByRole("dialog", { name: "Search", exact: true }),
   ).toBeVisible();
+  await expect(page.getByRole("tooltip")).toHaveCount(0);
+});
+
+test("Tooltips try a perpendicular side and dismiss when their trigger is clipped", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 140, height: 812 });
+  await page.goto("/");
+  const search = page.getByRole("button", { name: "Open search", exact: true });
+  await expect(search).toBeEnabled();
+  await search.evaluate((element) => {
+    element.style.position = "fixed";
+    element.style.left = "50px";
+    element.style.top = "300px";
+  });
+  await search.focus();
+  const tooltip = page.getByRole("tooltip", { name: "Search", exact: true });
+  await expect(tooltip).toBeVisible();
+  await expect(tooltip).toHaveAttribute("data-placement", "top");
+  const target = await search.boundingBox();
+  const bounds = await tooltip.boundingBox();
+  expect(bounds!.y + bounds!.height).toBeLessThan(target!.y);
+  expect(bounds!.x).toBeGreaterThanOrEqual(8);
+  expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(132);
+  await search.evaluate((element) => {
+    element.style.transform = "translateY(50px)";
+  });
+  await expect
+    .poll(async () => {
+      const currentTarget = await search.boundingBox();
+      const currentTooltip = await tooltip.boundingBox();
+      return Math.abs(
+        currentTarget!.y - currentTooltip!.y - currentTooltip!.height - 12,
+      );
+    })
+    .toBeLessThanOrEqual(1);
+  await search.evaluate((element) => {
+    element.style.top = "-100px";
+  });
+  await expect(tooltip).toBeHidden();
+  await expect(search).not.toHaveAttribute("aria-describedby");
+});
+
+test("About image links describe their destinations without changing their layout", async ({
+  page,
+}) => {
+  await page.goto("/about/");
+  await expect(page.getByRole("button", { name: "Open search" })).toBeEnabled();
+  const groups = [
+    {
+      selector: ".about__youtube-images a",
+      text: "View my YouTube channel",
+      count: 2,
+    },
+    {
+      selector: ".about__github-images a:nth-child(1)",
+      text: "View my GitHub profile",
+      count: 1,
+    },
+    {
+      selector: ".about__github-images a:nth-child(2)",
+      text: "View my GitHub followers",
+      count: 1,
+    },
+    {
+      selector: ".about__github-images a:nth-child(3)",
+      text: "Sponsor me on GitHub",
+      count: 1,
+    },
+    {
+      selector: ".about__github-statistics a",
+      text: "View my GitHub profile",
+      count: 1,
+    },
+    {
+      selector: ".about_awards-images a[href*='credly']",
+      text: "View my credentials on Credly",
+      count: 10,
+    },
+    {
+      selector: ".about_awards-images a[href='/open-uk-honouree/']",
+      text: "Read about my Open UK honour",
+      count: 1,
+    },
+    {
+      selector: "a:has(.about__stack-overflow-image)",
+      text: "View my Stack Overflow profile",
+      count: 1,
+    },
+    {
+      selector: ".about__mvp-images a",
+      text: "View the Microsoft MVP programme",
+      count: 1,
+    },
+  ];
+  for (const { selector, text, count } of groups) {
+    const links = page.locator(selector);
+    await expect(links).toHaveCount(count);
+    for (const link of await links.all()) {
+      await link.scrollIntoViewIfNeeded();
+      await link.focus();
+      await expect(link).toHaveAccessibleDescription(text);
+      await expect(
+        page.getByRole("tooltip", { name: text, exact: true }),
+      ).toBeVisible();
+      await expect(link).not.toHaveAttribute("title");
+      await page.keyboard.press("Escape");
+      await expect(page.getByRole("tooltip")).toHaveCount(0);
+    }
+  }
+});
+
+test("GitHub badges describe stargazer and fork lists rather than actions", async ({
+  page,
+}) => {
+  await page.goto("/portfolio/");
+  await expect(page.getByRole("button", { name: "Open search" })).toBeEnabled();
+  const card = page
+    .locator(".portfolio-card:has(.portfolio-card__github)")
+    .first();
+  const project = await card.locator(".portfolio-card__title").innerText();
+  for (const [selector, destination] of [
+    [".portfolio-card__stars", "stargazers"],
+    [".portfolio-card__forks", "forks"],
+  ]) {
+    const link = card.locator(`a:has(${selector})`);
+    await link.focus();
+    await expect(link).toHaveAttribute("href", new RegExp(`/${destination}$`));
+    await expect(link).toHaveAccessibleDescription(
+      `View ${project} ${destination} on GitHub`,
+    );
+    await expect(page.getByRole("tooltip")).toHaveText(
+      `View ${project} ${destination} on GitHub`,
+    );
+    await page.keyboard.press("Escape");
+  }
+});
+
+test("Article heading anchors prerender as accessible links and navigate without copying", async ({
+  page,
+  request,
+}) => {
+  const path = "/on-the-etiquette-of-pull-request-comments/";
+  const response = await request.get(path);
+  expect(response.ok()).toBe(true);
+  expect(await response.text()).toMatch(
+    /<a[^>]+class="heading-anchor"[^>]+href="#being-short"[^>]+aria-label="Link to this section"/,
+  );
+  await page.goto(path);
+  await expect(page.getByRole("button", { name: "Open search" })).toBeEnabled();
+  const link = page.locator("a.heading-anchor[href='#being-short']");
+  await expect(link).toHaveAccessibleName("Link to this section");
+  await expect(link).not.toHaveAttribute("aria-hidden");
+  await expect(link.locator("svg")).toHaveAttribute("aria-hidden", "true");
+  await link.scrollIntoViewIfNeeded();
+  await link.focus();
+  await expect(link).toHaveCSS("opacity", "1");
+  await expect(link).toHaveAccessibleDescription("Link to this section");
+  await expect(
+    page.getByRole("tooltip", { name: "Link to this section" }),
+  ).toBeVisible();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/#being-short$/);
   await expect(page.getByRole("tooltip")).toHaveCount(0);
 });

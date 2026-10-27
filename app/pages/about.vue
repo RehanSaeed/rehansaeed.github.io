@@ -36,22 +36,26 @@
         development escapades.
       </p>
       <div class="about__youtube-images">
-        <a :href="youtubeUrl">
-          <img
-            class="about__youtube-image"
-            alt="Youtube views"
-            height="20"
-            width="104"
-            :src="youtubeViewsImageUrl" />
-        </a>
-        <a :href="youtubeUrl">
-          <img
-            class="about__youtube-image"
-            alt="Youtube subscribers"
-            height="20"
-            width="124"
-            :src="youtubeSubscribersImageUrl" />
-        </a>
+        <u-tooltip v-slot="{ trigger }" text="View my YouTube channel">
+          <a v-bind="trigger" :href="youtubeUrl">
+            <img
+              class="about__youtube-image"
+              alt="Youtube views"
+              height="20"
+              width="104"
+              :src="youtubeViewsImageUrl" />
+          </a>
+        </u-tooltip>
+        <u-tooltip v-slot="{ trigger }" text="View my YouTube channel">
+          <a v-bind="trigger" :href="youtubeUrl">
+            <img
+              class="about__youtube-image"
+              alt="Youtube subscribers"
+              height="20"
+              width="124"
+              :src="youtubeSubscribersImageUrl" />
+          </a>
+        </u-tooltip>
       </div>
       <p class="about__description">
         You can see some of the open source projects that I have founded and
@@ -62,205 +66,237 @@
         commercial projects that I cannot disclose.
       </p>
       <div class="about__github-images">
-        <a :href="gitHubUrl">
-          <img
-            class="about__github-image"
-            alt="GitHub stars"
-            height="30"
-            width="135"
-            :src="gitHubStarsImageUrl" />
-        </a>
-        <a :href="gitHubFollowersUrl">
-          <img
-            class="about__github-image"
-            alt="GitHub follower count"
-            height="30"
-            width="168"
-            :src="gitHubFollowersImageUrl" />
-        </a>
-        <a :href="gitHubSponsorsUrl">
-          <img
-            class="about__github-image"
-            alt="GitHub sponsors"
-            height="30"
-            width="121"
-            :src="gitHubSponsorsImageUrl" />
-        </a>
+        <u-tooltip v-slot="{ trigger }" text="View my GitHub profile">
+          <a v-bind="trigger" :href="gitHubUrl">
+            <img
+              class="about__github-image"
+              alt="GitHub stars"
+              height="30"
+              width="135"
+              :src="gitHubStarsImageUrl" />
+          </a>
+        </u-tooltip>
+        <u-tooltip v-slot="{ trigger }" text="View my GitHub followers">
+          <a v-bind="trigger" :href="gitHubFollowersUrl">
+            <img
+              class="about__github-image"
+              alt="GitHub follower count"
+              height="30"
+              width="168"
+              :src="gitHubFollowersImageUrl" />
+          </a>
+        </u-tooltip>
+        <u-tooltip v-slot="{ trigger }" text="Sponsor me on GitHub">
+          <a v-bind="trigger" :href="gitHubSponsorsUrl">
+            <img
+              class="about__github-image"
+              alt="GitHub sponsors"
+              height="30"
+              width="121"
+              :src="gitHubSponsorsImageUrl" />
+          </a>
+        </u-tooltip>
       </div>
       <div class="about__github-statistics">
-        <a :href="gitHubUrl">
-          <img
-            class="about__github-statistics"
-            alt="GitHub statistics"
-            height="1280"
-            width="850"
-            :src="gitHubStatisticsImageUrl" />
-        </a>
+        <u-tooltip v-slot="{ trigger }" text="View my GitHub profile">
+          <a v-bind="trigger" :href="gitHubUrl">
+            <img
+              class="about__github-statistics"
+              alt="GitHub statistics"
+              height="1280"
+              width="850"
+              :src="gitHubStatisticsImageUrl" />
+          </a>
+        </u-tooltip>
       </div>
       <p class="about__description">
         Here are some of the awards I have been given for my work as a software
         engineer in open source or elsewhere:
       </p>
       <div class="about_awards-images">
-        <a :href="credlyUrl">
-          <NuxtPicture
-            format="avif"
-            :img-attrs="{ class: 'about__badge-image' }"
-            legacy-format="png"
-            alt="Microsoft Global Hackathon 2026 Participant"
-            height="300"
-            width="300"
-            sizes="150px"
-            densities="x1 x2"
-            src="/images/about/Microsoft-Global-Hackathon-2026-300x300.png"
-            quality="100" />
-        </a>
-        <a :href="credlyUrl">
-          <NuxtPicture
-            format="avif"
-            :img-attrs="{ class: 'about__badge-image' }"
-            legacy-format="png"
-            alt="Microsoft MSAI Security Champs March 2026"
-            height="300"
-            width="300"
-            sizes="150px"
-            densities="x1 x2"
-            src="/images/about/Microsoft-MSAI-Security-Champs-2026-300x300.png"
-            quality="100" />
-        </a>
-        <a :href="credlyUrl">
-          <NuxtPicture
-            format="avif"
-            :img-attrs="{ class: 'about__badge-image' }"
-            legacy-format="png"
-            alt="Microsoft Global Hackathon 2025 Participant"
-            height="300"
-            width="300"
-            sizes="150px"
-            densities="x1 x2"
-            src="/images/about/Microsoft-Global-Hackathon-2025-300x300.png"
-            quality="100" />
-        </a>
-        <a :href="credlyUrl">
-          <NuxtPicture
-            format="avif"
-            :img-attrs="{ class: 'about__badge-image' }"
-            legacy-format="png"
-            alt="Microsoft MSAI Security Champs Recognition 2025"
-            height="300"
-            width="300"
-            sizes="150px"
-            densities="x1 x2"
-            src="/images/about/Microsoft-MSAI-Security-Champs-Recognition-2025-300x300.png"
-            quality="100" />
-        </a>
-        <a :href="credlyUrl">
-          <NuxtPicture
-            format="avif"
-            :img-attrs="{ class: 'about__badge-image' }"
-            legacy-format="png"
-            alt="Microsoft Global Hackathon 2024 Participant"
-            height="300"
-            width="300"
-            sizes="150px"
-            densities="x1 x2"
-            src="/images/about/Microsoft-Global-Hackathon-2024-300x300.png"
-            quality="100" />
-        </a>
-        <a :href="credlyUrl">
-          <NuxtPicture
-            format="avif"
-            :img-attrs="{ class: 'about__badge-image' }"
-            legacy-format="png"
-            alt="Microsoft Global Hackathon 2023 Participant"
-            height="300"
-            width="300"
-            sizes="150px"
-            densities="x1 x2"
-            src="/images/about/Microsoft-Global-Hackathon-2023-300x300.png"
-            quality="100" />
-        </a>
-        <a href="/open-uk-honouree/">
-          <NuxtPicture
-            format="avif"
-            :img-attrs="{ class: 'about__open-uk-honours-image' }"
-            legacy-format="jpg"
-            alt="Open UK Honours 2022"
-            height="396"
-            width="1288"
-            sizes="322px"
-            densities="x1 x2"
-            src="/images/about/Open-UK-Honours-2022-1288x396.jpg"
-            quality="100" />
-        </a>
-        <a :href="credlyUrl">
-          <NuxtPicture
-            format="avif"
-            :img-attrs="{ class: 'about__badge-image' }"
-            legacy-format="png"
-            alt="Microsoft Global Hackathon 2022.png"
-            height="300"
-            width="300"
-            sizes="150px"
-            densities="x1 x2"
-            src="/images/about/Microsoft-Global-Hackathon-2022-300x300.png"
-            quality="100" />
-        </a>
-        <a :href="credlyUrl">
-          <NuxtPicture
-            format="avif"
-            :img-attrs="{ class: 'about__badge-image' }"
-            legacy-format="png"
-            alt="Microsoft Global Hackathon 2021.png"
-            height="300"
-            width="300"
-            sizes="150px"
-            densities="x1 x2"
-            src="/images/about/Microsoft-Global-Hackathon-2021-300x300.png"
-            quality="100" />
-        </a>
-        <a :href="credlyUrl">
-          <NuxtPicture
-            format="avif"
-            :img-attrs="{
-              class: 'about__badge-image about__badge-image--wide',
-            }"
-            legacy-format="png"
-            alt="Microsoft Global Hackathon 2020.png"
-            height="300"
-            width="350"
-            sizes="180px"
-            densities="x1 x2"
-            src="/images/about/Microsoft-Global-Hackathon-2020-350x300.png"
-            quality="100" />
-        </a>
-        <a :href="credlyUrl">
-          <NuxtPicture
-            format="avif"
-            :img-attrs="{ class: 'about__badge-image' }"
-            legacy-format="png"
-            alt="Microsoft Most Valuable Professional (MVP) Alumni"
-            height="300"
-            width="300"
-            sizes="150px"
-            densities="x1 x2"
-            src="/images/about/Microsoft-Most-Valuable-Professional-Alumni-2023-300x300.png"
-            quality="100" />
-        </a>
+        <u-tooltip v-slot="{ trigger }" text="View my credentials on Credly">
+          <a v-bind="trigger" :href="credlyUrl">
+            <NuxtPicture
+              format="avif"
+              :img-attrs="{ class: 'about__badge-image' }"
+              legacy-format="png"
+              alt="Microsoft Global Hackathon 2026 Participant"
+              height="300"
+              width="300"
+              sizes="150px"
+              densities="x1 x2"
+              src="/images/about/Microsoft-Global-Hackathon-2026-300x300.png"
+              quality="100" />
+          </a>
+        </u-tooltip>
+        <u-tooltip v-slot="{ trigger }" text="View my credentials on Credly">
+          <a v-bind="trigger" :href="credlyUrl">
+            <NuxtPicture
+              format="avif"
+              :img-attrs="{ class: 'about__badge-image' }"
+              legacy-format="png"
+              alt="Microsoft MSAI Security Champs March 2026"
+              height="300"
+              width="300"
+              sizes="150px"
+              densities="x1 x2"
+              src="/images/about/Microsoft-MSAI-Security-Champs-2026-300x300.png"
+              quality="100" />
+          </a>
+        </u-tooltip>
+        <u-tooltip v-slot="{ trigger }" text="View my credentials on Credly">
+          <a v-bind="trigger" :href="credlyUrl">
+            <NuxtPicture
+              format="avif"
+              :img-attrs="{ class: 'about__badge-image' }"
+              legacy-format="png"
+              alt="Microsoft Global Hackathon 2025 Participant"
+              height="300"
+              width="300"
+              sizes="150px"
+              densities="x1 x2"
+              src="/images/about/Microsoft-Global-Hackathon-2025-300x300.png"
+              quality="100" />
+          </a>
+        </u-tooltip>
+        <u-tooltip v-slot="{ trigger }" text="View my credentials on Credly">
+          <a v-bind="trigger" :href="credlyUrl">
+            <NuxtPicture
+              format="avif"
+              :img-attrs="{ class: 'about__badge-image' }"
+              legacy-format="png"
+              alt="Microsoft MSAI Security Champs Recognition 2025"
+              height="300"
+              width="300"
+              sizes="150px"
+              densities="x1 x2"
+              src="/images/about/Microsoft-MSAI-Security-Champs-Recognition-2025-300x300.png"
+              quality="100" />
+          </a>
+        </u-tooltip>
+        <u-tooltip v-slot="{ trigger }" text="View my credentials on Credly">
+          <a v-bind="trigger" :href="credlyUrl">
+            <NuxtPicture
+              format="avif"
+              :img-attrs="{ class: 'about__badge-image' }"
+              legacy-format="png"
+              alt="Microsoft Global Hackathon 2024 Participant"
+              height="300"
+              width="300"
+              sizes="150px"
+              densities="x1 x2"
+              src="/images/about/Microsoft-Global-Hackathon-2024-300x300.png"
+              quality="100" />
+          </a>
+        </u-tooltip>
+        <u-tooltip v-slot="{ trigger }" text="View my credentials on Credly">
+          <a v-bind="trigger" :href="credlyUrl">
+            <NuxtPicture
+              format="avif"
+              :img-attrs="{ class: 'about__badge-image' }"
+              legacy-format="png"
+              alt="Microsoft Global Hackathon 2023 Participant"
+              height="300"
+              width="300"
+              sizes="150px"
+              densities="x1 x2"
+              src="/images/about/Microsoft-Global-Hackathon-2023-300x300.png"
+              quality="100" />
+          </a>
+        </u-tooltip>
+        <u-tooltip v-slot="{ trigger }" text="Read about my Open UK honour">
+          <a v-bind="trigger" href="/open-uk-honouree/">
+            <NuxtPicture
+              format="avif"
+              :img-attrs="{ class: 'about__open-uk-honours-image' }"
+              legacy-format="jpg"
+              alt="Open UK Honours 2022"
+              height="396"
+              width="1288"
+              sizes="322px"
+              densities="x1 x2"
+              src="/images/about/Open-UK-Honours-2022-1288x396.jpg"
+              quality="100" />
+          </a>
+        </u-tooltip>
+        <u-tooltip v-slot="{ trigger }" text="View my credentials on Credly">
+          <a v-bind="trigger" :href="credlyUrl">
+            <NuxtPicture
+              format="avif"
+              :img-attrs="{ class: 'about__badge-image' }"
+              legacy-format="png"
+              alt="Microsoft Global Hackathon 2022.png"
+              height="300"
+              width="300"
+              sizes="150px"
+              densities="x1 x2"
+              src="/images/about/Microsoft-Global-Hackathon-2022-300x300.png"
+              quality="100" />
+          </a>
+        </u-tooltip>
+        <u-tooltip v-slot="{ trigger }" text="View my credentials on Credly">
+          <a v-bind="trigger" :href="credlyUrl">
+            <NuxtPicture
+              format="avif"
+              :img-attrs="{ class: 'about__badge-image' }"
+              legacy-format="png"
+              alt="Microsoft Global Hackathon 2021.png"
+              height="300"
+              width="300"
+              sizes="150px"
+              densities="x1 x2"
+              src="/images/about/Microsoft-Global-Hackathon-2021-300x300.png"
+              quality="100" />
+          </a>
+        </u-tooltip>
+        <u-tooltip v-slot="{ trigger }" text="View my credentials on Credly">
+          <a v-bind="trigger" :href="credlyUrl">
+            <NuxtPicture
+              format="avif"
+              :img-attrs="{
+                class: 'about__badge-image about__badge-image--wide',
+              }"
+              legacy-format="png"
+              alt="Microsoft Global Hackathon 2020.png"
+              height="300"
+              width="350"
+              sizes="180px"
+              densities="x1 x2"
+              src="/images/about/Microsoft-Global-Hackathon-2020-350x300.png"
+              quality="100" />
+          </a>
+        </u-tooltip>
+        <u-tooltip v-slot="{ trigger }" text="View my credentials on Credly">
+          <a v-bind="trigger" :href="credlyUrl">
+            <NuxtPicture
+              format="avif"
+              :img-attrs="{ class: 'about__badge-image' }"
+              legacy-format="png"
+              alt="Microsoft Most Valuable Professional (MVP) Alumni"
+              height="300"
+              width="300"
+              sizes="150px"
+              densities="x1 x2"
+              src="/images/about/Microsoft-Most-Valuable-Professional-Alumni-2023-300x300.png"
+              quality="100" />
+          </a>
+        </u-tooltip>
       </div>
       <p class="about__description">
         I have been fairly active on StackOverflow. You can view my
         <a :href="stackOverflowUrl">Stack Overflow profile</a> and see my
         contribution to the community.
       </p>
-      <a :href="stackOverflowUrl">
-        <img
-          class="about__stack-overflow-image"
-          alt="Stack Overflow profile statistics"
-          height="58"
-          width="208"
-          :src="stackOverflowProfileUrl" />
-      </a>
+      <u-tooltip v-slot="{ trigger }" text="View my Stack Overflow profile">
+        <a v-bind="trigger" :href="stackOverflowUrl">
+          <img
+            class="about__stack-overflow-image"
+            alt="Stack Overflow profile statistics"
+            height="58"
+            width="208"
+            :src="stackOverflowProfileUrl" />
+        </a>
+      </u-tooltip>
       <p class="about__description">
         Before I joined Microsoft, I was a
         <a :href="mvpUrl">Microsoft Most Valuable Professional (MVP)</a> for
@@ -268,18 +304,20 @@
         doing. Once I joined Microsoft, I had to give up this award.
       </p>
       <div class="about__mvp-images">
-        <a :href="mvpUrl">
-          <NuxtPicture
-            format="avif"
-            :img-attrs="{ class: 'about__mvp-image' }"
-            legacy-format="png"
-            alt="Microsoft Most Valuable Professional (MVP)"
-            height="84"
-            width="208"
-            sizes="208px"
-            src="/images/about/Microsoft-Most-Valuable-Professional-750x303.png"
-            quality="100" />
-        </a>
+        <u-tooltip v-slot="{ trigger }" text="View the Microsoft MVP programme">
+          <a v-bind="trigger" :href="mvpUrl">
+            <NuxtPicture
+              format="avif"
+              :img-attrs="{ class: 'about__mvp-image' }"
+              legacy-format="png"
+              alt="Microsoft Most Valuable Professional (MVP)"
+              height="84"
+              width="208"
+              sizes="208px"
+              src="/images/about/Microsoft-Most-Valuable-Professional-750x303.png"
+              quality="100" />
+          </a>
+        </u-tooltip>
       </div>
       <p class="about__description">
         Do you have questions or comments about my work? Please feel free to

@@ -1,11 +1,17 @@
 <template>
-  <u-button
-    v-show="hydrated && $pwa?.showInstallPrompt && !$pwa.isPWAInstalled"
-    class="install-button"
-    aria-label="Install the app"
-    @click.prevent="install">
-    <u-icon name="lucide:house-heart" />
-  </u-button>
+  <u-tooltip
+    v-if="hydrated && $pwa?.showInstallPrompt && !$pwa.isPWAInstalled"
+    v-slot="{ trigger }"
+    text="Install the app"
+    placement="left">
+    <u-button
+      v-bind="{ ...$attrs, ...trigger }"
+      class="install-button"
+      aria-label="Install the app"
+      @click.prevent="install">
+      <u-icon name="lucide:house-heart" />
+    </u-button>
+  </u-tooltip>
 </template>
 
 <script setup lang="ts">
@@ -13,6 +19,7 @@ import {
   pwaInstallPromoShown,
   pwaInstallPromoClicked,
 } from "~/framework/analytics";
+defineOptions({ inheritAttrs: false });
 const { $pwa } = useNuxtApp();
 const hydrated = ref(false);
 watch(

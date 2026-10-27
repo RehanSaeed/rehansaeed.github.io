@@ -9,14 +9,28 @@
       role="tooltip"
       popover="manual"
       :data-placement="side"
+      :data-positioned="isPositioned"
       @pointerenter="onBubbleEnter"
       @pointerleave="onBubbleLeave">
       {{ text }}
+      <span ref="arrowElement" class="tooltip__arrow" aria-hidden="true" />
     </div>
   </Teleport>
 </template>
 
 <script setup lang="ts">
+import {
+  arrow,
+  autoUpdate,
+  flip,
+  getOverflowAncestors,
+  hide,
+  limitShift,
+  offset,
+  shift,
+  useFloating,
+} from "@floating-ui/vue";
+
 type Placement = "top" | "right" | "bottom" | "left";
 
 const props = withDefaults(
@@ -25,10 +39,54 @@ const props = withDefaults(
 );
 const id = useId();
 const bubble = useTemplateRef("bubble");
+const arrowElement = useTemplateRef("arrowElement");
 const open = ref(false);
-const side = ref<Placement>(props.placement);
 const teleportTarget = shallowRef<HTMLElement | string>("body");
-let anchor: HTMLElement | undefined;
+const anchor = shallowRef<HTMLElement | null>(null);
+const {
+  floatingStyles,
+  placement: side,
+  middlewareData,
+  isPositioned,
+} = useFloating(anchor, bubble, {
+  open,
+  placement: computed(() => props.placement),
+  strategy: "fixed",
+  middleware: [
+    offset(12),
+    shift({ padding: 8, limiter: limitShift() }),
+    flip({ padding: 8, fallbackAxisSideDirection: "start" }),
+    arrow({ element: arrowElement, padding: 8 }),
+    hide(({ elements }) => {
+      const reference = elements.reference;
+      if (!(reference instanceof Element)) return {};
+      const topLayer = reference.closest(":modal, :popover-open");
+      // Top-layer ancestors escape page clipping, but their inner scrollers do not.
+      return topLayer
+        ? {
+            boundary: getOverflowAncestors(reference).filter(
+              (ancestor): ancestor is Element =>
+                ancestor instanceof Element && topLayer.contains(ancestor),
+            ),
+          }
+        : {};
+    }),
+  ],
+  whileElementsMounted(reference, floating, update) {
+    // Keep the top layer inside a modal's non-inert subtree.
+    floating.showPopover();
+    return autoUpdate(reference, floating, update, { animationFrame: true });
+  },
+});
+watchEffect(() => {
+  if (bubble.value) Object.assign(bubble.value.style, floatingStyles.value);
+  if (!arrowElement.value) return;
+  const coordinates = middlewareData.value.arrow;
+  arrowElement.value.style.left =
+    coordinates?.x == null ? "" : `${coordinates.x}px`;
+  arrowElement.value.style.top =
+    coordinates?.y == null ? "" : `${coordinates.y}px`;
+});
 let hovered = false;
 let focused = false;
 let bubbleHovered = false;
@@ -45,8 +103,8 @@ function dismiss() {
 
 function show(event: Event, delay = 0) {
   if (!(event.currentTarget instanceof HTMLElement)) return;
-  anchor = event.currentTarget;
-  teleportTarget.value = anchor.closest("dialog") ?? "body";
+  anchor.value = event.currentTarget;
+  teleportTarget.value = anchor.value.closest("dialog") ?? "body";
   clearTimer();
   timer = setTimeout(() => {
     if (props.text) open.value = true;
@@ -54,6 +112,7 @@ function show(event: Event, delay = 0) {
 }
 
 function scheduleHide() {
+  if (hovered || focused || bubbleHovered) return;
   clearTimer();
   timer = setTimeout(() => {
     if (!hovered && !focused && !bubbleHovered) dismiss();
@@ -100,60 +159,6 @@ const trigger = computed(() => ({
   onClick: dismiss,
 }));
 
-function position() {
-  if (!anchor || !bubble.value) return;
-  const target = anchor.getBoundingClientRect();
-  if (!anchor.isConnected || target.bottom < 0 || target.top > innerHeight) {
-    dismiss();
-    return;
-  }
-  const tooltip = bubble.value;
-  const { width, height } = tooltip.getBoundingClientRect();
-  const gap = 12;
-  const padding = 8;
-  const spaces = {
-    top: target.top,
-    right: innerWidth - target.right,
-    bottom: innerHeight - target.bottom,
-    left: target.left,
-  };
-  const opposite: Record<Placement, Placement> = {
-    top: "bottom",
-    right: "left",
-    bottom: "top",
-    left: "right",
-  };
-  const preferred = props.placement;
-  const alternate = opposite[preferred];
-  const required =
-    (preferred === "top" || preferred === "bottom" ? height : width) +
-    gap +
-    padding;
-  side.value =
-    spaces[preferred] < required && spaces[alternate] > spaces[preferred]
-      ? alternate
-      : preferred;
-  const vertical = side.value === "top" || side.value === "bottom";
-  let x = target.left + (target.width - width) / 2;
-  let y = target.top + (target.height - height) / 2;
-  if (side.value === "top") y = target.top - height - gap;
-  if (side.value === "bottom") y = target.bottom + gap;
-  if (side.value === "left") x = target.left - width - gap;
-  if (side.value === "right") x = target.right + gap;
-  x = Math.max(padding, Math.min(x, innerWidth - width - padding));
-  y = Math.max(padding, Math.min(y, innerHeight - height - padding));
-  const arrow = vertical
-    ? target.left + target.width / 2 - x
-    : target.top + target.height / 2 - y;
-  const edge = vertical ? width : height;
-  tooltip.style.left = `${x}px`;
-  tooltip.style.top = `${y}px`;
-  tooltip.style.setProperty(
-    "--tooltip-arrow-offset",
-    `${Math.max(12, Math.min(arrow, edge - 12))}px`,
-  );
-}
-
 function onEscape(event: KeyboardEvent) {
   if (event.key !== "Escape") return;
   event.preventDefault();
@@ -161,29 +166,21 @@ function onEscape(event: KeyboardEvent) {
   dismiss();
 }
 
-watch(open, async (visible, _, onCleanup) => {
+watch(open, (visible, _, onCleanup) => {
   if (!visible) return;
-  const observer = new ResizeObserver(position);
   onCleanup(() => {
-    observer.disconnect();
-    window.removeEventListener("resize", position);
-    window.removeEventListener("scroll", position, true);
-    document.removeEventListener("transitionend", position);
     document.removeEventListener("keydown", onEscape, true);
     bubbleHovered = false;
   });
-  await nextTick();
-  if (!open.value || !bubble.value || !anchor) return;
-  // Use the top layer to escape clipping, but stay inside a modal's non-inert subtree.
-  bubble.value.showPopover();
-  position();
-  observer.observe(anchor);
-  observer.observe(bubble.value);
-  window.addEventListener("resize", position);
-  window.addEventListener("scroll", position, true);
-  document.addEventListener("transitionend", position);
   document.addEventListener("keydown", onEscape, true);
 });
+
+watch(
+  () => middlewareData.value.hide?.referenceHidden,
+  (hidden) => {
+    if (hidden) dismiss();
+  },
+);
 
 onBeforeUnmount(clearTimer);
 </script>
@@ -194,6 +191,7 @@ onBeforeUnmount(clearTimer);
   inset: auto;
   margin: 0;
   padding: var(--global-space-fixed-2) var(--global-space-fixed-3);
+  inline-size: max-content;
   max-inline-size: min(22rem, calc(100vw - 16px));
   max-block-size: calc(100vh - 16px);
   overflow: visible;
@@ -210,8 +208,11 @@ onBeforeUnmount(clearTimer);
   text-align: start;
   overflow-wrap: anywhere;
 
-  &::before {
-    content: "";
+  &[data-positioned="false"] {
+    visibility: hidden;
+  }
+
+  .tooltip__arrow {
     position: absolute;
     inline-size: 10px;
     block-size: 10px;
@@ -221,28 +222,24 @@ onBeforeUnmount(clearTimer);
     background: inherit;
   }
 
-  &[data-placement="top"]::before {
-    left: var(--tooltip-arrow-offset);
+  &[data-placement="top"] .tooltip__arrow {
     bottom: -7px;
-    transform: translateX(-50%) rotate(45deg);
+    transform: rotate(45deg);
   }
 
-  &[data-placement="bottom"]::before {
-    left: var(--tooltip-arrow-offset);
+  &[data-placement="bottom"] .tooltip__arrow {
     top: -7px;
-    transform: translateX(-50%) rotate(225deg);
+    transform: rotate(225deg);
   }
 
-  &[data-placement="left"]::before {
-    top: var(--tooltip-arrow-offset);
+  &[data-placement="left"] .tooltip__arrow {
     right: -7px;
-    transform: translateY(-50%) rotate(-45deg);
+    transform: rotate(-45deg);
   }
 
-  &[data-placement="right"]::before {
-    top: var(--tooltip-arrow-offset);
+  &[data-placement="right"] .tooltip__arrow {
     left: -7px;
-    transform: translateY(-50%) rotate(135deg);
+    transform: rotate(135deg);
   }
 }
 

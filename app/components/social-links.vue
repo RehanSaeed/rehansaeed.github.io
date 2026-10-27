@@ -1,71 +1,115 @@
 <template>
   <div class="social">
-    <u-link-button
+    <u-tooltip
       v-if="metadata.author.youtube.url"
-      class="social__link"
-      label="Youtube"
-      :href="metadata.author.youtube.url"
-      rel="me">
-      <u-icon name="fa-brands:youtube" />
-    </u-link-button>
-    <u-link-button
+      v-slot="{ trigger }"
+      text="YouTube">
+      <u-link-button
+        v-bind="trigger"
+        class="social__link"
+        label="Youtube"
+        :href="metadata.author.youtube.url"
+        rel="me">
+        <u-icon name="fa-brands:youtube" />
+      </u-link-button>
+    </u-tooltip>
+    <u-tooltip
       v-if="metadata.author.twitch.url"
-      class="social__link"
-      label="Twitch"
-      :href="metadata.author.twitch.url"
-      rel="me">
-      <u-icon name="fa-brands:twitch" />
-    </u-link-button>
-    <u-link-button
+      v-slot="{ trigger }"
+      text="Twitch">
+      <u-link-button
+        v-bind="trigger"
+        class="social__link"
+        label="Twitch"
+        :href="metadata.author.twitch.url"
+        rel="me">
+        <u-icon name="fa-brands:twitch" />
+      </u-link-button>
+    </u-tooltip>
+    <u-tooltip
       v-if="metadata.author.gitHub.url"
-      class="social__link"
-      label="GitHub"
-      :href="metadata.author.gitHub.url"
-      rel="me authn">
-      <u-icon name="fa-brands:github" />
-    </u-link-button>
-    <u-link-button
+      v-slot="{ trigger }"
+      text="GitHub">
+      <u-link-button
+        v-bind="trigger"
+        class="social__link"
+        label="GitHub"
+        :href="metadata.author.gitHub.url"
+        rel="me authn">
+        <u-icon name="fa-brands:github" />
+      </u-link-button>
+    </u-tooltip>
+    <u-tooltip
       v-if="metadata.author.linkedIn.url"
-      class="social__link"
-      label="LinkedIn"
-      :href="metadata.author.linkedIn.url"
-      rel="me">
-      <u-icon name="fa-brands:linkedin" />
-    </u-link-button>
-    <u-link-button
+      v-slot="{ trigger }"
+      text="LinkedIn">
+      <u-link-button
+        v-bind="trigger"
+        class="social__link"
+        label="LinkedIn"
+        :href="metadata.author.linkedIn.url"
+        rel="me">
+        <u-icon name="fa-brands:linkedin" />
+      </u-link-button>
+    </u-tooltip>
+    <u-tooltip
       v-if="metadata.author.stackOverflow.url"
-      class="social__link"
-      label="Stack Overflow"
-      :href="metadata.author.stackOverflow.url"
-      rel="me">
-      <u-icon name="fa-brands:stack-overflow" />
-    </u-link-button>
-    <u-link-button
+      v-slot="{ trigger }"
+      text="Stack Overflow">
+      <u-link-button
+        v-bind="trigger"
+        class="social__link"
+        label="Stack Overflow"
+        :href="metadata.author.stackOverflow.url"
+        rel="me">
+        <u-icon name="fa-brands:stack-overflow" />
+      </u-link-button>
+    </u-tooltip>
+    <u-tooltip
       v-if="metadata.author.bluesky.url"
-      class="social__link"
-      label="Bluesky"
-      :href="metadata.author.bluesky.url"
-      rel="me">
-      <u-icon name="simple-icons:bluesky" />
-    </u-link-button>
-    <u-link-button
+      v-slot="{ trigger }"
+      text="Bluesky">
+      <u-link-button
+        v-bind="trigger"
+        class="social__link"
+        label="Bluesky"
+        :href="metadata.author.bluesky.url"
+        rel="me">
+        <u-icon name="simple-icons:bluesky" />
+      </u-link-button>
+    </u-tooltip>
+    <u-tooltip
       v-if="metadata.author.mastodon.url"
-      class="social__link"
-      label="Mastodon"
-      :href="metadata.author.mastodon.url"
-      rel="me">
-      <u-icon name="fa-brands:mastodon" />
-    </u-link-button>
-    <u-link-button
-      class="social__link"
-      label="Email"
-      href="#"
-      @click="openEmail">
-      <u-icon name="fa-regular:envelope" />
-    </u-link-button>
-    <u-link-button class="social__link" href="/rss.xml" label="RSS">
-      <u-icon name="fa-solid:rss" />
-    </u-link-button>
+      v-slot="{ trigger }"
+      text="Mastodon">
+      <u-link-button
+        v-bind="trigger"
+        class="social__link"
+        label="Mastodon"
+        :href="metadata.author.mastodon.url"
+        rel="me">
+        <u-icon name="fa-brands:mastodon" />
+      </u-link-button>
+    </u-tooltip>
+    <u-tooltip v-slot="{ trigger }" text="Send me an email">
+      <u-link-button
+        v-bind="trigger"
+        class="social__link"
+        label="Email"
+        href="#"
+        @click="openEmail">
+        <u-icon name="fa-regular:envelope" />
+      </u-link-button>
+    </u-tooltip>
+    <u-tooltip v-slot="{ trigger }" text="Subscribe via RSS">
+      <u-link-button
+        v-bind="trigger"
+        class="social__link"
+        href="/rss.xml"
+        label="RSS">
+        <u-icon name="fa-solid:rss" />
+      </u-link-button>
+    </u-tooltip>
   </div>
 </template>
 

@@ -57,22 +57,30 @@
           </u-tooltip>
         </div>
         <div class="portfolio-card__github">
-          <a :href="`${portfolio.permalink}/stargazers`">
-            <img
-              class="portfolio-card__badge portfolio-card__stars"
-              :alt="`${portfolio.title}: ${portfolio.stars} GitHub stars at last build`"
-              height="30"
-              loading="lazy"
-              :src="`https://img.shields.io/github/stars/${portfolio.repository}?style=social`" />
-          </a>
-          <a :href="`${portfolio.permalink}/forks`">
-            <img
-              class="portfolio-card__badge portfolio-card__forks"
-              :alt="`${portfolio.title}: ${portfolio.forks} GitHub forks at last build`"
-              height="30"
-              loading="lazy"
-              :src="`https://img.shields.io/github/forks/${portfolio.repository}?style=social`" />
-          </a>
+          <u-tooltip
+            v-slot="{ trigger }"
+            :text="`View ${portfolio.title} stargazers on GitHub`">
+            <a v-bind="trigger" :href="`${portfolio.permalink}/stargazers`">
+              <img
+                class="portfolio-card__badge portfolio-card__stars"
+                :alt="`${portfolio.title}: ${portfolio.stars} GitHub stars at last build`"
+                height="30"
+                loading="lazy"
+                :src="`https://img.shields.io/github/stars/${portfolio.repository}?style=social`" />
+            </a>
+          </u-tooltip>
+          <u-tooltip
+            v-slot="{ trigger }"
+            :text="`View ${portfolio.title} forks on GitHub`">
+            <a v-bind="trigger" :href="`${portfolio.permalink}/forks`">
+              <img
+                class="portfolio-card__badge portfolio-card__forks"
+                :alt="`${portfolio.title}: ${portfolio.forks} GitHub forks at last build`"
+                height="30"
+                loading="lazy"
+                :src="`https://img.shields.io/github/forks/${portfolio.repository}?style=social`" />
+            </a>
+          </u-tooltip>
         </div>
       </div>
       <p class="portfolio-card__description">{{ portfolio.description }}</p>

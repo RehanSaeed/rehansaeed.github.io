@@ -16,8 +16,11 @@ tooltip provides a description, not a replacement name. Non-interactive elements
 that need a keyboard-accessible tooltip should have `tabindex="0"`.
 
 `placement` accepts `top` (default), `right`, `bottom` or `left`. Tooltips flip to
-the opposite side when needed, stay within the viewport, and point back to their
-trigger. They appear on hover or focus, remain open while hovered, and dismiss on
+other sides when needed, stay within the viewport, and point back to their
+trigger. Placement is a preference, not a fixed side: Floating UI handles
+collision detection, shifting, arrow positioning and updates during scrolling,
+resizing and trigger animations. Updates run only while the tooltip is mounted.
+Tooltips appear on hover or focus, remain open while hovered, and dismiss on
 Escape, blur, pointer exit or activation. Touch taps activate the control without
 waiting for a tooltip.
 
@@ -32,3 +35,8 @@ accent, page background and text colours in both themes. Global overrides can
 set `--tooltip-border-color`, `--tooltip-background` and `--tooltip-color` on
 `:root` or a theme selector. Trigger-local variables do not inherit through the
 teleport. Tooltip text is plain text; keep interactive content in a dialog.
+
+Icon-only controls and image links use tooltips to explain their action or
+destination. Generated article heading links use the global Content component
+`HeadingAnchor`; its native link keeps the section fragment and accessible name,
+while only the decorative SVG is hidden from assistive technology.

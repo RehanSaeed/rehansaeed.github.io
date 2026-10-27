@@ -12,9 +12,18 @@
           title
         }}</u-heading>
         <form class="dialog__form" method="dialog" @submit.prevent="close">
-          <u-button :aria-label="`Close ${title}`" class="dialog__close" submit>
-            <u-icon name="feather:x" />
-          </u-button>
+          <u-tooltip
+            v-slot="{ trigger }"
+            :text="`Close ${title}`"
+            placement="left">
+            <u-button
+              v-bind="trigger"
+              :aria-label="`Close ${title}`"
+              class="dialog__close"
+              submit>
+              <u-icon name="feather:x" />
+            </u-button>
+          </u-tooltip>
         </form>
         <div class="dialog__content">
           <slot />
