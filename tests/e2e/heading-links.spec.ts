@@ -8,7 +8,7 @@ for (const width of [320, 375, 576, 768, 1280]) {
     );
     await page.evaluate(() => document.fonts.ready);
     const links = page.locator(
-      '.post__content :is(h1, h2, h3, h4, h5, h6) > a[aria-hidden="true"]',
+      ".post__content :is(h1, h2, h3, h4, h5, h6) > a.anchor-link",
     );
     expect(await links.count()).toBeGreaterThan(0);
 
@@ -28,6 +28,12 @@ for (const width of [320, 375, 576, 768, 1280]) {
         range.selectNodeContents(heading);
         range.setStartAfter(anchor);
         const textBox = range.getBoundingClientRect();
+        const probe = document.createElement("span");
+        probe.style.display = "block";
+        probe.style.width = "var(--heading-anchor-gap)";
+        anchor.append(probe);
+        const gap = probe.getBoundingClientRect().width;
+        probe.remove();
         return {
           anchorLeft: anchorBox.left,
           iconLeft: iconBox.left,
@@ -38,6 +44,11 @@ for (const width of [320, 375, 576, 768, 1280]) {
           headingLeft: heading.getBoundingClientRect().left,
           offset: heading.getBoundingClientRect().left - anchorBox.left,
           padding: Number.parseFloat(getComputedStyle(post).paddingLeft),
+          iconWidth: iconBox.width,
+          iconHeight: iconBox.height,
+          anchorWidth: anchorBox.width,
+          anchorHeight: anchorBox.height,
+          gap,
           hitLeftEdge:
             document
               .elementFromPoint(
@@ -53,7 +64,14 @@ for (const width of [320, 375, 576, 768, 1280]) {
       expect(layout.iconLeft).toBeGreaterThanOrEqual(layout.postLeft);
       expect(layout.iconRight).toBeLessThanOrEqual(layout.postRight);
       expect(layout.textLeft).toBeCloseTo(layout.headingLeft, 1);
-      expect(layout.offset).toBeCloseTo(Math.min(30, layout.padding), 1);
+      expect(layout.iconWidth).toBeGreaterThan(0);
+      expect(layout.iconWidth).toBeCloseTo(layout.iconHeight, 1);
+      expect(layout.iconWidth).toBeCloseTo(layout.anchorWidth, 1);
+      expect(layout.iconHeight).toBeCloseTo(layout.anchorHeight, 1);
+      expect(layout.offset).toBeCloseTo(
+        Math.min(layout.iconWidth + layout.gap, layout.padding),
+        1,
+      );
       expect(layout.hitLeftEdge).toBe(true);
       expect(layout.overflow).toBe("hidden");
       expect(layout.pageWidth).toBeLessThanOrEqual(width);
@@ -65,6 +83,14 @@ for (const width of [320, 375, 576, 768, 1280]) {
     await expect(firstLink).toHaveCSS("opacity", "0");
     await firstLink.focus();
     await expect(firstLink).toHaveCSS("opacity", "1");
+    const tooltip = page.getByRole("tooltip", { name: "Link to this section", exact: true });
+    await expect(tooltip).toBeVisible();
+    await expect(firstLink).toHaveAccessibleName("Link to this section");
+    await expect(firstLink).toHaveAccessibleDescription("Link to this section");
+    expect(await tooltip.evaluate((element) => element.matches(":popover-open"))).toBe(true);
+    await page.keyboard.press("Escape");
+    await expect(tooltip).toBeHidden();
+    await expect(firstLink).toBeFocused();
     const href = await firstLink.getAttribute("href");
     expect(href).toMatch(/^#.+/);
     await page.keyboard.press("Enter");
