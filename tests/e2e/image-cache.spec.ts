@@ -110,6 +110,18 @@ test("Missing fingerprint inputs fail rather than reusing unverified output", as
   }
 });
 
+test("A failed image-output save cannot mark a cold cache as complete", async () => {
+  const root = await fixture();
+  try {
+    const cold = await prepareImageCache(root);
+    await rm(join(root, "dist", "_ipx"), { recursive: true });
+    await expect(cold.save(join(root, "dist"))).rejects.toThrow("ENOENT");
+    expect((await prepareImageCache(root)).hit).toBe(false);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
 test("CI persists only the responsive image cache before generation", async () => {
   const workflow = parse(await readFile(".github/workflows/build.yml", "utf8"));
   const steps = workflow.jobs.build.steps;

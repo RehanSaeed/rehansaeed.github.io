@@ -25,8 +25,8 @@ export default defineNuxtModule({
       });
     });
     nuxt.hook("nitro:init", (nitro) => {
-      nitro.hooks.hook("prerender:done", async ({ failedRoutes }) => {
-        if (failedRoutes.length) return;
+      // Restored public assets are copied after prerendering, before compilation completes.
+      nitro.hooks.hook("compiled", async () => {
         await cache.save(nitro.options.output.publicDir);
       });
     });
