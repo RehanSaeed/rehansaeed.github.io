@@ -256,6 +256,7 @@ test.describe("GitHub comments", () => {
     const image = page.locator(".comment__content img").first();
     await expect(image).toHaveAttribute("width", "40");
     await expect(image).toHaveAttribute("height", "40");
+    await expect(image).toHaveCSS("display", "inline");
     await expect(image).toHaveCSS("width", "40px");
     await expect(image).toHaveCSS("height", "40px");
   });
@@ -283,7 +284,7 @@ test.describe("GitHub comments", () => {
               {
                 ...owner,
                 body_html: [
-                  '<p><a href="https://github.com"><img src="https://camo.githubusercontent.com/comment-image-small" alt="Small avatar" width="40" height="40"></a></p>',
+                  '<p><a href="https://github.com"><img src="https://camo.githubusercontent.com/comment-image-small" alt="Small avatar" width="40" height="40"></a> <strong>Reader</strong></p>',
                   '<p><img src="https://camo.githubusercontent.com/comment-image-natural" alt="Natural size"></p>',
                   '<p><img src="https://camo.githubusercontent.com/comment-image-wide" alt="Wide screenshot" width="1600" height="800"></p>',
                   '<img src="https://camo.githubusercontent.com/comment-image-small" alt="Direct image" width="40" height="40">',
@@ -321,7 +322,12 @@ test.describe("GitHub comments", () => {
       await expect(
         content.getByRole("img", { name: "Natural size" }),
       ).toHaveCSS("width", "96px");
+      await expect(
+        content.getByRole("img", { name: "Small avatar" }),
+      ).toHaveCSS("display", "inline");
       const bounds = await content.evaluate((element) => {
+        const avatar = element.querySelector("img")!.getBoundingClientRect();
+        const label = element.querySelector("strong")!.getBoundingClientRect();
         const screenshot = element.querySelector<HTMLImageElement>(
           'img[alt="Wide screenshot"]',
         )!;
@@ -329,6 +335,10 @@ test.describe("GitHub comments", () => {
           available: element.getBoundingClientRect().width,
           width: screenshot.getBoundingClientRect().width,
           height: screenshot.getBoundingClientRect().height,
+          inline:
+            label.left >= avatar.right &&
+            label.top < avatar.bottom &&
+            avatar.top < label.bottom,
           overflow:
             document.documentElement.scrollWidth >
             document.documentElement.clientWidth,
@@ -337,6 +347,7 @@ test.describe("GitHub comments", () => {
       expect(bounds.width).toBeLessThanOrEqual(bounds.available);
       expect(bounds.width).toBeGreaterThan(96);
       expect(bounds.width / bounds.height).toBeCloseTo(2);
+      expect(bounds.inline).toBe(true);
       expect(bounds.overflow).toBe(false);
     });
   }

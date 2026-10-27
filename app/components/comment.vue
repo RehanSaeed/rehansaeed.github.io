@@ -151,6 +151,7 @@ const edited = computed(() =>
   }
 
   img {
+    display: inline;
     // Keep HTML dimensions or intrinsic sizing instead of the global full width.
     inline-size: revert-layer;
   }
