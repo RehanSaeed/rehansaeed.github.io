@@ -198,7 +198,7 @@ for (const url of urls) {
 const referenceRoutes = (await readFile("tests/parity/urls.txt", "utf8"))
     .trim()
     .split(/\r?\n/);
-const additionalPublicRoutes = ["/tag/ai/"];
+const additionalPublicRoutes = ["/tag/ai/", "/tag/artificial-intelligence-ai/"];
 for (const path of [
     ...referenceRoutes,
     ...additionalPublicRoutes,

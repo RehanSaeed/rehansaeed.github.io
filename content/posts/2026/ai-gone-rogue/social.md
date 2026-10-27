@@ -1,101 +1,77 @@
 # AI Gone Rogue
 
-Status: **Draft - not approved for posting**
-
 Canonical URL: https://rehansaeed.com/ai-gone-rogue/
 
-The article remains unpublished. These drafts are for author review, not permission to publish, schedule or post. Confirm the final article, live URL, text, accounts and destinations before posting.
-
-## Mastodon
+## 🐘 Mastodon
 
 ### Copy-ready text
 
-An odd message from a colleague turned out to be their AI. Funny, but sometimes it matters who actually wrote the reply.
-
-My new Copilot instruction: disclose automated messages to colleagues, with a little help from HAL.
-
-A label isn't a correctness guarantee, or permission to send.
+Just blogged "AI Gone Rogue"
 
 https://rehansaeed.com/ai-gone-rogue/
 
-#AI #GitHubCopilot #DeveloperTools
+#ArtificialIntelligence #GitHubCopilot #DeveloperTools
 
 ### Review notes
 
-Target: the Hachyderm profile linked from the blog. On 2026-10-27, the [instance API](https://hachyderm.io/api/v2/instance) reported a 2,263-character limit and 23 characters reserved per URL. [Mastodon's posting documentation](https://docs.joinmastodon.org/user/posting/) confirms the URL-counting rule. This draft uses 345 characters with the URL counted as 23, leaving 1,918 characters.
+Target: the Hachyderm profile linked from the blog. The [instance API](https://hachyderm.io/api/v2/instance) reported a 2,263-character limit and 23 characters per URL on 2026-10-27. No relevant handles have been verified, so no mentions are proposed.
 
-## Bluesky
+## 🦋 Bluesky
 
 ### Copy-ready text
 
-If an AI agent posts under my name, I want colleagues to know it wasn't me typing.
-
-My new Copilot instruction asks for an automated-message label and a HAL image. A disclosure, not a correctness guarantee.
+Just blogged "AI Gone Rogue"
 
 https://rehansaeed.com/ai-gone-rogue/
 
+#ArtificialIntelligence #GitHubCopilot #DeveloperTools
+
 ### Review notes
 
-Use a single post. This draft contains 245 graphemes and 245 UTF-8 bytes, including the full canonical URL; no shortened-link counting has been assumed. Checked on 2026-10-27: [Bluesky's official post documentation](https://bsky.network/docs/about-bluesky-content/posts/) was accessible, but its linked post-schema source returned 404. The current limit could not be independently verified. **Blocked pending current limit verification** in the official schema or signed-in composer; do not treat the commonly documented 300-grapheme limit as verified here.
+**Blocked pending current limit verification** in the official schema or signed-in composer. On 2026-10-27, [Bluesky's post documentation](https://bsky.network/docs/about-bluesky-content/posts/) linked to a schema that returned 404.
 
-## LinkedIn
+## 💼 LinkedIn
 
 ### Copy-ready text
 
-A colleague posted an odd message at work. It turned out to be their AI, and we joked about how hard it was becoming to tell who we were talking to.
+Just blogged "AI Gone Rogue"
 
-There is a serious point behind the joke: a message under someone's name can look like something they personally wrote and checked.
-
-I've added a small instruction to my GitHub Copilot app's AI agent: when messaging colleagues, explain that the reply is automated and include a HAL image from 2001: A Space Odyssey.
-
-The text does the disclosure. HAL makes it hard to miss.
-
-It doesn't make the message correct, guarantee that the agent follows the instruction, or replace approval before sending.
-
-I wrote a short post about it:
+An odd message from a colleague turned out to be their AI. It led me to add an instruction to my GitHub Copilot app's agent: make automated replies to colleagues explicit, with a little help from HAL. The post explains why the plain-text disclosure matters, and why it isn't a correctness guarantee or a substitute for approval before sending.
 
 https://rehansaeed.com/ai-gone-rogue/
 
-### Review notes
+#ArtificialIntelligence #GitHubCopilot #DeveloperTools
 
-This draft contains 718 ASCII characters, including the full URL, leaving 2,282 against the 3,000-character post limit in [LinkedIn's ShareContent schema](https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/ugc-post-api?view=li-lms-2026-10#sharecontent), checked on 2026-10-27. No shortened-link counting has been assumed. No mentions, invented account handles or posting commitments. Confirm the signed-in account and composer before posting.
-
-## Reddit profile
+## 👽 Reddit profile
 
 ### Copy-ready title
 
-AI Gone Rogue: why I ask my agent to label messages to colleagues
+Just blogged "AI Gone Rogue"
 
 ### Copy-ready body
 
-A colleague posted an odd message which turned out to be their AI. We laughed, but it made me think about how differently I read a message from a colleague versus an automated reply under their name.
+A colleague posted an odd message which turned out to be their AI. I added an instruction to my GitHub Copilot app's agent to label automated messages to colleagues, with a HAL image for good measure. This short post is about knowing who actually wrote a reply, and why a disclosure still isn't a guarantee of correctness or a substitute for approval before sending.
 
-I added an instruction to my GitHub Copilot app's AI agent: say when a message to colleagues is automated, and include HAL from 2001: A Space Odyssey.
-
-The disclosure needs to work as plain text, even if the image doesn't load. It's not a guarantee of correctness or a substitute for approval before sending.
-
-I wrote up the anecdote on my blog: https://rehansaeed.com/ai-gone-rogue/
+https://rehansaeed.com/ai-gone-rogue/
 
 ### Review notes
 
-Intended destination: [u/muhammadrehansaeed](https://www.reddit.com/user/muhammadrehansaeed/), directly on the profile, not a subreddit. The body contains 584 ASCII characters, including the full URL. Verify the signed-in account and current title/body limits before posting.
+Intended destination: [u/muhammadrehansaeed](https://www.reddit.com/user/muhammadrehansaeed/), directly on the profile, not a subreddit. Verify the signed-in account before posting.
 
-## Subreddit shortlist for approval
+## 🎯 Subreddit shortlist for approval
 
 Suggested communities: r/GithubCopilot for the agent-instruction example, and r/ExperiencedDevs for the workplace communication angle.
 
 Neither is an approved destination. No community-specific copy has been prepared. Both are **blocked pending destination approval and current rule review**, including pinned guidance, permitted post types, flair and self-promotion restrictions. Their rules have not been verified.
 
-## Image suggestion
+## 🖼️ Image suggestion
 
-Use the supplied automated-reply screenshot, `images/automated-reply-495x262.png`, if an image is useful. It has been visually inspected and contains the disclosure and HAL image, not the original colleague's message.
+Use the supplied automated-reply screenshot, `images/automated-reply-495x262.png`, to show the disclosure and HAL image.
 
 Suggested alt text: An automated reply labelled "This reply was posted automatically by Rehan's AI agent (GitHub Copilot)", followed by HAL saying "I'm afraid I can't do that Dave".
 
-The supplied attachments are static PNGs, not animated GIFs. The reply screenshot was losslessly optimised at its original dimensions, with decoded pixels compared against the attachment. At the author's request, the 400x178 HAL image was enlarged proportionally to 1600x712 and centred on a black 1600x900 hero canvas without cropping. This does not add source detail. Both assets use lossless PNG encoding and lossless AVIF companions, with each companion verified pixel-identical to its PNG. The repository's default `images:avif` script uses lossy encoding across all images, so it was not used for these reviewed assets.
+Alternatively, use the 1600x900 hero, `/images/hero/HAL-9000-Prop-1600x900.png`. Suggested alt text: A close-up photograph of a HAL prop's camera lens beside the caption "I'm afraid I can't do that, Dave."
 
-The film image's reuse rights have not been independently established; confirm suitability for public use before publication. No platform upload or link preview has been checked.
+Hero credit: [HAL prop photograph](https://commons.wikimedia.org/wiki/File:HAL_9000_Original_requisite_from_2001_A_Space_Odyssey_-_retouche.jpg) by Carlos Pacheco, retouched by Pittigrilli, [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/), checked on 2026-10-27. Cropped, resized and caption added. It is an exhibition-prop photograph, not a film still. Retain the source, attribution, licence and modification notice with standalone reuse.
 
-## Posting record
-
-Nothing has been posted or scheduled.
+The supplied screenshot is a static PNG, not an animated GIF. Its embedded film image's reuse rights have not been independently established; confirm suitability for public use.
