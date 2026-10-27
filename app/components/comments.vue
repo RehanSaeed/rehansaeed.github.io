@@ -10,7 +10,11 @@
           href="#comments"
           >GitHub Comments</u-heading
         >
-        <div class="comments__summary">
+        <div
+          class="comments__summary"
+          :class="{
+            'comments__summary--with-comments': current.comments.length > 0,
+          }">
           <div class="comments__toolbar">
             <h3 class="comments__count">
               {{ current.comments.length }}
@@ -27,7 +31,7 @@
           </p>
         </div>
       </header>
-      <div class="comments__list">
+      <div v-if="current.comments.length" class="comments__list">
         <u-comment
           v-for="comment in current.comments"
           :key="comment.id"
@@ -103,6 +107,9 @@ async function refresh() {
 .comments__summary {
   display: grid;
   gap: var(--global-space-fixed-4);
+}
+
+.comments__summary--with-comments {
   padding-block-end: var(--global-space-fixed-4);
   border-block-end: var(--global-border-width-1) solid
     var(--global-border-color);
