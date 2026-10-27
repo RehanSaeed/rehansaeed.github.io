@@ -9,6 +9,7 @@ const popularitySchema = z.object({
   repository: z.string().regex(/^[\w-]+\/[\w.-]+$/),
   stars: z.number().int().nonnegative(),
   forks: z.number().int().nonnegative(),
+  createdAt: z.iso.datetime({ offset: true }).optional(),
 });
 const observationSchema = z.object({
   updated: z.number(),
@@ -20,6 +21,7 @@ export const cacheSchema = observationSchema.extend({
 const responseSchema = z.object({
   stargazers_count: z.number().int().nonnegative(),
   forks_count: z.number().int().nonnegative(),
+  created_at: z.iso.datetime({ offset: true }),
 });
 const logger = useLogger("blog-content:portfolio");
 
@@ -63,7 +65,8 @@ export async function portfolioSnapshots(
     Date.now() - cached.updated < 60 * 60 * 1000 &&
     projects.every(
       ({ permalink, repository }) =>
-        cached.snapshots[permalink]?.repository === repository,
+        cached.snapshots[permalink]?.repository === repository &&
+        cached.snapshots[permalink]?.createdAt,
     )
   ) {
     return Object.fromEntries(
@@ -88,6 +91,7 @@ export async function portfolioSnapshots(
         repository,
         stars: response.stargazers_count,
         forks: response.forks_count,
+        createdAt: response.created_at,
       };
     } catch (error) {
       const saved = cached?.snapshots[permalink];

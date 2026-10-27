@@ -6,25 +6,27 @@ export interface CounterGrowth {
 
 export const maximumProjectionAge = 14 * 24 * 60 * 60 * 1000;
 
-export function measureCounterGrowth(
-  count: number,
+export function lifetimeCounterGrowth(
+  items: { count: number; createdAt?: string }[],
   observedAt: number,
-  previous?: { count: number; observedAt: number },
-  allowDecrease = false,
 ): CounterGrowth {
-  const elapsed = observedAt - (previous?.observedAt ?? observedAt);
-  const change = count - (previous?.count ?? count);
-  const measured =
-    observedAt > 0 &&
-    previous &&
-    previous.observedAt > 0 &&
-    elapsed >= 60 * 60 * 1000 &&
-    (allowDecrease || change >= 0);
-  return {
+  const unavailable: CounterGrowth = {
     observedAt: observedAt > 0 ? observedAt : null,
-    since: measured ? previous.observedAt : null,
-    perSecond: measured ? change / (elapsed / 1000) : null,
+    since: null,
+    perSecond: null,
   };
+  if (observedAt <= 0) return unavailable;
+  let perSecond = 0;
+  let since = observedAt;
+  for (const item of items) {
+    const created = Date.parse(item.createdAt ?? "");
+    const seconds = (observedAt - created) / 1000;
+    if (!Number.isFinite(seconds) || seconds <= 0) return unavailable;
+    // Sum each item's own lifetime average, not the total divided by the oldest age.
+    perSecond += item.count / seconds;
+    since = Math.min(since, created);
+  }
+  return { observedAt, since: items.length ? since : null, perSecond };
 }
 
 export function canProjectCounter(growth: CounterGrowth, now: number): boolean {
@@ -34,23 +36,6 @@ export function canProjectCounter(growth: CounterGrowth, now: number): boolean {
     growth.observedAt !== null &&
     now >= growth.observedAt &&
     now - growth.observedAt <= maximumProjectionAge
-  );
-}
-
-export function projectCounter(
-  value: number,
-  growth: CounterGrowth,
-  now: number,
-): number {
-  if (!canProjectCounter(growth, now)) return value;
-  return Math.max(
-    0,
-    Math.min(
-      Number.MAX_SAFE_INTEGER,
-      Math.round(
-        value + growth.perSecond! * ((now - growth.observedAt!) / 1000),
-      ),
-    ),
   );
 }
 

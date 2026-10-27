@@ -35,21 +35,40 @@ snapshot, not necessarily when every source was last contacted. The Build workfl
 rebuilds and deploys the site every Monday at 05:17 UTC, as well as on pushes to
 `main` and manual runs, so published figures refresh without content edits.
 
-Portfolio's rolling counters are labelled estimates, not live API counts. Each
-source cache retains its previous complete observation. CI restores and saves
-these two cache files across builds on `main`; pull requests can read the baseline
-but do not save it. A rate is calculated only from two complete observations at
-least an hour apart, using the same current set of repositories or packages for
-both totals. Missing history, newly added items and source failures disable the
-affected projection rather than inventing a rate. Download regressions also
-disable projection; a negative star trend is allowed.
+Portfolio's counters are estimates based on lifetime averages, not live API
+counts. For each package, divide its lifetime downloads by the seconds between
+the earliest available version's creation date and the observation; add these
+individual rates together. NuGet's `FindPackagesById()` request orders by
+`Created asc` with `$top=1` and `semVerLevel=2.0.0`. Stars use the same calculation
+per repository with GitHub's `created_at`. This works on the first observation
+and does not mistake an unchanged hourly snapshot for a zero lifetime rate.
+Lifetime averages do not predict recent trends, and star totals can fall.
 
-Random one-second steps average to the measured rate, retaining fractional
-increments so slow-growing star counts are not artificially increased every
-second. Projections expire after 14 days without a fresh observation. The verified
-count and source observation date remain visible. Visitors can pause each ticker;
-reduced-motion users start with the snapshot, hidden tabs suspend timers, and
-screen readers receive the verified count without per-second announcements.
+CI restores and saves the source caches across builds on `main`; pull requests
+can read them but do not save them. Missing creation dates, invalid ages and source
+failures disable the affected rate rather than inventing one. Portfolio does not
+start an estimate from a snapshot older than 14 days.
+
+The shared `app/components/shared/number-ticker.vue` owns the title, odometer and
+animation. Use it anywhere without importing portfolio data:
+
+```vue
+<u-number-ticker title="Downloads" :number="1000" :rate="2.5" />
+```
+
+`rate` is the average increment per second. Each second uses a random multiplier
+between 0.5 and 1.5, retaining fractional increments so slow-growing counts do not
+artificially increase every second. The optional `paused` prop stops animation;
+`locale` defaults to `en-GB`. Changing `number` or `rate` resets the counter.
+Reduced-motion users see the supplied number. Hidden tabs suspend timers and
+catch up at the average rate on return; unmounting cleans up timers and listeners.
+Screen readers receive the supplied number without per-second announcements.
+Portfolio keeps verified totals, the estimate explanation and a shared pause
+control outside its two side-by-side cards.
+
+Six reviewable title-and-number layout studies are in
+`tests/fixtures/oss-card-treatments.html`. Open the file directly to compare light,
+dark and narrow layouts; it is not published as part of the site.
 
 ## Images
 
