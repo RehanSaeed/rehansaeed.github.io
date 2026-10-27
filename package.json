@@ -36,7 +36,7 @@
     "flexsearch": "0.8.212",
     "katex": "0.19.1",
     "mermaid": "12.2.0",
-    "nuxt": "4.6.2",
+    "nuxt": "4.6.3",
     "nuxt-og-image": "7.0.7",
     "rehype-katex": "7.0.1",
     "remark-math": "6.0.0",
