@@ -1,12 +1,16 @@
 <template>
   <div
     class="code-block"
-    :class="controls ? `code-block--controls-${controls}` : undefined">
+    :class="[
+      `code-block--controls-${controls}`,
+      { 'code-block--group': alternatives?.length && hydrated },
+    ]">
     <div
       v-if="alternatives?.length"
       v-show="hydrated"
       class="code-block__tabs"
       role="tablist"
+      aria-orientation="horizontal"
       aria-label="Code alternatives">
       <button
         v-for="(block, index) in blocks"

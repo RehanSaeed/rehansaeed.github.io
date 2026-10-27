@@ -42,6 +42,10 @@ Write-Output "Hello"
 :::
 ````
 
+Tabs sit on the top edge of the code panel, rather than appearing as detached
+buttons. Native buttons use the ARIA tablist/tab/tabpanel pattern, with selected
+state, linked tab/panel IDs and roving keyboard focus.
+
 The same pattern supports npm/pnpm or other alternatives. Each group is
 independent. Left/Right arrows switch tabs, Home/End select the first/last tab,
 and Tab moves into the controls and active panel. Wrapping is local to each block
