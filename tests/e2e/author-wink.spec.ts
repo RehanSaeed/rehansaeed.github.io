@@ -2,7 +2,7 @@ import sharp from "sharp";
 import { expect, test } from "./fixtures";
 
 for (const width of [375, 1280]) {
-  test(`The author winks every 30 seconds without moving the portrait at ${width}px`, async ({
+  test(`The author winks every 15 seconds without moving the portrait at ${width}px`, async ({
     page,
   }) => {
     await page.setViewportSize({ width, height: 900 });
@@ -43,7 +43,7 @@ for (const width of [375, 1280]) {
         iterations:
           timing.iterations === Infinity ? "infinite" : timing.iterations,
         samples: [
-          0, 29_999, 30_000, 30_120, 30_210, 30_360, 45_000, 60_120,
+          0, 14_999, 15_000, 15_120, 15_210, 15_360, 22_500, 30_120,
         ].map((time) => {
           animation.currentTime = time;
           return {
@@ -54,12 +54,12 @@ for (const width of [375, 1280]) {
         }),
       };
     });
-    expect(samples.delay).toBe(30_000);
-    expect(samples.duration).toBe(30_000);
+    expect(samples.delay).toBe(15_000);
+    expect(samples.duration).toBe(15_000);
     expect(samples.iterations).toBe("infinite");
     for (const { time, scale } of samples.samples) {
       expect(scale, `Eyelid scale at ${time}ms`).toBeCloseTo(
-        [30_120, 30_210, 60_120].includes(time) ? 1 : 0,
+        [15_120, 15_210, 30_120].includes(time) ? 1 : 0,
         6,
       );
     }
@@ -67,7 +67,7 @@ for (const width of [375, 1280]) {
     await expect(image).toHaveAttribute("src", imageSource!);
 
     const frames: Buffer[] = [];
-    for (const time of [0, 30_150]) {
+    for (const time of [0, 15_150]) {
       await portrait.evaluate((element, currentTime) => {
         element
           .querySelector(".author__eyelid")!

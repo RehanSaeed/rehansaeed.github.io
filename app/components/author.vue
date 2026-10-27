@@ -108,20 +108,20 @@ export default {
   transform: scaleY(0);
 
   @media (prefers-reduced-motion: no-preference) {
-    // A 360ms wink starts after 30 seconds, then repeats every 30 seconds.
-    animation: author-wink 30s linear 30s infinite;
+    // A 360ms wink starts after 15 seconds, then repeats every 15 seconds.
+    animation: author-wink 15s linear 15s infinite;
   }
 }
 
 @keyframes author-wink {
   0%,
-  1.2%,
+  2.4%,
   100% {
     transform: scaleY(0);
   }
 
-  0.4%,
-  0.7% {
+  0.8%,
+  1.4% {
     transform: scaleY(1);
   }
 }
