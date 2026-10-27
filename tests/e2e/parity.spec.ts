@@ -1,14 +1,49 @@
-import { readFileSync } from "node:fs";
+import { globSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { parse } from "yaml";
+import { tagPath } from "../../shared/utils/tag";
 import { expect, getAnalyticsEvents, test } from "./fixtures";
 
-type BaselinePage = { cards: string[] };
+type ListingPost = {
+  title: string;
+  permalink: string;
+  date: string;
+  published: boolean;
+  tags?: string[] | null;
+};
 
-const baseline: Record<string, BaselinePage> = JSON.parse(
-  readFileSync(join(process.cwd(), "tests/parity/baseline/pages.json"), "utf8"),
-);
+const posts = globSync("content/posts/**/index.md")
+  .map((file) => {
+    const source = readFileSync(file, "utf8");
+    const frontMatter = source.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+    if (!frontMatter) throw new Error(`Missing front matter in ${file}`);
+    return parse(frontMatter[1]!) as ListingPost;
+  })
+  .sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
+const published = posts.filter((post) => post.published);
 
 const collapse = (s: string) => s.replace(/\s+/g, " ").trim();
+
+// Read the listing's page size without changing application configuration for a test.
+const pagination = readFileSync(
+  join(process.cwd(), "app", "components", "posts-page.vue"),
+  "utf8",
+).match(/\bconst postsPerPage = (\d+);/);
+if (!pagination) throw new Error("Cannot read the posts listing page size");
+const postsPerPage = Number(pagination[1]);
+if (postsPerPage < 1) throw new Error("Invalid posts listing page size");
+
+const listingPosts = (path: string) => {
+  if (path.startsWith("/tag/")) {
+    const tag = posts
+      .flatMap((post) => post.tags ?? [])
+      .find((tag) => tagPath(tag) === path);
+    if (!tag) throw new Error(`No content tag for ${path}`);
+    return published.filter((post) => post.tags?.includes(tag));
+  }
+  const page = path === "/" ? 1 : Number(path.split("/")[1]);
+  return published.slice((page - 1) * postsPerPage, page * postsPerPage);
+};
 
 test.describe("Parity", () => {
   for (const path of [
@@ -53,12 +88,19 @@ test.describe("Parity", () => {
     "/tag/asp-net-core/",
   ]) {
     test(`Card order on ${path}`, async ({ page }) => {
+      const expected = listingPosts(path);
+      expect(expected.length).toBeGreaterThan(0);
       await page.goto(path);
 
-      const cards = (
-        await page.locator(".post-card__title").allTextContents()
-      ).map(collapse);
-      expect(cards).toEqual(baseline[path].cards);
+      const cards = page.locator(".post-card__title a");
+      await expect(cards).toHaveText(
+        expected.map((post) => collapse(post.title)),
+      );
+      expect(
+        await cards.evaluateAll((links) =>
+          links.map((link) => link.getAttribute("href")),
+        ),
+      ).toEqual(expected.map((post) => post.permalink));
     });
   }
 

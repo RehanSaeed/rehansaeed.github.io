@@ -27,6 +27,21 @@ async function ready(page: Page) {
   });
 }
 
+async function expectInheritedIconColour(target: Locator) {
+  const icon = target.locator("svg.icon");
+  await expect(icon).not.toHaveAttribute("color");
+  await expect(icon.locator("path")).toHaveCount(1);
+  await expect
+    .poll(() =>
+      target.evaluate(
+        (element) =>
+          getComputedStyle(element.querySelector("svg.icon path")!).fill ===
+          getComputedStyle(element).color,
+      ),
+    )
+    .toBe(true);
+}
+
 async function capture(page: Page, name: string, target?: Locator) {
   const icons = target
     ? target.locator("svg.icon:visible")
@@ -134,28 +149,10 @@ test("Coffee icons inherit their button text colour in both themes", async ({
 
   for (let theme = 0; theme < 2; theme++) {
     await page.mouse.move(0, 0);
-    await expect(button.locator("svg.icon")).not.toHaveAttribute("color");
-    await expect
-      .poll(() =>
-        button.evaluate(
-          (element) =>
-            getComputedStyle(element.querySelector("svg.icon path")!).fill ===
-            getComputedStyle(element).color,
-        ),
-      )
-      .toBe(true);
+    await expectInheritedIconColour(button);
     await button.click();
     await expect(support).toBeVisible();
-    await expect(link.locator("svg.icon")).not.toHaveAttribute("color");
-    await expect
-      .poll(() =>
-        link.evaluate(
-          (element) =>
-            getComputedStyle(element.querySelector("svg.icon path")!).fill ===
-            getComputedStyle(element).color,
-        ),
-      )
-      .toBe(true);
+    await expectInheritedIconColour(link);
     await support
       .getByRole("button", { name: "Close Buy me a Coffee" })
       .click();
@@ -366,11 +363,12 @@ test.describe("Icon areas", () => {
         await expect(
           page.locator(".post__footer svg.icon:visible"),
         ).toHaveCount(3);
-        await expect(
-          page
-            .getByRole("button", { name: "Buy me a Coffee", exact: true })
-            .locator("svg.icon path"),
-        ).toHaveCSS("fill", "rgb(255, 221, 0)");
+        await expectInheritedIconColour(
+          page.getByRole("button", {
+            name: "Buy me a Coffee",
+            exact: true,
+          }),
+        );
         await shot("post-actions", page.locator(".post__footer"));
         await page.getByRole("button", { name: "Share", exact: true }).click();
         const share = page.getByRole("dialog", { name: "Share", exact: true });
@@ -385,11 +383,12 @@ test.describe("Icon areas", () => {
           exact: true,
         });
         await expect(support.locator("svg.icon")).toHaveCount(5);
-        await expect(
-          support
-            .getByRole("link", { name: "Buy me a Coffee", exact: true })
-            .locator("svg.icon path"),
-        ).toHaveCSS("fill", "rgb(255, 221, 0)");
+        await expectInheritedIconColour(
+          support.getByRole("link", {
+            name: "Buy me a Coffee",
+            exact: true,
+          }),
+        );
         await shot("support-dialog", support);
         await support
           .getByRole("button", { name: "Close Buy me a Coffee" })
