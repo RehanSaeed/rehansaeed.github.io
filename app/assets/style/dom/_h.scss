@@ -15,41 +15,6 @@ h6 {
   text-wrap: balance;
   transition: color var(--global-duration-3);
 
-  a.heading-anchor {
-    color: var(--global-link-color);
-    float: left; // Remove when browser support is good enough.
-    float: inline-start;
-    margin-inline-start: -30px;
-    opacity: 0;
-    margin-inline-end: 8px;
-    inline-size: 22px;
-    block-size: 22px;
-    text-decoration: none;
-    transition: opacity var(--global-duration-2) ease-out 100ms;
-    vertical-align: middle;
-
-    svg {
-      display: inline;
-    }
-  }
-
-  &:hover,
-  &:focus {
-    a.heading-anchor {
-      color: var(--global-link-color);
-      opacity: 1;
-      text-decoration: none;
-      transition-delay: 0;
-    }
-  }
-
-  a.heading-anchor:focus {
-    color: var(--global-link-color);
-    opacity: 1;
-    text-decoration: none;
-    transition-delay: 0;
-  }
-
   &:target {
     animation-name: target;
     animation-duration: 3s;
