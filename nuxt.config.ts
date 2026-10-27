@@ -77,6 +77,8 @@ export default defineNuxtConfig({
         "feather:arrow-left",
         "feather:arrow-right",
         "feather:moon",
+        "feather:pause",
+        "feather:play",
         "feather:rotate-cw",
         "feather:search",
         "feather:sun",

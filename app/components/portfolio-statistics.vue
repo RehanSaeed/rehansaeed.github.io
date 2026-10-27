@@ -16,20 +16,18 @@
     class="portfolio-statistics"
     :data-downloads="statistics.downloads"
     :data-stars="statistics.stars">
-    <dl class="portfolio-statistics__totals">
-      <div class="portfolio-statistics__metric">
-        <dt>Lifetime NuGet downloads</dt>
-        <dd :title="`${downloadsExact} lifetime NuGet package downloads`">
-          <span :aria-label="`${downloadsExact} downloads`">{{
-            downloadsCompact
-          }}</span>
-        </dd>
-      </div>
-      <div class="portfolio-statistics__metric">
-        <dt>GitHub stars</dt>
-        <dd>{{ starsExact }}</dd>
-      </div>
-    </dl>
+    <div class="portfolio-statistics__totals">
+      <u-count-ticker
+        label="Lifetime NuGet downloads"
+        :value="statistics.downloads"
+        :growth="statistics.growth.downloads"
+        :generated-at="statistics.generatedAt" />
+      <u-count-ticker
+        label="GitHub stars"
+        :value="statistics.stars"
+        :growth="statistics.growth.stars"
+        :generated-at="statistics.generatedAt" />
+    </div>
     <p class="portfolio-statistics__note">
       Across {{ statistics.repositories }} repositories and
       {{ statistics.packages }} NuGet packages listed below. Downloads are not
@@ -47,10 +45,6 @@ defineProps<{ compact?: boolean }>();
 
 const downloadsExact = statistics.downloads.toLocaleString("en-GB");
 const starsExact = statistics.stars.toLocaleString("en-GB");
-const downloadsCompact = new Intl.NumberFormat("en-GB", {
-  notation: "compact",
-  maximumFractionDigits: 1,
-}).format(statistics.downloads);
 const downloadsLong = new Intl.NumberFormat("en-GB", {
   notation: "compact",
   compactDisplay: "long",
@@ -67,32 +61,24 @@ const generatedDate = new Intl.DateTimeFormat("en-GB", {
 <style lang="scss">
 .portfolio-statistics {
   display: grid;
+  min-inline-size: 0;
+  inline-size: 100%;
   justify-items: center;
   gap: var(--global-space-fixed-4);
   text-align: center;
 }
 
 .portfolio-statistics__totals {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
   gap: var(--global-space-fluid-5);
-  margin: 0;
-}
-
-.portfolio-statistics__metric {
-  display: flex;
-  flex-direction: column-reverse;
-}
-
-.portfolio-statistics__metric dd {
-  margin: 0;
-  font-size: var(--global-font-size-8);
-  font-weight: bold;
-  color: var(--global-accent-color);
+  inline-size: 100%;
+  max-inline-size: 72rem;
+  min-inline-size: 0;
 }
 
 .portfolio-statistics__note {
+  min-inline-size: 0;
   max-inline-size: var(--global-space-content-max-width);
   margin: 0;
   font-size: var(--global-font-size-1);

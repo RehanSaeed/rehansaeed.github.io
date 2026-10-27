@@ -9,9 +9,12 @@ const packageSchema = z.object({
   id: z.string().regex(/^[A-Za-z0-9][A-Za-z0-9_.-]*$/),
   downloads: z.number().int().nonnegative(),
 });
-const cacheSchema = z.object({
+const observationSchema = z.object({
   updated: z.number(),
   snapshots: z.record(z.string(), packageSchema),
+});
+export const cacheSchema = observationSchema.extend({
+  previous: observationSchema.optional(),
 });
 const downloadCountSchema = z
   .string()
@@ -112,7 +115,14 @@ export async function portfolioDownloads(
   if (!fresh) {
     await writeFile(
       path,
-      JSON.stringify({ updated: complete ? Date.now() : 0, snapshots }),
+      JSON.stringify({
+        updated: complete ? Date.now() : 0,
+        snapshots,
+        previous:
+          cached && cached.updated > 0
+            ? { updated: cached.updated, snapshots: cached.snapshots }
+            : cached?.previous,
+      }),
     );
   }
   return Object.fromEntries(
