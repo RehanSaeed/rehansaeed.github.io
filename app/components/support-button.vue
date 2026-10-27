@@ -1,7 +1,7 @@
 <template>
   <div>
     <u-button bordered @click="onClick">
-      <u-icon name="simple-icons:buymeacoffee" color="#ffdd00" inline />
+      <u-icon name="simple-icons:buymeacoffee" inline />
       Buy me a Coffee
     </u-button>
 
