@@ -6,6 +6,8 @@ Fenced code blocks keep their build-time Shiki highlighting. Existing language,
 After JavaScript loads, each block has icon-only **Copy code** and **Wrap lines**
 controls overlaid at its top right. They appear on hover or keyboard focus and
 remain visible on touch screens. Both have tooltips (dismissible with Escape).
+Single-line blocks vertically centre the controls; longer blocks keep them at
+the top right.
 The copy icon animates into a check mark on success; the wrap control animates
 between wrapping and horizontal-line icons. Reduced-motion preferences disable
 these animations.
@@ -45,6 +47,8 @@ Write-Output "Hello"
 Tabs sit on the top edge of the code panel, rather than appearing as detached
 buttons. Native buttons use the ARIA tablist/tab/tabpanel pattern, with selected
 state, linked tab/panel IDs and roving keyboard focus.
+Each alternative retains its language-specific styling, including PowerShell's
+blue background and dark-theme syntax colours in both site themes.
 
 The same pattern supports npm/pnpm or other alternatives. Each group is
 independent. Left/Right arrows switch tabs, Home/End select the first/last tab,
@@ -63,6 +67,9 @@ visible.
 
 Run `npm run dev` and open `/dev/code-controls/` to compare the original controls,
 the real shared `UButton` (plain and bordered), and soft/grouped alternatives.
+The `#tab-styles` section also offers attached, underline, segmented, pill and
+editor-style Bash/PowerShell tabs. These use the real renderer and highlighting;
+all styles retain the same accessible tab semantics and keyboard behaviour.
 Each example uses the same build-time-highlighted sample and working copy/wrap
 controls. Toggle all controls, narrow examples, or the theme to compare states;
 the preference radio buttons do not change the production default.

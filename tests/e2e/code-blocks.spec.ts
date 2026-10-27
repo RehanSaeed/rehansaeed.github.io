@@ -77,6 +77,46 @@ test("Icon controls overlay the top right, reveal on hover/focus and have dismis
   ).toBeVisible();
 });
 
+test("Single-line controls are vertically centred without moving multi-line controls", async ({
+  page,
+}) => {
+  await page.goto(path, { waitUntil: "domcontentloaded" });
+  const single = page
+    .locator(".code-block")
+    .filter({ hasText: "// No Language" });
+  const multi = page.locator(".code-block").filter({ hasText: "Wrapped code" });
+  for (const width of [1000, 375]) {
+    await page.setViewportSize({ width, height: 900 });
+    await single.hover();
+    await expect(
+      single.getByRole("button", { name: "Copy code", exact: true }),
+    ).toBeVisible();
+    const position = await single.evaluate((element) => {
+      const pre = element.querySelector("pre")!.getBoundingClientRect();
+      const toolbar = element
+        .querySelector(".code-block__toolbar")!
+        .getBoundingClientRect();
+      return {
+        offset: toolbar.top + toolbar.height / 2 - pre.top - pre.height / 2,
+        right: pre.right - toolbar.right,
+      };
+    });
+    expect(Math.abs(position.offset)).toBeLessThanOrEqual(1);
+    expect(position.right).toBeGreaterThanOrEqual(0);
+    expect(position.right).toBeLessThan(8);
+    await multi.hover();
+    const top = await multi.evaluate((element) => {
+      const pre = element.querySelector("pre")!.getBoundingClientRect();
+      return (
+        element.querySelector(".code-block__toolbar")!.getBoundingClientRect()
+          .top - pre.top
+      );
+    });
+    expect(top).toBeGreaterThanOrEqual(0);
+    expect(top).toBeLessThan(16);
+  }
+});
+
 test("Copy and wrap icons animate in both directions and respect reduced motion", async ({
   page,
 }) => {
@@ -322,6 +362,15 @@ test("The cheat sheet documents accessible Bash/PowerShell tabs and copies only 
   await expect(panel.locator("code")).toHaveText(
     'Write-Output "Hello <world> & friends"',
   );
+  await expect(panel.locator("pre")).toHaveClass(/\bshiki\b/);
+  const command = panel.locator("code .line > span").first();
+  const string = panel.locator("code .line > span").last();
+  await expect(command).toHaveCSS("color", "rgb(102, 217, 239)");
+  await expect(string).toHaveCSS("color", "rgb(230, 219, 116)");
+  await expect(panel.locator("pre")).toHaveCSS(
+    "background-color",
+    "rgb(1, 37, 86)",
+  );
   await group.getByRole("button", { name: "Copy code", exact: true }).click();
   expect(await page.evaluate(() => sessionStorage.getItem("copied-code"))).toBe(
     await panel.locator("code").textContent(),
@@ -424,7 +473,12 @@ test("Build-time groups preserve highlighted HTML without raw source duplication
       {},
       [
         "pre",
-        { language: "bash", filename: "Bash", code: "echo <ok>" },
+        {
+          language: "bash",
+          filename: "Bash",
+          className: ["language-bash", "shiki"],
+          code: "echo <ok>",
+        },
         ["code", {}, ["span", { class: "line" }, "echo <ok>"]],
       ],
       [
@@ -432,6 +486,7 @@ test("Build-time groups preserve highlighted HTML without raw source duplication
         {
           language: "powershell",
           filename: "PowerShell",
+          class: "language-powershell shiki",
           code: "Write-Output ok",
         },
         ["code", {}, "Write-Output ok"],
@@ -447,11 +502,13 @@ test("Build-time groups preserve highlighted HTML without raw source duplication
           {
             language: "bash",
             filename: "Bash",
+            class: "language-bash shiki",
             html: '<span class="line">echo &lt;ok&gt;</span>',
           },
           {
             language: "powershell",
             filename: "PowerShell",
+            class: "language-powershell shiki",
             html: "Write-Output ok",
           },
         ],

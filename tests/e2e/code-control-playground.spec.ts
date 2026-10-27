@@ -64,7 +64,10 @@ for (const style of ["current", "plain", "bordered", "soft", "grouped"]) {
 test("Comparison options change the preview without choosing a production design", async ({
   page,
 }) => {
-  await expect(page.locator(".controls-lab__card")).toHaveCount(5);
+  await expect(page.locator(".controls-lab__card[data-style]")).toHaveCount(5);
+  await expect(page.locator(".controls-lab__card[data-tab-style]")).toHaveCount(
+    5,
+  );
   await page.getByLabel("Narrow examples", { exact: true }).check();
   await expect
     .poll(
@@ -92,7 +95,7 @@ test("Comparison options change the preview without choosing a production design
     current.getByRole("button", { name: "Wrap lines", exact: true }),
   ).toHaveCSS("outline-style", "solid");
   await page.getByLabel("Prefer C", { exact: true }).check();
-  await expect(page.locator(".controls-lab__selection")).toContainText(
+  await expect(page.locator("[data-control-preference]")).toContainText(
     "Preference: C.",
   );
   await expect(page.locator(".code-block--controls-current")).toHaveCount(1);
@@ -105,3 +108,62 @@ test("Comparison options change the preview without choosing a production design
     theme === "dark" ? "light" : "dark",
   );
 });
+
+for (const style of ["attached", "underline", "segmented", "pills", "editor"]) {
+  test(`${style} tabs preserve semantics, highlighting and code interactions`, async ({
+    page,
+  }) => {
+    const card = page.locator(`[data-tab-style="${style}"]`);
+    const bash = card.getByRole("tab", { name: "Bash", exact: true });
+    const powershell = card.getByRole("tab", {
+      name: "PowerShell",
+      exact: true,
+    });
+    await expect(card.getByRole("tablist")).toHaveAttribute(
+      "aria-orientation",
+      "horizontal",
+    );
+    await expect(bash).toHaveAttribute("aria-selected", "true");
+    await bash.focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(powershell).toBeFocused();
+    await expect(powershell).toHaveAttribute("aria-selected", "true");
+    const panel = card.getByRole("tabpanel");
+    await expect(panel).toHaveAttribute(
+      "id",
+      (await powershell.getAttribute("aria-controls"))!,
+    );
+    await expect(panel).toHaveAttribute(
+      "aria-labelledby",
+      (await powershell.getAttribute("id"))!,
+    );
+    await expect(panel.locator("pre")).toHaveClass(/\bshiki\b/);
+    const command = panel.locator("code .line > span").first();
+    await expect(command).toHaveCSS("color", "rgb(102, 217, 239)");
+    await page
+      .getByRole("button", { name: "Toggle dark/light", exact: true })
+      .click();
+    await expect(command).toHaveCSS("color", "rgb(102, 217, 239)");
+    await card.hover();
+    await card.getByRole("button", { name: "Wrap lines", exact: true }).click();
+    await expect(panel.locator("code")).toHaveCSS("white-space", "pre-wrap");
+    await card.getByRole("button", { name: "Copy code", exact: true }).click();
+    expect(
+      await page.evaluate(() => sessionStorage.getItem("comparison-copy")),
+    ).toBe(await panel.locator("code").textContent());
+    await card.getByRole("radio").check();
+    await expect(page.locator("[data-tab-preference]")).toContainText(
+      `Tab preference: ${style.charAt(0).toUpperCase() + style.slice(1)}.`,
+    );
+    await expect(
+      page
+        .locator("[data-tab-style]")
+        .locator('[role="tab"][aria-selected="true"]'),
+    ).toHaveCount(5);
+    await expect(
+      page
+        .locator('[data-tab-style] [role="tab"][aria-selected="true"]')
+        .filter({ hasText: "Bash" }),
+    ).toHaveCount(4);
+  });
+}

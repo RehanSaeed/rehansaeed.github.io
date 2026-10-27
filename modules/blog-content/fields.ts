@@ -195,6 +195,11 @@ export function prerenderCodeBlocks(nodes: MinimarkNode[] | undefined): void {
     }
     const code = node[2];
     if (node[0] === "pre" && Array.isArray(code) && code[0] === "code") {
+      const className = classOf(node[1]);
+      if (className) {
+        node[1].class = className;
+        delete node[1].className;
+      }
       node[1].html = toHtml(code.slice(2) as MinimarkNode[]);
       delete node[1].code;
       node.length = 2;

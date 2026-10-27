@@ -3,6 +3,7 @@
     class="code-block"
     :class="[
       `code-block--controls-${controls}`,
+      `code-block--tabs-${tabStyle}`,
       { 'code-block--group': alternatives?.length && hydrated },
     ]">
     <div
@@ -133,6 +134,7 @@ import UButton from "../shared/button.vue";
 import type {
   CodeBlock,
   CodeControlStyle,
+  CodeTabStyle,
 } from "../../../shared/utils/code-blocks";
 
 defineOptions({ inheritAttrs: false });
@@ -141,9 +143,10 @@ const props = withDefaults(
     CodeBlock & {
       alternatives?: CodeBlock[];
       controls?: CodeControlStyle;
+      tabStyle?: CodeTabStyle;
     }
   >(),
-  { controls: "bordered" },
+  { controls: "bordered", tabStyle: "attached" },
 );
 const controlButton = computed(() =>
   props.controls === "current" ? "button" : UButton,
@@ -172,10 +175,14 @@ const wrapped = computed(
 );
 
 function preClass(block: CodeBlock) {
+  const text = (block.html ?? "").replace(/<[^>]*>/g, "").replace(/\r?\n$/, "");
   return [
     `language-${block.language || "text"}`,
     block.class,
-    { "line-numbers": hasMeta(block, "line-numbers") },
+    {
+      "line-numbers": hasMeta(block, "line-numbers"),
+      "code-block__pre--single-line": !text.includes("\n"),
+    },
   ];
 }
 
