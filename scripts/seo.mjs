@@ -198,7 +198,11 @@ for (const url of urls) {
 const referenceRoutes = (await readFile("tests/parity/urls.txt", "utf8"))
     .trim()
     .split(/\r?\n/);
-const additionalPublicRoutes = ["/tag/ai/", "/tag/artificial-intelligence-ai/"];
+const additionalPublicRoutes = [
+    "/tag/ai/",
+    "/tag/artificial-intelligence-ai/",
+    "/ai-gone-rogue/",
+];
 for (const path of [
     ...referenceRoutes,
     ...additionalPublicRoutes,
@@ -249,7 +253,7 @@ assert.equal(
     referenceRoutes.length - 5 + additionalPublicRoutes.length,
     "All and only public reference pages and approved additions indexed",
 );
-assert.equal(articles, 102, "Every published article has a schema graph");
+assert.equal(articles, 103, "Every published article has a schema graph");
 assert.equal(
     images.size,
     urls.length,

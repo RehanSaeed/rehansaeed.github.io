@@ -6,7 +6,7 @@ permalink: "/ai-gone-rogue/"
 heroImage: "/images/hero/HAL-9000-Prop-1600x900.png"
 date: "2026-10-27"
 dateModified: null
-published: false
+published: true
 categories:
   - "Thoughts"
 tags:

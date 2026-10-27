@@ -8,7 +8,7 @@ Just blogged "AI Gone Rogue"
 
 https://rehansaeed.com/ai-gone-rogue/
 
-#ArtificialIntelligence #GitHubCopilot #DeveloperTools
+#AI #ArtificialIntelligence #Copilot #GitHubCopilot #DeveloperTools #HAL9000
 
 ## 🦋 Bluesky
 
@@ -16,7 +16,7 @@ Just blogged "AI Gone Rogue"
 
 https://rehansaeed.com/ai-gone-rogue/
 
-#ArtificialIntelligence #GitHubCopilot #DeveloperTools
+#AI #ArtificialIntelligence #Copilot #GitHubCopilot #DeveloperTools #HAL9000
 
 ## 💼 LinkedIn
 
@@ -26,7 +26,7 @@ An odd message from a colleague turned out to be their AI. It led me to add an i
 
 https://rehansaeed.com/ai-gone-rogue/
 
-#ArtificialIntelligence #GitHubCopilot #DeveloperTools
+#AI #ArtificialIntelligence #Copilot #GitHubCopilot #DeveloperTools #HAL9000
 
 ## 👽 Reddit profile
 
