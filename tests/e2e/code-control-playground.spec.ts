@@ -20,6 +20,12 @@ test.beforeEach(async ({ page }) => {
     page.getByLabel("Narrow examples", { exact: true }),
   ).toBeEnabled();
   await expect(
+    page.getByRole("button", { name: "Toggle dark/light", exact: true }),
+  ).toBeVisible();
+  expect(
+    (await page.locator("[data-tab-style]").first().boundingBox())!.width,
+  ).toBeGreaterThan(280);
+  await expect(
     page.getByLabel("Show all controls", { exact: true }),
   ).not.toBeChecked();
   await page.getByLabel("Show all controls", { exact: true }).check();

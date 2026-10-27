@@ -14,43 +14,6 @@
           blocks. The blog still uses attached tabs and bordered controls.
         </p>
       </div>
-      <h2 id="tab-styles">Alternative-code tabs</h2>
-      <p>
-        Switch between Bash and PowerShell, try the arrow keys, copy and wrap,
-        or change the theme. Each card is independent.
-      </p>
-      <div class="controls-lab__grid">
-        <section
-          v-for="option in tabOptions"
-          :key="option.id"
-          class="controls-lab__card"
-          :aria-labelledby="`tab-heading-${option.id}`"
-          :data-tab-style="option.id">
-          <h3 :id="`tab-heading-${option.id}`">{{ option.title }}</h3>
-          <p>{{ option.description }}</p>
-          <div class="controls-lab__example">
-            <ContentRenderer :value="{ body: tabExampleBody(option.id) }" />
-          </div>
-          <label class="controls-lab__choice">
-            <input
-              v-model="tabChoice"
-              type="radio"
-              :disabled="!hydrated"
-              name="tab-preference"
-              :value="option.id" />
-            Prefer {{ option.title }}
-          </label>
-        </section>
-      </div>
-      <p class="controls-lab__selection" role="status" data-tab-preference>
-        {{
-          selectedTab
-            ? `Tab preference: ${selectedTab.title}.`
-            : "No tab preference selected yet."
-        }}
-        This selection is local only; it does not change the blog.
-      </p>
-      <h2 id="button-styles">Copy and wrap buttons</h2>
       <u-theme-button />
     </header>
     <div class="controls-lab__options">
@@ -64,6 +27,43 @@
       >
       <span>Try hover, keyboard focus, copy, wrap and light/dark themes.</span>
     </div>
+    <h2 id="tab-styles">Alternative-code tabs</h2>
+    <p>
+      Switch between Bash and PowerShell, try the arrow keys, copy and wrap, or
+      change the theme. Each card is independent.
+    </p>
+    <div class="controls-lab__grid">
+      <section
+        v-for="option in tabOptions"
+        :key="option.id"
+        class="controls-lab__card"
+        :aria-labelledby="`tab-heading-${option.id}`"
+        :data-tab-style="option.id">
+        <h3 :id="`tab-heading-${option.id}`">{{ option.title }}</h3>
+        <p>{{ option.description }}</p>
+        <div class="controls-lab__example">
+          <ContentRenderer :value="{ body: tabExampleBody(option.id) }" />
+        </div>
+        <label class="controls-lab__choice">
+          <input
+            v-model="tabChoice"
+            type="radio"
+            :disabled="!hydrated"
+            name="tab-preference"
+            :value="option.id" />
+          Prefer {{ option.title }}
+        </label>
+      </section>
+    </div>
+    <p class="controls-lab__selection" role="status" data-tab-preference>
+      {{
+        selectedTab
+          ? `Tab preference: ${selectedTab.title}.`
+          : "No tab preference selected yet."
+      }}
+      This selection is local only; it does not change the blog.
+    </p>
+    <h2 id="button-styles">Copy and wrap buttons</h2>
     <div class="controls-lab__grid">
       <section
         v-for="option in options"
@@ -71,9 +71,9 @@
         class="controls-lab__card"
         :aria-labelledby="`heading-${option.id}`"
         :data-style="option.id">
-        <h2 :id="`heading-${option.id}`">
+        <h3 :id="`heading-${option.id}`">
           {{ option.letter }}. {{ option.title }}
-        </h2>
+        </h3>
         <p>{{ option.description }}</p>
         <div class="controls-lab__example">
           <ContentRenderer :value="{ body: exampleBody(option.id) }" />
