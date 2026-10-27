@@ -34,5 +34,3 @@ The important bit is the plain text saying that the reply was posted automatical
 Of course, an instruction is not an enforcement mechanism. An agent can fail to follow it, and labelling a message doesn't make its contents correct. It also doesn't replace approval before an agent sends something on my behalf.
 
 I've [written before about the etiquette of pull request comments](/on-the-etiquette-of-pull-request-comments/). Perhaps knowing whether your colleague actually wrote the comment is now part of that etiquette too.
-
-_Hero image: [HAL prop photograph](https://commons.wikimedia.org/wiki/File:HAL_9000_Original_requisite_from_2001_A_Space_Odyssey_-_retouche.jpg) by Carlos Pacheco, retouched by Pittigrilli, licensed under [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/). Cropped, resized and caption added._
