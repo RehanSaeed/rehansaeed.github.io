@@ -35,27 +35,33 @@
     </div>
     <p v-if="error" role="status">Traffic history is currently unavailable.</p>
     <template v-else-if="history && data">
-      <div class="post-traffic__summary">
-        <div
-          class="post-traffic__metrics"
-          aria-live="polite"
-          aria-atomic="true">
-          <u-statistic
-            class="post-traffic__total"
-            :value="number.format(total)"
-            label="page views" />
-          <u-statistic
-            class="post-traffic__engagement"
-            :value="engagement"
-            label="average engagement per view" />
-        </div>
-        <p class="post-traffic__range">
-          <time :datetime="history.startDate">{{
-            date(history.startDate)
+      <div
+        v-if="
+          availableHistory &&
+          availableHistory.startDate > published.slice(0, 10)
+        "
+        class="custom-block warning post-traffic__warning"
+        role="note">
+        <p class="custom-block-title">Partial traffic history</p>
+        <p>
+          This article predates the available Google Analytics history. Traffic
+          before
+          <time :datetime="availableHistory.startDate">{{
+            date(availableHistory.startDate)
           }}</time>
-          <span> to </span>
-          <time :datetime="history.endDate">{{ date(history.endDate) }}</time>
+          is unavailable. All time covers recorded history, not the article's
+          full lifetime.
         </p>
+      </div>
+      <div class="post-traffic__metrics" aria-live="polite" aria-atomic="true">
+        <u-statistic
+          class="post-traffic__total"
+          :value="number.format(total)"
+          label="Page views" />
+        <u-statistic
+          class="post-traffic__engagement"
+          :value="engagement"
+          label="Average engagement per view" />
       </div>
       <div class="post-traffic__controls">
         <div
@@ -93,23 +99,6 @@
       <p v-if="!availableHistory?.days" class="post-traffic__coverage">
         Daily history is unavailable in this saved snapshot.
       </p>
-      <div
-        v-if="
-          availableHistory &&
-          availableHistory.startDate > published.slice(0, 10)
-        "
-        class="custom-block warning post-traffic__warning"
-        role="note">
-        <p class="custom-block-title">Partial traffic history</p>
-        <p>
-          This article predates the available GA4 history. Traffic before
-          <time :datetime="availableHistory.startDate">{{
-            date(availableHistory.startDate)
-          }}</time>
-          is unavailable. All time covers recorded history, not the article's
-          full lifetime.
-        </p>
-      </div>
       <p
         v-if="metric === 'engagement' && !hasEngagement"
         class="post-traffic__coverage"
@@ -310,31 +299,16 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   margin-block-start: var(--global-space-fixed-4);
 }
-.post-traffic__summary {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--global-space-fixed-3) var(--global-space-fixed-5);
-}
-.post-traffic__range {
-  margin: 0;
-  min-inline-size: 0;
-}
 .post-traffic__metrics {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, max-content));
   align-items: start;
-  gap: var(--global-space-fixed-3) var(--global-space-fixed-5);
+  gap: var(--global-space-fixed-5) var(--global-space-fixed-6);
   min-inline-size: 0;
-}
-.post-traffic__range {
-  margin-inline-start: auto;
 }
 @include breakpoints.respond-below(sm) {
-  .post-traffic__range {
-    flex-basis: 100%;
-    margin-inline-start: 0;
+  .post-traffic__metrics {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 .post-traffic__coverage {
