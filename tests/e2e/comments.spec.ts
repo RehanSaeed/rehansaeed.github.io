@@ -128,6 +128,10 @@ test.describe("GitHub comments", () => {
       await expect(
         page.locator(".comments__list > article.comment"),
       ).toHaveCount(1);
+      await expect(page.locator(".comments__summary")).toHaveCSS(
+        "border-block-end-style",
+        "solid",
+      );
       await expect(
         page.getByRole("region", { name: "GitHub Comments", exact: true }),
       ).toBeVisible();
@@ -341,6 +345,54 @@ test.describe("GitHub comments", () => {
       "Deleted user",
     );
   });
+
+  for (const width of [375, 1280]) {
+    for (const unavailable of [false, true]) {
+      test(`Omits the empty divider and spacing at ${width}px when live comments are ${unavailable ? "unavailable" : "empty"}`, async ({
+        page,
+      }) => {
+        await page.setViewportSize({ width, height: 900 });
+        await page.route("https://api.github.com/**", (route) =>
+          route.fulfill(
+            unavailable
+              ? { status: 403, json: { message: "Rate limit" } }
+              : { json: [] },
+          ),
+        );
+        const response = await page.goto(
+          unavailable ? "/ai-gone-rogue/#comments" : `${postPath}#comments`,
+        );
+        if (unavailable) {
+          const saved = load(await response!.text());
+          expect(saved(".comments__list")).toHaveLength(0);
+          expect(saved(".comments__summary--with-comments")).toHaveLength(0);
+        }
+        await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
+        await expect(page.locator(".comments__count")).toHaveText("0 Comments");
+        if (unavailable) {
+          await expect(page.locator(".comments__status")).toBeVisible();
+        }
+        await expect(page.locator(".comments__list")).toHaveCount(0);
+        await expect(page.locator(".comments__summary")).toHaveCSS(
+          "border-block-end-width",
+          "0px",
+        );
+        await expect(page.locator(".comments__summary")).toHaveCSS(
+          "padding-block-end",
+          "0px",
+        );
+        const layout = await page.locator(".comments").evaluate((card) => ({
+          bottomSpace:
+            card.getBoundingClientRect().bottom -
+            card.querySelector(".comments__header")!.getBoundingClientRect()
+              .bottom,
+          padding: parseFloat(getComputedStyle(card).paddingBlockEnd),
+        }));
+        expect(layout.bottomSpace).toBeCloseTo(layout.padding, 1);
+        await expect(page.locator(".comments__github")).toBeVisible();
+      });
+    }
+  }
 
   for (const count of [0, 6]) {
     test(`Wraps the shared GitHub action below ${count} comments on mobile`, async ({
