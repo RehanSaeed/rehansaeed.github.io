@@ -115,6 +115,11 @@ When explicitly asked to help draft an article, follow these guidelines:
   Hero images must match the schema's `/images/...-<width>x<height>.png` or JPEG
   naming pattern, with dimensions matching the actual file. Choose an image
   relevant to the article rather than copying another post's image by default.
+- For new posts, use a **1600x900** hero image, the larger of the two common
+  formats in this repository; **1366x768** is the older format. Prefer a source
+  image at least that large, preserve its aspect ratio and avoid cropping
+  important content. Enlarging a small source does not add detail. Do not resize
+  unrelated existing heroes.
 - Put article-specific images in the post's `images` directory and reference them
   relatively, for example `![Descriptive alt text](./images/example.png)`.
   Keep captions, alt text and attribution accurate; do not fabricate screenshots.
