@@ -48,9 +48,9 @@
           before
           <time :datetime="availableHistory.startDate">{{
             date(availableHistory.startDate)
-          }}</time>
-          is unavailable. All time covers recorded history, not the article's
-          full lifetime.
+          }}</time
+          >, including any initial spike at publication, is unavailable. All
+          time covers recorded history, not the article's full lifetime.
         </p>
       </div>
       <div class="post-traffic__metrics" aria-live="polite" aria-atomic="true">

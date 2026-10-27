@@ -111,13 +111,13 @@ for (const width of [375, 1280]) {
         ),
       ).toEqual(["DT", "DD"]);
       const value = statistic.locator("dd");
-      const label = statistic.locator("dt");
       await expect(value).toHaveCSS("display", "block");
-      const valueBounds = await value.boundingBox();
-      const labelBounds = await label.boundingBox();
-      expect(labelBounds!.y).toBeGreaterThanOrEqual(
-        valueBounds!.y + valueBounds!.height,
+      const labelGap = await statistic.evaluate(
+        (element) =>
+          element.querySelector("dt")!.getBoundingClientRect().top -
+          element.querySelector("dd")!.getBoundingClientRect().bottom,
       );
+      expect(labelGap).toBeGreaterThanOrEqual(-0.001);
     }
     const total = await chart.locator(".post-traffic__total").boundingBox();
     const metrics = chart.locator(".post-traffic__metrics");
@@ -166,7 +166,7 @@ for (const width of [375, 1280]) {
       ),
     ).toBe(true);
     await expect(chart).toContainText(
-      "Traffic before 15 Jan 2024 is unavailable.",
+      "Traffic before 15 Jan 2024, including any initial spike at publication, is unavailable.",
     );
     const warning = chart.locator(".post-traffic__warning");
     await expect(warning).toContainText(
