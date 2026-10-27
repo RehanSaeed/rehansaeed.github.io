@@ -57,9 +57,11 @@ animation. Use it anywhere without importing portfolio data:
 <u-number-ticker title="Downloads" :number="1000" :rate="2.5" />
 ```
 
-`rate` is the average increment per second. Each second uses a random multiplier
-between 0.5 and 1.5, retaining fractional increments so slow-growing counts do not
-artificially increase every second. The optional `paused` prop stops animation;
+`rate` is the average increment per second. Each second has a 50% chance of no
+movement; otherwise it uses a random multiplier between 1 and 3. This produces
+irregular upward jumps while preserving the supplied average, retaining fractional
+increments so slow-growing counts do not artificially increase every second.
+The optional `paused` prop stops animation;
 `locale` defaults to `en-GB`. Changing `number` or `rate` resets the counter.
 Reduced-motion users see the supplied number. Hidden tabs suspend timers and
 catch up at the average rate on return; unmounting cleans up timers and listeners.

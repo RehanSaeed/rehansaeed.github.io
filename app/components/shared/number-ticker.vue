@@ -115,21 +115,25 @@ onBeforeUnmount(() => {
 .number-ticker {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
+  align-content: center;
+  justify-items: center;
   gap: var(--global-space-fixed-3);
   min-inline-size: 0;
   padding: clamp(0.75rem, 2vw, 2rem);
   border: 1px solid var(--global-border-color);
   border-radius: var(--global-border-radius);
   background: var(--global-content-background-color);
-  text-align: start;
+  text-align: center;
   container-type: inline-size;
 }
 
 .number-ticker__title {
+  display: grid;
+  align-content: center;
   margin: 0;
   min-block-size: 2.6em;
   font-family: var(--font-heading);
-  font-size: clamp(0.75rem, 5.5cqi, 1.5rem);
+  font-size: clamp(0.75rem, 7cqi, 2rem);
   line-height: 1.3;
 }
 
@@ -139,7 +143,7 @@ onBeforeUnmount(() => {
   max-inline-size: 100%;
   color: var(--global-accent-color);
   font-family: var(--global-font-family-monospace);
-  font-size: clamp(0.75rem, 12cqi, 4rem);
+  font-size: clamp(0.75rem, 14.5cqi, 5rem);
   font-weight: var(--global-font-weight-bold);
   font-variant-numeric: tabular-nums;
   line-height: 1.4;
@@ -151,14 +155,14 @@ onBeforeUnmount(() => {
 
 .number-ticker__digits {
   display: flex;
-  gap: 0.06em;
+  gap: 0.035em;
 }
 
 .number-ticker__cell {
   display: inline-block;
   position: relative;
   overflow: hidden;
-  inline-size: 0.75em;
+  inline-size: 0.65em;
   block-size: 1.4em;
   border-radius: calc(var(--global-border-radius) / 2);
   background: color-mix(
@@ -172,7 +176,7 @@ onBeforeUnmount(() => {
 }
 
 .number-ticker__cell--separator {
-  inline-size: 0.3em;
+  inline-size: 0.24em;
   background: none;
   box-shadow: none;
 }

@@ -207,10 +207,14 @@ for (const width of [320, 375, 1280]) {
         "GitHub stars",
       ]);
       const cards = totals.locator(".number-ticker");
-      const first = (await cards.nth(0).boundingBox())!;
-      const second = (await cards.nth(1).boundingBox())!;
-      expect(second.y).toBe(first.y);
-      expect(second.x).toBeGreaterThan(first.x);
+      const [first, second] = await cards.evaluateAll((elements) =>
+        elements.map((element) => {
+          const { x, y } = element.getBoundingClientRect();
+          return { x, y };
+        }),
+      );
+      expect(second!.y).toBe(first!.y);
+      expect(second!.x).toBeGreaterThan(first!.x);
       for (const ticker of await cards.all()) {
         await expect(ticker).toHaveAttribute("data-state", "paused");
         expect(
@@ -225,14 +229,26 @@ for (const width of [320, 375, 1280]) {
               .evaluate((heading) =>
                 Number.parseFloat(getComputedStyle(heading).fontSize),
               ),
-          ).toBeGreaterThanOrEqual(22);
+          ).toBeGreaterThanOrEqual(28);
           expect(
             await ticker
               .locator(".number-ticker__value")
               .evaluate((value) =>
                 Number.parseFloat(getComputedStyle(value).fontSize),
               ),
-          ).toBeGreaterThanOrEqual(48);
+          ).toBeGreaterThanOrEqual(58);
+        }
+        const cardBounds = (await ticker.boundingBox())!;
+        const cardCentre = cardBounds.x + cardBounds.width / 2;
+        for (const selector of [
+          ".number-ticker__title",
+          ".number-ticker__digits",
+        ]) {
+          const content = ticker.locator(selector);
+          const bounds = (await content.boundingBox())!;
+          expect(
+            Math.abs(bounds.x + bounds.width / 2 - cardCentre),
+          ).toBeLessThan(1);
         }
         const digits = ticker.locator(".number-ticker__digits");
         expect(
