@@ -4,6 +4,7 @@
       class="webmention-link__author"
       :id="id"
       :href="url"
+      rel="ugc nofollow"
       level="3"
       size="6"
       >{{ name }}</u-heading

@@ -6,6 +6,7 @@
       v-for="{ mention, name, photo, label } of mentionsDisplay"
       :key="mention.id"
       :href="mention.data.url"
+      rel="ugc nofollow"
       :label="label"
       :alt="name"
       :src="photo" />
