@@ -52,7 +52,7 @@ test("Missing, future and stale observations cannot start a portfolio estimate",
 });
 
 test("Random second-by-second movement preserves the supplied average and fractional increments", () => {
-  for (const rate of [100, 0.01, -0.01]) {
+  for (const rate of [100, 1.087, 0.01, -0.01]) {
     let state = { value: 1000, remainder: 0 };
     const movements = new Set<number>();
     for (let i = 0; i < 10_000; i++) {
@@ -62,6 +62,8 @@ test("Random second-by-second movement preserves the supplied average and fracti
     }
     expect(state.value + state.remainder).toBeCloseTo(1000 + rate * 10_000, 6);
     expect(movements.size).toBeGreaterThan(1);
+    expect(movements.has(0)).toBe(true);
+    if (rate === 1.087) expect(Math.max(...movements)).toBeGreaterThan(1);
     if (Math.abs(rate) < 1)
       expect(Math.max(...[...movements].map(Math.abs))).toBe(1);
   }

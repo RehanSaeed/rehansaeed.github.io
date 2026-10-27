@@ -44,8 +44,8 @@ export function counterStep(
   seconds: number,
   random: number,
 ): number {
-  // A bounded, mean-one weight varies the cadence without inflating the trend.
-  return perSecond * seconds * (0.5 + random);
+  // Half the ticks pause; jumps on the other half preserve a mean-one weight.
+  return perSecond * seconds * (random < 0.5 ? 0 : 4 * random - 1);
 }
 
 export function advanceCounter(

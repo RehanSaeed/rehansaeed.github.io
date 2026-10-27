@@ -105,7 +105,7 @@ async function mountTicker(
   );
 }
 
-test("Shared ticker needs title, number and rate and increases once per second", async ({
+test("Shared ticker needs title, number and rate and follows the supplied average", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
@@ -126,6 +126,22 @@ test("Shared ticker needs title, number and rate and increases once per second",
   );
   await expect(ticker.locator("h3, p")).toHaveCount(2);
   await expect(ticker.getByRole("button")).toHaveCount(0);
+});
+
+test("Random ticks pause and jump by different amounts instead of counting one by one", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await mountTicker(page, { rate: 1 });
+  await page.evaluate(() => {
+    const samples = [0.1, 0.875, 0.2, 0.625, 0.75];
+    Math.random = () => samples.shift() ?? 0.5;
+  });
+  const ticker = page.locator(".number-ticker");
+  for (const value of [1000, 1002, 1002, 1004, 1006]) {
+    await page.clock.runFor(1000);
+    await expect(ticker).toHaveAttribute("data-value", String(value));
+  }
 });
 
 test("Pause preserves the displayed estimate and resuming does not add paused time", async ({
