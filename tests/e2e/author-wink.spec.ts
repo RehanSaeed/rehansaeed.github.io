@@ -2,12 +2,13 @@ import sharp from "sharp";
 import { expect, test } from "./fixtures";
 
 for (const width of [375, 1280]) {
-  test(`The author winks once a minute without moving the portrait at ${width}px`, async ({
+  test(`The author winks every 30 seconds without moving the portrait at ${width}px`, async ({
     page,
   }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.goto("/");
+    await page.evaluate(() => document.fonts.ready.then(() => undefined));
     const portrait = page.getByRole("main").locator(".author__portrait");
     const image = portrait.getByRole("img", { name: "Muhammad Rehan Saeed" });
     await expect(image).toBeVisible();
@@ -19,6 +20,7 @@ for (const width of [375, 1280]) {
         ),
       )
       .toBe(true);
+    await image.evaluate((element: HTMLImageElement) => element.decode());
     await expect(portrait.locator("svg")).toHaveAttribute(
       "aria-hidden",
       "true",
@@ -41,7 +43,7 @@ for (const width of [375, 1280]) {
         iterations:
           timing.iterations === Infinity ? "infinite" : timing.iterations,
         samples: [
-          0, 59_999, 60_000, 60_120, 60_210, 60_360, 90_000, 120_120,
+          0, 29_999, 30_000, 30_120, 30_210, 30_360, 45_000, 60_120,
         ].map((time) => {
           animation.currentTime = time;
           return {
@@ -52,12 +54,12 @@ for (const width of [375, 1280]) {
         }),
       };
     });
-    expect(samples.delay).toBe(60_000);
-    expect(samples.duration).toBe(60_000);
+    expect(samples.delay).toBe(30_000);
+    expect(samples.duration).toBe(30_000);
     expect(samples.iterations).toBe("infinite");
     for (const { time, scale } of samples.samples) {
       expect(scale, `Eyelid scale at ${time}ms`).toBeCloseTo(
-        [60_120, 60_210, 120_120].includes(time) ? 1 : 0,
+        [30_120, 30_210, 60_120].includes(time) ? 1 : 0,
         6,
       );
     }
@@ -65,7 +67,7 @@ for (const width of [375, 1280]) {
     await expect(image).toHaveAttribute("src", imageSource!);
 
     const frames: Buffer[] = [];
-    for (const time of [0, 60_150]) {
+    for (const time of [0, 30_150]) {
       await portrait.evaluate((element, currentTime) => {
         element
           .querySelector(".author__eyelid")!
