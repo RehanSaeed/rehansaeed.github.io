@@ -40,14 +40,14 @@
           class="post-traffic__metrics"
           aria-live="polite"
           aria-atomic="true">
-          <p class="post-traffic__total">
-            <strong>{{ number.format(total) }}</strong>
-            <span>page views</span>
-          </p>
-          <p class="post-traffic__engagement">
-            <strong>{{ engagement }}</strong>
-            <span> average engagement per view</span>
-          </p>
+          <u-statistic
+            class="post-traffic__total"
+            :value="number.format(total)"
+            label="page views" />
+          <u-statistic
+            class="post-traffic__engagement"
+            :value="engagement"
+            label="average engagement per view" />
         </div>
         <p class="post-traffic__range">
           <time :datetime="history.startDate">{{
@@ -65,6 +65,8 @@
           <u-button
             v-for="option in ranges"
             :key="option.value"
+            bordered
+            :primary="range === option.value"
             :aria-pressed="range === option.value"
             :disabled="option.value === 30 && !availableHistory?.days"
             @click="range = option.value">
@@ -73,11 +75,15 @@
         </div>
         <div class="post-traffic__mode" role="group" aria-label="Chart metric">
           <u-button
+            bordered
+            :primary="metric === 'views'"
             :aria-pressed="metric === 'views'"
             @click="metric = 'views'">
             Traffic
           </u-button>
           <u-button
+            bordered
+            :primary="metric === 'engagement'"
             :aria-pressed="metric === 'engagement'"
             @click="metric = 'engagement'">
             Engagement
@@ -87,14 +93,23 @@
       <p v-if="!availableHistory?.days" class="post-traffic__coverage">
         Daily history is unavailable in this saved snapshot.
       </p>
-      <p
+      <div
         v-if="
           availableHistory &&
           availableHistory.startDate > published.slice(0, 10)
         "
-        class="post-traffic__coverage">
-        Traffic before {{ date(availableHistory.startDate) }} is unavailable.
-      </p>
+        class="custom-block warning post-traffic__warning"
+        role="note">
+        <p class="custom-block-title">Partial traffic history</p>
+        <p>
+          This article predates the available GA4 history. Traffic before
+          <time :datetime="availableHistory.startDate">{{
+            date(availableHistory.startDate)
+          }}</time>
+          is unavailable. All time covers recorded history, not the article's
+          full lifetime.
+        </p>
+      </div>
       <p
         v-if="metric === 'engagement' && !hasEngagement"
         class="post-traffic__coverage"
@@ -295,27 +310,6 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   margin-block-start: var(--global-space-fixed-4);
 }
-.post-traffic__ranges button,
-.post-traffic__mode button {
-  padding: var(--global-space-fixed-2) var(--global-space-fixed-3);
-  border: 1px solid var(--global-border-color);
-  border-radius: var(--global-border-radius);
-  font-size: var(--global-font-size-1);
-}
-.post-traffic__mode {
-  font-size: var(--global-font-size-1);
-}
-.post-traffic__ranges button[aria-pressed="true"],
-.post-traffic__mode button[aria-pressed="true"] {
-  border-color: var(--global-accent-color);
-  background: var(--global-accent-color);
-  color: var(--global-content-background-color);
-}
-.post-traffic__ranges button:focus-visible,
-.post-traffic__mode button:focus-visible {
-  outline: 2px solid var(--global-accent-color);
-  outline-offset: 2px;
-}
 .post-traffic__summary {
   display: flex;
   flex-wrap: wrap;
@@ -323,29 +317,19 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   gap: var(--global-space-fixed-3) var(--global-space-fixed-5);
 }
-.post-traffic__total,
-.post-traffic__range,
-.post-traffic__engagement {
+.post-traffic__range {
   margin: 0;
   min-inline-size: 0;
 }
 .post-traffic__metrics {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  gap: var(--global-space-fixed-3) var(--global-space-fixed-5);
   min-inline-size: 0;
-}
-.post-traffic__total strong {
-  display: block;
-  font-family: var(--font-heading);
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: var(--global-font-weight-normal);
-  line-height: 1.2;
-  overflow-wrap: anywhere;
 }
 .post-traffic__range {
   margin-inline-start: auto;
-}
-.post-traffic__engagement {
-  margin-block-start: var(--global-space-fixed-2);
-  font-size: var(--global-font-size-1);
 }
 @include breakpoints.respond-below(sm) {
   .post-traffic__range {
@@ -356,6 +340,9 @@ onBeforeUnmount(() => {
 .post-traffic__coverage {
   margin-block: var(--global-space-fixed-3) 0;
   font-size: var(--global-font-size-1);
+}
+.post-traffic__warning p {
+  min-inline-size: 0;
 }
 .post-traffic__events {
   display: flex;

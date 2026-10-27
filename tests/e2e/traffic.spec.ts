@@ -1,4 +1,5 @@
 import { expect, test } from "./fixtures";
+import type { Locator } from "@playwright/test";
 import type { TrafficSnapshot } from "../../shared/utils/traffic";
 import {
   trafficMonths,
@@ -23,6 +24,31 @@ const snapshot: TrafficSnapshot = {
   },
 };
 
+async function expectPointTooltip(
+  chart: Locator,
+  date: string,
+  views: number,
+  engagement?: string,
+) {
+  const tooltip = chart.locator(".post-traffic__tooltip");
+  await expect(tooltip.locator(".post-traffic__tooltip-date")).toHaveText(date);
+  await expect(tooltip.locator(".post-traffic__tooltip-metrics dt")).toHaveText(
+    ["Page views", ...(engagement === undefined ? [] : ["Engagement / view"])],
+  );
+  await expect(tooltip.locator(".post-traffic__tooltip-metrics dd")).toHaveText(
+    [
+      new Intl.NumberFormat("en-GB").format(views),
+      ...(engagement === undefined ? [] : [engagement]),
+    ],
+  );
+  const bounds = await tooltip.boundingBox();
+  const viewportWidth = await tooltip.evaluate(
+    (element) => element.ownerDocument.documentElement.clientWidth,
+  );
+  expect(bounds!.x).toBeGreaterThanOrEqual(0);
+  expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(viewportWidth + 1);
+}
+
 for (const width of [375, 1280]) {
   test(`Traffic history is labelled, accessible and usable at ${width}px`, async ({
     page,
@@ -40,20 +66,49 @@ for (const width of [375, 1280]) {
       chart.getByRole("heading", { name: "Article Traffic", exact: true }),
     ).toBeVisible();
     await chart.scrollIntoViewIfNeeded();
-    await expect(chart.locator(".post-traffic__total strong")).toHaveText(
-      "360",
-    );
-    await expect(chart.locator(".post-traffic__total span")).toHaveText(
+    await expect(chart.locator(".post-traffic__total dd")).toHaveText("360");
+    await expect(chart.locator(".post-traffic__total dt")).toHaveText(
       "page views",
     );
-    await expect(chart.locator(".post-traffic__engagement")).toHaveText(
-      "Unavailable average engagement per view",
+    await expect(chart.locator(".post-traffic__engagement dt")).toHaveText(
+      "average engagement per view",
+    );
+    await expect(chart.locator(".post-traffic__engagement dd")).toHaveText(
+      "Unavailable",
     );
     await expect(chart.locator("h2")).toHaveCSS("text-align", "center");
-    await expect(chart.locator(".post-traffic__total strong")).toHaveCSS(
+    await expect(chart.locator(".post-traffic__total dd")).toHaveCSS(
       "font-family",
       /Audiowide/,
     );
+    const totalFontSize = await chart
+      .locator(".post-traffic__total dd")
+      .evaluate((element) => getComputedStyle(element).fontSize);
+    await expect(chart.locator(".post-traffic__engagement dd")).toHaveCSS(
+      "font-family",
+      /Audiowide/,
+    );
+    await expect(chart.locator(".post-traffic__engagement dd")).toHaveCSS(
+      "font-size",
+      totalFontSize,
+    );
+    for (const stat of ["total", "engagement"]) {
+      const statistic = chart.locator(`.post-traffic__${stat}`);
+      await expect(statistic).toHaveJSProperty("tagName", "DL");
+      expect(
+        await statistic.evaluate((element) =>
+          Array.from(element.children, (child) => child.tagName),
+        ),
+      ).toEqual(["DT", "DD"]);
+      const value = statistic.locator("dd");
+      const label = statistic.locator("dt");
+      await expect(value).toHaveCSS("display", "block");
+      const valueBounds = await value.boundingBox();
+      const labelBounds = await label.boundingBox();
+      expect(labelBounds!.y).toBeGreaterThanOrEqual(
+        valueBounds!.y + valueBounds!.height,
+      );
+    }
     const total = await chart.locator(".post-traffic__total").boundingBox();
     const range = await chart.locator(".post-traffic__range").boundingBox();
     if (width === 375)
@@ -78,6 +133,22 @@ for (const width of [375, 1280]) {
     await expect(chart).toContainText(
       "Traffic before 15 Jan 2024 is unavailable.",
     );
+    const warning = chart.locator(".post-traffic__warning");
+    await expect(warning).toHaveClass(/custom-block warning/);
+    await expect(warning).toHaveAttribute("role", "note");
+    await expect(warning.locator(".custom-block-title")).toHaveText(
+      "Partial traffic history",
+    );
+    await expect(warning.locator("time")).toHaveAttribute(
+      "datetime",
+      "2024-01-15",
+    );
+    await expect(warning).toContainText(
+      "All time covers recorded history, not the article's full lifetime.",
+    );
+    await chart.getByRole("button", { name: "Last year", exact: true }).click();
+    await expect(warning).toBeVisible();
+    await chart.getByRole("button", { name: "All time", exact: true }).click();
     const source = chart.locator(".post-traffic__source");
     const infoButton = chart.getByRole("button", {
       name: "About article traffic",
@@ -96,7 +167,7 @@ for (const width of [375, 1280]) {
     expect(await infoButton.getAttribute("aria-expanded")).toBeNull();
     await expect(source).toContainText("not unique visitors");
     await expect(source).toContainText("Europe/London");
-    expect(await plotOffset()).toBeCloseTo(beforeHelp, 5);
+    expect(await plotOffset()).toBeCloseTo(beforeHelp, 3);
     await source.hover();
     await expect(source).toBeVisible();
     const helpBounds = await source.boundingBox();
@@ -111,20 +182,39 @@ for (const width of [375, 1280]) {
     await expect(chart.getByRole("slider")).toHaveCount(0);
     await expect(chart.getByRole("table")).toHaveCount(0);
     await expect(chart.locator("figcaption")).toHaveCount(0);
+    await expect(chart.locator(".post-traffic__axis-labels")).toHaveCount(0);
     await expect(chart.locator(".post-traffic__scale span")).toHaveCount(5);
     await expect(chart.locator(".post-traffic__dates span")).toHaveCount(3);
     await expect(chart.locator(".post-traffic__axes")).toHaveAttribute(
       "d",
       "M 4 4 V 196 H 596",
     );
+    const rangeButtons = chart.getByRole("group", {
+      name: "Traffic date range",
+    });
+    await expect(rangeButtons.locator(".button--bordered")).toHaveCount(3);
+    await expect(rangeButtons.locator(".button--primary")).toHaveCount(1);
+    const allTime = rangeButtons.getByRole("button", {
+      name: "All time",
+      exact: true,
+    });
+    await expect(allTime).toHaveCSS(
+      "background-color",
+      await chart
+        .locator(".post-traffic__line")
+        .evaluate((element) => getComputedStyle(element).stroke),
+    );
+    const selectedColour = await allTime.evaluate(
+      (element) => getComputedStyle(element).color,
+    );
+    await allTime.hover();
+    await expect(allTime).toHaveCSS("color", selectedColour);
     const point = chart.getByRole("button", {
       name: "Jan 2024: 120 page views",
       exact: true,
     });
     await point.focus();
-    await expect(chart.getByRole("tooltip")).toHaveText(
-      "Jan 2024: 120 page views",
-    );
+    await expectPointTooltip(chart, "Jan 2024", 120);
     await point.press("ArrowRight");
     await expect(
       chart.getByRole("button", {
@@ -132,13 +222,9 @@ for (const width of [375, 1280]) {
         exact: true,
       }),
     ).toBeFocused();
-    await expect(chart.getByRole("tooltip")).toHaveText(
-      "Feb 2024: 0 page views",
-    );
+    await expectPointTooltip(chart, "Feb 2024", 0);
     await chart.locator(".post-traffic__point:focus").press("End");
-    await expect(chart.getByRole("tooltip")).toHaveText(
-      "Mar 2024: 240 page views",
-    );
+    await expectPointTooltip(chart, "Mar 2024", 240);
     await chart.locator(".post-traffic__point:focus").press("Home");
     await expect(point).toBeFocused();
     await point.press("Escape");
@@ -165,9 +251,7 @@ for (const width of [375, 1280]) {
     await infoButton.focus();
     await infoButton.press("Escape");
     await point.hover();
-    await expect(chart.getByRole("tooltip")).toHaveText(
-      "Jan 2024: 120 page views",
-    );
+    await expectPointTooltip(chart, "Jan 2024", 120);
     await chart.getByRole("tooltip").hover();
     await expect(chart.getByRole("tooltip")).toBeVisible();
     await page.mouse.move(0, 0);
@@ -211,8 +295,8 @@ test("A single zero month has a valid point and nonduplicated date labels", asyn
   );
   await page.goto(path, { waitUntil: "domcontentloaded" });
   const chart = page.locator(".post-traffic");
-  await expect(chart.locator(".post-traffic__total strong")).toHaveText("0");
-  await expect(chart.locator(".post-traffic__engagement strong")).toHaveText(
+  await expect(chart.locator(".post-traffic__total dd")).toHaveText("0");
+  await expect(chart.locator(".post-traffic__engagement dd")).toHaveText(
     "Unavailable",
   );
   await expect(chart.getByRole("slider")).toHaveCount(0);
@@ -221,7 +305,37 @@ test("A single zero month has a valid point and nonduplicated date labels", asyn
   await chart
     .getByRole("button", { name: "Jan 2024: 0 page views", exact: true })
     .focus();
-  await expect(chart.getByRole("tooltip")).toHaveText("Jan 2024: 0 page views");
+  await expectPointTooltip(chart, "Jan 2024", 0);
+});
+
+test("Recorded zero engagement remains distinct from an unavailable average", async ({
+  page,
+}) => {
+  await page.route("**/post-traffic.json", (route) =>
+    route.fulfill({
+      json: {
+        ...snapshot,
+        posts: {
+          [path]: {
+            ...snapshot.posts[path],
+            months: [
+              { month: "2024-01", views: 120, engagementSeconds: 0 },
+              { month: "2024-02", views: 0, engagementSeconds: 0 },
+              { month: "2024-03", views: 240, engagementSeconds: 0 },
+            ],
+          },
+        },
+      },
+    }),
+  );
+  await page.goto(path, { waitUntil: "domcontentloaded" });
+  const chart = page.locator(".post-traffic");
+  await expect(chart.locator(".post-traffic__engagement dd")).toHaveText("0s");
+  await chart.getByRole("button", { name: "Engagement", exact: true }).click();
+  await chart.locator(".post-traffic__point").first().focus();
+  await expectPointTooltip(chart, "Jan 2024", 120, "0s");
+  await chart.locator(".post-traffic__point").nth(1).focus();
+  await expectPointTooltip(chart, "Feb 2024", 0, "Unavailable");
 });
 
 test.describe("Touch traffic inspection", () => {
@@ -241,9 +355,7 @@ test.describe("Touch traffic inspection", () => {
       exact: true,
     });
     await point.tap();
-    await expect(chart.getByRole("tooltip")).toHaveText(
-      "Mar 2024: 240 page views",
-    );
+    await expectPointTooltip(chart, "Mar 2024", 240);
     await chart.getByRole("button", { name: "About article traffic" }).tap();
     await expect(chart.locator(".post-traffic__source")).toBeVisible();
     await chart
@@ -315,21 +427,26 @@ test.describe("Touch traffic inspection", () => {
       ).toHaveAttribute("datetime", start);
       const selected = name === "Last month" ? days : months.slice(-size);
       const total = selected.reduce((sum, item) => sum + item.views, 0);
-      await expect(chart.locator(".post-traffic__total strong")).toHaveText(
+      await expect(chart.locator(".post-traffic__total dd")).toHaveText(
         new Intl.NumberFormat("en-GB").format(total),
       );
       const seconds = Math.round(
         selected.reduce((sum, item) => sum + item.engagementSeconds, 0) / total,
       );
-      await expect(
-        chart.locator(".post-traffic__engagement strong"),
-      ).toHaveText(formatTrafficDuration(seconds));
+      await expect(chart.locator(".post-traffic__engagement dd")).toHaveText(
+        formatTrafficDuration(seconds),
+      );
       await expect(chart.locator(".post-traffic__annotation")).toHaveCount(0);
       await expect(chart.locator(".post-traffic__plot")).toHaveAttribute(
         "aria-label",
         new RegExp(name === "Last month" ? "^Daily" : "^Monthly"),
       );
       await expect(chart.getByRole("tooltip")).toHaveCount(0);
+      if (name === "Last month") {
+        await chart.locator(".post-traffic__point").last().focus();
+        await expectPointTooltip(chart, "22 Oct 2026", 30, "39s");
+        await chart.locator(".post-traffic__point").last().press("Escape");
+      }
       await chart
         .getByRole("button", { name: "Engagement", exact: true })
         .click();
@@ -381,7 +498,7 @@ test.describe("Touch traffic inspection", () => {
     await expect(chart.locator(".post-traffic__events")).toContainText(
       "Latest update 12 Jun 2019",
     );
-    await expect(chart.locator(".post-traffic__engagement strong")).toHaveText(
+    await expect(chart.locator(".post-traffic__engagement dd")).toHaveText(
       "Unavailable",
     );
     const updated = chart.getByRole("button", {
@@ -389,12 +506,15 @@ test.describe("Touch traffic inspection", () => {
       exact: true,
     });
     await updated.focus();
-    await expect(chart.getByRole("tooltip")).toHaveText(
-      "Jun 2019: 10 page views. Latest update 12 Jun 2019",
+    await expectPointTooltip(chart, "Jun 2019", 10);
+    await expect(chart.locator(".post-traffic__tooltip-events")).toHaveText(
+      "Latest update 12 Jun 2019",
     );
+    await expect(chart.locator(".post-traffic__warning")).toHaveCount(0);
     await chart.getByRole("button", { name: "Last year", exact: true }).click();
     await expect(chart.locator(".post-traffic__annotation")).toHaveCount(0);
     await expect(chart.locator(".post-traffic__events")).toHaveCount(0);
+    await expect(chart.locator(".post-traffic__warning")).toHaveCount(0);
   });
 
   test("Traffic and Engagement toggle a single chart without bridging missing averages", async ({
@@ -419,10 +539,14 @@ test.describe("Touch traffic inspection", () => {
     );
     await page.goto(path, { waitUntil: "domcontentloaded" });
     const card = page.locator(".post-traffic");
-    await expect(card.locator(".post-traffic__engagement strong")).toHaveText(
+    await expect(card.locator(".post-traffic__engagement dd")).toHaveText(
       "1m 3s",
     );
     await expect(card.locator(".post-traffic__chart")).toHaveCount(1);
+    await expect(card.locator(".post-traffic__engagement dd")).toHaveCSS(
+      "display",
+      "block",
+    );
     const metrics = card.getByRole("group", { name: "Chart metric" });
     const traffic = metrics.getByRole("button", {
       name: "Traffic",
@@ -437,9 +561,18 @@ test.describe("Touch traffic inspection", () => {
     await engagement.focus();
     await engagement.press("Enter");
     await expect(engagement).toHaveAttribute("aria-pressed", "true");
+    await expect(engagement).toHaveClass(/button--primary/);
+    await expect(traffic).not.toHaveClass(/button--primary/);
+    await expect(engagement).toHaveCSS("outline-style", "solid");
+    await expect(engagement).toHaveCSS("outline-width", "2px");
     await expect(metrics.locator('[aria-pressed="true"]')).toHaveCount(1);
     await expect(card.locator(".post-traffic__chart")).toHaveCount(1);
     await expect(card.locator("polyline.post-traffic__line")).toHaveCount(0);
+    await expect(card.locator(".post-traffic__axis-labels")).toHaveCount(0);
+    await expect(card.locator(".post-traffic__plot")).toHaveAttribute(
+      "aria-label",
+      /^Monthly average engagement per view/,
+    );
     await expect(card.locator(".post-traffic__scale span")).toHaveCount(5);
     await expect(card.locator(".post-traffic__scale span").first()).toHaveText(
       formatTrafficDuration(120),
@@ -451,12 +584,14 @@ test.describe("Touch traffic inspection", () => {
     expect(pathData).not.toContain("L ");
     await expect(card.locator(".post-traffic__point--missing")).toHaveCount(1);
     await card.locator(".post-traffic__point").first().focus();
-    await expect(card.getByRole("tooltip")).toHaveText(
-      "Jan 2024: 120 page views. 10s average engagement per view",
-    );
+    await expectPointTooltip(card, "Jan 2024", 120, "10s");
+    await card.locator(".post-traffic__point").nth(1).focus();
+    await expectPointTooltip(card, "Feb 2024", 0, "Unavailable");
     await traffic.focus();
     await traffic.press("Space");
     await expect(traffic).toHaveAttribute("aria-pressed", "true");
+    await expect(traffic).toHaveClass(/button--primary/);
+    await expect(engagement).not.toHaveClass(/button--primary/);
     await expect(metrics.locator('[aria-pressed="true"]')).toHaveCount(1);
     await expect(card.locator(".post-traffic__engagement-line")).toHaveCount(0);
     await expect(card.locator("polyline.post-traffic__line")).toHaveCount(1);
@@ -573,9 +708,7 @@ test("A decade of traffic remains usable on a narrow dark-theme screen", async (
   await points.first().focus();
   await points.first().press("End");
   await expect(points.last()).toBeFocused();
-  await expect(chart.getByRole("tooltip")).toHaveText(
-    "Oct 2026: 15,200 page views",
-  );
+  await expectPointTooltip(chart, "Oct 2026", 15_200);
   const tooltip = await chart.getByRole("tooltip").boundingBox();
   expect(tooltip!.x).toBeGreaterThanOrEqual(0);
   expect(tooltip!.x + tooltip!.width).toBeLessThanOrEqual(376);

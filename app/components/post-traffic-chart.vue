@@ -1,11 +1,5 @@
 <template>
   <div class="post-traffic__chart">
-    <div
-      v-if="metric === 'engagement'"
-      class="post-traffic__axis-labels"
-      aria-hidden="true">
-      <span>Avg. engagement / view</span>
-    </div>
     <div class="post-traffic__scale" aria-hidden="true">
       <span
         v-for="tick in ticks"
@@ -70,10 +64,37 @@
         class="post-traffic__tooltip"
         role="tooltip"
         :style="{
-          left: `clamp(min(5rem, 50%), ${x(selectedIndex) / 6}%, max(50%, calc(100% - 5rem)))`,
+          left: `clamp(min(10rem, 50%), ${x(selectedIndex) / 6}%, max(50%, calc(100% - 10rem)))`,
           top: `${pointY(selectedIndex) / 2}%`,
         }">
-        {{ pointText(selectedIndex) }}
+        <time
+          class="post-traffic__tooltip-date"
+          :datetime="series.points[selectedIndex]!.date">
+          {{ pointDate(selectedIndex) }}
+        </time>
+        <dl class="post-traffic__tooltip-metrics">
+          <div>
+            <dt>Page views</dt>
+            <dd>{{ number.format(series.points[selectedIndex]!.views) }}</dd>
+          </div>
+          <div
+            v-if="
+              series.points[selectedIndex]!.engagementSeconds !== undefined
+            ">
+            <dt>Engagement / view</dt>
+            <dd>{{ pointEngagement(selectedIndex) }}</dd>
+          </div>
+        </dl>
+        <ul
+          v-if="pointEvents(selectedIndex).length"
+          class="post-traffic__tooltip-events">
+          <li v-for="event in pointEvents(selectedIndex)" :key="event.label">
+            {{ event.label }}
+            <time :datetime="event.date">{{
+              dayFormat.format(new Date(event.date))
+            }}</time>
+          </li>
+        </ul>
       </div>
     </div>
     <div class="post-traffic__dates" aria-hidden="true">
@@ -193,12 +214,20 @@ const events = computed(() =>
     }))
     .filter((event) => event.index >= 0),
 );
+const pointDate = (index: number) =>
+  (props.series.interval === "day" ? dayFormat : monthFormat).format(
+    new Date(props.series.points[index]!.date),
+  );
+const pointEvents = (index: number) =>
+  events.value.filter((event) => event.index === index);
+function pointEngagement(index: number) {
+  const value = average(index);
+  return value === null ? "Unavailable" : formatTrafficDuration(value);
+}
 function pointText(index: number) {
   const item = props.series.points[index]!;
   const value = average(index);
-  const label = (
-    props.series.interval === "day" ? dayFormat : monthFormat
-  ).format(new Date(item.date));
+  const label = pointDate(index);
   return [
     `${label}: ${number.format(item.views)} page views`,
     ...(item.engagementSeconds !== undefined
@@ -208,11 +237,9 @@ function pointText(index: number) {
             : `${formatTrafficDuration(value)} average engagement per view`,
         ]
       : []),
-    ...events.value
-      .filter((event) => event.index === index)
-      .map(
-        (event) => `${event.label} ${dayFormat.format(new Date(event.date))}`,
-      ),
+    ...pointEvents(index).map(
+      (event) => `${event.label} ${dayFormat.format(new Date(event.date))}`,
+    ),
   ].join(". ");
 }
 function inspect(event: MouseEvent) {
@@ -281,14 +308,6 @@ onBeforeUnmount(() => document.removeEventListener("keydown", dismiss));
   gap: var(--global-space-fixed-2);
   margin-block-start: var(--global-space-fixed-5);
   min-inline-size: 0;
-  font-size: var(--global-font-size-1);
-}
-.post-traffic__axis-labels {
-  grid-column: 1 / -1;
-  display: flex;
-  justify-content: space-between;
-  gap: var(--global-space-fixed-3);
-  margin-block-end: var(--global-space-fixed-2);
   font-size: var(--global-font-size-1);
 }
 .post-traffic__scale {
@@ -376,14 +395,45 @@ onBeforeUnmount(() => document.removeEventListener("keydown", dismiss));
   position: absolute;
   z-index: 3;
   translate: -50% calc(-100% - 0.75rem);
-  inline-size: max-content;
-  max-inline-size: 100%;
+  inline-size: min(100%, 20rem);
   padding: var(--global-space-fixed-2) var(--global-space-fixed-3);
   border: 1px solid var(--global-border-color);
   border-radius: var(--global-border-radius);
   background: var(--global-content-background-color);
   box-shadow: var(--global-shadow-2);
   text-align: center;
+}
+.post-traffic__tooltip-date {
+  display: block;
+  margin-block-end: var(--global-space-fixed-2);
+  font-weight: var(--global-font-weight-semi-bold);
+}
+.post-traffic__tooltip-metrics {
+  display: grid;
+  gap: var(--global-space-fixed-1);
+  margin: 0;
+}
+.post-traffic__tooltip-metrics > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, auto);
+  align-items: baseline;
+  gap: var(--global-space-fixed-3);
+  text-align: start;
+}
+.post-traffic__tooltip-metrics dt,
+.post-traffic__tooltip-metrics dd {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+.post-traffic__tooltip-metrics dd {
+  margin: 0;
+  font-weight: var(--global-font-weight-semi-bold);
+  text-align: end;
+}
+.post-traffic__tooltip-events {
+  margin: var(--global-space-fixed-2) 0 0;
+  padding: 0;
+  list-style: none;
 }
 .post-traffic__tooltip::after {
   content: "";

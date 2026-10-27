@@ -35,6 +35,12 @@ If all reporting settings are absent, the build logs that reporting is disabled,
 publishes a null snapshot, and shows no traffic cards. Partial or invalid
 configuration fails the build.
 
+To preview real data before merging, manually run **Build** on the trusted
+feature branch, not `main`. Unlike pull-request-triggered builds, this manual
+run can use the reporting secret. It produces the `playwright-site` artifact
+without deploying; extract its `playwright-site.tar` and serve `dist` locally.
+Running on `main` can deploy the site and is not a preview-only operation.
+
 ### Identifiers and credentials
 
 The numeric GA4 property ID identifies the property; it does not authorise
@@ -57,6 +63,9 @@ in `/post-traffic.json` are intentionally public.
 - Coverage begins at the later of publication and `GA4_START_DATE`. Earlier
   history is labelled unavailable. GA4 cannot reconstruct traffic from before
   collection began, and this does not import Universal Analytics archives.
+  Articles published before that start date show the site's standard warning
+  callout explaining that **All time** covers only recorded history, not the
+  article's full lifetime. Changing the selected range does not hide it.
 - Daily report rows before an article's publication date are excluded, including
   rows in its first month. Only aggregated counts and foreground seconds are
   published, not users, sessions or individual events.
@@ -89,6 +98,13 @@ in `/post-traffic.json` are intentionally public.
   and leave gaps in the engagement line, rather than becoming invented
   zero-second observations. Missing engagement or a zero-view range shows an
   explicit unavailable message without resetting the selected metric or range.
+  Page views and weighted engagement use the shared `UStatistic` component:
+  semantic description lists with matching large values and labels below,
+  wrapping when space is limited. The parent formats and calculates the
+  values. Date and metric controls use `UButton`'s bordered and filled-purple
+  primary variants, retaining native pressed states and shared focus styling.
+  Neither chart has a visible plot title; engagement axis ticks retain their
+  duration units, and accessibility labels and tooltips identify the metric.
 - Dotted vertical annotations mark only the latest substantive update recorded
   in `dateModified`, when it falls within displayed coverage. Its exact date
   appears below the chart and in the relevant point tooltip. In a monthly view
@@ -101,8 +117,10 @@ in `/post-traffic.json` are intentionally public.
   still cause undercounting; verify hard loads and Nuxt client navigation in GA4.
 - The chart appears below GitHub comments, with per-bucket tooltips available
   by pointer, touch or keyboard focus. Tab enters the point group; arrow keys,
-  Home and End inspect points, and Escape dismisses the tooltip. Each point has
-  an accessible date and count. The info icon shows a floating source tooltip
+  Home and End inspect points, and Escape dismisses the tooltip. Point tooltips
+  show a date header and compact labelled view/engagement values, rather than
+  a long sentence; missing averages say **Unavailable**. Each point retains an
+  accessible date and count. The info icon shows a floating source tooltip
   on hover, focus or tap without shifting the chart. It stays available while
   hovered or focused and dismisses on Escape, loss of hover/focus or an outside
   tap.
