@@ -83,6 +83,7 @@ test("Likes and reposts tolerate anonymous authors and missing or broken photos"
         "href",
         `https://example.com/${type}/${index}`,
       );
+      await expect(face).toHaveAttribute("rel", "ugc nofollow");
       await face.focus();
       await expect(face).toBeFocused();
       if (author?.photo === photo) {
@@ -123,6 +124,119 @@ test("Likes and reposts tolerate anonymous authors and missing or broken photos"
     "9 Reposts",
   );
   expect(pageErrors).toEqual([]);
+});
+
+test("Webmention links are user-generated without changing editorial links", async ({
+  page,
+}) => {
+  const author = {
+    name: "Reader",
+    photo: "https://example.com/avatar.png",
+  };
+  await page.route(api, (route) =>
+    route.fulfill({
+      json: {
+        links: [
+          {
+            id: "plain-link",
+            source: "https://example.com/plain-link",
+            verified_date: published,
+            activity: { type: "link" },
+            data: { published },
+          },
+          {
+            id: "reply",
+            activity: { type: "reply" },
+            data: {
+              url: "https://example.com/reply",
+              author,
+              published,
+              content:
+                '<p>A <strong>formatted reply</strong> with <a href="https://example.com/first">a link</a> and <a href="https://example.com/second" rel="noopener noreferrer sponsored nofollow" target="_blank">another link</a>.</p>',
+            },
+          },
+          {
+            id: "photo-link",
+            activity: {
+              type: "link",
+              sentence_html:
+                '<p>A mention with <a href="https://example.com/sentence" rel="me">a sentence link</a>.</p>',
+            },
+            data: {
+              url: "https://example.com/photo-link",
+              author,
+              published,
+              content: "<p>Not the sentence.</p>",
+            },
+          },
+          {
+            id: "twitter-link",
+            activity: {
+              type: "link",
+              sentence_html: "<p>Not the tweet.</p>",
+            },
+            data: {
+              url: "https://twitter.com/reader/status/123",
+              author,
+              published,
+              content:
+                '<p>A tweet with <a href="https://example.com/tweet">a tweet link</a>.</p>',
+            },
+          },
+        ],
+      },
+    }),
+  );
+  await page.goto(postPath);
+  await expect(
+    page.getByRole("button", { name: "Open search", exact: true }),
+  ).toBeEnabled({ timeout: 60_000 });
+  const mentions = page.locator(".webmentions");
+  await mentions.scrollIntoViewIfNeeded();
+  await expect(mentions).toHaveAttribute("aria-busy", "false");
+  await expect(mentions.locator(".webmentions__link-count")).toHaveText(
+    "1 Linked",
+  );
+  await expect(mentions.locator(".webmentions__reply-count")).toHaveText(
+    "3 Replies",
+  );
+  const source = mentions.locator(".webmention-link__author a");
+  await expect(source).toHaveAttribute(
+    "href",
+    "https://example.com/plain-link",
+  );
+  await expect(source).toHaveAttribute("rel", "ugc nofollow");
+  await expect(
+    mentions.locator(".webmention-link__author"),
+  ).not.toHaveAttribute("rel");
+  const replyLinks = mentions.locator(".webmention-reply a[href]");
+  await expect(replyLinks).toHaveCount(10);
+  for (const link of await replyLinks.all()) {
+    const tokens = (await link.getAttribute("rel"))!.split(/\s+/);
+    expect(tokens).toEqual(expect.arrayContaining(["ugc", "nofollow"]));
+    expect(tokens.filter((token) => token === "nofollow")).toHaveLength(1);
+  }
+  await expect(
+    mentions.locator(".webmention-reply__content strong"),
+  ).toHaveText("formatted reply");
+  const existing = mentions.locator('a[href="https://example.com/second"]');
+  await expect(existing).toHaveAttribute("target", "_blank");
+  await expect(existing).toHaveAttribute(
+    "rel",
+    "noopener noreferrer sponsored nofollow ugc",
+  );
+  await expect(
+    mentions.locator('a[href="https://example.com/sentence"]'),
+  ).toHaveAttribute("rel", "me ugc nofollow");
+  await expect(
+    mentions.locator('a[href="https://example.com/tweet"]'),
+  ).toHaveText("a tweet link");
+  await expect(
+    mentions.getByRole("link", { name: "What's this?" }),
+  ).not.toHaveAttribute("rel", /ugc|nofollow/);
+  await expect(
+    page.locator(".post-page__content a[href]").first(),
+  ).not.toHaveAttribute("rel", /ugc/);
 });
 
 for (const failure of ["network", "http", "json", "shape"]) {

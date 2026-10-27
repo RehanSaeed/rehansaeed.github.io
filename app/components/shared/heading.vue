@@ -10,6 +10,7 @@
       class="heading__link"
       :class="linkClass"
       :href="href"
+      :rel="rel"
       :to="to">
       <slot />
     </Component>
@@ -37,6 +38,9 @@ export default {
       type: String,
     },
     href: {
+      type: String,
+    },
+    rel: {
       type: String,
     },
     to: {

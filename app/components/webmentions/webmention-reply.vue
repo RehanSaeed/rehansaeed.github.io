@@ -3,6 +3,7 @@
     <u-avatar
       class="webmention-reply__avatar"
       :href="url"
+      rel="ugc nofollow"
       :label="name"
       :alt="name"
       :src="photo" />
@@ -10,19 +11,27 @@
       class="webmention-reply__author"
       :id="id"
       :href="url"
+      rel="ugc nofollow"
       level="3"
       size="6"
       >{{ name }}</u-heading
     >
     <u-time class="webmention-reply__timestamp" :datetime="timestamp" />
     <!-- eslint-disable-next-line vue/no-v-html -- Preserve the configured aggregator's HTML reply format. -->
-    <div class="webmention-reply__content" v-html="content"></div>
+    <div class="webmention-reply__content" v-ugc-links v-html="content"></div>
   </article>
 </template>
 
 <script>
 export default {
   name: "u-webmention-reply",
+  directives: {
+    ugcLinks(element) {
+      for (const link of element.querySelectorAll("a[href]")) {
+        link.relList.add("ugc", "nofollow");
+      }
+    },
+  },
   props: {
     reply: {
       required: true,
