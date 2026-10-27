@@ -65,8 +65,10 @@ in `/post-traffic.json` are intentionally public.
   collection began, and this does not import Universal Analytics archives.
   Articles published before that start date show the site's standard warning
   callout above the statistics, naming Google Analytics and explaining that
-  **All time** covers only recorded history, not the
-  article's full lifetime. Changing the selected range does not hide it.
+  **All time** covers only recorded history, not the article's full lifetime.
+  The warning explicitly includes any initial spike at publication in the
+  missing history, without asserting that such a spike occurred.
+  Changing the selected range does not hide it.
 - Daily report rows before an article's publication date are excluded, including
   rows in its first month. Only aggregated counts and foreground seconds are
   published, not users, sessions or individual events.
