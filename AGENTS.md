@@ -182,9 +182,10 @@ private account details or confidential review notes.
 Include the article title, canonical URL (<https://rehansaeed.com> plus
 `permalink`), and a separate copy-ready section for each destination below. Use
 distinct emoji in section headings to make destinations and supporting sections
-easy to scan. Keep notes outside the copy-ready text and limited to useful
-information such as blockers, source attribution and destination choices.
-Do not add routine character-count review notes, publication-status labels,
+easy to scan. Keep source attribution and destination choices outside the
+copy-ready text. Do not add `Review notes` sections; report posting blockers in
+the conversation instead. Do not add routine character-count notes,
+publication-status labels,
 approval boilerplate or posting logs that require maintaining the file after
 publication. Still check character limits and obtain posting approval as
 described below. Use the canonical URL by default; do not invent tracking

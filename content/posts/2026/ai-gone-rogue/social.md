@@ -12,10 +12,6 @@ https://rehansaeed.com/ai-gone-rogue/
 
 #ArtificialIntelligence #GitHubCopilot #DeveloperTools
 
-### Review notes
-
-Target: the Hachyderm profile linked from the blog. The [instance API](https://hachyderm.io/api/v2/instance) reported a 2,263-character limit and 23 characters per URL on 2026-10-27. No relevant handles have been verified, so no mentions are proposed.
-
 ## 🦋 Bluesky
 
 ### Copy-ready text
@@ -25,10 +21,6 @@ Just blogged "AI Gone Rogue"
 https://rehansaeed.com/ai-gone-rogue/
 
 #ArtificialIntelligence #GitHubCopilot #DeveloperTools
-
-### Review notes
-
-**Blocked pending current limit verification** in the official schema or signed-in composer. On 2026-10-27, [Bluesky's post documentation](https://bsky.network/docs/about-bluesky-content/posts/) linked to a schema that returned 404.
 
 ## 💼 LinkedIn
 
@@ -53,10 +45,6 @@ Just blogged "AI Gone Rogue"
 A colleague posted an odd message which turned out to be their AI. I added an instruction to my GitHub Copilot app's agent to label automated messages to colleagues, with a HAL image for good measure. This short post is about knowing who actually wrote a reply, and why a disclosure still isn't a guarantee of correctness or a substitute for approval before sending.
 
 https://rehansaeed.com/ai-gone-rogue/
-
-### Review notes
-
-Intended destination: [u/muhammadrehansaeed](https://www.reddit.com/user/muhammadrehansaeed/), directly on the profile, not a subreddit. Verify the signed-in account before posting.
 
 ## 🎯 Subreddit shortlist for approval
 
