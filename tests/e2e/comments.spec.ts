@@ -249,6 +249,10 @@ test.describe("GitHub comments", () => {
   }) => {
     await page.route("**/api.github.com/**", (route) => route.abort());
     await page.goto("/gitattributes-best-practices/#comments");
+    await expect(page.locator(".comment__content").first()).toHaveCSS(
+      "display",
+      "grid",
+    );
     const image = page.locator(".comment__content img").first();
     await expect(image).toHaveAttribute("width", "40");
     await expect(image).toHaveAttribute("height", "40");
@@ -271,22 +275,24 @@ test.describe("GitHub comments", () => {
           });
         },
       );
-      await page.route(commentsPath, (route) =>
-        route.fulfill({
-          json: [
-            {
-              ...owner,
-              body_html: [
-                '<p><a href="https://github.com"><img src="https://camo.githubusercontent.com/comment-image-small" alt="Small avatar" width="40" height="40"></a></p>',
-                '<p><img src="https://camo.githubusercontent.com/comment-image-natural" alt="Natural size"></p>',
-                '<p><img src="https://camo.githubusercontent.com/comment-image-wide" alt="Wide screenshot" width="1600" height="800"></p>',
-                '<img src="https://camo.githubusercontent.com/comment-image-small" alt="Direct image" width="40" height="40">',
-              ].join(""),
-            },
-          ],
-        }),
+      await page.route(
+        "**/api.github.com/repos/RehanSaeed/rehansaeed.github.io/issues/80/comments*",
+        (route) =>
+          route.fulfill({
+            json: [
+              {
+                ...owner,
+                body_html: [
+                  '<p><a href="https://github.com"><img src="https://camo.githubusercontent.com/comment-image-small" alt="Small avatar" width="40" height="40"></a></p>',
+                  '<p><img src="https://camo.githubusercontent.com/comment-image-natural" alt="Natural size"></p>',
+                  '<p><img src="https://camo.githubusercontent.com/comment-image-wide" alt="Wide screenshot" width="1600" height="800"></p>',
+                  '<img src="https://camo.githubusercontent.com/comment-image-small" alt="Direct image" width="40" height="40">',
+                ].join(""),
+              },
+            ],
+          }),
       );
-      await page.goto(`${postPath}#comments`);
+      await page.goto("/gitattributes-best-practices/#comments");
       await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
       const content = page.locator(".comment__content");
       await expect(content.getByRole("img")).toHaveCount(4);
