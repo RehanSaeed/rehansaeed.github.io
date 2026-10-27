@@ -11,12 +11,9 @@ const popularitySchema = z.object({
   forks: z.number().int().nonnegative(),
   createdAt: z.iso.datetime({ offset: true }).optional(),
 });
-const observationSchema = z.object({
+export const cacheSchema = z.object({
   updated: z.number(),
   snapshots: z.record(z.string(), popularitySchema),
-});
-export const cacheSchema = observationSchema.extend({
-  previous: observationSchema.optional(),
 });
 const responseSchema = z.object({
   stargazers_count: z.number().int().nonnegative(),
@@ -113,10 +110,6 @@ export async function portfolioSnapshots(
     JSON.stringify({
       updated: complete ? Date.now() : 0,
       snapshots,
-      previous:
-        cached && cached.updated > 0
-          ? { updated: cached.updated, snapshots: cached.snapshots }
-          : cached?.previous,
     }),
   );
   return snapshots;

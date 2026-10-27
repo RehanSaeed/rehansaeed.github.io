@@ -177,6 +177,7 @@ test("Portfolio and About totals are in static HTML and match the listed project
   expect(summary.attr("data-downloads")).toBe(String(downloads));
   expect(summary.attr("data-stars")).toBe(String(stars));
   expect(summary.text()).toContain(stars.toLocaleString("en-GB"));
+  expect(summary.text()).toContain("package downloads");
   expect(summary.find("a").attr("href")).toBe(
     "/portfolio/#portfolio-open-source",
   );
@@ -202,7 +203,7 @@ for (const width of [320, 375, 1280]) {
       await expect(totals).toHaveAttribute("data-downloads", downloads!);
       await expect(totals).toHaveAttribute("data-stars", stars!);
       await expect(totals.locator(".number-ticker__title")).toHaveText([
-        "NuGet downloads",
+        "Package downloads",
         "GitHub stars",
       ]);
       const cards = totals.locator(".number-ticker");
@@ -217,7 +218,28 @@ for (const width of [320, 375, 1280]) {
             .locator("h3")
             .evaluate((heading) => getComputedStyle(heading).fontFamily),
         ).toContain("Audiowide");
+        if (width === 1280) {
+          expect(
+            await ticker
+              .locator("h3")
+              .evaluate((heading) =>
+                Number.parseFloat(getComputedStyle(heading).fontSize),
+              ),
+          ).toBeGreaterThanOrEqual(22);
+          expect(
+            await ticker
+              .locator(".number-ticker__value")
+              .evaluate((value) =>
+                Number.parseFloat(getComputedStyle(value).fontSize),
+              ),
+          ).toBeGreaterThanOrEqual(48);
+        }
         const digits = ticker.locator(".number-ticker__digits");
+        expect(
+          await digits.evaluate(
+            (element) => element.scrollWidth <= element.clientWidth,
+          ),
+        ).toBe(true);
         const before = await digits.textContent();
         await page.clock.runFor(2100);
         expect(await digits.textContent()).toBe(before);

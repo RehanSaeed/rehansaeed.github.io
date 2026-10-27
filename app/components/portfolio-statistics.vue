@@ -5,11 +5,11 @@
     :data-downloads="statistics.downloads"
     :data-stars="statistics.stars">
     My open source projects have received
-    <span :title="`${downloadsExact} lifetime NuGet package downloads`">{{
+    <span :title="`${downloadsExact} lifetime package downloads`">{{
       downloadsLong
     }}</span>
-    NuGet downloads and {{ starsExact }} GitHub stars across the projects in my
-    <NuxtLink to="/portfolio/#portfolio-open-source">portfolio</NuxtLink>.
+    package downloads and {{ starsExact }} GitHub stars across the projects in
+    my <NuxtLink to="/portfolio/#portfolio-open-source">portfolio</NuxtLink>.
   </p>
   <div
     v-else
@@ -18,7 +18,7 @@
     :data-stars="statistics.stars">
     <div class="portfolio-statistics__totals">
       <u-number-ticker
-        title="NuGet downloads"
+        title="Package downloads"
         :number="statistics.downloads"
         :rate="downloadRate"
         :paused="paused" />

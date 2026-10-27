@@ -44,10 +44,11 @@ per repository with GitHub's `created_at`. This works on the first observation
 and does not mistake an unchanged hourly snapshot for a zero lifetime rate.
 Lifetime averages do not predict recent trends, and star totals can fall.
 
-CI restores and saves the source caches across builds on `main`; pull requests
-can read them but do not save them. Missing creation dates, invalid ages and source
-failures disable the affected rate rather than inventing one. Portfolio does not
-start an estimate from a snapshot older than 14 days.
+The lifetime calculation needs no historical snapshots or cross-build CI cache.
+The existing short-lived local cache contains only the latest API responses.
+Missing creation dates, invalid ages and source failures disable the affected rate
+rather than inventing one. Portfolio does not start an estimate from a snapshot
+older than 14 days.
 
 The shared `app/components/shared/number-ticker.vue` owns the title, odometer and
 animation. Use it anywhere without importing portfolio data:

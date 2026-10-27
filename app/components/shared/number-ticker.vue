@@ -129,7 +129,7 @@ onBeforeUnmount(() => {
   margin: 0;
   min-block-size: 2.6em;
   font-family: var(--font-heading);
-  font-size: clamp(0.65rem, 3.8cqi, 1.1rem);
+  font-size: clamp(0.75rem, 5.5cqi, 1.5rem);
   line-height: 1.3;
 }
 
@@ -139,7 +139,7 @@ onBeforeUnmount(() => {
   max-inline-size: 100%;
   color: var(--global-accent-color);
   font-family: var(--global-font-family-monospace);
-  font-size: clamp(0.75rem, 10cqi, 2.4rem);
+  font-size: clamp(0.75rem, 12cqi, 4rem);
   font-weight: var(--global-font-weight-bold);
   font-variant-numeric: tabular-nums;
   line-height: 1.4;
