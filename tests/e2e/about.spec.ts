@@ -162,7 +162,7 @@ for (const width of [375, 1280]) {
           .evaluateAll((images) =>
             images.map((image) => image.getAttribute("alt")),
           ),
-      ).toEqual(["GitHub stars", "GitHub follower count", "GitHub sponsors"]);
+      ).toEqual(["GitHub follower count", "GitHub sponsors"]);
       expect(
         await page
           .locator(

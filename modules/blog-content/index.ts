@@ -32,6 +32,7 @@ import { listFiles, scanContent, toPosix } from "./scan";
 import { commentSnapshots } from "./comments";
 import { portfolioSnapshots } from "./portfolio";
 import { portfolioDownloads } from "./nuget";
+import { portfolioStatistics } from "./statistics";
 import { readImageDimensions } from "./images";
 import { filterMarkdownSitemap } from "./seo";
 
@@ -58,6 +59,16 @@ export default defineNuxtModule({
     const entries = await scanContent(contentDir);
     const portfolio = await portfolioSnapshots(dataDir, entries);
     const downloads = await portfolioDownloads(dataDir, entries);
+    const statistics = {
+      ...portfolioStatistics(entries, portfolio, downloads),
+      generatedAt: new Date().toISOString(),
+    };
+    const statisticsTemplate = addTemplate({
+      filename: "blog-portfolio-statistics.json",
+      write: true,
+      getContents: () => JSON.stringify(statistics),
+    });
+    nuxt.options.alias["#blog-portfolio-statistics"] = statisticsTemplate.dst;
     const images = (await listFiles(contentDir))
       .filter((file) => contentImagePattern.test(file))
       .sort();

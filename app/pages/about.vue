@@ -65,6 +65,7 @@
         <a :href="gitHubUrl">GitHub profile</a> and of course there are other
         commercial projects that I cannot disclose.
       </p>
+      <u-portfolio-statistics class="about__description" compact />
       <div class="about__github-images">
         <u-tooltip v-slot="{ trigger }" text="View my GitHub profile">
           <a v-bind="trigger" :href="gitHubUrl">
