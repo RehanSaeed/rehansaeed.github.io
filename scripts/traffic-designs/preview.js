@@ -7,6 +7,7 @@ import UPostTrafficChart from "../../app/components/post-traffic-chart.vue";
 import UCard from "../../app/components/shared/card.vue";
 import UButton from "../../app/components/shared/button.vue";
 import UIcon from "../../app/components/shared/icon.vue";
+import UStatistic from "../../app/components/shared/statistic.vue";
 import { article } from "./data.js";
 
 const app = createApp({
@@ -15,6 +16,7 @@ const app = createApp({
 app.component("UCard", UCard);
 app.component("UButton", UButton);
 app.component("UIcon", UIcon);
+app.component("UStatistic", UStatistic);
 app.component("UPostTrafficChart", UPostTrafficChart);
 app.component("NuxtIcon", {
   render: () =>
@@ -40,8 +42,10 @@ body { padding: 16px; margin: 0; background: var(--global-background-color); }
 [data-layout="center"] .post-traffic__summary { flex-direction: column; text-align: center; }
 [data-layout="center"] .post-traffic__range { margin-inline: 0; }
 [data-layout="split"] .post-traffic__range { padding: 12px; border: 1px solid var(--global-border-color); border-radius: var(--global-border-radius); font-size: .85em; }
-[data-layout="inline"] .post-traffic__total { display: flex; align-items: baseline; gap: 8px; }
-[data-layout="inline"] .post-traffic__total strong { font-size: 2rem; }
+[data-layout="inline"] .post-traffic__total,
+[data-layout="inline"] .post-traffic__engagement { display: flex; flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 8px; }
+[data-layout="inline"] .post-traffic__total dd,
+[data-layout="inline"] .post-traffic__engagement dd { font-size: 2rem; }
 [data-layout="footer-dates"] .post-traffic { display: flex; flex-direction: column; }
 [data-layout="footer-dates"] .post-traffic__summary { display: contents; }
 [data-layout="footer-dates"] .post-traffic__metrics { order: 1; }
@@ -51,7 +55,8 @@ body { padding: 16px; margin: 0; background: var(--global-background-color); }
 [data-layout="footer-dates"] .post-traffic__range { order: 5; margin-block-start: 16px; }
 [data-layout="footer-dates"] .post-traffic__events { order: 6; }
 [data-layout="compact"] .post-traffic__plot { block-size: 8rem; }
-[data-layout="compact"] .post-traffic__total strong { font-size: 2rem; }
+[data-layout="compact"] .post-traffic__total dd,
+[data-layout="compact"] .post-traffic__engagement dd { font-size: 2rem; }
 [data-layout="tall"] .post-traffic__plot { block-size: 17rem; }
 [data-layout="tiles"] .post-traffic__metrics,
 [data-layout="tiles"] .post-traffic__range { padding: 16px; border: 1px solid var(--global-border-color); border-radius: var(--global-border-radius); }

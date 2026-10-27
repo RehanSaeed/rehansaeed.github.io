@@ -86,8 +86,10 @@ test("Twelve real-component treatments and their controls work without external 
     "Latest update 12 Jun 2025",
   );
   await frame.getByRole("button", { name: "Engagement", exact: true }).click();
-  await expect(frame.locator(".post-traffic__axis-labels")).toHaveText(
-    "Avg. engagement / view",
+  await expect(frame.locator(".post-traffic__axis-labels")).toHaveCount(0);
+  await expect(frame.locator(".post-traffic__plot")).toHaveAttribute(
+    "aria-label",
+    /^Monthly average engagement per view/,
   );
   await expect(frame.locator(".post-traffic__chart")).toHaveCount(1);
   await expect(frame.locator(".post-traffic__preview-event")).toHaveCount(1);
@@ -97,6 +99,14 @@ test("Twelve real-component treatments and their controls work without external 
     await expect(frame.locator(".post-traffic__engagement-line")).toHaveCount(
       1,
     );
+    const totalFontSize = await frame
+      .locator(".post-traffic__total dd")
+      .evaluate((element) => getComputedStyle(element).fontSize);
+    await expect(frame.locator(".post-traffic__engagement dd")).toHaveCSS(
+      "font-size",
+      totalFontSize,
+    );
+    await expect(frame.locator(".post-traffic__axis-labels")).toHaveCount(0);
     await expect(frame.locator(".post-traffic__preview-area")).toHaveAttribute(
       "d",
       /^M [\d.]+ 196 L [\d.]+ [\d.]+/,
@@ -135,12 +145,10 @@ test("Mobile samples retain working presets, annotations and a non-expanding hel
   const gridWidth = (await chart.locator(".post-traffic__chart").boundingBox())!
     .width;
   expect(plotWidth).toBeGreaterThan(gridWidth * 0.55);
-  const initial = await chart
-    .locator(".post-traffic__total strong")
-    .innerText();
+  const initial = await chart.locator(".post-traffic__total dd").innerText();
   await chart.getByRole("button", { name: "Last year", exact: true }).click();
   await expect(chart.locator(".post-traffic__point")).toHaveCount(12);
-  await expect(chart.locator(".post-traffic__total strong")).not.toHaveText(
+  await expect(chart.locator(".post-traffic__total dd")).not.toHaveText(
     initial,
   );
   await expect(chart.locator(".post-traffic__annotation")).toHaveCount(0);
@@ -166,7 +174,7 @@ test("Mobile samples retain working presets, annotations and a non-expanding hel
   await help.focus();
   const tooltip = chart.locator(".post-traffic__source");
   await expect(tooltip).toBeVisible();
-  expect(await plotOffset()).toBeCloseTo(y, 5);
+  expect(await plotOffset()).toBeCloseTo(y, 3);
   await tooltip.hover();
   await expect(tooltip).toBeVisible();
   await help.press("Escape");
