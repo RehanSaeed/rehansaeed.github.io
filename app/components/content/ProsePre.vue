@@ -1,5 +1,7 @@
 <template>
-  <div class="code-block">
+  <div
+    class="code-block"
+    :class="controls ? `code-block--controls-${controls}` : undefined">
     <div
       v-if="alternatives?.length"
       v-show="hydrated"
@@ -55,7 +57,9 @@
             @pointerenter="dismissTooltips = false"
             @focusin="dismissTooltips = false"
             @keydown.esc="dismissTooltips = true">
-            <button
+            <component
+              :is="controlButton"
+              v-bind="controlButtonProps"
               type="button"
               aria-label="Wrap lines"
               :aria-describedby="`${id}-wrap-tip-${index}`"
@@ -69,7 +73,7 @@
                 name="lucide:move-right"
                 class="code-block__icon"
                 :class="{ 'code-block__icon--active': wrapped }" />
-            </button>
+            </component>
             <span
               :id="`${id}-wrap-tip-${index}`"
               class="code-block__tooltip"
@@ -83,7 +87,9 @@
             @pointerenter="dismissTooltips = false"
             @focusin="dismissTooltips = false"
             @keydown.esc="dismissTooltips = true">
-            <button
+            <component
+              :is="controlButton"
+              v-bind="controlButtonProps"
               type="button"
               :aria-label="copied ? 'Copied!' : 'Copy code'"
               :aria-describedby="`${id}-copy-tip-${index}`"
@@ -97,7 +103,7 @@
                 name="lucide:check"
                 class="code-block__icon"
                 :class="{ 'code-block__icon--active': copied }" />
-            </button>
+            </component>
             <span
               :id="`${id}-copy-tip-${index}`"
               class="code-block__tooltip"
@@ -119,10 +125,30 @@
 </template>
 
 <script setup lang="ts">
-import type { CodeBlock } from "../../../shared/utils/code-blocks";
+import UButton from "../shared/button.vue";
+import type {
+  CodeBlock,
+  CodeControlStyle,
+} from "../../../shared/utils/code-blocks";
 
 defineOptions({ inheritAttrs: false });
-const props = defineProps<CodeBlock & { alternatives?: CodeBlock[] }>();
+const props = withDefaults(
+  defineProps<
+    CodeBlock & {
+      alternatives?: CodeBlock[];
+      controls?: CodeControlStyle;
+    }
+  >(),
+  { controls: "bordered" },
+);
+const controlButton = computed(() =>
+  props.controls === "current" ? "button" : UButton,
+);
+const controlButtonProps = computed(() => {
+  if (props.controls === "bordered") return { bordered: true };
+  if (props.controls === "soft") return { contrast: true };
+  return {};
+});
 const id = useId();
 const hydrated = ref(false);
 const selected = ref(0);

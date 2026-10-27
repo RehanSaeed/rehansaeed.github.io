@@ -48,4 +48,21 @@ and Tab moves into the controls and active panel. Wrapping is local to each bloc
 or group; a reader's choice persists when switching that group's tabs.
 
 Without JavaScript, all alternatives remain visible and interactive controls are
-hidden. The `/cheat-sheet/` draft demonstrates wrapping and multiple groups.
+hidden. The `/cheat-sheet/` draft documents the Markdown syntax and demonstrates
+wrapping and Bash/PowerShell alternatives.
+
+## Comparing control styles locally
+
+The blog uses the shared bordered `UButton` controls (option C). They appear at
+the top right on code-block hover or keyboard focus; touch devices keep them
+visible.
+
+Run `npm run dev` and open `/dev/code-controls/` to compare the original controls,
+the real shared `UButton` (plain and bordered), and soft/grouped alternatives.
+Each example uses the same build-time-highlighted sample and working copy/wrap
+controls. Toggle all controls, narrow examples, or the theme to compare states;
+the preference radio buttons do not change the production default.
+
+This playground route is registered only in development and is not published.
+Its browser tests are opt-in: set `CODE_CONTROLS_PLAYGROUND=1` and `BASE_URL` to
+the dev server, then run `npx playwright test code-control-playground.spec.ts`.

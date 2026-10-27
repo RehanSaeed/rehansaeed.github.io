@@ -100,33 +100,35 @@ pre[class*="language-"] {
   align-items: center;
   gap: 0.5rem;
   font-size: var(--global-font-size-1);
+}
 
-  button {
-    min-block-size: 2.75rem;
-    padding: 0.4rem 0.75rem;
-    border: var(--global-border-width-1) solid var(--global-border-color);
-    border-radius: var(--global-border-radius);
-    background: var(--global-content-background-color);
-    color: var(--global-title-color);
-    font: inherit;
-    cursor: pointer;
+.code-block__tabs button,
+.code-block__toolbar button:not(.button) {
+  min-block-size: 2.75rem;
+  padding: 0.4rem 0.75rem;
+  border: var(--global-border-width-1) solid var(--global-border-color);
+  border-radius: var(--global-border-radius);
+  background: var(--global-content-background-color);
+  color: var(--global-title-color);
+  font: inherit;
+  cursor: pointer;
 
-    &:hover,
-    &[aria-selected="true"],
-    &[aria-pressed="true"] {
-      border-color: var(--global-accent-color);
-      color: var(--global-accent-color);
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--global-accent-color);
-      outline-offset: 2px;
-    }
-
-    &:disabled {
-      cursor: progress;
-    }
+  &:hover,
+  &[aria-selected="true"],
+  &[aria-pressed="true"] {
+    border-color: var(--global-accent-color);
+    color: var(--global-accent-color);
   }
+
+  &:disabled {
+    cursor: progress;
+  }
+}
+
+.code-block__tabs button:focus-visible,
+.code-block__toolbar button:focus-visible {
+  outline: 2px solid var(--global-accent-color);
+  outline-offset: 2px;
 }
 
 .code-block__tabs {
@@ -150,7 +152,26 @@ pre[class*="language-"] {
     min-block-size: 2.25rem;
     padding: 0;
     font-size: 1rem;
-    box-shadow: var(--global-shadow-1);
+    &:not(.button) {
+      box-shadow: var(--global-shadow-1);
+    }
+  }
+}
+
+.code-block--controls-soft .code-block__toolbar .button {
+  border-radius: var(--global-border-radius);
+}
+
+.code-block--controls-grouped .code-block__toolbar {
+  gap: 0;
+  border: var(--global-border-width-1) solid var(--global-border-color);
+  border-radius: var(--global-border-radius);
+  background: var(--global-content-background-color);
+  box-shadow: var(--global-shadow-1);
+
+  .code-block__action + .code-block__action {
+    border-inline-start: var(--global-border-width-1) solid
+      var(--global-border-color);
   }
 }
 
@@ -236,6 +257,13 @@ pre[class*="language-"] {
       opacity var(--global-duration-2) var(--ease-in-out-cubic),
       transform var(--global-duration-2) var(--ease-in-out-cubic),
       visibility var(--global-duration-2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .code-block__toolbar .button,
+  .code-block__toolbar .button::before {
+    transition: none;
   }
 }
 
