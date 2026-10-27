@@ -39,15 +39,6 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-      - name: "Restore Portfolio Observations"
-        uses: actions/cache/restore@v6.1.0
-        with:
-          path: |
-            .data/blog-portfolio.json
-            .data/blog-nuget.json
-          key: portfolio-observations-${{ runner.os }}-${{ github.run_id }}
-          restore-keys: |
-            portfolio-observations-${{ runner.os }}-
       - name: "NPM Install"
         run: npm ci
         env:
@@ -100,14 +91,6 @@ jobs:
         with:
           path: node_modules/.cache/nuxt-seo/skew-protection
           key: skew-${{ runner.os }}-${{ github.sha }}
-      - name: "Save Portfolio Observations"
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-        uses: actions/cache/save@v6.1.0
-        with:
-          path: |
-            .data/blog-portfolio.json
-            .data/blog-nuget.json
-          key: portfolio-observations-${{ runner.os }}-${{ github.run_id }}
       - name: "Setup Pages"
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         uses: actions/configure-pages@v6.0.0

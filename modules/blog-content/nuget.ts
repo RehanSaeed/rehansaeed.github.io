@@ -10,12 +10,9 @@ const packageSchema = z.object({
   downloads: z.number().int().nonnegative(),
   createdAt: z.iso.datetime({ offset: true }).optional(),
 });
-const observationSchema = z.object({
+export const cacheSchema = z.object({
   updated: z.number(),
   snapshots: z.record(z.string(), packageSchema),
-});
-export const cacheSchema = observationSchema.extend({
-  previous: observationSchema.optional(),
 });
 const downloadCountSchema = z
   .string()
@@ -127,10 +124,6 @@ export async function portfolioDownloads(
       JSON.stringify({
         updated: complete ? Date.now() : 0,
         snapshots,
-        previous:
-          cached && cached.updated > 0
-            ? { updated: cached.updated, snapshots: cached.snapshots }
-            : cached?.previous,
       }),
     );
   }

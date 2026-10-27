@@ -42,10 +42,14 @@ test("Portfolio popularity refreshes expired counts and reuses fresh counts", as
     stars = 30;
     expect(await portfolioSnapshots(dir, [entry])).toEqual(snapshots);
     expect(calls).toBe(1);
-    const previousAt = Date.now() - 2 * 60 * 60 * 1000;
+    const expiredAt = Date.now() - 2 * 60 * 60 * 1000;
     await writeFile(
       info.outputPath("portfolio-cache", "blog-portfolio.json"),
-      JSON.stringify({ updated: previousAt, snapshots }),
+      JSON.stringify({
+        updated: expiredAt,
+        snapshots,
+        previous: { updated: expiredAt - 60 * 60 * 1000, snapshots },
+      }),
     );
     const refreshed = await portfolioSnapshots(dir, [entry]);
     expect(refreshed[entry.data.permalink]?.stars).toBe(30);
@@ -56,7 +60,10 @@ test("Portfolio popularity refreshes expired counts and reuses fresh counts", as
         "utf8",
       ),
     );
-    expect(saved.previous).toEqual({ updated: previousAt, snapshots });
+    expect(saved).toEqual({
+      updated: expect.any(Number),
+      snapshots: refreshed,
+    });
   } finally {
     globalThis.fetch = originalFetch;
   }

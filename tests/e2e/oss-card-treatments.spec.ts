@@ -18,7 +18,7 @@ for (const width of [320, 390, 1280]) {
       const cards = treatment.locator(".metric");
       await expect(cards).toHaveCount(2);
       await expect(cards.locator("h3")).toHaveText([
-        "NuGet downloads",
+        "Package downloads",
         "GitHub stars",
       ]);
       await expect(cards.locator("p")).toHaveText(["301,807,974", "8,784"]);
