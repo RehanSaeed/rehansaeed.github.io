@@ -150,6 +150,12 @@ const edited = computed(() =>
     min-inline-size: 0;
   }
 
+  img {
+    display: inline;
+    // Keep HTML dimensions or intrinsic sizing instead of the global full width.
+    inline-size: revert-layer;
+  }
+
   > :is(ul, ol) > li:first-child > :first-child {
     margin-block-start: 0;
   }
