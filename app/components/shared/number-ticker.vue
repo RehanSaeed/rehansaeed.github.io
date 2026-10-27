@@ -120,6 +120,7 @@ onBeforeUnmount(() => {
   gap: var(--global-space-fixed-3);
   min-inline-size: 0;
   padding: clamp(0.75rem, 2vw, 2rem);
+  padding-block-start: clamp(0.5rem, 1vw, 1rem);
   border: 1px solid var(--global-border-color);
   border-radius: var(--global-border-radius);
   background: var(--global-content-background-color);
@@ -176,13 +177,14 @@ onBeforeUnmount(() => {
 }
 
 .number-ticker__cell--separator {
-  inline-size: 0.24em;
+  inline-size: 0.32em;
   background: none;
   box-shadow: none;
 }
 
 .number-ticker__digit {
-  display: block;
+  display: flex;
+  justify-content: center;
   position: absolute;
   inset: 0;
 }

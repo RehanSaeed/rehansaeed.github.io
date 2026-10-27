@@ -38,7 +38,7 @@ async function verifySocialCardProps() {
     ) => unknown[];
   } = {};
   runInNewContext(
-    ts.transpileModule(source, {
+    ts.transpileModule(source.replaceAll("import.meta.server", "true"), {
       compilerOptions: { module: ts.ModuleKind.CommonJS },
     }).outputText,
     {
@@ -67,6 +67,31 @@ async function verifySocialCardProps() {
 
 test("Social card props preserve each page's title, hero and template cache identity", async () => {
   await expect(verifySocialCardProps()).resolves.toBeUndefined();
+});
+
+test("Social card declarations do not run again during client hydration", async () => {
+  const source = await readFile("app/composables/use-blog-og-image.ts", "utf8");
+  const exports: {
+    useBlogOgImage?: (title: string) => unknown[];
+  } = {};
+  runInNewContext(
+    ts.transpileModule(source.replaceAll("import.meta.server", "false"), {
+      compilerOptions: { module: ts.ModuleKind.CommonJS },
+    }).outputText,
+    {
+      exports,
+      useAppConfig: () => ({ site: { author: { name: author } } }),
+      defineOgImage: () => {
+        throw new Error(
+          "Server-only social card declaration ran on the client",
+        );
+      },
+    },
+  );
+  if (!exports.useBlogOgImage) {
+    throw new Error("Missing social card composable");
+  }
+  expect(exports.useBlogOgImage("Portfolio")).toEqual([]);
 });
 
 async function verifyRenderedSocialCards() {

@@ -35,13 +35,16 @@ snapshot, not necessarily when every source was last contacted. The Build workfl
 rebuilds and deploys the site every Monday at 05:17 UTC, as well as on pushes to
 `main` and manual runs, so published figures refresh without content edits.
 
-Portfolio's counters are estimates based on lifetime averages, not live API
-counts. For each package, divide its lifetime downloads by the seconds between
-the earliest available version's creation date and the observation; add these
+Portfolio's download animation uses lifetime averages, not live API counts.
+The star animation deliberately averages one increase every 15 seconds for
+illustration, not the measured growth rate; its supplied snapshot and the About
+summary remain exact. For each package, divide its lifetime downloads by the seconds
+between the earliest available version's creation date and the observation; add these
 individual rates together. NuGet's `FindPackagesById()` request orders by
 `Created asc` with `$top=1` and `semVerLevel=2.0.0`. Stars use the same calculation
-per repository with GitHub's `created_at`. This works on the first observation
-and does not mistake an unchanged hourly snapshot for a zero lifetime rate.
+per repository with GitHub's `created_at`, but that rate is not the displayed
+star animation's cadence. This works on the first observation and does not mistake
+an unchanged hourly snapshot for a zero lifetime rate.
 Lifetime averages do not predict recent trends, and star totals can fall.
 
 The lifetime calculation needs no historical snapshots or cross-build CI cache.
@@ -66,8 +69,9 @@ The optional `paused` prop stops animation;
 Reduced-motion users see the supplied number. Hidden tabs suspend timers and
 catch up at the average rate on return; unmounting cleans up timers and listeners.
 Screen readers receive the supplied number without per-second announcements.
-Portfolio keeps verified totals, the estimate explanation and a shared pause
-control outside its two side-by-side cards.
+Portfolio displays only the two title-and-number cards, without explanatory text
+or controls. The shared component retains its optional `paused` prop for other uses.
+Exact build totals remain in the About summary, accessible numbers and data attributes.
 
 Six reviewable title-and-number layout studies are in
 `tests/fixtures/oss-card-treatments.html`. Open the file directly to compare light,
