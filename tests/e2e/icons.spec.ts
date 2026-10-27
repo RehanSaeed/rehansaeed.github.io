@@ -114,6 +114,64 @@ test("Shared icons encapsulate inline styling and decorative defaults", async ({
   await expect(logo).toHaveAttribute("aria-hidden", "true");
 });
 
+test("Coffee icons inherit their button text colour in both themes", async ({
+  page,
+}) => {
+  await page.goto(post);
+  await ready(page);
+  const button = page.getByRole("button", {
+    name: "Buy me a Coffee",
+    exact: true,
+  });
+  const support = page.getByRole("dialog", {
+    name: "Buy me a Coffee",
+    exact: true,
+  });
+  const link = support.getByRole("link", {
+    name: "Buy me a Coffee",
+    exact: true,
+  });
+
+  for (let theme = 0; theme < 2; theme++) {
+    await page.mouse.move(0, 0);
+    await expect(button.locator("svg.icon")).not.toHaveAttribute("color");
+    await expect
+      .poll(() =>
+        button.evaluate(
+          (element) =>
+            getComputedStyle(element.querySelector("svg.icon path")!).fill ===
+            getComputedStyle(element).color,
+        ),
+      )
+      .toBe(true);
+    await button.click();
+    await expect(support).toBeVisible();
+    await expect(link.locator("svg.icon")).not.toHaveAttribute("color");
+    await expect
+      .poll(() =>
+        link.evaluate(
+          (element) =>
+            getComputedStyle(element.querySelector("svg.icon path")!).fill ===
+            getComputedStyle(element).color,
+        ),
+      )
+      .toBe(true);
+    await support
+      .getByRole("button", { name: "Close Buy me a Coffee" })
+      .click();
+    if (theme === 0) {
+      const previousTheme = await page
+        .locator("html")
+        .getAttribute("data-theme");
+      await page.getByRole("button", { name: "Toggle dark/light" }).click();
+      await expect(page.locator("html")).not.toHaveAttribute(
+        "data-theme",
+        previousTheme!,
+      );
+    }
+  }
+});
+
 test.describe("Offline icons", () => {
   test.use({ serviceWorkers: "allow" });
 
