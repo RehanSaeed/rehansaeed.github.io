@@ -244,6 +244,97 @@ test.describe("GitHub comments", () => {
     });
   }
 
+  test("Preserves image dimensions in saved GitHub comments", async ({
+    page,
+  }) => {
+    await page.route("**/api.github.com/**", (route) => route.abort());
+    await page.goto("/gitattributes-best-practices/#comments");
+    const image = page.locator(".comment__content img").first();
+    await expect(image).toHaveAttribute("width", "40");
+    await expect(image).toHaveAttribute("height", "40");
+    await expect(image).toHaveCSS("width", "40px");
+    await expect(image).toHaveCSS("height", "40px");
+  });
+
+  for (const width of [320, 1280]) {
+    test(`Preserves refreshed comment image sizes without overflow at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.route(
+        "**/camo.githubusercontent.com/comment-image-*",
+        (route) => {
+          const wide = route.request().url().endsWith("wide");
+          return route.fulfill({
+            contentType: "image/svg+xml",
+            body: `<svg xmlns="http://www.w3.org/2000/svg" width="${wide ? 1600 : 96}" height="${wide ? 800 : 96}"><rect width="100%" height="100%" fill="blue"/></svg>`,
+          });
+        },
+      );
+      await page.route(commentsPath, (route) =>
+        route.fulfill({
+          json: [
+            {
+              ...owner,
+              body_html: [
+                '<p><a href="https://github.com"><img src="https://camo.githubusercontent.com/comment-image-small" alt="Small avatar" width="40" height="40"></a></p>',
+                '<p><img src="https://camo.githubusercontent.com/comment-image-natural" alt="Natural size"></p>',
+                '<p><img src="https://camo.githubusercontent.com/comment-image-wide" alt="Wide screenshot" width="1600" height="800"></p>',
+                '<img src="https://camo.githubusercontent.com/comment-image-small" alt="Direct image" width="40" height="40">',
+              ].join(""),
+            },
+          ],
+        }),
+      );
+      await page.goto(`${postPath}#comments`);
+      await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
+      const content = page.locator(".comment__content");
+      await expect(content.getByRole("img")).toHaveCount(4);
+      await expect
+        .poll(() =>
+          content
+            .locator("img")
+            .evaluateAll((images) =>
+              images.every(
+                (image) =>
+                  image instanceof HTMLImageElement && image.naturalWidth > 0,
+              ),
+            ),
+        )
+        .toBe(true);
+      for (const name of ["Small avatar", "Direct image"]) {
+        await expect(content.getByRole("img", { name })).toHaveCSS(
+          "width",
+          "40px",
+        );
+        await expect(content.getByRole("img", { name })).toHaveCSS(
+          "height",
+          "40px",
+        );
+      }
+      await expect(
+        content.getByRole("img", { name: "Natural size" }),
+      ).toHaveCSS("width", "96px");
+      const bounds = await content.evaluate((element) => {
+        const screenshot = element.querySelector<HTMLImageElement>(
+          'img[alt="Wide screenshot"]',
+        )!;
+        return {
+          available: element.getBoundingClientRect().width,
+          width: screenshot.getBoundingClientRect().width,
+          height: screenshot.getBoundingClientRect().height,
+          overflow:
+            document.documentElement.scrollWidth >
+            document.documentElement.clientWidth,
+        };
+      });
+      expect(bounds.width).toBeLessThanOrEqual(bounds.available);
+      expect(bounds.width).toBeGreaterThan(96);
+      expect(bounds.width / bounds.height).toBeCloseTo(2);
+      expect(bounds.overflow).toBe(false);
+    });
+  }
+
   test("Updates presentation when refreshing a saved comment with the same ID", async ({
     page,
     request,
