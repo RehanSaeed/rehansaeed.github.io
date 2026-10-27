@@ -8,12 +8,49 @@
     <header class="controls-lab__header">
       <div>
         <p class="controls-lab__eyebrow">Local design playground</p>
-        <h1>Code block controls</h1>
+        <h1>Code block playground</h1>
         <p>
-          Try the same code and interactions with five button treatments. The
-          blog uses C, with controls revealed on hover or keyboard focus.
+          Compare five tab styles and five button treatments using real code
+          blocks. The blog still uses attached tabs and bordered controls.
         </p>
       </div>
+      <h2 id="tab-styles">Alternative-code tabs</h2>
+      <p>
+        Switch between Bash and PowerShell, try the arrow keys, copy and wrap,
+        or change the theme. Each card is independent.
+      </p>
+      <div class="controls-lab__grid">
+        <section
+          v-for="option in tabOptions"
+          :key="option.id"
+          class="controls-lab__card"
+          :aria-labelledby="`tab-heading-${option.id}`"
+          :data-tab-style="option.id">
+          <h3 :id="`tab-heading-${option.id}`">{{ option.title }}</h3>
+          <p>{{ option.description }}</p>
+          <div class="controls-lab__example">
+            <ContentRenderer :value="{ body: tabExampleBody(option.id) }" />
+          </div>
+          <label class="controls-lab__choice">
+            <input
+              v-model="tabChoice"
+              type="radio"
+              :disabled="!hydrated"
+              name="tab-preference"
+              :value="option.id" />
+            Prefer {{ option.title }}
+          </label>
+        </section>
+      </div>
+      <p class="controls-lab__selection" role="status" data-tab-preference>
+        {{
+          selectedTab
+            ? `Tab preference: ${selectedTab.title}.`
+            : "No tab preference selected yet."
+        }}
+        This selection is local only; it does not change the blog.
+      </p>
+      <h2 id="button-styles">Copy and wrap buttons</h2>
       <u-theme-button />
     </header>
     <div class="controls-lab__options">
@@ -52,7 +89,7 @@
         </label>
       </section>
     </div>
-    <p class="controls-lab__selection" role="status">
+    <p class="controls-lab__selection" role="status" data-control-preference>
       {{
         selected
           ? `Preference: ${selected.letter}. ${selected.title}.`
@@ -64,7 +101,10 @@
 </template>
 
 <script setup lang="ts">
-import type { CodeControlStyle } from "../../shared/utils/code-blocks";
+import type {
+  CodeControlStyle,
+  CodeTabStyle,
+} from "../../shared/utils/code-blocks";
 
 definePageMeta({ layout: "empty" });
 useHead({ title: "Code control playground" });
@@ -77,6 +117,41 @@ onMounted(() => {
 const reveal = ref(false);
 const narrow = ref(false);
 const choice = ref<CodeControlStyle>();
+const tabChoice = ref<CodeTabStyle>();
+const tabOptions = [
+  {
+    id: "attached",
+    title: "Attached",
+    description: "The current style: the selected tab joins the code panel.",
+  },
+  {
+    id: "underline",
+    title: "Underline",
+    description:
+      "A quiet label row with an accent underline on the active tab.",
+  },
+  {
+    id: "segmented",
+    title: "Segmented",
+    description:
+      "Equal-width choices in a shared header, with a raised selected segment.",
+  },
+  {
+    id: "pills",
+    title: "Pills",
+    description:
+      "Rounded choices in a compact header, with an outlined active pill.",
+  },
+  {
+    id: "editor",
+    title: "Editor",
+    description:
+      "A file-tab strip with dividers, monospace labels and an accent top edge.",
+  },
+] as const;
+const selectedTab = computed(() =>
+  tabOptions.find((option) => option.id === tabChoice.value),
+);
 const options = [
   {
     id: "current",
@@ -151,6 +226,21 @@ if (!sample)
     statusMessage: "Highlighted code comparison sample is missing.",
   });
 const styles = elements.filter((node) => node[0] === "style");
+const groupSample = elements.find(
+  (node) => node[0] === "pre" && Array.isArray(node[1].alternatives),
+);
+if (!groupSample)
+  throw createError({
+    statusCode: 500,
+    statusMessage: "Highlighted tab comparison sample is missing.",
+  });
+const groupProps = groupSample[1];
+function tabExampleBody(tabStyle: CodeTabStyle) {
+  return {
+    type: "minimark",
+    value: [...styles, ["pre", { ...groupProps, tabStyle }]],
+  };
+}
 const sampleProps = sample[1];
 function exampleBody(controls: CodeControlStyle) {
   return {
@@ -215,7 +305,8 @@ function exampleBody(controls: CodeControlStyle) {
   border-radius: var(--global-border-radius);
   background: var(--global-content-background-color);
 
-  h2 {
+  h2,
+  h3 {
     font-family: var(--global-font-family-sans-serif);
     font-size: 1.25rem;
     margin-block-end: 0.75rem;
