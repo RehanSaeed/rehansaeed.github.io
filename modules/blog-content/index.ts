@@ -33,6 +33,7 @@ import { commentSnapshots } from "./comments";
 import { portfolioSnapshots } from "./portfolio";
 import { portfolioDownloads } from "./nuget";
 import { portfolioStatistics } from "./statistics";
+import { portfolioGrowth } from "./growth";
 import { readImageDimensions } from "./images";
 import { filterMarkdownSitemap } from "./seo";
 
@@ -61,6 +62,7 @@ export default defineNuxtModule({
     const downloads = await portfolioDownloads(dataDir, entries);
     const statistics = {
       ...portfolioStatistics(entries, portfolio, downloads),
+      growth: await portfolioGrowth(dataDir, entries),
       generatedAt: new Date().toISOString(),
     };
     const statisticsTemplate = addTemplate({

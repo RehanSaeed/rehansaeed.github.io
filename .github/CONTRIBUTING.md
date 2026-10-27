@@ -35,6 +35,22 @@ snapshot, not necessarily when every source was last contacted. The Build workfl
 rebuilds and deploys the site every Monday at 05:17 UTC, as well as on pushes to
 `main` and manual runs, so published figures refresh without content edits.
 
+Portfolio's rolling counters are labelled estimates, not live API counts. Each
+source cache retains its previous complete observation. CI restores and saves
+these two cache files across builds on `main`; pull requests can read the baseline
+but do not save it. A rate is calculated only from two complete observations at
+least an hour apart, using the same current set of repositories or packages for
+both totals. Missing history, newly added items and source failures disable the
+affected projection rather than inventing a rate. Download regressions also
+disable projection; a negative star trend is allowed.
+
+Random one-second steps average to the measured rate, retaining fractional
+increments so slow-growing star counts are not artificially increased every
+second. Projections expire after 14 days without a fresh observation. The verified
+count and source observation date remain visible. Visitors can pause each ticker;
+reduced-motion users start with the snapshot, hidden tabs suspend timers, and
+screen readers receive the verified count without per-second announcements.
+
 ## Images
 
 Keep PNG originals for images with transparency and JPG originals for photographs;

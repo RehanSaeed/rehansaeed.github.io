@@ -52,12 +52,17 @@ test("NuGet sums package-wide counts once and refreshes only expired snapshots",
   expect(calls).toBe(2);
   const file = info.outputPath("cache", "blog-nuget.json");
   const saved = JSON.parse(await readFile(file, "utf8"));
-  await writeFile(file, JSON.stringify({ ...saved, updated: 0 }));
+  const previousAt = Date.now() - 2 * 60 * 60 * 1000;
+  await writeFile(file, JSON.stringify({ ...saved, updated: previousAt }));
   expect(
     (await portfolioDownloads(dir, [entry]))[entry.data.permalink]
       ?.nugetDownloads,
   ).toBe(350);
   expect(calls).toBe(4);
+  expect(JSON.parse(await readFile(file, "utf8")).previous).toEqual({
+    updated: previousAt,
+    snapshots: saved.snapshots,
+  });
 });
 
 test("A new NuGet package invalidates a fresh snapshot and cannot disappear from totals", async ({}, info) => {

@@ -139,15 +139,21 @@ test("Portfolio and About totals are in static HTML and match the listed project
   expect(totals).toHaveLength(1);
   expect(totals.attr("data-downloads")).toBe(String(downloads));
   expect(totals.attr("data-stars")).toBe(String(stars));
-  expect(totals.find("dd").last().text()).toBe(stars.toLocaleString("en-GB"));
+  const tickers = totals.find(".count-ticker");
+  expect(tickers).toHaveLength(2);
+  expect(tickers.last().find(".count-ticker__verified strong").text()).toBe(
+    stars.toLocaleString("en-GB"),
+  );
   expect(totals.text()).toContain(
     `Across ${repositories.size} repositories and ${packages.size} NuGet packages`,
   );
   expect(totals.text()).toContain("Downloads are not unique users.");
   expect(totals.text()).toContain("Refreshed weekly");
-  const timestamp = totals.find("time").attr("datetime")!;
+  const timestamp = totals
+    .find(".portfolio-statistics__note time")
+    .attr("datetime")!;
   expect(Number.isFinite(Date.parse(timestamp))).toBe(true);
-  expect(totals.find("time").text()).toBe(
+  expect(totals.find(".portfolio-statistics__note time").text()).toBe(
     new Intl.DateTimeFormat("en-GB", {
       day: "numeric",
       month: "long",
@@ -155,9 +161,16 @@ test("Portfolio and About totals are in static HTML and match the listed project
       timeZone: "UTC",
     }).format(new Date(timestamp)),
   );
-  expect(totals.find("dd").first().attr("title")).toContain(
+  expect(tickers.first().find(".count-ticker__verified strong").text()).toBe(
     downloads.toLocaleString("en-GB"),
   );
+  tickers.each((_, ticker) => {
+    expect($(ticker).attr("data-state")).toBe("snapshot");
+    expect($(ticker).text()).toContain("Estimates, not a live feed.");
+    expect($(ticker).find(".count-ticker__value").attr("aria-live")).toBe(
+      "off",
+    );
+  });
   const about = await request.get("/about/");
   expect(about.ok()).toBe(true);
   const summary = load(await about.text())(".portfolio-statistics__summary");
@@ -176,6 +189,7 @@ for (const width of [375, 1280]) {
     }) => {
       await page.setViewportSize({ width, height: 900 });
       await page.emulateMedia({ colorScheme });
+      await page.clock.install();
       await page.goto("/about/");
       const summary = page.locator(".portfolio-statistics__summary");
       await expect(summary).toBeVisible();
@@ -187,10 +201,17 @@ for (const width of [375, 1280]) {
       await expect(totals).toBeVisible();
       await expect(totals).toHaveAttribute("data-downloads", downloads!);
       await expect(totals).toHaveAttribute("data-stars", stars!);
-      await expect(totals.locator("dt")).toHaveText([
+      await expect(totals.locator(".count-ticker__label")).toHaveText([
         "Lifetime NuGet downloads",
         "GitHub stars",
       ]);
+      for (const ticker of await totals.locator(".count-ticker").all()) {
+        await expect(ticker).toHaveAttribute("data-state", "snapshot");
+        const digits = ticker.locator(".count-ticker__digits");
+        const before = await digits.textContent();
+        await page.clock.runFor(2100);
+        expect(await digits.textContent()).toBe(before);
+      }
       expect(
         await page.evaluate(() => document.documentElement.scrollWidth),
       ).toBe(width);
