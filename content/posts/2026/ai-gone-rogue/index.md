@@ -27,7 +27,7 @@ That led me to add a line to my GitHub Copilot app's AI agent instructions:
 
 Here is what that looks like:
 
-![An automated reply labelled "This reply was posted automatically by Rehan's AI agent (GitHub Copilot)", followed by HAL saying "I'm afraid I can't do that Dave".](./images/automated-reply-495x262.png)
+![An animated HAL image with the caption "This reply was posted automatically by Rehan's AI agent (GitHub Copilot)." above it. HAL says "I'm afraid I can't do that Dave".](./images/automated-reply-448x254.gif)
 
 The important bit is the plain text saying that the reply was posted automatically. The HAL image is there to make it hard to miss, and because it makes me laugh. If the image doesn't load, the disclosure should still make sense.
 

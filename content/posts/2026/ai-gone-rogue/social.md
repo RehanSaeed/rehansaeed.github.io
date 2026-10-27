@@ -54,12 +54,12 @@ Neither is an approved destination. No community-specific copy has been prepared
 
 ## 🖼️ Image suggestion
 
-Use the supplied automated-reply screenshot, `images/automated-reply-495x262.png`, to show the disclosure and HAL image.
+Use the captioned animation, `images/automated-reply-448x254.gif`, to show the disclosure above the supplied HAL GIF.
 
-Suggested alt text: An automated reply labelled "This reply was posted automatically by Rehan's AI agent (GitHub Copilot)", followed by HAL saying "I'm afraid I can't do that Dave".
+Suggested alt text: An animated HAL image with the caption "This reply was posted automatically by Rehan's AI agent (GitHub Copilot)." above it. HAL says "I'm afraid I can't do that Dave".
 
 Alternatively, use the 1600x900 hero, `/images/hero/HAL-9000-Prop-1600x900.png`. Suggested alt text: A close-up photograph of a HAL prop's camera lens beside the caption "I'm afraid I can't do that, Dave."
 
 Hero credit: [HAL prop photograph](https://commons.wikimedia.org/wiki/File:HAL_9000_Original_requisite_from_2001_A_Space_Odyssey_-_retouche.jpg) by Carlos Pacheco, retouched by Pittigrilli, [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/), checked on 2026-10-27. Cropped, resized and caption added. It is an exhibition-prop photograph, not a film still. Retain the source, attribution, licence and modification notice with standalone reuse.
 
-The supplied screenshot is a static PNG, not an animated GIF. Its embedded film image's reuse rights have not been independently established; confirm suitability for public use.
+The film image in the supplied GIF has not had its reuse rights independently established; confirm suitability for public use.
