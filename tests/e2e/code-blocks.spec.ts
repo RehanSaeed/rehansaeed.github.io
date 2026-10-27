@@ -33,6 +33,7 @@ test("Icon controls overlay the top right, reveal on hover/focus and have dismis
   const copy = block.getByRole("button", { name: "Copy code", exact: true });
   const wrap = block.getByRole("button", { name: "Wrap lines", exact: true });
   await expect(copy).toBeAttached();
+  await expect(toolbar.locator(".button--bordered")).toHaveCount(2);
   await block.scrollIntoViewIfNeeded();
   await page.mouse.move(0, 0);
   await expect(toolbar).toHaveCSS("opacity", "0");
@@ -42,6 +43,9 @@ test("Icon controls overlay the top right, reveal on hover/focus and have dismis
   const after = await block.boundingBox();
   expect(after!.width).toBe(before!.width);
   expect(after!.height).toBe(before!.height);
+  await page.mouse.move(0, 0);
+  await expect(toolbar).toHaveCSS("opacity", "0");
+  await block.hover();
   const positions = await toolbar.evaluate((element) => {
     const code = element.parentElement!.getBoundingClientRect();
     const toolbar = element.getBoundingClientRect();
@@ -232,7 +236,7 @@ test("Copies source exactly, announces success, resets and reports clipboard err
   }
 });
 
-test("Alternatives have independent accessible tabs and copy only the selected code", async ({
+test("The cheat sheet documents accessible Bash/PowerShell tabs and copies only the selected code", async ({
   page,
 }) => {
   await page.addInitScript(() => {
@@ -260,6 +264,19 @@ test("Alternatives have independent accessible tabs and copy only the selected c
     name: "PowerShell",
     exact: true,
   });
+  await expect(group.getByRole("tab")).toHaveCount(2);
+  await expect(
+    page.getByRole("heading", { name: "Alternative Code Tabs", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("tablist", { name: "Code alternatives" }),
+  ).toHaveCount(1);
+  await expect(page.getByRole("tab", { name: "npm", exact: true })).toHaveCount(
+    0,
+  );
+  await expect(
+    page.getByRole("tab", { name: "pnpm", exact: true }),
+  ).toHaveCount(0);
   await expect(bash).toHaveAttribute("aria-selected", "true");
   await expect(group.getByRole("tabpanel")).toHaveCount(1);
   await bash.focus();
@@ -294,9 +311,6 @@ test("Alternatives have independent accessible tabs and copy only the selected c
   await expect(powershell).toBeFocused();
   await page.keyboard.press("ArrowRight");
   await expect(bash).toBeFocused();
-  await expect(
-    page.getByRole("tab", { name: "npm", exact: true }),
-  ).toHaveAttribute("aria-selected", "true");
   const ids = await page
     .locator(".code-block [id]")
     .evaluateAll((nodes) => nodes.map((node) => node.id));
@@ -368,12 +382,7 @@ test.describe("Without JavaScript", () => {
     await expect(
       page.getByRole("button", { name: "Copy code", exact: true }),
     ).toHaveCount(0);
-    for (const text of [
-      "printf",
-      'Write-Output "Hello',
-      "npm install nuxt",
-      "pnpm add nuxt",
-    ]) {
+    for (const text of ["printf", 'Write-Output "Hello']) {
       await expect(
         page.locator("pre").filter({ hasText: text }).last(),
       ).toBeVisible();

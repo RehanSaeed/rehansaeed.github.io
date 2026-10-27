@@ -195,6 +195,10 @@ const message =
   "This deliberately long line demonstrates optional wrapping without changing the copied source, its indentation, or its build-time syntax highlighting.";
 ```
 
+## Alternative Code Tabs
+
+Wrap two or more fenced code blocks in `::: code-group`. The language controls syntax highlighting, and the title in square brackets becomes the tab label. For example, use `bash [Bash]` and `powershell [PowerShell]` to create these two tabs:
+
 ::: code-group
 
 ```bash [Bash]
@@ -203,18 +207,6 @@ printf '%s\n' "Hello <world> & friends"
 
 ```powershell [PowerShell]
 Write-Output "Hello <world> & friends"
-```
-
-:::
-
-::: code-group
-
-```bash [npm]
-npm install nuxt
-```
-
-```bash [pnpm]
-pnpm add nuxt
 ```
 
 :::

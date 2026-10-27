@@ -1,3 +1,6 @@
+export type CodeControlStyle =
+  "current" | "plain" | "bordered" | "soft" | "grouped";
+
 export interface CodeBlock {
   language?: string;
   filename?: string;
