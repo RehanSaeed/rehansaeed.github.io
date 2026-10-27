@@ -144,23 +144,8 @@ test("Portfolio and About totals are in static HTML and match the listed project
   expect(tickers.last().find(".number-ticker__accessible").text()).toBe(
     stars.toLocaleString("en-GB"),
   );
-  expect(totals.text()).toContain(
-    `Across ${repositories.size} repositories and ${packages.size} NuGet packages`,
-  );
-  expect(totals.text()).toContain("Downloads are not unique users.");
-  expect(totals.text()).toContain("Refreshed weekly");
-  const timestamp = totals
-    .find(".portfolio-statistics__note time")
-    .attr("datetime")!;
-  expect(Number.isFinite(Date.parse(timestamp))).toBe(true);
-  expect(totals.find(".portfolio-statistics__note time").text()).toBe(
-    new Intl.DateTimeFormat("en-GB", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-      timeZone: "UTC",
-    }).format(new Date(timestamp)),
-  );
+  expect(totals.children("p")).toHaveLength(0);
+  expect(totals.find("button")).toHaveLength(0);
   expect(tickers.first().find(".number-ticker__accessible").text()).toBe(
     downloads.toLocaleString("en-GB"),
   );
@@ -270,7 +255,72 @@ for (const width of [320, 375, 1280]) {
   }
 }
 
-test("Portfolio uses real lifetime rates to animate the shared odometers and can pause both", async ({
+for (const width of [320, 375, 1280]) {
+  test(`Grouping separators remain fully visible and on the number baseline at ${width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/portfolio/");
+    await expect(page.locator(".number-ticker")).toHaveCount(2);
+    await expect(page.locator(".number-ticker__digit").first()).toHaveCSS(
+      "display",
+      "flex",
+    );
+    await page.evaluate(() => document.fonts.ready);
+    for (const colorScheme of ["light", "dark"] as const) {
+      await page.emulateMedia({ colorScheme });
+      const separators = await page
+        .locator(".number-ticker__cell--separator")
+        .evaluateAll((cells) =>
+          cells.map((cell) => {
+            const digit = cell.querySelector(".number-ticker__digit")!;
+            const style = getComputedStyle(digit);
+            const canvas = document.createElement("canvas").getContext("2d");
+            if (!canvas) throw new Error("Missing font measurement context");
+            canvas.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+            const metrics = canvas.measureText(digit.textContent!);
+            const range = document.createRange();
+            range.selectNodeContents(digit);
+            const text = range.getBoundingClientRect();
+            range.selectNodeContents(
+              cell.parentElement!.querySelector(
+                ".number-ticker__cell:not(.number-ticker__cell--separator) .number-ticker__digit",
+              )!,
+            );
+            const number = range.getBoundingClientRect();
+            const bounds = cell.getBoundingClientRect();
+            return {
+              character: digit.textContent,
+              left: text.left - metrics.actualBoundingBoxLeft - bounds.left,
+              right: bounds.right - text.left - metrics.actualBoundingBoxRight,
+              baselineOffset: text.top - number.top,
+            };
+          }),
+        );
+      expect(separators).toHaveLength(3);
+      for (const separator of separators) {
+        expect(separator.character).toBe(",");
+        expect(separator.left).toBeGreaterThanOrEqual(-0.5);
+        expect(separator.right).toBeGreaterThanOrEqual(-0.5);
+        expect(Math.abs(separator.baselineOffset)).toBeLessThan(1);
+      }
+      expect(
+        await page
+          .locator(".number-ticker__digits")
+          .evaluateAll((elements) =>
+            elements.every(
+              (element) => element.scrollWidth <= element.clientWidth,
+            ),
+          ),
+      ).toBe(true);
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth),
+      ).toBe(width);
+    }
+  });
+}
+
+test("Portfolio uses lifetime download rates and a visible fifteen-second star cadence", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
@@ -280,22 +330,27 @@ test("Portfolio uses real lifetime rates to animate the shared odometers and can
   await page.addInitScript(() => {
     Math.random = () => 0.5;
   });
-  await page.goto("/portfolio/");
+  await page.goto("/portfolio/", { waitUntil: "domcontentloaded" });
   const downloads = page.locator(".number-ticker").first();
   await expect(downloads).toHaveAttribute("data-state", "running");
   const value = Number(await downloads.getAttribute("data-value"));
   const rate = Number(await downloads.getAttribute("data-rate"));
   expect(rate).toBeGreaterThan(0);
-  await page.clock.runFor(20_000);
+  const stars = page.locator(".number-ticker").last();
+  const starValue = Number(await stars.getAttribute("data-value"));
+  const starRate = Number(await stars.getAttribute("data-rate"));
+  expect(starRate).toBe(1 / 15);
+  await page.clock.runFor(14_000);
+  await expect(stars).toHaveAttribute("data-value", String(starValue));
+  await page.clock.runFor(2000);
   await expect(downloads).toHaveAttribute(
     "data-value",
-    String(value + Math.trunc(20 * rate)),
+    String(value + Math.trunc(16 * rate)),
   );
-  await page.getByRole("button", { name: "Pause estimates" }).click();
-  await expect(page.locator(".number-ticker[data-state='paused']")).toHaveCount(
-    2,
-  );
-  const paused = await downloads.getAttribute("data-value");
-  await page.clock.runFor(5000);
-  await expect(downloads).toHaveAttribute("data-value", paused!);
+  await expect(stars).toHaveAttribute("data-value", String(starValue + 1));
+  await page.clock.runFor(15_000);
+  await expect(stars).toHaveAttribute("data-value", String(starValue + 2));
+  await expect(
+    page.locator(".portfolio-statistics").getByRole("button"),
+  ).toHaveCount(0);
 });
