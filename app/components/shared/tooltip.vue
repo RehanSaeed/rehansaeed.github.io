@@ -130,7 +130,25 @@ function onPointerLeave() {
   scheduleHide();
 }
 
+function onPointerDown() {
+  focused = false;
+  dismiss();
+}
+
 function onFocus(event: FocusEvent) {
+  const target = event.currentTarget;
+  if (!(target instanceof HTMLElement) || !target.matches(":focus-visible")) {
+    return;
+  }
+  const dialog = target.closest("dialog:modal");
+  // Native modal autofocus enters from outside; subsequent keyboard focus stays inside.
+  if (
+    dialog &&
+    (!(event.relatedTarget instanceof Node) ||
+      !dialog.contains(event.relatedTarget))
+  ) {
+    return;
+  }
   focused = true;
   show(event);
 }
@@ -154,6 +172,7 @@ const trigger = computed(() => ({
   "aria-describedby": open.value ? id : undefined,
   onPointerenter: onPointerEnter,
   onPointerleave: onPointerLeave,
+  onPointerdown: onPointerDown,
   onFocus,
   onBlur,
   onClick: dismiss,

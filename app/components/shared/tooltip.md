@@ -20,9 +20,11 @@ other sides when needed, stay within the viewport, and point back to their
 trigger. Placement is a preference, not a fixed side: Floating UI handles
 collision detection, shifting, arrow positioning and updates during scrolling,
 resizing and trigger animations. Updates run only while the tooltip is mounted.
-Tooltips appear on hover or focus, remain open while hovered, and dismiss on
-Escape, blur, pointer exit or activation. Touch taps activate the control without
-waiting for a tooltip.
+Tooltips appear on hover or keyboard-visible focus, remain open while hovered,
+and dismiss on Escape, blur, pointer exit or activation. Pointer focus does not
+keep a hover tooltip open after the pointer leaves. A native dialog's initial
+autofocus does not open a tooltip; using Tab within the dialog still does.
+Touch taps activate the control without waiting for a tooltip.
 
 The component adds no wrapper around its trigger, preserving grid/flex placement.
 When converting a component's root to `u-tooltip`, disable attribute inheritance

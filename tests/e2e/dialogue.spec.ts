@@ -42,11 +42,24 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
 
         await opener.click();
         await expect(dialog).toBeVisible();
+        await page.waitForTimeout(350);
+        await expect(page.getByRole("tooltip")).toHaveCount(0);
+        await page.keyboard.press("Escape");
+        await expect(closedDialog).toBeHidden();
+        await expect(opener).toBeFocused();
+
+        await opener.press("Enter");
+        await expect(dialog).toBeVisible();
+        await page.waitForTimeout(350);
+        await expect(page.getByRole("tooltip")).toHaveCount(0);
         const close = dialog.getByRole("button", {
           name: `Close ${title}`,
           exact: true,
         });
         await close.focus();
+        await page.keyboard.press("Tab");
+        await page.keyboard.press("Shift+Tab");
+        await expect(close).toBeFocused();
         const tooltip = page.getByRole("tooltip", {
           name: `Close ${title}`,
           exact: true,

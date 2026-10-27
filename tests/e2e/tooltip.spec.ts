@@ -106,6 +106,8 @@ test("Tooltips flip, clamp, track resizing and stay above dialogs", async ({
   const dialog = page.getByRole("dialog", { name: "Search", exact: true });
   await expect(dialog).toBeVisible();
   await dialog.getByRole("button", { name: "Close Search" }).focus();
+  await page.keyboard.press("Tab");
+  await page.keyboard.press("Shift+Tab");
   const modalTooltip = page.getByRole("tooltip", { name: "Close Search" });
   await expect(modalTooltip).toBeVisible();
   expect(
@@ -124,6 +126,46 @@ test("Tooltips flip, clamp, track resizing and stay above dialogs", async ({
   await expect(dialog).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(dialog).toBeHidden();
+});
+
+test("Pointer focus does not pin hover tooltips, while keyboard focus does", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const search = page.getByRole("button", { name: "Open search", exact: true });
+  const theme = page.getByRole("button", {
+    name: "Toggle dark/light",
+    exact: true,
+  });
+  await expect(search).toBeEnabled();
+  await theme.click();
+  await expect(theme).toBeFocused();
+  await page.mouse.move(0, 0);
+  await expect(page.getByRole("tooltip")).toHaveCount(0);
+  await theme.hover();
+  await expect(page.getByRole("tooltip")).toBeVisible();
+  await page.mouse.move(0, 0);
+  await expect(page.getByRole("tooltip")).toHaveCount(0);
+  await expect(theme).toBeFocused();
+
+  await page.keyboard.press("Shift+Tab");
+  await expect(search).toBeFocused();
+  const tooltip = page.getByRole("tooltip", { name: "Search", exact: true });
+  await expect(tooltip).toBeVisible();
+  await search.hover();
+  await page.mouse.move(0, 0);
+  await expect(tooltip).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(tooltip).toBeHidden();
+  await expect(search).toBeFocused();
+
+  await theme.hover();
+  await expect(page.getByRole("tooltip")).toBeVisible();
+  await page.mouse.down();
+  await page.mouse.move(0, 0);
+  await page.mouse.up();
+  await expect(theme).toBeFocused();
+  await expect(page.getByRole("tooltip")).toHaveCount(0);
 });
 
 test("Tooltip triggers retain native layout and touch activation", async ({
