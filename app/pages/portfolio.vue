@@ -33,6 +33,7 @@
       <u-heading id="portfolio-open-source" level="2" center
         >Open Source</u-heading
       >
+      <u-portfolio-statistics />
       <div class="portfolio__items">
         <u-portfolio-card
           v-for="item of openSourceProjects"

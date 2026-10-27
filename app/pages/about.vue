@@ -65,6 +65,7 @@
         <a :href="gitHubUrl">GitHub profile</a> and of course there are other
         commercial projects that I cannot disclose.
       </p>
+      <u-portfolio-statistics class="about__description" compact />
       <div class="about__github-images">
         <u-tooltip v-slot="{ trigger }" text="View my GitHub profile">
           <a v-bind="trigger" :href="gitHubUrl">
@@ -399,9 +400,6 @@ export default {
     },
     gitHubFollowersImageUrl() {
       return `https://img.shields.io/github/followers/${this.metadata.author.gitHub.user}?style=social`;
-    },
-    gitHubStarsImageUrl() {
-      return `https://img.shields.io/github/stars/${this.metadata.author.gitHub.user}?style=social`;
     },
     gitHubStatisticsImageUrl() {
       const fileName =

@@ -20,6 +20,21 @@ Link an existing issue if it provides useful context, but an issue is not requir
   `npx playwright test <test-file> --repeat-each=10 --retries=0` to investigate
   suspected timing or rendering issues without retries hiding failures.
 
+## Portfolio statistics
+
+The build fetches GitHub stars and lifetime NuGet download counts for the projects
+and package IDs in `content/portfolio/`. The shared totals on Portfolio and About
+include only published open source entries, counting each repository and package
+once (case-insensitively). Add projects and packages to those entries rather than
+editing the displayed totals.
+
+Counts are cached for an hour. When a source is unavailable, an existing snapshot
+is retained with a build warning; without a saved count the build fails rather
+than displaying a fabricated zero. The displayed date identifies the build
+snapshot, not necessarily when every source was last contacted. The Build workflow
+rebuilds and deploys the site every Monday at 05:17 UTC, as well as on pushes to
+`main` and manual runs, so published figures refresh without content edits.
+
 ## Images
 
 Keep PNG originals for images with transparency and JPG originals for photographs;
