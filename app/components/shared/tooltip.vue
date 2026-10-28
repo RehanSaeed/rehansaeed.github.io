@@ -33,6 +33,9 @@ import {
 
 type Placement = "top" | "right" | "bottom" | "left";
 
+const hoverOpenDelayMs = 300;
+const closeDelayMs = 120;
+
 const props = withDefaults(
   defineProps<{ text: string; placement?: Placement }>(),
   { placement: "top" },
@@ -130,7 +133,7 @@ const scheduleHide = () => {
     if (!hovered && !focused && !bubbleHovered) {
       dismiss();
     }
-  }, 120);
+  }, closeDelayMs);
 };
 
 const onPointerEnter = (event: PointerEvent) => {
@@ -138,7 +141,7 @@ const onPointerEnter = (event: PointerEvent) => {
     return;
   }
   hovered = true;
-  show(event, 300);
+  show(event, hoverOpenDelayMs);
 };
 
 const onPointerLeave = () => {
