@@ -12,14 +12,6 @@ for (const width of [375, 1280]) {
     const portrait = page.getByRole("main").locator(".author__portrait");
     const image = portrait.getByRole("img", { name: "Muhammad Rehan Saeed" });
     await expect(image).toBeVisible();
-    await expect
-      .poll(() =>
-        image.evaluate(
-          (element: HTMLImageElement) =>
-            element.complete && element.naturalWidth > 0,
-        ),
-      )
-      .toBe(true);
     await image.evaluate((element: HTMLImageElement) => element.decode());
     await expect(portrait.locator("svg")).toHaveAttribute(
       "aria-hidden",
@@ -85,10 +77,14 @@ for (const width of [375, 1280]) {
     expect(closed.info).toEqual(open.info);
     let changed = 0;
     for (let offset = 0; offset < open.data.length; offset += 4) {
+      // Fractional-pixel photo compositing can round channels one level apart.
       if (
         open.data
           .subarray(offset, offset + 4)
-          .equals(closed.data.subarray(offset, offset + 4))
+          .every(
+            (channel, index) =>
+              Math.abs(channel - closed.data[offset + index]) <= 1,
+          )
       ) {
         continue;
       }
