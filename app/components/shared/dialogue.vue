@@ -6,7 +6,7 @@
       :class="{ 'dialog--fullscreen': fullscreen }"
       :aria-labelledby="titleId"
       @cancel.prevent="close"
-      @close="close">
+      @close="onNativeClose">
       <div class="dialog__container">
         <u-heading :id="titleId" level="2" class="dialog__title">{{
           title
@@ -62,6 +62,12 @@ export default {
     },
     hide(dialog) {
       dialog.close();
+    },
+    onNativeClose(event) {
+      // A queued close event can arrive after the dialog has reopened.
+      if (!event.currentTarget.open) {
+        this.close();
+      }
     },
     close() {
       if (this.isOpen) {

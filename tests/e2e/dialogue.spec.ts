@@ -80,6 +80,36 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
 test.describe("Dialog transitions", () => {
   test.use({ reducedMotion: "no-preference" });
 
+  test("a queued close event does not close a reopened dialog", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/");
+    await page
+      .getByRole("button", { name: "Open search", exact: true })
+      .click();
+    const dialog = page.locator(".search-dialogue");
+    await expect(dialog).toBeVisible();
+    await dialog.evaluate(async (element: HTMLDialogElement) => {
+      const closed = new Promise<void>((resolve) => {
+        element.addEventListener("close", () => resolve(), { once: true });
+      });
+      element.close();
+      element.showModal();
+      await closed;
+      await new Promise(requestAnimationFrame);
+      await new Promise(requestAnimationFrame);
+    });
+    await expect(dialog).toHaveJSProperty("open", true);
+    await expect(dialog).toBeVisible();
+
+    await dialog.evaluate((element: HTMLDialogElement) => element.close());
+    await expect(dialog).toBeHidden();
+    await expect(
+      page.getByRole("button", { name: "Open search", exact: true }),
+    ).toBeFocused();
+  });
+
   test("animates the dialog and backdrop on entrance and exit", async ({
     page,
   }) => {
