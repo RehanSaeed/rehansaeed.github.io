@@ -10,7 +10,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .skip-link {
   position: absolute;
   inset-inline: 0;

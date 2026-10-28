@@ -86,6 +86,57 @@ test.describe("Nuxt best practices", () => {
     await expect(page.locator("main#main")).toBeFocused();
   });
 
+  for (const width of [375, 1280]) {
+    test(`Skip link stays out of the layout on refresh at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.emulateMedia({ reducedMotion: "no-preference" });
+      await page.goto("/");
+      const scripts = await delayClientScripts(page);
+      try {
+        await page.reload({ waitUntil: "commit" });
+        const skipLink = page.getByRole("link", { name: "Skip to content" });
+        const main = page.locator("main#main");
+        const navigation = page.locator(".navigation");
+        await expect(skipLink).toHaveCSS("position", "absolute");
+        await expect
+          .poll(async () => {
+            const bounds = await skipLink.boundingBox();
+            return bounds && bounds.y + bounds.height;
+          })
+          .toBeLessThanOrEqual(0);
+        await expect
+          .poll(() =>
+            page.evaluate(() => document.fonts.check("16px Audiowide")),
+          )
+          .toBe(true);
+        const mainBounds = await main.boundingBox();
+        const navigationBounds = await navigation.boundingBox();
+        expect(mainBounds).not.toBeNull();
+        expect(navigationBounds).not.toBeNull();
+
+        await page.keyboard.press("Tab");
+        await expect(skipLink).toBeFocused();
+        await expect(skipLink).toBeInViewport({ ratio: 1 });
+        expect((await main.boundingBox())?.y).toBe(mainBounds!.y);
+        expect(await navigation.boundingBox()).toEqual(navigationBounds);
+
+        scripts.resume();
+        await expect(
+          page.getByRole("button", { name: "Open search" }),
+        ).toBeEnabled();
+        await expect(skipLink).toHaveCSS("position", "absolute");
+        expect((await main.boundingBox())?.y).toBe(mainBounds!.y);
+        expect(await navigation.boundingBox()).toEqual(navigationBounds);
+        await page.keyboard.press("Enter");
+        await expect(main).toBeFocused();
+      } finally {
+        await scripts.dispose();
+      }
+    });
+  }
+
   test("Preloads the post hero with dimensions and high priority", async ({
     page,
   }) => {
