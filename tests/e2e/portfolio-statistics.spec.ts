@@ -98,7 +98,7 @@ unitTest(
   },
 );
 
-test("Portfolio and About totals are in static HTML and match the listed projects", async ({
+test("Portfolio totals match the listed projects and About uses the account stars badge", async ({
   request,
 }) => {
   const portfolio = await request.get("/portfolio/");
@@ -164,13 +164,19 @@ test("Portfolio and About totals are in static HTML and match the listed project
   });
   const about = await request.get("/about/");
   expect(about.ok()).toBe(true);
-  const summary = load(await about.text())(".portfolio-statistics__summary");
-  expect(summary.attr("data-downloads")).toBe(String(downloads));
-  expect(summary.attr("data-stars")).toBe(String(stars));
-  expect(summary.text()).toContain(stars.toLocaleString("en-GB"));
-  expect(summary.text()).toContain("package downloads");
-  expect(summary.find("a").attr("href")).toBe(
-    "/portfolio/#portfolio-open-source",
+  const aboutHtml = load(await about.text());
+  expect(aboutHtml(".portfolio-statistics, .number-ticker")).toHaveLength(0);
+  expect(
+    aboutHtml('.about__github-images img[alt*="stars received"]').attr("src"),
+  ).toBe(
+    "https://img.shields.io/github/stars/RehanSaeed?affiliations=OWNER&style=social",
+  );
+  const watchersBadge = aboutHtml(
+    '.about__github-images img[alt^="GitHub watch subscriptions"]',
+  );
+  const watchers = watchersBadge.attr("alt")!.match(/: (\d+)$/)![1];
+  expect(watchersBadge.attr("src")).toBe(
+    `https://img.shields.io/badge/Watchers-${watchers}-blue?logo=github&style=social`,
   );
 });
 
@@ -183,16 +189,61 @@ for (const width of [320, 375, 1280]) {
       await page.emulateMedia({ colorScheme });
       await page.clock.install();
       await page.goto("/about/");
-      const summary = page.locator(".portfolio-statistics__summary");
-      await expect(summary).toBeVisible();
-      const downloads = await summary.getAttribute("data-downloads");
-      const stars = await summary.getAttribute("data-stars");
-      await summary.getByRole("link", { name: "portfolio" }).click();
-      await expect(page).toHaveURL(/\/portfolio\/#portfolio-open-source$/);
+      const badge = page.getByRole("img", {
+        name: "GitHub stars received on my account's repositories",
+        exact: true,
+      });
+      await expect(badge).toBeVisible();
+      await expect(badge).toHaveAttribute(
+        "src",
+        "https://img.shields.io/github/stars/RehanSaeed?affiliations=OWNER&style=social",
+      );
+      await expect(page.locator(".portfolio-statistics")).toHaveCount(0);
+      expect(
+        await badge.evaluate((image) => {
+          const bounds = image.getBoundingClientRect();
+          return {
+            height: bounds.height,
+            fits: bounds.left >= 0 && bounds.right <= window.innerWidth,
+          };
+        }),
+      ).toEqual({ height: 30, fits: true });
+      const watchersBadge = page.getByRole("img", {
+        name: /^GitHub watch subscriptions/,
+      });
+      await expect(watchersBadge).toBeVisible();
+      const watchers = (await watchersBadge.getAttribute("alt"))!.match(
+        /: (\d+)$/,
+      )![1];
+      await expect(watchersBadge).toHaveAttribute(
+        "src",
+        `https://img.shields.io/badge/Watchers-${watchers}-blue?logo=github&style=social`,
+      );
+      await expect(watchersBadge.locator("..")).toHaveAttribute(
+        "href",
+        "https://github.com/RehanSaeed",
+      );
+      expect(
+        await watchersBadge.evaluate((image) => {
+          const bounds = image.getBoundingClientRect();
+          return {
+            height: bounds.height,
+            fits: bounds.left >= 0 && bounds.right <= window.innerWidth,
+          };
+        }),
+      ).toEqual({ height: 30, fits: true });
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth),
+      ).toBe(width);
+      await page
+        .locator(".about__description")
+        .getByRole("link", { name: "portfolio", exact: true })
+        .click();
+      await expect(page).toHaveURL(/\/portfolio\/$/);
       const totals = page.locator(".portfolio-statistics");
       await expect(totals).toBeVisible();
-      await expect(totals).toHaveAttribute("data-downloads", downloads!);
-      await expect(totals).toHaveAttribute("data-stars", stars!);
+      await expect(totals).toHaveAttribute("data-downloads", /^\d+$/);
+      await expect(totals).toHaveAttribute("data-stars", /^\d+$/);
       await expect(totals.locator(".number-ticker__title")).toHaveText([
         "My Package Downloads",
         "My GitHub Stars",

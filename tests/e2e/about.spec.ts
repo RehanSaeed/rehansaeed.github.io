@@ -162,7 +162,14 @@ for (const width of [375, 1280]) {
           .evaluateAll((images) =>
             images.map((image) => image.getAttribute("alt")),
           ),
-      ).toEqual(["GitHub follower count", "GitHub sponsors"]);
+      ).toEqual([
+        "GitHub stars received on my account's repositories",
+        "GitHub follower count",
+        "GitHub sponsors",
+        expect.stringMatching(
+          /^GitHub watch subscriptions across my \d+ public account-owned repositories: \d+$/,
+        ),
+      ]);
       expect(
         await page
           .locator(
