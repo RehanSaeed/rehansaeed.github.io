@@ -2,7 +2,7 @@ export type CodeControlStyle =
   "current" | "plain" | "bordered" | "soft" | "grouped";
 
 export type CodeTabStyle =
-  "attached" | "underline" | "segmented" | "pills" | "editor";
+  "attached" | "underline" | "segmented" | "pills" | "editor" | "editor-wide";
 
 export interface CodeBlock {
   language?: string;

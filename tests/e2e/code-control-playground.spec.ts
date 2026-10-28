@@ -72,7 +72,7 @@ test("Comparison options change the preview without choosing a production design
 }) => {
   await expect(page.locator(".controls-lab__card[data-style]")).toHaveCount(5);
   await expect(page.locator(".controls-lab__card[data-tab-style]")).toHaveCount(
-    5,
+    6,
   );
   await page.getByLabel("Narrow examples", { exact: true }).check();
   await expect
@@ -115,11 +115,19 @@ test("Comparison options change the preview without choosing a production design
   );
 });
 
-for (const style of ["attached", "underline", "segmented", "pills", "editor"]) {
+for (const style of [
+  "attached",
+  "underline",
+  "segmented",
+  "pills",
+  "editor",
+  "editor-wide",
+]) {
   test(`${style} tabs preserve semantics, highlighting and code interactions`, async ({
     page,
   }) => {
     const card = page.locator(`[data-tab-style="${style}"]`);
+    const title = await card.getByRole("heading").textContent();
     const bash = card.getByRole("tab", { name: "Bash", exact: true });
     const powershell = card.getByRole("tab", {
       name: "PowerShell",
@@ -144,6 +152,42 @@ for (const style of ["attached", "underline", "segmented", "pills", "editor"]) {
       (await powershell.getAttribute("id"))!,
     );
     await expect(panel.locator("pre")).toHaveClass(/\bshiki\b/);
+    if (style === "editor" || style === "editor-wide") {
+      const widths = await card.getByRole("tablist").evaluate((element) => {
+        const tabs = [...element.querySelectorAll('[role="tab"]')];
+        const first = tabs[0]!.getBoundingClientRect();
+        const last = tabs[1]!.getBoundingClientRect();
+        return {
+          available: element.clientWidth,
+          filled: last.right - first.left,
+          first: first.width,
+          last: last.width,
+        };
+      });
+      if (style === "editor-wide") {
+        expect(Math.abs(widths.filled - widths.available)).toBeLessThanOrEqual(
+          1,
+        );
+        expect(Math.abs(widths.first - widths.last)).toBeLessThanOrEqual(1);
+      } else {
+        expect(widths.filled).toBeLessThan(widths.available - 1);
+      }
+    }
+    const corners = await panel.locator("pre").evaluate((element) => {
+      const style = getComputedStyle(element);
+      return {
+        topLeft: style.borderTopLeftRadius,
+        topRight: style.borderTopRightRadius,
+        bottomRight: style.borderBottomRightRadius,
+      };
+    });
+    expect(corners.topLeft).toBe("0px");
+    if (style === "attached") {
+      expect(parseFloat(corners.topRight)).toBeGreaterThan(0);
+      expect(corners.topRight).toBe(corners.bottomRight);
+    } else {
+      expect(corners.topRight).toBe("0px");
+    }
     const command = panel.locator("code .line > span").first();
     await expect(command).toHaveCSS("color", "rgb(102, 217, 239)");
     await page
@@ -159,17 +203,17 @@ for (const style of ["attached", "underline", "segmented", "pills", "editor"]) {
     ).toBe(await panel.locator("code").textContent());
     await card.getByRole("radio").check();
     await expect(page.locator("[data-tab-preference]")).toContainText(
-      `Tab preference: ${style.charAt(0).toUpperCase() + style.slice(1)}.`,
+      `Tab preference: ${title}.`,
     );
     await expect(
       page
         .locator("[data-tab-style]")
         .locator('[role="tab"][aria-selected="true"]'),
-    ).toHaveCount(5);
+    ).toHaveCount(6);
     await expect(
       page
         .locator('[data-tab-style] [role="tab"][aria-selected="true"]')
         .filter({ hasText: "Bash" }),
-    ).toHaveCount(4);
+    ).toHaveCount(5);
   });
 }

@@ -146,7 +146,7 @@ const props = withDefaults(
       tabStyle?: CodeTabStyle;
     }
   >(),
-  { controls: "bordered", tabStyle: "attached" },
+  { controls: "bordered", tabStyle: "editor-wide" },
 );
 const controlButton = computed(() =>
   props.controls === "current" ? "button" : UButton,

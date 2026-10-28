@@ -167,6 +167,10 @@ pre[class*="language-"] {
   border-start-end-radius: 0;
 }
 
+.code-block--tabs-attached pre[class*="language-"] {
+  border-start-end-radius: var(--global-border-radius);
+}
+
 .code-block--tabs-underline .code-block__tabs button {
   margin-block-end: 0;
   border: 0;
@@ -181,7 +185,8 @@ pre[class*="language-"] {
 
 .code-block--tabs-segmented .code-block__tabs,
 .code-block--tabs-pills .code-block__tabs,
-.code-block--tabs-editor .code-block__tabs {
+.code-block--tabs-editor .code-block__tabs,
+.code-block--tabs-editor-wide .code-block__tabs {
   padding: 0.35rem;
   border: var(--global-border-width-1) solid var(--global-border-color);
   border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
@@ -218,7 +223,8 @@ pre[class*="language-"] {
   }
 }
 
-.code-block--tabs-editor .code-block__tabs {
+.code-block--tabs-editor .code-block__tabs,
+.code-block--tabs-editor-wide .code-block__tabs {
   padding: 0;
 
   button {
@@ -238,6 +244,16 @@ pre[class*="language-"] {
       border-block-start-color: var(--global-accent-color);
       background: var(--global-content-background-color);
     }
+  }
+}
+
+.code-block--tabs-editor-wide .code-block__tabs button {
+  flex: 1;
+  min-inline-size: 0;
+
+  &:last-child {
+    border-inline-end: 0;
+    border-start-end-radius: var(--global-border-radius);
   }
 }
 
