@@ -114,6 +114,7 @@ test("Rendered social cards use the post hero, title and current branding", asyn
   expect(heading.css("align-self")).toBe("flex-start");
   expect(heading.next().text()).toContain(author);
   expect(heading.parent().css("justify-content")).toBe("space-between");
+  expect(heading.parent().css("border-bottom")).toBe("12px solid #6b17e8");
   const panel = heading.next();
   expect(panel.css("background")).toBe("rgba(255, 255, 255, 0.85)");
   expect(panel.css("opacity")).toBeUndefined();
@@ -259,6 +260,19 @@ test("The CSS article and other page types advertise distinct static social card
     const buffer = await png.body();
     expect(buffer.readUInt32BE(16), path).toBe(1200);
     expect(buffer.readUInt32BE(20), path).toBe(630);
+    const bar = await sharp(buffer)
+      .extract({ left: 0, top: 618, width: 1200, height: 12 })
+      .removeAlpha()
+      .toBuffer();
+    const { channels } = await sharp(bar).stats();
+    expect(
+      channels.map(({ min, max }) => [min, max]),
+      path,
+    ).toEqual([
+      [107, 107],
+      [23, 23],
+      [232, 232],
+    ]);
   }
 });
 

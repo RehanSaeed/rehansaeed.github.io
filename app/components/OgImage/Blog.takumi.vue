@@ -25,7 +25,7 @@
         padding: 48px 56px;
         width: 100%;
         height: 100%;
-        border-bottom: 12px solid #ccbdff;
+        border-bottom: 12px solid #6b17e8;
       ">
       <div
         style="
