@@ -376,7 +376,7 @@ test("Article section links prerender as accessible links and navigate without c
   await expect(link).toHaveCSS("width", "22px");
   await expect(link).toHaveCSS("height", "22px");
   await expect(link.locator("svg")).toHaveCSS("display", "inline");
-  await page.locator("h2#being-short").hover();
+  await page.locator("#being-short").hover();
   await expect(link).toHaveCSS("opacity", "1");
   await page.mouse.move(0, 0);
   await expect(link).toHaveCSS("opacity", "0");
