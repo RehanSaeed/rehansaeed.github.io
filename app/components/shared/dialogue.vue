@@ -63,9 +63,12 @@ export default defineComponent({
     hide(dialog: Element) {
       if (dialog instanceof HTMLDialogElement) dialog.close();
     },
-    onNativeClose(event) {
+    onNativeClose(event: Event) {
       // A queued close event can arrive after the dialog has reopened.
-      if (!event.currentTarget.open) {
+      if (
+        event.currentTarget instanceof HTMLDialogElement &&
+        !event.currentTarget.open
+      ) {
         this.close();
       }
     },
