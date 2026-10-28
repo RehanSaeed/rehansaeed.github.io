@@ -127,7 +127,9 @@ for (const colorScheme of ["light", "dark"] as const) {
     await page.goto("/");
     await ready(page);
     const button = soundToggle(page);
-    const tooltip = page.getByRole("tooltip");
+    const tooltip = page.getByRole("tooltip", {
+      name: /^Turn sound effects (on|off)$/,
+    });
     await button.hover();
     await expect(tooltip).toBeVisible();
     await expect(tooltip).toHaveText("Turn sound effects off");
