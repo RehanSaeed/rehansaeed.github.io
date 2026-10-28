@@ -1,17 +1,13 @@
 <template>
-  <u-tooltip v-slot="{ trigger }" text="Link to this section">
-    <a
-      v-bind="trigger"
-      class="section-link"
-      :href="href"
-      aria-label="Link to this section">
+  <u-tooltip v-slot="{ trigger }" :text="label">
+    <a v-bind="trigger" class="section-link" :href="href" :aria-label="label">
       <slot />
     </a>
   </u-tooltip>
 </template>
 
 <script setup lang="ts">
-defineProps<{ href: string }>();
+defineProps<{ href: string; label: string }>();
 </script>
 
 <style lang="scss" scoped>
