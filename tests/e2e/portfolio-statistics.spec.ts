@@ -141,6 +141,12 @@ test("Portfolio and About totals are in static HTML and match the listed project
   expect(totals.attr("data-stars")).toBe(String(stars));
   const tickers = totals.find(".number-ticker");
   expect(tickers).toHaveLength(2);
+  expect(
+    tickers
+      .find(".number-ticker__title")
+      .map((_, title) => $(title).text())
+      .get(),
+  ).toEqual(["My Package Downloads", "My GitHub Stars"]);
   expect(tickers.last().find(".number-ticker__accessible").text()).toBe(
     stars.toLocaleString("en-GB"),
   );
@@ -188,8 +194,8 @@ for (const width of [320, 375, 1280]) {
       await expect(totals).toHaveAttribute("data-downloads", downloads!);
       await expect(totals).toHaveAttribute("data-stars", stars!);
       await expect(totals.locator(".number-ticker__title")).toHaveText([
-        "Package Downloads",
-        "GitHub Stars",
+        "My Package Downloads",
+        "My GitHub Stars",
       ]);
       const cards = totals.locator(".number-ticker");
       const [first, second] = await cards.evaluateAll((elements) =>
@@ -214,14 +220,14 @@ for (const width of [320, 375, 1280]) {
               .evaluate((heading) =>
                 Number.parseFloat(getComputedStyle(heading).fontSize),
               ),
-          ).toBeGreaterThanOrEqual(28);
+          ).toBeGreaterThanOrEqual(20);
           expect(
             await ticker
               .locator(".number-ticker__value")
               .evaluate((value) =>
                 Number.parseFloat(getComputedStyle(value).fontSize),
               ),
-          ).toBeGreaterThanOrEqual(58);
+          ).toBeGreaterThanOrEqual(40);
         }
         const cardBounds = (await ticker.boundingBox())!;
         const cardCentre = cardBounds.x + cardBounds.width / 2;
@@ -251,6 +257,20 @@ for (const width of [320, 375, 1280]) {
       const bounds = await totals.boundingBox();
       expect(bounds!.x).toBeGreaterThanOrEqual(0);
       expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
+      const aligned = await page.evaluate(() => {
+        const tickers = document
+          .querySelector(".portfolio-statistics__totals")!
+          .getBoundingClientRect();
+        const project = document
+          .querySelector(".portfolio__open-source .portfolio-card")!
+          .getBoundingClientRect();
+        return {
+          left: Math.abs(tickers.left - project.left),
+          right: Math.abs(tickers.right - project.right),
+        };
+      });
+      expect(aligned.left).toBeLessThan(1);
+      expect(aligned.right).toBeLessThan(1);
     });
   }
 }

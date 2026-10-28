@@ -18,11 +18,11 @@
     :data-stars="statistics.stars">
     <div class="portfolio-statistics__totals">
       <u-number-ticker
-        title="Package Downloads"
+        title="My Package Downloads"
         :number="statistics.downloads"
         :rate="downloadRate" />
       <u-number-ticker
-        title="GitHub Stars"
+        title="My GitHub Stars"
         :number="statistics.stars"
         :rate="starRate" />
     </div>
@@ -74,7 +74,8 @@ const downloadsLong = new Intl.NumberFormat("en-GB", {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(0.5rem, 2vw, 2rem);
   inline-size: 100%;
-  max-inline-size: 72rem;
+  max-inline-size: var(--global-space-card-max-width);
   min-inline-size: 0;
+  font-size: max(16px, 0.85em);
 }
 </style>

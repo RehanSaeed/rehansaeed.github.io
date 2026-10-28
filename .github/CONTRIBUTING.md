@@ -53,6 +53,8 @@ Optional `paused` and `locale` props support other uses; the default locale is
 `en-GB`. Reduced-motion users and screen readers receive the supplied number.
 Hidden tabs suspend timers and catch up at the average rate on return.
 Portfolio displays only the two title-and-number cards, without text or controls.
+The pair uses the same maximum width and font sizing as compact project cards so
+their outer edges align.
 
 ## Images
 
