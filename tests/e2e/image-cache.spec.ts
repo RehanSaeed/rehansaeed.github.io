@@ -133,9 +133,13 @@ test("CI persists only the responsive image cache before generation", async () =
     steps.findIndex((step: { name: string }) => step.name === "NPM Build"),
   );
   expect(steps[cacheIndex].with.path).toBe(".cache/nuxt-images");
+  expect(
+    steps.find((step: { name: string }) => step.name === "Setup Node").id,
+  ).toBe("node");
   for (const input of [
     "runner.os",
     "runner.arch",
+    "steps.node.outputs.node-version",
     "package-lock.json",
     "nuxt.config.ts",
     "modules/image-cache/**",
@@ -145,4 +149,7 @@ test("CI persists only the responsive image cache before generation", async () =
   ]) {
     expect(steps[cacheIndex].with.key).toContain(input);
   }
+  expect(steps[cacheIndex].with["restore-keys"].trim()).toBe(
+    steps[cacheIndex].with.key.replace("${{ github.sha }}", ""),
+  );
 });
