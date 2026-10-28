@@ -59,7 +59,9 @@ const {
     arrow({ element: arrowElement, padding: 8 }),
     hide(({ elements }) => {
       const reference = elements.reference;
-      if (!(reference instanceof Element)) return {};
+      if (!(reference instanceof Element)) {
+        return {};
+      }
       const topLayer = reference.closest(":modal, :popover-open");
       // Top-layer ancestors escape page clipping, but their inner scrollers do not.
       return topLayer
