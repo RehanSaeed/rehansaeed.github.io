@@ -8,6 +8,7 @@ import UCard from "../../app/components/shared/card.vue";
 import UButton from "../../app/components/shared/button.vue";
 import UIcon from "../../app/components/shared/icon.vue";
 import UStatistic from "../../app/components/shared/statistic.vue";
+import UTooltip from "../../app/components/shared/tooltip.vue";
 import { article } from "./data.js";
 
 const app = createApp({
@@ -17,6 +18,7 @@ app.component("UCard", UCard);
 app.component("UButton", UButton);
 app.component("UIcon", UIcon);
 app.component("UStatistic", UStatistic);
+app.component("UTooltip", UTooltip);
 app.component("UPostTrafficChart", UPostTrafficChart);
 app.component("NuxtIcon", {
   render: () =>

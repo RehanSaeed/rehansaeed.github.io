@@ -9,6 +9,7 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const directory = join(root, "scripts", "traffic-designs");
 const component = join(root, "app", "components", "post-traffic.vue");
 const chart = join(root, "app", "components", "post-traffic-chart.vue");
+const tooltip = join(root, "app", "components", "shared", "tooltip.vue");
 const result = await build({
   configFile: false,
   root,
@@ -26,7 +27,7 @@ const result = await build({
       enforce: "pre",
       transform(code, id) {
         if (
-          ![component, chart].some(
+          ![component, chart, tooltip].some(
             (file) => id.replaceAll("/", "\\") === file.replaceAll("/", "\\"),
           )
         )
@@ -34,7 +35,7 @@ const result = await build({
         return code.replace(
           '<script setup lang="ts">',
           `<script setup lang="ts">
-import { computed, ref, watch, useId, useTemplateRef, onMounted, onBeforeUnmount } from "vue";
+import { computed, ref, shallowRef, watch, watchEffect, useSlots, useId, useTemplateRef, onMounted, onBeforeUnmount } from "vue";
 import { useFetch } from "traffic-preview-data";`,
         );
       },

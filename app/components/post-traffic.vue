@@ -2,36 +2,19 @@
   <u-card v-if="history || error" class="post-traffic">
     <div class="post-traffic__header">
       <h2>Article Traffic</h2>
-      <div
+      <u-tooltip
         v-if="history && data"
-        ref="help"
-        class="post-traffic__help"
-        @pointerenter="sourceOpen = true"
-        @pointerleave="leaveSource"
-        @focusin="sourceOpen = true"
-        @focusout="blurSource">
+        v-slot="{ trigger }"
+        :text="sourceText"
+        placement="bottom"
+        toggle-on-click>
         <u-button
+          v-bind="trigger"
           class="post-traffic__info"
-          aria-label="About article traffic"
-          :aria-describedby="`${id}-source`"
-          @click="sourceOpen = true">
+          aria-label="About article traffic">
           <u-icon name="fa-regular:question-circle" />
         </u-button>
-        <p
-          v-show="sourceOpen"
-          :id="`${id}-source`"
-          class="post-traffic__source"
-          role="tooltip">
-          Source: Google Analytics 4 ({{ data.timeZone }}). Updated
-          <time :datetime="data.updated">{{ date(data.updated) }}</time
-          >. Repeat views are included; these are not unique visitors.
-          Engagement is recorded foreground time per view, not reading
-          completion. Switch metrics to see views or seconds per view. Presets
-          end at the reporting cutoff; Last month shows the last 30 processed
-          days. Monthly buckets may be partial. Blockers and consent choices can
-          reduce recorded traffic.
-        </p>
-      </div>
+      </u-tooltip>
     </div>
     <p v-if="error" role="status">Traffic history is currently unavailable.</p>
     <template v-else-if="history && data">
@@ -133,7 +116,6 @@ const props = defineProps<{
   published: string;
   modified?: string | null;
 }>();
-const id = useId();
 const { data, error } = await useFetch("/post-traffic.json", {
   key: "post-traffic",
   server: false,
@@ -162,11 +144,6 @@ const history = computed(() =>
     ? selectTrafficRange(availableHistory.value, range.value)
     : undefined,
 );
-const sourceOpen = ref(false);
-const help = useTemplateRef<HTMLElement>("help");
-watch(history, () => {
-  sourceOpen.value = false;
-});
 const number = new Intl.NumberFormat("en-GB");
 const dateFormat = new Intl.DateTimeFormat("en-GB", {
   day: "numeric",
@@ -175,6 +152,11 @@ const dateFormat = new Intl.DateTimeFormat("en-GB", {
   timeZone: "UTC",
 });
 const date = (value: string) => dateFormat.format(new Date(value));
+const sourceText = computed(() =>
+  data.value
+    ? `Source: Google Analytics 4 (${data.value.timeZone}). Updated ${date(data.value.updated)}. Repeat views are included; these are not unique visitors. Engagement is recorded foreground time per view, not reading completion. Switch metrics to see views or seconds per view. Presets end at the reporting cutoff; Last month shows the last 30 processed days. Monthly buckets may be partial. Blockers and consent choices can reduce recorded traffic.`
+    : "",
+);
 const total = computed(
   () => history.value?.points.reduce((sum, item) => sum + item.views, 0) ?? 0,
 );
@@ -205,35 +187,6 @@ const annotations = computed(() => {
     ? [{ label: "Latest update", date: modified }]
     : [];
 });
-function leaveSource() {
-  if (!help.value?.contains(document.activeElement)) sourceOpen.value = false;
-}
-function blurSource(event: FocusEvent) {
-  if (
-    !(event.relatedTarget instanceof Node) ||
-    !help.value?.contains(event.relatedTarget)
-  )
-    sourceOpen.value = false;
-}
-function dismissSource(event: Event) {
-  if (event instanceof KeyboardEvent) {
-    if (event.key !== "Escape") return;
-  } else if (
-    event.target instanceof Node &&
-    help.value?.contains(event.target)
-  ) {
-    return;
-  }
-  sourceOpen.value = false;
-}
-onMounted(() => {
-  document.addEventListener("pointerdown", dismissSource);
-  document.addEventListener("keydown", dismissSource);
-});
-onBeforeUnmount(() => {
-  document.removeEventListener("pointerdown", dismissSource);
-  document.removeEventListener("keydown", dismissSource);
-});
 </script>
 
 <style lang="scss">
@@ -254,38 +207,13 @@ onBeforeUnmount(() => {
   margin: 0;
   text-align: center;
 }
-.post-traffic__help {
-  position: relative;
+.post-traffic__info {
   grid-column: 3;
   justify-self: end;
-}
-.post-traffic__info {
   display: grid;
   place-items: center;
   min-inline-size: 2rem;
   min-block-size: 2rem;
-}
-.post-traffic__source {
-  position: absolute;
-  z-index: 4;
-  inset-block-start: calc(100% + 0.5rem);
-  inset-inline-end: 0;
-  inline-size: min(26rem, calc(100vw - 4rem));
-  min-inline-size: 0;
-  margin: 0;
-  padding: var(--global-space-fixed-3);
-  border: 1px solid var(--global-border-color);
-  border-radius: var(--global-border-radius);
-  background: var(--global-content-background-color);
-  box-shadow: var(--global-shadow-2);
-  font-size: var(--global-font-size-1);
-}
-.post-traffic__source::before {
-  content: "";
-  position: absolute;
-  inset-block-end: 100%;
-  inset-inline: 0;
-  block-size: 0.5rem;
 }
 .post-traffic__controls,
 .post-traffic__ranges,

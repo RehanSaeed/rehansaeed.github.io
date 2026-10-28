@@ -40,7 +40,23 @@ async function expectPointTooltip(
   views: number,
   engagement?: string,
 ) {
-  const tooltip = chart.locator(".post-traffic__tooltip");
+  const tooltip = chart
+    .page()
+    .getByRole("tooltip")
+    .filter({
+      has: chart.page().locator(".post-traffic__tooltip"),
+    });
+  await expect(tooltip).toBeVisible();
+  await expect(tooltip).toHaveClass("tooltip");
+  await expect(tooltip).toHaveAttribute("data-positioned", "true");
+  await expect(chart.locator(".post-traffic__point--selected")).toHaveAttribute(
+    "aria-describedby",
+    (await tooltip.getAttribute("id"))!,
+  );
+  await expect(tooltip.locator(".tooltip__arrow")).toHaveCount(1);
+  expect(
+    await tooltip.evaluate((element) => element.matches(":popover-open")),
+  ).toBe(true);
   await expect(tooltip.locator(".post-traffic__tooltip-date")).toHaveText(date);
   await expect(tooltip.locator(".post-traffic__tooltip-metrics dt")).toHaveText(
     ["Page views", ...(engagement === undefined ? [] : ["Engagement / view"])],
@@ -202,7 +218,9 @@ for (const width of [375, 1280]) {
     await chart.getByRole("button", { name: "Last year", exact: true }).click();
     await expect(warning).toBeVisible();
     await chart.getByRole("button", { name: "All time", exact: true }).click();
-    const source = chart.locator(".post-traffic__source");
+    const source = page
+      .getByRole("tooltip")
+      .filter({ hasText: "Source: Google Analytics" });
     const infoButton = chart.getByRole("button", {
       name: "About article traffic",
     });
@@ -282,7 +300,7 @@ for (const width of [375, 1280]) {
     await chart.locator(".post-traffic__point:focus").press("Home");
     await expect(point).toBeFocused();
     await point.press("Escape");
-    await expect(chart.getByRole("tooltip")).toHaveCount(0);
+    await expect(page.getByRole("tooltip")).toHaveCount(0);
     await point.press("ArrowRight");
     await chart.locator(".post-traffic__point:focus").press("Escape");
     await chart.locator(".post-traffic__point:focus").press("ArrowRight");
@@ -306,10 +324,10 @@ for (const width of [375, 1280]) {
     await infoButton.press("Escape");
     await point.hover();
     await expectPointTooltip(chart, "Jan 2024", 120);
-    await chart.getByRole("tooltip").hover();
-    await expect(chart.getByRole("tooltip")).toBeVisible();
+    await page.getByRole("tooltip").hover();
+    await expect(page.getByRole("tooltip")).toBeVisible();
     await page.mouse.move(0, 0);
-    await expect(chart.getByRole("tooltip")).toHaveCount(0);
+    await expect(page.getByRole("tooltip")).toHaveCount(0);
     await chart.screenshot({ path: info.outputPath("traffic-chart.png") });
   });
 }
@@ -415,11 +433,23 @@ test.describe("Touch traffic inspection", () => {
     await point.tap();
     await expectPointTooltip(chart, "Mar 2024", 240);
     await chart.getByRole("button", { name: "About article traffic" }).tap();
-    await expect(chart.locator(".post-traffic__source")).toBeVisible();
+    await expect(
+      page.getByRole("tooltip").filter({ hasText: "Source: Google Analytics" }),
+    ).toBeVisible();
+    await chart.getByRole("button", { name: "About article traffic" }).tap();
+    await expect(
+      page.getByRole("tooltip").filter({ hasText: "Source: Google Analytics" }),
+    ).toBeHidden();
+    await chart.getByRole("button", { name: "About article traffic" }).tap();
+    await expect(
+      page.getByRole("tooltip").filter({ hasText: "Source: Google Analytics" }),
+    ).toBeVisible();
     await chart
       .getByRole("heading", { name: "Article Traffic", exact: true })
       .tap();
-    await expect(chart.locator(".post-traffic__source")).toBeHidden();
+    await expect(
+      page.getByRole("tooltip").filter({ hasText: "Source: Google Analytics" }),
+    ).toBeHidden();
   });
 
   test("Date presets update the plot, dates, totals and weighted engagement", async ({
@@ -503,7 +533,7 @@ test.describe("Touch traffic inspection", () => {
         "aria-label",
         new RegExp(name === "Last month" ? "^Daily" : "^Monthly"),
       );
-      await expect(chart.getByRole("tooltip")).toHaveCount(0);
+      await expect(page.getByRole("tooltip")).toHaveCount(0);
       if (name === "Last month") {
         await chart.locator(".post-traffic__point").last().focus();
         await expectPointTooltip(chart, "22 Oct 2026", 30, "39s");
@@ -573,7 +603,7 @@ test.describe("Touch traffic inspection", () => {
     });
     await updated.focus();
     await expectPointTooltip(chart, "Jun 2019", 10);
-    await expect(chart.locator(".post-traffic__tooltip-events")).toHaveText(
+    await expect(page.locator(".post-traffic__tooltip-events")).toHaveText(
       "Latest update 12 Jun 2019",
     );
     await expect(chart.locator(".post-traffic__warning")).toHaveCount(0);
@@ -661,7 +691,7 @@ test.describe("Touch traffic inspection", () => {
     await expect(metrics.locator('[aria-pressed="true"]')).toHaveCount(1);
     await expect(card.locator(".post-traffic__engagement-line")).toHaveCount(0);
     await expect(card.locator("polyline.post-traffic__line")).toHaveCount(1);
-    await expect(card.locator(".post-traffic__tooltip")).toHaveCount(0);
+    await expect(page.locator(".post-traffic__tooltip")).toHaveCount(0);
   });
 
   test("Missing engagement and zero-view ranges are explicit without resetting the metric", async ({
@@ -775,7 +805,7 @@ test("A decade of traffic remains usable on a narrow dark-theme screen", async (
   await points.first().press("End");
   await expect(points.last()).toBeFocused();
   await expectPointTooltip(chart, "Oct 2026", 15_200);
-  const tooltip = await chart.getByRole("tooltip").boundingBox();
+  const tooltip = await page.getByRole("tooltip").boundingBox();
   expect(tooltip!.x).toBeGreaterThanOrEqual(0);
   expect(tooltip!.x + tooltip!.width).toBeLessThanOrEqual(376);
   const bounds = await chart.boundingBox();
