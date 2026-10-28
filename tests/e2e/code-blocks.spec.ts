@@ -117,6 +117,56 @@ test("Single-line controls are vertically centred without moving multi-line cont
   }
 });
 
+test("Single-line controls stay aligned with the code above a horizontal scrollbar", async ({
+  page,
+  browserName,
+}) => {
+  await page.goto(path, { waitUntil: "domcontentloaded" });
+  await page.addStyleTag({
+    content: `
+      pre::-webkit-scrollbar { height: 24px; }
+      pre::-webkit-scrollbar-thumb { background: grey; }
+    `,
+  });
+  const block = page.locator(".code-block").filter({
+    hasText: "docker image build --tag foo:1.0.0",
+  });
+  for (const width of [1000, 375]) {
+    await page.setViewportSize({ width, height: 900 });
+    await block.hover();
+    await expect(
+      block.getByRole("button", { name: "Copy code", exact: true }),
+    ).toBeVisible();
+    const position = await block.evaluate((element) => {
+      const pre = element.querySelector("pre")!;
+      const bounds = pre.getBoundingClientRect();
+      const style = getComputedStyle(pre);
+      const toolbar = element
+        .querySelector(".code-block__toolbar")!
+        .getBoundingClientRect();
+      const border =
+        parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth);
+      return {
+        overflow: pre.scrollWidth - pre.clientWidth,
+        scrollbar: pre.offsetHeight - pre.clientHeight - border,
+        offset:
+          toolbar.top +
+          toolbar.height / 2 -
+          (bounds.top +
+            parseFloat(style.borderTopWidth) +
+            parseFloat(style.paddingTop) +
+            parseFloat(style.lineHeight) / 2),
+        bottom: bounds.top + pre.clientTop + pre.clientHeight - toolbar.bottom,
+      };
+    });
+    expect(position.overflow).toBeGreaterThan(0);
+    if (browserName === "chromium")
+      expect(position.scrollbar).toBeGreaterThan(0);
+    expect(Math.abs(position.offset)).toBeLessThanOrEqual(1);
+    expect(position.bottom).toBeGreaterThanOrEqual(0);
+  }
+});
+
 test("Copy and wrap icons animate in both directions and respect reduced motion", async ({
   page,
 }) => {

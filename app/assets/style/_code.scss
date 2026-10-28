@@ -1,6 +1,9 @@
 @use "abstracts/type";
 @use "abstracts/visually-hidden";
 
+$code-line-height: 1.3;
+$code-padding: 0.85rem;
+
 // Code blocks are highlighted at build time by Shiki (see nuxt.config.ts and ProsePre.vue):
 // <div class="code-title"><span>Title</span></div>
 // <div class="line-highlight" data-language="js">
@@ -10,7 +13,7 @@
 
 code,
 pre[class*="language-"] {
-  --code-line-height: 1.3;
+  --code-line-height: #{$code-line-height};
 
   font-family: var(--global-font-family-monospace);
   direction: ltr;
@@ -43,7 +46,7 @@ pre[class*="language-"] ::selection {
 
 /* Code blocks */
 pre[class*="language-"] {
-  padding: 0.85rem;
+  padding: $code-padding;
   margin: 1.275rem 0;
   overflow-x: auto; // Remove when browser support is good enough.
   overflow-inline: auto;
@@ -157,6 +160,10 @@ pre[class*="language-"] {
       outline-offset: -3px;
     }
   }
+}
+
+.code-block--group {
+  --code-border-start: 0px;
 }
 
 .code-block--group pre[class*="language-"] {
@@ -281,9 +288,12 @@ pre[class*="language-"] {
 }
 
 .line-highlight:has(.code-block__pre--single-line) .code-block__toolbar {
-  inset-block: 0;
-  block-size: fit-content;
-  margin-block: auto;
+  // Align with the first code line, not the height added by scrolling or wrapping.
+  inset-block-start: calc(
+    var(--code-border-start, var(--global-border-width-1)) + #{$code-padding} +
+      #{$code-line-height * 0.5}em
+  );
+  transform: translateY(-50%);
 }
 
 .code-block--controls-soft .code-block__toolbar .button {
