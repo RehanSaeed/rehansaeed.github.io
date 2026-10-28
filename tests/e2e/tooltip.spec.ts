@@ -362,11 +362,11 @@ test("Article section links prerender as accessible links and navigate without c
   const response = await request.get(path);
   expect(response.ok()).toBe(true);
   expect(await response.text()).toMatch(
-    /<a[^>]+class="section-link"[^>]+href="#being-short"[^>]+aria-label="Link to this section"/,
+    /<a[^>]+class="anchor-link"[^>]+href="#being-short"[^>]+aria-label="Link to this section"/,
   );
   await page.goto(path);
   await expect(page.getByRole("button", { name: "Open search" })).toBeEnabled();
-  const link = page.locator("a.section-link[href='#being-short']");
+  const link = page.locator("a.anchor-link[href='#being-short']");
   await expect(link).toHaveAccessibleName("Link to this section");
   await expect(link).not.toHaveAttribute("aria-hidden");
   await expect(link.locator("svg")).toHaveAttribute("aria-hidden", "true");

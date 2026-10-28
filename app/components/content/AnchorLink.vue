@@ -1,6 +1,6 @@
 <template>
   <u-tooltip v-slot="{ trigger }" :text="label">
-    <a v-bind="trigger" class="section-link" :href="href" :aria-label="label">
+    <a v-bind="trigger" class="anchor-link" :href="href" :aria-label="label">
       <slot />
     </a>
   </u-tooltip>
@@ -11,7 +11,7 @@ defineProps<{ href: string; label: string }>();
 </script>
 
 <style lang="scss" scoped>
-.section-link {
+.anchor-link {
   color: var(--global-link-color);
   float: inline-start;
   margin-inline-start: -30px;

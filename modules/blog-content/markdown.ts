@@ -380,7 +380,7 @@ export function rehypeHeadingAnchors() {
       node.children = [
         {
           type: "element",
-          tagName: "section-link",
+          tagName: "anchor-link",
           properties: { href: `#${id}`, label: "Link to this section" },
           children: [structuredClone(anchorIcon)],
         },
