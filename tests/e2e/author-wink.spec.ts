@@ -19,6 +19,7 @@ for (const width of [375, 1280]) {
     );
     await expect(portrait.locator("svg")).toHaveCSS("pointer-events", "none");
     const bounds = await portrait.boundingBox();
+    const imageBounds = await image.boundingBox();
     const imageSource = await image.getAttribute("src");
     const samples = await portrait.evaluate((element) => {
       const eyelid = element.querySelector(".author__eyelid");
@@ -55,9 +56,7 @@ for (const width of [375, 1280]) {
         6,
       );
     }
-    expect(await portrait.boundingBox()).toEqual(bounds);
-    await expect(image).toHaveAttribute("src", imageSource!);
-
+    // Isolate the animated overlay from platform-dependent photo resampling.
     const frames: Buffer[] = [];
     for (const time of [0, 15_150]) {
       await portrait.evaluate((element, currentTime) => {
@@ -66,9 +65,16 @@ for (const width of [375, 1280]) {
           .getAnimations()[0].currentTime = currentTime;
       }, time);
       frames.push(
-        await portrait.screenshot({ animations: "allow", scale: "css" }),
+        await portrait.screenshot({
+          animations: "allow",
+          scale: "css",
+          style: ".author__image { visibility: hidden; }",
+        }),
       );
     }
+    expect(await portrait.boundingBox()).toEqual(bounds);
+    expect(await image.boundingBox()).toEqual(imageBounds);
+    await expect(image).toHaveAttribute("src", imageSource!);
     await Promise.all(
       frames.map((body, index) =>
         testInfo.attach(index === 0 ? "wink-open" : "wink-closed", {
@@ -85,14 +91,10 @@ for (const width of [375, 1280]) {
     expect(closed.info).toEqual(open.info);
     let changed = 0;
     for (let offset = 0; offset < open.data.length; offset += 4) {
-      // Fractional-pixel photo compositing can round channels one level apart.
       if (
         open.data
           .subarray(offset, offset + 4)
-          .every(
-            (channel, index) =>
-              Math.abs(channel - closed.data[offset + index]) <= 1,
-          )
+          .equals(closed.data.subarray(offset, offset + 4))
       ) {
         continue;
       }
@@ -104,7 +106,7 @@ for (const width of [375, 1280]) {
       expect(y).toBeLessThan(0.51);
       changed++;
     }
-    expect(changed, "The wink visibly changes the photograph").toBeGreaterThan(
+    expect(changed, "The wink visibly changes the eye overlay").toBeGreaterThan(
       5,
     );
   });
