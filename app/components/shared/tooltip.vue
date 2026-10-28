@@ -94,16 +94,16 @@ let focused = false;
 let bubbleHovered = false;
 let timer: ReturnType<typeof setTimeout> | undefined;
 
-function clearTimer() {
+const clearTimer = () => {
   clearTimeout(timer);
-}
+};
 
-function dismiss() {
+const dismiss = () => {
   clearTimer();
   open.value = false;
-}
+};
 
-function show(event: Event, delay = 0) {
+const show = (event: Event, delay = 0) => {
   if (!(event.currentTarget instanceof HTMLElement)) return;
   anchor.value = event.currentTarget;
   teleportTarget.value = anchor.value.closest("dialog") ?? "body";
@@ -111,33 +111,33 @@ function show(event: Event, delay = 0) {
   timer = setTimeout(() => {
     if (props.text) open.value = true;
   }, delay);
-}
+};
 
-function scheduleHide() {
+const scheduleHide = () => {
   if (hovered || focused || bubbleHovered) return;
   clearTimer();
   timer = setTimeout(() => {
     if (!hovered && !focused && !bubbleHovered) dismiss();
   }, 120);
-}
+};
 
-function onPointerEnter(event: PointerEvent) {
+const onPointerEnter = (event: PointerEvent) => {
   if (event.pointerType === "touch") return;
   hovered = true;
   show(event, 300);
-}
+};
 
-function onPointerLeave() {
+const onPointerLeave = () => {
   hovered = false;
   scheduleHide();
-}
+};
 
-function onPointerDown() {
+const onPointerDown = () => {
   focused = false;
   dismiss();
-}
+};
 
-function onFocus(event: FocusEvent) {
+const onFocus = (event: FocusEvent) => {
   const target = event.currentTarget;
   if (!(target instanceof HTMLElement) || !target.matches(":focus-visible")) {
     return;
@@ -153,22 +153,22 @@ function onFocus(event: FocusEvent) {
   }
   focused = true;
   show(event);
-}
+};
 
-function onBlur() {
+const onBlur = () => {
   focused = false;
   scheduleHide();
-}
+};
 
-function onBubbleEnter() {
+const onBubbleEnter = () => {
   bubbleHovered = true;
   clearTimer();
-}
+};
 
-function onBubbleLeave() {
+const onBubbleLeave = () => {
   bubbleHovered = false;
   scheduleHide();
-}
+};
 
 const trigger = computed(() => ({
   "aria-describedby": open.value ? id : undefined,
@@ -180,12 +180,12 @@ const trigger = computed(() => ({
   onClick: dismiss,
 }));
 
-function onEscape(event: KeyboardEvent) {
+const onEscape = (event: KeyboardEvent) => {
   if (event.key !== "Escape") return;
   event.preventDefault();
   event.stopPropagation();
   dismiss();
-}
+};
 
 watch(open, (visible, _, onCleanup) => {
   if (!visible) return;
