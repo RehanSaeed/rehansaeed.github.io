@@ -167,18 +167,22 @@ test.describe("Parity", () => {
     ).toBe("dark");
   });
 
-  test("Theme toggle swaps About page images", async ({ page }) => {
+  test("Theme toggle swaps the About contribution chart and preserves the cookie-free reputation badge", async ({
+    page,
+  }) => {
     await page.emulateMedia({ colorScheme: "light" });
     await page.goto("/about/");
     const stackOverflow = page.locator(".about__stack-overflow-image");
     const gitHub = page.locator("img.about__github-statistics");
-    await expect(stackOverflow).toHaveAttribute("src", /[?&]theme=dark$/);
+    const reputationBadge =
+      "https://img.shields.io/stackexchange/stackoverflow/r/1212017?style=social&logo=stackoverflow";
+    await expect(stackOverflow).toHaveAttribute("src", reputationBadge);
     await expect(gitHub).toHaveAttribute("src", /profile-green-animate\.svg$/);
 
     await page.getByRole("button", { name: "Toggle dark/light" }).click();
 
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-    await expect(stackOverflow).toHaveAttribute("src", /[?&]theme=light$/);
+    await expect(stackOverflow).toHaveAttribute("src", reputationBadge);
     await expect(gitHub).toHaveAttribute("src", /profile-night-green\.svg$/);
   });
 

@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import "katex/dist/katex.min.css";
 import { getImageMetadata } from "~/framework/images.js";
 import { contentImageSizes } from "#shared/utils/images";
 

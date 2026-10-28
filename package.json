@@ -76,6 +76,11 @@
     "vue-tsc": "3.3.13",
     "yaml": "2.9.1"
   },
+  "overrides": {
+    "@lhci/cli": {
+      "lighthouse": "13.5.0"
+    }
+  },
   "scripts": {
     "images:avif": "node scripts/avif-images.mjs",
     "dev": "nuxt dev",

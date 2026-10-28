@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import { Document } from "flexsearch";
 import { useId } from "vue";
 
 const minimumSearchTermLength = 3;
@@ -32,8 +31,11 @@ let indexPromise;
 
 // Downloads the prerendered /flexsearch.json once and builds the index in the browser.
 function loadIndex() {
-  indexPromise ??= $fetch("/flexsearch.json")
-    .then((documents) => {
+  indexPromise ??= Promise.all([
+    $fetch("/flexsearch.json"),
+    import("flexsearch"),
+  ])
+    .then(([documents, { Document }]) => {
       const index = new Document({
         tokenize: "forward",
         document: {
