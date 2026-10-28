@@ -1,72 +1,91 @@
 <template>
-  <div class="post-traffic__chart">
-    <div class="post-traffic__scale" aria-hidden="true">
-      <span
-        v-for="tick in ticks"
-        :key="tick"
-        :style="{ top: `${y(tick) / 2}%` }">
-        {{
-          metric === "views" ? number.format(tick) : formatTrafficDuration(tick)
-        }}
-      </span>
-    </div>
-    <div
-      ref="plot"
-      class="post-traffic__plot"
-      role="group"
-      :aria-label="`${series.interval === 'day' ? 'Daily' : 'Monthly'} ${metric === 'views' ? 'page views' : 'average engagement per view'}. Use arrow keys to inspect ${series.interval === 'day' ? 'days' : 'months'}.`"
-      @pointermove="inspect"
-      @pointerleave="leave"
-      @focusout="blur"
-      @keydown="navigate">
-      <svg viewBox="0 0 600 200" preserveAspectRatio="none" aria-hidden="true">
-        <path class="post-traffic__axes" d="M 4 4 V 196 H 596" />
-        <path
-          v-for="tick in ticks.slice(0, -1)"
-          :key="tick"
-          class="post-traffic__gridline"
-          :d="`M 4 ${y(tick)} H 596`" />
-        <path
-          v-for="event in events"
-          :key="event.label"
-          class="post-traffic__annotation"
-          :d="`M ${x(event.index)} 4 V 196`" />
-        <polyline
-          v-if="metric === 'views'"
-          class="post-traffic__line"
-          :points="points" />
-        <path
-          v-else
-          class="post-traffic__line post-traffic__engagement-line"
-          :d="engagementPath" />
-      </svg>
-      <button
-        v-for="(item, index) in series.points"
-        :key="item.date"
-        type="button"
-        class="post-traffic__point"
-        :class="{
-          'post-traffic__point--selected': selectedIndex === index,
-          'post-traffic__point--missing':
-            metric === 'engagement' && average(index) === null,
-        }"
-        :style="{ left: `${x(index) / 6}%`, top: `${pointY(index) / 2}%` }"
-        :tabindex="index === (selectedIndex ?? 0) ? 0 : -1"
-        :aria-label="pointText(index)"
-        :aria-describedby="
-          selectedIndex === index ? `${id}-tooltip` : undefined
-        "
-        @focus="selectedIndex = index"
-        @click="selectPoint($event, index)" />
-      <div
-        v-if="selectedIndex !== null"
-        :id="`${id}-tooltip`"
-        class="post-traffic__tooltip"
-        role="tooltip"
-        :style="{
-          left: `clamp(min(10rem, 50%), ${x(selectedIndex) / 6}%, max(50%, calc(100% - 10rem)))`,
-          top: `${pointY(selectedIndex) / 2}%`,
-        }">
+  <u-tooltip
+    :open="selectedIndex !== null"
+    :reference="selectedPoint"
+    @update:open="
+      (visible) => {
+        if (!visible) selectedIndex = null;
+      }
+    ">
+    <template #default="{ trigger }">
+      <div class="post-traffic__chart">
+        <div class="post-traffic__scale" aria-hidden="true">
+          <span
+            v-for="tick in ticks"
+            :key="tick"
+            :style="{ top: `${y(tick) / 2}%` }">
+            {{
+              metric === "views"
+                ? number.format(tick)
+                : formatTrafficDuration(tick)
+            }}
+          </span>
+        </div>
+        <div
+          ref="plot"
+          class="post-traffic__plot"
+          role="group"
+          :aria-label="`${series.interval === 'day' ? 'Daily' : 'Monthly'} ${metric === 'views' ? 'page views' : 'average engagement per view'}. Use arrow keys to inspect ${series.interval === 'day' ? 'days' : 'months'}.`"
+          @pointermove="inspect"
+          @pointerenter="trigger.onPointerenter"
+          @pointerleave="trigger.onPointerleave"
+          @keydown="navigate">
+          <svg
+            viewBox="0 0 600 200"
+            preserveAspectRatio="none"
+            aria-hidden="true">
+            <path class="post-traffic__axes" d="M 4 4 V 196 H 596" />
+            <path
+              v-for="tick in ticks.slice(0, -1)"
+              :key="tick"
+              class="post-traffic__gridline"
+              :d="`M 4 ${y(tick)} H 596`" />
+            <path
+              v-for="event in events"
+              :key="event.label"
+              class="post-traffic__annotation"
+              :d="`M ${x(event.index)} 4 V 196`" />
+            <polyline
+              v-if="metric === 'views'"
+              class="post-traffic__line"
+              :points="points" />
+            <path
+              v-else
+              class="post-traffic__line post-traffic__engagement-line"
+              :d="engagementPath" />
+          </svg>
+          <button
+            v-for="(item, index) in series.points"
+            :key="item.date"
+            type="button"
+            class="post-traffic__point"
+            :class="{
+              'post-traffic__point--selected': selectedIndex === index,
+              'post-traffic__point--missing':
+                metric === 'engagement' && average(index) === null,
+            }"
+            :style="{ left: `${x(index) / 6}%`, top: `${pointY(index) / 2}%` }"
+            :tabindex="index === (selectedIndex ?? 0) ? 0 : -1"
+            :aria-label="pointText(index)"
+            :aria-describedby="
+              selectedIndex === index ? trigger['aria-describedby'] : undefined
+            "
+            @focus="
+              selectedIndex = index;
+              trigger.onFocus($event);
+            "
+            @blur="trigger.onBlur"
+            @click="selectPoint($event, index)" />
+        </div>
+        <div class="post-traffic__dates" aria-hidden="true">
+          <span v-for="index in dateLabels" :key="index">{{
+            axisDate(series.points[index]!.date)
+          }}</span>
+        </div>
+      </div>
+    </template>
+    <template #content>
+      <div v-if="selectedIndex !== null" class="post-traffic__tooltip">
         <time
           class="post-traffic__tooltip-date"
           :datetime="series.points[selectedIndex]!.date">
@@ -96,13 +115,8 @@
           </li>
         </ul>
       </div>
-    </div>
-    <div class="post-traffic__dates" aria-hidden="true">
-      <span v-for="index in dateLabels" :key="index">{{
-        axisDate(series.points[index]!.date)
-      }}</span>
-    </div>
-  </div>
+    </template>
+  </u-tooltip>
 </template>
 
 <script setup lang="ts">
@@ -116,9 +130,15 @@ const props = defineProps<{
   metric: "views" | "engagement";
   annotations: { date: string; label: string }[];
 }>();
-const id = useId();
 const selectedIndex = ref<number | null>(null);
 const plot = useTemplateRef<HTMLElement>("plot");
+const selectedPoint = computed(() =>
+  selectedIndex.value === null
+    ? null
+    : (plot.value?.querySelectorAll<HTMLButtonElement>(".post-traffic__point")[
+        selectedIndex.value
+      ] ?? null),
+);
 watch(
   () => props.series,
   () => {
@@ -262,19 +282,6 @@ function selectPoint(event: MouseEvent, index: number) {
   if (event.detail === 0) selectedIndex.value = index;
   else inspect(event);
 }
-function leave() {
-  if (!plot.value?.contains(document.activeElement)) selectedIndex.value = null;
-}
-function blur(event: FocusEvent) {
-  if (
-    !(event.relatedTarget instanceof Node) ||
-    !plot.value?.contains(event.relatedTarget)
-  )
-    selectedIndex.value = null;
-}
-function dismiss(event: KeyboardEvent) {
-  if (event.key === "Escape") selectedIndex.value = null;
-}
 function navigate(event: KeyboardEvent) {
   if (event.key === "Escape") {
     selectedIndex.value = null;
@@ -297,8 +304,6 @@ function navigate(event: KeyboardEvent) {
   selectedIndex.value = next;
   plot.value?.querySelectorAll("button")[next]?.focus();
 }
-onMounted(() => document.addEventListener("keydown", dismiss));
-onBeforeUnmount(() => document.removeEventListener("keydown", dismiss));
 </script>
 
 <style lang="scss">
@@ -393,16 +398,7 @@ onBeforeUnmount(() => document.removeEventListener("keydown", dismiss));
   z-index: 1;
 }
 .post-traffic__tooltip {
-  position: absolute;
-  z-index: 3;
-  translate: -50% calc(-100% - 0.75rem);
-  inline-size: min(100%, 20rem);
-  padding: var(--global-space-fixed-2) var(--global-space-fixed-3);
-  border: 1px solid var(--global-border-color);
-  border-radius: var(--global-border-radius);
-  background: var(--global-content-background-color);
-  box-shadow: var(--global-shadow-2);
-  text-align: center;
+  inline-size: min(18rem, calc(100vw - 4rem));
 }
 .post-traffic__tooltip-date {
   display: block;
@@ -435,13 +431,6 @@ onBeforeUnmount(() => document.removeEventListener("keydown", dismiss));
   margin: var(--global-space-fixed-2) 0 0;
   padding: 0;
   list-style: none;
-}
-.post-traffic__tooltip::after {
-  content: "";
-  position: absolute;
-  inset-block-start: 100%;
-  inset-inline: 0;
-  block-size: 0.75rem;
 }
 .post-traffic__dates {
   grid-column: 2;

@@ -173,7 +173,9 @@ test("Mobile samples retain working presets, annotations and a non-expanding hel
   const y = await plotOffset();
   const help = chart.getByRole("button", { name: "About article traffic" });
   await help.focus();
-  const tooltip = chart.locator(".post-traffic__source");
+  const tooltip = frame
+    .getByRole("tooltip")
+    .filter({ hasText: "Source: Google Analytics" });
   await expect(tooltip).toBeVisible();
   expect(await plotOffset()).toBeCloseTo(y, 3);
   await tooltip.hover();

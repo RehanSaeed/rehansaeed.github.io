@@ -120,6 +120,10 @@ in `/post-traffic.json` are intentionally public.
   rather than publishing misleading zero-filled histories. Pagination retrieves
   all report rows. Blockers, consent choices and collection configuration can
   still cause undercounting; verify hard loads and Nuxt client navigation in GA4.
+- Chart points and the source information use the shared `UTooltip` component
+  for themed top-layer bubbles, directional arrows, viewport collision handling
+  and Escape dismissal. The chart supplies a controlled point anchor and
+  structured content; the source button also toggles on tap.
 - The chart appears below GitHub comments, with per-bucket tooltips available
   by pointer, touch or keyboard focus. Tab enters the point group; arrow keys,
   Home and End inspect points, and Escape dismisses the tooltip. Point tooltips
