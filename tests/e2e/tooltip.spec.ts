@@ -373,8 +373,17 @@ test("Article section links prerender as accessible links and navigate without c
   await link.scrollIntoViewIfNeeded();
   await page.mouse.move(0, 0);
   await expect(link).toHaveCSS("opacity", "0");
-  await expect(link).toHaveCSS("width", "22px");
-  await expect(link).toHaveCSS("height", "22px");
+  const iconSize = await link.evaluate((element) => {
+    const probe = document.createElement("span");
+    probe.style.display = "block";
+    probe.style.width = "var(--global-space-fixed-4)";
+    element.append(probe);
+    const size = getComputedStyle(probe).width;
+    probe.remove();
+    return size;
+  });
+  await expect(link).toHaveCSS("width", iconSize);
+  await expect(link).toHaveCSS("height", iconSize);
   await expect(link.locator("svg")).toHaveCSS("display", "inline");
   await page.locator("#being-short").hover();
   await expect(link).toHaveCSS("opacity", "1");
