@@ -28,54 +28,31 @@ include only published open source entries, counting each repository and package
 once (case-insensitively). Add projects and packages to those entries rather than
 editing the displayed totals.
 
-Counts are cached for an hour. When a source is unavailable, an existing snapshot
-is retained with a build warning; without a saved count the build fails rather
-than displaying a fabricated zero. The displayed date identifies the build
-snapshot, not necessarily when every source was last contacted. The Build workflow
-rebuilds and deploys the site every Monday at 05:17 UTC, as well as on pushes to
-`main` and manual runs, so published figures refresh without content edits.
+Counts are cached locally for an hour and refreshed by the weekly Monday 05:17 UTC
+build, pushes to `main` and manual builds. Source failures retain saved counts with
+a warning; without saved counts the build fails. No observation history or
+cross-build CI cache is needed.
 
 Portfolio's download animation uses lifetime averages, not live API counts.
 The star animation deliberately averages one increase every 15 seconds for
 illustration, not the measured growth rate; its supplied snapshot and the About
-summary remain exact. For each package, divide its lifetime downloads by the seconds
-between the earliest available version's creation date and the observation; add these
-individual rates together. NuGet's `FindPackagesById()` request orders by
-`Created asc` with `$top=1` and `semVerLevel=2.0.0`. Stars use the same calculation
-per repository with GitHub's `created_at`, but that rate is not the displayed
-star animation's cadence. This works on the first observation and does not mistake
-an unchanged hourly snapshot for a zero lifetime rate.
-Lifetime averages do not predict recent trends, and star totals can fall.
+summary remain exact. Sum each package's downloads divided by its age in seconds.
+NuGet's `FindPackagesById()` request obtains the earliest release with `Created asc`,
+`$top=1` and `semVerLevel=2.0.0`. Invalid creation dates disable the download rate;
+failed or over-14-day-old source snapshots disable the corresponding animation.
 
-The lifetime calculation needs no historical snapshots or cross-build CI cache.
-The existing short-lived local cache contains only the latest API responses.
-Missing creation dates, invalid ages and source failures disable the affected rate
-rather than inventing one. Portfolio does not start an estimate from a snapshot
-older than 14 days.
-
-The shared `app/components/shared/number-ticker.vue` owns the title, odometer and
-animation. Use it anywhere without importing portfolio data:
+The shared `app/components/shared/number-ticker.vue` accepts a title, number and
+average rate per second, independently of Portfolio:
 
 ```vue
 <u-number-ticker title="Downloads" :number="1000" :rate="2.5" />
 ```
 
-`rate` is the average increment per second. Each second has a 50% chance of no
-movement; otherwise it uses a random multiplier between 1 and 3. This produces
-irregular upward jumps while preserving the supplied average, retaining fractional
-increments so slow-growing counts do not artificially increase every second.
-The optional `paused` prop stops animation;
-`locale` defaults to `en-GB`. Changing `number` or `rate` resets the counter.
-Reduced-motion users see the supplied number. Hidden tabs suspend timers and
-catch up at the average rate on return; unmounting cleans up timers and listeners.
-Screen readers receive the supplied number without per-second announcements.
-Portfolio displays only the two title-and-number cards, without explanatory text
-or controls. The shared component retains its optional `paused` prop for other uses.
-Exact build totals remain in the About summary, accessible numbers and data attributes.
-
-Six reviewable title-and-number layout studies are in
-`tests/fixtures/oss-card-treatments.html`. Open the file directly to compare light,
-dark and narrow layouts; it is not published as part of the site.
+Random pauses and jumps preserve the average and retain fractional increments.
+Optional `paused` and `locale` props support other uses; the default locale is
+`en-GB`. Reduced-motion users and screen readers receive the supplied number.
+Hidden tabs suspend timers and catch up at the average rate on return.
+Portfolio displays only the two title-and-number cards, without text or controls.
 
 ## Images
 

@@ -23,7 +23,7 @@ test("Lifetime rates sum each item's count divided by its own actual age", () =>
       ],
       now,
     ),
-  ).toEqual({ observedAt: now, since: now - 2 * hour, perSecond: 2 });
+  ).toEqual({ observedAt: now, perSecond: 2 });
   for (const createdAt of [
     undefined,
     "invalid",
@@ -43,7 +43,7 @@ test("Lifetime rates sum each item's count divided by its own actual age", () =>
 });
 
 test("Missing, future and stale observations cannot start a portfolio estimate", () => {
-  const growth = { observedAt: now, since: now - hour, perSecond: 2 };
+  const growth = { observedAt: now, perSecond: 2 };
   expect(canProjectCounter(growth, now)).toBe(true);
   expect(canProjectCounter(growth, now - 1)).toBe(false);
   expect(canProjectCounter(growth, now + maximumProjectionAge + 1)).toBe(false);
@@ -101,7 +101,6 @@ async function saveObservations(
           repository: "example/project",
           stars: 102,
           forks: 0,
-          createdAt,
         },
       },
     }),
@@ -130,7 +129,7 @@ test("Portfolio lifetime rates work on the first observation and deduplicate pub
   }));
   const result = await portfolioGrowth(dir, [project, project, ...ignored]);
   expect(result.downloads.perSecond).toBe(1);
-  expect(result.stars.perSecond).toBe(102 / 7200);
+  expect(result.stars).toEqual({ observedAt: now, perSecond: 1 / 15 });
 });
 
 test("Missing creation dates and source failures disable a rate rather than inventing one", async ({}, info) => {
@@ -152,6 +151,7 @@ test("Missing creation dates and source failures disable a rate rather than inve
   expect(
     (await portfolioGrowth(dir, [project])).downloads.observedAt,
   ).toBeNull();
+  expect((await portfolioGrowth(dir, [project])).stars.observedAt).toBeNull();
   await writeFile(join(dir, "blog-nuget.json"), "{}");
   await expect(portfolioGrowth(dir, [project])).rejects.toThrow();
 });
