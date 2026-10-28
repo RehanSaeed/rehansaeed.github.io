@@ -99,8 +99,7 @@ export default {
     },
   },
   mounted() {
-    // The mask is only applied in the browser, as in Gridsome, so the server and hydration renders
-    // match.
+    // Apply the mask only in the browser so the server and hydration renders match.
     this.isMounted = true;
   },
   render() {

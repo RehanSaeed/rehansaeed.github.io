@@ -1,4 +1,4 @@
-// A copy of /atom.xml at the URL Gridsome mistakenly linked as the Atom feed's self link.
+// A copy of /atom.xml at the legacy Atom feed's self-link URL.
 export default defineEventHandler(async (event) => {
   setResponseHeader(
     event,

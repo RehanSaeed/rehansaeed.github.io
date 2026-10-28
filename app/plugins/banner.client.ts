@@ -1,4 +1,4 @@
-// The ASCII-art banner printed to the browser console, as in Gridsome's main.js.
+// The ASCII-art banner printed to the browser console.
 export default defineNuxtPlugin(() => {
   const consoleOptions = "background: #ffffff; color: #6b17e8";
 

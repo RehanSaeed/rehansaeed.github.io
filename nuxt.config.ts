@@ -207,7 +207,7 @@ export default defineNuxtConfig({
     },
   },
 
-  // Same service worker and manifest URLs as gridsome-plugin-pwa, so installed users get an update
+  // Keep the existing service worker and manifest URLs so installed users get an update
   // of the old service worker rather than a second one. The whole site is precached for offline use.
   pwa: {
     strategies: "generateSW",
@@ -311,7 +311,7 @@ export default defineNuxtConfig({
       ],
       // Workbox's defaults, plus Nuxt's payload cache buster (/x/_payload.json?_b=<buildId>).
       ignoreURLParametersMatching: [/^utm_/, /^fbclid$/, /^_b$/],
-      // No SPA fallback, as in Gridsome. Clean URLs resolve to their prerendered index.html.
+      // No SPA fallback. Clean URLs resolve to their prerendered index.html.
       navigateFallback: null,
       directoryIndex: "index.html",
       cleanupOutdatedCaches: true,
@@ -331,13 +331,13 @@ export default defineNuxtConfig({
     },
   ],
 
-  // Global, as in Gridsome's main.js, so rehype-katex output is styled on every page.
+  // Global so rehype-katex output is styled on every page.
   css: ["~/assets/style/index.scss", "katex/dist/katex.min.css"],
 
   app: {
     head: {
       htmlAttrs: { lang: site.language },
-      // Gridsome falls back to the site name for pages without a title (the streaming pages).
+      // Fall back to the site name for pages without a title (the streaming pages).
       title: site.name,
       titleTemplate: `%s - ${site.name}`,
       meta: [
@@ -455,10 +455,10 @@ export default defineNuxtConfig({
   content: {
     build: {
       markdown: {
-        // Gridsome never derived title/description from the first heading/paragraph.
+        // Do not derive title/description from the first heading/paragraph.
         contentHeading: false,
         remarkPlugins: {
-          // Not enabled in Gridsome; would turn ":word:" text into emoji.
+          // Keep literal ":word:" text instead of turning it into emoji.
           "remark-emoji": false,
         },
         highlight: {
@@ -501,8 +501,8 @@ export default defineNuxtConfig({
     "modules:before": () => {
       mkdirSync(contentPublicPath, { recursive: true });
     },
-    // Nuxt prerenders static page routes by their path. Give them the canonical trailing slash, as in
-    // Gridsome, so "/about" and the crawled "/about/" aren't both rendered to dist/about/index.html.
+    // Nuxt prerenders static page routes by their path. Give them the canonical trailing slash so
+    // "/about" and the crawled "/about/" aren't both rendered to dist/about/index.html.
     "pages:extend": (pages) => {
       for (const page of pages) {
         if (page.path !== "/" && !page.path.includes(":")) {
@@ -552,8 +552,8 @@ export default defineNuxtConfig({
         cache.driver = pathToFileURL(cache.driver).href;
       }
     },
-    // GitHub Pages serves 404.html for unknown URLs. Nuxt prerenders it as an empty SPA shell; Gridsome
-    // server rendered the not found page instead, so write the rendered error page there.
+    // GitHub Pages serves 404.html for unknown URLs. Nuxt prerenders it as an empty SPA shell,
+    // so write the server-rendered error page there instead.
     "nitro:init": (nitro) => {
       nitro.hooks.hook("prerender:generate", (route) => {
         if (route.route === "/404.html") {

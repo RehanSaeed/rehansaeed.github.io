@@ -23,7 +23,7 @@ export function restoreKeptTags(nodes: MinimarkNode[] | undefined): void {
   }
 }
 
-// Gridsome's word counter (@gridsome/transformer-remark/lib/timeToRead.js), CJK aware.
+// Word matching includes CJK characters.
 const wordPattern =
   /[a-zA-Z0-9_\u0392-\u03c9\u00c0-\u00ff\u0600-\u06ff\u0400-\u04ff]+|[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff\u3040-\u309f\uac00-\ud7af]+/g;
 
@@ -54,7 +54,7 @@ function collectText(nodes: MinimarkNode[], out: string[]): void {
       // Count the source, not Shiki's token spans, which can split words.
       out.push(node[1].code);
     } else if (isKatex(node)) {
-      // KaTeX splits identifiers into per-letter spans; Gridsome stripped tags without separators.
+      // KaTeX splits identifiers into per-letter spans; join them without separators.
       const inner: string[] = [];
       collectText(node.slice(2) as MinimarkNode[], inner);
       out.push(inner.join(""));
@@ -64,14 +64,14 @@ function collectText(nodes: MinimarkNode[], out: string[]): void {
   }
 }
 
-/** Gridsome: words in the rendered HTML text / 230 words per minute, rounded, minimum 1. */
+/** Rendered-text word count / reading speed, rounded; minimum 1 for non-empty text. */
 export function timeToRead(
   body: { value?: MinimarkNode[] },
   speed = 230,
 ): number {
   const text: string[] = [];
   collectText(body.value ?? [], text);
-  // Gridsome counted sanitize-html output, which re-escapes text, so "<" counted as the word "lt".
+  // Count escaped HTML text for consistent reading times, so "<" counts as the word "lt".
   const escaped = text
     .join(" ")
     .replace(/&/g, "&amp;")
@@ -89,7 +89,7 @@ export function timeToRead(
 }
 
 /**
- * Gridsome's findHeadings (@gridsome/transformer-remark/lib/utils.js): every mdast heading, with a
+ * Collect every mdast heading, with a
  * value made from the direct children that carry a `value` (text, inline code, HTML), tags stripped.
  */
 export function headings(markdown: string): { depth: number; value: string }[] {

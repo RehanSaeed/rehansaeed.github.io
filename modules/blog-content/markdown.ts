@@ -3,9 +3,8 @@ import { dirname, extname, resolve } from "node:path";
 import GithubSlugger from "github-slugger";
 
 /**
- * Remark/rehype plugins reproducing the Gridsome markdown pipeline (see the old gridsome.config.js):
- * remark-containers, remark-kbd, gridsome-remark-embed-snippet, @noxify/gridsome-plugin-remark-embed
- * (YouTube), gridsome-plugin-remark-mermaid and remark-autolink-headings.
+ * Remark/rehype plugins for containers, keyboard shortcuts, code snippets, YouTube embeds,
+ * Mermaid diagrams and heading links.
  *
  * The installed mdast/hast type packages are mixed versions, so these plugins are loosely typed.
  */
@@ -87,7 +86,7 @@ function isEmptyParagraph(node: Node): boolean {
   return node.type === "paragraph" && !node.children?.length;
 }
 
-/** `::: type Title` ... `:::` blocks (remark-containers with the custom transform from gridsome.config.js). */
+/** `::: type Title` ... `:::` blocks with a custom container transform. */
 export function remarkContainers() {
   return (tree: Node) => {
     const transform = (parent: Node) => {
@@ -289,8 +288,8 @@ export function remarkMermaid() {
 }
 
 /**
- * Gridsome's remark pipeline decided list item looseness per item: an item with more than one child
- * kept its paragraphs in `<p>`. Newer mdast-util-to-hast decides per list, and @nuxtjs/mdc unwraps
+ * Decide list item looseness per item: an item with more than one child keeps its paragraphs
+ * in `<p>`. mdast-util-to-hast decides per list, and @nuxtjs/mdc unwraps
  * `<p>` in `<li>` regardless, so loose paragraphs are protected with the keep prefix.
  */
 export function remarkLooseListItems() {
@@ -391,7 +390,7 @@ export function rehypeHeadingAnchors() {
 }
 
 /**
- * rehype-external-links settings matching Gridsome's remark-external-links: only links with an
+ * rehype-external-links settings: only links with an
  * explicit http(s) scheme are external, so protocol-relative `//host` links are left alone.
  */
 export const externalLinksOptions = {
