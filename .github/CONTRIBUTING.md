@@ -41,15 +41,6 @@ downloaded during offline installation. PNG app icons and installation screensho
 are retained for compatibility. Browsers without AVIF support cannot display
 uncached content images offline.
 
-Static builds cache responsive IPX output in `.cache/nuxt-images`; CI restores
-this separately from social cards. Unchanged images are copied into the next
-build as public assets, while new responsive sizes still render normally.
-Image bytes, image paths, the lockfile, Node version, Nuxt configuration and
-cache implementation invalidate the cache. Image quality, responsive sizes and
-PNG/JPG fallbacks are unchanged. Only image output is reused, never HTML,
-content data or verification results. Delete `.cache/nuxt-images` to measure a
-cold build; compare it with a second `npm run build` on the same machine.
-
 ## Dependency updates
 
 Commit `package.json` and its regenerated `package-lock.json` together. Run
