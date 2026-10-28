@@ -188,8 +188,8 @@ for (const width of [320, 375, 1280]) {
       await expect(totals).toHaveAttribute("data-downloads", downloads!);
       await expect(totals).toHaveAttribute("data-stars", stars!);
       await expect(totals.locator(".number-ticker__title")).toHaveText([
-        "Package downloads",
-        "GitHub stars",
+        "Package Downloads",
+        "GitHub Stars",
       ]);
       const cards = totals.locator(".number-ticker");
       const [first, second] = await cards.evaluateAll((elements) =>

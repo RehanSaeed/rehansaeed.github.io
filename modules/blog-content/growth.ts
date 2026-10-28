@@ -21,20 +21,8 @@ export async function portfolioGrowth(
       downloadsSchema.parse(JSON.parse(text)),
     ),
   ]);
-  const repositories = new Map<string, { count: number; createdAt?: string }>();
   const packages = new Map<string, { count: number; createdAt?: string }>();
   for (const { data } of projects) {
-    const repository = new URL(data.permalink).pathname.slice(1).toLowerCase();
-    const snapshot = popularity.snapshots[data.permalink];
-    if (!snapshot || snapshot.repository.toLowerCase() !== repository) {
-      throw new Error(
-        `Missing current portfolio growth observation: ${repository}.`,
-      );
-    }
-    repositories.set(repository, {
-      count: snapshot.stars,
-      createdAt: snapshot.createdAt,
-    });
     for (const { id } of data.nugetPackages ?? []) {
       const key = id.toLowerCase();
       const pkg = downloads.snapshots[key];
@@ -45,10 +33,10 @@ export async function portfolioGrowth(
     }
   }
   return {
-    stars: lifetimeCounterGrowth(
-      [...repositories.values()],
-      popularity.updated,
-    ),
+    stars: {
+      observedAt: popularity.updated > 0 ? popularity.updated : null,
+      perSecond: 1 / 15,
+    },
     downloads: lifetimeCounterGrowth([...packages.values()], downloads.updated),
   };
 }

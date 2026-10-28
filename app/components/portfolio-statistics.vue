@@ -18,11 +18,11 @@
     :data-stars="statistics.stars">
     <div class="portfolio-statistics__totals">
       <u-number-ticker
-        title="Package downloads"
+        title="Package Downloads"
         :number="statistics.downloads"
         :rate="downloadRate" />
       <u-number-ticker
-        title="GitHub stars"
+        title="GitHub Stars"
         :number="statistics.stars"
         :rate="starRate" />
     </div>
@@ -42,7 +42,9 @@ const downloadRate = computed(() =>
     : 0,
 );
 const starRate = computed(() =>
-  canProjectCounter(statistics.growth.stars, now.value) ? 1 / 15 : 0,
+  canProjectCounter(statistics.growth.stars, now.value)
+    ? statistics.growth.stars.perSecond
+    : 0,
 );
 onMounted(() => {
   now.value = Date.now();

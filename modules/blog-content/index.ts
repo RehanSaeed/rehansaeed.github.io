@@ -63,7 +63,6 @@ export default defineNuxtModule({
     const statistics = {
       ...portfolioStatistics(entries, portfolio, downloads),
       growth: await portfolioGrowth(dataDir, entries),
-      generatedAt: new Date().toISOString(),
     };
     const statisticsTemplate = addTemplate({
       filename: "blog-portfolio-statistics.json",
