@@ -28,7 +28,7 @@ function absoluteUrls(html: string, contentDir: string): string {
   });
 }
 
-/** The RSS, Atom and JSON feeds of published posts, as previously built by gridsome-plugin-feed. */
+/** The RSS, Atom and JSON feeds of published posts. */
 export async function createFeed(event: H3Event): Promise<Feed> {
   const posts = await queryCollection(event, "posts")
     .where("published", "=", true)
@@ -84,7 +84,7 @@ export async function createFeed(event: H3Event): Promise<Feed> {
   return feed;
 }
 
-/** RSS 2.0. Items without an id get permalink guids, matching the Gridsome feed. */
+/** RSS 2.0. Items without an id get permalink guids. */
 export function rss2(feed: Feed): string {
   for (const item of feed.items) {
     delete item.id;

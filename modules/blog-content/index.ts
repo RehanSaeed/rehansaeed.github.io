@@ -38,8 +38,8 @@ import { filterMarkdownSitemap } from "./seo";
 const postsPerPage = 10;
 
 /**
- * Build-time content support that Gridsome provided out of the box:
- * - Computed `timeToRead` and `headings` fields, matching @gridsome/transformer-remark.
+ * Build-time content support:
+ * - Computed `timeToRead` and `headings` fields.
  * - Co-located post images, copied to `/content-images/` and referenced from the rendered markdown.
  * - Prerender routes for pages the crawler cannot reach (drafts and their tags, portfolio-only tags).
  */
@@ -137,7 +137,7 @@ export default defineNuxtModule({
       await writeFile(hashFile, moduleHash);
     }
 
-    // The Gridsome remark pipeline. @nuxt/content reads these options lazily when it creates its
+    // @nuxt/content reads these options lazily when it creates its
     // parser, after module setup. Order matters: the object key order is the plugin order.
     const content = (nuxt.options.content ||= {} as never) as Exclude<
       typeof nuxt.options.content,
@@ -146,7 +146,7 @@ export default defineNuxtModule({
     const markdown = ((content.build ??= {}).markdown ??= {});
     markdown.remarkPlugins = {
       ...markdown.remarkPlugins,
-      // CommonMark + GFM only, as in Gridsome; no MDC component syntax.
+      // CommonMark + GFM only; no MDC component syntax.
       "remark-mdc": false,
       "blog-embed-snippet": { instance: remarkEmbedSnippet },
       "blog-containers": { instance: remarkContainers },
@@ -208,11 +208,11 @@ export default defineNuxtModule({
       }
       prerenderCodeBlocks(body.value);
       content.headings = headings(file.body);
-      // An empty YAML key (e.g. "tags:") parses as null; Gridsome treated it as an empty list.
+      // An empty YAML key (e.g. "tags:") parses as null; normalise it to an empty list.
       for (const key of ["categories", "tags"] as const) {
         content[key] ??= [];
       }
-      // Normalise "2020-04-30" and "2020-04-30T10:00:00Z" to Gridsome's "YYYY-MM-DDTHH:mm:ssZ"
+      // Normalise "2020-04-30" and "2020-04-30T10:00:00Z" to the "YYYY-MM-DDTHH:mm:ssZ"
       // format ("2020-04-30T00:00:00+00:00"). It is also what SQL ordering compares.
       for (const key of ["date", "dateModified"] as const) {
         const value = content[key];

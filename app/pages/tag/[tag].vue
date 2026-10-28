@@ -47,7 +47,7 @@ const { data } = await useAsyncData(`tag-${slug}`, async () => {
   }
   return {
     title,
-    // Gridsome's tag page query did not include tags or hero images for its post cards.
+    // Tag-page post cards omit tags and hero images.
     posts: posts
       .filter((x) => x.published && x.tags.includes(title))
       .map(({ tags: _tags, published: _published, ...x }) => x),

@@ -1,4 +1,4 @@
-// A copy of /rss.xml, kept because the Gridsome site also served the RSS feed at this URL.
+// A copy of /rss.xml, kept for existing RSS subscriptions at this URL.
 export default defineEventHandler(async (event) => {
   setResponseHeader(
     event,

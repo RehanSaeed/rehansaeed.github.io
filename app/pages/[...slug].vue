@@ -33,7 +33,7 @@ import { pageHeadingId } from "#shared/utils/headings";
 
 const site = useAppConfig().site;
 const route = useRoute();
-// Drafts are routed too, as in Gridsome; they are only left out of listings and feeds.
+// Drafts are routed too; they are only left out of listings and feeds.
 const permalink = route.path.endsWith("/") ? route.path : `${route.path}/`;
 
 const { data: post } = await useAsyncData(`post-${permalink}`, () =>
