@@ -81,8 +81,12 @@ const {
   },
 });
 watchEffect(() => {
-  if (bubble.value) Object.assign(bubble.value.style, floatingStyles.value);
-  if (!arrowElement.value) return;
+  if (bubble.value) {
+    Object.assign(bubble.value.style, floatingStyles.value);
+  }
+  if (!arrowElement.value) {
+    return;
+  }
   const coordinates = middlewareData.value.arrow;
   arrowElement.value.style.left =
     coordinates?.x == null ? "" : `${coordinates.x}px`;
@@ -104,25 +108,35 @@ const dismiss = () => {
 };
 
 const show = (event: Event, delay = 0) => {
-  if (!(event.currentTarget instanceof HTMLElement)) return;
+  if (!(event.currentTarget instanceof HTMLElement)) {
+    return;
+  }
   anchor.value = event.currentTarget;
   teleportTarget.value = anchor.value.closest("dialog") ?? "body";
   clearTimer();
   timer = setTimeout(() => {
-    if (props.text) open.value = true;
+    if (props.text) {
+      open.value = true;
+    }
   }, delay);
 };
 
 const scheduleHide = () => {
-  if (hovered || focused || bubbleHovered) return;
+  if (hovered || focused || bubbleHovered) {
+    return;
+  }
   clearTimer();
   timer = setTimeout(() => {
-    if (!hovered && !focused && !bubbleHovered) dismiss();
+    if (!hovered && !focused && !bubbleHovered) {
+      dismiss();
+    }
   }, 120);
 };
 
 const onPointerEnter = (event: PointerEvent) => {
-  if (event.pointerType === "touch") return;
+  if (event.pointerType === "touch") {
+    return;
+  }
   hovered = true;
   show(event, 300);
 };
@@ -181,14 +195,18 @@ const trigger = computed(() => ({
 }));
 
 const onEscape = (event: KeyboardEvent) => {
-  if (event.key !== "Escape") return;
+  if (event.key !== "Escape") {
+    return;
+  }
   event.preventDefault();
   event.stopPropagation();
   dismiss();
 };
 
 watch(open, (visible, _, onCleanup) => {
-  if (!visible) return;
+  if (!visible) {
+    return;
+  }
   onCleanup(() => {
     document.removeEventListener("keydown", onEscape, true);
     bubbleHovered = false;
@@ -199,7 +217,9 @@ watch(open, (visible, _, onCleanup) => {
 watch(
   () => middlewareData.value.hide?.referenceHidden,
   (hidden) => {
-    if (hidden) dismiss();
+    if (hidden) {
+      dismiss();
+    }
   },
 );
 
