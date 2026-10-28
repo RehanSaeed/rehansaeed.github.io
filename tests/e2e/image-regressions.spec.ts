@@ -34,10 +34,10 @@ test.describe("All-pages audit regressions", () => {
       };
       rehypeHeadingAnchors()(tree);
       const anchor = tree.children![0]!.children![0]!;
+      expect(anchor.tagName).toBe("anchor-link");
       expect(anchor.properties).toEqual({
         href: "#being-short",
-        className: ["heading-anchor"],
-        "aria-label": "Link to Being Short",
+        label: "Link to this section",
       });
       expect(anchor.children![0]!.properties?.["aria-hidden"]).toBe("true");
     },
@@ -86,8 +86,8 @@ test.describe("All-pages audit regressions", () => {
     page,
   }) => {
     await page.goto("/on-the-etiquette-of-pull-request-comments/");
-    const anchor = page.locator(".heading-anchor").first();
-    await expect(anchor).toHaveAccessibleName(/^Link to .+/);
+    const anchor = page.locator(".anchor-link").first();
+    await expect(anchor).toHaveAccessibleName("Link to this section");
     await expect(anchor).not.toHaveAttribute("aria-hidden");
     await anchor.focus();
     await expect(anchor).toHaveCSS("opacity", "1");
