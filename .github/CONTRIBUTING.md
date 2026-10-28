@@ -23,7 +23,7 @@ Link an existing issue if it provides useful context, but an issue is not requir
 ## Portfolio statistics
 
 The build fetches GitHub stars and lifetime NuGet download counts for the projects
-and package IDs in `content/portfolio/`. The shared totals on Portfolio and About
+and package IDs in `content/portfolio/`. The totals on Portfolio
 include only published open source entries, counting each repository and package
 once (case-insensitively). Add projects and packages to those entries rather than
 editing the displayed totals.
@@ -35,8 +35,8 @@ cross-build CI cache is needed.
 
 Portfolio's download animation uses lifetime averages, not live API counts.
 The star animation deliberately averages one increase every 15 seconds for
-illustration, not the measured growth rate; its supplied snapshot and the About
-summary remain exact. Sum each package's downloads divided by its age in seconds.
+illustration, not the measured growth rate; the supplied snapshot and accessible
+numbers remain exact. Sum each package's downloads divided by its age in seconds.
 NuGet's `FindPackagesById()` request obtains the earliest release with `Created asc`,
 `$top=1` and `semVerLevel=2.0.0`. Invalid creation dates disable the download rate;
 failed or over-14-day-old source snapshots disable the corresponding animation.
@@ -55,6 +55,19 @@ Hidden tabs suspend timers and catch up at the average rate on return.
 Portfolio displays only the two title-and-number cards, without text or controls.
 The pair uses the same maximum width and font sizing as compact project cards so
 their outer edges align.
+
+About uses Shields.io's built-in GitHub account stars badge alongside Followers
+and Sponsors. It refreshes independently and counts account-owned repositories
+(`affiliations=OWNER`), not the curated Portfolio projects or organisation-hosted
+repositories, so the two totals can differ.
+
+The matching Watchers badge sums `watchers.totalCount` from GitHub GraphQL across
+all public repositories owned by the account in `site.json`, including forks and
+archived repositories. It paginates beyond 100 repositories and counts watch
+subscriptions, not unique people. This build-time total uses the existing
+`GITHUB_TOKEN`, a one-hour local cache and the weekly rebuild. Failed requests
+retain saved counts with a warning and retry next build; without saved counts the
+build fails. Do not use REST's `watchers_count`, which counts stars instead.
 
 ## Images
 

@@ -65,13 +65,14 @@
         <a :href="gitHubUrl">GitHub profile</a> and of course there are other
         commercial projects that I cannot disclose.
       </p>
-      <u-portfolio-statistics class="about__description" compact />
       <div class="about__github-images">
-        <u-tooltip v-slot="{ trigger }" text="View my GitHub profile">
+        <u-tooltip
+          v-slot="{ trigger }"
+          text="Stars received by my account-owned repositories; organisation-owned projects are excluded.">
           <a v-bind="trigger" :href="gitHubUrl">
             <img
               class="about__github-image"
-              alt="GitHub stars"
+              alt="GitHub stars received on my account's repositories"
               height="30"
               width="135"
               :src="gitHubStarsImageUrl" />
@@ -95,6 +96,18 @@
               height="30"
               width="121"
               :src="gitHubSponsorsImageUrl" />
+          </a>
+        </u-tooltip>
+        <u-tooltip
+          v-slot="{ trigger }"
+          text="Total watch subscriptions across my public, account-owned repositories. A person watching several repositories is counted once per repository. Refreshed when this site builds.">
+          <a v-bind="trigger" :href="gitHubUrl">
+            <img
+              class="about__github-image"
+              :alt="`GitHub watch subscriptions across my ${watchers.repositories} public account-owned repositories: ${watchers.watchers}`"
+              height="30"
+              width="165"
+              :src="gitHubWatchersImageUrl" />
           </a>
         </u-tooltip>
       </div>
@@ -329,6 +342,8 @@
 </template>
 
 <script>
+import watchers from "#blog-github-watchers";
+
 export default {
   name: "u-about",
   setup() {
@@ -369,7 +384,7 @@ export default {
         { property: "fb:app_id", content: metadata.facebookAppId },
       ],
     });
-    return { metadata };
+    return { metadata, watchers };
   },
   data() {
     return {
@@ -400,6 +415,12 @@ export default {
     },
     gitHubFollowersImageUrl() {
       return `https://img.shields.io/github/followers/${this.metadata.author.gitHub.user}?style=social`;
+    },
+    gitHubStarsImageUrl() {
+      return `https://img.shields.io/github/stars/${this.metadata.author.gitHub.user}?affiliations=OWNER&style=social`;
+    },
+    gitHubWatchersImageUrl() {
+      return `https://img.shields.io/badge/Watchers-${this.watchers.watchers}-blue?logo=github&style=social`;
     },
     gitHubStatisticsImageUrl() {
       const fileName =

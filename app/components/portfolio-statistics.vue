@@ -1,18 +1,5 @@
 <template>
-  <p
-    v-if="compact"
-    class="portfolio-statistics__summary"
-    :data-downloads="statistics.downloads"
-    :data-stars="statistics.stars">
-    My open source projects have received
-    <span :title="`${downloadsExact} lifetime package downloads`">{{
-      downloadsLong
-    }}</span>
-    package downloads and {{ starsExact }} GitHub stars across the projects in
-    my <NuxtLink to="/portfolio/#portfolio-open-source">portfolio</NuxtLink>.
-  </p>
   <div
-    v-else
     class="portfolio-statistics"
     :data-downloads="statistics.downloads"
     :data-stars="statistics.stars">
@@ -33,8 +20,6 @@
 import statistics from "#blog-portfolio-statistics";
 import { canProjectCounter } from "#shared/utils/ticker";
 
-defineProps<{ compact?: boolean }>();
-
 const now = ref(0);
 const downloadRate = computed(() =>
   canProjectCounter(statistics.growth.downloads, now.value)
@@ -49,14 +34,6 @@ const starRate = computed(() =>
 onMounted(() => {
   now.value = Date.now();
 });
-
-const downloadsExact = statistics.downloads.toLocaleString("en-GB");
-const starsExact = statistics.stars.toLocaleString("en-GB");
-const downloadsLong = new Intl.NumberFormat("en-GB", {
-  notation: "compact",
-  compactDisplay: "long",
-  maximumFractionDigits: 1,
-}).format(statistics.downloads);
 </script>
 
 <style lang="scss">
