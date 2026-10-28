@@ -10,8 +10,9 @@
         <p class="controls-lab__eyebrow">Local design playground</p>
         <h1>Code block playground</h1>
         <p>
-          Compare five tab styles and five button treatments using real code
-          blocks. The blog still uses attached tabs and bordered controls.
+          Compare {{ tabOptions.length }} tab styles and five button treatments
+          using real code blocks. The blog uses full-width Editor tabs and
+          bordered controls.
         </p>
       </div>
       <u-theme-button />
@@ -144,9 +145,15 @@ const tabOptions = [
   },
   {
     id: "editor",
-    title: "Editor",
+    title: "Editor, content width",
     description:
-      "A file-tab strip with dividers, monospace labels and an accent top edge.",
+      "File-style tabs sized to their labels, leaving the rest of the header empty.",
+  },
+  {
+    id: "editor-wide",
+    title: "Editor, full width",
+    description:
+      "The same editor treatment, with equal-width tabs filling the entire header.",
   },
 ] as const;
 const selectedTab = computed(() =>

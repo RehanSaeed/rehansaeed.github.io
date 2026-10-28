@@ -305,6 +305,7 @@ test("The cheat sheet documents accessible Bash/PowerShell tabs and copies only 
     exact: true,
   });
   await expect(group.getByRole("tab")).toHaveCount(2);
+  await expect(group).toHaveClass(/\bcode-block--tabs-editor-wide\b/);
   await expect(
     page.getByRole("heading", { name: "Alternative Code Tabs", exact: true }),
   ).toBeVisible();
@@ -341,10 +342,25 @@ test("The cheat sheet documents accessible Bash/PowerShell tabs and copies only 
   expect(Math.abs(tabEdge.gap)).toBeLessThanOrEqual(1);
   expect(Math.abs(tabEdge.left)).toBeLessThanOrEqual(1);
   expect(Math.abs(tabEdge.right)).toBeLessThanOrEqual(1);
-  await expect(bash).toHaveCSS(
-    "border-bottom-color",
-    await bash.evaluate((element) => getComputedStyle(element).backgroundColor),
-  );
+  const widths = await group.getByRole("tablist").evaluate((element) => {
+    const tabs = [...element.querySelectorAll('[role="tab"]')].map((tab) =>
+      tab.getBoundingClientRect(),
+    );
+    return {
+      available: element.clientWidth,
+      filled: tabs[1]!.right - tabs[0]!.left,
+      first: tabs[0]!.width,
+      last: tabs[1]!.width,
+    };
+  });
+  expect(Math.abs(widths.filled - widths.available)).toBeLessThanOrEqual(1);
+  expect(Math.abs(widths.first - widths.last)).toBeLessThanOrEqual(1);
+  const corner = await group
+    .getByRole("tablist")
+    .evaluate((element) =>
+      parseFloat(getComputedStyle(element).borderTopRightRadius),
+    );
+  expect(corner).toBeGreaterThan(0);
   await expect(group.getByRole("tabpanel")).toHaveCount(1);
   await bash.focus();
   await page.keyboard.press("ArrowLeft");

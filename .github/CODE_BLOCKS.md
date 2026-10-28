@@ -44,8 +44,9 @@ Write-Output "Hello"
 :::
 ````
 
-Tabs sit on the top edge of the code panel, rather than appearing as detached
-buttons. Native buttons use the ARIA tablist/tab/tabpanel pattern, with selected
+Tabs use the full-width Editor style: equal-width choices filling a rounded
+header on the top edge of the code panel, with an accent top edge on the active tab.
+Native buttons use the ARIA tablist/tab/tabpanel pattern, with selected
 state, linked tab/panel IDs and roving keyboard focus.
 Each alternative retains its language-specific styling, including PowerShell's
 blue background and dark-theme syntax colours in both site themes.
@@ -63,13 +64,15 @@ wrapping and Bash/PowerShell alternatives.
 
 The blog uses the shared bordered `UButton` controls (option C). They appear at
 the top right on code-block hover or keyboard focus; touch devices keep them
-visible.
+visible. Code groups use the Editor, full width tab style.
 
 Run `npm run dev` and open `/dev/code-controls/` to compare the original controls,
 the real shared `UButton` (plain and bordered), and soft/grouped alternatives.
 The `#tab-styles` section also offers attached, underline, segmented, pill and
-editor-style Bash/PowerShell tabs. These use the real renderer and highlighting;
+editor-style Bash/PowerShell tabs, with separate content-width and full-width
+Editor examples. These use the real renderer and highlighting;
 all styles retain the same accessible tab semantics and keyboard behaviour.
+The attached-tab example keeps the code panel's exposed top-right corner rounded.
 Each example uses the same build-time-highlighted sample and working copy/wrap
 controls. Toggle all controls, narrow examples, or the theme to compare states;
 the preference radio buttons do not change the production default.
