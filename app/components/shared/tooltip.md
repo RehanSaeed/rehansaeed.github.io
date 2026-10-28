@@ -40,5 +40,5 @@ teleport. Tooltip text is plain text; keep interactive content in a dialog.
 
 Icon-only controls and image links use tooltips to explain their action or
 destination. Generated article heading links use the global Content component
-`HeadingAnchor`; its native link keeps the section fragment and accessible name,
+`SectionLink`; its native link keeps the section fragment and accessible name,
 while only the decorative SVG is hidden from assistive technology.

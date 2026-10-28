@@ -2,7 +2,7 @@
   <u-tooltip v-slot="{ trigger }" text="Link to this section">
     <a
       v-bind="trigger"
-      class="heading-anchor"
+      class="section-link"
       :href="href"
       aria-label="Link to this section">
       <slot />
@@ -15,7 +15,7 @@ defineProps<{ href: string }>();
 </script>
 
 <style lang="scss" scoped>
-.heading-anchor {
+.section-link {
   color: var(--global-link-color);
   float: left; // Remove when browser support is good enough.
   float: inline-start;
