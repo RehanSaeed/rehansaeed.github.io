@@ -1,18 +1,23 @@
 <template>
   <div class="sound-control">
-    <u-button
-      class="sound-control__button"
-      aria-label="Sound effects"
-      :aria-pressed="enabled"
-      :title="enabled ? 'Turn sound effects off' : 'Turn sound effects on'"
-      @click="setEnabled(!enabled)">
-      <u-icon
-        class="sound-control__icon sound-control__on"
-        name="feather:volume-2" />
-      <u-icon
-        class="sound-control__icon sound-control__off"
-        name="feather:volume-x" />
-    </u-button>
+    <u-tooltip
+      v-slot="{ trigger }"
+      :text="enabled ? 'Turn sound effects off' : 'Turn sound effects on'"
+      placement="left">
+      <u-button
+        v-bind="trigger"
+        class="sound-control__button"
+        aria-label="Sound effects"
+        :aria-pressed="enabled"
+        @click="setEnabled(!enabled)">
+        <u-icon
+          class="sound-control__icon sound-control__on"
+          name="feather:volume-2" />
+        <u-icon
+          class="sound-control__icon sound-control__off"
+          name="feather:volume-x" />
+      </u-button>
+    </u-tooltip>
     <p v-if="error" class="sound-control__error" role="status">{{ error }}</p>
   </div>
 </template>
