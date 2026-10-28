@@ -56,7 +56,7 @@ for (const width of [375, 1280]) {
         6,
       );
     }
-    // Isolate the animated overlay from platform-dependent photo resampling.
+    // Exclude photo resampling and the portrait border's subpixel antialiasing.
     const frames: Buffer[] = [];
     for (const time of [0, 15_150]) {
       await portrait.evaluate((element, currentTime) => {
@@ -65,7 +65,7 @@ for (const width of [375, 1280]) {
           .getAnimations()[0].currentTime = currentTime;
       }, time);
       frames.push(
-        await portrait.screenshot({
+        await portrait.locator("svg").screenshot({
           animations: "allow",
           scale: "css",
           style: ".author__image { visibility: hidden; }",
