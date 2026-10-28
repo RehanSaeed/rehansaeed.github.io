@@ -6,6 +6,9 @@ for (const width of [320, 375, 576, 768, 1280]) {
     await page.goto(
       "/optimally-configuring-open-telemetry-tracing-for-asp-net-core/",
     );
+    await expect(
+      page.getByRole("button", { name: "Open search", exact: true }),
+    ).toBeEnabled();
     await page.evaluate(() => document.fonts.ready);
     const links = page.locator(
       ".post__content :is(h1, h2, h3, h4, h5, h6) > a.anchor-link",
@@ -83,11 +86,16 @@ for (const width of [320, 375, 576, 768, 1280]) {
     await expect(firstLink).toHaveCSS("opacity", "0");
     await firstLink.focus();
     await expect(firstLink).toHaveCSS("opacity", "1");
-    const tooltip = page.getByRole("tooltip", { name: "Link to this section", exact: true });
+    const tooltip = page.getByRole("tooltip", {
+      name: "Link to this section",
+      exact: true,
+    });
     await expect(tooltip).toBeVisible();
     await expect(firstLink).toHaveAccessibleName("Link to this section");
     await expect(firstLink).toHaveAccessibleDescription("Link to this section");
-    expect(await tooltip.evaluate((element) => element.matches(":popover-open"))).toBe(true);
+    expect(
+      await tooltip.evaluate((element) => element.matches(":popover-open")),
+    ).toBe(true);
     await page.keyboard.press("Escape");
     await expect(tooltip).toBeHidden();
     await expect(firstLink).toBeFocused();
