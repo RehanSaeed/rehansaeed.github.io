@@ -68,7 +68,8 @@ for (const width of [375, 1280]) {
         await portrait.locator("svg").screenshot({
           animations: "allow",
           scale: "css",
-          style: ".author__image { visibility: hidden; }",
+          style:
+            ".author__portrait { visibility: hidden; } .author__wink { visibility: visible; }",
         }),
       );
     }
