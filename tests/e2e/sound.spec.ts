@@ -44,10 +44,7 @@ async function enable(page: Page) {
 async function expectSoundState(page: Page, enabled: boolean) {
   const button = soundToggle(page);
   await expect(button).toHaveAttribute("aria-pressed", String(enabled));
-  await expect(button).toHaveAttribute(
-    "title",
-    `Turn sound effects ${enabled ? "off" : "on"}`,
-  );
+  await expect(button).not.toHaveAttribute("title");
   await expect(
     button.locator(`.sound-control__${enabled ? "on" : "off"}`),
   ).toHaveCSS("opacity", "1");
@@ -121,6 +118,54 @@ test("Defaults to on without autoplay, and interaction plays a cue", async ({
   await themeToggle(page).click();
   await expect.poll(() => playback(page)).toHaveLength(1);
 });
+
+for (const colorScheme of ["light", "dark"] as const) {
+  test(`Sound tooltips describe the action without playing cues in ${colorScheme}`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme });
+    await page.goto("/");
+    await ready(page);
+    const button = soundToggle(page);
+    const tooltip = page.getByRole("tooltip");
+    await button.hover();
+    await expect(tooltip).toBeVisible();
+    await expect(tooltip).toHaveText("Turn sound effects off");
+    await expect(tooltip).toHaveAttribute("data-placement", "left");
+    await expect(button).toHaveAccessibleDescription("Turn sound effects off");
+    await expect(button).not.toHaveAttribute("title");
+    expect(await playback(page)).toEqual([]);
+
+    await button.click();
+    await expectSoundState(page, false);
+    await expect(tooltip).toHaveCount(0);
+    await expect(button).not.toHaveAttribute("aria-describedby");
+    expect(await playback(page)).toEqual([]);
+
+    await page.mouse.move(0, 0);
+    await themeToggle(page).focus();
+    await page.keyboard.press("Tab");
+    await expect(button).toBeFocused();
+    await expect(tooltip).toHaveText("Turn sound effects on");
+    await expect(button).toHaveAccessibleDescription("Turn sound effects on");
+    expect(await playback(page)).toEqual([]);
+
+    await page.keyboard.press("Enter");
+    await expectSoundState(page, true);
+    await expect(tooltip).toHaveCount(0);
+    await expect.poll(() => playback(page)).toHaveLength(1);
+    await page.keyboard.press("Shift+Tab");
+    await page.keyboard.press("Tab");
+    await expect(tooltip).toHaveText("Turn sound effects off");
+    await expect(button).toHaveAccessibleDescription("Turn sound effects off");
+    await page.keyboard.press("Escape");
+    await expect(tooltip).toHaveCount(0);
+    await expect(button).not.toHaveAttribute("aria-describedby");
+    await expect(button).toBeFocused();
+    await expectSoundState(page, true);
+    expect(await playback(page)).toHaveLength(1);
+  });
+}
 
 test("A saved mute stays silent and requests no samples until enabled", async ({
   page,
@@ -549,6 +594,19 @@ test("Sounds on explicit dialog dismissal once, but not on deep links or result 
   await expect.poll(() => playback(page)).toHaveLength(2);
   await page.getByRole("button", { name: "Open search", exact: true }).click();
   await expect.poll(() => playback(page)).toHaveLength(3);
+  await page.getByRole("button", { name: "Close Search", exact: true }).focus();
+  await page.keyboard.press("Tab");
+  await page.keyboard.press("Shift+Tab");
+  await expect(
+    page.getByRole("tooltip", { name: "Close Search" }),
+  ).toBeVisible();
+  expect(await playback(page)).toHaveLength(3);
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("tooltip")).toHaveCount(0);
+  await expect(
+    page.getByRole("dialog", { name: "Search", exact: true }),
+  ).toBeVisible();
+  expect(await playback(page)).toHaveLength(3);
   await page.keyboard.press("Escape");
   await expect.poll(() => playback(page)).toHaveLength(4);
   await page.goto("/?search=ASP.NET");
