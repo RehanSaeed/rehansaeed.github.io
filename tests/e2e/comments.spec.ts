@@ -252,12 +252,20 @@ test.describe("GitHub comments", () => {
     page,
   }) => {
     await page.route("**/api.github.com/**", (route) => route.abort());
+    // Override the shared fixture's empty external-image responses.
+    await page.route("**/camo.githubusercontent.com/**", (route) =>
+      route.fulfill({
+        contentType: "image/svg+xml",
+        body: '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96"><rect width="100%" height="100%" fill="blue"/></svg>',
+      }),
+    );
     await page.goto("/gitattributes-best-practices/#comments");
     await expect(page.locator(".comment__content").first()).toHaveCSS(
       "display",
       "grid",
     );
     const image = page.locator(".comment__content img").first();
+    await expect(image).toHaveJSProperty("naturalWidth", 96);
     await expect(image).toHaveAttribute("width", "40");
     await expect(image).toHaveAttribute("height", "40");
     await expect(image).toHaveCSS("display", "inline");

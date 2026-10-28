@@ -4,7 +4,7 @@ import { expect, test } from "./fixtures";
 for (const width of [375, 1280]) {
   test(`The author winks every 15 seconds without moving the portrait at ${width}px`, async ({
     page,
-  }) => {
+  }, testInfo) => {
     await page.setViewportSize({ width, height: 900 });
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.goto("/");
@@ -12,14 +12,6 @@ for (const width of [375, 1280]) {
     const portrait = page.getByRole("main").locator(".author__portrait");
     const image = portrait.getByRole("img", { name: "Muhammad Rehan Saeed" });
     await expect(image).toBeVisible();
-    await expect
-      .poll(() =>
-        image.evaluate(
-          (element: HTMLImageElement) =>
-            element.complete && element.naturalWidth > 0,
-        ),
-      )
-      .toBe(true);
     await image.evaluate((element: HTMLImageElement) => element.decode());
     await expect(portrait.locator("svg")).toHaveAttribute(
       "aria-hidden",
@@ -27,6 +19,7 @@ for (const width of [375, 1280]) {
     );
     await expect(portrait.locator("svg")).toHaveCSS("pointer-events", "none");
     const bounds = await portrait.boundingBox();
+    const imageBounds = await image.boundingBox();
     const imageSource = await image.getAttribute("src");
     const samples = await portrait.evaluate((element) => {
       const eyelid = element.querySelector(".author__eyelid");
@@ -63,9 +56,7 @@ for (const width of [375, 1280]) {
         6,
       );
     }
-    expect(await portrait.boundingBox()).toEqual(bounds);
-    await expect(image).toHaveAttribute("src", imageSource!);
-
+    // Exclude photo resampling and the portrait border's subpixel antialiasing.
     const frames: Buffer[] = [];
     for (const time of [0, 15_150]) {
       await portrait.evaluate((element, currentTime) => {
@@ -74,9 +65,25 @@ for (const width of [375, 1280]) {
           .getAnimations()[0].currentTime = currentTime;
       }, time);
       frames.push(
-        await portrait.screenshot({ animations: "allow", scale: "css" }),
+        await portrait.locator("svg").screenshot({
+          animations: "allow",
+          scale: "css",
+          style:
+            ".author__portrait { visibility: hidden; } .author__wink { visibility: visible; }",
+        }),
       );
     }
+    expect(await portrait.boundingBox()).toEqual(bounds);
+    expect(await image.boundingBox()).toEqual(imageBounds);
+    await expect(image).toHaveAttribute("src", imageSource!);
+    await Promise.all(
+      frames.map((body, index) =>
+        testInfo.attach(index === 0 ? "wink-open" : "wink-closed", {
+          body,
+          contentType: "image/png",
+        }),
+      ),
+    );
     const [open, closed] = await Promise.all(
       frames.map((frame) =>
         sharp(frame).ensureAlpha().raw().toBuffer({ resolveWithObject: true }),
@@ -100,7 +107,7 @@ for (const width of [375, 1280]) {
       expect(y).toBeLessThan(0.51);
       changed++;
     }
-    expect(changed, "The wink visibly changes the photograph").toBeGreaterThan(
+    expect(changed, "The wink visibly changes the eye overlay").toBeGreaterThan(
       5,
     );
   });
