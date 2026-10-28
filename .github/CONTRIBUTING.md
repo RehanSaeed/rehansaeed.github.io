@@ -16,6 +16,9 @@ Link an existing issue if it provides useful context, but an issue is not requir
   Prettier, and runs ESLint fixes and Prettier on staged JavaScript, TypeScript
   and Vue files.
 - Add tests for behavior changes and make sure checks pass.
+- CI rejects flaky Playwright tests even if a retry passes. Use
+  `npx playwright test <test-file> --repeat-each=10 --retries=0` to investigate
+  suspected timing or rendering issues without retries hiding failures.
 
 ## Images
 

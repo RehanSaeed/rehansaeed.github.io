@@ -8,6 +8,7 @@ export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: true,
   forbidOnly: isCI,
+  failOnFlakyTests: isCI,
   retries: isCI || isRemote ? 1 : 0,
   workers: isRemote ? 4 : undefined,
   timeout: isRemote ? 120_000 : 30_000,
