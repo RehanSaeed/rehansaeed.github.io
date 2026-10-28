@@ -13,7 +13,6 @@ defineProps<{ href: string; label: string }>();
 <style lang="scss" scoped>
 .section-link {
   color: var(--global-link-color);
-  float: left; // Remove when browser support is good enough.
   float: inline-start;
   margin-inline-start: -30px;
   opacity: 0;
