@@ -32,6 +32,9 @@ for (const { name, path, selector } of [
     page,
   }) => {
     await page.goto(path);
+    await expect(
+      page.getByRole("button", { name: "Open search", exact: true }),
+    ).toBeEnabled();
     const links = page.locator(selector).getByRole("link");
     await expect(links).toHaveCount(9);
 
@@ -53,6 +56,19 @@ for (const { name, path, selector } of [
       expect(transformDuration).toBeGreaterThan(0);
 
       await link.hover();
+      const label = await link.getAttribute("aria-label");
+      const text =
+        label === "Youtube"
+          ? "YouTube"
+          : label === "Email"
+            ? "Send me an email"
+            : label === "RSS"
+              ? "Subscribe via RSS"
+              : label!;
+      await expect(
+        page.getByRole("tooltip", { name: text, exact: true }),
+      ).toBeVisible();
+      await expect(link).toHaveAccessibleDescription(text);
       await expect(link).toHaveCSS("transform", "matrix(1.5, 0, 0, 1.5, 0, 0)");
       const hovered = await icon.boundingBox();
       expect(hovered?.width).toBeCloseTo(original!.width * 1.5, 1);
@@ -61,6 +77,7 @@ for (const { name, path, selector } of [
 
       await page.mouse.move(0, 0);
       await expect(link).toHaveCSS("transform", "none");
+      await expect(page.getByRole("tooltip")).toHaveCount(0);
       const restored = await icon.boundingBox();
       expect(restored?.width).toBeCloseTo(original!.width, 1);
       expect(restored?.height).toBeCloseTo(original!.height, 1);

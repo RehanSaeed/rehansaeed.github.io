@@ -49,7 +49,7 @@ for (const colorScheme of ["light", "dark"] as const) {
         (await author.getAttribute("href"))!,
       );
       await expect(avatar).toHaveAccessibleName(login);
-      await expect(avatar).toHaveAttribute("title", login);
+      await expect(avatar).not.toHaveAttribute("title");
       await expect(avatar.locator("img")).toHaveAttribute("alt", login);
       await expect(avatar.locator("img")).toHaveAttribute("loading", "lazy");
       await expect
@@ -86,6 +86,7 @@ for (const colorScheme of ["light", "dark"] as const) {
           await expect(avatar).toBeFocused();
         }
         await expect(avatar).toHaveCSS("scale", "1.4");
+        await expect(avatar).toHaveAccessibleDescription(login);
         await expect(avatar).toHaveCSS("opacity", "1");
         const unclippedEdges = await avatar.evaluate((element) => {
           const bounds = element.getBoundingClientRect();

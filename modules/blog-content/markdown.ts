@@ -380,8 +380,8 @@ export function rehypeHeadingAnchors() {
       node.children = [
         {
           type: "element",
-          tagName: "a",
-          properties: { href: `#${id}`, "aria-hidden": "true" },
+          tagName: "anchor-link",
+          properties: { href: `#${id}`, label: "Link to this section" },
           children: [structuredClone(anchorIcon)],
         },
         ...(node.children ?? []),

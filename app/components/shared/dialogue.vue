@@ -6,15 +6,24 @@
       :class="{ 'dialog--fullscreen': fullscreen }"
       :aria-labelledby="titleId"
       @cancel.prevent="close"
-      @close="close">
+      @close="onNativeClose">
       <div class="dialog__container">
         <u-heading :id="titleId" level="2" class="dialog__title">{{
           title
         }}</u-heading>
         <form class="dialog__form" method="dialog" @submit.prevent="close">
-          <u-button :aria-label="`Close ${title}`" class="dialog__close" submit>
-            <u-icon name="feather:x" />
-          </u-button>
+          <u-tooltip
+            v-slot="{ trigger }"
+            :text="`Close ${title}`"
+            placement="left">
+            <u-button
+              v-bind="trigger"
+              :aria-label="`Close ${title}`"
+              class="dialog__close"
+              submit>
+              <u-icon name="feather:x" />
+            </u-button>
+          </u-tooltip>
         </form>
         <div class="dialog__content">
           <slot />
@@ -53,6 +62,12 @@ export default {
     },
     hide(dialog) {
       dialog.close();
+    },
+    onNativeClose(event) {
+      // A queued close event can arrive after the dialog has reopened.
+      if (!event.currentTarget.open) {
+        this.close();
+      }
     },
     close() {
       if (this.isOpen) {

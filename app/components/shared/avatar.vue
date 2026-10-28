@@ -1,24 +1,26 @@
 <template>
-  <Component
-    class="avatar"
-    :is="tag"
-    :aria-label="label"
-    :title="label"
-    :href="href"
-    :to="to">
-    <picture v-if="src && !imageFailed">
-      <source v-if="avifSource" type="image/avif" :srcset="avifSource" />
-      <img
-        class="avatar__image"
-        :alt="alt"
-        :src="src"
-        :width="sizeInPixels"
-        :height="sizeInPixels"
-        :loading="loading"
-        @error="onImageError" />
-    </picture>
-    <u-icon v-else class="avatar__fallback" name="fa-solid:user" />
-  </Component>
+  <u-tooltip v-slot="{ trigger }" :text="label">
+    <Component
+      v-bind="{ ...$attrs, ...trigger }"
+      class="avatar"
+      :is="tag"
+      :aria-label="label"
+      :href="href"
+      :to="to">
+      <picture v-if="src && !imageFailed">
+        <source v-if="avifSource" type="image/avif" :srcset="avifSource" />
+        <img
+          class="avatar__image"
+          :alt="alt"
+          :src="src"
+          :width="sizeInPixels"
+          :height="sizeInPixels"
+          :loading="loading"
+          @error="onImageError" />
+      </picture>
+      <u-icon v-else class="avatar__fallback" name="fa-solid:user" />
+    </Component>
+  </u-tooltip>
 </template>
 
 <script>
@@ -27,6 +29,7 @@ import { getAvifSource } from "#shared/utils/images";
 
 export default {
   name: "u-avatar",
+  inheritAttrs: false,
   data() {
     return { imageFailed: false };
   },

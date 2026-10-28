@@ -78,7 +78,7 @@ test("Likes and reposts tolerate anonymous authors and missing or broken photos"
       const name = author?.name?.trim() || "Anonymous";
       const label = index === 0 ? name : `${name} - 2 January 2026`;
       await expect(face).toHaveAccessibleName(label);
-      await expect(face).toHaveAttribute("title", label);
+      await expect(face).not.toHaveAttribute("title");
       await expect(face).toHaveAttribute(
         "href",
         `https://example.com/${type}/${index}`,
@@ -86,6 +86,7 @@ test("Likes and reposts tolerate anonymous authors and missing or broken photos"
       await expect(face).toHaveAttribute("rel", "ugc nofollow");
       await face.focus();
       await expect(face).toBeFocused();
+      await expect(face).toHaveAccessibleDescription(label);
       if (author?.photo === photo) {
         await expect(face.locator("img")).toHaveAttribute("alt", name);
         await expect

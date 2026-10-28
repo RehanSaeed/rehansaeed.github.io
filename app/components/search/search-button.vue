@@ -1,11 +1,14 @@
 <template>
   <div>
-    <u-button
-      class="search-button"
-      aria-label="Open search"
-      @click.prevent="onOpen">
-      <u-icon name="feather:search" />
-    </u-button>
+    <u-tooltip v-slot="{ trigger }" text="Search" placement="left">
+      <u-button
+        v-bind="trigger"
+        class="search-button"
+        aria-label="Open search"
+        @click.prevent="onOpen">
+        <u-icon name="feather:search" />
+      </u-button>
+    </u-tooltip>
 
     <u-dialogue
       fullscreen

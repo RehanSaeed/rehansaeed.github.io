@@ -1,12 +1,19 @@
 <template>
-  <u-button
-    class="theme-button"
-    aria-label="Toggle dark/light"
-    :title="darkTheme ? 'Enable light theme' : 'Enable dark theme'"
-    @click.prevent="onToggleTheme">
-    <u-icon class="theme-button__icon theme-button__moon" name="feather:moon" />
-    <u-icon class="theme-button__icon theme-button__sun" name="feather:sun" />
-  </u-button>
+  <u-tooltip
+    v-slot="{ trigger }"
+    :text="darkTheme ? 'Enable light theme' : 'Enable dark theme'"
+    placement="left">
+    <u-button
+      v-bind="{ ...$attrs, ...trigger }"
+      class="theme-button"
+      aria-label="Toggle dark/light"
+      @click.prevent="onToggleTheme">
+      <u-icon
+        class="theme-button__icon theme-button__moon"
+        name="feather:moon" />
+      <u-icon class="theme-button__icon theme-button__sun" name="feather:sun" />
+    </u-button>
+  </u-tooltip>
 </template>
 
 <script>
@@ -14,6 +21,7 @@ import { appThemeChanged, appThemeLoaded } from "~/framework/analytics";
 
 export default {
   name: "u-theme-button",
+  inheritAttrs: false,
   data() {
     return {
       darkTheme: false,

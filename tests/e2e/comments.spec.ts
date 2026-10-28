@@ -154,6 +154,13 @@ test.describe("GitHub comments", () => {
       ).toBeVisible();
       const date = comment.locator(".comment__timestamp > time");
       await expect(date).toHaveAttribute("datetime", owner.created_at);
+      await expect(date).not.toHaveAttribute("title");
+      await date.focus();
+      await expect(date).toHaveAccessibleDescription(owner.created_at);
+      await expect(
+        page.getByRole("tooltip", { name: owner.created_at }),
+      ).toBeVisible();
+      await page.keyboard.press("Escape");
       await expect(date.locator("..")).not.toHaveJSProperty("tagName", "A");
       await expect(comment.locator(".comment__edited time")).toHaveAttribute(
         "datetime",
@@ -163,6 +170,11 @@ test.describe("GitHub comments", () => {
       await expect(
         comment.getByRole("img", { name: "Thumbs up: 3" }),
       ).toHaveText("👍3");
+      const reaction = comment.getByRole("img", { name: "Thumbs up: 3" });
+      await reaction.focus();
+      await expect(reaction).toHaveAccessibleDescription("Thumbs up: 3");
+      await expect(reaction).not.toHaveAttribute("title");
+      await page.keyboard.press("Escape");
       await expect(comment.getByRole("img", { name: "Heart: 1" })).toHaveText(
         "❤️1",
       );

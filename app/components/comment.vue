@@ -42,18 +42,23 @@
             v-for="reaction in reactions"
             :key="reaction.name"
             class="comment__reaction-item">
-            <u-badge
-              class="comment__reaction"
-              role="img"
-              :aria-label="`${reaction.label}: ${reaction.count}`"
-              :title="`${reaction.label}: ${reaction.count}`">
-              <span class="comment__reaction-emoji" aria-hidden="true">{{
-                reaction.emoji
-              }}</span>
-              <span class="comment__reaction-count" aria-hidden="true">{{
-                reaction.count
-              }}</span>
-            </u-badge>
+            <u-tooltip
+              v-slot="{ trigger }"
+              :text="`${reaction.label}: ${reaction.count}`">
+              <u-badge
+                v-bind="trigger"
+                class="comment__reaction"
+                role="img"
+                tabindex="0"
+                :aria-label="`${reaction.label}: ${reaction.count}`">
+                <span class="comment__reaction-emoji" aria-hidden="true">{{
+                  reaction.emoji
+                }}</span>
+                <span class="comment__reaction-count" aria-hidden="true">{{
+                  reaction.count
+                }}</span>
+              </u-badge>
+            </u-tooltip>
           </li>
         </ul>
       </footer>

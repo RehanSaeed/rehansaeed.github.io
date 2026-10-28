@@ -21,6 +21,7 @@
     "url": "git+https://github.com/RehanSaeed/rehansaeed.github.io.git"
   },
   "dependencies": {
+    "@floating-ui/vue": "2.0.1",
     "@fontsource-variable/cascadia-code": "5.3.0",
     "@fontsource/audiowide": "5.3.0",
     "@nuxt/content": "3.16.2",

@@ -42,6 +42,33 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
 
         await opener.click();
         await expect(dialog).toBeVisible();
+        await page.waitForTimeout(350);
+        await expect(page.getByRole("tooltip")).toHaveCount(0);
+        await page.keyboard.press("Escape");
+        await expect(closedDialog).toBeHidden();
+        await expect(opener).toBeFocused();
+
+        await opener.press("Enter");
+        await expect(dialog).toBeVisible();
+        await page.waitForTimeout(350);
+        await expect(page.getByRole("tooltip")).toHaveCount(0);
+        const close = dialog.getByRole("button", {
+          name: `Close ${title}`,
+          exact: true,
+        });
+        await close.focus();
+        await page.keyboard.press("Tab");
+        await page.keyboard.press("Shift+Tab");
+        await expect(close).toBeFocused();
+        const tooltip = page.getByRole("tooltip", {
+          name: `Close ${title}`,
+          exact: true,
+        });
+        await expect(tooltip).toBeVisible();
+        await expect(close).toHaveAccessibleDescription(`Close ${title}`);
+        await page.keyboard.press("Escape");
+        await expect(tooltip).toBeHidden();
+        await expect(dialog).toBeVisible();
         await page.keyboard.press("Escape");
         await expect(closedDialog).toBeHidden();
         await expect(opener).toBeFocused();
@@ -52,6 +79,36 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
 
 test.describe("Dialog transitions", () => {
   test.use({ reducedMotion: "no-preference" });
+
+  test("a queued close event does not close a reopened dialog", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/");
+    await page
+      .getByRole("button", { name: "Open search", exact: true })
+      .click();
+    const dialog = page.locator(".search-dialogue");
+    await expect(dialog).toBeVisible();
+    await dialog.evaluate(async (element: HTMLDialogElement) => {
+      const closed = new Promise<void>((resolve) => {
+        element.addEventListener("close", () => resolve(), { once: true });
+      });
+      element.close();
+      element.showModal();
+      await closed;
+      await new Promise(requestAnimationFrame);
+      await new Promise(requestAnimationFrame);
+    });
+    await expect(dialog).toHaveJSProperty("open", true);
+    await expect(dialog).toBeVisible();
+
+    await dialog.evaluate((element: HTMLDialogElement) => element.close());
+    await expect(dialog).toBeHidden();
+    await expect(
+      page.getByRole("button", { name: "Open search", exact: true }),
+    ).toBeFocused();
+  });
 
   test("animates the dialog and backdrop on entrance and exit", async ({
     page,

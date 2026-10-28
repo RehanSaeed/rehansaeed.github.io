@@ -4,13 +4,16 @@
     class="site-update"
     aria-label="Site update">
     <h2 class="site-update__title">Update available</h2>
-    <u-button
-      class="site-update__close"
-      aria-label="Dismiss site update"
-      :disabled="updating"
-      @click="$pwa.cancelPrompt()">
-      <u-icon name="feather:x" />
-    </u-button>
+    <u-tooltip v-slot="{ trigger }" text="Dismiss update notification">
+      <u-button
+        v-bind="trigger"
+        class="site-update__close"
+        aria-label="Dismiss site update"
+        :disabled="updating"
+        @click="$pwa.cancelPrompt()">
+        <u-icon name="feather:x" />
+      </u-button>
+    </u-tooltip>
     <p class="site-update__message" role="status">
       {{ error || "A new version is available. Update when you are ready." }}
     </p>

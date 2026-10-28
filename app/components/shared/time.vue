@@ -1,7 +1,13 @@
 <template>
-  <time class="time" :datetime="datetime" :title="datetime">{{
-    datetimeDisplay
-  }}</time>
+  <u-tooltip v-slot="{ trigger }" :text="datetime">
+    <time
+      v-bind="{ ...$attrs, ...trigger }"
+      class="time"
+      :datetime="datetime"
+      tabindex="0"
+      >{{ datetimeDisplay }}</time
+    >
+  </u-tooltip>
 </template>
 
 <script>
@@ -12,6 +18,7 @@ import {
 
 export default {
   name: "u-time",
+  inheritAttrs: false,
   props: {
     datetime: {
       type: String,

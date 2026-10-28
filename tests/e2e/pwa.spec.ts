@@ -124,8 +124,14 @@ test("Install button waits for browser eligibility and consumes each prompt once
   await expect(button).toBeHidden();
   expect(await announcePrompt(page)).toBe(true);
   await expect(button).toBeVisible();
+  await button.focus();
+  await expect(
+    page.getByRole("tooltip", { name: "Install the app" }),
+  ).toBeVisible();
+  await expect(button).toHaveAccessibleDescription("Install the app");
   await button.click();
   await expect(button).toBeHidden();
+  await expect(page.getByRole("tooltip")).toHaveCount(0);
   await expect(page.locator("html")).toHaveAttribute("data-prompt-calls", "1");
   expect(await announcePrompt(page, "accepted")).toBe(true);
   await expect(button).toBeVisible();
@@ -134,6 +140,33 @@ test("Install button waits for browser eligibility and consumes each prompt once
   await expect(page.locator("html")).toHaveAttribute("data-prompt-calls", "2");
   await page.evaluate(() => window.dispatchEvent(new Event("appinstalled")));
   await expect(button).toBeHidden();
+});
+
+test("Update dismiss control describes its action and removes its tooltip", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.getByRole("button", { name: "Open search" })).toBeEnabled();
+  await page.evaluate(() => {
+    const root = document.querySelector<
+      HTMLElement & {
+        __vue_app__: { config: { globalProperties: { $nuxt: NuxtApp } } };
+      }
+    >("#__nuxt")!;
+    root.__vue_app__.config.globalProperties.$nuxt.$pwa!.needRefresh = true;
+  });
+  const notice = page.getByRole("region", { name: "Site update" });
+  const dismiss = notice.getByRole("button", { name: "Dismiss site update" });
+  await dismiss.focus();
+  await expect(
+    page.getByRole("tooltip", { name: "Dismiss update notification" }),
+  ).toBeVisible();
+  await expect(dismiss).toHaveAccessibleDescription(
+    "Dismiss update notification",
+  );
+  await dismiss.click();
+  await expect(notice).toHaveCount(0);
+  await expect(page.getByRole("tooltip")).toHaveCount(0);
 });
 
 test("Install prompt captured before component mount survives client navigation", async ({
