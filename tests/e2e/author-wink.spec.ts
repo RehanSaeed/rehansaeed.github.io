@@ -4,7 +4,7 @@ import { expect, test } from "./fixtures";
 for (const width of [375, 1280]) {
   test(`The author winks every 15 seconds without moving the portrait at ${width}px`, async ({
     page,
-  }) => {
+  }, testInfo) => {
     await page.setViewportSize({ width, height: 900 });
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.goto("/");
@@ -69,6 +69,14 @@ for (const width of [375, 1280]) {
         await portrait.screenshot({ animations: "allow", scale: "css" }),
       );
     }
+    await Promise.all(
+      frames.map((body, index) =>
+        testInfo.attach(index === 0 ? "wink-open" : "wink-closed", {
+          body,
+          contentType: "image/png",
+        }),
+      ),
+    );
     const [open, closed] = await Promise.all(
       frames.map((frame) =>
         sharp(frame).ensureAlpha().raw().toBuffer({ resolveWithObject: true }),
