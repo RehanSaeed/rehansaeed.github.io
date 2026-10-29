@@ -179,7 +179,11 @@ const onClick = (event: MouseEvent) => {
 
 const onFocus = (event: FocusEvent) => {
   const target = event.currentTarget;
-  if (!(target instanceof HTMLElement) || !target.matches(":focus-visible")) {
+  // Controlled inspection stays open for any focused point, not just keyboard focus.
+  if (
+    !(target instanceof HTMLElement) ||
+    (props.open === undefined && !target.matches(":focus-visible"))
+  ) {
     return;
   }
   const dialog = target.closest("dialog:modal");

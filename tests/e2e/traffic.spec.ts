@@ -54,9 +54,9 @@ async function expectPointTooltip(
     (await tooltip.getAttribute("id"))!,
   );
   await expect(tooltip.locator(".tooltip__arrow")).toHaveCount(1);
-  expect(
-    await tooltip.evaluate((element) => element.matches(":popover-open")),
-  ).toBe(true);
+  await expect
+    .poll(() => tooltip.evaluate((element) => element.matches(":popover-open")))
+    .toBe(true);
   await expect(tooltip.locator(".post-traffic__tooltip-date")).toHaveText(date);
   await expect(tooltip.locator(".post-traffic__tooltip-metrics dt")).toHaveText(
     ["Page views", ...(engagement === undefined ? [] : ["Engagement / view"])],
@@ -247,6 +247,8 @@ for (const width of [375, 1280]) {
     await page.keyboard.press("Escape");
     await expect(source).toBeHidden();
     await infoButton.focus();
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Shift+Tab");
     await expect(source).toBeVisible();
     await infoButton.press("Escape");
     await expect(source).toBeHidden();
