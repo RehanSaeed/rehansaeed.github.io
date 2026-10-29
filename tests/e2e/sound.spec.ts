@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { Page } from "@playwright/test";
 import type { NuxtApp } from "nuxt/app";
-import { soundNames } from "../../app/composables/use-sound-effect";
+import { soundNames } from "../../shared/utils/sounds";
 import { delayClientScripts, expect, test } from "./fixtures";
 
 declare global {
