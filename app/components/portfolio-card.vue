@@ -5,7 +5,8 @@
     tag="article"
     compact
     hoverable
-    focusable>
+    focusable
+    sound>
     <figure class="portfolio-card__header">
       <NuxtPicture
         format="avif"

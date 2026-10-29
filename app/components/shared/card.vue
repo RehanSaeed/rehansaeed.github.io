@@ -1,5 +1,6 @@
 <template>
   <component
+    v-bind="soundTrigger"
     class="card"
     :is="tag"
     :class="{
@@ -14,7 +15,13 @@
 <script>
 export default {
   name: "u-card",
+  setup(props) {
+    return { soundTrigger: useLinkSound(() => props.sound) };
+  },
   props: {
+    sound: {
+      type: Boolean,
+    },
     compact: {
       type: Boolean,
     },

@@ -10,7 +10,7 @@
         class="site-update__close"
         aria-label="Dismiss site update"
         :disabled="updating"
-        @click="$pwa.cancelPrompt()">
+        @click="dismiss">
         <u-icon name="feather:x" />
       </u-button>
     </u-tooltip>
@@ -25,7 +25,7 @@
         @click="update">
         {{ updating ? "Updating..." : "Update now" }}
       </u-button>
-      <u-button bordered :disabled="updating" @click="$pwa.cancelPrompt()">
+      <u-button bordered :disabled="updating" @click="dismiss">
         Later
       </u-button>
     </div>
@@ -34,13 +34,20 @@
 
 <script setup lang="ts">
 const { $pwa } = useNuxtApp();
+const { play } = useSoundEffect();
 const updating = ref(false);
 const error = ref("");
+
+function dismiss() {
+  $pwa?.cancelPrompt();
+  play("dialog-close");
+}
 
 async function update() {
   if (!$pwa || updating.value) return;
   updating.value = true;
   error.value = "";
+  play("link-activate");
   try {
     await $pwa.updateServiceWorker();
   } catch (cause) {

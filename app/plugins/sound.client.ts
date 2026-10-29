@@ -134,6 +134,8 @@ export default defineNuxtPlugin((app) => {
 
   function play(name: SoundEffect) {
     if (!enabled.value || disposed) return;
+    // A navigation preview must not cut off a confirmation or deliberate action.
+    if (name === "link-hover" && activeSource) return;
     const buffer = sounds.get(name);
     if (!buffer || !context || !volume) return;
     if (context.state !== "running") {

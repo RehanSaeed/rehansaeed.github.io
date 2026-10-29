@@ -1,5 +1,6 @@
 <template>
   <Component
+    v-bind="soundTrigger"
     :is="tag"
     class="link-button"
     :class="{
@@ -20,7 +21,13 @@ import { NuxtLink } from "#components";
 
 export default {
   name: "u-link-button",
+  setup(props) {
+    return { soundTrigger: useLinkSound(() => props.sound) };
+  },
   props: {
+    sound: {
+      type: Boolean,
+    },
     bordered: {
       type: Boolean,
     },
