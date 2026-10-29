@@ -3,6 +3,7 @@
     <u-link-button
       class="tags__link"
       bordered
+      sound
       v-for="tag of tags"
       :key="tag"
       :to="tagPath(tag)"

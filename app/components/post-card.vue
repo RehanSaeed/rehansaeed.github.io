@@ -5,6 +5,7 @@
     compact
     hoverable
     focusable
+    sound
     :class="{ 'post-card--has-poster': post.poster }">
     <div class="post-card__header">
       <NuxtPicture

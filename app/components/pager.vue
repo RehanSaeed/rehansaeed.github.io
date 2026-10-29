@@ -5,6 +5,7 @@
       :class="{ 'pager__button--none': !pageInfo.hasPreviousPage }"
       bordered
       contrast
+      sound
       :to="previousUrl"
       >Previous</u-link-button
     >
@@ -20,6 +21,7 @@
       :class="{ 'pager__button--none': !pageInfo.hasNextPage }"
       bordered
       contrast
+      sound
       :to="nextUrl"
       >Next</u-link-button
     >
