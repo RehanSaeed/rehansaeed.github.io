@@ -38,6 +38,12 @@ static hosting without a runtime image server. Keep SVGs and remote images in
 their original formats, and retain PNG/JPG URLs in feeds, social metadata,
 favicons and the web app manifest for compatibility.
 
+When changing PWA shortcut artwork, bump the PNG filename version in
+`scripts/pwa-shortcut-icons.mjs`, `nuxt.config.ts` and the shortcut tests, then
+regenerate the PNGs and their AVIF companions. Installed browsers detect changes
+to the manifest's `shortcuts`; replacing image bytes at the same URL can leave
+the operating system's jumplist icons stale.
+
 The PWA precaches AVIF content images only, including the plain hero companions
 used by offline search. PNG/JPG fallbacks remain available online but are not
 downloaded during offline installation. PNG app icons and installation screenshots

@@ -12,7 +12,7 @@ const shortcuts = [
 test("PWA shortcut PNGs match their branded SVG sources", async () => {
   for (const { slug } of shortcuts) {
     const filename = join("public", "images", "icons", slug);
-    const image = sharp(`${filename}.png`);
+    const image = sharp(`${filename}-v2.png`);
     const metadata = await image.metadata();
     expect([metadata.width, metadata.height]).toEqual([192, 192]);
     expect(metadata.format).toBe("png");
@@ -63,13 +63,13 @@ test("The manifest serves the redesigned icons for all three shortcuts", async (
     );
     expect(shortcut).toMatchObject({
       url,
-      icons: [{ src: `/images/icons/${slug}.png`, sizes: "192x192" }],
+      icons: [{ src: `/images/icons/${slug}-v2.png`, sizes: "192x192" }],
     });
     const icon = await request.get(shortcut.icons[0].src);
     expect(icon.ok()).toBe(true);
     expect(icon.headers()["content-type"]).toContain("image/png");
     expect(await icon.body()).toEqual(
-      await readFile(join("public", "images", "icons", `${slug}.png`)),
+      await readFile(join("public", "images", "icons", `${slug}-v2.png`)),
     );
   }
 });
