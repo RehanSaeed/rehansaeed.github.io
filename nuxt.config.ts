@@ -266,6 +266,8 @@ export default defineNuxtConfig({
           label,
         },
       ]),
+      // Bump icon filename versions when artwork changes so installed jumplists
+      // detect a manifest update; replacing bytes at the same URL is not enough.
       shortcuts: [
         {
           name: "Blog",
