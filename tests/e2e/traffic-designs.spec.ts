@@ -173,6 +173,8 @@ test("Mobile samples retain working presets, annotations and a non-expanding hel
   const y = await plotOffset();
   const help = chart.getByRole("button", { name: "About article traffic" });
   await help.focus();
+  await page.keyboard.press("Tab");
+  await page.keyboard.press("Shift+Tab");
   const tooltip = frame
     .getByRole("tooltip")
     .filter({ hasText: "Source: Google Analytics" });
