@@ -5,6 +5,8 @@ import { remarkContainers } from "../../modules/blog-content/markdown";
 
 const path = "/cheat-sheet/";
 
+test.use({ launchOptions: { ignoreDefaultArgs: ["--hide-scrollbars"] } });
+
 async function stubClipboard(page: Page) {
   await page.addInitScript(() => {
     Object.defineProperty(navigator, "clipboard", {
@@ -60,8 +62,13 @@ test("Icon controls overlay the top right, reveal on hover/focus and have dismis
   await expect(copy.locator("svg")).toHaveCount(2);
   await expect(wrap.locator("svg")).toHaveCount(2);
   await copy.hover();
-  const tip = block.getByRole("tooltip", { name: "Copy code", exact: true });
+  const tip = page.getByRole("tooltip", { name: "Copy code", exact: true });
   await expect(tip).toBeVisible();
+  await expect(tip).toHaveClass("tooltip");
+  await expect(tip.locator(".tooltip__arrow")).toBeVisible();
+  expect(
+    await tip.evaluate((element) => element.matches(":popover-open")),
+  ).toBe(true);
   await expect(copy).toHaveAttribute(
     "aria-describedby",
     (await tip.getAttribute("id"))!,
@@ -69,11 +76,19 @@ test("Icon controls overlay the top right, reveal on hover/focus and have dismis
   await copy.focus();
   await page.keyboard.press("Escape");
   await expect(tip).toBeHidden();
+  await expect(copy).not.toHaveAttribute("aria-describedby");
   await wrap.focus();
   await page.mouse.move(0, 0);
   await expect(toolbar).toHaveCSS("opacity", "1");
   await expect(
-    block.getByRole("tooltip", { name: "Wrap lines", exact: true }),
+    page.getByRole("tooltip", { name: "Wrap lines", exact: true }),
+  ).toBeVisible();
+  await page.keyboard.press("Enter");
+  await expect(wrap).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("tooltip")).toHaveCount(0);
+  await wrap.hover();
+  await expect(
+    page.getByRole("tooltip", { name: "Unwrap lines", exact: true }),
   ).toBeVisible();
 });
 

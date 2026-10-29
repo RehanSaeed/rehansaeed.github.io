@@ -56,65 +56,49 @@
           "><code :class="`language-${block.language || 'text'}`" v-html="block.html || ''" /></pre>
         <!-- eslint-enable vue/no-v-html -->
         <div v-show="hydrated" class="code-block__toolbar">
-          <div
-            class="code-block__action"
-            :class="{ 'code-block__action--dismissed': dismissTooltips }"
-            @pointerenter="dismissTooltips = false"
-            @focusin="dismissTooltips = false"
-            @keydown.esc="dismissTooltips = true">
-            <component
-              :is="controlButton"
-              v-bind="controlButtonProps"
-              type="button"
-              aria-label="Wrap lines"
-              :aria-describedby="`${id}-wrap-tip-${index}`"
-              :aria-pressed="wrapped"
-              @click="wrap = !wrapped">
-              <u-icon
-                name="lucide:wrap-text"
-                class="code-block__icon"
-                :class="{ 'code-block__icon--active': !wrapped }" />
-              <u-icon
-                name="lucide:move-right"
-                class="code-block__icon"
-                :class="{ 'code-block__icon--active': wrapped }" />
-            </component>
-            <span
-              :id="`${id}-wrap-tip-${index}`"
-              class="code-block__tooltip"
-              role="tooltip">
-              {{ wrapped ? "Unwrap lines" : "Wrap lines" }}
-            </span>
+          <div class="code-block__action">
+            <u-tooltip
+              v-slot="{ trigger }"
+              :text="wrapped ? 'Unwrap lines' : 'Wrap lines'">
+              <component
+                :is="controlButton"
+                v-bind="{ ...controlButtonProps, ...trigger }"
+                type="button"
+                aria-label="Wrap lines"
+                :aria-pressed="wrapped"
+                @click="wrap = !wrapped">
+                <u-icon
+                  name="lucide:wrap-text"
+                  class="code-block__icon"
+                  :class="{ 'code-block__icon--active': !wrapped }" />
+                <u-icon
+                  name="lucide:move-right"
+                  class="code-block__icon"
+                  :class="{ 'code-block__icon--active': wrapped }" />
+              </component>
+            </u-tooltip>
           </div>
-          <div
-            class="code-block__action"
-            :class="{ 'code-block__action--dismissed': dismissTooltips }"
-            @pointerenter="dismissTooltips = false"
-            @focusin="dismissTooltips = false"
-            @keydown.esc="dismissTooltips = true">
-            <component
-              :is="controlButton"
-              v-bind="controlButtonProps"
-              type="button"
-              :aria-label="copied ? 'Copied!' : 'Copy code'"
-              :aria-describedby="`${id}-copy-tip-${index}`"
-              :disabled="copying"
-              @click="copy">
-              <u-icon
-                name="lucide:copy"
-                class="code-block__icon"
-                :class="{ 'code-block__icon--active': !copied }" />
-              <u-icon
-                name="lucide:check"
-                class="code-block__icon"
-                :class="{ 'code-block__icon--active': copied }" />
-            </component>
-            <span
-              :id="`${id}-copy-tip-${index}`"
-              class="code-block__tooltip"
-              role="tooltip">
-              {{ copied ? "Copied!" : "Copy code" }}
-            </span>
+          <div class="code-block__action">
+            <u-tooltip
+              v-slot="{ trigger }"
+              :text="copied ? 'Copied!' : 'Copy code'">
+              <component
+                :is="controlButton"
+                v-bind="{ ...controlButtonProps, ...trigger }"
+                type="button"
+                :aria-label="copied ? 'Copied!' : 'Copy code'"
+                :disabled="copying"
+                @click="copy">
+                <u-icon
+                  name="lucide:copy"
+                  class="code-block__icon"
+                  :class="{ 'code-block__icon--active': !copied }" />
+                <u-icon
+                  name="lucide:check"
+                  class="code-block__icon"
+                  :class="{ 'code-block__icon--active': copied }" />
+              </component>
+            </u-tooltip>
           </div>
         </div>
       </div>
@@ -163,7 +147,6 @@ const wrap = ref<boolean>();
 const copied = ref(false);
 const copying = ref(false);
 const message = ref("");
-const dismissTooltips = ref(false);
 let reset: ReturnType<typeof setTimeout> | undefined;
 const blocks = computed(() =>
   props.alternatives?.length ? props.alternatives : [props],
