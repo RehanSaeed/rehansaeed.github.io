@@ -1,4 +1,4 @@
-import { soundNames, type SoundEffect } from "~/composables/use-sound-effect";
+import { soundNames, type SoundEffect } from "#shared/utils/sounds";
 
 const preferenceKey = "sound-effect-enabled";
 
