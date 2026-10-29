@@ -6,7 +6,7 @@ for (const name of ["blog", "portfolio", "about"]) {
   await sharp(fileURLToPath(new URL(`${name}.svg`, directory)))
     .resize(192, 192)
     .png({ palette: false, compressionLevel: 9 })
-    .toFile(fileURLToPath(new URL(`${name}-v2.png`, directory)));
+    .toFile(fileURLToPath(new URL(`${name}.png`, directory)));
 }
 console.log(
   "Regenerated the three 192x192 PWA shortcut icons from SVG sources.",
