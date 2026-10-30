@@ -45,6 +45,7 @@ async function clearPlayback(page: Page) {
 
 async function ready(page: Page) {
   await page.mouse.move(1, 1);
+  await expect(soundToggle(page)).toBeEnabled();
   await expect
     .poll(() => page.evaluate(() => window.soundProbe.decoded))
     .toBe(soundNames.length);
@@ -946,9 +947,7 @@ test("Route unmount stops an active tag preview", async ({ page }) => {
   expect(await page.evaluate(() => window.soundProbe.stops)).toBe(1);
 });
 
-test("Muting and route unmount cancel pending tag previews", async ({
-  page,
-}) => {
+test("Muting and unmount prevent late tag previews", async ({ page }) => {
   await page.goto("/");
   await ready(page);
   await page
@@ -979,8 +978,13 @@ test("Muting and route unmount cancel pending tag previews", async ({
         .click();
     });
   await expect(page).toHaveURL(/\/about\/$/);
+  await expect(page.locator(".post-card .tags__link")).toHaveCount(0);
+  const soundsAtUnmount = await playedSounds(page);
   await page.waitForTimeout(150);
-  expect(await playedSounds(page)).toEqual([]);
+  expect(await playedSounds(page)).toEqual(soundsAtUnmount);
+  await expect
+    .poll(() => page.evaluate(() => window.soundProbe.active))
+    .toBe(0);
 });
 
 test("Search opening, typing, result hover and selection, and dismissal stay silent", async ({
@@ -1051,12 +1055,21 @@ test("Coffee, support links and fallback sharing remain silent and functional", 
     });
     element.click();
   });
-  await page.keyboard.press("Escape");
+  await page.mouse.move(1, 1);
+  await page
+    .getByRole("button", { name: "Close Buy me a Coffee", exact: true })
+    .press("Enter");
+  await expect(
+    page.getByRole("dialog", { name: "Buy me a Coffee", exact: true }),
+  ).toBeHidden();
   await page.getByRole("button", { name: "Share", exact: true }).click();
   await expect(
     page.getByRole("dialog", { name: "Share", exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Close Share", exact: true }).click();
+  await page.mouse.move(1, 1);
+  await page
+    .getByRole("button", { name: "Close Share", exact: true })
+    .press("Enter");
   await expect(
     page.getByRole("dialog", { name: "Share", exact: true }),
   ).toBeHidden();
