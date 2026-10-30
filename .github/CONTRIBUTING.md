@@ -53,8 +53,11 @@ variable or paid map subscription is required for local development or deploymen
 The map uses OpenFreeMap's Positron and Dark styles, with white countries and
 water, borders and pins coloured using the site's purple theme tokens. The author
 pin marks a representative East London point near Stratford, not a street address.
-Its default framing shows the UK and Europe, not street-level London. Keep that
-regional view for reduced-motion users as well.
+Before a visitor location is available, the map shows the UK and Europe.
+After lookup, fit only the author and visitor coordinates with room for both pins
+and their labels. Nearby visitors should get a closer view, not a continent-wide
+map; cap zoom at 12 for very close or identical locations. Reduced-motion users
+get the same framing without animation.
 Keep the map's OpenMapTiles and OpenStreetMap attribution visible.
 
 The renderer, worker and styles are loaded only when the map approaches the
@@ -70,9 +73,10 @@ Once the interactive map loads, it also requests an approximate IP location from
 the visitor's IP address; the request omits credentials and the referrer. No GPS
 permission is requested, and the application does not persist coordinates or send
 them to analytics. IP locations can be inaccurate, especially with VPNs.
-The map adds a second purple pin and a dotted line to London, and widens the
-regional view to include both locations, unless the visitor has already moved
-the map. Theme changes must restore the connection layer as well as its colours.
+The map adds a second purple pin and a dotted line to London, and fits the view to
+both locations, unless the visitor has already moved the map. Resize the framing
+with the map container, without overriding deliberate user zoom or pan.
+Theme changes must restore the connection layer as well as its colours.
 The caption calculates an approximate great-circle distance in miles from the
 validated IP coordinates; never hardcode a visitor location or an example distance.
 GeoJS is linked in the map credits rather than a separate explanatory paragraph.

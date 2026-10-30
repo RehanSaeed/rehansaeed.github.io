@@ -47,6 +47,33 @@ async function expectPinInsideMap(page: Page, selector: string) {
     .toBe(true);
 }
 
+async function expectLocationsFillView(page: Page, coincident: boolean) {
+  const figure = page.locator(".location-map");
+  await expect
+    .poll(async () => {
+      const canvas = (await figure
+        .locator(".maplibregl-canvas")
+        .boundingBox())!;
+      const author = (await figure
+        .locator(".maplibregl-marker.location-map__marker")
+        .boundingBox())!;
+      const visitor = (await figure
+        .locator(".maplibregl-marker.location-map__visitor")
+        .boundingBox())!;
+      const dx = Math.abs(
+        author.x + author.width / 2 - visitor.x - visitor.width / 2,
+      );
+      const dy = Math.abs(
+        author.y + author.height - visitor.y - visitor.height,
+      );
+      if (coincident) return dx < 1 && dy < 1;
+      return (
+        Math.max(dx / (canvas.width - 96), dy / (canvas.height - 128)) > 0.9
+      );
+    })
+    .toBe(true);
+}
+
 async function expectWhiteLand(page: Page) {
   const canvas = page.locator(".location-map .maplibregl-canvas");
   await expect
@@ -400,6 +427,8 @@ for (const colorScheme of ["light", "dark"] as const) {
 }
 
 for (const [place, longitude, latitude] of [
+  ["Central London", "-0.1278", "51.5074"],
+  ["East London", "-0.005", "51.54"],
   ["New York", "-74.0060", "40.7128"],
   ["Paris", "2.3522", "48.8566"],
   ["Sydney", "151.2093", "-33.8688"],
@@ -440,12 +469,14 @@ for (const [place, longitude, latitude] of [
     await expect(figure).not.toContainText("Approximate location via");
     await expectPinInsideMap(page, ".location-map__marker");
     await expectPinInsideMap(page, ".location-map__visitor");
+    await expectLocationsFillView(page, place === "East London");
     if (place === "New York") await expectDottedConnection(page);
     await expect(figure).toContainText("GeoJS");
     expect(lookups).toEqual([geoUrl]);
     await page.setViewportSize({ width: 375, height: 900 });
     await expectPinInsideMap(page, ".location-map__marker");
     await expectPinInsideMap(page, ".location-map__visitor");
+    await expectLocationsFillView(page, place === "East London");
     await page.getByRole("button", { name: "Toggle dark/light" }).click();
     await expect(
       figure.locator(".maplibregl-marker.location-map__visitor"),
