@@ -9,10 +9,14 @@ export function useSoundEffect() {
     enabled: readonly(enabled),
     error: readonly(error),
     setEnabled(value: boolean) {
-      if (import.meta.client) app.$soundEffect.setEnabled(value);
+      if (import.meta.client) {
+        app.$soundEffect.setEnabled(value);
+      }
     },
     play(sound: SoundEffect) {
-      if (import.meta.client) return app.$soundEffect.play(sound);
+      if (import.meta.client) {
+        return app.$soundEffect.play(sound);
+      }
     },
   };
 }

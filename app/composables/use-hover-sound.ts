@@ -15,7 +15,9 @@ export function useHoverSound(setting: () => HoverSoundEffect | undefined) {
   }
 
   watch(enabled, (value) => {
-    if (!value) cancelPreview();
+    if (!value) {
+      cancelPreview();
+    }
   });
   watch(setting, cancelPreview);
   onBeforeUnmount(cancelPreview);
@@ -41,7 +43,9 @@ export function useHoverSound(setting: () => HoverSoundEffect | undefined) {
             // Quick passes stay silent; leaving stops the accompanying preview.
             timer = setTimeout(() => {
               timer = undefined;
-              if (!enabled.value) return;
+              if (!enabled.value) {
+                return;
+              }
               stopPreview = play(sound);
             }, 100);
           },
