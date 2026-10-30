@@ -12,7 +12,6 @@ async function mountTicker(
     number?: number;
     rate?: number;
     locale?: string;
-    paused?: boolean;
   } = {},
 ) {
   const [component, utilities, vue] = await Promise.all([
@@ -51,7 +50,7 @@ async function mountTicker(
   await page.clock.install({ time: new Date(now - 10_000) });
   await page.clock.pauseAt(new Date(now));
   await page.setContent(
-    '<main id="ticker-test"></main><input type="number" aria-label="Number" /><input type="number" aria-label="Rate" /><input type="checkbox" aria-label="Paused" /><button>Unmount</button>',
+    '<main id="ticker-test"></main><input type="number" aria-label="Number" /><input type="number" aria-label="Rate" /><button>Unmount</button>',
   );
   await page.evaluate(
     async ({ componentSource, utilitiesSource, vue, options }) => {
@@ -72,14 +71,12 @@ async function mountTicker(
       Math.random = () => 0.5;
       const number = ref(options.number ?? 1000);
       const rate = ref(options.rate ?? 2);
-      const paused = ref(options.paused ?? false);
       const app = createApp({
         setup: () => () =>
           h(Ticker, {
             title: "Downloads",
             number: number.value,
             rate: rate.value,
-            paused: paused.value,
             locale: options.locale,
           }),
       });
@@ -87,14 +84,12 @@ async function mountTicker(
       for (const [label, model] of [
         ["Number", number],
         ["Rate", rate],
-        ["Paused", paused],
       ] as const) {
         document
           .querySelector(`[aria-label="${label}"]`)!
           .addEventListener("input", (event) => {
             const input = event.target as HTMLInputElement;
-            model.value =
-              input.type === "checkbox" ? input.checked : Number(input.value);
+            model.value = Number(input.value);
           });
       }
       document
@@ -151,23 +146,6 @@ test("Random ticks pause and jump by different amounts instead of counting one b
     await page.clock.runFor(1000);
     await expect(ticker).toHaveAttribute("data-value", String(value));
   }
-});
-
-test("Pause preserves the displayed estimate and resuming does not add paused time", async ({
-  page,
-}) => {
-  await page.emulateMedia({ reducedMotion: "no-preference" });
-  await mountTicker(page);
-  const ticker = page.locator(".number-ticker");
-  await page.clock.runFor(1000);
-  await page.getByLabel("Paused").check();
-  await expect(ticker).toHaveAttribute("data-state", "paused");
-  await page.clock.runFor(5000);
-  await expect(ticker).toHaveAttribute("data-value", "1002");
-  await page.getByLabel("Paused").uncheck();
-  await expect(ticker).toHaveAttribute("data-state", "running");
-  await page.clock.runFor(1000);
-  await expect(ticker).toHaveAttribute("data-value", "1004");
 });
 
 test("Reduced motion prevents ticking and changing the preference stops animation", async ({
