@@ -17,7 +17,10 @@
       </a>
       <div v-if="hasError" class="webmentions__error">
         <p role="alert">Unable to load Web Mentions. Please try again.</p>
-        <u-button class="webmentions__retry" bordered @click="onLoadMentions">
+        <u-button
+          class="webmentions__retry"
+          variant="secondary"
+          @click="onLoadMentions">
           <u-icon name="feather:rotate-cw" />
           Retry
         </u-button>

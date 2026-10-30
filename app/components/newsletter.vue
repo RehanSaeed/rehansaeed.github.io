@@ -33,7 +33,9 @@
         style="position: absolute; inset-inline-start: -5000px"
         tabindex="-1"
         value />
-      <u-button bordered submit class="newsletter__button">Subscribe</u-button>
+      <u-button variant="secondary" submit class="newsletter__button"
+        >Subscribe</u-button
+      >
     </form>
   </u-card>
 </template>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <u-button bordered @click="onClick">
+    <u-button variant="secondary" @click="onClick">
       <u-icon name="fa-solid:share-alt" inline />
       Share
     </u-button>

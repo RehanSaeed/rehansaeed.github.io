@@ -19,13 +19,16 @@
     </p>
     <div class="site-update__actions">
       <u-button
-        bordered
+        variant="secondary"
         class="site-update__update"
         :disabled="updating"
         @click="update">
         {{ updating ? "Updating..." : "Update now" }}
       </u-button>
-      <u-button bordered :disabled="updating" @click="$pwa.cancelPrompt()">
+      <u-button
+        variant="secondary"
+        :disabled="updating"
+        @click="$pwa.cancelPrompt()">
         Later
       </u-button>
     </div>
