@@ -1,3 +1,4 @@
+import type { VNode } from "vue";
 import {
   linkSoundProfiles,
   type LinkSound,
@@ -20,7 +21,7 @@ export function useLinkSound(setting: () => boolean | LinkSound | undefined) {
 
   function getLink(event: Event) {
     if (!profile.value || !(event.target instanceof Element)) return;
-    const link = event.target.closest<HTMLAnchorElement>("a[href]");
+    const link = event.target.closest("a[href]");
     if (
       !link ||
       link.closest("[data-sound-link]") !== event.currentTarget ||
@@ -30,6 +31,37 @@ export function useLinkSound(setting: () => boolean | LinkSound | undefined) {
       return;
     }
     return link;
+  }
+
+  function activate(event: MouseEvent) {
+    cancelPreview();
+    const link = getLink(event);
+    if (
+      !link ||
+      !profile.value ||
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.altKey ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.shiftKey
+    ) {
+      return;
+    }
+    let sound = profile.value.activate;
+    if (setting() === "content") {
+      const url = new URL(link.getAttribute("href") ?? "", document.baseURI);
+      if (url.origin !== location.origin) {
+        sound = "external-open";
+      } else if (
+        url.pathname === location.pathname &&
+        url.search === location.search &&
+        (url.hash || link.getAttribute("href") === "#")
+      ) {
+        sound = "anchor-jump";
+      }
+    }
+    play(sound);
   }
 
   const trigger = computed(() =>
@@ -72,43 +104,29 @@ export function useLinkSound(setting: () => boolean | LinkSound | undefined) {
             }
           },
           onFocusout: cancelPreview,
-          onClickCapture(event: MouseEvent) {
-            cancelPreview();
-            const link = getLink(event);
-            if (
-              link &&
-              profile.value &&
-              !event.defaultPrevented &&
-              event.button === 0 &&
-              !event.altKey &&
-              !event.ctrlKey &&
-              !event.metaKey &&
-              !event.shiftKey
-            ) {
-              let sound = profile.value.activate;
-              if (setting() === "content") {
-                const url = new URL(link.href);
-                if (url.origin !== location.origin) {
-                  sound = "external-open";
-                } else if (
-                  url.pathname === location.pathname &&
-                  url.search === location.search &&
-                  url.hash
-                ) {
-                  sound = "anchor-jump";
-                }
-              }
-              play(sound);
-            }
-          },
         }
       : {},
   );
+
+  function mount({ el }: VNode) {
+    // Native capture avoids Vue stamping unrelated descendant clicks, including
+    // actions mounted in the same millisecond or rendered with a fixed clock.
+    if (el instanceof HTMLElement) el.addEventListener("click", activate, true);
+  }
+
+  function unmount({ el }: VNode) {
+    if (el instanceof HTMLElement)
+      el.removeEventListener("click", activate, true);
+  }
 
   watch(enabled, (value) => {
     if (!value) cancelPreview();
   });
   watch(profile, cancelPreview);
   onBeforeUnmount(cancelPreview);
-  return trigger;
+  return computed(() => ({
+    ...trigger.value,
+    onVnodeMounted: mount,
+    onVnodeBeforeUnmount: unmount,
+  }));
 }
