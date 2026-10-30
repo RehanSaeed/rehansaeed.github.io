@@ -3,6 +3,7 @@ import { createRequire } from "node:module";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { runInNewContext } from "node:vm";
+import { test as unitTest } from "@playwright/test";
 import { compileString } from "sass-embedded";
 import { ModuleKind, ScriptTarget, transpileModule } from "typescript";
 import { h, type ComponentOptions } from "vue";
@@ -28,7 +29,9 @@ runInNewContext(source, {
   exports: componentExports,
   require: loadDependency,
 });
-if (!componentExports.default) throw new Error("Missing button component");
+if (!componentExports.default) {
+  throw new Error("Missing button component");
+}
 const button = {
   ...componentExports.default,
   template: descriptor.template!.content,
@@ -41,20 +44,23 @@ const properties = compileString(readFileSync(propertiesPath, "utf8"), {
 const variants = ["plain", "secondary", "primary"] as const;
 
 for (const variant of variants) {
-  test(`${variant} preserves server-rendered disabled and submit behaviour`, async () => {
-    for (const disabled of [false, true]) {
-      for (const submit of [false, true]) {
-        const html = await renderToString(
-          h(button, { variant, disabled, submit }, () => "Action"),
-        );
-        expect(html.includes(" disabled")).toBe(disabled || !submit);
-        expect(html.includes("button--hydrating")).toBe(!disabled && !submit);
-        expect(html).toContain(`type="${submit ? "submit" : "button"}"`);
-        expect(html.includes("button--bordered")).toBe(variant !== "plain");
-        expect(html.includes("button--primary")).toBe(variant === "primary");
+  unitTest(
+    `${variant} preserves server-rendered disabled and submit behaviour`,
+    async () => {
+      for (const disabled of [false, true]) {
+        for (const submit of [false, true]) {
+          const html = await renderToString(
+            h(button, { variant, disabled, submit }, () => "Action"),
+          );
+          expect(html.includes(" disabled")).toBe(disabled || !submit);
+          expect(html.includes("button--hydrating")).toBe(!disabled && !submit);
+          expect(html).toContain(`type="${submit ? "submit" : "button"}"`);
+          expect(html.includes("button--bordered")).toBe(variant !== "plain");
+          expect(html.includes("button--primary")).toBe(variant === "primary");
+        }
       }
-    }
-  });
+    },
+  );
 }
 
 for (const theme of ["light", "dark"]) {
