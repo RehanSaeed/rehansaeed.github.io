@@ -163,7 +163,7 @@ useSchemaOrg([
   padding-block-start: var(--global-space-fluid-5);
 
   .portfolio-statistics {
-    margin-block-end: var(--global-space-fluid-5);
+    margin-block-end: var(--global-space-fluid-6);
   }
 }
 </style>

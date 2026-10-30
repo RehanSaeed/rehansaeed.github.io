@@ -470,10 +470,13 @@ for (const width of [320, 375, 1280]) {
           aboveHeading: heading.top - microsoft.bottom,
           belowBadges: project.top - badges.bottom,
           minimumGap: gap * 2 - 1,
+          minimumBadgeGap: gap * 3 - 1,
         };
       });
       expect(spacing.aboveHeading).toBeGreaterThanOrEqual(spacing.minimumGap);
-      expect(spacing.belowBadges).toBeGreaterThanOrEqual(spacing.minimumGap);
+      expect(spacing.belowBadges).toBeGreaterThanOrEqual(
+        spacing.minimumBadgeGap,
+      );
     });
   }
 }
