@@ -2,18 +2,18 @@
   <div>
     <p class="post-meta">
       Posted
-      <u-time class="dt-published" :datetime="meta.date">
+      <u-time
+        class="dt-published"
+        :class="{ 'post-meta__publication': trafficToggle }"
+        :datetime="meta.date">
         <template v-if="trafficToggle" #default="{ trigger, text, ready }">
-          <button
+          {{ text }}
+          <span
+            v-if="ready"
             v-bind="trigger"
-            class="post-meta__date-toggle"
-            type="button"
-            :disabled="!ready"
-            :aria-label="`${text}; activate five times to toggle article traffic`"
-            :aria-pressed="trafficVisible"
-            @click="activateTraffic">
-            {{ text }}
-          </button>
+            class="post-meta__date-gesture"
+            aria-hidden="true"
+            @click="activateTraffic" />
         </template>
       </u-time>
       <template v-if="meta.dateModified">
@@ -35,10 +35,6 @@ export default {
       required: true,
     },
     trafficToggle: {
-      type: Boolean,
-      default: false,
-    },
-    trafficVisible: {
       type: Boolean,
       default: false,
     },
@@ -68,14 +64,13 @@ export default {
   margin-block-end: 0;
   opacity: 0.8;
 }
-.post-meta__date-toggle {
-  appearance: none;
-  background: none;
-  border: 0;
-  padding: 0;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
+.post-meta__publication {
+  position: relative;
+}
+.post-meta__date-gesture {
+  position: absolute;
+  inset: 0;
+  cursor: text;
   touch-action: manipulation;
 }
 </style>
