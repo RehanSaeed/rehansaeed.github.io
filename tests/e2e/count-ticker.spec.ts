@@ -234,7 +234,7 @@ test("Ticker styles preserve responsive dimensions and follow shared design toke
     <html data-theme="light"><body>
     <dl class="number-ticker">
       <dt class="number-ticker__header number-ticker__header--with-info">
-        <span class="number-ticker__title">Downloads</span>
+        <span class="number-ticker__label">Downloads</span>
         <button class="number-ticker__info" aria-label="Downloads">i</button>
       </dt>
       <dd class="number-ticker__value">
@@ -248,6 +248,12 @@ test("Ticker styles preserve responsive dimensions and follow shared design toke
   });
   const ticker = page.locator(".number-ticker");
   const info = ticker.getByRole("button", { name: "Downloads" });
+  const header = ticker.getByRole("term");
+  await expect(header).toHaveCSS("grid-template-areas", '". label info"');
+  await expect(header.locator(".number-ticker__label")).toHaveCSS(
+    "grid-column-start",
+    "label",
+  );
   for (const rootSize of [16, 20]) {
     const rootStyle = await page.addStyleTag({
       content: `html { font-size: ${rootSize}px; }`,
@@ -276,6 +282,10 @@ test("Ticker styles preserve responsive dimensions and follow shared design toke
   await expect(ticker).toHaveCSS("border-top-width", "3px");
   await expect(info).toHaveCSS("inline-size", "32px");
   await expect(info).toHaveCSS("block-size", "32px");
+  await header.evaluate((element) =>
+    element.classList.remove("number-ticker__header--with-info"),
+  );
+  await expect(header).toHaveCSS("grid-template-areas", '"label"');
 });
 
 test("Shared ticker needs label, number and rate and follows the supplied average", async ({

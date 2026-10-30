@@ -143,8 +143,8 @@ test("Portfolio totals match the listed projects and About shares the star total
   expect(tickers).toHaveLength(2);
   expect(
     tickers
-      .find(".number-ticker__title")
-      .map((_, title) => $(title).text())
+      .find(".number-ticker__label")
+      .map((_, label) => $(label).text())
       .get(),
   ).toEqual(["Package Downloads", "GitHub Stars"]);
   expect(tickers.last().find(".number-ticker__accessible").text()).toBe(
@@ -170,14 +170,14 @@ test("Portfolio totals match the listed projects and About shares the star total
   const aboutHtml = load(await about.text());
   const aboutTickers = aboutHtml(".about__statistics .number-ticker");
   expect(aboutTickers).toHaveLength(2);
-  expect(aboutTickers.first().find(".number-ticker__title").text()).toBe(
+  expect(aboutTickers.first().find(".number-ticker__label").text()).toBe(
     "Package Downloads",
   );
   expect(aboutTickers.first().find(".number-ticker__accessible").text()).toBe(
     downloads.toLocaleString("en-GB"),
   );
   const aboutStars = aboutTickers.eq(1);
-  expect(aboutStars.find(".number-ticker__title").text()).toBe("GitHub Stars");
+  expect(aboutStars.find(".number-ticker__label").text()).toBe("GitHub Stars");
   expect(aboutStars.find(".number-ticker__accessible").text()).toBe(
     stars.toLocaleString("en-GB"),
   );
@@ -339,7 +339,7 @@ for (const width of [320, 375, 1280]) {
       await expect(totals).toHaveAttribute("data-downloads", /^\d+$/);
       await expect(totals).toHaveAttribute("data-stars", /^\d+$/);
       await expect(totals).toHaveAttribute("data-stars", starTotal!);
-      await expect(totals.locator(".number-ticker__title")).toHaveText([
+      await expect(totals.locator(".number-ticker__label")).toHaveText([
         "Package Downloads",
         "GitHub Stars",
       ]);
@@ -382,13 +382,13 @@ for (const width of [320, 375, 1280]) {
       for (const ticker of await cards.all()) {
         expect(
           await ticker
-            .locator(".number-ticker__title")
+            .locator(".number-ticker__label")
             .evaluate((heading) => getComputedStyle(heading).fontFamily),
         ).toContain("Audiowide");
         if (width === 1280) {
           expect(
             await ticker
-              .locator(".number-ticker__title")
+              .locator(".number-ticker__label")
               .evaluate((heading) =>
                 Number.parseFloat(getComputedStyle(heading).fontSize),
               ),
@@ -404,7 +404,7 @@ for (const width of [320, 375, 1280]) {
         const cardBounds = (await ticker.boundingBox())!;
         const cardCentre = cardBounds.x + cardBounds.width / 2;
         for (const selector of [
-          ".number-ticker__title",
+          ".number-ticker__label",
           ".number-ticker__digits",
         ]) {
           const content = ticker.locator(selector);
