@@ -47,6 +47,8 @@ const user = site.author.gitHub.user;
 
 <style lang="scss">
 .github-badges {
+  --github-badges-image-height: 30px;
+
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -67,13 +69,13 @@ const user = site.author.gitHub.user;
     touch-action: manipulation;
 
     &:focus-visible {
-      outline: 2px solid var(--global-accent-color);
-      outline-offset: 3px;
+      outline: var(--global-border-width-2) solid var(--global-accent-color);
+      outline-offset: var(--global-focus-outline-offset);
     }
   }
 
   img {
-    block-size: 30px;
+    block-size: var(--github-badges-image-height);
   }
 }
 </style>

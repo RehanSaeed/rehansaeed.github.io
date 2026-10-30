@@ -133,8 +133,15 @@ onBeforeUnmount(() => {
 @use "~/assets/style/abstracts/visually-hidden";
 
 .number-ticker {
-  --number-ticker-font-size-min: 0.75rem;
+  --number-ticker-font-size-base: 1rem;
+  --number-ticker-font-size-min: calc(
+    var(--number-ticker-font-size-base) * 0.75
+  );
+  --number-ticker-label-line-height: 1.3;
   --number-ticker-line-height: 1.4;
+  --number-ticker-digit-width: 0.65em;
+  --number-ticker-separator-width: 0.32em;
+  --number-ticker-digit-gap: 0.035em;
   --number-ticker-digit-duration: 450ms;
 
   display: grid;
@@ -180,10 +187,14 @@ onBeforeUnmount(() => {
   grid-area: label;
   align-content: center;
   margin: 0;
-  min-block-size: 2.6em;
+  min-block-size: calc(var(--number-ticker-label-line-height) * 2em);
   font-family: var(--font-heading);
-  font-size: clamp(var(--number-ticker-font-size-min), 7cqi, 2rem);
-  line-height: 1.3;
+  font-size: clamp(
+    var(--number-ticker-font-size-min),
+    7cqi,
+    calc(var(--number-ticker-font-size-base) * 2)
+  );
+  line-height: var(--number-ticker-label-line-height);
 }
 
 .number-ticker__info {
@@ -192,12 +203,12 @@ onBeforeUnmount(() => {
   place-items: center;
   inline-size: var(--global-space-fixed-5);
   block-size: var(--global-space-fixed-5);
-  font-size: 1rem;
+  font-size: var(--number-ticker-font-size-base);
   touch-action: manipulation;
 
   &:focus-visible {
     outline: var(--global-border-width-2) solid var(--global-accent-color);
-    outline-offset: 3px;
+    outline-offset: var(--global-focus-outline-offset);
   }
 }
 
@@ -207,7 +218,11 @@ onBeforeUnmount(() => {
   max-inline-size: 100%;
   color: var(--global-accent-color);
   font-family: var(--global-font-family-monospace);
-  font-size: clamp(var(--number-ticker-font-size-min), 14.5cqi, 5rem);
+  font-size: clamp(
+    var(--number-ticker-font-size-min),
+    14.5cqi,
+    calc(var(--number-ticker-font-size-base) * 5)
+  );
   font-weight: var(--global-font-weight-bold);
   font-variant-numeric: tabular-nums;
   line-height: var(--number-ticker-line-height);
@@ -219,14 +234,14 @@ onBeforeUnmount(() => {
 
 .number-ticker__digits {
   display: flex;
-  gap: 0.035em;
+  gap: var(--number-ticker-digit-gap);
 }
 
 .number-ticker__cell {
   display: inline-block;
   position: relative;
   overflow: hidden;
-  inline-size: 0.65em;
+  inline-size: var(--number-ticker-digit-width);
   block-size: calc(var(--number-ticker-line-height) * 1em);
   border-radius: calc(var(--global-border-radius) / 2);
   background: color-mix(
@@ -240,7 +255,7 @@ onBeforeUnmount(() => {
 }
 
 .number-ticker__cell--separator {
-  inline-size: 0.32em;
+  inline-size: var(--number-ticker-separator-width);
   background: none;
   box-shadow: none;
 }
