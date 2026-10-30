@@ -79,7 +79,7 @@ async function expectWhiteLand(page: Page) {
   await expect
     .poll(async () => {
       const pixel = await sharp(await canvas.screenshot())
-        .extract({ left: 2, top: 2, width: 1, height: 1 })
+        .extract({ left: 16, top: 16, width: 1, height: 1 })
         .removeAlpha()
         .raw()
         .toBuffer();

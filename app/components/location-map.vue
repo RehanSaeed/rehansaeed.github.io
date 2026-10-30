@@ -180,6 +180,20 @@ function mapStyle() {
     : "https://tiles.openfreemap.org/styles/positron";
 }
 
+const createMarker = (
+  maplibregl: typeof import("maplibre-gl"),
+  template: HTMLElement | undefined,
+  position: [number, number],
+) => {
+  const element = template?.cloneNode(true);
+  if (!map || !(element instanceof HTMLElement)) {
+    throw new Error("Could not create the location marker.");
+  }
+  return new maplibregl.Marker({ element, anchor: "bottom" })
+    .setLngLat(position)
+    .addTo(map);
+};
+
 function removeMap() {
   locationController?.abort();
   visitorMarker?.remove();
@@ -256,6 +270,7 @@ function applyMapPalette() {
       colour("accent"),
     ];
     for (const layer of map.getStyle().layers) {
+      if (layer.id.startsWith("visitor-connection")) continue;
       if (layer.type === "background") {
         map.setPaintProperty(layer.id, "background-color", land);
       } else if (layer.type === "fill") {
@@ -265,17 +280,7 @@ function applyMapPalette() {
           layer["source-layer"] === "water" ? tint(0.35) : land,
         );
       } else if (layer.type === "line") {
-        map.setPaintProperty(
-          layer.id,
-          "line-color",
-          layer.id === "visitor-connection-outline"
-            ? theme
-                .getPropertyValue("--location-map-connection-outline-color")
-                .trim()
-            : layer.id === "visitor-connection"
-              ? colour("accent")
-              : tint(0.5),
-        );
+        map.setPaintProperty(layer.id, "line-color", tint(0.5));
       } else if (layer.type === "symbol" && layer.layout?.["text-field"]) {
         const water = ["water_name", "waterway"].includes(
           layer["source-layer"] ?? "",
@@ -358,13 +363,11 @@ async function loadVisitorLocation(maplibregl: typeof import("maplibre-gl")) {
     if (disposed || !map) return;
     visitorLocation = [location.longitude, location.latitude];
     distanceMiles.value = Math.round(distanceInMiles(london, visitorLocation));
-    const element = visitorTemplate.value?.cloneNode(true);
-    if (!(element instanceof HTMLElement)) {
-      throw new Error("Could not create the visitor marker.");
-    }
-    visitorMarker = new maplibregl.Marker({ element, anchor: "bottom" })
-      .setLngLat(visitorLocation)
-      .addTo(map);
+    visitorMarker = createMarker(
+      maplibregl,
+      visitorTemplate.value,
+      visitorLocation,
+    );
     updateConnection();
     frameMap(true);
   } catch (error) {
@@ -401,8 +404,8 @@ async function loadMap() {
       import("maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url"),
     ]);
     if (disposed) return;
-    if (!mapContainer.value || !markerTemplate.value) {
-      throw new Error("The map container or photo marker is missing.");
+    if (!mapContainer.value) {
+      throw new Error("The map container is missing.");
     }
     maplibregl.setWorkerUrl(workerUrl);
     reduceMotion = window.matchMedia(
@@ -425,13 +428,7 @@ async function loadMap() {
       new maplibregl.NavigationControl({ showCompass: false }),
       "top-right",
     );
-    const photoPin = markerTemplate.value.cloneNode(true);
-    if (!(photoPin instanceof HTMLElement)) {
-      throw new Error("Could not create the photo marker.");
-    }
-    marker = new maplibregl.Marker({ element: photoPin, anchor: "bottom" })
-      .setLngLat(london)
-      .addTo(map);
+    marker = createMarker(maplibregl, markerTemplate.value, london);
     map
       .getCanvas()
       .setAttribute("aria-label", "Map showing London, the UK and Europe");
