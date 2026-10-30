@@ -505,7 +505,9 @@ for (const width of [320, 375, 1280]) {
             const digit = cell.querySelector(".number-ticker__digit")!;
             const style = getComputedStyle(digit);
             const canvas = document.createElement("canvas").getContext("2d");
-            if (!canvas) throw new Error("Missing font measurement context");
+            if (!canvas) {
+              throw new Error("Missing font measurement context");
+            }
             canvas.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
             const metrics = canvas.measureText(digit.textContent!);
             const range = document.createRange();

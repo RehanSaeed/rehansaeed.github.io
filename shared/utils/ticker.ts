@@ -13,12 +13,16 @@ export function lifetimeCounterGrowth(
     observedAt: observedAt > 0 ? observedAt : null,
     perSecond: null,
   };
-  if (observedAt <= 0) return unavailable;
+  if (observedAt <= 0) {
+    return unavailable;
+  }
   let perSecond = 0;
   for (const item of items) {
     const created = Date.parse(item.createdAt ?? "");
     const seconds = (observedAt - created) / 1000;
-    if (!Number.isFinite(seconds) || seconds <= 0) return unavailable;
+    if (!Number.isFinite(seconds) || seconds <= 0) {
+      return unavailable;
+    }
     // Sum each item's own lifetime average, not the total divided by the oldest age.
     perSecond += item.count / seconds;
   }

@@ -63,9 +63,12 @@ test("Random second-by-second movement preserves the supplied average and fracti
     expect(state.value + state.remainder).toBeCloseTo(1000 + rate * 10_000, 6);
     expect(movements.size).toBeGreaterThan(1);
     expect(movements.has(0)).toBe(true);
-    if (rate === 1.087) expect(Math.max(...movements)).toBeGreaterThan(1);
-    if (Math.abs(rate) < 1)
+    if (rate === 1.087) {
+      expect(Math.max(...movements)).toBeGreaterThan(1);
+    }
+    if (Math.abs(rate) < 1) {
       expect(Math.max(...[...movements].map(Math.abs))).toBe(1);
+    }
   }
   expect(advanceCounter({ value: 0, remainder: 0 }, -2, 1, 0.5).value).toBe(0);
   expect(

@@ -46,7 +46,9 @@ export async function accountWatchers(dataDir: string, owner: string) {
   let cached: z.infer<typeof cacheSchema> | undefined;
   try {
     const saved = cacheSchema.parse(JSON.parse(await readFile(path, "utf8")));
-    if (saved.owner === owner) cached = saved;
+    if (saved.owner === owner) {
+      cached = saved;
+    }
   } catch (error) {
     if (!(
       error instanceof Error &&
@@ -94,7 +96,9 @@ export async function accountWatchers(dataDir: string, owner: string) {
         (sum, repository) => sum + repository.watchers.totalCount,
         0,
       );
-      if (!batch.pageInfo.hasNextPage) break;
+      if (!batch.pageInfo.hasNextPage) {
+        break;
+      }
       cursor = batch.pageInfo.endCursor;
       if (!cursor || cursors.has(cursor) || batch.nodes.length === 0) {
         throw new Error("GitHub watchers pagination did not advance.");
