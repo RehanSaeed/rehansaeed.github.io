@@ -289,7 +289,7 @@ for (const width of [375, 1280]) {
     const rangeButtons = chart.getByRole("group", {
       name: "Traffic date range",
     });
-    await expect(rangeButtons.locator(".button--bordered")).toHaveCount(2);
+    await expect(rangeButtons.locator(".button--secondary")).toHaveCount(1);
     await expect(rangeButtons.locator(".button--primary")).toHaveCount(1);
     const lastYear = rangeButtons.getByRole("button", {
       name: "Last year",
@@ -830,9 +830,14 @@ test.describe("Touch traffic inspection", () => {
     await engagement.press("Enter");
     await expect(engagement).toHaveAttribute("aria-pressed", "true");
     await expect(engagement).toHaveClass(/button--primary/);
+    await expect(engagement).not.toHaveClass(/button--secondary/);
     await expect(traffic).not.toHaveClass(/button--primary/);
-    await expect(engagement).toHaveCSS("outline-style", "solid");
-    await expect(engagement).toHaveCSS("outline-width", "2px");
+    await expect(traffic).toHaveClass(/button--secondary/);
+    await expect(engagement).toBeFocused();
+    await expect(engagement).toHaveCSS(
+      "transform",
+      "matrix(1, 0, 0, 1, 0, -2)",
+    );
     await expect(metrics.locator('[aria-pressed="true"]')).toHaveCount(1);
     await expect(card.locator(".post-traffic__chart")).toHaveCount(1);
     await expect(card.locator("polyline.post-traffic__line")).toHaveCount(0);
@@ -859,7 +864,9 @@ test.describe("Touch traffic inspection", () => {
     await traffic.press("Space");
     await expect(traffic).toHaveAttribute("aria-pressed", "true");
     await expect(traffic).toHaveClass(/button--primary/);
+    await expect(traffic).not.toHaveClass(/button--secondary/);
     await expect(engagement).not.toHaveClass(/button--primary/);
+    await expect(engagement).toHaveClass(/button--secondary/);
     await expect(metrics.locator('[aria-pressed="true"]')).toHaveCount(1);
     await expect(card.locator(".post-traffic__engagement-line")).toHaveCount(0);
     await expect(card.locator("polyline.post-traffic__line")).toHaveCount(1);
