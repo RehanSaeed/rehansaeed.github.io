@@ -443,6 +443,38 @@ for (const width of [320, 375, 1280]) {
       expect(aligned.left).toBeLessThan(1);
       expect(aligned.right).toBeLessThan(1);
     });
+
+    test(`Portfolio section spacing at ${width}px in ${colorScheme} mode`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.emulateMedia({ colorScheme });
+      await page.goto("/portfolio/", { waitUntil: "domcontentloaded" });
+      await expect(
+        page.locator(".portfolio__open-source .portfolio-card").first(),
+      ).toBeVisible();
+      const spacing = await page.evaluate(() => {
+        const section = document.querySelector(".portfolio__open-source")!;
+        const gap = Number.parseFloat(getComputedStyle(section).rowGap);
+        const heading = section.querySelector("h2")!.getBoundingClientRect();
+        const microsoft = document
+          .querySelector(".portfolio__microsoft")!
+          .getBoundingClientRect();
+        const badges = section
+          .querySelector(".github-badges")!
+          .getBoundingClientRect();
+        const project = section
+          .querySelector(".portfolio-card")!
+          .getBoundingClientRect();
+        return {
+          aboveHeading: heading.top - microsoft.bottom,
+          belowBadges: project.top - badges.bottom,
+          minimumGap: gap * 2 - 1,
+        };
+      });
+      expect(spacing.aboveHeading).toBeGreaterThanOrEqual(spacing.minimumGap);
+      expect(spacing.belowBadges).toBeGreaterThanOrEqual(spacing.minimumGap);
+    });
   }
 }
 
