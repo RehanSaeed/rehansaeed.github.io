@@ -166,7 +166,7 @@ test("Portfolio totals match the listed projects and About shares the star total
   expect(about.ok()).toBe(true);
   const aboutHtml = load(await about.text());
   const aboutTickers = aboutHtml(".about__statistics .number-ticker");
-  expect(aboutTickers).toHaveLength(4);
+  expect(aboutTickers).toHaveLength(2);
   expect(aboutTickers.first().find(".number-ticker__title").text()).toBe(
     "Package Downloads",
   );
@@ -179,26 +179,34 @@ test("Portfolio totals match the listed projects and About shares the star total
     stars.toLocaleString("en-GB"),
   );
   expect(aboutHtml('img[src*="shields.io/github/stars/"]')).toHaveLength(0);
-  expect(aboutHtml('img[src*="shields.io/github/sponsors/"]')).toHaveLength(0);
-  for (const [index, attribute, title] of [
-    [2, "data-followers", "GitHub Followers"],
-    [3, "data-watchers", "GitHub Watchers"],
-  ] as const) {
-    const value = Number(aboutHtml(".about__statistics").attr(attribute));
-    expect(Number.isInteger(value) && value >= 0).toBe(true);
-    expect(aboutTickers.eq(index).find("h3").text()).toBe(title);
-    expect(
-      aboutTickers.eq(index).find(".number-ticker__accessible").text(),
-    ).toBe(value.toLocaleString("en-GB"));
-    expect(aboutTickers.eq(index).attr("data-rate")).toBe("0");
-  }
   const watchersBadge = aboutHtml(
-    '.about__github-images img[alt^="GitHub watch subscriptions"]',
+    '.github-badges img[alt^="GitHub watch subscriptions"]',
   );
   const watchers = watchersBadge.attr("alt")!.match(/: (\d+)$/)![1];
   expect(watchersBadge.attr("src")).toBe(
     `https://img.shields.io/badge/Watchers-${watchers}-blue?logo=github&style=social`,
   );
+  const badgeSources = [
+    "https://img.shields.io/github/followers/RehanSaeed?style=social",
+    "https://img.shields.io/github/sponsors/RehanSaeed?logo=github&style=social",
+    watchersBadge.attr("src"),
+  ];
+  for (const html of [$, aboutHtml]) {
+    expect(
+      html(".github-badges img")
+        .map((_, img) => html(img).attr("src"))
+        .get(),
+    ).toEqual(badgeSources);
+    expect(
+      html(".github-badges a")
+        .map((_, link) => html(link).attr("href"))
+        .get(),
+    ).toEqual([
+      "https://github.com/RehanSaeed?tab=followers",
+      "https://github.com/sponsors/RehanSaeed",
+      "https://github.com/RehanSaeed",
+    ]);
+  }
 });
 
 for (const width of [320, 375, 1280]) {
@@ -211,12 +219,10 @@ for (const width of [320, 375, 1280]) {
       await page.clock.install();
       await page.goto("/about/", { waitUntil: "domcontentloaded" });
       const aboutTickers = page.locator(".about__statistics .number-ticker");
-      await expect(aboutTickers).toHaveCount(4);
+      await expect(aboutTickers).toHaveCount(2);
       await expect(aboutTickers.locator("h3")).toHaveText([
         "Package Downloads",
         "GitHub Stars",
-        "GitHub Followers",
-        "GitHub Watchers",
       ]);
       const aboutStars = aboutTickers.nth(1);
       await expect(aboutStars).toBeVisible();
@@ -229,22 +235,15 @@ for (const width of [320, 375, 1280]) {
       ).toHaveCount(0);
       await expect(
         page.getByRole("img", { name: "GitHub sponsors", exact: true }),
-      ).toHaveCount(0);
+      ).toBeVisible();
       await expect(
         page.getByRole("img", { name: "GitHub follower count", exact: true }),
       ).toBeVisible();
-      for (const index of [2, 3]) {
-        await expect(aboutTickers.nth(index)).toHaveAttribute("data-rate", "0");
-        await expect(aboutTickers.nth(index)).toHaveAttribute(
-          "data-state",
-          "paused",
-        );
-      }
       expect(
         await aboutStars.evaluate((ticker) => {
           const bounds = ticker.getBoundingClientRect();
           const badges = document
-            .querySelector(".about__github-images")!
+            .querySelector(".github-badges")!
             .getBoundingClientRect();
           return {
             border: getComputedStyle(ticker).borderTopWidth,
@@ -255,16 +254,12 @@ for (const width of [320, 375, 1280]) {
       ).toEqual({ border: "0px", aboveBadges: true, fits: true });
       expect(
         await aboutTickers.evaluateAll((tickers) => {
-          const [downloads, stars, followers, watchers] = tickers.map(
-            (ticker) => ticker.getBoundingClientRect(),
+          const [downloads, stars] = tickers.map((ticker) =>
+            ticker.getBoundingClientRect(),
           );
           return {
             sideBySide:
               downloads!.top === stars!.top && downloads!.right <= stars!.left,
-            secondRow:
-              followers!.top === watchers!.top &&
-              followers!.right <= watchers!.left &&
-              followers!.top >= downloads!.bottom,
             borderless: tickers.every(
               (ticker) => getComputedStyle(ticker).borderTopWidth === "0px",
             ),
@@ -281,7 +276,6 @@ for (const width of [320, 375, 1280]) {
         }),
       ).toEqual({
         sideBySide: true,
-        secondRow: true,
         borderless: true,
         fits: true,
       });
@@ -289,12 +283,6 @@ for (const width of [320, 375, 1280]) {
         name: /^GitHub watch subscriptions/,
       });
       await expect(watchersBadge).toBeVisible();
-      await expect(aboutTickers.last()).toHaveAttribute(
-        "data-value",
-        (await page
-          .locator(".about__statistics")
-          .getAttribute("data-watchers"))!,
-      );
       const watchers = (await watchersBadge.getAttribute("alt"))!.match(
         /: (\d+)$/,
       )![1];
@@ -315,6 +303,24 @@ for (const width of [320, 375, 1280]) {
           };
         }),
       ).toEqual({ height: 30, fits: true });
+      const badgeSources = await page
+        .locator(".github-badges img")
+        .evaluateAll((images) =>
+          images.map((image) => image.getAttribute("src")),
+        );
+      expect(badgeSources).toHaveLength(3);
+      expect(
+        await page.locator(".github-badges img").evaluateAll((images) =>
+          images.every((image) => {
+            const bounds = image.getBoundingClientRect();
+            return (
+              bounds.height === 30 &&
+              bounds.left >= 0 &&
+              bounds.right <= innerWidth
+            );
+          }),
+        ),
+      ).toBe(true);
       expect(
         await page.evaluate(() => document.documentElement.scrollWidth),
       ).toBe(width);
@@ -332,6 +338,33 @@ for (const width of [320, 375, 1280]) {
         "Package Downloads",
         "GitHub Stars",
       ]);
+      await expect(totals.locator(".github-badges img")).toHaveCount(3);
+      expect(
+        await totals
+          .locator(".github-badges img")
+          .evaluateAll((images) =>
+            images.map((image) => image.getAttribute("src")),
+          ),
+      ).toEqual(badgeSources);
+      expect(
+        await totals.locator(".github-badges").evaluate((badges) => {
+          const bounds = badges.getBoundingClientRect();
+          const tickers = document
+            .querySelector(".portfolio-statistics__totals")!
+            .getBoundingClientRect();
+          return (
+            bounds.top >= tickers.bottom &&
+            [...badges.querySelectorAll("img")].every((image) => {
+              const imageBounds = image.getBoundingClientRect();
+              return (
+                imageBounds.height === 30 &&
+                imageBounds.left >= 0 &&
+                imageBounds.right <= innerWidth
+              );
+            })
+          );
+        }),
+      ).toBe(true);
       const cards = totals.locator(".number-ticker");
       const [first, second] = await cards.evaluateAll((elements) =>
         elements.map((element) => {
@@ -524,23 +557,18 @@ for (const path of ["/about/", "/portfolio/"]) {
     await page.keyboard.press("Escape");
     await expect(tooltip).toHaveCount(0);
     await expect(stars).toBeFocused();
-    if (path === "/about/") {
-      for (const [label, explanation] of [
-        ["About GitHub followers", "people following my GitHub account"],
-        ["About GitHub watchers", "watch subscriptions"],
-      ]) {
-        const button = page.getByRole("button", { name: label, exact: true });
-        await expect(button.locator("svg path")).toHaveCount(1);
-        await button.focus();
-        await expect(tooltip).toBeVisible();
-        await expect(tooltip).toContainText(explanation);
-        await expect(tooltip).toContainText("build snapshot");
-        await expect(button).toHaveAccessibleDescription(
-          await tooltip.innerText(),
-        );
-        await page.keyboard.press("Escape");
-        await expect(tooltip).toHaveCount(0);
-      }
+    for (const [name, text] of [
+      ["GitHub follower count", "View my GitHub followers"],
+      ["GitHub sponsors", "Sponsor me on GitHub"],
+      [/^GitHub watch subscriptions/, "Total watch subscriptions"],
+    ] as const) {
+      const link = page.getByRole("img", { name, exact: true }).locator("..");
+      await link.focus();
+      await expect(tooltip).toBeVisible();
+      await expect(tooltip).toContainText(text);
+      await expect(link).toHaveAccessibleDescription(await tooltip.innerText());
+      await page.keyboard.press("Escape");
+      await expect(tooltip).toHaveCount(0);
     }
   });
 }

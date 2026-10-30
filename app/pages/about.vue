@@ -65,34 +65,7 @@
         <a :href="gitHubUrl">GitHub profile</a> and of course there are other
         commercial projects that I cannot disclose.
       </p>
-      <u-portfolio-statistics
-        class="about__statistics"
-        borderless
-        account-stats />
-      <div class="about__github-images">
-        <u-tooltip v-slot="{ trigger }" text="View my GitHub followers">
-          <a v-bind="trigger" :href="gitHubFollowersUrl">
-            <img
-              class="about__github-image"
-              alt="GitHub follower count"
-              height="30"
-              width="168"
-              :src="gitHubFollowersImageUrl" />
-          </a>
-        </u-tooltip>
-        <u-tooltip
-          v-slot="{ trigger }"
-          text="Total watch subscriptions across my public, account-owned repositories. A person watching several repositories is counted once per repository. Refreshed when this site builds.">
-          <a v-bind="trigger" :href="gitHubUrl">
-            <img
-              class="about__github-image"
-              :alt="`GitHub watch subscriptions across my ${watchers.repositories} public account-owned repositories: ${watchers.watchers}`"
-              height="30"
-              width="165"
-              :src="gitHubWatchersImageUrl" />
-          </a>
-        </u-tooltip>
-      </div>
+      <u-portfolio-statistics class="about__statistics" borderless />
       <div class="about__github-statistics">
         <u-tooltip v-slot="{ trigger }" text="View my GitHub profile">
           <a v-bind="trigger" :href="gitHubUrl">
@@ -482,7 +455,6 @@ onUnmounted(() => {
   margin-block-end: var(--global-space-fixed-5);
 }
 
-.about__github-images,
 .about__youtube-images {
   display: flex;
   flex-wrap: wrap;
@@ -491,11 +463,8 @@ onUnmounted(() => {
 
   margin-block-end: var(--global-space-fixed-5);
 }
-.about__github-image,
 .about__youtube-image {
   block-size: 30px;
-}
-.about__youtube-image {
   inline-size: auto;
 }
 .about__github-statistics {
