@@ -1,7 +1,7 @@
-export function distanceInMiles(
+export const distanceInMiles = (
   from: [number, number],
   to: [number, number],
-): number {
+): number => {
   const radians = (degrees: number) => (degrees * Math.PI) / 180;
   const latitudeDelta = radians(to[1] - from[1]);
   const longitudeDelta = radians(to[0] - from[0]);
@@ -16,4 +16,4 @@ export function distanceInMiles(
     earthRadiusMiles *
     Math.asin(Math.sqrt(Math.min(1, Math.max(0, haversine))))
   );
-}
+};
