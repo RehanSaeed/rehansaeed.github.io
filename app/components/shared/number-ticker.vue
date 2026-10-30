@@ -133,15 +133,27 @@ onBeforeUnmount(() => {
 @use "~/assets/style/abstracts/visually-hidden";
 
 .number-ticker {
+  --number-ticker-font-size-min: 0.75rem;
+  --number-ticker-line-height: 1.4;
+  --number-ticker-digit-duration: 450ms;
+
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   align-content: center;
   justify-items: center;
   gap: var(--global-space-fixed-3);
   min-inline-size: 0;
-  padding: clamp(0.75rem, 2vw, 2rem);
-  padding-block-start: clamp(0.5rem, 1vw, 1rem);
-  border: 1px solid var(--global-border-color);
+  padding: clamp(
+    var(--global-space-fixed-3),
+    2vw,
+    calc(var(--global-space-fixed-4) * 2)
+  );
+  padding-block-start: clamp(
+    calc(var(--global-space-fixed-4) / 2),
+    1vw,
+    var(--global-space-fixed-4)
+  );
+  border: var(--global-border-width-1) solid var(--global-border-color);
   border-radius: var(--global-border-radius);
   background: var(--global-content-background-color);
   text-align: center;
@@ -156,9 +168,11 @@ onBeforeUnmount(() => {
 }
 
 .number-ticker__header--with-info {
-  grid-template-columns: 1.5rem minmax(0, 1fr) 1.5rem;
+  grid-template-columns:
+    var(--global-space-fixed-5) minmax(0, 1fr)
+    var(--global-space-fixed-5);
   grid-template-areas: ". title info";
-  gap: 0.25rem;
+  gap: calc(var(--global-space-fixed-4) / 4);
 }
 
 .number-ticker__title {
@@ -168,7 +182,7 @@ onBeforeUnmount(() => {
   margin: 0;
   min-block-size: 2.6em;
   font-family: var(--font-heading);
-  font-size: clamp(0.75rem, 7cqi, 2rem);
+  font-size: clamp(var(--number-ticker-font-size-min), 7cqi, 2rem);
   line-height: 1.3;
 }
 
@@ -176,13 +190,13 @@ onBeforeUnmount(() => {
   display: grid;
   grid-area: info;
   place-items: center;
-  inline-size: 1.5rem;
-  block-size: 1.5rem;
+  inline-size: var(--global-space-fixed-5);
+  block-size: var(--global-space-fixed-5);
   font-size: 1rem;
   touch-action: manipulation;
 
   &:focus-visible {
-    outline: 2px solid var(--global-accent-color);
+    outline: var(--global-border-width-2) solid var(--global-accent-color);
     outline-offset: 3px;
   }
 }
@@ -193,10 +207,10 @@ onBeforeUnmount(() => {
   max-inline-size: 100%;
   color: var(--global-accent-color);
   font-family: var(--global-font-family-monospace);
-  font-size: clamp(0.75rem, 14.5cqi, 5rem);
+  font-size: clamp(var(--number-ticker-font-size-min), 14.5cqi, 5rem);
   font-weight: var(--global-font-weight-bold);
   font-variant-numeric: tabular-nums;
-  line-height: 1.4;
+  line-height: var(--number-ticker-line-height);
 }
 
 .number-ticker__accessible {
@@ -213,14 +227,14 @@ onBeforeUnmount(() => {
   position: relative;
   overflow: hidden;
   inline-size: 0.65em;
-  block-size: 1.4em;
+  block-size: calc(var(--number-ticker-line-height) * 1em);
   border-radius: calc(var(--global-border-radius) / 2);
   background: color-mix(
     in srgb,
     var(--global-accent-color) 5%,
     var(--global-content-background-color)
   );
-  box-shadow: inset 0 -2px
+  box-shadow: inset 0 calc(-1 * var(--global-border-width-2))
     color-mix(in srgb, var(--global-accent-color) 20%, transparent);
   text-align: center;
 }
@@ -241,8 +255,8 @@ onBeforeUnmount(() => {
 .number-ticker-digit-enter-active,
 .number-ticker-digit-leave-active {
   transition:
-    transform 450ms var(--ease-out-cubic),
-    opacity 450ms var(--ease-out-cubic);
+    transform var(--number-ticker-digit-duration) var(--ease-out-cubic),
+    opacity var(--number-ticker-digit-duration) var(--ease-out-cubic);
 }
 
 .number-ticker-digit-enter-from {
