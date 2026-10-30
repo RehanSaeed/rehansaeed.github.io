@@ -119,26 +119,23 @@
 </template>
 
 <script setup lang="ts">
-import type { Map as MapboxMap, Marker as MapboxMarker } from "mapbox-gl";
+import type { Map as MapLibreMap, Marker as MapLibreMarker } from "maplibre-gl";
 
 const london: [number, number] = [-0.1278, 51.5074];
-const token = useRuntimeConfig().public.mapboxAccessToken;
 const avatarClipId = `${useId()}-location-avatar`;
 const mapContainer = ref<HTMLDivElement>();
 const markerTemplate = ref<HTMLDivElement>();
 const mapReady = ref(false);
-const mapStatus = ref(
-  token ? "" : "Interactive map unavailable. Showing a static map of London.",
-);
-let map: MapboxMap | undefined;
-let marker: MapboxMarker | undefined;
+const mapStatus = ref("");
+let map: MapLibreMap | undefined;
+let marker: MapLibreMarker | undefined;
 let resizeObserver: ResizeObserver | undefined;
 let disposed = false;
 
 function mapStyle() {
   return document.documentElement.dataset.theme === "dark"
-    ? "mapbox://styles/mapbox/dark-v11"
-    : "mapbox://styles/mapbox/light-v11";
+    ? "https://tiles.openfreemap.org/styles/dark"
+    : "https://tiles.openfreemap.org/styles/positron";
 }
 
 function removeMap() {
@@ -171,24 +168,22 @@ function updateTheme() {
 }
 
 async function loadMap() {
-  if (!token || disposed) return;
+  if (disposed) return;
   try {
-    const [{ default: mapboxgl }] = await Promise.all([
-      import("mapbox-gl"),
-      import("mapbox-gl/dist/mapbox-gl.css"),
+    const [maplibregl, , { default: workerUrl }] = await Promise.all([
+      import("maplibre-gl"),
+      import("maplibre-gl/dist/maplibre-gl.css"),
+      import("maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url"),
     ]);
     if (disposed) return;
     if (!mapContainer.value || !markerTemplate.value) {
       throw new Error("The map container or photo marker is missing.");
     }
-    if (!mapboxgl.supported()) {
-      throw new Error("Mapbox requires a browser with WebGL support.");
-    }
+    maplibregl.setWorkerUrl(workerUrl);
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    map = new mapboxgl.Map({
-      accessToken: token,
+    map = new maplibregl.Map({
       container: mapContainer.value,
       style: mapStyle(),
       center: reduceMotion ? london : [-15, 54],
@@ -198,14 +193,14 @@ async function loadMap() {
     });
     map.scrollZoom.disable();
     map.addControl(
-      new mapboxgl.NavigationControl({ showCompass: false }),
+      new maplibregl.NavigationControl({ showCompass: false }),
       "top-right",
     );
     const photoPin = markerTemplate.value.cloneNode(true);
     if (!(photoPin instanceof HTMLElement)) {
       throw new Error("Could not create the photo marker.");
     }
-    marker = new mapboxgl.Marker({ element: photoPin, anchor: "bottom" })
+    marker = new maplibregl.Marker({ element: photoPin, anchor: "bottom" })
       .setLngLat(london)
       .addTo(map);
     map.getCanvas().setAttribute("aria-label", "Map of London, United Kingdom");
@@ -233,12 +228,6 @@ async function loadMap() {
 }
 
 onMounted(() => {
-  if (!token) {
-    console.warn(
-      "[location-map] Set NUXT_PUBLIC_MAPBOX_ACCESS_TOKEN to enable Mapbox.",
-    );
-    return;
-  }
   window.addEventListener("__themeChanged", updateTheme);
 });
 
