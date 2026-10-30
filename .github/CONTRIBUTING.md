@@ -44,6 +44,21 @@ downloaded during offline installation. PNG app icons and installation screensho
 are retained for compatibility. Browsers without AVIF support cannot display
 uncached content images offline.
 
+## Mapbox location map
+
+The About page progressively enhances its static map with Mapbox GL JS. To enable
+it locally, copy `.env.example` to `.env` and set
+`NUXT_PUBLIC_MAPBOX_ACCESS_TOKEN` to a public (`pk.`) Mapbox token. Never use a
+secret (`sk.`) token. Restrict the token's allowed URLs to the intended development
+and production origins.
+
+For GitHub Pages, configure the repository Actions variable `MAPBOX_ACCESS_TOKEN`
+and rebuild the site. The public token is included in the static build. Without
+it, without JavaScript, or if Mapbox cannot load, the photo pin and static map
+remain available. Mapbox is loaded only when the map approaches the viewport;
+map loads are subject to the account's Mapbox usage limits and pricing. No
+visitor-location lookup is performed.
+
 ## Dependency updates
 
 Commit `package.json` and its regenerated `package-lock.json` together. Run
