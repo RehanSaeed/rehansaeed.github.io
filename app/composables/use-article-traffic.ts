@@ -3,7 +3,9 @@ export function useArticleTraffic() {
   const initialized = useState("article-traffic-initialized", () => false);
 
   onMounted(() => {
-    if (initialized.value) return;
+    if (initialized.value) {
+      return;
+    }
     initialized.value = true;
     try {
       visible.value =

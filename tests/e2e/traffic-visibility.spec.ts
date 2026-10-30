@@ -25,7 +25,9 @@ const snapshot: TrafficSnapshot = {
 };
 
 async function clickDate(gesture: Locator, count = 5) {
-  for (let index = 0; index < count; index++) await gesture.click();
+  for (let index = 0; index < count; index++) {
+    await gesture.click();
+  }
 }
 
 test.beforeEach(async ({ page }) => {
@@ -39,7 +41,9 @@ test("Traffic stays hidden without fetching a snapshot until the fifth activatio
 }) => {
   let requests = 0;
   page.on("request", (request) => {
-    if (new URL(request.url()).pathname === "/post-traffic.json") requests++;
+    if (new URL(request.url()).pathname === "/post-traffic.json") {
+      requests++;
+    }
   });
   const response = await page.goto(path);
   expect(await response!.text()).not.toContain('class="post-page__traffic');
@@ -151,8 +155,9 @@ test("Blocked session storage logs the limitation without breaking the toggle", 
     const get = Storage.prototype.getItem;
     const set = Storage.prototype.setItem;
     Storage.prototype.getItem = function (this: Storage, key: string) {
-      if (key === "article-traffic-visible")
+      if (key === "article-traffic-visible") {
         throw new DOMException("Storage blocked", "SecurityError");
+      }
       return get.call(this, key);
     };
     Storage.prototype.setItem = function (
@@ -160,14 +165,17 @@ test("Blocked session storage logs the limitation without breaking the toggle", 
       key: string,
       value: string,
     ) {
-      if (key === "article-traffic-visible")
+      if (key === "article-traffic-visible") {
         throw new DOMException("Storage blocked", "SecurityError");
+      }
       return set.call(this, key, value);
     };
   });
   const warnings: string[] = [];
   page.on("console", (message) => {
-    if (message.type() === "warning") warnings.push(message.text());
+    if (message.type() === "warning") {
+      warnings.push(message.text());
+    }
   });
   await page.goto(path);
   await clickDate(page.locator(gestureSelector));
@@ -202,7 +210,9 @@ test.describe("Touch publication-date gesture", () => {
     const gesture = date.locator(gestureSelector);
     await expect(gesture).toBeAttached();
     const before = await date.boundingBox();
-    for (let index = 0; index < 5; index++) await gesture.tap();
+    for (let index = 0; index < 5; index++) {
+      await gesture.tap();
+    }
     await expect(page.locator(".post-traffic")).toBeVisible();
     const after = await date.boundingBox();
     expect(after!.width).toBeCloseTo(before!.width, 1);

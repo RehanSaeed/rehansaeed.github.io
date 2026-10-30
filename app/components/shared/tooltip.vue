@@ -167,14 +167,18 @@ const onPointerLeave = () => {
 
 const onPointerDown = () => {
   focused = false;
-  if (!props.toggleOnClick) dismiss();
+  if (!props.toggleOnClick) {
+    dismiss();
+  }
 };
 
 const onClick = (event: MouseEvent) => {
   if (props.toggleOnClick && !open.value) {
     focused = true;
     show(event);
-  } else dismiss();
+  } else {
+    dismiss();
+  }
 };
 
 const onFocus = (event: FocusEvent) => {

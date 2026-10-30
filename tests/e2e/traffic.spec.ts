@@ -171,16 +171,17 @@ for (const width of [375, 1280]) {
     const engagementBounds = await chart
       .locator(".post-traffic__engagement")
       .boundingBox();
-    if (width === 375)
+    if (width === 375) {
       expect(engagementBounds!.y - total!.y - total!.height).toBeCloseTo(
         spacing.rowGap,
         2,
       );
-    else
+    } else {
       expect(engagementBounds!.x - total!.x - total!.width).toBeCloseTo(
         spacing.columnGap,
         2,
       );
+    }
     await expect(chart.locator(".post-traffic__range")).toHaveCount(0);
     const summary = await metrics.boundingBox();
     const controls = await chart

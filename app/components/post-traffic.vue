@@ -122,13 +122,19 @@ const { data, error } = await useFetch("/post-traffic.json", {
   transform: parseTrafficSnapshot,
 });
 watch(error, (value) => {
-  if (value) console.warn("[traffic] Unable to load article traffic:", value);
+  if (value) {
+    console.warn("[traffic] Unable to load article traffic:", value);
+  }
 });
 const availableHistory = computed(() => data.value?.posts[props.permalink]);
 const defaultRange = computed<0 | 12 | 30>(() => {
   const history = availableHistory.value;
-  if (!history) return 0;
-  if (history.days?.[0]?.date === history.startDate) return 30;
+  if (!history) {
+    return 0;
+  }
+  if (history.days?.[0]?.date === history.startDate) {
+    return 30;
+  }
   return history.months.length <= 12 ? 12 : 0;
 });
 const ranges = computed(() => {

@@ -266,8 +266,9 @@ function inspect(event: MouseEvent) {
   if (
     !plot.value ||
     (event.target instanceof Element && event.target.closest("[role=tooltip]"))
-  )
+  ) {
     return;
+  }
   const bounds = plot.value.getBoundingClientRect();
   const position = Math.max(
     0,
@@ -279,8 +280,11 @@ function inspect(event: MouseEvent) {
   selectedIndex.value = Math.round(position * (props.series.points.length - 1));
 }
 function selectPoint(event: MouseEvent, index: number) {
-  if (event.detail === 0) selectedIndex.value = index;
-  else inspect(event);
+  if (event.detail === 0) {
+    selectedIndex.value = index;
+  } else {
+    inspect(event);
+  }
 }
 function navigate(event: KeyboardEvent) {
   if (event.key === "Escape") {
@@ -299,7 +303,9 @@ function navigate(event: KeyboardEvent) {
     End: last,
   };
   const next = destinations[event.key];
-  if (next === undefined) return;
+  if (next === undefined) {
+    return;
+  }
   event.preventDefault();
   selectedIndex.value = next;
   plot.value?.querySelectorAll("button")[next]?.focus();
