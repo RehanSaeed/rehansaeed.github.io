@@ -40,9 +40,8 @@ const props = withDefaults(
     number: number;
     rate: number;
     locale?: string;
-    paused?: boolean;
   }>(),
-  { locale: "en-GB", paused: false },
+  { locale: "en-GB" },
 );
 
 const displayValue = ref(props.number);
@@ -77,8 +76,7 @@ function tick() {
 
 function syncAnimation() {
   clearTimer();
-  running.value =
-    !!motion && !motion.matches && !props.paused && props.rate !== 0;
+  running.value = !!motion && !motion.matches && props.rate !== 0;
   if (!running.value) return;
   lastTick = Date.now();
   if (!document.hidden) timer = setInterval(tick, 1000);
@@ -97,8 +95,6 @@ watch([() => props.number, () => props.rate], () => {
   remainder = 0;
   syncAnimation();
 });
-watch(() => props.paused, syncAnimation);
-
 onMounted(() => {
   motion = window.matchMedia("(prefers-reduced-motion: reduce)");
   motion.addEventListener("change", syncAnimation);
