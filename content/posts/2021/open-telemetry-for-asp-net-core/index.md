@@ -5,7 +5,7 @@ author: "Muhammad Rehan Saeed"
 permalink: "/open-telemetry-for-asp-net-core/"
 heroImage: "/images/hero/Open-Telemetry-1600x900.png"
 date: "2021-02-01"
-dateModified: null
+dateModified: "2026-10-25"
 published: true
 series: "Open Telemetry"
 seriesOrder: 2
@@ -24,6 +24,10 @@ tags:
   - "Activity"
 ---
 
+::: tip Update (2026-10-25)
+Updated the setup for .NET 10 and OpenTelemetry 1.20.0. The complete `Program.cs` below also works on .NET 8 and replaces the incomplete `ConfigureServices` example. The original trace output and discussion are retained below for reference.
+:::
+
 1. [Open Telemetry - Deep Dive into Open Telemetry for .NET](/deep-dive-into-open-telemetry-for-net/)
 2. [Open Telemetry - Configuring Open Telemetry for ASP.NET Core](/open-telemetry-for-asp-net-core/)
 3. [Open Telemetry - Exporting Open Telemetry Data to Jaeger](/exporting-open-telemetry-data-to-jaeger/)
@@ -41,48 +45,58 @@ You can optionally add packages beginning with `OpenTelemetry.Instrumentation.*`
 
 You can also optionally add packages beginning with `OpenTelemetry.Exporter.*` to export trace data e.g. the `OpenTelemetry.Exporter.Console` package exports all trace data to the console or debug output of your application.
 
+For a .NET 10 application created with `dotnet new web --framework net10.0`, add these package references to the project's `.csproj` file:
+
 ```xml
 <ItemGroup Label="Package References">
-  <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.0.1" />
-  <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.0.0-rc2" />
-  <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.0.0-rc2" />
+  <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.20.0" />
+  <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.20.0" />
+  <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.20.0" />
 </ItemGroup>
 ```
 
-In our `Program.cs` I've added a `ConfigureServices` method, where we can add Open Telemetry support with just a few lines of code using the `AddOpenTelemetryTracing` method.
+Replace `Program.cs` with the complete example below. Modern ASP.NET Core templates use top-level statements: register services through `builder.Services` before `builder.Build()`, rather than adding a `public virtual ConfigureServices` method directly to the file. `AddOpenTelemetry().WithTracing(...)` replaces the `AddOpenTelemetryTracing` API [removed in OpenTelemetry 1.4.0](https://github.com/open-telemetry/opentelemetry-dotnet/blob/main/src/OpenTelemetry.Extensions.Hosting/CHANGELOG.md#140).
 
 ```cs
-public virtual void ConfigureServices(
-    IServiceCollection services,
-    IWebHostEnvironment webHostEnvironment)
-{
-    // ...omitted
-    services.AddOpenTelemetryTracing(
-        builder =>
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services
+    .AddOpenTelemetry()
+    .ConfigureResource(resource => resource
+        .AddService(builder.Environment.ApplicationName))
+    .WithTracing(tracing =>
+    {
+        tracing.AddAspNetCoreInstrumentation();
+
+        if (builder.Environment.IsDevelopment())
         {
-            builder
-                .SetResourceBuilder(ResourceBuilder
-                    .CreateDefault()
-                    .AddService(webHostEnvironment.ApplicationName))
-                .AddAspNetCoreInstrumentation();
-            if (webHostEnvironment.IsDevelopment())
-            {
-                builder.AddConsoleExporter(
-                    options => options.Targets = ConsoleExporterOutputTargets.Debug);
-            }
-        });
-}
+            tracing.AddConsoleExporter(
+                options => options.Targets = ConsoleExporterOutputTargets.Debug);
+        }
+    });
+
+var app = builder.Build();
+
+app.MapGet("/", () => "Hello, OpenTelemetry!");
+
+app.Run();
 ```
 
-The `SetResourceBuilder` method is your opportunity to add a set of common attributes to all spans created in the application. In the above case, we've added an application name.
+The `ConfigureResource` method is your opportunity to add a set of common attributes to all spans created in the application. In the above case, we've added an application name.
 
 The `AddAspNetCoreInstrumentation` method is where we enable collection of attributes relating to ASP.NET Core requests and responses.
 
 Finally, we use `AddConsoleExporter` to export the trace data to the debug output. You could also output to the console but there is a lot of trace data and the console is already outputting log information which results in duplication, so I prefer not to do that. Note that we only do this if we are running in the development environment.
 
+Run the application in the `Development` environment from your IDE and request `/` to see a server span in its debug output. To inspect traces in a terminal instead, change `ConsoleExporterOutputTargets.Debug` to `ConsoleExporterOutputTargets.Console`.
+
 # The Trace Output
 
-If we now start the application and execute a request/response cycle, we can see the following in our IDE's debug output window:
+The output and discussion below are from the original 2021 packages. Current versions use updated attribute names, such as `http.request.method` instead of `http.method`, and show resource attributes separately. `telemetry.sdk.version` identifies the SDK version, not the protocol version.
 
 ```
 Activity.Id:          00-dde96d459fee4144a83818e054e221b1-cac69896c1bcd14f-01
