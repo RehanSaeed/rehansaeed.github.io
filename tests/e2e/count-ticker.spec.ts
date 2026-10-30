@@ -12,9 +12,10 @@ async function mountTicker(
     number?: number;
     rate?: number;
     locale?: string;
+    offscreen?: boolean;
   } = {},
 ) {
-  const [component, utilities, vue] = await Promise.all([
+  const [component, utilities, vue, intersect] = await Promise.all([
     readFile(
       join(process.cwd(), "app", "components", "shared", "number-ticker.vue"),
       "utf8",
@@ -30,12 +31,19 @@ async function mountTicker(
       ),
       "utf8",
     ),
+    readFile(
+      join(process.cwd(), "app", "components", "shared", "intersect.vue"),
+      "utf8",
+    ),
   ]);
   const { descriptor } = parse(component);
   const compiled = compileScript(descriptor, {
     id: "number-ticker-test",
     inlineTemplate: true,
   });
+  const intersectSource = compileScript(parse(intersect).descriptor, {
+    id: "intersect-test",
+  }).content;
   const transpile = (source: string) =>
     ts.transpileModule(source, {
       compilerOptions: {
@@ -50,10 +58,52 @@ async function mountTicker(
   await page.clock.install({ time: new Date(now - 10_000) });
   await page.clock.pauseAt(new Date(now));
   await page.setContent(
-    '<main id="ticker-test"></main><input type="number" aria-label="Number" /><input type="number" aria-label="Rate" /><button>Unmount</button>',
+    '<style>#ticker-test.offscreen { transform: translateY(200vh); }</style><main id="ticker-test"></main><input type="number" aria-label="Number" /><input type="number" aria-label="Rate" /><button>Unmount</button>',
   );
-  await page.evaluate(
-    async ({ componentSource, utilitiesSource, vue, options }) => {
+  const fixture = await page.evaluateHandle(
+    async ({
+      componentSource,
+      utilitiesSource,
+      vue,
+      intersectSource,
+      options,
+    }) => {
+      const intervals = new Set<number>();
+      const setInterval = window.setInterval.bind(window);
+      const clearInterval = window.clearInterval.bind(window);
+      window.setInterval = (handler, timeout, ...args) => {
+        const timer = setInterval(handler, timeout, ...args);
+        intervals.add(timer);
+        return timer;
+      };
+      window.clearInterval = (timer) => {
+        if (timer !== undefined) {
+          intervals.delete(timer);
+        }
+        clearInterval(timer);
+      };
+      const observers = new Set<IntersectionObserver>();
+      const NativeIntersectionObserver = window.IntersectionObserver;
+      const ready = new Promise<void>((resolve) => {
+        window.IntersectionObserver = class extends NativeIntersectionObserver {
+          constructor(
+            callback: IntersectionObserverCallback,
+            options?: IntersectionObserverInit,
+          ) {
+            super((entries, observer) => {
+              callback(entries, observer);
+              document.dispatchEvent(new Event("ticker-intersection"));
+              resolve();
+            }, options);
+            observers.add(this);
+          }
+
+          disconnect() {
+            observers.delete(this);
+            super.disconnect();
+          }
+        };
+      });
       const moduleUrl = (source: string) =>
         URL.createObjectURL(new Blob([source], { type: "text/javascript" }));
       const vueUrl = moduleUrl(vue);
@@ -68,6 +118,7 @@ async function mountTicker(
       );
       const { createApp, h, ref } = await import(vueUrl);
       const { default: Ticker } = await import(componentUrl);
+      const { default: Intersect } = await import(moduleUrl(intersectSource));
       Math.random = () => 0.5;
       const number = ref(options.number ?? 1000);
       const rate = ref(options.rate ?? 2);
@@ -80,6 +131,10 @@ async function mountTicker(
             locale: options.locale,
           }),
       });
+      app.component("u-intersect", Intersect);
+      document
+        .querySelector("#ticker-test")!
+        .classList.toggle("offscreen", options.offscreen ?? false);
       app.mount("#ticker-test");
       for (const [label, model] of [
         ["Number", number],
@@ -95,10 +150,36 @@ async function mountTicker(
       document
         .querySelector("button")!
         .addEventListener("click", () => app.unmount());
+      return { ready, intervals, observers };
     },
-    { componentSource, utilitiesSource: transpile(utilities), vue, options },
+    {
+      componentSource,
+      utilitiesSource: transpile(utilities),
+      vue,
+      intersectSource,
+      options,
+    },
   );
+  await page.clock.runFor(50);
+  await fixture.evaluate(({ ready }) => ready);
+  return fixture;
 }
+
+const moveTicker = async (page: Page, offscreen: boolean) => {
+  const intersection = await page.evaluateHandle(() => ({
+    changed: new Promise<void>((resolve) => {
+      document.addEventListener("ticker-intersection", () => resolve(), {
+        once: true,
+      });
+    }),
+  }));
+  await page.locator("#ticker-test").evaluate((element, offscreen) => {
+    element.classList.toggle("offscreen", offscreen);
+  }, offscreen);
+  await page.clock.runFor(50);
+  await intersection.evaluate(({ changed }) => changed);
+  await intersection.dispose();
+};
 
 const changeReducedMotion = async (
   page: Page,
@@ -223,6 +304,79 @@ test("Hidden tabs suspend the timer and returning visitors catch up at the avera
   });
   await page.clock.runFor(500);
   await expect(digits).toHaveText("1,120");
+});
+
+test("Offscreen tickers wait for entry, catch up once and disconnect on unmount", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  const fixture = await mountTicker(page, { offscreen: true });
+  const digits = page.locator(".number-ticker__digits");
+  expect(await fixture.evaluate(({ observers }) => observers.size)).toBe(1);
+  expect(await fixture.evaluate(({ intervals }) => intervals.size)).toBe(0);
+  await page.clock.runFor(60_000);
+  await expect(digits).toHaveText("1,000");
+  await moveTicker(page, false);
+  await page.clock.runFor(500);
+  await expect(digits).toHaveText("1,120");
+  expect(await fixture.evaluate(({ intervals }) => intervals.size)).toBe(1);
+  await page.getByRole("button", { name: "Unmount" }).click();
+  expect(await fixture.evaluate(({ intervals }) => intervals.size)).toBe(0);
+  expect(await fixture.evaluate(({ observers }) => observers.size)).toBe(0);
+});
+
+test("Leaving the viewport clears the timer and tab events cannot restart it offscreen", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  const fixture = await mountTicker(page);
+  const digits = page.locator(".number-ticker__digits");
+  expect(await fixture.evaluate(({ intervals }) => intervals.size)).toBe(1);
+  await moveTicker(page, true);
+  expect(await fixture.evaluate(({ intervals }) => intervals.size)).toBe(0);
+  await page.clock.runFor(60_000);
+  await expect(digits).toHaveText("1,000");
+  await page.evaluate(() => {
+    document.dispatchEvent(new Event("visibilitychange"));
+  });
+  expect(await fixture.evaluate(({ intervals }) => intervals.size)).toBe(0);
+  await moveTicker(page, false);
+  await page.clock.runFor(500);
+  await expect(digits).toHaveText("1,120");
+  expect(await fixture.evaluate(({ intervals }) => intervals.size)).toBe(1);
+});
+
+test("Entering the viewport cannot bypass a hidden tab or reduced motion", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  const fixture = await mountTicker(page, { offscreen: true });
+  await page.evaluate(() => {
+    Object.defineProperty(document, "hidden", {
+      configurable: true,
+      value: true,
+    });
+    document.dispatchEvent(new Event("visibilitychange"));
+  });
+  await moveTicker(page, false);
+  expect(await fixture.evaluate(({ intervals }) => intervals.size)).toBe(0);
+  await changeReducedMotion(page, "reduce");
+  await page.evaluate(() => {
+    Object.defineProperty(document, "hidden", {
+      configurable: true,
+      value: false,
+    });
+    document.dispatchEvent(new Event("visibilitychange"));
+  });
+  await moveTicker(page, true);
+  await moveTicker(page, false);
+  expect(await fixture.evaluate(({ intervals }) => intervals.size)).toBe(0);
+  await page.clock.runFor(5000);
+  await expect(page.locator(".number-ticker__digits")).toHaveText("1,000");
+  await changeReducedMotion(page, "no-preference");
+  expect(await fixture.evaluate(({ intervals }) => intervals.size)).toBe(1);
+  await page.clock.runFor(1500);
+  await expect(page.locator(".number-ticker__digits")).toHaveText("1,002");
 });
 
 test("Prop changes reset the number, cross digit boundaries, honour locale and stop a zero rate", async ({
