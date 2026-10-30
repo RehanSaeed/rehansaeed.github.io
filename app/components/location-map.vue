@@ -268,7 +268,13 @@ function applyMapPalette() {
         map.setPaintProperty(
           layer.id,
           "line-color",
-          layer.id === "visitor-connection" ? colour("accent") : tint(0.5),
+          layer.id === "visitor-connection-outline"
+            ? theme
+                .getPropertyValue("--location-map-connection-outline-color")
+                .trim()
+            : layer.id === "visitor-connection"
+              ? colour("accent")
+              : tint(0.5),
         );
       } else if (layer.type === "symbol" && layer.layout?.["text-field"]) {
         const water = ["water_name", "waterway"].includes(
@@ -307,22 +313,31 @@ function updateConnection() {
       },
     },
   });
-  map.addLayer(
-    {
-      id,
-      source: id,
-      type: "line",
-      layout: { "line-cap": "round", "line-join": "round" },
-      paint: {
-        "line-color": getComputedStyle(map.getContainer())
-          .getPropertyValue("--global-accent-color")
-          .trim(),
-        "line-width": 2,
-        "line-dasharray": [0.1, 2],
+  const theme = getComputedStyle(map.getContainer());
+  for (const [layerId, width, colour] of [
+    [
+      `${id}-outline`,
+      6,
+      theme.getPropertyValue("--location-map-connection-outline-color").trim(),
+    ],
+    [id, 3, theme.getPropertyValue("--global-accent-color").trim()],
+  ] as const) {
+    map.addLayer(
+      {
+        id: layerId,
+        source: id,
+        type: "line",
+        layout: { "line-cap": "round", "line-join": "round" },
+        paint: {
+          "line-color": colour,
+          "line-width": width,
+          // Dash units scale with width; align both layers in screen pixels.
+          "line-dasharray": [0.3 / width, 9 / width],
+        },
       },
-    },
-    map.getStyle().layers.find((layer) => layer.type === "symbol")?.id,
-  );
+      map.getStyle().layers.find((layer) => layer.type === "symbol")?.id,
+    );
+  }
 }
 
 async function loadVisitorLocation(maplibregl: typeof import("maplibre-gl")) {
@@ -460,6 +475,7 @@ onBeforeUnmount(() => {
 .location-map {
   --location-map-land-color: white;
   --location-map-land-label-color: var(--global-body-color);
+  --location-map-connection-outline-color: var(--location-map-land-color);
 
   inline-size: 100%;
   max-inline-size: 36rem;
@@ -473,6 +489,7 @@ onBeforeUnmount(() => {
 
 [data-theme="dark"] .location-map {
   --location-map-land-label-color: var(--global-background-color);
+  --location-map-connection-outline-color: var(--global-background-color);
 }
 
 .location-map__viewport {

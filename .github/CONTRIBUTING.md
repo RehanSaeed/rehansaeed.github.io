@@ -73,10 +73,13 @@ Once the interactive map loads, it also requests an approximate IP location from
 the visitor's IP address; the request omits credentials and the referrer. No GPS
 permission is requested, and the application does not persist coordinates or send
 them to analytics. IP locations can be inaccurate, especially with VPNs.
-The map adds a second purple pin and a dotted line to London, and fits the view to
+The map adds a second purple pin and a dotted line to London. Keep the purple dots
+outlined (white in light mode, dark in dark mode) so they remain distinct from
+both white land and purple water. Match the two layers' dash lengths in screen
+pixels, not width-relative units. The map fits the view to
 both locations, unless the visitor has already moved the map. Resize the framing
 with the map container, without overriding deliberate user zoom or pan.
-Theme changes must restore the connection layer as well as its colours.
+Theme changes must restore both connection layers as well as their colours.
 The caption calculates an approximate great-circle distance in miles from the
 validated IP coordinates; never hardcode a visitor location or an example distance.
 GeoJS is linked in the map credits rather than a separate explanatory paragraph.
