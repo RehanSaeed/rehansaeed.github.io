@@ -6,9 +6,16 @@
     :data-state="running ? 'running' : 'paused'">
     <dt
       class="number-ticker__header"
-      :class="{ 'number-ticker__header--with-info': $slots.info }">
+      :class="{ 'number-ticker__header--with-info': info }">
       <span class="number-ticker__title">{{ title }}</span>
-      <slot name="info" />
+      <u-tooltip v-if="info" v-slot="{ trigger }" :text="info" toggle-on-click>
+        <u-button
+          v-bind="trigger"
+          class="number-ticker__info"
+          :aria-label="`About ${title}`">
+          <u-icon name="fa-solid:info-circle" />
+        </u-button>
+      </u-tooltip>
     </dt>
     <dd class="number-ticker__value" aria-live="off">
       <span class="number-ticker__accessible">{{ exactValue }}</span>
@@ -40,6 +47,7 @@ const props = withDefaults(
     number: number;
     rate: number;
     locale?: string;
+    info?: string;
   }>(),
   { locale: "en-GB" },
 );
@@ -157,6 +165,20 @@ onBeforeUnmount(() => {
   font-family: var(--font-heading);
   font-size: clamp(0.75rem, 7cqi, 2rem);
   line-height: 1.3;
+}
+
+.number-ticker__info {
+  display: grid;
+  place-items: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  font-size: 1rem;
+  touch-action: manipulation;
+
+  &:focus-visible {
+    outline: 2px solid var(--global-accent-color);
+    outline-offset: 3px;
+  }
 }
 
 .number-ticker__value {

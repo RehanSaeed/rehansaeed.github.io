@@ -130,6 +130,9 @@ test("Shared ticker needs title, number and rate and follows the supplied averag
     "true",
   );
   await expect(ticker.getByRole("button")).toHaveCount(0);
+  await expect(ticker.locator(".number-ticker__header")).not.toHaveClass(
+    /number-ticker__header--with-info/,
+  );
 });
 
 test("Random ticks pause and jump by different amounts instead of counting one by one", async ({

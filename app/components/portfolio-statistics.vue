@@ -8,33 +8,13 @@
       <u-number-ticker
         title="Package Downloads"
         :number="statistics.downloads"
-        :rate="downloadRate">
-        <template #info>
-          <u-tooltip v-slot="{ trigger }" :text="downloadInfo" toggle-on-click>
-            <u-button
-              v-bind="trigger"
-              class="portfolio-statistics__info"
-              aria-label="About package downloads">
-              <u-icon name="fa-solid:info-circle" />
-            </u-button>
-          </u-tooltip>
-        </template>
-      </u-number-ticker>
+        :rate="downloadRate"
+        :info="downloadInfo" />
       <u-number-ticker
         title="GitHub Stars"
         :number="statistics.stars"
-        :rate="starRate">
-        <template #info>
-          <u-tooltip v-slot="{ trigger }" :text="starInfo" toggle-on-click>
-            <u-button
-              v-bind="trigger"
-              class="portfolio-statistics__info"
-              aria-label="About GitHub stars">
-              <u-icon name="fa-solid:info-circle" />
-            </u-button>
-          </u-tooltip>
-        </template>
-      </u-number-ticker>
+        :rate="starRate"
+        :info="starInfo" />
     </div>
     <u-github-badges />
   </div>
@@ -83,20 +63,6 @@ onMounted(() => {
   max-inline-size: var(--global-space-card-max-width);
   min-inline-size: 0;
   font-size: max(16px, 0.85em);
-}
-
-.portfolio-statistics__info {
-  display: grid;
-  place-items: center;
-  inline-size: 1.5rem;
-  block-size: 1.5rem;
-  font-size: 1rem;
-  touch-action: manipulation;
-
-  &:focus-visible {
-    outline: 2px solid var(--global-accent-color);
-    outline-offset: 3px;
-  }
 }
 
 .portfolio-statistics--borderless {
