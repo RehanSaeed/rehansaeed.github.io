@@ -1,9 +1,18 @@
 # Agent instructions
 
-## README changes
+## Human documentation and agent work records
 
-Do not modify README.md unless the user explicitly requests it. Put implementation
-details in relevant documentation or code comments, not the README.
+- README.md and CONTRIBUTING.md (including .github/CONTRIBUTING.md)
+  are human-facing documentation, not agent work logs.
+- Do not modify these files unless the user explicitly requests changes
+  to them. A general request to implement a feature, fix a bug or update
+  documentation is not permission to edit these files.
+- Do not append task summaries, implementation details, debugging notes,
+  validation results, temporary workarounds or agent instructions to them.
+- Put change summaries and validation results in the pull request description.
+  Keep temporary investigation notes in session storage outside the repository.
+- Keep durable agent-specific guidance in AGENTS.md, not human documentation.
+  Do not use AGENTS.md as a task log either.
 
 ## Blog and Social Media Authoring
 
