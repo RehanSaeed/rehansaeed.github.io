@@ -369,13 +369,16 @@ test("The free map loads on approach, shows Europe and follows the purple theme"
   );
   const pin = figure.locator(".maplibregl-marker.location-map__marker");
   await expect(pin).toHaveCount(1);
-  const avatar = pin.locator("img");
+  await expect(pin).toHaveCSS("display", "grid");
+  const avatar = pin.locator(".location-map__avatar");
   await expect(avatar).toHaveAttribute("src", photo);
   await avatar.evaluate((image: HTMLImageElement) => image.decode());
   expect(
     await avatar.evaluate((image: HTMLImageElement) => image.naturalWidth),
   ).toBe(192);
   await expect(avatar).toHaveCSS("border-radius", "50%");
+  await expect(avatar).toHaveCSS("width", "62px");
+  await expect(avatar).toHaveCSS("height", "62px");
   await expect(figure.locator(".maplibregl-ctrl-attrib")).toBeVisible();
   await expect(figure.locator(".maplibregl-ctrl-attrib")).toContainText(
     "Mock map data",
@@ -465,7 +468,7 @@ for (const colorScheme of ["light", "dark"] as const) {
       .poll(() => styles)
       .toEqual([colorScheme === "dark" ? "dark" : "positron"]);
     await expect(figure.locator(".maplibregl-canvas")).toBeVisible();
-    const avatar = figure.locator(".maplibregl-marker img");
+    const avatar = figure.locator(".maplibregl-marker .location-map__avatar");
     await avatar.evaluate((image: HTMLImageElement) => image.decode());
     const bounds = await figure.boundingBox();
     expect(bounds!.x).toBeGreaterThanOrEqual(0);
