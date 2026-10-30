@@ -238,6 +238,10 @@ for (const width of [375, 1280]) {
     expect(await infoButton.getAttribute("aria-expanded")).toBeNull();
     await expect(source).toContainText("not unique visitors");
     await expect(source).toContainText("Europe/London");
+    await expect(source).toContainText(
+      "Recent figures are provisional while Google Analytics processes incoming data.",
+    );
+    await expect(source).not.toContainText("processed days");
     expect(await plotOffset()).toBeCloseTo(beforeHelp, 3);
     await source.hover();
     await expect(source).toBeVisible();

@@ -7,7 +7,7 @@ The site stays statically hosted on GitHub Pages. During generation, the
 `blog-content` module authenticates to Google's Data API, exports
 `screenPageViews` and `userEngagementDuration` grouped by `date` and `pagePath`,
 aggregates them by month, and writes
-`/post-traffic.json`, retaining monthly history and only the latest 30 processed
+`/post-traffic.json`, retaining monthly history and only the latest 30 calendar
 days as daily aggregates. The chart fetches this same-origin static snapshot; no
 analytics credentials or private reporting API calls reach the browser.
 
@@ -72,17 +72,23 @@ in `/post-traffic.json` are intentionally public.
 - Daily report rows before an article's publication date are excluded, including
   rows in its first month. Only aggregated counts and foreground seconds are
   published, not users, sessions or individual events.
-- The end date is four UTC calendar days before generation, allowing more than
-  48 hours for processing even in property timezones behind UTC. Reporting
-  uses the property's timezone, which is displayed with the chart.
+- Exports include **today** in the property's reporting timezone, which is
+  displayed with the chart. There is no artificial processing delay or fixed
+  final date. The API request uses `today`, then pins pagination and snapshot
+  coverage to that calendar date using the returned reporting timezone.
+  Recent figures are **provisional** while Google Analytics processes incoming
+  data; they can be incomplete or revised, including initially reported zeros.
+  The source tooltip explains this. A newly published article can have a chart
+  in the next export, even if no views have been reported yet.
 - The first and last monthly buckets may be partial. Months without report rows
   inside the declared tracking interval count as zero. Tracking outages must not
   be misrepresented by choosing an inaccurate start date.
 - **All time**, **Last year** and **Last month** select all available monthly
-  history, the last 12 monthly buckets, or the last 30 processed calendar days
+  history, the last 12 monthly buckets, or the last 30 calendar days
   with daily points, respectively. The buttons sit below the statistics row and
-  above the chart. Presets end at the snapshot's reporting cutoff, not today's
-  date, and never split a monthly aggregate or invent earlier coverage. The
+  above the chart. Presets end at the snapshot's latest included date (today
+  when exported, not a live feed) and never split a monthly aggregate or invent
+  earlier coverage. The
   chart's date labels, total, engagement and plot update together. There is no
   separate date-range summary above the chart. Short histories
   retain their real start date. A legacy snapshot without daily data explicitly
@@ -145,7 +151,11 @@ build. Invalid configuration never falls back to another property's data.
 View-only caches are refreshed even within 24 hours to add engagement; if that
 refresh fails, their view history remains usable and engagement is explicitly
 unavailable rather than fabricated.
-Snapshots without recent daily coverage are also refreshed. Daily buckets are
+Snapshots ending before today in the property's timezone are refreshed even
+within that 24-hour window, including snapshots from the former four-day delay.
+The same applies when a newly published article is missing. A failed refresh
+retains the original snapshot without padding its dates or inventing counts for
+new articles. Snapshots without recent daily coverage are also refreshed. Daily buckets are
 validated for continuity, publication/cutoff bounds and consistency with monthly
 counts. They come from the same paginated GA4 report, not a second API query.
 

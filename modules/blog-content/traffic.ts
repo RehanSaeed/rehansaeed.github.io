@@ -156,13 +156,14 @@ export async function postTrafficSnapshot(
     startDate: settings.startDate,
     hostname,
   };
-  // Leave at least 48 hours for processing, even in properties behind UTC.
-  const endDate = new Date(Date.now() - 4 * 86_400_000)
-    .toISOString()
-    .slice(0, 10);
-  if (settings.startDate > endDate) {
-    throw new Error("GA4_START_DATE must be at least four days ago.");
-  }
+  const now = Date.now();
+  const today = (timeZone: string) =>
+    new Intl.DateTimeFormat("en-CA", {
+      timeZone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(now);
   const posts = entries
     .filter((entry) => entry.collection === "posts" && entry.data.published)
     .map(({ data }) => ({
@@ -171,11 +172,15 @@ export async function postTrafficSnapshot(
     }));
   const cachePath = join(dataDir, "blog-traffic.json");
   let cached: z.infer<typeof cacheSchema> | undefined;
+  let cachedEndDate: string | undefined;
   try {
     const saved = cacheSchema.parse(
       JSON.parse(await readFile(cachePath, "utf8")),
     );
-    if (JSON.stringify(saved.source) === JSON.stringify(source)) cached = saved;
+    if (JSON.stringify(saved.source) === JSON.stringify(source)) {
+      cachedEndDate = today(saved.snapshot.timeZone);
+      cached = saved;
+    }
   } catch (error) {
     if (!(
       error instanceof Error &&
@@ -198,15 +203,16 @@ export async function postTrafficSnapshot(
   });
   if (
     cached &&
-    Date.now() >= Date.parse(cached.snapshot.updated) &&
-    Date.now() - Date.parse(cached.snapshot.updated) < 24 * 60 * 60 * 1000 &&
+    cachedEndDate &&
+    now >= Date.parse(cached.snapshot.updated) &&
+    now - Date.parse(cached.snapshot.updated) < 24 * 60 * 60 * 1000 &&
     posts.every(({ permalink, date }) => {
       const history = cached.snapshot.posts[permalink];
       return (
-        date > endDate ||
+        date > cachedEndDate ||
         (history?.startDate ===
           (date > settings.startDate ? date : settings.startDate) &&
-          history.endDate === endDate &&
+          history.endDate === cachedEndDate &&
           history.days?.every((day) => day.engagementSeconds !== undefined) &&
           history.months.every(
             (month) => month.engagementSeconds !== undefined,
@@ -221,13 +227,13 @@ export async function postTrafficSnapshot(
     const token = await accessToken(settings.credentials);
     const counts = new Map<string, Map<string, TrafficTotals>>();
     const recentCounts = new Map<string, Map<string, TrafficTotals>>();
-    const recentStart = trafficDailyStart(settings.startDate, endDate);
     const published = new Map(
       posts.map(({ permalink, date }) => [permalink, date]),
     );
     let offset = 0;
     let rowCount = 0;
     let timeZone: string | undefined;
+    let endDate: string | undefined;
     do {
       const report = reportSchema.parse(
         await googleRequest(
@@ -239,7 +245,12 @@ export async function postTrafficSnapshot(
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              dateRanges: [{ startDate: settings.startDate, endDate }],
+              dateRanges: [
+                {
+                  startDate: settings.startDate,
+                  endDate: endDate ?? "today",
+                },
+              ],
               dimensions: [{ name: "date" }, { name: "pagePath" }],
               metrics: [
                 { name: "screenPageViews" },
@@ -275,6 +286,13 @@ export async function postTrafficSnapshot(
         throw new Error("GA4 returned an incomplete or inconsistent report.");
       }
       timeZone = report.metadata.timeZone;
+      endDate ??= today(timeZone);
+      if (settings.startDate > endDate) {
+        throw new Error(
+          "GA4_START_DATE must not be after today in the reporting timezone.",
+        );
+      }
+      const recentStart = trafficDailyStart(settings.startDate, endDate);
       rowCount = report.rowCount;
       for (const row of report.rows) {
         const rawDate = row.dimensionValues[0]!.value;
@@ -316,7 +334,7 @@ export async function postTrafficSnapshot(
       }
     } while (offset < rowCount);
     snapshot = trafficSnapshotSchema.parse({
-      updated: new Date().toISOString(),
+      updated: new Date(now).toISOString(),
       timeZone,
       posts: Object.fromEntries(
         posts.flatMap(({ permalink, date }) => {
