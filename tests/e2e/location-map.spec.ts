@@ -1,55 +1,42 @@
 import type { Page } from "@playwright/test";
+import sharp from "sharp";
 import { expect, test } from "./fixtures";
 
 const photo = "/images/author/Muhammad-Rehan-Saeed/Logo-192x192.png";
-const unavailable =
-  "Interactive map unavailable. Showing a static map of London.";
-
-async function mockMapbox(page: Page) {
+async function mockOpenFreeMap(page: Page) {
   const styles: string[] = [];
-  await page.route("https://api.mapbox.com/**", (route) => {
+  await page.route("https://tiles.openfreemap.org/styles/*", (route) => {
     const url = new URL(route.request().url());
-    if (url.pathname.startsWith("/styles/v1/mapbox/")) {
-      const style = url.pathname.split("/").at(-1)!;
-      styles.push(style);
-      return route.fulfill({
-        json: {
-          version: 8,
-          sources: {
-            "mock-map-data": {
-              type: "geojson",
-              data: { type: "FeatureCollection", features: [] },
-              attribution: "Mock map data",
+    const style = url.pathname.split("/").at(-1)!;
+    styles.push(style);
+    return route.fulfill({
+      json: {
+        version: 8,
+        sources: {
+          "mock-map-data": {
+            type: "geojson",
+            data: { type: "FeatureCollection", features: [] },
+            attribution: "Mock map data",
+          },
+        },
+        layers: [
+          {
+            id: "background",
+            type: "background",
+            paint: {
+              "background-color": style === "dark" ? "#102737" : "#ede8fa",
             },
           },
-          layers: [
-            {
-              id: "background",
-              type: "background",
-              paint: {
-                "background-color":
-                  style === "dark-v11" ? "#102737" : "#ede8fa",
-              },
-            },
-            { id: "places", type: "circle", source: "mock-map-data" },
-          ],
-        },
-      });
-    }
-    return route.fulfill({ json: {} });
+          { id: "places", type: "circle", source: "mock-map-data" },
+        ],
+      },
+    });
   });
-  await page.route("https://events.mapbox.com/**", (route) =>
-    route.fulfill({ status: 204 }),
-  );
   return styles;
 }
 
-async function requireConfiguredMapbox(page: Page) {
+async function requireWebGL(page: Page) {
   await expect(page.getByRole("button", { name: "Open search" })).toBeEnabled();
-  test.skip(
-    (await page.getByText(unavailable, { exact: true }).count()) > 0,
-    "This build has no Mapbox public token configured.",
-  );
   const hasWebGL = await page.evaluate(() => {
     const canvas = document.createElement("canvas");
     const context = canvas.getContext("webgl2");
@@ -66,8 +53,8 @@ for (const width of [320, 375, 1280]) {
     }, testInfo) => {
       await page.setViewportSize({ width, height: 900 });
       await page.emulateMedia({ colorScheme });
-      await page.route("https://api.mapbox.com/**", (route) =>
-        route.fulfill({ status: 401, json: { message: "Invalid token" } }),
+      await page.route("https://tiles.openfreemap.org/**", (route) =>
+        route.fulfill({ status: 503, body: "Map service unavailable" }),
       );
       await page.goto("/about/", { waitUntil: "domcontentloaded" });
 
@@ -89,17 +76,17 @@ for (const width of [320, 375, 1280]) {
         "data-theme",
         colorScheme,
       );
+      await figure.scrollIntoViewIfNeeded();
 
       const avatar = map.locator("image");
       await expect(avatar).toHaveAttribute("href", photo);
       const avatarResponse = await page.request.get(photo);
       expect(avatarResponse.ok()).toBe(true);
       expect(avatarResponse.headers()["content-type"]).toContain("image/png");
-      await avatar.evaluate(async (element: SVGImageElement) => {
-        const image = new Image();
-        image.src = element.href.baseVal;
-        await image.decode();
-      });
+      const avatarMetadata = await sharp(
+        await avatarResponse.body(),
+      ).metadata();
+      expect([avatarMetadata.width, avatarMetadata.height]).toEqual([192, 192]);
 
       const pin = map.locator(".location-map__pin");
       const position = await pin.evaluate((element: SVGGElement) => {
@@ -122,7 +109,6 @@ for (const width of [320, 375, 1280]) {
       });
       expect(colours.actual).toBe(colours.expected);
 
-      await figure.scrollIntoViewIfNeeded();
       const bounds = await figure.boundingBox();
       expect(bounds).not.toBeNull();
       expect(bounds!.x).toBeGreaterThanOrEqual(0);
@@ -160,26 +146,32 @@ test.describe("Without JavaScript", () => {
   });
 });
 
-test("Mapbox loads on approach, centres the photo pin and follows the theme", async ({
+test("The free map loads on approach, centres the photo pin and follows the theme", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1280, height: 500 });
   await page.emulateMedia({ colorScheme: "light", reducedMotion: "reduce" });
-  const styles = await mockMapbox(page);
+  const mapboxRequests: string[] = [];
+  page.on("request", (request) => {
+    if (new URL(request.url()).hostname.endsWith(".mapbox.com")) {
+      mapboxRequests.push(request.url());
+    }
+  });
+  const styles = await mockOpenFreeMap(page);
   await page.goto("/about/", { waitUntil: "domcontentloaded" });
-  await requireConfiguredMapbox(page);
+  await requireWebGL(page);
   expect(styles).toEqual([]);
   const figure = page.locator(".location-map");
   await figure.scrollIntoViewIfNeeded();
   await expect(figure).toHaveClass(/location-map--interactive/);
-  await expect.poll(() => styles).toEqual(["light-v11"]);
-  const canvas = figure.locator(".mapboxgl-canvas");
+  await expect.poll(() => styles).toEqual(["positron"]);
+  const canvas = figure.locator(".maplibregl-canvas");
   await expect(canvas).toBeVisible();
   await expect(canvas).toHaveAttribute(
     "aria-label",
     "Map of London, United Kingdom",
   );
-  const pin = figure.locator(".mapboxgl-marker");
+  const pin = figure.locator(".maplibregl-marker");
   await expect(pin).toHaveCount(1);
   const avatar = pin.locator("img");
   await expect(avatar).toHaveAttribute("src", photo);
@@ -188,9 +180,8 @@ test("Mapbox loads on approach, centres the photo pin and follows the theme", as
     await avatar.evaluate((image: HTMLImageElement) => image.naturalWidth),
   ).toBe(192);
   await expect(avatar).toHaveCSS("border-radius", "50%");
-  await expect(figure.locator(".mapboxgl-ctrl-logo")).toBeVisible();
-  await expect(figure.locator(".mapboxgl-ctrl-attrib")).toBeVisible();
-  await expect(figure.locator(".mapboxgl-ctrl-attrib")).toContainText(
+  await expect(figure.locator(".maplibregl-ctrl-attrib")).toBeVisible();
+  await expect(figure.locator(".maplibregl-ctrl-attrib")).toContainText(
     "Mock map data",
   );
   await expect(figure.getByRole("button", { name: "Zoom in" })).toBeEnabled();
@@ -214,31 +205,32 @@ test("Mapbox loads on approach, centres the photo pin and follows the theme", as
   ).toBeLessThanOrEqual(1);
 
   await page.getByRole("button", { name: "Toggle dark/light" }).click();
-  await expect.poll(() => styles).toEqual(["light-v11", "dark-v11"]);
+  await expect.poll(() => styles).toEqual(["positron", "dark"]);
   await expect(pin).toBeVisible();
   await page
     .locator("nav")
     .getByRole("link", { name: "Blog", exact: true })
     .click();
   await expect(page).toHaveURL(/\/$/);
-  await expect(page.locator(".mapboxgl-map")).toHaveCount(0);
+  await expect(page.locator(".maplibregl-map")).toHaveCount(0);
+  expect(mapboxRequests).toEqual([]);
 });
 
 test("The animated fly-in ends with the photo pin over London", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
-  await mockMapbox(page);
+  await mockOpenFreeMap(page);
   await page.goto("/about/", { waitUntil: "domcontentloaded" });
-  await requireConfiguredMapbox(page);
+  await requireWebGL(page);
   const figure = page.locator(".location-map");
   await figure.scrollIntoViewIfNeeded();
   await expect(figure).toHaveClass(/location-map--interactive/);
   await expect
     .poll(
       async () => {
-        const canvas = await figure.locator(".mapboxgl-canvas").boundingBox();
-        const pin = await figure.locator(".mapboxgl-marker").boundingBox();
+        const canvas = await figure.locator(".maplibregl-canvas").boundingBox();
+        const pin = await figure.locator(".maplibregl-marker").boundingBox();
         if (!canvas || !pin) return Infinity;
         return Math.hypot(
           pin.x + pin.width / 2 - canvas.x - canvas.width / 2,
@@ -250,14 +242,14 @@ test("The animated fly-in ends with the photo pin over London", async ({
     .toBeLessThan(2);
 });
 
-test("A Mapbox failure keeps the photo fallback and announces the problem", async ({
+test("An OpenFreeMap failure keeps the photo fallback and announces the problem", async ({
   page,
 }) => {
-  await page.route("https://api.mapbox.com/**", (route) =>
-    route.fulfill({ status: 401, json: { message: "Invalid token" } }),
+  await page.route("https://tiles.openfreemap.org/**", (route) =>
+    route.fulfill({ status: 503, body: "Map service unavailable" }),
   );
   await page.goto("/about/", { waitUntil: "domcontentloaded" });
-  await requireConfiguredMapbox(page);
+  await requireWebGL(page);
   const figure = page.locator(".location-map");
   await figure.scrollIntoViewIfNeeded();
   await expect(figure.getByRole("status")).toHaveText(
@@ -265,7 +257,68 @@ test("A Mapbox failure keeps the photo fallback and announces the problem", asyn
   );
   await expect(figure).not.toHaveClass(/location-map--interactive/);
   await expect(figure.locator(".location-map__illustration")).toBeVisible();
-  await expect(figure.locator(".mapboxgl-canvas")).toHaveCount(0);
+  await expect(figure.locator(".maplibregl-canvas")).toHaveCount(0);
+  await expect(figure.locator(".location-map__pin image")).toHaveAttribute(
+    "href",
+    photo,
+  );
+});
+
+for (const colorScheme of ["light", "dark"] as const) {
+  test(`The interactive photo map fits a mobile viewport in ${colorScheme} mode`, async ({
+    page,
+  }, testInfo) => {
+    await page.setViewportSize({ width: 375, height: 900 });
+    await page.emulateMedia({ colorScheme, reducedMotion: "reduce" });
+    const styles = await mockOpenFreeMap(page);
+    await page.goto("/about/", { waitUntil: "domcontentloaded" });
+    await requireWebGL(page);
+    const figure = page.locator(".location-map");
+    await figure.scrollIntoViewIfNeeded();
+    await expect(figure).toHaveClass(/location-map--interactive/);
+    await expect
+      .poll(() => styles)
+      .toEqual([colorScheme === "dark" ? "dark" : "positron"]);
+    await expect(figure.locator(".maplibregl-canvas")).toBeVisible();
+    const avatar = figure.locator(".maplibregl-marker img");
+    await avatar.evaluate((image: HTMLImageElement) => image.decode());
+    const bounds = await figure.boundingBox();
+    expect(bounds!.x).toBeGreaterThanOrEqual(0);
+    expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(375);
+    const layout = await figure.evaluate((element) => ({
+      clientWidth: element.clientWidth,
+      scrollWidth: element.scrollWidth,
+    }));
+    expect(layout.scrollWidth).toBe(layout.clientWidth);
+    await expect(figure.locator(".maplibregl-ctrl-attrib")).toBeVisible();
+    await testInfo.attach("Interactive London photo map", {
+      body: await figure.screenshot(),
+      contentType: "image/png",
+    });
+  });
+}
+
+test("A browser without WebGL keeps the self-hosted photo map", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const getContext = HTMLCanvasElement.prototype.getContext;
+    Object.defineProperty(HTMLCanvasElement.prototype, "getContext", {
+      value(this: HTMLCanvasElement, contextId: string, ...args: unknown[]) {
+        if (contextId === "webgl2" || contextId === "webgl") return null;
+        return Reflect.apply(getContext, this, [contextId, ...args]);
+      },
+    });
+  });
+  await mockOpenFreeMap(page);
+  await page.goto("/about/", { waitUntil: "domcontentloaded" });
+  const figure = page.locator(".location-map");
+  await figure.scrollIntoViewIfNeeded();
+  await expect(figure.getByRole("status")).toHaveText(
+    "The interactive map could not load. Showing a static map of London.",
+  );
+  await expect(figure).not.toHaveClass(/location-map--interactive/);
+  await expect(figure.locator(".location-map__illustration")).toBeVisible();
   await expect(figure.locator(".location-map__pin image")).toHaveAttribute(
     "href",
     photo,

@@ -44,20 +44,25 @@ downloaded during offline installation. PNG app icons and installation screensho
 are retained for compatibility. Browsers without AVIF support cannot display
 uncached content images offline.
 
-## Mapbox location map
+## About location map
 
-The About page progressively enhances its static map with Mapbox GL JS. To enable
-it locally, copy `.env.example` to `.env` and set
-`NUXT_PUBLIC_MAPBOX_ACCESS_TOKEN` to a public (`pk.`) Mapbox token. Never use a
-secret (`sk.`) token. Restrict the token's allowed URLs to the intended development
-and production origins.
+The About page progressively enhances its static map with
+[MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/) and
+[OpenFreeMap](https://openfreemap.org/) tiles. No account, API token, environment
+variable or paid map subscription is required for local development or deployment.
+The map uses OpenFreeMap's Positron and Dark styles to follow the site theme.
+Keep the map's OpenMapTiles and OpenStreetMap attribution visible.
 
-For GitHub Pages, configure the repository Actions variable `MAPBOX_ACCESS_TOKEN`
-and rebuild the site. The public token is included in the static build. Without
-it, without JavaScript, or if Mapbox cannot load, the photo pin and static map
-remain available. Mapbox is loaded only when the map approaches the viewport;
-map loads are subject to the account's Mapbox usage limits and pricing. No
-visitor-location lookup is performed.
+The renderer, worker and styles are loaded only when the map approaches the
+viewport. Reduced-motion users start directly at London without the fly-in.
+Without JavaScript or WebGL, or if the map service fails, the photo pin and
+self-hosted Natural Earth map remain available.
+
+OpenFreeMap's public service currently has no map-view or request limits for
+normal use, but is donation-funded and provides no availability guarantee.
+Visitors make external requests for styles, tiles, sprites and fonts; no
+visitor-location lookup is performed. Retain the fallback and review
+[OpenFreeMap's terms](https://openfreemap.org/tos/) when changing the integration.
 
 ## Dependency updates
 
