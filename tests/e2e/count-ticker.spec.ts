@@ -100,6 +100,23 @@ async function mountTicker(
   );
 }
 
+const changeReducedMotion = async (
+  page: Page,
+  reducedMotion: "reduce" | "no-preference",
+) => {
+  const change = await page.evaluateHandle(() => ({
+    changed: new Promise<void>((resolve) => {
+      window
+        .matchMedia("(prefers-reduced-motion: reduce)")
+        .addEventListener("change", () => resolve(), { once: true });
+    }),
+  }));
+  await page.emulateMedia({ reducedMotion });
+  await page.clock.runFor(50);
+  await change.evaluate(({ changed }) => changed);
+  await change.dispose();
+};
+
 test("Shared ticker needs title, number and rate and follows the supplied average", async ({
   page,
 }) => {
@@ -112,11 +129,11 @@ test("Shared ticker needs title, number and rate and follows the supplied averag
     "aria-live",
     "off",
   );
-  await expect(ticker).toHaveAttribute("data-state", "running");
+  const digits = ticker.locator(".number-ticker__digits");
+  await page.clock.runFor(1500);
+  await expect(digits).toHaveText("1,002");
   await page.clock.runFor(1000);
-  await expect(ticker).toHaveAttribute("data-value", "1002");
-  await page.clock.runFor(1000);
-  await expect(ticker).toHaveAttribute("data-value", "1004");
+  await expect(digits).toHaveText("1,004");
   await expect(ticker.locator(".number-ticker__accessible")).toHaveText(
     "1,000",
   );
@@ -144,10 +161,11 @@ test("Random ticks pause and jump by different amounts instead of counting one b
     const samples = [0.1, 0.875, 0.2, 0.625, 0.75];
     Math.random = () => samples.shift() ?? 0.5;
   });
-  const ticker = page.locator(".number-ticker");
+  const digits = page.locator(".number-ticker__digits");
+  await page.clock.runFor(500);
   for (const value of [1000, 1002, 1002, 1004, 1006]) {
     await page.clock.runFor(1000);
-    await expect(ticker).toHaveAttribute("data-value", String(value));
+    await expect(digits).toHaveText(value.toLocaleString("en-GB"));
   }
 });
 
@@ -155,21 +173,18 @@ test("Reduced motion prevents ticking and changing the preference stops animatio
   page,
 }) => {
   await mountTicker(page);
-  const ticker = page.locator(".number-ticker");
+  const digits = page.locator(".number-ticker__digits");
   await page.clock.runFor(5000);
-  await expect(ticker).toHaveAttribute("data-value", "1000");
-  await page.emulateMedia({ reducedMotion: "no-preference" });
-  await expect(ticker).toHaveAttribute("data-state", "running");
-  await page.clock.runFor(1000);
-  await expect(ticker).toHaveAttribute("data-value", "1002");
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await expect(ticker).toHaveAttribute("data-state", "paused");
+  await expect(digits).toHaveText("1,000");
+  await changeReducedMotion(page, "no-preference");
+  await page.clock.runFor(1500);
+  await expect(digits).toHaveText("1,002");
+  await changeReducedMotion(page, "reduce");
   await page.clock.runFor(5000);
-  await expect(ticker).toHaveAttribute("data-value", "1002");
-  await page.emulateMedia({ reducedMotion: "no-preference" });
-  await expect(ticker).toHaveAttribute("data-state", "running");
-  await page.clock.runFor(1000);
-  await expect(ticker).toHaveAttribute("data-value", "1004");
+  await expect(digits).toHaveText("1,002");
+  await changeReducedMotion(page, "no-preference");
+  await page.clock.runFor(1500);
+  await expect(digits).toHaveText("1,004");
 });
 
 test("Slow rates retain fractional increments instead of inventing one count every second", async ({
@@ -177,11 +192,11 @@ test("Slow rates retain fractional increments instead of inventing one count eve
 }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await mountTicker(page, { rate: 0.25 });
-  const ticker = page.locator(".number-ticker");
+  const digits = page.locator(".number-ticker__digits");
   await page.clock.runFor(3000);
-  await expect(ticker).toHaveAttribute("data-value", "1000");
-  await page.clock.runFor(1000);
-  await expect(ticker).toHaveAttribute("data-value", "1001");
+  await expect(digits).toHaveText("1,000");
+  await page.clock.runFor(1500);
+  await expect(digits).toHaveText("1,001");
 });
 
 test("Hidden tabs suspend the timer and returning visitors catch up at the average rate", async ({
@@ -189,7 +204,7 @@ test("Hidden tabs suspend the timer and returning visitors catch up at the avera
 }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await mountTicker(page);
-  const ticker = page.locator(".number-ticker");
+  const digits = page.locator(".number-ticker__digits");
   await page.evaluate(() => {
     Object.defineProperty(document, "hidden", {
       configurable: true,
@@ -198,7 +213,7 @@ test("Hidden tabs suspend the timer and returning visitors catch up at the avera
     document.dispatchEvent(new Event("visibilitychange"));
   });
   await page.clock.runFor(60_000);
-  await expect(ticker).toHaveAttribute("data-value", "1000");
+  await expect(digits).toHaveText("1,000");
   await page.evaluate(() => {
     Object.defineProperty(document, "hidden", {
       configurable: true,
@@ -206,7 +221,8 @@ test("Hidden tabs suspend the timer and returning visitors catch up at the avera
     });
     document.dispatchEvent(new Event("visibilitychange"));
   });
-  await expect(ticker).toHaveAttribute("data-value", "1120");
+  await page.clock.runFor(500);
+  await expect(digits).toHaveText("1,120");
 });
 
 test("Prop changes reset the number, cross digit boundaries, honour locale and stop a zero rate", async ({
@@ -222,7 +238,6 @@ test("Prop changes reset the number, cross digit boundaries, honour locale and s
     "-1.234,5",
   );
   await page.getByLabel("Rate").fill("0");
-  await expect(ticker).toHaveAttribute("data-state", "paused");
   await page.clock.runFor(5000);
   await expect(ticker.locator(".number-ticker__digits")).toHaveText("-1.234,5");
   await page.getByRole("button", { name: "Unmount" }).click();

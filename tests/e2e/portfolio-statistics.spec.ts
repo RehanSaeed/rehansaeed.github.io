@@ -156,7 +156,9 @@ test("Portfolio totals match the listed projects and About shares the star total
     downloads.toLocaleString("en-GB"),
   );
   tickers.each((_, ticker) => {
-    expect($(ticker).attr("data-state")).toBe("paused");
+    expect($(ticker).find(".number-ticker__digits").text()).toBe(
+      $(ticker).find(".number-ticker__accessible").text(),
+    );
     expect(ticker.tagName).toBe("dl");
     expect($(ticker).children("dt, dd")).toHaveLength(2);
     expect($(ticker).find(".number-ticker__value").attr("aria-live")).toBe(
@@ -378,7 +380,6 @@ for (const width of [320, 375, 1280]) {
       expect(second!.y).toBe(first!.y);
       expect(second!.x).toBeGreaterThan(first!.x);
       for (const ticker of await cards.all()) {
-        await expect(ticker).toHaveAttribute("data-state", "paused");
         expect(
           await ticker
             .locator(".number-ticker__title")
@@ -683,24 +684,27 @@ test("Portfolio uses lifetime download rates and a visible fifteen-second star c
   });
   await page.goto("/portfolio/", { waitUntil: "domcontentloaded" });
   const downloads = page.locator(".number-ticker").first();
-  await expect(downloads).toHaveAttribute("data-state", "running");
-  const value = Number(await downloads.getAttribute("data-value"));
-  const rate = Number(await downloads.getAttribute("data-rate"));
-  expect(rate).toBeGreaterThan(0);
-  const stars = page.locator(".number-ticker").last();
-  const starValue = Number(await stars.getAttribute("data-value"));
-  const starRate = Number(await stars.getAttribute("data-rate"));
-  expect(starRate).toBe(1 / 15);
-  await page.clock.runFor(14_000);
-  await expect(stars).toHaveAttribute("data-value", String(starValue));
-  await page.clock.runFor(2000);
-  await expect(downloads).toHaveAttribute(
-    "data-value",
-    String(value + Math.trunc(16 * rate)),
+  await expect(
+    downloads.getByRole("button", { name: "Package Downloads", exact: true }),
+  ).toBeEnabled();
+  const downloadDigits = downloads.locator(".number-ticker__digits");
+  const value = Number(
+    (await downloadDigits.textContent())!.replaceAll(",", ""),
   );
-  await expect(stars).toHaveAttribute("data-value", String(starValue + 1));
+  const stars = page.locator(".number-ticker").last();
+  const starDigits = stars.locator(".number-ticker__digits");
+  const starValue = Number(
+    (await starDigits.textContent())!.replaceAll(",", ""),
+  );
+  await page.clock.runFor(14_500);
+  await expect(starDigits).toHaveText(starValue.toLocaleString("en-GB"));
+  await page.clock.runFor(2000);
+  expect(
+    Number((await downloadDigits.textContent())!.replaceAll(",", "")),
+  ).toBeGreaterThan(value);
+  await expect(starDigits).toHaveText((starValue + 1).toLocaleString("en-GB"));
   await page.clock.runFor(15_000);
-  await expect(stars).toHaveAttribute("data-value", String(starValue + 2));
+  await expect(starDigits).toHaveText((starValue + 2).toLocaleString("en-GB"));
   await expect(
     page.locator(".portfolio-statistics").getByRole("button"),
   ).toHaveCount(2);

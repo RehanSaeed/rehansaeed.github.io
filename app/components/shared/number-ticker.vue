@@ -1,9 +1,5 @@
 <template>
-  <dl
-    class="number-ticker"
-    :data-value="displayValue"
-    :data-rate="rate"
-    :data-state="running ? 'running' : 'paused'">
+  <dl class="number-ticker">
     <dt
       class="number-ticker__header"
       :class="{ 'number-ticker__header--with-info': info }">
