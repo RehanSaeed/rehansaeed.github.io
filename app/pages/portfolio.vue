@@ -158,4 +158,12 @@ useSchemaOrg([
 .portfolio__section > h2 {
   margin-block: 0;
 }
+
+.portfolio__open-source {
+  padding-block-start: var(--global-space-fluid-5);
+
+  .portfolio-statistics {
+    margin-block-end: var(--global-space-fluid-5);
+  }
+}
 </style>
