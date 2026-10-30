@@ -116,6 +116,16 @@ for (const width of [375, 1280]) {
     const totalFontSize = await chart
       .locator(".post-traffic__total dd")
       .evaluate((element) => getComputedStyle(element).fontSize);
+    const expectedFontSize = await chart
+      .locator(".post-traffic__total")
+      .evaluate((element) => {
+        const style = getComputedStyle(element);
+        return (
+          parseFloat(style.fontSize) *
+          parseFloat(style.getPropertyValue("--global-font-size-8"))
+        );
+      });
+    expect(parseFloat(totalFontSize)).toBeCloseTo(expectedFontSize, 2);
     await expect(chart.locator(".post-traffic__engagement dd")).toHaveCSS(
       "font-family",
       /Audiowide/,
