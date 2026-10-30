@@ -1,567 +1,519 @@
 <template>
-  <div class="about">
-    <header class="about__title">
-      <u-heading id="about" level="1" center :to="relativeUrl">About</u-heading>
-      <p>
-        A little about my professional career, open source projects and history.
-      </p>
+  <article
+    ref="article"
+    class="about"
+    :class="{ 'about--motion': motionEnabled }"
+    aria-labelledby="about">
+    <header id="the-person" class="about__hero">
+      <div class="about__intro">
+        <div>
+          <p class="about__eyebrow">Muhammad Rehan Saeed</p>
+          <h1 id="about">Software is<br />a <em>human</em><br />endeavour.</h1>
+          <p class="about__standfirst">
+            A little about my professional career, open source projects and the
+            things I share along the way.
+          </p>
+          <div class="about__prose">
+            <p><strong>Hello, I'm Rehan.</strong></p>
+            <p>
+              I am a professional Software Developer at Microsoft. Although I
+              work for Microsoft, my opinions are my own.
+            </p>
+            <blockquote class="about__quote">
+              <p>
+                If it’s written in HTML/CSS/JS, C# or .NET, I have probably
+                written something using it in anger!
+              </p>
+              <footer>— Muhammad Rehan Saeed</footer>
+            </blockquote>
+            <p class="about__source-note">
+              In my own words:
+              <a :href="metadata.author.gitHub.url">GitHub biography</a> and
+              <a :href="credlyUrl">Credly profile</a>.
+            </p>
+          </div>
+          <a class="about__text-link" href="#youtube">
+            Explore the work <span aria-hidden="true">&darr;</span>
+          </a>
+        </div>
+        <figure class="about__portrait">
+          <NuxtPicture
+            format="avif"
+            legacy-format="jpg"
+            :img-attrs="{ class: 'about__portrait-image' }"
+            alt="Muhammad Rehan Saeed"
+            height="480"
+            width="320"
+            sizes="320px"
+            loading="eager"
+            fetchpriority="high"
+            src="/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg" />
+          <figcaption>
+            The person behind the code.<br />
+            Software developer, open source contributor and blogger.
+          </figcaption>
+        </figure>
+      </div>
+      <div class="about__hero-footer">
+        <p>Scroll to explore. Read at your own pace.</p>
+      </div>
     </header>
 
-    <u-arrows class="about__arrows" />
+    <section
+      class="about__location about__section"
+      aria-label="London, United Kingdom"
+      data-reveal>
+      <u-location-map />
+    </section>
 
-    <u-card class="about__container" tag="article">
-      <NuxtPicture
-        format="avif"
-        :img-attrs="{ class: 'about__image' }"
-        legacy-format="jpg"
-        alt="Muhammad Rehan Saeed"
-        height="480"
-        width="320"
-        sizes="320px"
-        src="/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg"
-        quality="100" />
-      <u-heading :id="metadata.author.name" level="2" class="about__title">{{
-        metadata.author.name
-      }}</u-heading>
-      <u-social-links class="about__social-links" />
-      <p class="about__description">
-        I am a professional Software Developer at Microsoft. Although I work for
-        Microsoft, my opinions are my own. If it’s written in HTML/CSS/JS, C# or
-        .NET, I have probably written something using it in anger!
-      </p>
-      <p class="about__description">
-        I occasionally appear on
-        <a :href="youtubeUrl">Youtube</a> and
-        <a :href="twitchUrl">Twitch</a> where you can watch my software
-        development escapades.
-      </p>
-      <div class="about__youtube-images">
-        <u-tooltip v-slot="{ trigger }" text="View my YouTube channel">
-          <a v-bind="trigger" :href="youtubeUrl">
+    <section
+      id="youtube"
+      class="about__youtube about__section"
+      aria-labelledby="youtube-title">
+      <div class="about__feature-copy" data-reveal>
+        <h2 id="youtube-title">YouTube</h2>
+        <p class="about__standfirst">
+          I occasionally appear on YouTube and Twitch where you can watch my
+          software development escapades.
+        </p>
+        <a class="about__text-link" :href="metadata.author.youtube.url"
+          >Watch on YouTube &rarr;</a
+        >
+        <a class="about__text-link" :href="metadata.author.twitch.url"
+          >Find me on Twitch &rarr;</a
+        >
+        <div class="about__youtube-images">
+          <a :href="metadata.author.youtube.url">
             <img
-              class="about__youtube-image"
+              class="about__youtube-badge"
               alt="Youtube views"
-              height="20"
               width="104"
-              :src="youtubeViewsImageUrl" />
-          </a>
-        </u-tooltip>
-        <u-tooltip v-slot="{ trigger }" text="View my YouTube channel">
-          <a v-bind="trigger" :href="youtubeUrl">
-            <img
-              class="about__youtube-image"
-              alt="Youtube subscribers"
               height="20"
-              width="124"
-              :src="youtubeSubscribersImageUrl" />
+              loading="lazy"
+              :src="youtubeBadgeImageUrl('viewCount', 'Views')" />
           </a>
-        </u-tooltip>
+          <a :href="metadata.author.youtube.url">
+            <img
+              class="about__youtube-badge"
+              alt="Youtube subscribers"
+              width="124"
+              height="20"
+              loading="lazy"
+              :src="youtubeBadgeImageUrl('subscriberCount', 'Subscribers')" />
+          </a>
+        </div>
       </div>
-      <p class="about__description">
-        You can see some of the open source projects that I have founded and
-        maintained in my
-        <NuxtLink to="/portfolio/">portfolio</NuxtLink>. There are many others I
-        have contributed to which you can see in my
-        <a :href="gitHubUrl">GitHub profile</a> and of course there are other
-        commercial projects that I cannot disclose.
-      </p>
-      <div class="about__github-images">
-        <u-tooltip v-slot="{ trigger }" text="View my GitHub profile">
-          <a v-bind="trigger" :href="gitHubUrl">
+      <figure class="about__youtube-feature" data-reveal>
+        <a :href="metadata.author.youtube.url">
+          <NuxtPicture
+            format="avif"
+            legacy-format="jpg"
+            :img-attrs="{ class: 'about__youtube-image' }"
+            alt="Muhammad Rehan Saeed pointing at the .NET logo on his YouTube channel artwork"
+            width="1920"
+            height="1080"
+            sizes="sm:640px md:960px lg:1280px"
+            loading="lazy"
+            src="/images/hero/My-YouTube-1920x1080.jpg" />
+        </a>
+        <figcaption>
+          My YouTube channel. Follow the image to browse my videos; no video
+          player loads until you visit the channel.
+        </figcaption>
+      </figure>
+    </section>
+
+    <section
+      id="github"
+      class="about__work about__section"
+      aria-labelledby="work-title">
+      <header class="about__work-header" data-reveal>
+        <h2 id="work-title">GitHub</h2>
+        <p class="about__standfirst">
+          You can see some of the open source projects that I have founded and
+          maintained in my
+          <NuxtLink to="/portfolio/">portfolio</NuxtLink>.
+        </p>
+        <p>
+          There are many others I have contributed to which you can see in my
+          <a :href="metadata.author.gitHub.url">GitHub profile</a>, and of
+          course there are other commercial projects that I cannot disclose.
+        </p>
+        <a class="about__text-link" :href="metadata.author.gitHub.sponsorsUrl">
+          Sponsor my open source work &rarr;
+        </a>
+        <div class="about__github-images">
+          <a :href="metadata.author.gitHub.url">
             <img
               class="about__github-image"
               alt="GitHub stars"
-              height="30"
               width="135"
-              :src="gitHubStarsImageUrl" />
+              height="30"
+              loading="lazy"
+              :src="`https://img.shields.io/github/stars/${metadata.author.gitHub.user}?style=social`" />
           </a>
-        </u-tooltip>
-        <u-tooltip v-slot="{ trigger }" text="View my GitHub followers">
-          <a v-bind="trigger" :href="gitHubFollowersUrl">
+          <a :href="`${metadata.author.gitHub.url}?tab=followers`">
             <img
               class="about__github-image"
               alt="GitHub follower count"
-              height="30"
               width="168"
-              :src="gitHubFollowersImageUrl" />
+              height="30"
+              loading="lazy"
+              :src="`https://img.shields.io/github/followers/${metadata.author.gitHub.user}?style=social`" />
           </a>
-        </u-tooltip>
-        <u-tooltip v-slot="{ trigger }" text="Sponsor me on GitHub">
-          <a v-bind="trigger" :href="gitHubSponsorsUrl">
+          <a :href="metadata.author.gitHub.sponsorsUrl">
             <img
               class="about__github-image"
               alt="GitHub sponsors"
-              height="30"
               width="121"
-              :src="gitHubSponsorsImageUrl" />
+              height="30"
+              loading="lazy"
+              :src="`https://img.shields.io/github/sponsors/${metadata.author.gitHub.user}?logo=github&style=social`" />
           </a>
-        </u-tooltip>
-      </div>
-      <div class="about__github-statistics">
-        <u-tooltip v-slot="{ trigger }" text="View my GitHub profile">
-          <a v-bind="trigger" :href="gitHubUrl">
+        </div>
+      </header>
+
+      <figure class="about__github-statistics" data-reveal>
+        <a :href="metadata.author.gitHub.url">
+          <picture>
+            <source
+              media="(prefers-reduced-motion: reduce)"
+              srcset="
+                https://raw.githubusercontent.com/RehanSaeed/RehanSaeed/main/profile-3d-contrib/profile-green.svg
+              " />
             <img
-              class="about__github-statistics"
-              alt="GitHub statistics"
-              height="1280"
-              width="850"
+              class="about__github-statistics-image"
+              alt="GitHub contribution graphic; open my profile for the contribution calendar and current details"
+              width="1280"
+              height="850"
+              loading="lazy"
               :src="gitHubStatisticsImageUrl" />
-          </a>
-        </u-tooltip>
+          </picture>
+        </a>
+        <figcaption>
+          My GitHub contribution graphic, generated by my profile repository.
+          <a :href="metadata.author.gitHub.url"
+            >View current activity on GitHub</a
+          >.
+        </figcaption>
+      </figure>
+    </section>
+
+    <section
+      id="awards"
+      class="about__recognition about__section"
+      aria-labelledby="recognition-title">
+      <header class="about__recognition-header" data-reveal>
+        <h2 id="recognition-title">Awards</h2>
+        <p class="about__standfirst">
+          Community recognition, participation and credentials. Different
+          things, with different meanings.
+        </p>
+      </header>
+      <figure class="about__honour" data-reveal>
+        <a href="/open-uk-honouree/">
+          <NuxtPicture
+            format="avif"
+            legacy-format="jpg"
+            :img-attrs="{ class: 'about__honour-image' }"
+            alt="Open UK Honours 2022"
+            height="396"
+            width="1288"
+            sizes="sm:322px md:644px"
+            loading="lazy"
+            src="/images/about/Open-UK-Honours-2022-1288x396.jpg" />
+        </a>
+        <figcaption>
+          <span class="about__eyebrow">2022 / OpenUK</span>
+          <h3>Recognition from the open technology community.</h3>
+          <p>
+            I was included in OpenUK's 2022 Honours List for open source
+            software. This is OpenUK's community recognition, not a UK state
+            honour.
+          </p>
+          <p class="about__source-note">
+            <a href="/open-uk-honouree/">My account of the award</a> ·
+            <a
+              href="https://openuk.uk/community/openuk-honours-lists/2022honourslist/">
+              OpenUK's 2022 list
+            </a>
+          </p>
+        </figcaption>
+      </figure>
+      <div class="about__credential-intro" data-reveal>
+        <h3>Participation is part of the story, too.</h3>
+        <p>
+          Here are some of my hackathon participation and security recognition
+          badges. Participant badges show participation, not competition wins.
+          The years belong to the badges; they are not a career timeline.
+        </p>
       </div>
-      <p class="about__description">
-        Here are some of the awards I have been given for my work as a software
-        engineer in open source or elsewhere:
+      <section
+        v-for="group in credentialGroups"
+        :key="group.year"
+        class="about__credential-group"
+        :aria-labelledby="`credentials-${group.year}`">
+        <h4
+          :id="`credentials-${group.year}`"
+          class="about__credential-year"
+          data-reveal>
+          {{ group.year }}
+        </h4>
+        <ul
+          class="about__credentials"
+          :aria-label="`${group.year} credentials and participation`">
+          <li
+            v-for="credential in group.credentials"
+            :key="credential.filename"
+            data-reveal>
+            <a :href="credlyUrl">
+              <NuxtPicture
+                format="avif"
+                legacy-format="png"
+                :img-attrs="{ class: 'about__badge-image' }"
+                :alt="credential.label"
+                height="300"
+                :width="credential.width"
+                sizes="150px"
+                densities="x1 x2"
+                loading="lazy"
+                :src="`/images/about/${credential.filename}`" />
+              <span>{{ credential.title }}</span>
+              <span class="about__source-note"
+                >{{ credential.kind }} · Credly &rarr;</span
+              >
+            </a>
+          </li>
+        </ul>
+      </section>
+      <p class="about__source-note">
+        Badge artwork and labels are also shown on my
+        <a :href="metadata.author.gitHub.url">GitHub profile</a>.
+        <a :href="credlyUrl">Consult Credly for issuer records</a>; this gallery
+        is not a complete or live credential record.
       </p>
-      <div class="about_awards-images">
-        <u-tooltip v-slot="{ trigger }" text="View my credentials on Credly">
-          <a v-bind="trigger" :href="credlyUrl">
-            <NuxtPicture
-              format="avif"
-              :img-attrs="{ class: 'about__badge-image' }"
-              legacy-format="png"
-              alt="Microsoft Global Hackathon 2026 Participant"
-              height="300"
-              width="300"
-              sizes="150px"
-              densities="x1 x2"
-              src="/images/about/Microsoft-Global-Hackathon-2026-300x300.png"
-              quality="100" />
-          </a>
-        </u-tooltip>
-        <u-tooltip v-slot="{ trigger }" text="View my credentials on Credly">
-          <a v-bind="trigger" :href="credlyUrl">
-            <NuxtPicture
-              format="avif"
-              :img-attrs="{ class: 'about__badge-image' }"
-              legacy-format="png"
-              alt="Microsoft MSAI Security Champs March 2026"
-              height="300"
-              width="300"
-              sizes="150px"
-              densities="x1 x2"
-              src="/images/about/Microsoft-MSAI-Security-Champs-2026-300x300.png"
-              quality="100" />
-          </a>
-        </u-tooltip>
-        <u-tooltip v-slot="{ trigger }" text="View my credentials on Credly">
-          <a v-bind="trigger" :href="credlyUrl">
-            <NuxtPicture
-              format="avif"
-              :img-attrs="{ class: 'about__badge-image' }"
-              legacy-format="png"
-              alt="Microsoft Global Hackathon 2025 Participant"
-              height="300"
-              width="300"
-              sizes="150px"
-              densities="x1 x2"
-              src="/images/about/Microsoft-Global-Hackathon-2025-300x300.png"
-              quality="100" />
-          </a>
-        </u-tooltip>
-        <u-tooltip v-slot="{ trigger }" text="View my credentials on Credly">
-          <a v-bind="trigger" :href="credlyUrl">
-            <NuxtPicture
-              format="avif"
-              :img-attrs="{ class: 'about__badge-image' }"
-              legacy-format="png"
-              alt="Microsoft MSAI Security Champs Recognition 2025"
-              height="300"
-              width="300"
-              sizes="150px"
-              densities="x1 x2"
-              src="/images/about/Microsoft-MSAI-Security-Champs-Recognition-2025-300x300.png"
-              quality="100" />
-          </a>
-        </u-tooltip>
-        <u-tooltip v-slot="{ trigger }" text="View my credentials on Credly">
-          <a v-bind="trigger" :href="credlyUrl">
-            <NuxtPicture
-              format="avif"
-              :img-attrs="{ class: 'about__badge-image' }"
-              legacy-format="png"
-              alt="Microsoft Global Hackathon 2024 Participant"
-              height="300"
-              width="300"
-              sizes="150px"
-              densities="x1 x2"
-              src="/images/about/Microsoft-Global-Hackathon-2024-300x300.png"
-              quality="100" />
-          </a>
-        </u-tooltip>
-        <u-tooltip v-slot="{ trigger }" text="View my credentials on Credly">
-          <a v-bind="trigger" :href="credlyUrl">
-            <NuxtPicture
-              format="avif"
-              :img-attrs="{ class: 'about__badge-image' }"
-              legacy-format="png"
-              alt="Microsoft Global Hackathon 2023 Participant"
-              height="300"
-              width="300"
-              sizes="150px"
-              densities="x1 x2"
-              src="/images/about/Microsoft-Global-Hackathon-2023-300x300.png"
-              quality="100" />
-          </a>
-        </u-tooltip>
-        <u-tooltip v-slot="{ trigger }" text="Read about my Open UK honour">
-          <a v-bind="trigger" href="/open-uk-honouree/">
-            <NuxtPicture
-              format="avif"
-              :img-attrs="{ class: 'about__open-uk-honours-image' }"
-              legacy-format="jpg"
-              alt="Open UK Honours 2022"
-              height="396"
-              width="1288"
-              sizes="322px"
-              densities="x1 x2"
-              src="/images/about/Open-UK-Honours-2022-1288x396.jpg"
-              quality="100" />
-          </a>
-        </u-tooltip>
-        <u-tooltip v-slot="{ trigger }" text="View my credentials on Credly">
-          <a v-bind="trigger" :href="credlyUrl">
-            <NuxtPicture
-              format="avif"
-              :img-attrs="{ class: 'about__badge-image' }"
-              legacy-format="png"
-              alt="Microsoft Global Hackathon 2022.png"
-              height="300"
-              width="300"
-              sizes="150px"
-              densities="x1 x2"
-              src="/images/about/Microsoft-Global-Hackathon-2022-300x300.png"
-              quality="100" />
-          </a>
-        </u-tooltip>
-        <u-tooltip v-slot="{ trigger }" text="View my credentials on Credly">
-          <a v-bind="trigger" :href="credlyUrl">
-            <NuxtPicture
-              format="avif"
-              :img-attrs="{ class: 'about__badge-image' }"
-              legacy-format="png"
-              alt="Microsoft Global Hackathon 2021.png"
-              height="300"
-              width="300"
-              sizes="150px"
-              densities="x1 x2"
-              src="/images/about/Microsoft-Global-Hackathon-2021-300x300.png"
-              quality="100" />
-          </a>
-        </u-tooltip>
-        <u-tooltip v-slot="{ trigger }" text="View my credentials on Credly">
-          <a v-bind="trigger" :href="credlyUrl">
-            <NuxtPicture
-              format="avif"
-              :img-attrs="{
-                class: 'about__badge-image about__badge-image--wide',
-              }"
-              legacy-format="png"
-              alt="Microsoft Global Hackathon 2020.png"
-              height="300"
-              width="350"
-              sizes="180px"
-              densities="x1 x2"
-              src="/images/about/Microsoft-Global-Hackathon-2020-350x300.png"
-              quality="100" />
-          </a>
-        </u-tooltip>
-        <u-tooltip v-slot="{ trigger }" text="View my credentials on Credly">
-          <a v-bind="trigger" :href="credlyUrl">
-            <NuxtPicture
-              format="avif"
-              :img-attrs="{ class: 'about__badge-image' }"
-              legacy-format="png"
-              alt="Microsoft Most Valuable Professional (MVP) Alumni"
-              height="300"
-              width="300"
-              sizes="150px"
-              densities="x1 x2"
-              src="/images/about/Microsoft-Most-Valuable-Professional-Alumni-2023-300x300.png"
-              quality="100" />
-          </a>
-        </u-tooltip>
-      </div>
-      <p class="about__description">
-        I have been fairly active on StackOverflow. You can view my
-        <a :href="stackOverflowUrl">Stack Overflow profile</a> and see my
-        contribution to the community.
+    </section>
+
+    <section
+      id="stackoverflow"
+      class="about__answers about__section"
+      aria-labelledby="answers-title"
+      data-reveal>
+      <h2 id="answers-title">Stack Overflow</h2>
+      <p class="about__standfirst">
+        I have been fairly active on Stack Overflow. You can view my
+        <a :href="metadata.author.stackOverflow.url">Stack Overflow profile</a>
+        and see my contribution to the community.
       </p>
-      <u-tooltip v-slot="{ trigger }" text="View my Stack Overflow profile">
-        <a v-bind="trigger" :href="stackOverflowUrl">
+      <a class="about__text-link" :href="metadata.author.stackOverflow.url">
+        Browse my questions and answers &rarr;
+      </a>
+      <figure class="about__stack-overflow">
+        <a :href="metadata.author.stackOverflow.url">
           <img
             class="about__stack-overflow-image"
             alt="Stack Overflow profile statistics"
-            height="58"
             width="208"
+            height="58"
+            loading="lazy"
             :src="stackOverflowProfileUrl" />
         </a>
-      </u-tooltip>
-      <p class="about__description">
-        Before I joined Microsoft, I was a
-        <a :href="mvpUrl">Microsoft Most Valuable Professional (MVP)</a> for
-        three years. This gave me inside information into the work Microsoft was
-        doing. Once I joined Microsoft, I had to give up this award.
-      </p>
-      <div class="about__mvp-images">
-        <u-tooltip v-slot="{ trigger }" text="View the Microsoft MVP programme">
-          <a v-bind="trigger" :href="mvpUrl">
-            <NuxtPicture
-              format="avif"
-              :img-attrs="{ class: 'about__mvp-image' }"
-              legacy-format="png"
-              alt="Microsoft Most Valuable Professional (MVP)"
-              height="84"
-              width="208"
-              sizes="208px"
-              src="/images/about/Microsoft-Most-Valuable-Professional-750x303.png"
-              quality="100" />
-          </a>
-        </u-tooltip>
+        <figcaption>
+          My profile image is supplied by Stack Overflow. Follow it to see my
+          questions, answers and current reputation.
+        </figcaption>
+      </figure>
+    </section>
+
+    <section
+      id="microsoft-mvp"
+      class="about__mvp about__section"
+      aria-labelledby="alumni-title"
+      data-reveal>
+      <h2 id="alumni-title">Microsoft MVP</h2>
+      <div class="about__alumni">
+        <a
+          href="https://mvp.microsoft.com/en-us/PublicProfile/5001654?fullName=Muhammad%20Rehan%20Saeed">
+          <NuxtPicture
+            format="avif"
+            legacy-format="png"
+            :img-attrs="{ class: 'about__mvp-image' }"
+            alt="Microsoft Most Valuable Professional (MVP)"
+            height="303"
+            width="750"
+            sizes="208px"
+            loading="lazy"
+            src="/images/about/Microsoft-Most-Valuable-Professional-750x303.png" />
+        </a>
+        <div>
+          <h3>Before Microsoft: the MVP years.</h3>
+          <p>
+            Before I joined Microsoft, I was a Microsoft Most Valuable
+            Professional (MVP). Once I joined Microsoft, I had to give up this
+            award. The alumni badge below is not a current MVP award.
+          </p>
+          <p class="about__source-note">
+            My
+            <a :href="metadata.author.gitHub.url">self-reported biography</a>
+            and <a href="/open-uk-honouree/">2022 account</a> describe this
+            earlier chapter.
+          </p>
+          <figure class="about__alumni-badge">
+            <a :href="credlyUrl">
+              <NuxtPicture
+                format="avif"
+                legacy-format="png"
+                :img-attrs="{ class: 'about__badge-image' }"
+                alt="Microsoft Most Valuable Professional (MVP) Alumni"
+                width="300"
+                height="300"
+                sizes="150px"
+                densities="x1 x2"
+                loading="lazy"
+                src="/images/about/Microsoft-Most-Valuable-Professional-Alumni-2023-300x300.png" />
+            </a>
+            <figcaption>
+              MVP alumni status — not a current MVP award.
+            </figcaption>
+          </figure>
+        </div>
       </div>
-      <p class="about__description">
-        Do you have questions or comments about my work? Please feel free to
-        contact me using any of the links above.
-      </p>
-    </u-card>
-  </div>
+    </section>
+  </article>
 </template>
 
-<script>
-export default {
-  name: "u-about",
-  setup() {
-    const metadata = useAppConfig().site;
-    const title = "About";
-    const description = `About ${metadata.author.name}. ${metadata.description}.`;
-    const url = metadata.url + "/about/";
-    useBlogOgImage(title);
-    useSchemaOrg([
-      defineWebPage({
-        "@type": "ProfilePage",
-        mainEntity: { "@id": `${metadata.url}/#identity` },
-      }),
-      defineBreadcrumb({
-        itemListElement: [
-          { name: "Blog", item: metadata.url + "/" },
-          { name: title, item: url },
-        ],
-      }),
-    ]);
-    useHead({
-      title,
-      link: [{ rel: "canonical", href: url }],
-      meta: [
-        { name: "description", content: description },
-        { name: "author", content: metadata.author.name },
-        // Open Graph
-        { property: "og:title", content: title },
-        { property: "og:url", content: url },
-        { property: "og:description", content: description },
-        { property: "og:locale", content: metadata.language.replace("-", "_") },
-        { property: "og:site_name", content: metadata.name },
-        { property: "og:type", content: "profile" },
-        { property: "profile:first_name", content: metadata.author.firstName },
-        { property: "profile:last_name", content: metadata.author.lastName },
-        { property: "profile:username", content: metadata.author.name },
-        { property: "profile:gender", content: metadata.author.gender },
-        { property: "fb:app_id", content: metadata.facebookAppId },
-      ],
+<script setup lang="ts">
+import { aboutCredentials } from "~/data/about";
+
+const metadata = useAppConfig().site;
+const title = "About";
+const description = `About ${metadata.author.name}. ${metadata.description}.`;
+const url = `${metadata.url}/about/`;
+const credlyUrl = "https://www.credly.com/users/muhammad_rehan_saeed/badges";
+const awardCredentials = aboutCredentials.filter(
+  (credential) => credential.kind !== "Alumni",
+);
+const credentialGroups = [...new Set(awardCredentials.map(({ year }) => year))]
+  .sort((a, b) => Number(b) - Number(a))
+  .map((year) => ({
+    year,
+    credentials: awardCredentials.filter(
+      (credential) => credential.year === year,
+    ),
+  }));
+
+useBlogOgImage(title);
+useSchemaOrg([
+  defineWebPage({
+    "@type": "ProfilePage",
+    mainEntity: { "@id": `${metadata.url}/#identity` },
+  }),
+  defineBreadcrumb({
+    itemListElement: [
+      { name: "Blog", item: `${metadata.url}/` },
+      { name: title, item: url },
+    ],
+  }),
+]);
+useHead({
+  title,
+  link: [{ rel: "canonical", href: url }],
+  meta: [
+    { name: "description", content: description },
+    { name: "author", content: metadata.author.name },
+    { property: "og:title", content: title },
+    { property: "og:url", content: url },
+    { property: "og:description", content: description },
+    { property: "og:locale", content: metadata.language.replace("-", "_") },
+    { property: "og:site_name", content: metadata.name },
+    { property: "og:type", content: "profile" },
+    { property: "profile:first_name", content: metadata.author.firstName },
+    { property: "profile:last_name", content: metadata.author.lastName },
+    { property: "profile:username", content: metadata.author.name },
+    { property: "profile:gender", content: metadata.author.gender },
+    { property: "fb:app_id", content: metadata.facebookAppId },
+  ],
+});
+
+const article = useTemplateRef("article");
+const reducedMotion = ref(true);
+const motionEnabled = computed(() => !reducedMotion.value);
+const theme = ref<"light" | "dark">("light");
+const gitHubStatisticsImageUrl = computed(() => {
+  const file =
+    theme.value === "light"
+      ? "profile-green-animate.svg"
+      : "profile-night-green.svg";
+  return `https://raw.githubusercontent.com/RehanSaeed/RehanSaeed/main/profile-3d-contrib/${file}`;
+});
+const stackOverflowProfileUrl = computed(
+  () =>
+    `https://stackoverflow.com/users/flair/${metadata.author.stackOverflow.user}.png?theme=${theme.value === "light" ? "dark" : "light"}`,
+);
+let revealObserver: IntersectionObserver | undefined;
+let motionPreference: MediaQueryList | undefined;
+
+function updateMotionPreference() {
+  reducedMotion.value = motionPreference?.matches ?? true;
+}
+
+function updateTheme() {
+  theme.value =
+    document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+}
+
+function youtubeBadgeImageUrl(
+  statistic: "viewCount" | "subscriberCount",
+  label: string,
+) {
+  const query = new URLSearchParams({
+    url: `https://api.socialcounts.org/youtube-live-subscriber-count/${metadata.author.youtube.user}`,
+    query: `$.counters.api.${statistic}`,
+    label,
+    logo: "youtube",
+    style: "social",
+  });
+  return `https://img.shields.io/badge/dynamic/json?${query}`;
+}
+
+watch(motionEnabled, (enabled) => {
+  if (!enabled) {
+    article.value?.getAnimations({ subtree: true }).forEach((animation) => {
+      animation.cancel();
     });
-    return { metadata };
-  },
-  data() {
-    return {
-      theme: "light",
-    };
-  },
-  computed: {
-    relativeUrl() {
-      return "/about/";
+  }
+});
+
+onMounted(() => {
+  updateTheme();
+  window.addEventListener("__themeChanged", updateTheme);
+  motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+  updateMotionPreference();
+  motionPreference.addEventListener("change", updateMotionPreference);
+
+  // Content stays visible if JavaScript or IntersectionObserver is unavailable.
+  if (!("IntersectionObserver" in window)) return;
+  revealObserver = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.setAttribute("data-revealed", "");
+          revealObserver?.unobserve(entry.target);
+        }
+      }
     },
-    stackOverflowUrl() {
-      return this.metadata.author.stackOverflow.url;
-    },
-    stackOverflowProfileUrl() {
-      return `https://stackoverflow.com/users/flair/${this.metadata.author.stackOverflow.user}.png?theme=${this.oppositeTheme}`;
-    },
-    gitHubUrl() {
-      return this.metadata.author.gitHub.url;
-    },
-    gitHubSponsorsUrl() {
-      return `https://github.com/sponsors/${this.metadata.author.gitHub.user}`;
-    },
-    gitHubSponsorsImageUrl() {
-      return `https://img.shields.io/github/sponsors/${this.metadata.author.gitHub.user}?logo=github&style=social`;
-    },
-    gitHubFollowersUrl() {
-      return `https://github.com/${this.metadata.author.gitHub.user}?tab=followers`;
-    },
-    gitHubFollowersImageUrl() {
-      return `https://img.shields.io/github/followers/${this.metadata.author.gitHub.user}?style=social`;
-    },
-    gitHubStarsImageUrl() {
-      return `https://img.shields.io/github/stars/${this.metadata.author.gitHub.user}?style=social`;
-    },
-    gitHubStatisticsImageUrl() {
-      const fileName =
-        this.theme === "light"
-          ? "profile-green-animate.svg"
-          : "profile-night-green.svg";
-      return `https://raw.githubusercontent.com/RehanSaeed/RehanSaeed/main/profile-3d-contrib/${fileName}`;
-    },
-    mvpUrl() {
-      return "https://mvp.microsoft.com/en-us/PublicProfile/5001654?fullName=Muhammad%20Rehan%20Saeed";
-    },
-    credlyUrl() {
-      return "https://www.credly.com/users/muhammad_rehan_saeed/badges";
-    },
-    twitchUrl() {
-      return this.metadata.author.twitch.url;
-    },
-    youtubeUrl() {
-      return this.metadata.author.youtube.url;
-    },
-    youtubeViewsImageUrl() {
-      return this.youtubeBadgeImageUrl("viewCount", "Views");
-    },
-    youtubeSubscribersImageUrl() {
-      return this.youtubeBadgeImageUrl("subscriberCount", "Subscribers");
-    },
-    oppositeTheme() {
-      return this.theme === "light" ? "dark" : "light";
-    },
-  },
-  methods: {
-    youtubeBadgeImageUrl(statistic, label) {
-      const query = new URLSearchParams({
-        url: `https://api.socialcounts.org/youtube-live-subscriber-count/${this.metadata.author.youtube.user}`,
-        query: `$.counters.api.${statistic}`,
-        label,
-        logo: "youtube",
-        style: "social",
-      });
-      return `https://img.shields.io/badge/dynamic/json?${query}`;
-    },
-    setTheme(e) {
-      this.theme = e.detail;
-    },
-  },
-  mounted() {
-    if (window) {
-      this.theme = window.__theme;
-      window.addEventListener("__themeChanged", this.setTheme);
-    }
-  },
-  unmounted() {
-    if (window) {
-      window.removeEventListener("__themeChanged", this.setTheme);
-    }
-  },
-};
+    { threshold: 0.1 },
+  );
+  article.value?.querySelectorAll("[data-reveal]").forEach((element) => {
+    revealObserver?.observe(element);
+  });
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("__themeChanged", updateTheme);
+  revealObserver?.disconnect();
+  motionPreference?.removeEventListener("change", updateMotionPreference);
+});
 </script>
 
-<style lang="scss">
-.about {
-  display: grid;
-  gap: var(--global-space-fluid-5);
-  justify-items: center;
-}
-
-.about__title {
-  text-align: center;
-}
-
-.about__arrows {
-  justify-self: normal;
-  margin-inline: calc(var(--global-space-main) * -1);
-}
-
-.about__container {
-  display: grid;
-  justify-items: center;
-
-  &:last-child {
-    margin-block-end: 0;
-  }
-}
-
-.about__image {
-  border-radius: var(--global-border-radius);
-  display: block;
-  max-inline-size: 320px;
-}
-
-.about__social-links {
-  margin-block-end: var(--global-space-fluid-3);
-}
-
-.about__github-images,
-.about__youtube-images {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--global-space-fixed-4);
-
-  margin-block-end: var(--global-space-fixed-5);
-}
-.about__github-image,
-.about__youtube-image {
-  block-size: 30px;
-}
-.about__youtube-image {
-  inline-size: auto;
-}
-.about__github-statistics {
-  block-size: 26rem;
-  margin-block-end: var(--global-space-fixed-5);
-}
-
-.about__stack-overflow-image {
-  border-radius: var(--global-border-radius);
-  display: block;
-  margin-block-end: var(--global-space-fixed-5);
-  inline-size: 208px;
-  block-size: 58px;
-}
-
-.about__mvp-images {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: var(--global-space-fixed-5);
-
-  margin-block-end: var(--global-space-fixed-5);
-}
-.about__mvp-image {
-  border-radius: var(--global-border-radius);
-  inline-size: 208px;
-  block-size: 84px;
-}
-
-.about__badge-image {
-  inline-size: 150px;
-  block-size: 150px;
-}
-.about__badge-image--wide {
-  inline-size: 180px;
-}
-
-.about_awards-images {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: var(--global-space-fixed-5);
-
-  margin-block-end: var(--global-space-fixed-5);
-  max-inline-size: 800px;
-}
-.about__open-uk-honours-image {
-  border: 1px solid var(--global-accent-color);
-  border-radius: var(--global-border-radius);
-  inline-size: 322px;
-  block-size: 99x;
-}
-</style>
+<style lang="scss" src="~/assets/style/about.scss"></style>

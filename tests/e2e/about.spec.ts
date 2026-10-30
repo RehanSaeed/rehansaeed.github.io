@@ -1,79 +1,35 @@
 import { join } from "node:path";
 import { test as unitTest } from "@playwright/test";
+import type { Page } from "@playwright/test";
+import sharp from "sharp";
 import { expect, test } from "./fixtures";
 import { readImageDimensions } from "../../modules/blog-content/images";
-import sharp from "sharp";
+import { aboutCredentials } from "../../app/data/about";
+import metadata from "../../site.json";
 
-const badges = [
-  {
-    filename: "Microsoft-Global-Hackathon-2026-300x300.png",
-    alt: "Microsoft Global Hackathon 2026 Participant",
-    issuedAt: "2026-08-20",
-  },
-  {
-    filename: "Microsoft-MSAI-Security-Champs-2026-300x300.png",
-    alt: "Microsoft MSAI Security Champs March 2026",
-    issuedAt: "2026-03-31",
-  },
-  {
-    filename: "Microsoft-Global-Hackathon-2025-300x300.png",
-    alt: "Microsoft Global Hackathon 2025 Participant",
-    issuedAt: "2025-08-05",
-  },
-  {
-    filename: "Microsoft-MSAI-Security-Champs-Recognition-2025-300x300.png",
-    alt: "Microsoft MSAI Security Champs Recognition 2025",
-    issuedAt: "2025-09-30",
-  },
-  ...[
-    [2024, "2024-08-02"],
-    [2023, "2023-08-24"],
-  ].map(([year, issuedAt]) => ({
-    filename: `Microsoft-Global-Hackathon-${year}-300x300.png`,
-    alt: `Microsoft Global Hackathon ${year} Participant`,
-    issuedAt: String(issuedAt),
-  })),
-];
-const existingBadges = [
-  {
-    filename: "Microsoft-Global-Hackathon-2022-300x300.png",
-    issuedAt: "2022-08-25",
-  },
-  {
-    filename: "Microsoft-Global-Hackathon-2021-300x300.png",
-    issuedAt: "2021-09-02",
-  },
-  {
-    filename: "Microsoft-Global-Hackathon-2020-350x300.png",
-    issuedAt: "2020-06-22",
-  },
-  {
-    filename: "Microsoft-Most-Valuable-Professional-Alumni-2023-300x300.png",
-    issuedAt: "2023-05-18",
-  },
-];
+async function openAbout(page: Page) {
+  await page.route("https://tiles.openfreemap.org/**", (route) =>
+    route.fulfill({ status: 503, body: "Map unavailable during About tests" }),
+  );
+  await page.goto("/about/", { waitUntil: "domcontentloaded" });
+}
 
 unitTest(
-  "Credly PNG filenames include their issue year and match their intrinsic dimensions",
+  "Credential filenames match their years and intrinsic dimensions",
   async () => {
-    for (const { filename, issuedAt } of [...badges, ...existingBadges]) {
-      expect(filename).toMatch(
-        new RegExp(`-${issuedAt.slice(0, 4)}-\\d+x\\d+\\.png$`),
-      );
+    for (const { filename, year, width } of aboutCredentials) {
+      expect(filename).toMatch(new RegExp(`-${year}-${width}x300\\.png$`));
       expect(
         await readImageDimensions(
           join(process.cwd(), "public", "images", "about", filename),
         ),
-      ).toEqual({
-        width: filename.includes("350x300") ? 350 : 300,
-        height: 300,
-      });
+      ).toEqual({ width, height: 300 });
     }
   },
 );
 
 unitTest(
-  "Badge canvases are transparent without removing enclosed light artwork",
+  "Badge canvases preserve transparency and enclosed light artwork",
   async () => {
     for (const { filename, lightPixel, minimumBlue } of [
       {
@@ -122,121 +78,130 @@ unitTest(
   },
 );
 
-for (const width of [375, 1280]) {
+for (const width of [320, 375, 768, 1440]) {
   for (const colorScheme of ["light", "dark"] as const) {
-    test(`About Credly badges at ${width}px in ${colorScheme} mode`, async ({
+    test(`Editorial About at ${width}px in ${colorScheme} mode`, async ({
       page,
     }) => {
-      await page.setViewportSize({ width, height: 900 });
+      await page.setViewportSize({ width, height: 1000 });
       await page.emulateMedia({ colorScheme });
-      await page.goto("/about/");
-      await expect(
-        page
-          .locator(".about__description")
-          .filter({ hasText: "If it’s written" }),
-      ).toContainText(
-        "If it’s written in HTML/CSS/JS, C# or .NET, I have probably written something using it in anger!",
+      await openAbout(page);
+      const article = page.getByRole("article");
+      await expect(article.getByRole("heading", { level: 1 })).toHaveCount(1);
+      await expect(article.getByRole("heading", { level: 1 })).toHaveText(
+        /Software is\s*a human\s*endeavour\./,
       );
-      await expect(
-        page
-          .locator(".about__description")
-          .filter({ hasText: "I occasionally appear" }),
-      ).toHaveText(
-        "I occasionally appear on Youtube and Twitch where you can watch my software development escapades.",
+      await expect(article.getByRole("blockquote")).toContainText(
+        "If it’s written in HTML/CSS/JS, C# or .NET",
       );
-      const descriptions = await page
-        .locator(".about__description")
-        .allTextContents();
-      const youtubeIndex = descriptions.findIndex((text) =>
-        text.includes("I occasionally appear"),
-      );
-      expect(youtubeIndex).toBeGreaterThanOrEqual(0);
+      await expect(article.getByRole("navigation")).toHaveCount(0);
+      await expect(article.locator(":scope > footer")).toHaveCount(0);
       expect(
-        descriptions.findIndex((text) =>
-          text.includes("open source projects that I have founded"),
-        ),
-      ).toBeGreaterThan(youtubeIndex);
-      expect(
-        await page
-          .locator(".about__github-image")
-          .evaluateAll((images) =>
-            images.map((image) => image.getAttribute("alt")),
-          ),
-      ).toEqual(["GitHub stars", "GitHub follower count", "GitHub sponsors"]);
-      expect(
-        await page
-          .locator(
-            ".about__container > .about__github-images, .about__container > .about__youtube-images, .about__container > .about_awards-images, .about__container > .about__mvp-images",
-          )
-          .evaluateAll((sections) =>
-            sections.map((section) => section.className),
-          ),
+        await article
+          .locator(":scope > section[id]")
+          .evaluateAll((sections) => sections.map((section) => section.id)),
       ).toEqual([
-        "about__youtube-images",
-        "about__github-images",
-        "about_awards-images",
-        "about__mvp-images",
+        "youtube",
+        "github",
+        "awards",
+        "stackoverflow",
+        "microsoft-mvp",
       ]);
-      for (const [alt, statistic] of [
-        ["Youtube views", "viewCount"],
-        ["Youtube subscribers", "subscriberCount"],
+      await expect(article.locator(".about__sources")).toHaveCount(0);
+      await expect(article.locator(".location-map")).toHaveCount(1);
+      await expect(
+        article.locator(
+          ".about__masthead, .about__motion-toggle, .about__person",
+        ),
+      ).toHaveCount(0);
+      await expect(article.locator(".about__hero")).toContainText(
+        "I am a professional Software Developer at Microsoft.",
+      );
+      await expect(
+        article
+          .locator(".about__hero")
+          .getByRole("img", { name: "Muhammad Rehan Saeed", exact: true }),
+      ).toHaveCount(1);
+      await expect(
+        page.getByRole("link", { name: "Portfolio", exact: true }),
+      ).toHaveCount(1);
+      await expect(article.getByRole("heading", { level: 1 })).toHaveCSS(
+        "font-family",
+        /Audiowide/,
+      );
+      expect(
+        await article.evaluate((element) => {
+          const pageStyle = getComputedStyle(element);
+          const siteStyle = getComputedStyle(document.documentElement);
+          return [
+            ["--cp-bg", "--global-background-color"],
+            ["--cp-accent", "--global-accent-color"],
+            ["--cp-text", "--global-body-color"],
+          ].every(
+            ([local, global]) =>
+              pageStyle.getPropertyValue(local!).trim() ===
+              siteStyle.getPropertyValue(global!).trim(),
+          );
+        }),
+      ).toBe(true);
+      await expect(page.locator("link[rel=canonical]")).toHaveAttribute(
+        "href",
+        "https://rehansaeed.com/about/",
+      );
+      await expect(article.locator("iframe")).toHaveCount(0);
+      await expect(article.locator('img[src^="https:"]')).toHaveCount(7);
+      await expect(
+        article.locator(
+          ".about__scrolly, .about__diagram, .about__project-story",
+        ),
+      ).toHaveCount(0);
+      await expect(article).not.toContainText("From input to output");
+      await expect(article).not.toContainText("Start with the useful bits.");
+      await expect(article).not.toContainText("Make the failure legible.");
+      await expect(article).not.toContainText("Give information a shape.");
+      const galleries = page.getByRole("list", {
+        name: /^\d{4} credentials and participation$/,
+      });
+      await expect(galleries).toHaveCount(7);
+      await expect(galleries.getByRole("listitem")).toHaveCount(9);
+      await expect(article.locator(".about__credential-year")).toHaveText([
+        "2026",
+        "2025",
+        "2024",
+        "2023",
+        "2022",
+        "2021",
+        "2020",
+      ]);
+      for (const year of [
+        "2026",
+        "2025",
+        "2024",
+        "2023",
+        "2022",
+        "2021",
+        "2020",
       ]) {
-        const src = await page
-          .getByRole("img", { name: alt, exact: true })
-          .getAttribute("src");
-        const url = new URL(src!);
-        expect(url.origin + url.pathname).toBe(
-          "https://img.shields.io/badge/dynamic/json",
-        );
-        expect(url.searchParams.get("url")).toBe(
-          "https://api.socialcounts.org/youtube-live-subscriber-count/UC6geox4JkY11093RqecELGA",
-        );
-        expect(url.searchParams.get("query")).toBe(
-          `$.counters.api.${statistic}`,
+        const group = article.getByRole("region", { name: year, exact: true });
+        await expect(
+          group.getByRole("heading", { name: year, exact: true }),
+        ).toHaveCount(1);
+        await expect(group.getByRole("listitem")).toHaveCount(
+          ["2026", "2025"].includes(year) ? 2 : 1,
         );
       }
-      await expect
-        .poll(() => page.evaluate(() => document.documentElement.scrollWidth))
-        .toBe(width);
-      const awards = page.locator(".about_awards-images");
-      const credly = page.locator(
-        'a[href="https://www.credly.com/users/muhammad_rehan_saeed/badges"] .about__badge-image',
-      );
-      await expect(credly).toHaveCount(10);
-      const expectedOrder = [...badges, ...existingBadges].map(
-        ({ filename }) => filename,
-      );
-      expect(
-        await credly.evaluateAll((images) =>
-          images.map((image) => image.getAttribute("src")!.split("/").at(-1)),
-        ),
-      ).toEqual(expectedOrder);
-      const expectedAwards = expectedOrder.flatMap((filename) =>
-        filename === "Microsoft-Global-Hackathon-2022-300x300.png"
-          ? ["Open-UK-Honours-2022-1288x396.jpg", filename]
-          : [filename],
-      );
-      expect(
-        await awards
-          .locator("img")
-          .evaluateAll((images) =>
-            images.map((image) => image.getAttribute("src")!.split("/").at(-1)),
-          ),
-      ).toEqual(expectedAwards);
-      for (const { filename, alt } of badges) {
-        const image = awards.getByRole("img", { name: alt, exact: true });
-        await expect(image).toHaveAttribute("width", "300");
+      for (const text of await galleries
+        .getByRole("listitem")
+        .allTextContents()) {
+        expect(text).not.toMatch(/\b20\d{2}\b/);
+      }
+      for (const credential of aboutCredentials) {
+        const image = article.getByRole("img", {
+          name: credential.label,
+          exact: true,
+        });
+        await expect(image).toHaveAttribute("width", `${credential.width}`);
         await expect(image).toHaveAttribute("height", "300");
-        await expect(image).toHaveAttribute(
-          "src",
-          new RegExp(`/images/about/${filename.replaceAll(".", "\\.")}$`),
-        );
-        await expect(
-          awards.getByRole("link", { name: alt, exact: true }),
-        ).toHaveAttribute(
-          "href",
-          "https://www.credly.com/users/muhammad_rehan_saeed/badges",
-        );
         await image.scrollIntoViewIfNeeded();
         await expect
           .poll(() =>
@@ -244,32 +209,211 @@ for (const width of [375, 1280]) {
               (node: HTMLImageElement) =>
                 node.complete &&
                 node.naturalWidth > 0 &&
-                node.naturalWidth === node.naturalHeight &&
                 node.currentSrc.includes("f_avif"),
             ),
           )
           .toBe(true);
         const bounds = await image.boundingBox();
-        expect(bounds).not.toBeNull();
         expect(bounds!.width).toBeCloseTo(150, 3);
         expect(bounds!.height).toBeCloseTo(150, 3);
         expect(bounds!.x).toBeGreaterThanOrEqual(0);
         expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
       }
-      await expect(
-        awards.getByRole("img", {
-          name: "Microsoft Global Hackathon 2022.png",
-        }),
-      ).toHaveCount(1);
-      const awardsLayout = await awards.evaluate((node) => ({
-        left: node.getBoundingClientRect().left,
-        right: node.getBoundingClientRect().right,
-        clientWidth: node.clientWidth,
-        scrollWidth: node.scrollWidth,
-      }));
-      expect(awardsLayout.left).toBeGreaterThanOrEqual(0);
-      expect(awardsLayout.right).toBeLessThanOrEqual(width);
-      expect(awardsLayout.scrollWidth).toBe(awardsLayout.clientWidth);
+      await expect
+        .poll(() => page.evaluate(() => document.documentElement.scrollWidth))
+        .toBeLessThanOrEqual(width);
+      const copy = article.locator(".about__feature-copy");
+      const paragraph = copy.locator(".about__standfirst");
+      const copyBounds = await copy.boundingBox();
+      const paragraphBounds = await paragraph.boundingBox();
+      expect(paragraphBounds!.width).toBeLessThanOrEqual(copyBounds!.width);
     });
   }
 }
+
+test("Original channel badges and profile artwork remain in their sections", async ({
+  page,
+}) => {
+  await openAbout(page);
+  for (const [label, statistic] of [
+    ["Views", "viewCount"],
+    ["Subscribers", "subscriberCount"],
+  ] as const) {
+    const image = page.locator("#youtube").getByRole("img", {
+      name: `Youtube ${label.toLowerCase()}`,
+      exact: true,
+    });
+    const source = new URL((await image.getAttribute("src"))!);
+    expect(source.origin + source.pathname).toBe(
+      "https://img.shields.io/badge/dynamic/json",
+    );
+    expect(source.searchParams.get("url")).toBe(
+      `https://api.socialcounts.org/youtube-live-subscriber-count/${metadata.author.youtube.user}`,
+    );
+    expect(source.searchParams.get("query")).toBe(
+      `$.counters.api.${statistic}`,
+    );
+    expect(source.searchParams.get("label")).toBe(label);
+    await expect(
+      page.locator("#youtube").getByRole("link", {
+        name: `Youtube ${label.toLowerCase()}`,
+        exact: true,
+      }),
+    ).toHaveAttribute("href", metadata.author.youtube.url);
+  }
+  for (const [name, statistic] of [
+    ["GitHub stars", "stars"],
+    ["GitHub follower count", "followers"],
+    ["GitHub sponsors", "sponsors"],
+  ]) {
+    await expect(
+      page.locator("#github").getByRole("img", { name, exact: true }),
+    ).toHaveAttribute(
+      "src",
+      new RegExp(
+        `^https://img\\.shields\\.io/github/${statistic}/${metadata.author.gitHub.user}\\?`,
+      ),
+    );
+  }
+  await expect(page.locator(".about__github-statistics-image")).toHaveAttribute(
+    "width",
+    "1280",
+  );
+  await expect(page.locator(".about__github-statistics-image")).toHaveAttribute(
+    "height",
+    "850",
+  );
+  await expect(
+    page
+      .locator("#stackoverflow")
+      .getByRole("link", { name: "Stack Overflow profile statistics" }),
+  ).toHaveAttribute("href", metadata.author.stackOverflow.url);
+  await expect(
+    page.locator("#microsoft-mvp").getByRole("link", {
+      name: "Microsoft Most Valuable Professional (MVP)",
+      exact: true,
+    }),
+  ).toHaveAttribute("href", /^https:\/\/mvp\.microsoft\.com\//);
+});
+
+test("Profile artwork follows the site theme and reduced motion preference", async ({
+  page,
+}) => {
+  await page.emulateMedia({
+    colorScheme: "light",
+    reducedMotion: "no-preference",
+  });
+  await openAbout(page);
+  const graphic = page.locator(".about__github-statistics-image");
+  const flair = page.getByRole("img", {
+    name: "Stack Overflow profile statistics",
+  });
+  await expect(graphic).toHaveAttribute("src", /profile-green-animate\.svg$/);
+  await expect(flair).toHaveAttribute(
+    "src",
+    new RegExp(
+      `/flair/${metadata.author.stackOverflow.user}\\.png\\?theme=dark$`,
+    ),
+  );
+  await page.getByRole("button", { name: "Toggle dark/light" }).click();
+  await expect(graphic).toHaveAttribute("src", /profile-night-green\.svg$/);
+  await expect(flair).toHaveAttribute("src", /\?theme=light$/);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await graphic.scrollIntoViewIfNeeded();
+  await expect
+    .poll(() => graphic.evaluate((image: HTMLImageElement) => image.currentSrc))
+    .toMatch(/\/profile-green\.svg$/);
+  await page.getByRole("button", { name: "Toggle dark/light" }).click();
+  await expect(flair).toHaveAttribute("src", /\?theme=dark$/);
+  await expect
+    .poll(() => graphic.evaluate((image: HTMLImageElement) => image.currentSrc))
+    .toMatch(/\/profile-green\.svg$/);
+});
+
+test("Sections animate into view as the reader scrolls", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await openAbout(page);
+  await expect(page.locator(".about")).toHaveClass(/about--motion/);
+  for (const selector of [
+    "#youtube .about__feature-copy",
+    "#github .about__work-header",
+    "#awards .about__recognition-header",
+    "#stackoverflow",
+    "#microsoft-mvp",
+  ]) {
+    const section = page.locator(selector);
+    await section.scrollIntoViewIfNeeded();
+    await expect(section).toHaveAttribute("data-revealed", "");
+  }
+});
+
+test("The introduction link works with the keyboard", async ({ page }) => {
+  await openAbout(page);
+  const link = page.getByRole("link", {
+    name: "Explore the work",
+    exact: true,
+  });
+  await link.focus();
+  await expect(link).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/#youtube$/);
+  await expect(
+    page.getByRole("heading", { name: "YouTube", level: 2 }),
+  ).toBeInViewport();
+});
+
+test("Reduced motion is respected on load and when the system preference changes", async ({
+  page,
+}) => {
+  await openAbout(page);
+  await expect(page.getByRole("button", { name: /Animations:/ })).toHaveCount(
+    0,
+  );
+  await expect(page.locator(".about")).not.toHaveClass(/about--motion/);
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(page.locator(".about")).toHaveClass(/about--motion/);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(page.locator(".about")).not.toHaveClass(/about--motion/);
+  await page.locator("#youtube .about__feature-copy").scrollIntoViewIfNeeded();
+  await expect(page.locator("#youtube .about__feature-copy")).toHaveCSS(
+    "animation-name",
+    "none",
+  );
+});
+
+test("About remains readable and navigable without JavaScript", async ({
+  browser,
+  baseURL,
+}) => {
+  const context = await browser.newContext({
+    javaScriptEnabled: false,
+    reducedMotion: "reduce",
+    viewport: { width: 375, height: 900 },
+  });
+  const page = await context.newPage();
+  try {
+    await page.goto(`${baseURL}/about/`, { waitUntil: "domcontentloaded" });
+    await expect(page.getByRole("button", { name: /Animations:/ })).toHaveCount(
+      0,
+    );
+    await expect(page.locator(".about__project-controls")).toHaveCount(0);
+    await page
+      .getByRole("link", { name: "Explore the work", exact: true })
+      .click();
+    await expect(page).toHaveURL(/#youtube$/);
+    await expect(
+      page.getByRole("heading", {
+        name: "YouTube",
+        level: 2,
+      }),
+    ).toBeInViewport();
+    await expect(page.locator(".about__sources")).toHaveCount(0);
+    await expect(page.locator(".location-map__illustration")).toBeVisible();
+    for (const section of await page.locator(".about > section[id]").all()) {
+      await expect(section).toHaveCSS("opacity", "1");
+    }
+  } finally {
+    await context.close();
+  }
+});
