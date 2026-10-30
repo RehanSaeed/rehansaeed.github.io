@@ -157,7 +157,8 @@ test("Portfolio totals match the listed projects and About shares the star total
   );
   tickers.each((_, ticker) => {
     expect($(ticker).attr("data-state")).toBe("paused");
-    expect($(ticker).find("h3, p")).toHaveLength(2);
+    expect(ticker.tagName).toBe("dl");
+    expect($(ticker).children("dt, dd")).toHaveLength(2);
     expect($(ticker).find(".number-ticker__value").attr("aria-live")).toBe(
       "off",
     );
@@ -192,6 +193,8 @@ test("Portfolio totals match the listed projects and About shares the star total
     "https://img.shields.io/github/sponsors/RehanSaeed?logo=github&style=social",
   ];
   for (const html of [$, aboutHtml]) {
+    expect(html('ul.github-badges[aria-label="GitHub links"]')).toHaveLength(1);
+    expect(html(".github-badges > li")).toHaveLength(3);
     expect(
       html(".github-badges img")
         .map((_, img) => html(img).attr("src"))
@@ -220,13 +223,13 @@ for (const width of [320, 375, 1280]) {
       await page.goto("/about/", { waitUntil: "domcontentloaded" });
       const aboutTickers = page.locator(".about__statistics .number-ticker");
       await expect(aboutTickers).toHaveCount(2);
-      await expect(aboutTickers.locator("h3")).toHaveText([
+      await expect(aboutTickers.getByRole("term")).toHaveText([
         "Package Downloads",
         "GitHub Stars",
       ]);
       const aboutStars = aboutTickers.nth(1);
       await expect(aboutStars).toBeVisible();
-      await expect(aboutStars.locator("h3")).toHaveText("GitHub Stars");
+      await expect(aboutStars.getByRole("term")).toHaveText("GitHub Stars");
       const starTotal = await page
         .locator(".about__statistics")
         .getAttribute("data-stars");
@@ -378,13 +381,13 @@ for (const width of [320, 375, 1280]) {
         await expect(ticker).toHaveAttribute("data-state", "paused");
         expect(
           await ticker
-            .locator("h3")
+            .locator(".number-ticker__title")
             .evaluate((heading) => getComputedStyle(heading).fontFamily),
         ).toContain("Audiowide");
         if (width === 1280) {
           expect(
             await ticker
-              .locator("h3")
+              .locator(".number-ticker__title")
               .evaluate((heading) =>
                 Number.parseFloat(getComputedStyle(heading).fontSize),
               ),
@@ -561,8 +564,18 @@ for (const path of ["/about/", "/portfolio/"]) {
       exact: true,
     });
     await expect(downloads).toBeEnabled();
+    await expect(downloads).toHaveAttribute("aria-expanded", "false");
     await expect(downloads.locator("svg path")).toHaveCount(1);
     await expect(stars.locator("svg path")).toHaveCount(1);
+    await expect(downloads.locator("svg")).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
+    for (const button of [downloads, stars]) {
+      const bounds = (await button.boundingBox())!;
+      expect(bounds.width).toBeGreaterThanOrEqual(24);
+      expect(bounds.height).toBeGreaterThanOrEqual(24);
+    }
     await downloads.hover();
     const tooltip = page.getByRole("tooltip");
     await expect(tooltip).toBeVisible();
@@ -572,6 +585,7 @@ for (const path of ["/about/", "/portfolio/"]) {
     await expect(downloads).toHaveAccessibleDescription(
       await tooltip.innerText(),
     );
+    await expect(downloads).toHaveAttribute("aria-expanded", "true");
     await page.keyboard.press("Escape");
     await expect(tooltip).toHaveCount(0);
     await page.mouse.move(0, 0);
@@ -592,21 +606,68 @@ for (const path of ["/about/", "/portfolio/"]) {
     await page.keyboard.press("Escape");
     await expect(tooltip).toHaveCount(0);
     await expect(stars).toBeFocused();
+    await expect(stars).toHaveCSS("outline-style", "solid");
+    await expect(stars).toHaveCSS("outline-width", "2px");
+    const badges = page.getByRole("list", { name: "GitHub links" });
+    await expect(badges.getByRole("listitem")).toHaveCount(3);
     for (const [name, text] of [
       ["GitHub follower count", "View my GitHub followers"],
       [/^GitHub watch subscriptions/, "Total watch subscriptions"],
       ["GitHub sponsors", "Sponsor me on GitHub"],
     ] as const) {
       const link = page.getByRole("img", { name, exact: true }).locator("..");
-      await link.focus();
+      await page.keyboard.press("Tab");
+      await expect(link).toBeFocused();
+      await expect(link).toHaveCSS("outline-style", "solid");
+      await expect(link).toHaveCSS("outline-width", "2px");
       await expect(tooltip).toBeVisible();
       await expect(tooltip).toContainText(text);
       await expect(link).toHaveAccessibleDescription(await tooltip.innerText());
       await page.keyboard.press("Escape");
       await expect(tooltip).toHaveCount(0);
     }
+    await downloads.click();
+    await expect(tooltip).toBeVisible();
+    await expect(downloads).toHaveAttribute("aria-expanded", "true");
+    await downloads.click();
+    await expect(tooltip).toHaveCount(0);
+    await expect(downloads).toHaveAttribute("aria-expanded", "false");
+    await page.keyboard.press("Enter");
+    await expect(tooltip).toBeVisible();
+    await page.keyboard.press("Space");
+    await expect(tooltip).toHaveCount(0);
   });
 }
+
+test.describe("Statistics touch controls", () => {
+  test.use({ hasTouch: true });
+  test.skip(
+    ({ browserName }) => browserName === "firefox",
+    "Playwright does not support touch emulation in Firefox.",
+  );
+
+  for (const path of ["/about/", "/portfolio/"]) {
+    test(`Statistics info opens and closes on tap on ${path}`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 375, height: 900 });
+      await page.goto(path, { waitUntil: "domcontentloaded" });
+      const info = page.getByRole("button", {
+        name: "About package downloads",
+        exact: true,
+      });
+      await expect(info).toBeEnabled();
+      await info.tap();
+      const tooltip = page.getByRole("tooltip");
+      await expect(tooltip).toContainText("Verified total:");
+      await expect(info).toHaveAttribute("aria-expanded", "true");
+      await expect(info).toHaveAccessibleDescription(await tooltip.innerText());
+      await info.tap();
+      await expect(tooltip).toHaveCount(0);
+      await expect(info).toHaveAttribute("aria-expanded", "false");
+    });
+  }
+});
 
 test("Portfolio uses lifetime download rates and a visible fifteen-second star cadence", async ({
   page,
