@@ -56,7 +56,9 @@ async function capture(page: Page, name: string, target?: Locator) {
     expect(box?.height).toBeGreaterThan(0);
     expect(box!.width).toBeCloseTo(box!.height, 1);
   }
-  if (!screenshotDirectory) return;
+  if (!screenshotDirectory) {
+    return;
+  }
   await mkdir(screenshotDirectory, { recursive: true });
   const options = {
     path: join(screenshotDirectory, `${name}.png`),
@@ -189,7 +191,9 @@ test.describe("Offline icons", () => {
     });
     page.on("request", (request) => {
       const url = new URL(request.url());
-      if (/iconify|_nuxt_icon/.test(url.href)) iconRequests.push(url.href);
+      if (/iconify|_nuxt_icon/.test(url.href)) {
+        iconRequests.push(url.href);
+      }
     });
     await page.route(
       (url) => url.origin !== new URL(baseURL!).origin,

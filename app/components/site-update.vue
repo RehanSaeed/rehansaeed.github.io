@@ -38,7 +38,9 @@ const updating = ref(false);
 const error = ref("");
 
 async function update() {
-  if (!$pwa || updating.value) return;
+  if (!$pwa || updating.value) {
+    return;
+  }
   updating.value = true;
   error.value = "";
   try {

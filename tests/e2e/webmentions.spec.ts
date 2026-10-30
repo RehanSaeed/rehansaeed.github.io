@@ -252,7 +252,9 @@ for (const failure of ["network", "http", "json", "shape"]) {
     await page.route(api, async (route) => {
       requests++;
       if (requests === 1) {
-        if (failure === "network") return route.abort();
+        if (failure === "network") {
+          return route.abort();
+        }
         if (failure === "http") {
           return route.fulfill({ status: 503, json: { links: [] } });
         }

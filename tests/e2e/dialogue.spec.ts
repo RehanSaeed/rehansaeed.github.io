@@ -156,12 +156,16 @@ test.describe("Dialog transitions", () => {
 
       document.querySelector<HTMLButtonElement>(".search-button")!.click();
       const { animations: entranceAnimations, ...entrance } = await sample();
-      for (const animation of entranceAnimations) animation.finish();
+      for (const animation of entranceAnimations) {
+        animation.finish();
+      }
       await new Promise(requestAnimationFrame);
       await new Promise(requestAnimationFrame);
       element.querySelector<HTMLButtonElement>(".dialog__close")!.click();
       const { animations: exitAnimations, ...exit } = await sample();
-      for (const animation of exitAnimations) animation.finish();
+      for (const animation of exitAnimations) {
+        animation.finish();
+      }
       await new Promise(requestAnimationFrame);
       await new Promise(requestAnimationFrame);
       const closedDisplay = getComputedStyle(element).display;

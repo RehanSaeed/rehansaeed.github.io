@@ -130,6 +130,8 @@ export async function issueComments(
         ),
       );
     comments.push(...batch.map(safeComment));
-    if (batch.length < 100) return comments;
+    if (batch.length < 100) {
+      return comments;
+    }
   }
 }

@@ -16,7 +16,9 @@ const posts = globSync("content/posts/**/index.md")
   .map((file) => {
     const source = readFileSync(file, "utf8");
     const frontMatter = source.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-    if (!frontMatter) throw new Error(`Missing front matter in ${file}`);
+    if (!frontMatter) {
+      throw new Error(`Missing front matter in ${file}`);
+    }
     return parse(frontMatter[1]!) as ListingPost;
   })
   .sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
@@ -29,16 +31,22 @@ const pagination = readFileSync(
   join(process.cwd(), "app", "components", "posts-page.vue"),
   "utf8",
 ).match(/\bconst postsPerPage = (\d+);/);
-if (!pagination) throw new Error("Cannot read the posts listing page size");
+if (!pagination) {
+  throw new Error("Cannot read the posts listing page size");
+}
 const postsPerPage = Number(pagination[1]);
-if (postsPerPage < 1) throw new Error("Invalid posts listing page size");
+if (postsPerPage < 1) {
+  throw new Error("Invalid posts listing page size");
+}
 
 const listingPosts = (path: string) => {
   if (path.startsWith("/tag/")) {
     const tag = posts
       .flatMap((post) => post.tags ?? [])
       .find((tag) => tagPath(tag) === path);
-    if (!tag) throw new Error(`No content tag for ${path}`);
+    if (!tag) {
+      throw new Error(`No content tag for ${path}`);
+    }
     return published.filter((post) => post.tags?.includes(tag));
   }
   const page = path === "/" ? 1 : Number(path.split("/")[1]);
@@ -59,17 +67,24 @@ test.describe("Parity", () => {
       const errors: string[] = [];
       page.on("pageerror", (error) => errors.push(error.message));
       page.on("console", (message) => {
-        if (message.type() !== "error" && message.type() !== "warning") return;
+        if (message.type() !== "error" && message.type() !== "warning") {
+          return;
+        }
         const source = message.location().url;
         // Third-party embeds (badges, avatars, comments) are outside our control.
-        if (source && !source.startsWith(origin)) return;
+        if (source && !source.startsWith(origin)) {
+          return;
+        }
         if (
           message.type() === "warning" &&
           !/hydrat|\[Vue warn\]/i.test(message.text())
-        )
+        ) {
           return;
+        }
         // An artefact of `serviceWorkers: 'block'`; registration is covered by its own test.
-        if (/service worker registration/i.test(message.text())) return;
+        if (/service worker registration/i.test(message.text())) {
+          return;
+        }
         errors.push(`${message.type()}: ${message.text()}`);
       });
 

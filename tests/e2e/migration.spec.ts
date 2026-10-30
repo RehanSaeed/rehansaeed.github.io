@@ -240,8 +240,9 @@ test.describe("Migration completion", () => {
     await expect(images.first()).toHaveAttribute("loading", "eager");
     await expect(images.first()).toHaveAttribute("fetchpriority", "high");
     await expect(images.nth(1)).toHaveAttribute("loading", "lazy");
-    for (const image of await images.all())
+    for (const image of await images.all()) {
       await expect(image).toHaveAttribute("height", /^[1-9]\d*$/);
+    }
   });
 
   test("Maps all analytics event names to valid GA4 identifiers", () => {

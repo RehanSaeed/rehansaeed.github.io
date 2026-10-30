@@ -25,7 +25,9 @@ const hydrated = ref(false);
 watch(
   () => $pwa?.showInstallPrompt,
   (visible) => {
-    if (visible && !$pwa?.isPWAInstalled) pwaInstallPromoShown();
+    if (visible && !$pwa?.isPWAInstalled) {
+      pwaInstallPromoShown();
+    }
   },
   { immediate: true },
 );

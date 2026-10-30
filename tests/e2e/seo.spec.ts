@@ -141,8 +141,9 @@ test("Later dismisses the package update prompt without interrupting client navi
   await expect(notice).toHaveCount(0);
   let documentNavigations = 0;
   page.on("request", (request) => {
-    if (request.isNavigationRequest() && request.frame() === page.mainFrame())
+    if (request.isNavigationRequest() && request.frame() === page.mainFrame()) {
       documentNavigations++;
+    }
   });
   await page.getByRole("link", { name: "Next", exact: true }).click();
   await expect(page).toHaveURL(/\/2\/$/);
@@ -208,8 +209,9 @@ test("A package update without a worker does not force a document reload", async
   await expect(notice).toBeVisible();
   let documentNavigations = 0;
   page.on("request", (request) => {
-    if (request.isNavigationRequest() && request.frame() === page.mainFrame())
+    if (request.isNavigationRequest() && request.frame() === page.mainFrame()) {
       documentNavigations++;
+    }
   });
   await notice.getByRole("button", { name: "Update now", exact: true }).click();
   await expect(
@@ -239,14 +241,17 @@ for (const width of [320, 375, 1280]) {
       const documentWidth = await page.evaluate(
         () => document.documentElement.scrollWidth,
       );
-      if (width >= 375) expect(documentWidth).toBe(width);
+      if (width >= 375) {
+        expect(documentWidth).toBe(width);
+      }
       let documentNavigations = 0;
       page.on("request", (request) => {
         if (
           request.isNavigationRequest() &&
           request.frame() === page.mainFrame()
-        )
+        ) {
           documentNavigations++;
+        }
       });
       await announceUpdate(page);
       await announceUpdate(page);

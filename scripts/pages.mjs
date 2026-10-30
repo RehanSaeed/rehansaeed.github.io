@@ -45,7 +45,9 @@ export async function verifyArtifact(directory, routes) {
             !stat.isSymbolicLink(),
             `Pages artifact contains a symlink: ${name}`,
         );
-        if (!stat.isFile()) continue;
+        if (!stat.isFile()) {
+            continue;
+        }
         assert.equal(
             stat.nlink,
             1,
@@ -87,7 +89,9 @@ export async function verifyArtifact(directory, routes) {
         assert(exists(route), `Missing prerendered route: ${route}`);
     }
     for (const file of files) {
-        if (!file.endsWith(".html")) continue;
+        if (!file.endsWith(".html")) {
+            continue;
+        }
         const page = `/${file.replace(/index\.html$/, "")}`;
         const $ = load(await readFile(join(directory, file), "utf8"));
         const ids = new Set();
@@ -105,8 +109,9 @@ export async function verifyArtifact(directory, routes) {
                 node.is("a") &&
                 (node.attr("target") === "_blank" ||
                     node.closest(".comments").length)
-            )
+            ) {
                 return;
+            }
             const references = [
                 node.attr("src"),
                 node.attr("href"),
@@ -117,11 +122,12 @@ export async function verifyArtifact(directory, routes) {
             ].filter(Boolean);
             for (const value of references) {
                 const path = localPath(value, page);
-                if (path !== null)
+                if (path !== null) {
                     assert(
                         exists(path),
                         `${file}: missing local resource ${value}`,
                     );
+                }
             }
         });
     }
@@ -144,9 +150,15 @@ export function checkPagesSettings(pages) {
 function allows(sources, address) {
     const url = new URL(address);
     return sources.some((source) => {
-        if (source === "'self'") return url.origin === origin;
-        if (source === "*" || source === `${url.protocol}`) return true;
-        if (!source.startsWith("https://")) return false;
+        if (source === "'self'") {
+            return url.origin === origin;
+        }
+        if (source === "*" || source === `${url.protocol}`) {
+            return true;
+        }
+        if (!source.startsWith("https://")) {
+            return false;
+        }
         const parsed = new URL(source.replace("://*.", "://wildcard."));
         const wildcard = source.startsWith("https://*.");
         const host = wildcard
@@ -215,13 +227,17 @@ export function checkCsp(policies, analyticsId) {
         const directives = new Map();
         for (const part of policy.split(";")) {
             const [name, ...sources] = part.trim().split(/\s+/);
-            if (name && !directives.has(name)) directives.set(name, sources);
+            if (name && !directives.has(name)) {
+                directives.set(name, sources);
+            }
         }
         for (const [directive, fallbacks, address] of checks) {
             const effective = [directive, ...fallbacks].find((name) =>
                 directives.has(name),
             );
-            if (!effective) continue;
+            if (!effective) {
+                continue;
+            }
             const sources = directives.get(effective);
             assert(
                 !sources.includes("'strict-dynamic'"),
@@ -420,7 +436,9 @@ export async function verifyPublished(
             );
             return;
         } catch (error) {
-            if (attempt === attempts || Date.now() >= deadline) throw error;
+            if (attempt === attempts || Date.now() >= deadline) {
+                throw error;
+            }
             console.warn(
                 `Deployment verification attempt ${attempt} failed: ${error.message}`,
             );

@@ -70,7 +70,9 @@ async function refresh() {
       controller.signal,
     );
   } catch (error) {
-    if (controller.signal.aborted) return;
+    if (controller.signal.aborted) {
+      return;
+    }
     console.warn(
       "[comments] Live refresh unavailable; retaining static snapshot:",
       error,

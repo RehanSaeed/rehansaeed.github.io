@@ -183,7 +183,9 @@ export default defineNuxtModule({
       const body = content.body as Parameters<typeof timeToRead>[0];
       if (collection.name === "posts") {
         content.path = content.permalink;
-        if (!content.published) content.robots = "noindex, follow";
+        if (!content.published) {
+          content.robots = "noindex, follow";
+        }
       } else if (content.kind !== "microsoft") {
         const snapshot = portfolio[String(content.permalink)];
         const packages = downloads[String(content.permalink)];
@@ -242,7 +244,9 @@ export default defineNuxtModule({
     });
     nuxt.hook("nitro:init", (nitro) => {
       nitro.hooks.hook("prerender:generate", (route) => {
-        if (route.route !== "/sitemap.md") return;
+        if (route.route !== "/sitemap.md") {
+          return;
+        }
         if (typeof route.contents !== "string") {
           throw new Error("AI discovery did not generate a Markdown sitemap.");
         }

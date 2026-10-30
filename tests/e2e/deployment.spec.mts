@@ -279,8 +279,11 @@ test("GA4 vendor and collector loads pass the corrected CSP without sending trac
             ].includes(url.hostname)
         ) {
             // Keep the explicit probes separate from the app's configured GA4 loader.
-            if (url.searchParams.has("csp-probe")) requests.push(url.hostname);
-            else loaderRequests.push(url.href);
+            if (url.searchParams.has("csp-probe")) {
+                requests.push(url.hostname);
+            } else {
+                loaderRequests.push(url.href);
+            }
             await route.fulfill({
                 status: 200,
                 headers: { "Access-Control-Allow-Origin": "*" },
@@ -310,8 +313,9 @@ test("GA4 vendor and collector loads pass the corrected CSP without sending trac
     });
     const violations: string[] = [];
     page.on("console", (message) => {
-        if (/content security policy/i.test(message.text()))
+        if (/content security policy/i.test(message.text())) {
             violations.push(message.text());
+        }
     });
     await page.goto("/");
     await expect

@@ -31,7 +31,9 @@ test("PWA shortcut PNGs match their branded SVG sources", async () => {
     for (let y = 0; y < 192; y++) {
       for (let x = 0; x < 192; x++) {
         const offset = (y * 192 + x) * 4;
-        if (pixels[offset + 3] !== 255) transparent++;
+        if (pixels[offset + 3] !== 255) {
+          transparent++;
+        }
         const background =
           pixels[offset] === 107 &&
           pixels[offset + 1] === 23 &&

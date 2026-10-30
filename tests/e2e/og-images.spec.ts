@@ -38,8 +38,9 @@ test("Social card props preserve each page's title, hero and template cache iden
       defineOgImage: (...args: unknown[]) => args,
     },
   );
-  if (!exports.useBlogOgImage)
+  if (!exports.useBlogOgImage) {
     throw new Error("Missing social card composable");
+  }
   for (const [title, hero] of [
     [cssTitle, cssHero],
     ["Blog", defaultHero],
@@ -76,7 +77,9 @@ test("Rendered social cards use the post hero, title and current branding", asyn
     }).outputText,
     { exports, require: createRequire(join(process.cwd(), "package.json")) },
   );
-  if (!exports.default) throw new Error("Missing social card component");
+  if (!exports.default) {
+    throw new Error("Missing social card component");
+  }
   const $ = load(
     await renderToString(
       h(exports.default, { title: cssTitle, heroImage: cssHero, author }),
@@ -146,7 +149,9 @@ test("Native title backgrounds fit each wrapped line without fading the text", a
     }).outputText,
     { exports },
   );
-  if (!exports.fitOgTitleLines) throw new Error("Missing title layout helper");
+  if (!exports.fitOgTitleLines) {
+    throw new Error("Missing title layout helper");
+  }
   const renderer = new Renderer();
   await renderer.registerFont({
     name: "Audiowide",
@@ -199,10 +204,13 @@ test("Native title backgrounds fit each wrapped line without fading the text", a
       renderer,
     );
     const foreground = root.children?.[1];
-    if (foreground?.type !== "container") throw new Error("Missing foreground");
+    if (foreground?.type !== "container") {
+      throw new Error("Missing foreground");
+    }
     const heading = foreground.children?.[0];
-    if (heading?.type !== "container" || !heading.children)
+    if (heading?.type !== "container" || !heading.children) {
       throw new Error("Missing fitted title lines");
+    }
     expect(
       heading.children
         .map((line) => line.type === "text" && line.text)

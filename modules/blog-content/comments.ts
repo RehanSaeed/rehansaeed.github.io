@@ -38,8 +38,9 @@ export async function commentSnapshots(
       logger.warn("Ignoring invalid snapshot cache:", error);
     }
   }
-  if (cached && Date.now() - cached.updated < 60 * 60 * 1000)
+  if (cached && Date.now() - cached.updated < 60 * 60 * 1000) {
     return cached.snapshots;
+  }
 
   const snapshots = { ...cached?.snapshots };
   const repo = `${site.repository.owner}/${site.repository.name}`;
@@ -57,12 +58,16 @@ export async function commentSnapshots(
           ),
         );
       issues.push(...batch);
-      if (batch.length < 100) break;
+      if (batch.length < 100) {
+        break;
+      }
     }
     // Sequential requests avoid GitHub's secondary concurrency/rate limits.
     let complete = true;
     for (const issue of issues.sort((a, b) => a.number - b.number)) {
-      if (!issue.title.startsWith("[Comment] ")) continue;
+      if (!issue.title.startsWith("[Comment] ")) {
+        continue;
+      }
       const title = issue.title.slice("[Comment] ".length);
       try {
         snapshots[title] = {

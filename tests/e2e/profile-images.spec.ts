@@ -76,7 +76,9 @@ unitTest(
       let earPixels = 0;
       for (let y = 90; y < 123; y++) {
         for (let x = 173; x < 181; x++) {
-          if (data[(y * info.width + x) * 4 + 3] > 127) earPixels++;
+          if (data[(y * info.width + x) * 4 + 3] > 127) {
+            earPixels++;
+          }
         }
       }
       expect(earPixels, `${filename}: restored ear contour`).toBeGreaterThan(
@@ -134,7 +136,9 @@ unitTest(
     );
     const previous = source.replace(/\s*<rect\b[^>]*\/>/, "");
     const portrait = source.match(/<path\b[^>]*\bd="([^"]+)"/)?.[1];
-    if (!portrait) throw new Error("The personal icon has no portrait path");
+    if (!portrait) {
+      throw new Error("The personal icon has no portrait path");
+    }
     const spot = portrait.slice(portrait.lastIndexOf("M"));
     const render = (svg: string) =>
       sharp(Buffer.from(svg.replaceAll("currentColor", "#6b17e8")))
@@ -226,7 +230,9 @@ unitTest(
       for (let x = 0; x < 980; x++) {
         const sx = (x + 0.5) / 4;
         const sy = (y + 0.5) / 4;
-        if (Math.hypot(sx - 122.5, sy - 122.5) > 107.25) continue;
+        if (Math.hypot(sx - 122.5, sy - 122.5) > 107.25) {
+          continue;
+        }
         const region =
           sx < 39 && sy > 206.55 - 0.48 * sx + 0.5
             ? "left"
@@ -237,7 +243,9 @@ unitTest(
                 : sy > 227
                   ? "bottom"
                   : undefined;
-        if (!region) continue;
+        if (!region) {
+          continue;
+        }
         const offset = (y * 980 + x) * 4;
         regions[region].checked++;
         if (

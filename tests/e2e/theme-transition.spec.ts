@@ -148,7 +148,9 @@ for (const initialTheme of ["light", "dark"] as const) {
           "Expected a numeric page background transition duration",
         );
       }
-      for (const transition of transitions) transition.pause();
+      for (const transition of transitions) {
+        transition.pause();
+      }
 
       const frames = [0.25, 0.5, 0.75].map((progress) => {
         for (const transition of transitions) {
@@ -163,7 +165,9 @@ for (const initialTheme of ["light", "dark"] as const) {
           })),
         };
       });
-      for (const transition of transitions) transition.finish();
+      for (const transition of transitions) {
+        transition.finish();
+      }
       return {
         initialBackground,
         finalBackground: getComputedStyle(document.body).backgroundColor,

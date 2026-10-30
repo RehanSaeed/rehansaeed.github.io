@@ -3,7 +3,9 @@ import type { GitHubComment } from "../../shared/utils/comments";
 export function commentAssociation(
   association: GitHubComment["author_association"],
 ) {
-  if (!association || association === "NONE") return undefined;
+  if (!association || association === "NONE") {
+    return undefined;
+  }
   const label = association.toLowerCase().replaceAll("_", " ");
   return label.charAt(0).toUpperCase() + label.slice(1);
 }

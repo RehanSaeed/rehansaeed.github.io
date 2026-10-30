@@ -20,7 +20,9 @@ unitTest(
       for (const file of files) {
         expect(file).not.toMatch(/\.jpeg$/i);
         expect(file).not.toMatch(/\.(png|jpg)\.avif$/i);
-        if (!/\.(png|jpg)$/.test(file)) continue;
+        if (!/\.(png|jpg)$/.test(file)) {
+          continue;
+        }
         const basename = file.replace(/\.(png|jpg)$/, "");
         const preferredSource = files.includes(`${basename}.png`)
           ? `${basename}.png`

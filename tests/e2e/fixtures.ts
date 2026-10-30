@@ -59,7 +59,9 @@ export const getAnalyticsEvents = (page: Page): Promise<AnalyticsEvent[]> =>
     };
 
     for (const call of w.__gaCalls ?? []) {
-      if (call[0] !== "send" || call[1] !== "event") continue;
+      if (call[0] !== "send" || call[1] !== "event") {
+        continue;
+      }
       if (typeof call[2] === "object" && call[2] !== null) {
         const fields = call[2] as Record<string, string | undefined>;
         events.push({
@@ -78,7 +80,9 @@ export const getAnalyticsEvents = (page: Page): Promise<AnalyticsEvent[]> =>
 
     for (const entry of w.dataLayer ?? []) {
       const args = Array.from(entry ?? []);
-      if (args[0] !== "event") continue;
+      if (args[0] !== "event") {
+        continue;
+      }
       const params = (args[2] ?? {}) as Record<string, string | undefined>;
       events.push({
         category: params.event_category!,

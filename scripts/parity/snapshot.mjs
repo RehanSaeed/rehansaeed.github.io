@@ -30,7 +30,9 @@ const norm = (value) =>
         : value;
 
 const normDeep = (value) => {
-    if (Array.isArray(value)) return value.map(normDeep);
+    if (Array.isArray(value)) {
+        return value.map(normDeep);
+    }
     if (value && typeof value === "object") {
         return Object.fromEntries(
             Object.entries(value).map(([k, v]) => [k, normDeep(v)]),
@@ -56,7 +58,9 @@ const extractHead = (html) => {
     const meta = {};
     $("meta").each((_, el) => {
         const key = $(el).attr("property") ?? $(el).attr("name");
-        if (!key || key === "viewport" || key === "generator") return;
+        if (!key || key === "viewport" || key === "generator") {
+            return;
+        }
         const content = norm($(el).attr("content") ?? "");
         meta[key] = key in meta ? [meta[key], content].flat() : content;
     });
@@ -68,8 +72,9 @@ const extractHead = (html) => {
             !/^(canonical|prev|next|alternate|search|manifest|me|webmention|pingback)$/.test(
                 rel,
             )
-        )
+        ) {
             return;
+        }
         const value = [
             norm($(el).attr("href")),
             $(el).attr("type"),
@@ -193,7 +198,9 @@ const summariseSitemap = (xml) => {
 
 const artifact = async (path, summarise) => {
     const response = await get(path);
-    if (response.status !== 200) return { status: response.status };
+    if (response.status !== 200) {
+        return { status: response.status };
+    }
     try {
         return {
             status: 200,
@@ -225,7 +232,9 @@ const main = async () => {
                       status: response.status,
                       location: norm(response.location),
                   };
-        if (++done % 50 === 0) console.log(`  ${done}/${urls.length}`);
+        if (++done % 50 === 0) {
+            console.log(`  ${done}/${urls.length}`);
+        }
     });
 
     const notFound = await get("/this-does-not-exist/");
@@ -271,7 +280,9 @@ const main = async () => {
         ([, page]) => page.status !== 200,
     );
     console.log(`Wrote ${args.out} (${failed.length} non-200 pages)`);
-    for (const [path, page] of failed) console.log(`  ${page.status} ${path}`);
+    for (const [path, page] of failed) {
+        console.log(`  ${page.status} ${path}`);
+    }
 };
 
 await main();

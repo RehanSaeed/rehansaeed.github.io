@@ -14,12 +14,16 @@ declare module "nitropack" {
 export default defineNitroPlugin((nitro) => {
   let renderer: Promise<Renderer> | undefined;
   nitro.hooks.hook("nuxt-og-image:takumi:nodes", async (nodes, context) => {
-    if (context.options.component !== "BlogTakumi") return;
+    if (context.options.component !== "BlogTakumi") {
+      return;
+    }
     renderer ??= (async () => {
       const font = await useStorage("assets:og-font").getItemRaw<Uint8Array>(
         "audiowide-latin-400-normal.woff",
       );
-      if (!font) throw new Error("Missing Audiowide social card font");
+      if (!font) {
+        throw new Error("Missing Audiowide social card font");
+      }
       const instance = new Renderer();
       await instance.registerFont({
         name: "Audiowide",
