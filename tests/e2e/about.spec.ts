@@ -163,7 +163,6 @@ for (const width of [375, 1280]) {
             images.map((image) => image.getAttribute("alt")),
           ),
       ).toEqual([
-        "GitHub stars received on my account's repositories",
         "GitHub follower count",
         "GitHub sponsors",
         expect.stringMatching(

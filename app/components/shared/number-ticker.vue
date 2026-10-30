@@ -5,7 +5,12 @@
     :data-value="displayValue"
     :data-rate="rate"
     :data-state="running ? 'running' : 'paused'">
-    <h3 class="number-ticker__title">{{ title }}</h3>
+    <div
+      class="number-ticker__header"
+      :class="{ 'number-ticker__header--with-info': $slots.info }">
+      <h3 class="number-ticker__title">{{ title }}</h3>
+      <slot name="info" />
+    </div>
     <p class="number-ticker__value" aria-live="off">
       <span class="number-ticker__accessible">{{ exactValue }}</span>
       <span class="number-ticker__digits" aria-hidden="true">
@@ -126,6 +131,21 @@ onBeforeUnmount(() => {
   background: var(--global-content-background-color);
   text-align: center;
   container-type: inline-size;
+}
+
+.number-ticker__header {
+  display: grid;
+  align-items: center;
+  inline-size: 100%;
+}
+
+.number-ticker__header--with-info {
+  grid-template-columns: 1.25rem minmax(0, 1fr) 1.25rem;
+  gap: 0.25rem;
+
+  .number-ticker__title {
+    grid-column: 2;
+  }
 }
 
 .number-ticker__title {
