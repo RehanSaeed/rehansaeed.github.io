@@ -1009,7 +1009,21 @@ test("Search opening, typing, result hover and selection, and dismissal stay sil
     page.getByRole("dialog", { name: "Search", exact: true }),
   ).toBeVisible();
   expect(await playedSounds(page)).toEqual([]);
-  await page.getByRole("searchbox", { name: "Search", exact: true }).focus();
+  await page
+    .getByRole("searchbox", { name: "Search", exact: true })
+    .press("Tab");
+  await page.getByRole("button", { name: "Close Search", exact: true }).focus();
+  const tooltip = page.getByRole("tooltip", {
+    name: "Close Search",
+    exact: true,
+  });
+  await expect(tooltip).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(tooltip).toBeHidden();
+  await expect(
+    page.getByRole("dialog", { name: "Search", exact: true }),
+  ).toBeVisible();
+  expect(await playedSounds(page)).toEqual([]);
   await page.keyboard.press("Escape");
   await expect(
     page.getByRole("dialog", { name: "Search", exact: true }),
