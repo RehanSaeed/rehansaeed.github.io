@@ -1,7 +1,9 @@
+import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 
 const sampleRate = 22050;
-const directory = new URL("../public/sounds/v3/", import.meta.url);
+const directory = new URL("../public/sounds/v4/", import.meta.url);
 
 function tone(start, duration, frequency, options = {}) {
   return {
@@ -66,88 +68,28 @@ const sounds = {
     level: 0.08,
     layers: [tone(0, 0.08, 1200, { to: 450, decay: 7 })],
   },
-  "youtube-play": {
-    duration: 0.1,
-    level: 0.08,
-    layers: [
-      noise(0, 0.018, { highpass: true }),
-      tone(0.008, 0.075, 480, { partials: wood, decay: 8 }),
-    ],
+};
+
+// CC0 source credits, edit details and regeneration requirements are in v4/LICENSE.txt.
+const recordings = {
+  "github-meow": {
+    url: "https://opengameart.org/sites/default/files/cat_mewfood.wav",
+    sha256: "3550f080882b52e236c8810a353756b2e0395fb7dadf0aeface0a06893cd181f",
+    start: 0.04,
+    duration: 0.38,
   },
-  "twitch-pop": {
-    duration: 0.12,
-    level: 0.08,
-    layers: [
-      tone(0, 0.065, 480, { to: 1400, decay: 6 }),
-      tone(0.05, 0.07, 780, { to: 1600, decay: 7 }),
-    ],
-  },
-  "github-paw": {
-    duration: 0.13,
-    level: 0.08,
-    layers: [
-      tone(0, 0.055, 380, { partials: wood, decay: 8 }),
-      tone(0.065, 0.06, 330, { partials: wood, decay: 8 }),
-    ],
-  },
-  "linkedin-connect": {
-    duration: 0.15,
-    level: 0.08,
-    layers: [
-      tone(0, 0.11, 640, { partials: bell }),
-      tone(0.04, 0.11, 960, { partials: bell }),
-    ],
-  },
-  "stack-overflow": {
-    duration: 0.18,
-    level: 0.08,
-    layers: [
-      tone(0, 0.05, 300, { partials: wood, decay: 8 }),
-      tone(0.06, 0.05, 450, { partials: wood, decay: 8 }),
-      tone(0.12, 0.05, 600, { partials: wood, decay: 8 }),
-    ],
-  },
-  "bluesky-flutter": {
-    duration: 0.22,
-    level: 0.08,
-    layers: [
-      noise(0, 0.04, { cutoff: 1300, highpass: true }),
-      noise(0.05, 0.04, { cutoff: 1800, highpass: true }),
-      noise(0.1, 0.04, { cutoff: 1300, highpass: true }),
-      noise(0.15, 0.04, { cutoff: 1800, highpass: true }),
-    ],
-  },
-  "mastodon-puff": {
-    duration: 0.14,
-    level: 0.08,
-    layers: [
-      noise(0, 0.13, { cutoff: 220, decay: 4 }),
-      tone(0.01, 0.12, 90, {
-        to: 120,
-        amplitude: 0.2,
-        partials: [
-          [1, 1],
-          [2, 0.3],
-          [3, 0.15],
-        ],
-      }),
-    ],
+  "bluesky-wings": {
+    url: "https://bigsoundbank.com/UPLOAD/bwf-en/2891.wav",
+    sha256: "5ec60d7de3e085642484a0aefdc75d0d7932cd3009a23395d6d1ef19a51ebd2f",
+    filter: "asetrate=96000",
+    start: 0.125,
+    duration: 0.65,
   },
   "email-paper": {
-    duration: 0.15,
-    level: 0.08,
-    layers: [
-      noise(0, 0.08, { cutoff: 2600, highpass: true, reverse: true }),
-      noise(0.06, 0.08, { cutoff: 900 }),
-    ],
-  },
-  "rss-ping": {
-    duration: 0.19,
-    level: 0.08,
-    layers: [
-      tone(0, 0.12, 1100, { partials: bell }),
-      tone(0.07, 0.12, 1800, { amplitude: 0.3 }),
-    ],
+    url: "https://bigsoundbank.com/UPLOAD/bwf-en/0785.wav",
+    sha256: "d39ec62e16243b1b9ccb1f0f7f1176449900061cb0a0b48de4957d063cac7599",
+    start: 0.17,
+    duration: 0.66,
   },
 };
 
@@ -195,10 +137,64 @@ for (const [name, { duration, level = 0.22, layers }] of Object.entries(
       samples[offset + i] += value * envelope * layer.amplitude;
     }
   }
+  await writeSample(name, samples, level);
+}
+
+for (const [
+  name,
+  { url, sha256, filter = "anull", start, duration },
+] of Object.entries(recordings)) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Could not download ${name}: HTTP ${response.status}`);
+  }
+  const original = Buffer.from(await response.arrayBuffer());
+  if (createHash("sha256").update(original).digest("hex") !== sha256) {
+    throw new Error(`The licensed source for ${name} has changed`);
+  }
+  // Decode before trimming so FFmpeg consumes stdin instead of closing its pipe early.
+  const decoded = execFileSync(
+    "ffmpeg",
+    [
+      "-v",
+      "error",
+      "-i",
+      "pipe:0",
+      "-af",
+      filter,
+      "-ac",
+      "1",
+      "-ar",
+      String(sampleRate),
+      "-f",
+      "f32le",
+      "pipe:1",
+    ],
+    { input: original, maxBuffer: 8 * 1024 * 1024 },
+  );
+  const offset = Math.round(start * sampleRate);
+  const count = Math.round(duration * sampleRate);
+  if (decoded.length < (offset + count) * 4) {
+    throw new Error(`${name} is shorter than its selected recording excerpt`);
+  }
+  const samples = Float64Array.from({ length: count }, (_, i) => {
+    const envelope =
+      Math.min(1, i / (sampleRate * 0.005)) *
+      Math.min(1, (count - 1 - i) / (sampleRate * 0.02));
+    return decoded.readFloatLE((offset + i) * 4) * envelope;
+  });
+  await writeSample(name, samples, 0.08);
+}
+
+async function writeSample(name, samples, level) {
+  const count = samples.length;
   const peak = samples.reduce(
     (maximum, value) => Math.max(maximum, Math.abs(value)),
     0,
   );
+  if (!Number.isFinite(peak) || peak === 0) {
+    throw new Error(`${name} contains no finite, nonzero audio`);
+  }
   const buffer = Buffer.alloc(44 + count * 2);
   buffer.write("RIFF", 0);
   buffer.writeUInt32LE(buffer.length - 8, 4);

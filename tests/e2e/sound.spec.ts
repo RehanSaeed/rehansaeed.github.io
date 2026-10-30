@@ -719,17 +719,11 @@ for (const { name, path, selector } of [
 }
 
 for (const [label, sound] of [
-  ["Youtube", "youtube-play"],
-  ["Twitch", "twitch-pop"],
-  ["GitHub", "github-paw"],
-  ["LinkedIn", "linkedin-connect"],
-  ["Stack Overflow", "stack-overflow"],
-  ["Bluesky", "bluesky-flutter"],
-  ["Mastodon", "mastodon-puff"],
+  ["GitHub", "github-meow"],
+  ["Bluesky", "bluesky-wings"],
   ["Email", "email-paper"],
-  ["RSS", "rss-ping"],
 ] as const) {
-  test(`${label} has its own hover accent, with no extra click cue`, async ({
+  test(`${label} has a matching recorded hover sound, with no extra click cue`, async ({
     page,
   }) => {
     await page.goto("/");
@@ -748,6 +742,34 @@ for (const [label, sound] of [
     });
     await link.click();
     expect(await playedSounds(page)).toEqual([sound]);
+  });
+}
+
+for (const label of [
+  "Youtube",
+  "Twitch",
+  "LinkedIn",
+  "Stack Overflow",
+  "Mastodon",
+  "RSS",
+] as const) {
+  test(`${label} stays silent instead of using an arbitrary icon sound`, async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await ready(page);
+    const link = page.getByRole("link", { name: label, exact: true }).first();
+    await expect(link).not.toHaveAttribute("data-sound-hover");
+    await link.hover();
+    await page.waitForTimeout(150);
+    await link.evaluate((element) => {
+      element.addEventListener("click", (event) => event.preventDefault(), {
+        capture: true,
+        once: true,
+      });
+    });
+    await link.click();
+    expect(await playedSounds(page)).toEqual([]);
   });
 }
 
@@ -852,7 +874,7 @@ for (const event of ["pointerleave", "pointerdown"] as const) {
       .getByRole("link", { name: "Bluesky", exact: true })
       .first();
     await link.hover();
-    await expect.poll(() => playedSounds(page)).toEqual(["bluesky-flutter"]);
+    await expect.poll(() => playedSounds(page)).toEqual(["bluesky-wings"]);
     await link.dispatchEvent(event, { pointerType: "mouse" });
     await expect
       .poll(() => page.evaluate(() => window.soundProbe.active))
@@ -909,9 +931,9 @@ test("A stale stop callback cannot stop a newer instance of the same sample", as
       }
     >("#__nuxt")!;
     const audio = root.__vue_app__.config.globalProperties.$nuxt.$soundEffect;
-    const first = audio.play("github-paw")!;
+    const first = audio.play("github-meow")!;
     first();
-    const second = audio.play("github-paw")!;
+    const second = audio.play("github-meow")!;
     const stops = window.soundProbe.stops;
     first();
     const staleStoppedNewer = window.soundProbe.stops !== stops;
@@ -919,7 +941,7 @@ test("A stale stop callback cannot stop a newer instance of the same sample", as
     return { staleStoppedNewer, stops: window.soundProbe.stops };
   });
   expect(result).toEqual({ staleStoppedNewer: false, stops: 2 });
-  expect(await playedSounds(page)).toEqual(["github-paw", "github-paw"]);
+  expect(await playedSounds(page)).toEqual(["github-meow", "github-meow"]);
 });
 
 test("Route unmount stops an active tag preview", async ({ page }) => {
@@ -1311,7 +1333,16 @@ for (const width of [375, 1280]) {
   });
 }
 
-test("Original samples are small, quiet mono WAVs with click-free endpoints", async () => {
+test("Samples are small, quiet mono WAVs with complete short gestures and faded endpoints", async () => {
+  const durations = {
+    "toggle-on": 0.09,
+    "toggle-off": 0.095,
+    "enable-sound": 0.18,
+    "tag-hover": 0.08,
+    "github-meow": 0.38,
+    "bluesky-wings": 0.65,
+    "email-paper": 0.66,
+  };
   expect(
     (await readdir(soundDirectory))
       .filter((name) => name.endsWith(".wav"))
@@ -1331,8 +1362,8 @@ test("Original samples are small, quiet mono WAVs with click-free endpoints", as
     expect(buffer.readInt16LE(44)).toBe(0);
     expect(buffer.readInt16LE(buffer.length - 2)).toBe(0);
     const duration = (buffer.length - 44) / 2 / 22050;
-    expect(duration).toBeGreaterThanOrEqual(0.05);
-    expect(duration).toBeLessThanOrEqual(0.3);
+    expect(duration).toBeCloseTo(durations[name], 4);
+    expect(duration).toBeLessThanOrEqual(0.7);
     let peak = 0;
     for (let offset = 44; offset < buffer.length; offset += 2) {
       peak = Math.max(peak, Math.abs(buffer.readInt16LE(offset)) / 32768);
@@ -1346,7 +1377,7 @@ test("Original samples are small, quiet mono WAVs with click-free endpoints", as
   expect(bytes).toBeLessThan(150000);
 });
 
-test("The original palette has different timbres, not pitch-shifted copies of one chirp", async () => {
+test("Recorded icon sounds and original controls have distinct waveforms and timbres", async () => {
   const samples = new Map<string, number[]>();
   const fingerprints = new Set<string>();
   for (const name of soundNames) {
@@ -1395,33 +1426,14 @@ test("The original palette has different timbres, not pitch-shifted copies of on
     return total / weight;
   }
 
-  // Paper/noise and pitched plucks must have measurably different spectra.
+  // Recorded paper/wing foley is broadband, unlike a voiced mew or a tonal control.
   const paper = flatness(samples.get("email-paper")!);
-  const pluck = flatness(samples.get("linkedin-connect")!);
+  const pluck = flatness(samples.get("enable-sound")!);
   expect(paper).toBeGreaterThan(0.1);
   expect(pluck).toBeLessThan(0.02);
   expect(paper).toBeGreaterThan(pluck * 10);
-  expect(flatness(samples.get("bluesky-flutter")!)).toBeGreaterThan(0.1);
-  expect(flatness(samples.get("rss-ping")!)).toBeLessThan(0.02);
-  const flutter = samples.get("bluesky-flutter")!;
-  for (const start of [0, 0.05, 0.1, 0.15]) {
-    expect(
-      flutter
-        .slice(
-          Math.round((start + 0.004) * 22050),
-          Math.round((start + 0.025) * 22050),
-        )
-        .some((value) => Math.abs(value) > 0.001),
-    ).toBe(true);
-    expect(
-      flutter
-        .slice(
-          Math.round((start + 0.04) * 22050),
-          Math.round((start + 0.05) * 22050),
-        )
-        .every((value) => value === 0),
-    ).toBe(true);
-  }
+  expect(flatness(samples.get("bluesky-wings")!)).toBeGreaterThan(0.1);
+  expect(flatness(samples.get("github-meow")!)).toBeLessThan(0.1);
 });
 
 test.describe("Sound runtime cache", () => {
@@ -1472,10 +1484,10 @@ test.describe("Sound runtime cache", () => {
       originalSounds.every((path) => path.startsWith(`${soundPath}/`)),
     ).toBe(true);
     const futureSounds = [
-      "/sounds/v3/future-1.wav",
-      "/sounds/v3/future-2.wav",
-      "/sounds/v3/future-3.wav",
-      "/sounds/v4/future-4.wav",
+      `${soundPath}/future-1.wav`,
+      `${soundPath}/future-2.wav`,
+      `${soundPath}/future-3.wav`,
+      "/sounds/v5/future-4.wav",
     ];
     const sample = await readFile(join(soundDirectory, "toggle-on.wav"));
     const futurePattern = "**/sounds/v*/future-*.wav";

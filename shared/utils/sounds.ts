@@ -1,13 +1,7 @@
 export const socialSounds = {
-  youtube: "youtube-play",
-  twitch: "twitch-pop",
-  gitHub: "github-paw",
-  linkedIn: "linkedin-connect",
-  stackOverflow: "stack-overflow",
-  bluesky: "bluesky-flutter",
-  mastodon: "mastodon-puff",
+  gitHub: "github-meow",
+  bluesky: "bluesky-wings",
   email: "email-paper",
-  rss: "rss-ping",
 } as const;
 
 export const hoverSoundNames = [
@@ -25,4 +19,4 @@ export const soundNames = [
 export type SoundEffect = (typeof soundNames)[number];
 export type HoverSoundEffect = (typeof hoverSoundNames)[number];
 
-export const soundPath = "/sounds/v3";
+export const soundPath = "/sounds/v4";
