@@ -146,7 +146,7 @@ test("Portfolio totals match the listed projects and About shares the star total
       .find(".number-ticker__title")
       .map((_, title) => $(title).text())
       .get(),
-  ).toEqual(["My Package Downloads", "My GitHub Stars"]);
+  ).toEqual(["Package Downloads", "GitHub Stars"]);
   expect(tickers.last().find(".number-ticker__accessible").text()).toBe(
     stars.toLocaleString("en-GB"),
   );
@@ -168,23 +168,21 @@ test("Portfolio totals match the listed projects and About shares the star total
   const aboutTickers = aboutHtml(".about__statistics .number-ticker");
   expect(aboutTickers).toHaveLength(4);
   expect(aboutTickers.first().find(".number-ticker__title").text()).toBe(
-    "My Package Downloads",
+    "Package Downloads",
   );
   expect(aboutTickers.first().find(".number-ticker__accessible").text()).toBe(
     downloads.toLocaleString("en-GB"),
   );
   const aboutStars = aboutTickers.eq(1);
-  expect(aboutStars.find(".number-ticker__title").text()).toBe(
-    "My GitHub Stars",
-  );
+  expect(aboutStars.find(".number-ticker__title").text()).toBe("GitHub Stars");
   expect(aboutStars.find(".number-ticker__accessible").text()).toBe(
     stars.toLocaleString("en-GB"),
   );
   expect(aboutHtml('img[src*="shields.io/github/stars/"]')).toHaveLength(0);
   expect(aboutHtml('img[src*="shields.io/github/sponsors/"]')).toHaveLength(0);
   for (const [index, attribute, title] of [
-    [2, "data-followers", "My GitHub Followers"],
-    [3, "data-watchers", "My GitHub Watchers"],
+    [2, "data-followers", "GitHub Followers"],
+    [3, "data-watchers", "GitHub Watchers"],
   ] as const) {
     const value = Number(aboutHtml(".about__statistics").attr(attribute));
     expect(Number.isInteger(value) && value >= 0).toBe(true);
@@ -215,14 +213,14 @@ for (const width of [320, 375, 1280]) {
       const aboutTickers = page.locator(".about__statistics .number-ticker");
       await expect(aboutTickers).toHaveCount(4);
       await expect(aboutTickers.locator("h3")).toHaveText([
-        "My Package Downloads",
-        "My GitHub Stars",
-        "My GitHub Followers",
-        "My GitHub Watchers",
+        "Package Downloads",
+        "GitHub Stars",
+        "GitHub Followers",
+        "GitHub Watchers",
       ]);
       const aboutStars = aboutTickers.nth(1);
       await expect(aboutStars).toBeVisible();
-      await expect(aboutStars.locator("h3")).toHaveText("My GitHub Stars");
+      await expect(aboutStars.locator("h3")).toHaveText("GitHub Stars");
       const starTotal = await page
         .locator(".about__statistics")
         .getAttribute("data-stars");
@@ -331,8 +329,8 @@ for (const width of [320, 375, 1280]) {
       await expect(totals).toHaveAttribute("data-stars", /^\d+$/);
       await expect(totals).toHaveAttribute("data-stars", starTotal!);
       await expect(totals.locator(".number-ticker__title")).toHaveText([
-        "My Package Downloads",
-        "My GitHub Stars",
+        "Package Downloads",
+        "GitHub Stars",
       ]);
       const cards = totals.locator(".number-ticker");
       const [first, second] = await cards.evaluateAll((elements) =>
