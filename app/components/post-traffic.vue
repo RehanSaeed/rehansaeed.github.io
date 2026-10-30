@@ -124,20 +124,31 @@ const { data, error } = await useFetch("/post-traffic.json", {
 watch(error, (value) => {
   if (value) console.warn("[traffic] Unable to load article traffic:", value);
 });
-const ranges = [
-  { value: 0, label: "All time" },
-  { value: 12, label: "Last year" },
-  { value: 30, label: "Last month" },
-] as const;
-const range = ref<0 | 12 | 30>(0);
-const metric = ref<"views" | "engagement">("views");
 const availableHistory = computed(() => data.value?.posts[props.permalink]);
+const defaultRange = computed<0 | 12 | 30>(() => {
+  const history = availableHistory.value;
+  if (!history) return 0;
+  if (history.days?.[0]?.date === history.startDate) return 30;
+  return history.months.length <= 12 ? 12 : 0;
+});
+const ranges = computed(() => {
+  const options = [
+    { value: 0, label: "All time" },
+    { value: 12, label: "Last year" },
+    { value: 30, label: "Last month" },
+  ] as const;
+  return options.slice(
+    defaultRange.value === 30 ? 2 : defaultRange.value === 12 ? 1 : 0,
+  );
+});
+const range = ref<0 | 12 | 30>(defaultRange.value);
+const metric = ref<"views" | "engagement">("views");
 watch(
   availableHistory,
-  (value) => {
-    if (range.value === 30 && !value?.days) range.value = 0;
+  () => {
+    range.value = defaultRange.value;
   },
-  { flush: "sync" },
+  { immediate: true, flush: "sync" },
 );
 const history = computed(() =>
   availableHistory.value
@@ -154,7 +165,7 @@ const dateFormat = new Intl.DateTimeFormat("en-GB", {
 const date = (value: string) => dateFormat.format(new Date(value));
 const sourceText = computed(() =>
   data.value
-    ? `Source: Google Analytics 4 (${data.value.timeZone}). Updated ${date(data.value.updated)}. Repeat views are included; these are not unique visitors. Engagement is recorded foreground time per view, not reading completion. Switch metrics to see views or seconds per view. Presets end at the snapshot's latest date; Last month shows the last 30 calendar days. Recent figures are provisional while Google Analytics processes incoming data. Monthly buckets may be partial. Blockers and consent choices can reduce recorded traffic.`
+    ? `Page views include repeats. Engagement is the average time this article was active in the foreground per view. Source: Google Analytics. Updated ${date(data.value.updated)} (${data.value.timeZone}). Recent figures are provisional.`
     : "",
 );
 const total = computed(

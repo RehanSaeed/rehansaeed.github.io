@@ -215,9 +215,13 @@ for (const width of [375, 1280]) {
     await expect(warning).toContainText(
       "All time covers recorded history, not the article's full lifetime.",
     );
-    await chart.getByRole("button", { name: "Last year", exact: true }).click();
+    await expect(
+      chart.getByRole("button", { name: "Last year", exact: true }),
+    ).toHaveAttribute("aria-pressed", "true");
     await expect(warning).toBeVisible();
-    await chart.getByRole("button", { name: "All time", exact: true }).click();
+    await expect(
+      chart.getByRole("button", { name: "All time", exact: true }),
+    ).toHaveCount(0);
     const source = page
       .getByRole("tooltip")
       .filter({ hasText: "Source: Google Analytics" });
@@ -236,12 +240,9 @@ for (const width of [375, 1280]) {
     await expect(source).toBeVisible();
     await expect(source).toHaveAttribute("role", "tooltip");
     expect(await infoButton.getAttribute("aria-expanded")).toBeNull();
-    await expect(source).toContainText("not unique visitors");
-    await expect(source).toContainText("Europe/London");
-    await expect(source).toContainText(
-      "Recent figures are provisional while Google Analytics processes incoming data.",
+    await expect(source).toHaveText(
+      "Page views include repeats. Engagement is the average time this article was active in the foreground per view. Source: Google Analytics. Updated 25 Oct 2026 (Europe/London). Recent figures are provisional.",
     );
-    await expect(source).not.toContainText("processed days");
     expect(await plotOffset()).toBeCloseTo(beforeHelp, 3);
     await source.hover();
     await expect(source).toBeVisible();
@@ -270,23 +271,23 @@ for (const width of [375, 1280]) {
     const rangeButtons = chart.getByRole("group", {
       name: "Traffic date range",
     });
-    await expect(rangeButtons.locator(".button--bordered")).toHaveCount(3);
+    await expect(rangeButtons.locator(".button--bordered")).toHaveCount(2);
     await expect(rangeButtons.locator(".button--primary")).toHaveCount(1);
-    const allTime = rangeButtons.getByRole("button", {
-      name: "All time",
+    const lastYear = rangeButtons.getByRole("button", {
+      name: "Last year",
       exact: true,
     });
-    await expect(allTime).toHaveCSS(
+    await expect(lastYear).toHaveCSS(
       "background-color",
       await chart
         .locator(".post-traffic__line")
         .evaluate((element) => getComputedStyle(element).stroke),
     );
-    const selectedColour = await allTime.evaluate(
+    const selectedColour = await lastYear.evaluate(
       (element) => getComputedStyle(element).color,
     );
-    await allTime.hover();
-    await expect(allTime).toHaveCSS("color", selectedColour);
+    await lastYear.hover();
+    await expect(lastYear).toHaveCSS("color", selectedColour);
     const point = chart.getByRole("button", {
       name: "Jan 2024: 120 page views",
       exact: true,
@@ -335,6 +336,153 @@ for (const width of [375, 1280]) {
     await page.mouse.move(0, 0);
     await expect(page.getByRole("tooltip")).toHaveCount(0);
     await chart.screenshot({ path: info.outputPath("traffic-chart.png") });
+  });
+}
+
+const rangeCases: {
+  name: string;
+  startDate: string;
+  endDate: string;
+  selected: "All time" | "Last year" | "Last month";
+  daily?: boolean;
+  zero?: boolean;
+}[] = [
+  {
+    name: "one zero-view day",
+    startDate: "2024-01-31",
+    endDate: "2024-01-31",
+    selected: "Last month",
+    zero: true,
+  },
+  {
+    name: "29 days crossing a month boundary",
+    startDate: "2024-01-15",
+    endDate: "2024-02-12",
+    selected: "Last month",
+  },
+  {
+    name: "exactly 30 days crossing a month boundary",
+    startDate: "2024-01-15",
+    endDate: "2024-02-13",
+    selected: "Last month",
+  },
+  {
+    name: "31 days in one calendar month",
+    startDate: "2024-01-01",
+    endDate: "2024-01-31",
+    selected: "Last year",
+  },
+  {
+    name: "31 days crossing a month boundary",
+    startDate: "2024-01-15",
+    endDate: "2024-02-14",
+    selected: "Last year",
+  },
+  {
+    name: "exactly 12 monthly buckets",
+    startDate: "2024-01-15",
+    endDate: "2024-12-31",
+    selected: "Last year",
+  },
+  {
+    name: "13 partial monthly buckets",
+    startDate: "2024-01-31",
+    endDate: "2025-01-01",
+    selected: "All time",
+  },
+  {
+    name: "short legacy history without daily data",
+    startDate: "2024-01-15",
+    endDate: "2024-01-31",
+    selected: "Last year",
+    daily: false,
+  },
+];
+for (const {
+  name,
+  startDate,
+  endDate,
+  selected,
+  daily = true,
+  zero = false,
+} of rangeCases) {
+  test(`Date range defaults and visibility cover ${name}`, async ({ page }) => {
+    const days = trafficDays(startDate, endDate).map((date) => ({
+      date,
+      views: zero ? 0 : 1,
+      engagementSeconds: zero ? 0 : 10,
+    }));
+    const months = trafficMonths(startDate, endDate).map((month) => {
+      const count = days.filter((day) => day.date.startsWith(month)).length;
+      return {
+        month,
+        views: zero ? 0 : count,
+        engagementSeconds: zero ? 0 : count * 10,
+      };
+    });
+    await page.route("**/post-traffic.json", (route) =>
+      route.fulfill({
+        json: {
+          ...snapshot,
+          posts: {
+            [path]: {
+              startDate,
+              endDate,
+              months,
+              ...(daily ? { days: days.slice(-30) } : {}),
+            },
+          },
+        },
+      }),
+    );
+    await page.goto(path, { waitUntil: "domcontentloaded" });
+    const card = page.locator(".post-traffic");
+    const ranges = card.getByRole("group", { name: "Traffic date range" });
+    const labels =
+      selected === "Last month"
+        ? ["Last month"]
+        : selected === "Last year"
+          ? ["Last year", "Last month"]
+          : ["All time", "Last year", "Last month"];
+    await expect(ranges.getByRole("button")).toHaveText(labels);
+    await expect(ranges.locator('[aria-pressed="true"]')).toHaveText(selected);
+    await expect(card.locator(".post-traffic__point")).toHaveCount(
+      selected === "Last month" ? days.length : months.length,
+    );
+    await expect(card.locator(".post-traffic__plot")).toHaveAttribute(
+      "aria-label",
+      selected === "Last month" ? /^Daily/ : /^Monthly/,
+    );
+    await expect(card.locator(".post-traffic__total dd")).toHaveText(
+      new Intl.NumberFormat("en-GB").format(zero ? 0 : days.length),
+    );
+    await expect(card.locator(".post-traffic__engagement dd")).toHaveText(
+      zero ? "Unavailable" : "10s",
+    );
+    const month = ranges.getByRole("button", {
+      name: "Last month",
+      exact: true,
+    });
+    if (!daily) {
+      await expect(month).toBeDisabled();
+      await expect(card).toContainText(
+        "Daily history is unavailable in this saved snapshot.",
+      );
+    } else {
+      await expect(month).toBeEnabled();
+      await card
+        .getByRole("button", { name: "Engagement", exact: true })
+        .click();
+      await expect(ranges.locator('[aria-pressed="true"]')).toHaveText(
+        selected,
+      );
+      await month.click();
+      await expect(ranges.getByRole("button")).toHaveText(labels);
+      await expect(month).toHaveAttribute("aria-pressed", "true");
+      await expect(
+        card.getByRole("button", { name: "Engagement", exact: true }),
+      ).toHaveAttribute("aria-pressed", "true");
+    }
   });
 }
 

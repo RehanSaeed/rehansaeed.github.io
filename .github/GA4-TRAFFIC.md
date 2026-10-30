@@ -78,7 +78,10 @@ in `/post-traffic.json` are intentionally public.
   coverage to that calendar date using the returned reporting timezone.
   Recent figures are **provisional** while Google Analytics processes incoming
   data; they can be incomplete or revised, including initially reported zeros.
-  The source tooltip explains this. A newly published article can have a chart
+  The concise source tooltip explains page views (including repeats), average
+  foreground time per view and the provisional figures, and includes the source,
+  update date and reporting timezone. Detailed collection limitations remain here
+  rather than in that tooltip. A newly published article can have a chart
   in the next export, even if no views have been reported yet.
 - The first and last monthly buckets may be partial. Months without report rows
   inside the declared tracking interval count as zero. Tracking outages must not
@@ -86,13 +89,21 @@ in `/post-traffic.json` are intentionally public.
 - **All time**, **Last year** and **Last month** select all available monthly
   history, the last 12 monthly buckets, or the last 30 calendar days
   with daily points, respectively. The buttons sit below the statistics row and
-  above the chart. Presets end at the snapshot's latest included date (today
+  above the chart. When daily data covers the entire history (up to 30 days),
+  default to **Last month** and hide both longer presets. Otherwise, when the
+  history contains at most 12 monthly buckets, default to **Last year** and hide
+  **All time**. Longer histories default to **All time** with all presets visible.
+  These thresholds follow the preset windows, not calendar anniversaries, so the
+  default always includes every recorded view. Preset visibility depends on the
+  full available history, not the selected range or the number of nonzero buckets.
+  Presets end at the snapshot's latest included date (today
   when exported, not a live feed) and never split a monthly aggregate or invent
   earlier coverage. The
   chart's date labels, total, engagement and plot update together. There is no
   separate date-range summary above the chart. Short histories
   retain their real start date. A legacy snapshot without daily data explicitly
-  disables Last month until refreshed.
+  disables Last month until refreshed; short legacy histories use Last year
+  instead so their monthly counts remain accessible.
 - **Average engagement per view** is total GA4 `userEngagementDuration`
   (foreground seconds) divided by total `screenPageViews` in the selected range,
   rounded once to the nearest second. It is not an average of monthly averages,
