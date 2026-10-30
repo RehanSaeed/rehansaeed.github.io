@@ -61,7 +61,7 @@ their outer edges align.
 About uses the same Portfolio download and star totals and animations, including
 listed organisation-hosted projects. The `borderless` option on
 `u-portfolio-statistics` shows titles and tickers without outer card borders.
-Both pages show Followers, Sponsors and Watchers badges beneath the two tickers
+Both pages show Followers, Watchers and Sponsors badges beneath the two tickers
 using `app/components/github-badges.vue`. There are no Followers or Watchers
 tickers or an account-only stars badge.
 

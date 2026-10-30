@@ -129,7 +129,7 @@ for (const width of [375, 1280]) {
     }) => {
       await page.setViewportSize({ width, height: 900 });
       await page.emulateMedia({ colorScheme });
-      await page.goto("/about/");
+      await page.goto("/about/", { waitUntil: "domcontentloaded" });
       await expect(
         page
           .locator(".about__description")
@@ -164,10 +164,10 @@ for (const width of [375, 1280]) {
           ),
       ).toEqual([
         "GitHub follower count",
-        "GitHub sponsors",
         expect.stringMatching(
           /^GitHub watch subscriptions across my \d+ public account-owned repositories: \d+$/,
         ),
+        "GitHub sponsors",
       ]);
       expect(
         await page

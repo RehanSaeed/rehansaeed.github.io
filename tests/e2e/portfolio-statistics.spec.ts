@@ -188,8 +188,8 @@ test("Portfolio totals match the listed projects and About shares the star total
   );
   const badgeSources = [
     "https://img.shields.io/github/followers/RehanSaeed?style=social",
-    "https://img.shields.io/github/sponsors/RehanSaeed?logo=github&style=social",
     watchersBadge.attr("src"),
+    "https://img.shields.io/github/sponsors/RehanSaeed?logo=github&style=social",
   ];
   for (const html of [$, aboutHtml]) {
     expect(
@@ -203,8 +203,8 @@ test("Portfolio totals match the listed projects and About shares the star total
         .get(),
     ).toEqual([
       "https://github.com/RehanSaeed?tab=followers",
-      "https://github.com/sponsors/RehanSaeed",
       "https://github.com/RehanSaeed",
+      "https://github.com/sponsors/RehanSaeed",
     ]);
   }
 });
@@ -559,8 +559,8 @@ for (const path of ["/about/", "/portfolio/"]) {
     await expect(stars).toBeFocused();
     for (const [name, text] of [
       ["GitHub follower count", "View my GitHub followers"],
-      ["GitHub sponsors", "Sponsor me on GitHub"],
       [/^GitHub watch subscriptions/, "Total watch subscriptions"],
+      ["GitHub sponsors", "Sponsor me on GitHub"],
     ] as const) {
       const link = page.getByRole("img", { name, exact: true }).locator("..");
       await link.focus();
