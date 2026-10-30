@@ -44,51 +44,6 @@ downloaded during offline installation. PNG app icons and installation screensho
 are retained for compatibility. Browsers without AVIF support cannot display
 uncached content images offline.
 
-## About location map
-
-The About page progressively enhances its static map with
-[MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/) and
-[OpenFreeMap](https://openfreemap.org/) tiles. No account, API token, environment
-variable or paid map subscription is required for local development or deployment.
-The map uses OpenFreeMap's Positron and Dark styles, with white countries and
-water, borders and pins coloured using the site's purple theme tokens. The author
-pin marks a representative East London point near Stratford, not a street address.
-Before a visitor location is available, the map shows the UK and Europe.
-After lookup, fit only the author and visitor coordinates with room for both pins
-and their labels. Nearby visitors should get a closer view, not a continent-wide
-map; cap zoom at 12 for very close or identical locations. Reduced-motion users
-get the same framing without animation.
-Keep the map's OpenMapTiles and OpenStreetMap attribution visible.
-
-The renderer, worker and styles are loaded only when the map approaches the
-viewport. Reduced-motion users start directly at the regional view without the fly-in.
-Without JavaScript or WebGL, or if the map service fails, the photo pin and
-self-hosted Natural Earth map remain available.
-
-OpenFreeMap's public service currently has no map-view or request limits for
-normal use, but is donation-funded and provides no availability guarantee.
-Visitors make external requests for styles, tiles, sprites and fonts.
-Once the interactive map loads, it also requests an approximate IP location from
-[GeoJS](https://www.geojs.io/docs/v1/endpoints/geo/) automatically. GeoJS receives
-the visitor's IP address; the request omits credentials and the referrer. No GPS
-permission is requested, and the application does not persist coordinates or send
-them to analytics. IP locations can be inaccurate, especially with VPNs.
-The map adds a second purple pin and a dotted line to London. Keep the purple dots
-outlined (white in light mode, dark in dark mode) so they remain distinct from
-both white land and purple water. Match the two layers' dash lengths in screen
-pixels, not width-relative units. The map fits the view to
-both locations, unless the visitor has already moved the map. Resize the framing
-with the map container, without overriding deliberate user zoom or pan.
-Theme changes must restore both connection layers as well as their colours.
-The caption calculates an approximate great-circle distance in miles from the
-validated IP coordinates; never hardcode a visitor location or an example distance.
-GeoJS is linked in the map credits rather than a separate explanatory paragraph.
-A failed, invalid or eight-second timed-out lookup shows an accessible notice
-without breaking the map. Lookup requests are aborted on navigation and are not made for the static
-fallback. Tests must mock GeoJS rather than use real visitor locations.
-Retain the fallback and review
-[OpenFreeMap's terms](https://openfreemap.org/tos/) when changing the integration.
-
 ## Dependency updates
 
 Commit `package.json` and its regenerated `package-lock.json` together. Run
