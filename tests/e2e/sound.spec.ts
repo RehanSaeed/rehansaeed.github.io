@@ -575,8 +575,11 @@ test("Shares preference across navigation, reloads and tabs without automatic cu
   expect(await playback(page)).toEqual([]);
   const other = await context.newPage();
   await other.goto("/");
+  await other.bringToFront();
   await expect(soundToggle(other)).toHaveAttribute("aria-pressed", "true");
   await soundToggle(other).click();
+  await expect(soundToggle(other)).toHaveAttribute("aria-pressed", "false");
+  await page.bringToFront();
   await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "false");
   await themeToggle(page).click();
   expect(await playback(page)).toEqual([]);
