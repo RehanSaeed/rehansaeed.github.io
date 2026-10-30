@@ -72,8 +72,9 @@ test("The publication date retains its tooltip and supports Enter and Space", as
   const button = page.locator(".dt-published button");
   await expect(button).toBeEnabled();
   await button.focus();
-  await button.press("Tab");
-  await button.press("Shift+Tab");
+  await page.keyboard.press("Tab");
+  await page.keyboard.press("Shift+Tab");
+  await expect(button).toBeFocused();
   const datetime = await page.locator(".dt-published").getAttribute("datetime");
   await expect(
     page.getByRole("tooltip").filter({ hasText: datetime! }),
