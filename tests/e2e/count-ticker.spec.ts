@@ -74,7 +74,7 @@ async function mountTicker(
       const app = createApp({
         setup: () => () =>
           h(Ticker, {
-            title: "Downloads",
+            label: "Downloads",
             number: number.value,
             rate: rate.value,
             locale: options.locale,
@@ -117,7 +117,7 @@ const changeReducedMotion = async (
   await change.dispose();
 };
 
-test("Shared ticker needs title, number and rate and follows the supplied average", async ({
+test("Shared ticker needs label, number and rate and follows the supplied average", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
