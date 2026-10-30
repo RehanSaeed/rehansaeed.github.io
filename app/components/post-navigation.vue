@@ -11,8 +11,7 @@
         :class="`post-navigation__card--${item.rel}`"
         tag="li"
         hoverable
-        focusable
-        :sound="item.rel === 'prev' ? 'previous' : 'next'">
+        focusable>
         <NuxtLink
           class="post-navigation__link"
           :to="item.post.permalink"

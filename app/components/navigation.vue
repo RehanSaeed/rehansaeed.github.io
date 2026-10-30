@@ -1,10 +1,6 @@
 <template>
   <nav class="navigation">
-    <u-link-button
-      class="navigation__image-container"
-      label="Home"
-      to="/"
-      sound>
+    <u-link-button class="navigation__image-container" label="Home" to="/">
       <NuxtPicture
         format="avif"
         :alt="metadata.author.name"
@@ -16,25 +12,19 @@
         height="50" />
     </u-link-button>
     <div class="navigation__items-left">
-      <u-link-button
-        class="navigation__item"
-        to="/"
-        :aria-current="blogPage"
-        sound
+      <u-link-button class="navigation__item" to="/" :aria-current="blogPage"
         >Blog</u-link-button
       >
       <u-link-button
         class="navigation__item"
         to="/portfolio/"
         :aria-current="portfolioPage"
-        sound
         >Portfolio</u-link-button
       >
       <u-link-button
         class="navigation__item"
         to="/about/"
         :aria-current="aboutPage"
-        sound
         >About</u-link-button
       >
     </div>

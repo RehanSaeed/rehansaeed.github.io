@@ -74,7 +74,7 @@ test("Update now delegates activation and reload handling to the package", async
   expect(app.errors).toHaveLength(0);
   expect(app.state.updating.value).toBe(false);
   expect(app.state.error.value).toBe("");
-  expect(app.sounds).toEqual(["update-start"]);
+  expect(app.sounds).toEqual([]);
 });
 
 test("Concurrent update clicks invoke the package only once", async () => {
@@ -91,20 +91,20 @@ test("Concurrent update clicks invoke the package only once", async () => {
   expect(app.state.updating.value).toBe(true);
   await app.state.update();
   expect(calls).toBe(1);
-  expect(app.sounds).toEqual(["update-start"]);
+  expect(app.sounds).toEqual([]);
   complete();
   await update;
   expect(app.state.updating.value).toBe(false);
-  expect(app.sounds).toEqual(["update-start"]);
+  expect(app.sounds).toEqual([]);
 });
 
-test("Only an explicit dismissal plays the close cue", () => {
+test("Explicit dismissal stays silent and delegates to the package", () => {
   const app = mountUpdate();
   expect(app.sounds).toEqual([]);
   expect(app.dismissals()).toBe(0);
   app.state.dismiss();
   expect(app.dismissals()).toBe(1);
-  expect(app.sounds).toEqual(["dialog-close"]);
+  expect(app.sounds).toEqual([]);
 });
 
 test("A package failure is reported and can be retried successfully", async () => {
@@ -120,5 +120,5 @@ test("A package failure is reported and can be retried successfully", async () =
   await app.state.update();
   expect(app.state.error.value).toBe("");
   expect(app.state.updating.value).toBe(false);
-  expect(app.sounds).toEqual(["update-start", "update-start"]);
+  expect(app.sounds).toEqual([]);
 });

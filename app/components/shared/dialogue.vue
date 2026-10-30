@@ -40,7 +40,7 @@ export default {
   name: "u-dialogue",
   emits: ["close"],
   setup() {
-    return { titleId: useId(), playSoundEffect: useSoundEffect().play };
+    return { titleId: useId() };
   },
   props: {
     fullscreen: {
@@ -70,7 +70,6 @@ export default {
       }
     },
     onDismiss() {
-      if (this.isOpen) this.playSoundEffect("dialog-close");
       this.close();
     },
     close() {

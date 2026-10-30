@@ -1,6 +1,6 @@
 <template>
   <div>
-    <u-button bordered @click="onClick">
+    <u-button bordered @click="open">
       <u-icon name="simple-icons:buymeacoffee" inline />
       Buy me a Coffee
     </u-button>
@@ -22,19 +22,12 @@ export default {
       isDialogueOpen: false,
     };
   },
-  setup() {
-    return { playSoundEffect: useSoundEffect().play };
-  },
   methods: {
     open() {
       this.isDialogueOpen = true;
     },
     close() {
       this.isDialogueOpen = false;
-    },
-    onClick() {
-      this.open();
-      this.playSoundEffect("coffee-open");
     },
   },
 };

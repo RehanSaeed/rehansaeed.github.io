@@ -1,6 +1,5 @@
 <template>
   <component
-    v-bind="soundTrigger"
     class="card"
     :is="tag"
     :class="{
@@ -13,11 +12,8 @@
 </template>
 
 <script setup lang="ts">
-import type { LinkSound } from "#shared/utils/sounds";
-
-const props = withDefaults(
+withDefaults(
   defineProps<{
-    sound?: boolean | LinkSound;
     compact?: boolean;
     focusable?: boolean;
     hoverable?: boolean;
@@ -25,7 +21,6 @@ const props = withDefaults(
   }>(),
   { tag: "section" },
 );
-const soundTrigger = useLinkSound(() => props.sound);
 </script>
 
 <style lang="scss">

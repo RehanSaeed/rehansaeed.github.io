@@ -1,5 +1,5 @@
 <template>
-  <div class="social" v-bind="soundTrigger">
+  <div class="social">
     <u-tooltip
       v-if="metadata.author.youtube.url"
       v-slot="{ trigger }"
@@ -8,6 +8,7 @@
         v-bind="trigger"
         class="social__link"
         label="Youtube"
+        :sound="socialSounds.youtube"
         :href="metadata.author.youtube.url"
         rel="me">
         <u-icon name="fa-brands:youtube" />
@@ -21,6 +22,7 @@
         v-bind="trigger"
         class="social__link"
         label="Twitch"
+        :sound="socialSounds.twitch"
         :href="metadata.author.twitch.url"
         rel="me">
         <u-icon name="fa-brands:twitch" />
@@ -34,6 +36,7 @@
         v-bind="trigger"
         class="social__link"
         label="GitHub"
+        :sound="socialSounds.gitHub"
         :href="metadata.author.gitHub.url"
         rel="me authn">
         <u-icon name="fa-brands:github" />
@@ -47,6 +50,7 @@
         v-bind="trigger"
         class="social__link"
         label="LinkedIn"
+        :sound="socialSounds.linkedIn"
         :href="metadata.author.linkedIn.url"
         rel="me">
         <u-icon name="fa-brands:linkedin" />
@@ -60,6 +64,7 @@
         v-bind="trigger"
         class="social__link"
         label="Stack Overflow"
+        :sound="socialSounds.stackOverflow"
         :href="metadata.author.stackOverflow.url"
         rel="me">
         <u-icon name="fa-brands:stack-overflow" />
@@ -73,6 +78,7 @@
         v-bind="trigger"
         class="social__link"
         label="Bluesky"
+        :sound="socialSounds.bluesky"
         :href="metadata.author.bluesky.url"
         rel="me">
         <u-icon name="simple-icons:bluesky" />
@@ -86,6 +92,7 @@
         v-bind="trigger"
         class="social__link"
         label="Mastodon"
+        :sound="socialSounds.mastodon"
         :href="metadata.author.mastodon.url"
         rel="me">
         <u-icon name="fa-brands:mastodon" />
@@ -96,6 +103,7 @@
         v-bind="trigger"
         class="social__link"
         label="Email"
+        :sound="socialSounds.email"
         href="#"
         @click="openEmail">
         <u-icon name="fa-regular:envelope" />
@@ -106,7 +114,8 @@
         v-bind="trigger"
         class="social__link"
         href="/rss.xml"
-        label="RSS">
+        label="RSS"
+        :sound="socialSounds.rss">
         <u-icon name="fa-solid:rss" />
       </u-link-button>
     </u-tooltip>
@@ -114,6 +123,7 @@
 </template>
 
 <script>
+import { socialSounds } from "#shared/utils/sounds";
 import { decode } from "~/framework/obfuscate.js";
 
 export default {
@@ -121,7 +131,7 @@ export default {
   setup() {
     return {
       metadata: useAppConfig().site,
-      soundTrigger: useLinkSound(() => "social"),
+      socialSounds,
     };
   },
   methods: {

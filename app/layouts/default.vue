@@ -1,6 +1,6 @@
 <template>
   <u-scroll-custom-property>
-    <div id="app" v-bind="soundTrigger">
+    <div id="app">
       <u-skip-link />
 
       <u-scroll-indicator />
@@ -17,10 +17,6 @@
     </div>
   </u-scroll-custom-property>
 </template>
-
-<script setup lang="ts">
-const soundTrigger = useLinkSound(() => "content");
-</script>
 
 <style lang="scss">
 @use "~/assets/style/abstracts/breakpoints";

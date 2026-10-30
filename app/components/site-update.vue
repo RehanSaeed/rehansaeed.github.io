@@ -34,20 +34,17 @@
 
 <script setup lang="ts">
 const { $pwa } = useNuxtApp();
-const { play } = useSoundEffect();
 const updating = ref(false);
 const error = ref("");
 
 function dismiss() {
   $pwa?.cancelPrompt();
-  play("dialog-close");
 }
 
 async function update() {
   if (!$pwa || updating.value) return;
   updating.value = true;
   error.value = "";
-  play("update-start");
   try {
     await $pwa.updateServiceWorker();
   } catch (cause) {

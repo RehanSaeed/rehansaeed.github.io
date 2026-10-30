@@ -42,7 +42,6 @@ export default {
   setup() {
     return {
       metadata: useAppConfig().site,
-      playSoundEffect: useSoundEffect().play,
     };
   },
   data() {
@@ -122,7 +121,6 @@ export default {
       this.isDialogueOpen = false;
     },
     onClick() {
-      this.playSoundEffect("share-open");
       if (this.isSupported) {
         this.share();
       } else {

@@ -1,5 +1,5 @@
 <template>
-  <article class="search-result" v-bind="soundTrigger">
+  <article class="search-result">
     <NuxtLink
       :to="searchResult.permalink"
       class="search-result__link"
@@ -31,9 +31,6 @@ import { getAvifSource } from "#shared/utils/images";
 export default {
   name: "u-search-result",
   emits: ["selected"],
-  setup() {
-    return { soundTrigger: useLinkSound(() => "search") };
-  },
   computed: {
     avifSource() {
       return getAvifSource(this.searchResult.heroImage);

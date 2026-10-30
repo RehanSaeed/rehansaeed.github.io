@@ -18,10 +18,10 @@
 
 <script setup lang="ts">
 import { NuxtLink } from "#components";
-import type { LinkSound } from "#shared/utils/sounds";
+import type { HoverSoundEffect } from "#shared/utils/sounds";
 
 const props = defineProps<{
-  sound?: boolean | LinkSound;
+  sound?: HoverSoundEffect;
   bordered?: boolean;
   contrast?: boolean;
   primary?: boolean;
@@ -30,7 +30,7 @@ const props = defineProps<{
   href?: string;
   rel?: string;
 }>();
-const soundTrigger = useLinkSound(() => props.sound);
+const soundTrigger = useHoverSound(() => props.sound);
 const tag = computed(() => (props.to ? NuxtLink : "a"));
 </script>
 

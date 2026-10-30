@@ -21,7 +21,6 @@ import {
 } from "~/framework/analytics";
 defineOptions({ inheritAttrs: false });
 const { $pwa } = useNuxtApp();
-const { play } = useSoundEffect();
 const hydrated = ref(false);
 watch(
   () => $pwa?.showInstallPrompt,
@@ -35,7 +34,6 @@ async function install() {
     const choice: unknown = await $pwa?.install();
     if (choice && typeof choice === "object" && "outcome" in choice) {
       pwaInstallPromoClicked("install-button", choice.outcome === "accepted");
-      if (choice.outcome === "accepted") play("success");
     }
   } catch (error) {
     console.error("PWA installation failed:", error);
