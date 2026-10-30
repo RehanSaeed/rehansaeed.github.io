@@ -2,7 +2,8 @@
   <button
     class="button"
     :class="{
-      'button--bordered': variant !== 'plain',
+      'button--plain': variant === 'plain',
+      'button--secondary': variant === 'secondary',
       'button--primary': variant === 'primary',
       'button--hydrating': !hydrated && !disabled && !submit,
     }"
@@ -83,7 +84,8 @@ export default defineComponent({
   }
 }
 
-.button--bordered {
+.button--primary,
+.button--secondary {
   background-color: var(--global-background-color);
   border: var(--global-border-width-1) solid var(--global-border-color);
   border-radius: var(--global-border-radius);
@@ -106,7 +108,8 @@ export default defineComponent({
   }
 }
 
-.button--bordered::before {
+.button--primary::before,
+.button--secondary::before {
   content: "";
 
   position: absolute;
@@ -119,12 +122,15 @@ export default defineComponent({
   transition: opacity var(--global-duration-1) var(--ease-in-out-cubic);
 }
 
-.button--bordered:hover::before,
-.button--bordered:focus::before {
+.button--primary:hover::before,
+.button--primary:focus::before,
+.button--secondary:hover::before,
+.button--secondary:focus::before {
   opacity: 1;
 }
 
-.button--bordered:active::before {
+.button--primary:active::before,
+.button--secondary:active::before {
   box-shadow: var(--global-shadow-1);
   opacity: 1;
 }

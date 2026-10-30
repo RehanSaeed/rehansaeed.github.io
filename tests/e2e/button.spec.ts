@@ -55,8 +55,11 @@ for (const variant of variants) {
           expect(html.includes(" disabled")).toBe(disabled || !submit);
           expect(html.includes("button--hydrating")).toBe(!disabled && !submit);
           expect(html).toContain(`type="${submit ? "submit" : "button"}"`);
-          expect(html.includes("button--bordered")).toBe(variant !== "plain");
-          expect(html.includes("button--primary")).toBe(variant === "primary");
+          for (const candidate of variants) {
+            expect(html.includes(`button--${candidate}`)).toBe(
+              variant === candidate,
+            );
+          }
         }
       }
     },
@@ -128,7 +131,9 @@ for (const theme of ["light", "dark"]) {
       return values;
     });
     await expect(plain).toHaveAttribute("data-forwarded", "yes");
-    await expect(plain).toHaveClass("button forwarded");
+    await expect(plain).toHaveClass("button button--plain forwarded");
+    await expect(secondary).toHaveClass("button button--secondary");
+    await expect(primary).toHaveClass("button button--primary");
     await expect(plain.locator("svg")).toBeVisible();
     await expect(plain).toHaveCSS("padding", "0px");
     await expect(plain).toHaveCSS("border-top-width", "0px");
@@ -252,18 +257,18 @@ test("Real callers retain plain icons, secondary actions and pre-hydration submi
     const share = page.getByRole("button", { name: "Share", exact: true });
     await expect(search).toBeDisabled();
     await expect(search).toHaveClass(/button--hydrating/);
-    await expect(search).not.toHaveClass(/button--bordered/);
+    await expect(search).toHaveClass(/button--plain/);
     await expect(share).toBeDisabled();
-    await expect(share).toHaveClass(/button--bordered/);
+    await expect(share).toHaveClass(/button--secondary/);
     await expect(subscribe).toBeEnabled();
     await expect(subscribe).toHaveAttribute("type", "submit");
-    await expect(subscribe).toHaveClass(/button--bordered/);
+    await expect(subscribe).toHaveClass(/button--secondary/);
     scripts.resume();
     await expect(search).toBeEnabled();
     await expect(share).toBeEnabled();
     await expect(
       page.getByRole("button", { name: "Buy me a Coffee", exact: true }),
-    ).toHaveClass(/button--bordered/);
+    ).toHaveClass(/button--secondary/);
     await search.focus();
     await expect(search).toHaveAccessibleDescription("Search");
     await search.press("Enter");
@@ -271,7 +276,7 @@ test("Real callers retain plain icons, secondary actions and pre-hydration submi
     await expect(dialog).toBeVisible();
     const close = dialog.getByRole("button", { name: "Close Search" });
     await expect(close).toHaveAttribute("type", "submit");
-    await expect(close).not.toHaveClass(/button--bordered/);
+    await expect(close).toHaveClass(/button--plain/);
     await close.click();
     await expect(dialog).toBeHidden();
   } finally {
