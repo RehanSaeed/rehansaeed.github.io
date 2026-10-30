@@ -8,7 +8,6 @@
         v-bind="trigger"
         class="social__link"
         label="Youtube"
-        :sound="socialSounds.youtube"
         :href="metadata.author.youtube.url"
         rel="me">
         <u-icon name="fa-brands:youtube" />
@@ -22,7 +21,6 @@
         v-bind="trigger"
         class="social__link"
         label="Twitch"
-        :sound="socialSounds.twitch"
         :href="metadata.author.twitch.url"
         rel="me">
         <u-icon name="fa-brands:twitch" />
@@ -50,7 +48,6 @@
         v-bind="trigger"
         class="social__link"
         label="LinkedIn"
-        :sound="socialSounds.linkedIn"
         :href="metadata.author.linkedIn.url"
         rel="me">
         <u-icon name="fa-brands:linkedin" />
@@ -64,7 +61,6 @@
         v-bind="trigger"
         class="social__link"
         label="Stack Overflow"
-        :sound="socialSounds.stackOverflow"
         :href="metadata.author.stackOverflow.url"
         rel="me">
         <u-icon name="fa-brands:stack-overflow" />
@@ -92,7 +88,6 @@
         v-bind="trigger"
         class="social__link"
         label="Mastodon"
-        :sound="socialSounds.mastodon"
         :href="metadata.author.mastodon.url"
         rel="me">
         <u-icon name="fa-brands:mastodon" />
@@ -114,8 +109,7 @@
         v-bind="trigger"
         class="social__link"
         href="/rss.xml"
-        label="RSS"
-        :sound="socialSounds.rss">
+        label="RSS">
         <u-icon name="fa-solid:rss" />
       </u-link-button>
     </u-tooltip>
