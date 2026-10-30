@@ -2,7 +2,11 @@ import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import type { Page } from "@playwright/test";
 import type { NuxtApp } from "nuxt/app";
-import { soundNames, soundPath } from "../../shared/utils/sounds";
+import {
+  hoverSoundNames,
+  soundNames,
+  soundPath,
+} from "../../shared/utils/sounds";
 import { delayClientScripts, expect, test } from "./fixtures";
 
 declare global {
@@ -26,6 +30,7 @@ const themeToggle = (page: Page) =>
 const playback = (page: Page) => page.evaluate(() => window.soundProbe.starts);
 const playedSounds = (page: Page) =>
   page.evaluate(() => window.soundProbe.played);
+const soundDirectory = join("public", ...soundPath.split("/").filter(Boolean));
 
 async function clearPlayback(page: Page) {
   await expect
@@ -167,7 +172,7 @@ test("Defaults to on without autoplay, and interaction plays a cue", async ({
   await expect.poll(() => playback(page)).toHaveLength(1);
 });
 
-test("Sound capture preserves descendant buttons when event timestamps are identical", async ({
+test("Silent search and sound controls work when event timestamps are identical", async ({
   page,
 }) => {
   await page.clock.setFixedTime(new Date("2026-01-01T12:00:00Z"));
@@ -178,16 +183,12 @@ test("Sound capture preserves descendant buttons when event timestamps are ident
     page.getByRole("dialog", { name: "Search", exact: true }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Close Search", exact: true }).click();
-  await expect
-    .poll(() => playedSounds(page))
-    .toEqual(["dialog-open", "dialog-close"]);
+  expect(await playedSounds(page)).toEqual([]);
   await soundToggle(page).click();
   await expectSoundState(page, false);
   await soundToggle(page).click();
   await expectSoundState(page, true);
-  await expect
-    .poll(() => playedSounds(page))
-    .toEqual(["dialog-open", "dialog-close", "toggle-on"]);
+  await expect.poll(() => playedSounds(page)).toEqual(["enable-sound"]);
 });
 
 for (const colorScheme of ["light", "dark"] as const) {
@@ -490,7 +491,8 @@ test("Enabling confirms once and muting never plays an extra cue", async ({
   expect(await playback(page)).toEqual([]);
   await soundToggle(page).click();
   await expect.poll(() => playback(page)).toHaveLength(1);
-  expect((await playback(page))[0]).toBeCloseTo(0.09, 2);
+  expect(await playedSounds(page)).toEqual(["enable-sound"]);
+  expect((await playback(page))[0]).toBeCloseTo(0.18, 2);
   await soundToggle(page).click();
   await expectSoundState(page, false);
   expect(await playback(page)).toHaveLength(1);
@@ -522,7 +524,8 @@ test("A cold enable confirms after loading without replaying other actions", asy
     release();
     await ready(page);
     await expect.poll(() => playback(page)).toHaveLength(1);
-    expect((await playback(page))[0]).toBeCloseTo(0.09, 2);
+    expect(await playedSounds(page)).toEqual(["enable-sound"]);
+    expect((await playback(page))[0]).toBeCloseTo(0.18, 2);
   } finally {
     release();
   }
@@ -564,11 +567,7 @@ test("Shares preference across navigation, reloads and tabs without automatic cu
     .getByRole("link", { name: "About", exact: true })
     .click();
   await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "true");
-  expect(
-    (await playback(page)).filter(
-      (duration) => Math.abs(duration - 0.075) < 0.001,
-    ),
-  ).toHaveLength(1);
+  expect(await playback(page)).toEqual([]);
   await page.reload();
   await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "true");
   await ready(page);
@@ -663,77 +662,394 @@ test("Playback failures are reported without blocking the action", async ({
   await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "false");
 });
 
-test("Sounds on explicit dialog dismissal and result selection, but not deep links", async ({
+for (const { name, path, selector } of [
+  { name: "header navigation", path: "/", selector: ".navigation__item" },
+  { name: "post cards", path: "/", selector: ".post-card__title a" },
+  { name: "next page", path: "/", selector: ".pager__next-button" },
+  { name: "previous page", path: "/2/", selector: ".pager__previous-button" },
+  {
+    name: "portfolio cards",
+    path: "/portfolio/",
+    selector: ".portfolio-card__title a",
+  },
+  {
+    name: "adjacent posts",
+    path: "/on-the-etiquette-of-pull-request-comments/",
+    selector: ".post-navigation__link",
+  },
+  {
+    name: "footer links",
+    path: "/",
+    selector: '.footer__text a[href="https://nuxt.com"]',
+  },
+  {
+    name: "article links",
+    path: "/on-the-etiquette-of-pull-request-comments/",
+    selector: ".post__content p a",
+  },
+  {
+    name: "heading anchors",
+    path: "/on-the-etiquette-of-pull-request-comments/",
+    selector: ".anchor-link",
+  },
+  {
+    name: "edit source",
+    path: "/on-the-etiquette-of-pull-request-comments/",
+    selector: ".post__edit",
+  },
+]) {
+  test(`Ordinary ${name} stay silent on hover and activation`, async ({
+    page,
+  }) => {
+    await page.goto(path);
+    await ready(page);
+    const link = page.locator(selector).first();
+    await link.hover();
+    await page.waitForTimeout(150);
+    await link.evaluate((element: HTMLAnchorElement) => {
+      element.addEventListener("click", (event) => event.preventDefault(), {
+        capture: true,
+        once: true,
+      });
+      element.click();
+    });
+    expect(await playedSounds(page)).toEqual([]);
+  });
+}
+
+for (const [label, sound] of [
+  ["Youtube", "youtube-play"],
+  ["Twitch", "twitch-pop"],
+  ["GitHub", "github-paw"],
+  ["LinkedIn", "linkedin-connect"],
+  ["Stack Overflow", "stack-overflow"],
+  ["Bluesky", "bluesky-flutter"],
+  ["Mastodon", "mastodon-puff"],
+  ["Email", "email-paper"],
+  ["RSS", "rss-ping"],
+] as const) {
+  test(`${label} has its own hover accent, with no extra click cue`, async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await ready(page);
+    const link = page.getByRole("link", { name: label, exact: true }).first();
+    await expect(link).toHaveAttribute("data-sound-hover", sound);
+    await link.hover();
+    await expect.poll(() => playedSounds(page)).toEqual([sound]);
+    await link.dispatchEvent("pointerenter", { pointerType: "mouse" });
+    await page.waitForTimeout(150);
+    await link.evaluate((element) => {
+      element.addEventListener("click", (event) => event.preventDefault(), {
+        capture: true,
+        once: true,
+      });
+    });
+    await link.click();
+    expect(await playedSounds(page)).toEqual([sound]);
+  });
+}
+
+test("Tag pills preview once on hover and navigate without an activation cue", async ({
   page,
 }) => {
   await page.goto("/");
-  await enable(page);
+  await ready(page);
+  const tag = page.locator(".post-card .tags__link").first();
+  const href = await tag.getAttribute("href");
+  await tag.hover();
+  await expect.poll(() => playedSounds(page)).toEqual(["tag-hover"]);
+  await tag.click();
+  await expect(page).toHaveURL(new RegExp(`${href}$`));
+  expect(await playedSounds(page)).toEqual(["tag-hover"]);
+});
+
+test("Keyboard focus and activation stay silent, including social icons and tags", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await ready(page);
+  const social = page
+    .getByRole("link", { name: "Bluesky", exact: true })
+    .first();
+  await social.evaluate((element) => {
+    element.addEventListener("click", (event) => event.preventDefault(), {
+      once: true,
+    });
+  });
+  await social.focus();
+  await page.waitForTimeout(150);
+  await social.press("Enter");
+  const tag = page.locator(".post-card .tags__link").first();
+  const href = await tag.getAttribute("href");
+  await tag.focus();
+  await page.waitForTimeout(150);
+  await tag.press("Enter");
+  await expect(page).toHaveURL(new RegExp(`${href}$`));
+  expect(await playedSounds(page)).toEqual([]);
+  const about = page
+    .locator("nav")
+    .getByRole("link", { name: "About", exact: true });
+  await about.focus();
+  await about.press("Enter");
+  await expect(page).toHaveURL(/\/about\/$/);
+  expect(await playedSounds(page)).toEqual([]);
+});
+
+test("Quick passes, touch, downloads, disabled links and pointer-down cancel previews", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await ready(page);
+  await page
+    .getByRole("link", { name: "Bluesky", exact: true })
+    .first()
+    .evaluate((element) => {
+      const enter = (pointerType = "mouse") =>
+        element.dispatchEvent(
+          new PointerEvent("pointerenter", { pointerType }),
+        );
+      const leave = () =>
+        element.dispatchEvent(new PointerEvent("pointerleave"));
+      enter();
+      leave();
+      enter("touch");
+      leave();
+      element.setAttribute("download", "");
+      enter();
+      leave();
+      element.removeAttribute("download");
+      element.setAttribute("aria-disabled", "true");
+      enter();
+      leave();
+      element.removeAttribute("aria-disabled");
+      enter();
+      element.dispatchEvent(
+        new PointerEvent("pointerdown", { pointerType: "mouse" }),
+      );
+    });
+  await page.waitForTimeout(150);
+  expect(await playedSounds(page)).toEqual([]);
+});
+
+for (const event of ["pointerleave", "pointerdown"] as const) {
+  test(`${event} stops a playing hover accent, not just its pending timer`, async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await ready(page);
+    await page.evaluate(() => {
+      const context = window.soundProbe.context!;
+      const createSource = context.createBufferSource;
+      context.createBufferSource = () => {
+        const source = createSource.call(context);
+        source.loop = true;
+        return source;
+      };
+    });
+    const link = page
+      .getByRole("link", { name: "Bluesky", exact: true })
+      .first();
+    await link.hover();
+    await expect.poll(() => playedSounds(page)).toEqual(["bluesky-flutter"]);
+    await link.dispatchEvent(event, { pointerType: "mouse" });
+    await expect
+      .poll(() => page.evaluate(() => window.soundProbe.active))
+      .toBe(0);
+    expect(await page.evaluate(() => window.soundProbe.stops)).toBe(1);
+  });
+}
+
+for (const control of ["theme", "enable"] as const) {
+  test(`Hover entry and exit never interrupt the ${control} confirmation`, async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await ready(page);
+    await page.evaluate(() => {
+      const context = window.soundProbe.context!;
+      const createSource = context.createBufferSource;
+      context.createBufferSource = () => {
+        const source = createSource.call(context);
+        source.loop = true;
+        return source;
+      };
+    });
+    if (control === "theme") {
+      await themeToggle(page).click();
+    } else {
+      await soundToggle(page).click();
+      await soundToggle(page).click();
+    }
+    await expect.poll(() => playback(page)).toHaveLength(1);
+    const confirmation = await playedSounds(page);
+    if (control === "enable") expect(confirmation).toEqual(["enable-sound"]);
+    await page.locator(".tags__link").first().hover();
+    await page.waitForTimeout(150);
+    await page.mouse.move(1, 1);
+    expect(await playedSounds(page)).toEqual(confirmation);
+    expect(await page.evaluate(() => window.soundProbe.stops)).toBe(0);
+    await soundToggle(page).click();
+    await expect
+      .poll(() => page.evaluate(() => window.soundProbe.active))
+      .toBe(0);
+  });
+}
+
+test("A stale stop callback cannot stop a newer instance of the same sample", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await ready(page);
+  const result = await page.evaluate(() => {
+    const root = document.querySelector<
+      HTMLElement & {
+        __vue_app__: { config: { globalProperties: { $nuxt: NuxtApp } } };
+      }
+    >("#__nuxt")!;
+    const audio = root.__vue_app__.config.globalProperties.$nuxt.$soundEffect;
+    const first = audio.play("github-paw")!;
+    first();
+    const second = audio.play("github-paw")!;
+    const stops = window.soundProbe.stops;
+    first();
+    const staleStoppedNewer = window.soundProbe.stops !== stops;
+    second();
+    return { staleStoppedNewer, stops: window.soundProbe.stops };
+  });
+  expect(result).toEqual({ staleStoppedNewer: false, stops: 2 });
+  expect(await playedSounds(page)).toEqual(["github-paw", "github-paw"]);
+});
+
+test("Route unmount stops an active tag preview", async ({ page }) => {
+  await page.goto("/");
+  await ready(page);
+  await page.evaluate(() => {
+    const context = window.soundProbe.context!;
+    const createSource = context.createBufferSource;
+    context.createBufferSource = () => {
+      const source = createSource.call(context);
+      source.loop = true;
+      return source;
+    };
+  });
+  await page.locator(".post-card .tags__link").first().hover();
+  await expect.poll(() => playedSounds(page)).toEqual(["tag-hover"]);
+  await page
+    .locator("nav")
+    .getByRole("link", { name: "About", exact: true })
+    .evaluate((element: HTMLAnchorElement) => element.click());
+  await expect(page).toHaveURL(/\/about\/$/);
+  await expect
+    .poll(() => page.evaluate(() => window.soundProbe.active))
+    .toBe(0);
+  expect(await page.evaluate(() => window.soundProbe.stops)).toBe(1);
+});
+
+test("Muting and route unmount cancel pending tag previews", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await ready(page);
+  await page
+    .locator(".post-card .tags__link")
+    .first()
+    .evaluate((element) => {
+      element.dispatchEvent(
+        new PointerEvent("pointerenter", { pointerType: "mouse" }),
+      );
+      document
+        .querySelector<HTMLButtonElement>(".sound-control__button")!
+        .click();
+    });
+  await page.waitForTimeout(150);
+  expect(await playedSounds(page)).toEqual([]);
+  await soundToggle(page).click();
+  await expect.poll(() => playedSounds(page)).toEqual(["enable-sound"]);
+  await clearPlayback(page);
+  await page
+    .locator(".post-card .tags__link")
+    .first()
+    .evaluate((element) => {
+      element.dispatchEvent(
+        new PointerEvent("pointerenter", { pointerType: "mouse" }),
+      );
+      document
+        .querySelector<HTMLAnchorElement>('.navigation__item[href="/about/"]')!
+        .click();
+    });
+  await expect(page).toHaveURL(/\/about\/$/);
+  await page.waitForTimeout(150);
+  expect(await playedSounds(page)).toEqual([]);
+});
+
+test("Search opening, typing, result hover and selection, and dismissal stay silent", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await ready(page);
   await page.getByRole("button", { name: "Open search", exact: true }).click();
-  await expect.poll(() => playback(page)).toHaveLength(1);
-  await page.getByRole("button", { name: "Close Search", exact: true }).click();
-  await expect.poll(() => playback(page)).toHaveLength(2);
-  await page.getByRole("button", { name: "Open search", exact: true }).click();
-  await expect.poll(() => playback(page)).toHaveLength(3);
-  await page.getByRole("button", { name: "Close Search", exact: true }).focus();
-  await page.keyboard.press("Tab");
-  await page.keyboard.press("Shift+Tab");
-  await expect(
-    page.getByRole("tooltip", { name: "Close Search" }),
-  ).toBeVisible();
-  expect(await playback(page)).toHaveLength(3);
-  await page.keyboard.press("Escape");
-  await expect(page.getByRole("tooltip")).toHaveCount(0);
+  await page
+    .getByRole("searchbox", { name: "Search", exact: true })
+    .fill("ASP.NET");
+  const result = page.locator(".search-result__link").first();
+  await result.hover();
+  await page.waitForTimeout(150);
+  await result.click();
   await expect(
     page.getByRole("dialog", { name: "Search", exact: true }),
-  ).toBeVisible();
-  expect(await playback(page)).toHaveLength(3);
-  await page.keyboard.press("Escape");
-  await expect.poll(() => playback(page)).toHaveLength(4);
+  ).toBeHidden();
+  expect(await playedSounds(page)).toEqual([]);
+  await page.getByRole("button", { name: "Open search", exact: true }).click();
+  await page.getByRole("button", { name: "Close Search", exact: true }).click();
+  expect(await playedSounds(page)).toEqual([]);
   await page.goto("/?search=ASP.NET");
   await ready(page);
   await expect(
     page.getByRole("dialog", { name: "Search", exact: true }),
   ).toBeVisible();
-  expect(await playback(page)).toEqual([]);
-  await page.locator(".search-result__link").first().click();
+  expect(await playedSounds(page)).toEqual([]);
+  await page.getByRole("searchbox", { name: "Search", exact: true }).focus();
+  await page.keyboard.press("Escape");
   await expect(
     page.getByRole("dialog", { name: "Search", exact: true }),
   ).toBeHidden();
-  await expect.poll(() => playedSounds(page)).toContain("search-select");
-  expect(
-    (await playedSounds(page)).filter((name) => name === "search-select"),
-  ).toHaveLength(1);
+  expect(await playedSounds(page)).toEqual([]);
 });
 
-test("Coffee and fallback Share dialogs have distinct open sounds and explicit close cues", async ({
+test("Coffee, support links and fallback sharing remain silent and functional", async ({
   page,
 }) => {
   await page.addInitScript(() => {
     Object.defineProperty(navigator, "share", { value: undefined });
   });
-  await page.goto("/");
-  await enable(page);
-  await page.locator(".post-card__title").first().click();
-  await clearPlayback(page);
+  await page.goto("/on-the-etiquette-of-pull-request-comments/");
+  await ready(page);
   await page
     .getByRole("button", { name: "Buy me a Coffee", exact: true })
     .click();
-  await expect.poll(() => playback(page)).toHaveLength(1);
+  const support = page.locator(".support-links .link-button").first();
+  await support.hover();
+  await page.waitForTimeout(150);
+  await support.evaluate((element: HTMLAnchorElement) => {
+    element.addEventListener("click", (event) => event.preventDefault(), {
+      once: true,
+    });
+    element.click();
+  });
   await page.keyboard.press("Escape");
-  await expect.poll(() => playback(page)).toHaveLength(2);
   await page.getByRole("button", { name: "Share", exact: true }).click();
-  await expect.poll(() => playback(page)).toHaveLength(3);
+  await expect(
+    page.getByRole("dialog", { name: "Share", exact: true }),
+  ).toBeVisible();
   await page.getByRole("button", { name: "Close Share", exact: true }).click();
-  await expect.poll(() => playback(page)).toHaveLength(4);
-  expect(await playedSounds(page)).toEqual([
-    "coffee-open",
-    "dialog-close",
-    "share-open",
-    "dialog-close",
-  ]);
+  await expect(
+    page.getByRole("dialog", { name: "Share", exact: true }),
+  ).toBeHidden();
+  expect(await playedSounds(page)).toEqual([]);
 });
 
-test("Native sharing stays synchronous and plays only its opening cue", async ({
+test("Native sharing stays synchronous without an audio cue", async ({
   page,
 }) => {
   await page.addInitScript(() => {
@@ -744,441 +1060,73 @@ test("Native sharing stays synchronous and plays only its opening cue", async ({
       },
     });
   });
-  await page.goto("/");
-  await enable(page);
-  await page.locator(".post-card__title").first().click();
-  await clearPlayback(page);
-  await page.getByRole("button", { name: "Share", exact: true }).click();
-  await expect(page.locator("html")).toHaveAttribute("data-shared", "true");
-  expect(await playedSounds(page)).toEqual(["share-open"]);
-});
-
-for (const { name, path, selector, sound } of [
-  {
-    name: "header navigation",
-    path: "/",
-    selector: ".navigation__item",
-    sound: "link-hover",
-  },
-  {
-    name: "post cards",
-    path: "/",
-    selector: ".post-card__title a",
-    sound: "card-hover",
-  },
-  { name: "tags", path: "/", selector: ".tags__link", sound: "tag-hover" },
-  {
-    name: "pagination",
-    path: "/",
-    selector: ".pager__next-button",
-    sound: "card-hover",
-  },
-  {
-    name: "portfolio cards",
-    path: "/portfolio/",
-    selector: ".portfolio-card__title a",
-    sound: "card-hover",
-  },
-  {
-    name: "adjacent posts",
-    path: "/on-the-etiquette-of-pull-request-comments/",
-    selector: ".post-navigation__link",
-    sound: "card-hover",
-  },
-  {
-    name: "social links",
-    path: "/",
-    selector: ".social__link",
-    sound: "social-hover",
-  },
-  {
-    name: "search results",
-    path: "/?search=ASP.NET",
-    selector: ".search-result__link",
-    sound: "card-hover",
-  },
-]) {
-  test(`Previews ${name} once for intentional mouse hover`, async ({
-    page,
-  }) => {
-    await page.goto(path);
-    await ready(page);
-    const link = page.locator(selector).first();
-    await link.hover();
-    await expect.poll(() => playback(page)).toHaveLength(1);
-    expect(await playedSounds(page)).toEqual([sound]);
-    await link.evaluate((element) => {
-      element.dispatchEvent(
-        new PointerEvent("pointerover", {
-          bubbles: true,
-          pointerType: "mouse",
-          relatedTarget: element,
-        }),
-      );
-    });
-    await page.waitForTimeout(150);
-    expect(await playback(page)).toHaveLength(1);
-  });
-}
-
-for (const { name, path, selector, sound } of [
-  {
-    name: "post cards",
-    path: "/",
-    selector: ".post-card__title a",
-    sound: "card-open",
-  },
-  { name: "tags", path: "/", selector: ".tags__link", sound: "tag-select" },
-  {
-    name: "next page",
-    path: "/",
-    selector: ".pager__next-button",
-    sound: "page-next",
-  },
-  {
-    name: "previous page",
-    path: "/2/",
-    selector: ".pager__previous-button",
-    sound: "page-previous",
-  },
-  {
-    name: "portfolio cards",
-    path: "/portfolio/",
-    selector: ".portfolio-card__title a",
-    sound: "card-open",
-  },
-  {
-    name: "next article",
-    path: "/on-the-etiquette-of-pull-request-comments/",
-    selector: ".post-navigation__card--next a",
-    sound: "page-next",
-  },
-  {
-    name: "previous article",
-    path: "/on-the-etiquette-of-pull-request-comments/",
-    selector: ".post-navigation__card--prev a",
-    sound: "page-previous",
-  },
-  {
-    name: "social icons",
-    path: "/",
-    selector: ".social__link",
-    sound: "external-open",
-  },
-  {
-    name: "footer links",
-    path: "/",
-    selector: '.footer__text a[href="https://nuxt.com"]',
-    sound: "external-open",
-  },
-  {
-    name: "article links",
-    path: "/on-the-etiquette-of-pull-request-comments/",
-    selector: ".post__content p a",
-    sound: "external-open",
-  },
-  {
-    name: "internal article links",
-    path: "/on-the-etiquette-of-pull-request-comments/",
-    selector: '.post__content a[href="/stop-brace-wars-use-stylecop/"]',
-    sound: "link-activate",
-  },
-  {
-    name: "heading anchors",
-    path: "/on-the-etiquette-of-pull-request-comments/",
-    selector: ".anchor-link",
-    sound: "anchor-jump",
-  },
-  {
-    name: "edit source",
-    path: "/on-the-etiquette-of-pull-request-comments/",
-    selector: ".post__edit",
-    sound: "external-open",
-  },
-]) {
-  test(`Uses a distinct action sound for ${name} without duplicate layout feedback`, async ({
-    page,
-  }) => {
-    await page.goto(path);
-    await ready(page);
-    await page
-      .locator(selector)
-      .first()
-      .evaluate((element: HTMLAnchorElement) => {
-        element.addEventListener("click", (event) => event.preventDefault(), {
-          capture: true,
-          once: true,
-        });
-        element.click();
-      });
-    expect(await playedSounds(page)).toEqual([sound]);
-  });
-}
-
-test("Support links have bell previews and external activation without replaying the dialog cue", async ({
-  page,
-}) => {
   await page.goto("/on-the-etiquette-of-pull-request-comments/");
   await ready(page);
-  await page
-    .getByRole("button", { name: "Buy me a Coffee", exact: true })
-    .click();
-  await expect.poll(() => playedSounds(page)).toEqual(["coffee-open"]);
-  await page.waitForTimeout(300);
-  await clearPlayback(page);
-  const link = page.locator(".support-links .link-button").first();
-  await link.hover();
-  await expect.poll(() => playedSounds(page)).toEqual(["social-hover"]);
-  await link.evaluate((element: HTMLAnchorElement) => {
-    element.addEventListener("click", (event) => event.preventDefault(), {
-      once: true,
-    });
-    element.click();
-  });
-  expect(await playedSounds(page)).toEqual(["social-hover", "external-open"]);
+  await page.getByRole("button", { name: "Share", exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-shared", "true");
+  expect(await playedSounds(page)).toEqual([]);
 });
 
-test("Newsletter validation and typing stay silent; valid submission has a send cue, not success", async ({
+test("Newsletter validation, typing and submission are silent, with no false success cue", async ({
   page,
 }) => {
   await page.goto("/");
   await ready(page);
   const form = page.locator(".newsletter__form");
   await form.evaluate((element) => {
-    element.addEventListener("submit", (event) => event.preventDefault());
+    element.addEventListener("submit", (event) => {
+      event.preventDefault();
+      element.setAttribute("data-submitted", "true");
+    });
   });
   await form.getByRole("button", { name: "Subscribe", exact: true }).click();
-  expect(await playedSounds(page)).toEqual([]);
+  await expect(form).not.toHaveAttribute("data-submitted");
   await form.getByRole("textbox").fill("reader@example.com");
-  expect(await playedSounds(page)).toEqual([]);
   await form.getByRole("button", { name: "Subscribe", exact: true }).click();
-  await expect.poll(() => playedSounds(page)).toEqual(["form-submit"]);
-});
-
-test("Content links have no hover cue and preserve modified, disabled and download behaviour", async ({
-  page,
-}) => {
-  await page.goto("/on-the-etiquette-of-pull-request-comments/");
-  await ready(page);
-  const link = page.locator(".post__content p a").first();
-  await link.hover();
-  await page.waitForTimeout(150);
-  await link.evaluate((element) => {
-    element.addEventListener("click", (event) => event.preventDefault());
-    for (const options of [
-      { ctrlKey: true },
-      { metaKey: true },
-      { shiftKey: true },
-      { altKey: true },
-      { button: 1 },
-    ]) {
-      element.dispatchEvent(
-        new MouseEvent("click", {
-          bubbles: true,
-          cancelable: true,
-          ...options,
-        }),
-      );
-    }
-    element.setAttribute("download", "");
-    element.dispatchEvent(
-      new MouseEvent("click", { bubbles: true, cancelable: true }),
-    );
-    element.removeAttribute("download");
-    element.setAttribute("aria-disabled", "true");
-    element.dispatchEvent(
-      new MouseEvent("click", { bubbles: true, cancelable: true }),
-    );
-  });
+  await expect(form).toHaveAttribute("data-submitted", "true");
   expect(await playedSounds(page)).toEqual([]);
 });
 
-test("Nested tag links activate once and keyboard navigation retains native behaviour", async ({
+test("A saved mute fetches nothing and silences social hover, tags and navigation", async ({
   page,
 }) => {
-  await page.goto("/");
-  await ready(page);
-  const tag = page.locator(".post-card .tags__link").first();
-  const href = await tag.getAttribute("href");
-  await tag.click();
-  await expect(page).toHaveURL(new RegExp(`${href}$`));
-  expect(
-    (await playedSounds(page)).filter((name) => name === "tag-select"),
-  ).toHaveLength(1);
-
-  await page.goto("/");
-  await ready(page);
-  const about = page.getByRole("link", { name: "About", exact: true }).first();
-  await page.keyboard.press("Tab");
-  await clearPlayback(page);
-  await about.focus();
-  await expect.poll(() => playback(page)).toHaveLength(1);
-  expect((await playback(page))[0]).toBeCloseTo(0.06, 3);
-  await about.press("Enter");
-  await expect(page).toHaveURL(/\/about\/$/);
-  await expect.poll(() => playback(page)).toHaveLength(2);
-  expect(await playedSounds(page)).toEqual(["link-hover", "link-activate"]);
-});
-
-test("Quick passes, touch hover, modified clicks and inline-link hover stay silent", async ({
-  page,
-}) => {
-  await page.goto("/on-the-etiquette-of-pull-request-comments/");
-  await ready(page);
-  const link = page.locator(".navigation__item").first();
-  await link.evaluate((element) => {
-    element.dispatchEvent(
-      new PointerEvent("pointerover", { bubbles: true, pointerType: "mouse" }),
-    );
-    element.dispatchEvent(
-      new PointerEvent("pointerout", { bubbles: true, pointerType: "mouse" }),
-    );
-    element.dispatchEvent(
-      new PointerEvent("pointerover", { bubbles: true, pointerType: "touch" }),
-    );
-    element.addEventListener("click", (event) => event.preventDefault(), {
-      once: true,
-    });
-    element.dispatchEvent(
-      new MouseEvent("click", {
-        bubbles: true,
-        cancelable: true,
-        ctrlKey: true,
-      }),
-    );
+  await page.addInitScript(() =>
+    localStorage.setItem("sound-effect-enabled", "false"),
+  );
+  const requests: string[] = [];
+  page.on("request", (request) => {
+    if (request.url().includes("/sounds/")) requests.push(request.url());
   });
-  const inline = page.locator(".post__content p a").first();
-  await inline.hover();
-  await page.waitForTimeout(150);
-  expect(await playback(page)).toEqual([]);
-});
-
-test("Muting cancels a pending link preview and muted navigation requests no samples", async ({
-  page,
-}) => {
   await page.goto("/");
-  await ready(page);
+  await expectSoundState(page, false);
   await page
-    .locator(".navigation__item")
+    .getByRole("link", { name: "Bluesky", exact: true })
     .first()
-    .evaluate((element) => {
-      element.dispatchEvent(
-        new PointerEvent("pointerover", {
-          bubbles: true,
-          pointerType: "mouse",
-        }),
-      );
-      document
-        .querySelector<HTMLButtonElement>(".sound-control__button")!
-        .click();
-    });
+    .hover();
   await page.waitForTimeout(150);
-  expect(await playback(page)).toEqual([]);
-  await page.reload();
-  const requests: string[] = [];
-  page.on("request", (request) => {
-    if (request.url().includes("/sounds/")) requests.push(request.url());
-  });
-  await expectSoundState(page, false);
-  await page.locator(".post-card__title a").first().hover();
+  await page.locator(".tags__link").first().hover();
   await page.waitForTimeout(150);
-  await page.getByRole("link", { name: "About", exact: true }).first().click();
-  await expect(page).toHaveURL(/\/about\/$/);
-  expect(await playback(page)).toEqual([]);
-  expect(requests).toEqual([]);
-});
-
-test("Link previews do not interrupt a deliberate action cue", async ({
-  page,
-}) => {
-  await page.goto("/");
-  await ready(page);
-  await page.keyboard.press("Tab");
-  await clearPlayback(page);
-  await page.evaluate(() => {
-    document.querySelector<HTMLButtonElement>(".theme-button")!.click();
-    for (const selector of [
-      ".navigation__item",
-      ".post-card__title a",
-      ".tags__link",
-      ".social__link",
-    ]) {
-      document.querySelector<HTMLAnchorElement>(selector)!.focus();
-    }
-  });
-  expect(await playback(page)).toHaveLength(1);
-  expect(await playedSounds(page)).toEqual([
-    (await page.locator("html").getAttribute("data-theme")) === "dark"
-      ? "toggle-on"
-      : "toggle-off",
-  ]);
-  expect(await page.evaluate(() => window.soundProbe.stops)).toBe(0);
-});
-
-test("A saved mute also silences social, content, support, sharing and newsletter actions", async ({
-  page,
-}) => {
-  await page.addInitScript(() => {
-    localStorage.setItem("sound-effect-enabled", "false");
-    Object.defineProperty(navigator, "share", {
-      value: () => Promise.resolve(),
-    });
-  });
-  const requests: string[] = [];
-  page.on("request", (request) => {
-    if (request.url().includes("/sounds/")) requests.push(request.url());
-  });
-  await page.goto("/on-the-etiquette-of-pull-request-comments/");
-  await expectSoundState(page, false);
-  for (const selector of [
-    ".social__link",
-    ".post__content p a",
-    ".post__edit",
-    ".anchor-link",
-  ]) {
-    const link = page.locator(selector).first();
-    await link.evaluate((element: HTMLAnchorElement) => {
-      element.addEventListener("click", (event) => event.preventDefault(), {
-        once: true,
-      });
-      element.dispatchEvent(
-        new PointerEvent("pointerover", {
-          bubbles: true,
-          pointerType: "mouse",
-        }),
-      );
-      element.click();
-    });
-  }
-  await page.getByRole("button", { name: "Share", exact: true }).click();
   await page
-    .getByRole("button", { name: "Buy me a Coffee", exact: true })
+    .locator("nav")
+    .getByRole("link", { name: "About", exact: true })
     .click();
-  await page.locator(".support-links .link-button").first().hover();
-  await page.keyboard.press("Escape");
-  await page
-    .locator(".newsletter__form")
-    .evaluate((element: HTMLFormElement) => {
-      element.addEventListener("submit", (event) => event.preventDefault());
-      element.querySelector<HTMLInputElement>('[type="email"]')!.value =
-        "reader@example.com";
-      element.requestSubmit();
-    });
-  await page.waitForTimeout(150);
+  await expect(page).toHaveURL(/\/about\/$/);
+  await page.reload();
+  await expectSoundState(page, false);
   expect(await playedSounds(page)).toEqual([]);
   expect(requests).toEqual([]);
 });
 
 for (const outcome of ["accepted", "dismissed", "error"] as const) {
-  test(`App installation ${outcome} only confirms a successful choice`, async ({
-    page,
-  }) => {
+  test(`App installation ${outcome} remains silent`, async ({ page }) => {
     await page.goto("/");
     await ready(page);
     await page.evaluate((outcome) => {
       const event = Object.assign(
         new Event("beforeinstallprompt", { cancelable: true }),
-        { prompt: async () => {} },
+        {
+          prompt: async () => {},
+        },
       );
       Object.defineProperty(event, "userChoice", {
         get: () =>
@@ -1190,50 +1138,13 @@ for (const outcome of ["accepted", "dismissed", "error"] as const) {
     }, outcome);
     const install = page.getByRole("button", { name: "Install the app" });
     await expect(install).toBeVisible();
-    expect(await playback(page)).toEqual([]);
     await install.click();
     await expect(install).toBeHidden();
-    if (outcome === "accepted") {
-      await expect.poll(() => playback(page)).toHaveLength(1);
-      expect((await playback(page))[0]).toBeCloseTo(0.18, 3);
-    } else {
-      expect(await playback(page)).toEqual([]);
-    }
+    expect(await playedSounds(page)).toEqual([]);
   });
 }
 
-test("An install choice arriving after mute does not play a success cue", async ({
-  page,
-}) => {
-  await page.goto("/");
-  await ready(page);
-  await page.evaluate(() => {
-    window.dispatchEvent(
-      Object.assign(new Event("beforeinstallprompt", { cancelable: true }), {
-        prompt: async () => {},
-        userChoice: new Promise((resolve) => {
-          window.addEventListener(
-            "sound-test:install",
-            () => resolve({ outcome: "accepted" }),
-            { once: true },
-          );
-        }),
-      }),
-    );
-  });
-  await page.getByRole("button", { name: "Install the app" }).click();
-  await soundToggle(page).click();
-  await page.evaluate(() =>
-    window.dispatchEvent(new Event("sound-test:install")),
-  );
-  await expectSoundState(page, false);
-  await expect(
-    page.getByRole("button", { name: "Install the app" }),
-  ).toBeHidden();
-  expect(await playback(page)).toEqual([]);
-});
-
-test("Update notifications stay silent until explicitly dismissed or applied", async ({
+test("Update notifications, dismissal and applying updates remain silent", async ({
   page,
 }) => {
   await page.goto("/");
@@ -1254,17 +1165,13 @@ test("Update notifications stay silent until explicitly dismissed or applied", a
   });
   const notice = page.getByRole("region", { name: "Site update" });
   await expect(notice).toBeVisible();
-  expect(await playback(page)).toEqual([]);
   await notice.getByRole("button", { name: "Later", exact: true }).click();
   await expect(notice).toHaveCount(0);
-  await expect.poll(() => playback(page)).toHaveLength(1);
-  expect((await playback(page))[0]).toBeCloseTo(0.1, 3);
   await page.evaluate(() =>
     window.dispatchEvent(new Event("sound-test:update")),
   );
   await notice.getByRole("button", { name: "Update now", exact: true }).click();
-  await expect.poll(() => playback(page)).toHaveLength(2);
-  expect((await playedSounds(page))[1]).toBe("update-start");
+  expect(await playedSounds(page)).toEqual([]);
 });
 
 test("Late samples do not replay clicks or sound after muting", async ({
@@ -1379,16 +1286,14 @@ for (const width of [375, 1280]) {
 
 test("Original samples are small, quiet mono WAVs with click-free endpoints", async () => {
   expect(
-    (await readdir(join("public", "sounds", "v2")))
+    (await readdir(soundDirectory))
       .filter((name) => name.endsWith(".wav"))
       .map((name) => name.replace(".wav", ""))
       .sort(),
   ).toEqual([...soundNames].sort());
   let bytes = 0;
   for (const name of soundNames) {
-    const buffer = await readFile(
-      join("public", "sounds", "v2", `${name}.wav`),
-    );
+    const buffer = await readFile(join(soundDirectory, `${name}.wav`));
     bytes += buffer.length;
     expect(buffer.toString("ascii", 0, 4)).toBe("RIFF");
     expect(buffer.toString("ascii", 8, 16)).toBe("WAVEfmt ");
@@ -1407,6 +1312,9 @@ test("Original samples are small, quiet mono WAVs with click-free endpoints", as
     }
     expect(peak).toBeGreaterThan(0);
     expect(peak).toBeLessThan(0.3);
+    if ((hoverSoundNames as readonly string[]).includes(name)) {
+      expect(peak).toBeLessThanOrEqual(0.081);
+    }
   }
   expect(bytes).toBeLessThan(150000);
 });
@@ -1415,9 +1323,7 @@ test("The original palette has different timbres, not pitch-shifted copies of on
   const samples = new Map<string, number[]>();
   const fingerprints = new Set<string>();
   for (const name of soundNames) {
-    const buffer = await readFile(
-      join("public", "sounds", "v2", `${name}.wav`),
-    );
+    const buffer = await readFile(join(soundDirectory, `${name}.wav`));
     const values: number[] = [];
     for (let offset = 44; offset < buffer.length; offset += 2) {
       values.push(buffer.readInt16LE(offset) / 32768);
@@ -1463,13 +1369,32 @@ test("The original palette has different timbres, not pitch-shifted copies of on
   }
 
   // Paper/noise and pitched plucks must have measurably different spectra.
-  const paper = flatness(samples.get("card-open")!);
-  const pluck = flatness(samples.get("link-hover")!);
+  const paper = flatness(samples.get("email-paper")!);
+  const pluck = flatness(samples.get("linkedin-connect")!);
   expect(paper).toBeGreaterThan(0.1);
   expect(pluck).toBeLessThan(0.02);
   expect(paper).toBeGreaterThan(pluck * 10);
-  expect(flatness(samples.get("page-next")!)).toBeGreaterThan(0.05);
-  expect(flatness(samples.get("social-hover")!)).toBeLessThan(0.02);
+  expect(flatness(samples.get("bluesky-flutter")!)).toBeGreaterThan(0.1);
+  expect(flatness(samples.get("rss-ping")!)).toBeLessThan(0.02);
+  const flutter = samples.get("bluesky-flutter")!;
+  for (const start of [0, 0.05, 0.1, 0.15]) {
+    expect(
+      flutter
+        .slice(
+          Math.round((start + 0.004) * 22050),
+          Math.round((start + 0.025) * 22050),
+        )
+        .some((value) => Math.abs(value) > 0.001),
+    ).toBe(true);
+    expect(
+      flutter
+        .slice(
+          Math.round((start + 0.04) * 22050),
+          Math.round((start + 0.05) * 22050),
+        )
+        .every((value) => value === 0),
+    ).toBe(true);
+  }
 });
 
 test.describe("Sound runtime cache", () => {
@@ -1520,14 +1445,12 @@ test.describe("Sound runtime cache", () => {
       originalSounds.every((path) => path.startsWith(`${soundPath}/`)),
     ).toBe(true);
     const futureSounds = [
-      "/sounds/v2/future-1.wav",
-      "/sounds/v2/future-2.wav",
-      "/sounds/v2/future-3.wav",
-      "/sounds/v3/future-4.wav",
+      "/sounds/v3/future-1.wav",
+      "/sounds/v3/future-2.wav",
+      "/sounds/v3/future-3.wav",
+      "/sounds/v4/future-4.wav",
     ];
-    const sample = await readFile(
-      join("public", "sounds", "v2", "toggle-on.wav"),
-    );
+    const sample = await readFile(join(soundDirectory, "toggle-on.wav"));
     const futurePattern = "**/sounds/v*/future-*.wav";
     await context.route(futurePattern, (route) =>
       route.fulfill({ contentType: "audio/wav", body: sample }),

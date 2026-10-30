@@ -1,11 +1,11 @@
-import { soundNames, soundPath, type SoundEffect } from "#shared/utils/sounds";
+import {
+  hoverSoundNames,
+  soundNames,
+  soundPath,
+  type SoundEffect,
+} from "#shared/utils/sounds";
 
-const previewSounds = new Set<SoundEffect>([
-  "link-hover",
-  "card-hover",
-  "tag-hover",
-  "social-hover",
-]);
+const previewSounds = new Set<SoundEffect>(hoverSoundNames);
 
 const preferenceKey = "sound-effect-enabled";
 
@@ -121,7 +121,7 @@ export default defineNuxtPlugin((app) => {
       const unlocked = persist ? unlock() : undefined;
       if (confirm) {
         void Promise.all([prepared, unlocked]).then(() => {
-          if (version === preferenceVersion) play("toggle-on");
+          if (version === preferenceVersion) play("enable-sound");
         });
       }
     } else {
@@ -141,7 +141,7 @@ export default defineNuxtPlugin((app) => {
 
   function play(name: SoundEffect) {
     if (!enabled.value || disposed) return;
-    // A navigation preview must not cut off a confirmation or deliberate action.
+    // Hover accents must not cut off a confirmation or deliberate action.
     if (previewSounds.has(name) && activeSource) return;
     const buffer = sounds.get(name);
     if (!buffer || !context || !volume) return;
@@ -158,10 +158,15 @@ export default defineNuxtPlugin((app) => {
       source.connect(volume);
       source.onended = () => {
         source?.disconnect();
-        if (activeSource === source) activeSource = undefined;
+        if (activeSource === source) {
+          activeSource = undefined;
+        }
       };
       source.start();
       activeSource = source;
+      return () => {
+        if (activeSource === source) stop();
+      };
     } catch (cause) {
       source?.disconnect();
       report(

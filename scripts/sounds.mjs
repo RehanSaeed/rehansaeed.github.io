@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 
 const sampleRate = 22050;
-const directory = new URL("../public/sounds/v2/", import.meta.url);
+const directory = new URL("../public/sounds/v3/", import.meta.url);
 
 function tone(start, duration, frequency, options = {}) {
   return {
@@ -53,143 +53,101 @@ const sounds = {
       tone(0.005, 0.08, 380, { to: 180, decay: 8 }),
     ],
   },
-  "dialog-open": {
-    duration: 0.16,
-    layers: [
-      noise(0, 0.13, { reverse: true, highpass: true, amplitude: 0.3 }),
-      tone(0.025, 0.1, 620, {
-        to: 1450,
-        partials: [
-          [1, 1],
-          [2, 0.15],
-        ],
-      }),
-    ],
-  },
-  "dialog-close": {
-    duration: 0.1,
-    layers: [
-      noise(0, 0.07, { cutoff: 900 }),
-      tone(0, 0.09, 260, { to: 90, decay: 7 }),
-    ],
-  },
-  "link-hover": {
-    duration: 0.06,
-    level: 0.08,
-    layers: [
-      tone(0, 0.06, 840, {
-        partials: [
-          [1, 1],
-          [3, 0.12],
-        ],
-        decay: 8,
-      }),
-    ],
-  },
-  "link-activate": {
-    duration: 0.075,
-    layers: [
-      noise(0, 0.018, { highpass: true }),
-      tone(0.008, 0.055, 490, { partials: wood, decay: 9 }),
-    ],
-  },
-  success: {
+  "enable-sound": {
     duration: 0.18,
+    level: 0.16,
     layers: [
-      tone(0, 0.17, 660, { partials: bell }),
-      tone(0.035, 0.14, 830),
-      tone(0.07, 0.11, 990),
-    ],
-  },
-  "card-hover": {
-    duration: 0.085,
-    level: 0.1,
-    layers: [tone(0, 0.085, 360, { partials: wood, decay: 7 })],
-  },
-  "card-open": {
-    duration: 0.14,
-    layers: [
-      noise(0, 0.12, { cutoff: 2600, highpass: true, reverse: true }),
-      noise(0.07, 0.06, { cutoff: 900 }),
+      tone(0, 0.12, 660, { partials: bell }),
+      tone(0.045, 0.13, 990, { partials: bell }),
     ],
   },
   "tag-hover": {
-    duration: 0.055,
-    level: 0.08,
-    layers: [tone(0, 0.055, 1600, { to: 650, decay: 9 })],
-  },
-  "tag-select": {
     duration: 0.08,
-    layers: [
-      tone(0, 0.08, 280, { to: 1100, decay: 7 }),
-      noise(0, 0.012, { amplitude: 0.15 }),
-    ],
-  },
-  "page-previous": {
-    duration: 0.17,
-    layers: [
-      noise(0, 0.15, { cutoff: 1100, reverse: true }),
-      noise(0.09, 0.08, { cutoff: 3500, highpass: true }),
-      tone(0.02, 0.1, 400, { to: 180, amplitude: 0.15 }),
-    ],
-  },
-  "page-next": {
-    duration: 0.19,
-    layers: [
-      noise(0, 0.11, { cutoff: 3500, highpass: true }),
-      noise(0.06, 0.13, { cutoff: 1100, reverse: true }),
-      tone(0.03, 0.13, 180, { to: 400, amplitude: 0.15 }),
-    ],
-  },
-  "social-hover": {
-    duration: 0.11,
     level: 0.08,
-    layers: [tone(0, 0.11, 1320, { partials: bell, decay: 7 })],
+    layers: [tone(0, 0.08, 1200, { to: 450, decay: 7 })],
   },
-  "external-open": {
-    duration: 0.125,
-    layers: [tone(0, 0.08, 740, { partials: bell }), tone(0.035, 0.09, 1110)],
-  },
-  "anchor-jump": {
-    duration: 0.065,
+  "youtube-play": {
+    duration: 0.1,
+    level: 0.08,
     layers: [
-      noise(0, 0.015, { highpass: true }),
-      noise(0.035, 0.025, { cutoff: 800 }),
+      noise(0, 0.018, { highpass: true }),
+      tone(0.008, 0.075, 480, { partials: wood, decay: 8 }),
     ],
   },
-  "coffee-open": {
-    duration: 0.26,
+  "twitch-pop": {
+    duration: 0.12,
+    level: 0.08,
     layers: [
-      tone(0, 0.1, 650, { to: 160, decay: 4 }),
-      tone(0.07, 0.11, 820, { to: 210, decay: 4 }),
-      tone(0.15, 0.11, 1100, { to: 280, decay: 4 }),
+      tone(0, 0.065, 480, { to: 1400, decay: 6 }),
+      tone(0.05, 0.07, 780, { to: 1600, decay: 7 }),
     ],
   },
-  "share-open": {
+  "github-paw": {
+    duration: 0.13,
+    level: 0.08,
+    layers: [
+      tone(0, 0.055, 380, { partials: wood, decay: 8 }),
+      tone(0.065, 0.06, 330, { partials: wood, decay: 8 }),
+    ],
+  },
+  "linkedin-connect": {
+    duration: 0.15,
+    level: 0.08,
+    layers: [
+      tone(0, 0.11, 640, { partials: bell }),
+      tone(0.04, 0.11, 960, { partials: bell }),
+    ],
+  },
+  "stack-overflow": {
+    duration: 0.18,
+    level: 0.08,
+    layers: [
+      tone(0, 0.05, 300, { partials: wood, decay: 8 }),
+      tone(0.06, 0.05, 450, { partials: wood, decay: 8 }),
+      tone(0.12, 0.05, 600, { partials: wood, decay: 8 }),
+    ],
+  },
+  "bluesky-flutter": {
     duration: 0.22,
+    level: 0.08,
     layers: [
-      tone(0, 0.13, 520, { partials: bell }),
-      tone(0.045, 0.13, 780, { partials: bell }),
-      tone(0.09, 0.13, 1040, { partials: bell }),
+      noise(0, 0.04, { cutoff: 1300, highpass: true }),
+      noise(0.05, 0.04, { cutoff: 1800, highpass: true }),
+      noise(0.1, 0.04, { cutoff: 1300, highpass: true }),
+      noise(0.15, 0.04, { cutoff: 1800, highpass: true }),
     ],
   },
-  "search-select": {
-    duration: 0.105,
+  "mastodon-puff": {
+    duration: 0.14,
+    level: 0.08,
     layers: [
-      tone(0, 0.105, 1760, { partials: bell }),
-      noise(0, 0.014, { amplitude: 0.15 }),
+      noise(0, 0.13, { cutoff: 220, decay: 4 }),
+      tone(0.01, 0.12, 90, {
+        to: 120,
+        amplitude: 0.2,
+        partials: [
+          [1, 1],
+          [2, 0.3],
+          [3, 0.15],
+        ],
+      }),
     ],
   },
-  "form-submit": {
-    duration: 0.23,
+  "email-paper": {
+    duration: 0.15,
+    level: 0.08,
     layers: [
-      noise(0, 0.2, { highpass: true, reverse: true, amplitude: 0.3 }),
-      tone(0.05, 0.18, 320, { to: 1300, amplitude: 0.5, decay: 2 }),
+      noise(0, 0.08, { cutoff: 2600, highpass: true, reverse: true }),
+      noise(0.06, 0.08, { cutoff: 900 }),
     ],
   },
-  "update-start": {
-    duration: 0.24,
-    layers: [tone(0, 0.09, 330), tone(0.06, 0.1, 440), tone(0.13, 0.11, 660)],
+  "rss-ping": {
+    duration: 0.19,
+    level: 0.08,
+    layers: [
+      tone(0, 0.12, 1100, { partials: bell }),
+      tone(0.07, 0.12, 1800, { amplitude: 0.3 }),
+    ],
   },
 };
 
