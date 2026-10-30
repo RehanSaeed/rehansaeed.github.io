@@ -47,8 +47,9 @@ test("Theme colour and shapes animate in both directions without replacing SVGs"
 
   for (const theme of ["dark", "light"] as const) {
     const transitions = await button.evaluate((element) => {
-      if (!(element instanceof HTMLButtonElement))
+      if (!(element instanceof HTMLButtonElement)) {
         throw new Error("Expected a native theme button");
+      }
       // Start and pause in one browser task so even short colour transitions are captured.
       element.click();
       const animations = element.getAnimations({ subtree: true });
@@ -90,15 +91,17 @@ test("Theme colour and shapes animate in both directions without replacing SVGs"
       expect(transform).not.toBe("matrix(1, 0, 0, 1, 0, 0)");
     }
     await button.evaluate((element) => {
-      for (const animation of element.getAnimations({ subtree: true }))
+      for (const animation of element.getAnimations({ subtree: true })) {
         animation.finish();
+      }
     });
     await expectTheme(button, theme);
     expect(transitions.colour).not.toBe(
       await button.evaluate((element) => getComputedStyle(element).color),
     );
-    for (const icon of icons)
+    for (const icon of icons) {
       expect(await icon.evaluate((element) => element.isConnected)).toBe(true);
+    }
     expect(await page.evaluate(() => localStorage.getItem("theme"))).toBe(
       theme,
     );

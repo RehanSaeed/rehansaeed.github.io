@@ -4,10 +4,11 @@ import { chromium, expect } from "@playwright/test";
 import { once } from "node:events";
 
 const legacy = process.argv[2];
-if (!legacy)
+if (!legacy) {
     throw new Error(
         "Usage: node scripts/parity/sw-cutover.mjs <archived-Gridsome-dist>",
     );
+}
 const port = "8092";
 const origin = `http://localhost:${port}`;
 let server;
@@ -25,7 +26,9 @@ const start = async (root) => {
     assert.equal((await fetch(origin)).status, 200);
 };
 const stop = async () => {
-    if (!server || server.exitCode !== null) return;
+    if (!server || server.exitCode !== null) {
+        return;
+    }
     const stopped = once(server, "exit");
     server.kill();
     await stopped;
@@ -43,8 +46,9 @@ try {
     await page.evaluate(async () => {
         await navigator.serviceWorker.ready;
         await navigator.serviceWorker.ready.then((registration) => {
-            if (registration.active)
+            if (registration.active) {
                 registration.active.postMessage({ type: "SKIP_WAITING" });
+            }
         });
     });
     await page.reload();

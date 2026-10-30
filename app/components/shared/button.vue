@@ -2,9 +2,9 @@
   <button
     class="button"
     :class="{
-      'button--bordered': bordered,
-      'button--contrast': contrast,
-      'button--primary': primary,
+      'button--plain': variant === 'plain',
+      'button--secondary': variant === 'secondary',
+      'button--primary': variant === 'primary',
       'button--hydrating': !hydrated && !disabled && !submit,
     }"
     :disabled="disabled || (!hydrated && !submit)"
@@ -13,21 +13,20 @@
   </button>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent, type PropType } from "vue";
+
+export default defineComponent({
   name: "u-button",
   props: {
     disabled: {
       type: Boolean,
     },
-    bordered: {
-      type: Boolean,
-    },
-    contrast: {
-      type: Boolean,
-    },
-    primary: {
-      type: Boolean,
+    variant: {
+      type: String as PropType<"plain" | "secondary" | "primary">,
+      default: "plain",
+      validator: (value: string) =>
+        ["plain", "secondary", "primary"].includes(value),
     },
     submit: {
       type: Boolean,
@@ -48,7 +47,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style lang="scss">
@@ -85,7 +84,8 @@ export default {
   }
 }
 
-.button--bordered {
+.button--primary,
+.button--secondary {
   background-color: var(--global-background-color);
   border: var(--global-border-width-1) solid var(--global-border-color);
   border-radius: var(--global-border-radius);
@@ -108,7 +108,8 @@ export default {
   }
 }
 
-.button--bordered::before {
+.button--primary::before,
+.button--secondary::before {
   content: "";
 
   position: absolute;
@@ -121,21 +122,33 @@ export default {
   transition: opacity var(--global-duration-1) var(--ease-in-out-cubic);
 }
 
-.button--bordered:hover::before,
-.button--bordered:focus::before {
+.button--primary:hover::before,
+.button--primary:focus::before,
+.button--secondary:hover::before,
+.button--secondary:focus::before {
   opacity: 1;
 }
 
-.button--bordered:active::before {
+.button--primary:active::before,
+.button--secondary:active::before {
   box-shadow: var(--global-shadow-1);
   opacity: 1;
 }
 
-.button--contrast {
-  background-color: var(--global-content-background-color);
-}
+.button--primary {
+  border-color: var(--global-accent-color);
+  background-color: var(--global-accent-color);
+  color: var(--global-content-background-color);
 
-.link--primary {
-  color: var(--global-accent-color);
+  &:hover,
+  &:focus {
+    color: var(--global-content-background-color);
+  }
+
+  &:disabled {
+    border-color: var(--global-border-color);
+    background-color: var(--global-border-color);
+    color: var(--global-disabled-color);
+  }
 }
 </style>

@@ -268,27 +268,29 @@ export default defineNuxtConfig({
           label,
         },
       ]),
+      // Bump icon URL versions when artwork changes so installed jumplists
+      // detect a manifest update; replacing bytes at the same URL is not enough.
       shortcuts: [
         {
           name: "Blog",
           short_name: "Blog",
           description: "Read the latest blog posts.",
           url: "/",
-          icons: [{ src: "/images/icons/blog.png", sizes: "192x192" }],
+          icons: [{ src: "/images/icons/blog.png?v=2", sizes: "192x192" }],
         },
         {
           name: "Portfolio",
           short_name: "Portfolio",
           description: "View the portfolio of my projects.",
           url: "/portfolio/",
-          icons: [{ src: "/images/icons/portfolio.png", sizes: "192x192" }],
+          icons: [{ src: "/images/icons/portfolio.png?v=2", sizes: "192x192" }],
         },
         {
           name: "About",
           short_name: "About",
           description: "About Muhammad Rehan Saeed.",
           url: "/about/",
-          icons: [{ src: "/images/icons/about.png", sizes: "192x192" }],
+          icons: [{ src: "/images/icons/about.png?v=2", sizes: "192x192" }],
         },
       ],
     },
@@ -311,8 +313,8 @@ export default defineNuxtConfig({
         "404.html",
         "200.html",
       ],
-      // Workbox's defaults, plus Nuxt's payload cache buster (/x/_payload.json?_b=<buildId>).
-      ignoreURLParametersMatching: [/^utm_/, /^fbclid$/, /^_b$/],
+      // Also ignore Nuxt's payload cache buster and shortcut icon URL versions offline.
+      ignoreURLParametersMatching: [/^utm_/, /^fbclid$/, /^_b$/, /^v$/],
       // No SPA fallback. Clean URLs resolve to their prerendered index.html.
       navigateFallback: null,
       directoryIndex: "index.html",

@@ -13,6 +13,7 @@ export default withNuxt(
     },
     {
         rules: {
+            curly: ["error", "all"],
             // Retain established Vue naming/formatting; Prettier owns formatting.
             "vue/component-definition-name-casing": "off",
             "vue/html-self-closing": "off",

@@ -5,7 +5,9 @@ export function filterMarkdownSitemap(
   const sections = markdown.split(/\n(?=## )/).map((section) => {
     const lines = section.split("\n").filter((line) => {
       const link = line.match(/^- \[.*\]\((https?:\/\/[^\s)]+)/);
-      if (!link) return true;
+      if (!link) {
+        return true;
+      }
       const path = new URL(link[1]!).pathname
         .replace(/\.md$/, "")
         .replace(/\/$/, "");

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <u-button bordered @click="open">
+    <u-button variant="secondary" @click="open">
       <u-icon name="simple-icons:buymeacoffee" inline />
       Buy me a Coffee
     </u-button>

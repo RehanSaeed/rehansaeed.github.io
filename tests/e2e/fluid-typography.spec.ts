@@ -40,7 +40,9 @@ for (const defaultFontSize of [16, 32]) {
               }
             }
           };
-          for (const sheet of document.styleSheets) removeEnhancement(sheet);
+          for (const sheet of document.styleSheets) {
+            removeEnhancement(sheet);
+          }
           return removed;
         });
         expect(removed).toBeGreaterThan(0);

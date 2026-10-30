@@ -31,7 +31,9 @@ test("PWA shortcut PNGs match their branded SVG sources", async () => {
     for (let y = 0; y < 192; y++) {
       for (let x = 0; x < 192; x++) {
         const offset = (y * 192 + x) * 4;
-        if (pixels[offset + 3] !== 255) transparent++;
+        if (pixels[offset + 3] !== 255) {
+          transparent++;
+        }
         const background =
           pixels[offset] === 107 &&
           pixels[offset + 1] === 23 &&
@@ -63,7 +65,7 @@ test("The manifest serves the redesigned icons for all three shortcuts", async (
     );
     expect(shortcut).toMatchObject({
       url,
-      icons: [{ src: `/images/icons/${slug}.png`, sizes: "192x192" }],
+      icons: [{ src: `/images/icons/${slug}.png?v=2`, sizes: "192x192" }],
     });
     const icon = await request.get(shortcut.icons[0].src);
     expect(icon.ok()).toBe(true);

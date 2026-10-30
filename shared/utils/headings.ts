@@ -9,7 +9,9 @@ export function pageHeadingId(
   const ids = new Set<string>();
   const collect = (nodes: readonly unknown[]) => {
     for (const node of nodes) {
-      if (!Array.isArray(node)) continue;
+      if (!Array.isArray(node)) {
+        continue;
+      }
       const [, properties, ...children] = node;
       if (
         properties !== null &&

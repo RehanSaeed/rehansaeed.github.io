@@ -24,7 +24,9 @@ async function start(root) {
     assert.equal((await fetch(origin)).status, 200);
 }
 async function stop() {
-    if (!server || server.exitCode !== null) return;
+    if (!server || server.exitCode !== null) {
+        return;
+    }
     const stopped = once(server, "exit");
     server.kill();
     await stopped;
@@ -44,7 +46,9 @@ let retained = 0;
 for (const file of await readdir(join(previous, "_nuxt"), {
     recursive: true,
 })) {
-    if (!/\.(js|css)$/.test(file)) continue;
+    if (!/\.(js|css)$/.test(file)) {
+        continue;
+    }
     assert.deepEqual(
         await readFile(join("dist", "_nuxt", file)),
         await readFile(join(previous, "_nuxt", file)),
@@ -119,8 +123,9 @@ try {
         if (
             request.isNavigationRequest() &&
             request.frame() === accepted.mainFrame()
-        )
+        ) {
             reloads++;
+        }
     });
     await accepted
         .getByRole("button", { name: "Update now", exact: true })

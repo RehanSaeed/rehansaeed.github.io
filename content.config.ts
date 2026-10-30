@@ -26,7 +26,9 @@ const schema = z.object({
       typeof entry.permalink === "string" &&
       entry.permalink.startsWith("/"),
     onUrl: (url, entry) => {
-      if (typeof entry.permalink === "string") url.loc = entry.permalink;
+      if (typeof entry.permalink === "string") {
+        url.loc = entry.permalink;
+      }
       if (typeof (entry.dateModified ?? entry.date) === "string") {
         url.lastmod = String(entry.dateModified ?? entry.date);
       }

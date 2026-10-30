@@ -213,7 +213,9 @@ for (const path of [
             ? "404.html"
             : join(path.slice(1), "index.html");
     const $ = load(await read(htmlPath));
-    if (!$("meta[name=robots]").attr("content")?.includes("noindex")) continue;
+    if (!$("meta[name=robots]").attr("content")?.includes("noindex")) {
+        continue;
+    }
     assert(
         !$('link[rel=alternate][type="text/markdown"]').length,
         `${path}: noindex Markdown advertisement`,

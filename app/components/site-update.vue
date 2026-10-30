@@ -19,13 +19,13 @@
     </p>
     <div class="site-update__actions">
       <u-button
-        bordered
+        variant="secondary"
         class="site-update__update"
         :disabled="updating"
         @click="update">
         {{ updating ? "Updating..." : "Update now" }}
       </u-button>
-      <u-button bordered :disabled="updating" @click="dismiss">
+      <u-button variant="secondary" :disabled="updating" @click="dismiss">
         Later
       </u-button>
     </div>
@@ -42,7 +42,9 @@ function dismiss() {
 }
 
 async function update() {
-  if (!$pwa || updating.value) return;
+  if (!$pwa || updating.value) {
+    return;
+  }
   updating.value = true;
   error.value = "";
   try {

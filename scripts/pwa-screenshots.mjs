@@ -30,7 +30,9 @@ try {
                 waitUntil: "domcontentloaded",
                 timeout: 90_000,
             });
-            if (!response?.ok()) throw new Error(`Could not load ${path}`);
+            if (!response?.ok()) {
+                throw new Error(`Could not load ${path}`);
+            }
             await page
                 .getByRole("button", { name: "Open search", exact: true })
                 .waitFor();
