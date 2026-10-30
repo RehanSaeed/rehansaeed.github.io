@@ -129,11 +129,6 @@ export default defineComponent({
   opacity: 1;
 }
 
-.button:focus-visible {
-  outline: 2px solid var(--global-accent-color);
-  outline-offset: 2px;
-}
-
 .button--primary {
   border-color: var(--global-accent-color);
   background-color: var(--global-accent-color);

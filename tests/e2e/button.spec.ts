@@ -186,10 +186,31 @@ for (const theme of ["light", "dark"]) {
       await page.keyboard.press("Tab");
       await page.keyboard.press("Shift+Tab");
       await expect(control).toBeFocused();
-      await expect(control).toHaveCSS("outline-style", "solid");
-      await expect(control).toHaveCSS("outline-width", "2px");
-      await expect(control).toHaveCSS("outline-color", tokens.accent);
-      await expect(control).toHaveCSS("outline-offset", "2px");
+      if (control === plain) {
+        await expect(control).toHaveCSS(
+          "transform",
+          "matrix(1.07, 0, 0, 1.07, 0, 0)",
+        );
+        await expect(control).toHaveCSS("color", tokens.accent);
+      } else {
+        await expect(control).toHaveCSS("outline-style", "none");
+        await expect(control).toHaveCSS(
+          "transform",
+          "matrix(1, 0, 0, 1, 0, -2)",
+        );
+        await expect
+          .poll(() =>
+            control.evaluate((element) =>
+              getComputedStyle(element, "::before").getPropertyValue("opacity"),
+            ),
+          )
+          .toBe("1");
+        expect(
+          await control.evaluate(
+            (element) => getComputedStyle(element, "::before").boxShadow,
+          ),
+        ).not.toBe("none");
+      }
       if (control === primary) {
         await expect(control).toHaveCSS("color", tokens.content);
       }
