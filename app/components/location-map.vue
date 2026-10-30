@@ -317,10 +317,10 @@ function updateConnection() {
   for (const [layerId, width, colour] of [
     [
       `${id}-outline`,
-      6,
+      8,
       theme.getPropertyValue("--location-map-connection-outline-color").trim(),
     ],
-    [id, 3, theme.getPropertyValue("--global-accent-color").trim()],
+    [id, 5, theme.getPropertyValue("--global-accent-color").trim()],
   ] as const) {
     map.addLayer(
       {
@@ -332,7 +332,7 @@ function updateConnection() {
           "line-color": colour,
           "line-width": width,
           // Dash units scale with width; align both layers in screen pixels.
-          "line-dasharray": [0.3 / width, 9 / width],
+          "line-dasharray": [0.3 / width, 12 / width],
         },
       },
       map.getStyle().layers.find((layer) => layer.type === "symbol")?.id,
