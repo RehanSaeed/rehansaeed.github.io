@@ -2,9 +2,8 @@
   <button
     class="button"
     :class="{
-      'button--bordered': bordered,
-      'button--contrast': contrast,
-      'button--primary': primary,
+      'button--bordered': variant !== 'plain',
+      'button--primary': variant === 'primary',
       'button--hydrating': !hydrated && !disabled && !submit,
     }"
     :disabled="disabled || (!hydrated && !submit)"
@@ -13,21 +12,20 @@
   </button>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent, type PropType } from "vue";
+
+export default defineComponent({
   name: "u-button",
   props: {
     disabled: {
       type: Boolean,
     },
-    bordered: {
-      type: Boolean,
-    },
-    contrast: {
-      type: Boolean,
-    },
-    primary: {
-      type: Boolean,
+    variant: {
+      type: String as PropType<"plain" | "secondary" | "primary">,
+      default: "plain",
+      validator: (value: string) =>
+        ["plain", "secondary", "primary"].includes(value),
     },
     submit: {
       type: Boolean,
@@ -48,7 +46,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style lang="scss">
@@ -131,11 +129,25 @@ export default {
   opacity: 1;
 }
 
-.button--contrast {
-  background-color: var(--global-content-background-color);
+.button:focus-visible {
+  outline: 2px solid var(--global-accent-color);
+  outline-offset: 2px;
 }
 
-.link--primary {
-  color: var(--global-accent-color);
+.button--primary {
+  border-color: var(--global-accent-color);
+  background-color: var(--global-accent-color);
+  color: var(--global-content-background-color);
+
+  &:hover,
+  &:focus {
+    color: var(--global-content-background-color);
+  }
+
+  &:disabled {
+    border-color: var(--global-border-color);
+    background-color: var(--global-border-color);
+    color: var(--global-disabled-color);
+  }
 }
 </style>
