@@ -200,7 +200,7 @@ const changeReducedMotion = async (
   await change.dispose();
 };
 
-test("Ticker styles preserve responsive dimensions and follow shared design tokens", async ({
+test("Ticker styles, statistics and badges preserve dimensions and follow shared design tokens", async ({
   page,
 }) => {
   const propertiesPath = join(
@@ -210,37 +210,59 @@ test("Ticker styles preserve responsive dimensions and follow shared design toke
     "style",
     "_properties.scss",
   );
-  const [component, properties] = await Promise.all([
+  const [component, properties, statistics, badges] = await Promise.all([
     readFile(
       join(process.cwd(), "app", "components", "shared", "number-ticker.vue"),
       "utf8",
     ),
     readFile(propertiesPath, "utf8"),
+    readFile(
+      join(process.cwd(), "app", "components", "portfolio-statistics.vue"),
+      "utf8",
+    ),
+    readFile(
+      join(process.cwd(), "app", "components", "github-badges.vue"),
+      "utf8",
+    ),
   ]);
-  const { descriptor } = parse(component);
-  const styles = compileString(descriptor.styles[0]!.content, {
-    importers: [
-      {
-        findFileUrl: (url) =>
-          url.startsWith("~/")
-            ? pathToFileURL(
-                join(process.cwd(), "app", ...url.slice(2).split("/")),
-              )
-            : null,
-      },
-    ],
-  }).css;
+  const styles = [component, statistics, badges]
+    .map((source) => {
+      const { descriptor } = parse(source);
+      return compileString(descriptor.styles[0]!.content, {
+        importers: [
+          {
+            findFileUrl: (url) =>
+              url.startsWith("~/")
+                ? pathToFileURL(
+                    join(process.cwd(), "app", ...url.slice(2).split("/")),
+                  )
+                : null,
+          },
+        ],
+      }).css;
+    })
+    .join("\n");
   await page.setContent(`
     <html data-theme="light"><body>
+    <div class="portfolio-statistics">
+    <div class="portfolio-statistics__totals">
     <dl class="number-ticker">
       <dt class="number-ticker__header number-ticker__header--with-info">
         <span class="number-ticker__label">Downloads</span>
         <button class="number-ticker__info" aria-label="Downloads">i</button>
       </dt>
       <dd class="number-ticker__value">
-        <span class="number-ticker__cell">0</span>
+        <span class="number-ticker__digits">
+          <span class="number-ticker__cell">0</span>
+          <span class="number-ticker__cell number-ticker__cell--separator">,</span>
+        </span>
       </dd>
     </dl>
+    </div>
+    <ul class="github-badges">
+      <li><a href="#badge"><img alt="GitHub badge" width="135" height="30"></a></li>
+    </ul>
+    </div>
     </body></html>
   `);
   await page.addStyleTag({
@@ -249,6 +271,9 @@ test("Ticker styles preserve responsive dimensions and follow shared design toke
   const ticker = page.locator(".number-ticker");
   const info = ticker.getByRole("button", { name: "Downloads" });
   const header = ticker.getByRole("term");
+  const totals = page.locator(".portfolio-statistics__totals");
+  const badge = page.getByRole("img", { name: "GitHub badge" });
+  const badgeLink = page.getByRole("link", { name: "GitHub badge" });
   await expect(header).toHaveCSS("grid-template-areas", '". label info"');
   await expect(header.locator(".number-ticker__label")).toHaveCSS(
     "grid-column-start",
@@ -270,18 +295,82 @@ test("Ticker styles preserve responsive dimensions and follow shared design toke
       );
       await expect(info).toHaveCSS("inline-size", `${1.5 * rootSize}px`);
       await expect(info).toHaveCSS("block-size", `${1.5 * rootSize}px`);
+      await expect(info).toHaveCSS("font-size", `${rootSize}px`);
+      await expect(totals).toHaveCSS(
+        "gap",
+        `${Math.max(0.5 * rootSize, Math.min(0.02 * width, 2 * rootSize))}px`,
+      );
+      await expect(totals).toHaveCSS(
+        "font-size",
+        `${Math.max(16, 0.85 * rootSize)}px`,
+      );
+      await expect(badge).toHaveCSS("block-size", "30px");
     }
     await rootStyle.evaluate((element) => element.remove());
   }
+  await info.focus();
+  await page.keyboard.press("Tab");
+  await expect(badgeLink).toBeFocused();
+  await expect(badgeLink).toHaveCSS("outline-width", "2px");
+  await expect(badgeLink).toHaveCSS("outline-offset", "3px");
+  await page.keyboard.press("Shift+Tab");
+  await expect(info).toBeFocused();
+  await expect(info).toHaveCSS("outline-width", "2px");
+  await expect(info).toHaveCSS("outline-offset", "3px");
   await page.setViewportSize({ width: 320, height: 900 });
   await page.addStyleTag({
-    content:
-      ":root { --global-space-fixed-6: 4rem; --global-border-width-1: 3px; }",
+    content: `
+      :root {
+        --global-space-fixed-6: 4rem;
+        --global-border-width-1: 3px;
+        --global-border-width-2: 4px;
+        --global-focus-outline-offset: 5px;
+        --global-font-size-1: 1.25em;
+      }
+      .github-badges { --github-badges-image-height: 36px; }
+      .number-ticker {
+        --number-ticker-font-size-base: 2rem;
+        --number-ticker-label-line-height: 1.5;
+        --number-ticker-digit-width: 0.75em;
+        --number-ticker-separator-width: 0.5em;
+        --number-ticker-digit-gap: 0.1em;
+      }
+    `,
   });
   await expect(ticker).toHaveCSS("padding-inline-start", "16px");
   await expect(ticker).toHaveCSS("border-top-width", "3px");
   await expect(info).toHaveCSS("inline-size", "32px");
   await expect(info).toHaveCSS("block-size", "32px");
+  await expect(info).toHaveCSS("font-size", "32px");
+  await expect(info).toHaveCSS("outline-width", "4px");
+  await expect(info).toHaveCSS("outline-offset", "5px");
+  await expect(totals).toHaveCSS("font-size", "20px");
+  expect(
+    await totals.evaluate((element) =>
+      Number.parseFloat(getComputedStyle(element).gap),
+    ),
+  ).toBeCloseTo(32 / 3, 3);
+  await expect(header.locator(".number-ticker__label")).toHaveCSS(
+    "min-block-size",
+    "72px",
+  );
+  await expect(ticker.locator(".number-ticker__digits")).toHaveCSS(
+    "gap",
+    "2.4px",
+  );
+  await expect(ticker.locator(".number-ticker__cell").first()).toHaveCSS(
+    "inline-size",
+    "18px",
+  );
+  await expect(ticker.locator(".number-ticker__cell--separator")).toHaveCSS(
+    "inline-size",
+    "12px",
+  );
+  await expect(badge).toHaveCSS("block-size", "36px");
+  await page.keyboard.press("Tab");
+  await expect(badgeLink).toBeFocused();
+  await expect(badgeLink).toHaveCSS("outline-width", "4px");
+  await expect(badgeLink).toHaveCSS("outline-offset", "5px");
   await header.evaluate((element) =>
     element.classList.remove("number-ticker__header--with-info"),
   );

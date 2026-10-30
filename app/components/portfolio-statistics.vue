@@ -47,6 +47,8 @@ onMounted(() => {
 
 <style lang="scss">
 .portfolio-statistics {
+  --portfolio-statistics-font-size-min: 16px;
+
   display: grid;
   min-inline-size: 0;
   inline-size: 100%;
@@ -58,11 +60,18 @@ onMounted(() => {
 .portfolio-statistics__totals {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(0.5rem, 2vw, 2rem);
+  gap: clamp(
+    calc(var(--global-space-fixed-4) / 2),
+    2vw,
+    calc(var(--global-space-fixed-4) * 2)
+  );
   inline-size: 100%;
   max-inline-size: var(--global-space-card-max-width);
   min-inline-size: 0;
-  font-size: max(16px, 0.85em);
+  font-size: max(
+    var(--portfolio-statistics-font-size-min),
+    var(--global-font-size-1)
+  );
 }
 
 .portfolio-statistics--borderless {
