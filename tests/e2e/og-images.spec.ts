@@ -75,8 +75,9 @@ test("Social card declarations do not run again during client hydration", async 
       },
     },
   );
-  if (!exports.useBlogOgImage)
+  if (!exports.useBlogOgImage) {
     throw new Error("Missing social card composable");
+  }
   expect(exports.useBlogOgImage("Portfolio")).toEqual([]);
 });
 

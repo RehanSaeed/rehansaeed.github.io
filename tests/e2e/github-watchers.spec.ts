@@ -10,8 +10,11 @@ test.beforeEach(() => {
 });
 test.afterEach(() => {
   globalThis.fetch = originalFetch;
-  if (originalToken === undefined) delete process.env.GITHUB_TOKEN;
-  else process.env.GITHUB_TOKEN = originalToken;
+  if (originalToken === undefined) {
+    delete process.env.GITHUB_TOKEN;
+  } else {
+    process.env.GITHUB_TOKEN = originalToken;
+  }
 });
 
 function page(
