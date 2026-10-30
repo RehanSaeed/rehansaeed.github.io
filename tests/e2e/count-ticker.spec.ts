@@ -1,6 +1,8 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 import { expect, test, type Page } from "@playwright/test";
+import { compileString } from "sass-embedded";
 import { compileScript, parse } from "vue/compiler-sfc";
 import ts from "typescript";
 
@@ -197,6 +199,84 @@ const changeReducedMotion = async (
   await change.evaluate(({ changed }) => changed);
   await change.dispose();
 };
+
+test("Ticker styles preserve responsive dimensions and follow shared design tokens", async ({
+  page,
+}) => {
+  const propertiesPath = join(
+    process.cwd(),
+    "app",
+    "assets",
+    "style",
+    "_properties.scss",
+  );
+  const [component, properties] = await Promise.all([
+    readFile(
+      join(process.cwd(), "app", "components", "shared", "number-ticker.vue"),
+      "utf8",
+    ),
+    readFile(propertiesPath, "utf8"),
+  ]);
+  const { descriptor } = parse(component);
+  const styles = compileString(descriptor.styles[0]!.content, {
+    importers: [
+      {
+        findFileUrl: (url) =>
+          url.startsWith("~/")
+            ? pathToFileURL(
+                join(process.cwd(), "app", ...url.slice(2).split("/")),
+              )
+            : null,
+      },
+    ],
+  }).css;
+  await page.setContent(`
+    <html data-theme="light"><body>
+    <dl class="number-ticker">
+      <dt class="number-ticker__header number-ticker__header--with-info">
+        <span class="number-ticker__title">Downloads</span>
+        <button class="number-ticker__info" aria-label="Downloads">i</button>
+      </dt>
+      <dd class="number-ticker__value">
+        <span class="number-ticker__cell">0</span>
+      </dd>
+    </dl>
+    </body></html>
+  `);
+  await page.addStyleTag({
+    content: `${compileString(properties, { url: pathToFileURL(propertiesPath) }).css}\n${styles}`,
+  });
+  const ticker = page.locator(".number-ticker");
+  const info = ticker.getByRole("button", { name: "Downloads" });
+  for (const rootSize of [16, 20]) {
+    const rootStyle = await page.addStyleTag({
+      content: `html { font-size: ${rootSize}px; }`,
+    });
+    for (const width of [320, 375, 1280]) {
+      await page.setViewportSize({ width, height: 900 });
+      await expect(ticker).toHaveCSS(
+        "padding-inline-start",
+        `${Math.max(0.75 * rootSize, Math.min(0.02 * width, 2 * rootSize))}px`,
+      );
+      await expect(ticker).toHaveCSS(
+        "padding-block-start",
+        `${Math.max(0.5 * rootSize, Math.min(0.01 * width, rootSize))}px`,
+      );
+      await expect(info).toHaveCSS("inline-size", `${1.5 * rootSize}px`);
+      await expect(info).toHaveCSS("block-size", `${1.5 * rootSize}px`);
+    }
+    await rootStyle.evaluate((element) => element.remove());
+  }
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.addStyleTag({
+    content:
+      ":root { --global-space-fixed-6: 4rem; --global-border-width-1: 3px; }",
+  });
+  await expect(ticker).toHaveCSS("padding-inline-start", "16px");
+  await expect(ticker).toHaveCSS("border-top-width", "3px");
+  await expect(info).toHaveCSS("inline-size", "32px");
+  await expect(info).toHaveCSS("block-size", "32px");
+});
 
 test("Shared ticker needs label, number and rate and follows the supplied average", async ({
   page,
