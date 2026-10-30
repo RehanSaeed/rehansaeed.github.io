@@ -233,7 +233,9 @@ onBeforeUnmount(() => {
 }
 
 .number-ticker__digits {
-  display: flex;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
   gap: var(--number-ticker-digit-gap);
 }
 
@@ -261,7 +263,7 @@ onBeforeUnmount(() => {
 }
 
 .number-ticker__digit {
-  display: flex;
+  display: grid;
   justify-content: center;
   position: absolute;
   inset: 0;

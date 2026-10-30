@@ -253,8 +253,12 @@ test("Ticker styles, statistics and badges preserve dimensions and follow shared
       </dt>
       <dd class="number-ticker__value">
         <span class="number-ticker__digits">
-          <span class="number-ticker__cell">0</span>
-          <span class="number-ticker__cell number-ticker__cell--separator">,</span>
+          <span class="number-ticker__cell">
+            <span class="number-ticker__digit">0</span>
+          </span>
+          <span class="number-ticker__cell number-ticker__cell--separator">
+            <span class="number-ticker__digit">,</span>
+          </span>
         </span>
       </dd>
     </dl>
@@ -271,9 +275,17 @@ test("Ticker styles, statistics and badges preserve dimensions and follow shared
   const ticker = page.locator(".number-ticker");
   const info = ticker.getByRole("button", { name: "Downloads" });
   const header = ticker.getByRole("term");
+  const digits = ticker.locator(".number-ticker__digits");
   const totals = page.locator(".portfolio-statistics__totals");
   const badge = page.getByRole("img", { name: "GitHub badge" });
   const badgeLink = page.getByRole("link", { name: "GitHub badge" });
+  await expect(digits).toHaveCSS("display", "grid");
+  await expect(digits).toHaveCSS("grid-auto-flow", "column");
+  await expect(digits).toHaveCSS("grid-auto-columns", "max-content");
+  await expect(digits.locator(".number-ticker__digit").first()).toHaveCSS(
+    "display",
+    "grid",
+  );
   await expect(header).toHaveCSS("grid-template-areas", '". label info"');
   await expect(header.locator(".number-ticker__label")).toHaveCSS(
     "grid-column-start",
@@ -305,6 +317,41 @@ test("Ticker styles, statistics and badges preserve dimensions and follow shared
         `${Math.max(16, 0.85 * rootSize)}px`,
       );
       await expect(badge).toHaveCSS("block-size", "30px");
+      const geometry = await digits.evaluate((element) => {
+        const style = getComputedStyle(element);
+        return {
+          fontSize: Number.parseFloat(style.fontSize),
+          gap: Number.parseFloat(style.columnGap),
+          width: element.getBoundingClientRect().width,
+          cells: Array.from(element.children, (cell) => {
+            const bounds = cell.getBoundingClientRect();
+            const range = document.createRange();
+            range.selectNodeContents(cell.firstElementChild!);
+            const glyph = range.getBoundingClientRect();
+            return {
+              left: bounds.left,
+              top: bounds.top,
+              width: bounds.width,
+              glyphCenter: glyph.left + glyph.width / 2,
+            };
+          }),
+        };
+      });
+      const [digit, separator] = geometry.cells;
+      expect(digit!.width).toBeCloseTo(0.65 * geometry.fontSize, 1);
+      expect(separator!.width).toBeCloseTo(0.32 * geometry.fontSize, 1);
+      expect(separator!.top).toBeCloseTo(digit!.top, 1);
+      expect(separator!.left - digit!.left - digit!.width).toBeCloseTo(
+        geometry.gap,
+        1,
+      );
+      expect(geometry.width).toBeCloseTo(
+        digit!.width + separator!.width + geometry.gap,
+        1,
+      );
+      for (const cell of geometry.cells) {
+        expect(cell.glyphCenter).toBeCloseTo(cell.left + cell.width / 2, 1);
+      }
     }
     await rootStyle.evaluate((element) => element.remove());
   }
