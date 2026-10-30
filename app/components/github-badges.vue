@@ -9,15 +9,6 @@
           :src="`https://img.shields.io/github/followers/${user}?style=social`" />
       </a>
     </u-tooltip>
-    <u-tooltip v-slot="{ trigger }" text="Sponsor me on GitHub">
-      <a v-bind="trigger" :href="`https://github.com/sponsors/${user}`">
-        <img
-          alt="GitHub sponsors"
-          height="30"
-          width="121"
-          :src="`https://img.shields.io/github/sponsors/${user}?logo=github&style=social`" />
-      </a>
-    </u-tooltip>
     <u-tooltip
       v-slot="{ trigger }"
       text="Total watch subscriptions across my public, account-owned repositories, including forks and archived repositories but excluding organisation-owned repositories. A person watching several repositories is counted once per repository. Refreshed when this site builds.">
@@ -27,6 +18,15 @@
           height="30"
           width="165"
           :src="`https://img.shields.io/badge/Watchers-${watchers.watchers}-blue?logo=github&style=social`" />
+      </a>
+    </u-tooltip>
+    <u-tooltip v-slot="{ trigger }" text="Sponsor me on GitHub">
+      <a v-bind="trigger" :href="`https://github.com/sponsors/${user}`">
+        <img
+          alt="GitHub sponsors"
+          height="30"
+          width="121"
+          :src="`https://img.shields.io/github/sponsors/${user}?logo=github&style=social`" />
       </a>
     </u-tooltip>
   </div>
