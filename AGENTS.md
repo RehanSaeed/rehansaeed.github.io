@@ -5,13 +5,6 @@
 Do not modify README.md unless the user explicitly requests it. Put implementation
 details in relevant documentation or code comments, not the README.
 
-## Contributing guide
-
-Keep `.github/CONTRIBUTING.md` concise and written for human contributors.
-Put agent-specific instructions in `AGENTS.md` and non-obvious implementation
-constraints beside the relevant code or configuration, not in the contributing
-guide. Do not accumulate task histories or dependency troubleshooting notes there.
-
 ## Blog and Social Media Authoring
 
 These instructions apply to agents working in this repository. The author writes
