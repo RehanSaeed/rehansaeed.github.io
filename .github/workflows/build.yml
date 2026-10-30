@@ -69,6 +69,7 @@ jobs:
           TZ: UTC
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NUXT_PUBLIC_GOOGLE_ANALYTICS_ID: ${{ vars.GA4_MEASUREMENT_ID }}
+          NUXT_PUBLIC_MAPBOX_ACCESS_TOKEN: ${{ vars.MAPBOX_ACCESS_TOKEN }}
       - name: "Type Check"
         run: npm run typecheck
       - name: "Lint"

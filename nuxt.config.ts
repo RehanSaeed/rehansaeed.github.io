@@ -15,6 +15,12 @@ if (googleAnalyticsId && !/^G-[A-Z0-9]+$/.test(googleAnalyticsId)) {
     "NUXT_PUBLIC_GOOGLE_ANALYTICS_ID must be a GA4 G- measurement ID.",
   );
 }
+const mapboxAccessToken = process.env.NUXT_PUBLIC_MAPBOX_ACCESS_TOKEN ?? "";
+if (mapboxAccessToken && !mapboxAccessToken.startsWith("pk.")) {
+  throw new Error(
+    "NUXT_PUBLIC_MAPBOX_ACCESS_TOKEN must be a public Mapbox token starting with pk.",
+  );
+}
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -626,6 +632,7 @@ export default defineNuxtConfig({
     public: {
       siteUrl: site.url,
       googleAnalyticsId,
+      mapboxAccessToken,
     },
   },
 });
