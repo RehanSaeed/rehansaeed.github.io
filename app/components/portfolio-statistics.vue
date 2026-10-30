@@ -70,7 +70,7 @@ onMounted(() => {
     border: 0;
     background: none;
   }
-  .number-ticker__title {
+  .number-ticker__label {
     min-block-size: 0;
   }
 }

@@ -4,7 +4,7 @@
       <dt
         class="number-ticker__header"
         :class="{ 'number-ticker__header--with-info': info }">
-        <span class="number-ticker__title">{{ label }}</span>
+        <span class="number-ticker__label">{{ label }}</span>
         <u-tooltip
           v-if="info"
           v-slot="{ trigger }"
@@ -162,7 +162,7 @@ onBeforeUnmount(() => {
 
 .number-ticker__header {
   display: grid;
-  grid-template-areas: "title";
+  grid-template-areas: "label";
   align-items: center;
   inline-size: 100%;
 }
@@ -171,13 +171,13 @@ onBeforeUnmount(() => {
   grid-template-columns:
     var(--global-space-fixed-5) minmax(0, 1fr)
     var(--global-space-fixed-5);
-  grid-template-areas: ". title info";
+  grid-template-areas: ". label info";
   gap: calc(var(--global-space-fixed-4) / 4);
 }
 
-.number-ticker__title {
+.number-ticker__label {
   display: grid;
-  grid-area: title;
+  grid-area: label;
   align-content: center;
   margin: 0;
   min-block-size: 2.6em;
