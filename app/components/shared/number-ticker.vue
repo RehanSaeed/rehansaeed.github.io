@@ -56,7 +56,9 @@ let lastTick = 0;
 let motion: MediaQueryList | undefined;
 
 const clearTimer = () => {
-  if (timer !== undefined) clearInterval(timer);
+  if (timer !== undefined) {
+    clearInterval(timer);
+  }
   timer = undefined;
 };
 
@@ -77,9 +79,13 @@ const tick = () => {
 const syncAnimation = () => {
   clearTimer();
   running.value = !!motion && !motion.matches && props.rate !== 0;
-  if (!running.value) return;
+  if (!running.value) {
+    return;
+  }
   lastTick = Date.now();
-  if (!document.hidden) timer = setInterval(tick, 1000);
+  if (!document.hidden) {
+    timer = setInterval(tick, 1000);
+  }
 };
 
 const visibilityChanged = () => {
