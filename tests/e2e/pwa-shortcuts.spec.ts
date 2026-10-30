@@ -65,7 +65,7 @@ test("The manifest serves the redesigned icons for all three shortcuts", async (
     );
     expect(shortcut).toMatchObject({
       url,
-      icons: [{ src: `/images/icons/${slug}.png`, sizes: "192x192" }],
+      icons: [{ src: `/images/icons/${slug}.png?v=2`, sizes: "192x192" }],
     });
     const icon = await request.get(shortcut.icons[0].src);
     expect(icon.ok()).toBe(true);
