@@ -556,11 +556,11 @@ for (const path of ["/about/", "/portfolio/"]) {
     await page.setViewportSize({ width: 375, height: 900 });
     await page.goto(path, { waitUntil: "domcontentloaded" });
     const downloads = page.getByRole("button", {
-      name: "About Package Downloads",
+      name: "Package Downloads",
       exact: true,
     });
     const stars = page.getByRole("button", {
-      name: "About GitHub Stars",
+      name: "GitHub Stars",
       exact: true,
     });
     await expect(downloads).toBeEnabled();
@@ -653,7 +653,7 @@ test.describe("Statistics touch controls", () => {
       await page.setViewportSize({ width: 375, height: 900 });
       await page.goto(path, { waitUntil: "domcontentloaded" });
       const info = page.getByRole("button", {
-        name: "About Package Downloads",
+        name: "Package Downloads",
         exact: true,
       });
       await expect(info).toBeEnabled();

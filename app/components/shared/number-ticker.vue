@@ -12,7 +12,7 @@
         <u-button
           v-bind="trigger"
           class="number-ticker__info"
-          :aria-label="`About ${title}`">
+          :aria-label="title">
           <u-icon name="fa-solid:info-circle" />
         </u-button>
       </u-tooltip>
