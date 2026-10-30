@@ -127,6 +127,7 @@ for (const width of [375, 1280]) {
     for (const stat of ["total", "engagement"]) {
       const statistic = chart.locator(`.post-traffic__${stat}`);
       await expect(statistic).toHaveJSProperty("tagName", "DL");
+      await expect(statistic).toHaveCSS("display", "grid");
       expect(
         await statistic.evaluate((element) =>
           Array.from(element.children, (child) => child.tagName),
