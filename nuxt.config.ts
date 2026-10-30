@@ -298,6 +298,7 @@ export default defineNuxtConfig({
         "**/*.{js,json,css,html,png,jpg,jpeg,svg,gif,woff2,webp,avif}",
       ],
       globIgnores: [
+        "post-traffic.json",
         "images/items/**/*",
         "images/reactions/**/*",
         "images/thumbnails/**/*",
@@ -317,6 +318,19 @@ export default defineNuxtConfig({
       navigateFallback: null,
       directoryIndex: "index.html",
       cleanupOutdatedCaches: true,
+      runtimeCaching: [
+        {
+          urlPattern: ({ url, sameOrigin }) =>
+            sameOrigin && url.pathname === "/post-traffic.json",
+          handler: "NetworkFirst",
+          options: {
+            cacheName: "article-traffic",
+            networkTimeoutSeconds: 3,
+            cacheableResponse: { statuses: [200] },
+            expiration: { maxEntries: 1 },
+          },
+        },
+      ],
       // The feeds are around 1 MB each.
       maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
     },

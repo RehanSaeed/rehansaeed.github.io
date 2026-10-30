@@ -11,6 +11,27 @@ aggregates them by month, and writes
 days as daily aggregates. The chart fetches this same-origin static snapshot; no
 analytics credentials or private reporting API calls reach the browser.
 
+## Hidden traffic section
+
+Traffic is hidden by default. Click or tap the article's publication date five
+times to show it; repeat the gesture to hide it. Leave no more than three seconds
+between activations, otherwise the count resets. The date retains its existing
+appearance and absolute-date tooltip. Its native button also supports five
+activations with Enter or Space and announces its state to assistive technology.
+Article listings, update dates and unpublished drafts do not have this switch.
+
+The choice is kept in `sessionStorage` for the current tab, including reloads and
+navigation between articles. An independent tab starts hidden; browsers can copy
+session storage when duplicating a tab. If storage is blocked,
+the toggle still works for the current loaded app and logs that it cannot remember
+the choice across reloads.
+
+The chart is mounted, and its JSON requested, only after revealing the section.
+The PWA does not precache this JSON for every visitor; it caches it on demand after
+the first revealed chart for subsequent offline access. This is concealment, not
+authentication: the code, gesture and aggregate JSON remain public. There is no
+secret token, protected API or access-control guarantee.
+
 ## Configuration
 
 1. Enable the Google Analytics Data API in a Google Cloud project.
@@ -173,8 +194,9 @@ counts. They come from the same paginated GA4 report, not a second API query.
 Actions cache is **not a permanent analytics archive** and can be evicted.
 Each refresh queries the full configured history from GA4. Long-term retention
 independent of GA4 would need a separately backed-up archive; no Cloudflare
-storage is provisioned by this feature. The snapshot is precached alongside
-other static JSON for offline use and updates with the site's deployment/PWA.
+storage is provisioned by this feature. The snapshot uses network-first runtime
+caching after the section is revealed, with a cached fallback for offline use.
+Online requests receive the snapshot from the current deployment.
 
 ## References
 
