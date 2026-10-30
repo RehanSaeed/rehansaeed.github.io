@@ -12,7 +12,7 @@
         tag="li"
         hoverable
         focusable
-        sound>
+        :sound="item.rel === 'prev' ? 'previous' : 'next'">
         <NuxtLink
           class="post-navigation__link"
           :to="item.post.permalink"

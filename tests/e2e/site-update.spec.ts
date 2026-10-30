@@ -74,7 +74,7 @@ test("Update now delegates activation and reload handling to the package", async
   expect(app.errors).toHaveLength(0);
   expect(app.state.updating.value).toBe(false);
   expect(app.state.error.value).toBe("");
-  expect(app.sounds).toEqual(["link-activate"]);
+  expect(app.sounds).toEqual(["update-start"]);
 });
 
 test("Concurrent update clicks invoke the package only once", async () => {
@@ -91,11 +91,11 @@ test("Concurrent update clicks invoke the package only once", async () => {
   expect(app.state.updating.value).toBe(true);
   await app.state.update();
   expect(calls).toBe(1);
-  expect(app.sounds).toEqual(["link-activate"]);
+  expect(app.sounds).toEqual(["update-start"]);
   complete();
   await update;
   expect(app.state.updating.value).toBe(false);
-  expect(app.sounds).toEqual(["link-activate"]);
+  expect(app.sounds).toEqual(["update-start"]);
 });
 
 test("Only an explicit dismissal plays the close cue", () => {
@@ -120,5 +120,5 @@ test("A package failure is reported and can be retried successfully", async () =
   await app.state.update();
   expect(app.state.error.value).toBe("");
   expect(app.state.updating.value).toBe(false);
-  expect(app.sounds).toEqual(["link-activate", "link-activate"]);
+  expect(app.sounds).toEqual(["update-start", "update-start"]);
 });

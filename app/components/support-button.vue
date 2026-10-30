@@ -34,7 +34,7 @@ export default {
     },
     onClick() {
       this.open();
-      this.playSoundEffect("dialog-open");
+      this.playSoundEffect("coffee-open");
     },
   },
 };

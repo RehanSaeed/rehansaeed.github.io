@@ -122,11 +122,11 @@ export default {
       this.isDialogueOpen = false;
     },
     onClick() {
+      this.playSoundEffect("share-open");
       if (this.isSupported) {
         this.share();
       } else {
         this.open();
-        this.playSoundEffect("dialog-open");
       }
     },
   },

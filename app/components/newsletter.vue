@@ -3,6 +3,7 @@
     <form
       class="newsletter__form"
       method="post"
+      @submit="playSoundEffect('form-submit')"
       :action="metadata.mailchimpUrl">
       <u-heading
         id="newsletter"
@@ -42,7 +43,10 @@
 export default {
   name: "u-newsletter",
   setup() {
-    return { metadata: useAppConfig().site };
+    return {
+      metadata: useAppConfig().site,
+      playSoundEffect: useSoundEffect().play,
+    };
   },
 };
 </script>

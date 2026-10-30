@@ -1,5 +1,5 @@
 <template>
-  <div class="social">
+  <div class="social" v-bind="soundTrigger">
     <u-tooltip
       v-if="metadata.author.youtube.url"
       v-slot="{ trigger }"
@@ -119,7 +119,10 @@ import { decode } from "~/framework/obfuscate.js";
 export default {
   name: "u-social-links",
   setup() {
-    return { metadata: useAppConfig().site };
+    return {
+      metadata: useAppConfig().site,
+      soundTrigger: useLinkSound(() => "social"),
+    };
   },
   methods: {
     openEmail(event) {

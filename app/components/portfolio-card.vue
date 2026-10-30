@@ -6,7 +6,7 @@
     compact
     hoverable
     focusable
-    sound>
+    sound="card">
     <figure class="portfolio-card__header">
       <NuxtPicture
         format="avif"

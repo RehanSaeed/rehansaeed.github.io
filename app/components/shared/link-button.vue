@@ -16,46 +16,22 @@
   </Component>
 </template>
 
-<script>
+<script setup lang="ts">
 import { NuxtLink } from "#components";
+import type { LinkSound } from "#shared/utils/sounds";
 
-export default {
-  name: "u-link-button",
-  setup(props) {
-    return { soundTrigger: useLinkSound(() => props.sound) };
-  },
-  props: {
-    sound: {
-      type: Boolean,
-    },
-    bordered: {
-      type: Boolean,
-    },
-    contrast: {
-      type: Boolean,
-    },
-    primary: {
-      type: Boolean,
-    },
-    label: {
-      type: String,
-    },
-    to: {
-      type: String,
-    },
-    href: {
-      type: String,
-    },
-    rel: {
-      type: String,
-    },
-  },
-  computed: {
-    tag() {
-      return this.to ? NuxtLink : "a";
-    },
-  },
-};
+const props = defineProps<{
+  sound?: boolean | LinkSound;
+  bordered?: boolean;
+  contrast?: boolean;
+  primary?: boolean;
+  label?: string;
+  to?: string;
+  href?: string;
+  rel?: string;
+}>();
+const soundTrigger = useLinkSound(() => props.sound);
+const tag = computed(() => (props.to ? NuxtLink : "a"));
 </script>
 
 <style lang="scss">

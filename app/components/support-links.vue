@@ -5,7 +5,7 @@
       your support!
     </p>
 
-    <div class="support-links">
+    <div class="support-links" v-bind="soundTrigger">
       <u-link-button
         v-if="metadata.author.patreon.url"
         bordered
@@ -46,7 +46,10 @@
 export default {
   name: "u-support-links",
   setup() {
-    return { metadata: useAppConfig().site };
+    return {
+      metadata: useAppConfig().site,
+      soundTrigger: useLinkSound(() => "social"),
+    };
   },
 };
 </script>

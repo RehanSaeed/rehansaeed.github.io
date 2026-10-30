@@ -12,31 +12,20 @@
   </component>
 </template>
 
-<script>
-export default {
-  name: "u-card",
-  setup(props) {
-    return { soundTrigger: useLinkSound(() => props.sound) };
-  },
-  props: {
-    sound: {
-      type: Boolean,
-    },
-    compact: {
-      type: Boolean,
-    },
-    focusable: {
-      type: Boolean,
-    },
-    hoverable: {
-      type: Boolean,
-    },
-    tag: {
-      default: "section",
-      type: String,
-    },
-  },
-};
+<script setup lang="ts">
+import type { LinkSound } from "#shared/utils/sounds";
+
+const props = withDefaults(
+  defineProps<{
+    sound?: boolean | LinkSound;
+    compact?: boolean;
+    focusable?: boolean;
+    hoverable?: boolean;
+    tag?: string;
+  }>(),
+  { tag: "section" },
+);
+const soundTrigger = useLinkSound(() => props.sound);
 </script>
 
 <style lang="scss">

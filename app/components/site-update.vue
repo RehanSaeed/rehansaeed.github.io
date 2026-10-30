@@ -47,7 +47,7 @@ async function update() {
   if (!$pwa || updating.value) return;
   updating.value = true;
   error.value = "";
-  play("link-activate");
+  play("update-start");
   try {
     await $pwa.updateServiceWorker();
   } catch (cause) {
