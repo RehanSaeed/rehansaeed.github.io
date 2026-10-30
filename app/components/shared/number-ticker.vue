@@ -55,12 +55,12 @@ let remainder = 0;
 let lastTick = 0;
 let motion: MediaQueryList | undefined;
 
-function clearTimer() {
+const clearTimer = () => {
   if (timer !== undefined) clearInterval(timer);
   timer = undefined;
-}
+};
 
-function tick() {
+const tick = () => {
   const now = Date.now();
   const seconds = Math.max(0, (now - lastTick) / 1000);
   const next = advanceCounter(
@@ -72,23 +72,23 @@ function tick() {
   displayValue.value = next.value;
   remainder = next.remainder;
   lastTick = now;
-}
+};
 
-function syncAnimation() {
+const syncAnimation = () => {
   clearTimer();
   running.value = !!motion && !motion.matches && props.rate !== 0;
   if (!running.value) return;
   lastTick = Date.now();
   if (!document.hidden) timer = setInterval(tick, 1000);
-}
+};
 
-function visibilityChanged() {
+const visibilityChanged = () => {
   clearTimer();
   if (running.value && !document.hidden) {
     tick();
     timer = setInterval(tick, 1000);
   }
-}
+};
 
 watch([() => props.number, () => props.rate], () => {
   displayValue.value = props.number;
