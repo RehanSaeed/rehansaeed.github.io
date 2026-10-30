@@ -29,6 +29,7 @@
         Microsoft, my opinions are my own. If it’s written in HTML/CSS/JS, C# or
         .NET, I have probably written something using it in anger!
       </p>
+      <u-location-map />
       <p class="about__description">
         I occasionally appear on
         <a :href="youtubeUrl">Youtube</a> and
