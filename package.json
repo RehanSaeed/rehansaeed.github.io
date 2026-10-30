@@ -60,7 +60,7 @@
     "@takumi-rs/core": "2.19.0",
     "@types/sanitize-html": "2.16.2",
     "cheerio": "^1.2.0",
-    "eslint": "10.13.0",
+    "eslint": "10.14.0",
     "github-slugger": "2.0.0",
     "husky": "9.1.7",
     "lint-staged": "17.6.0",
