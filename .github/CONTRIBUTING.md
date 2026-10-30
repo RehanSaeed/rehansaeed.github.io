@@ -60,20 +60,27 @@ their outer edges align.
 
 About uses the same Portfolio download and star totals and animations, including
 listed organisation-hosted projects. The `borderless` option on
-`u-portfolio-statistics` shows both titles and tickers without outer card borders
-above the Followers, Sponsors and Watchers badges, rather than an account-only
-stars badge.
+`u-portfolio-statistics` shows titles and tickers without outer card borders.
+Its `account-stats` option adds Followers and Watchers in a second row on About,
+with snapshot values and no estimated growth. Followers and Watchers badges stay
+below for comparison; there is no Sponsors or account-only stars badge.
 
 The shared number ticker has an optional `info` slot beside its centred title;
 ordinary title/number/rate usage does not require it.
 
 The matching Watchers badge sums `watchers.totalCount` from GitHub GraphQL across
 all public repositories owned by the account in `site.json`, including forks and
-archived repositories. It paginates beyond 100 repositories and counts watch
+archived repositories. The same query fetches the account's follower total.
+It paginates beyond 100 repositories and counts watch
 subscriptions, not unique people. This build-time total uses the existing
 `GITHUB_TOKEN`, a one-hour local cache and the weekly rebuild. Failed requests
 retain saved counts with a warning and retry next build; without saved counts the
 build fails. Do not use REST's `watchers_count`, which counts stars instead.
+
+The Followers ticker is a build snapshot; its Shields badge refreshes
+independently. Shields also supports individual NuGet download badges. An
+aggregate download badge can use the build's Portfolio total, just as the
+Watchers badge uses the build's account total.
 
 ## Images
 

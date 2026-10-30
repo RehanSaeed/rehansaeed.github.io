@@ -65,7 +65,10 @@
         <a :href="gitHubUrl">GitHub profile</a> and of course there are other
         commercial projects that I cannot disclose.
       </p>
-      <u-portfolio-statistics class="about__statistics" borderless />
+      <u-portfolio-statistics
+        class="about__statistics"
+        borderless
+        account-stats />
       <div class="about__github-images">
         <u-tooltip v-slot="{ trigger }" text="View my GitHub followers">
           <a v-bind="trigger" :href="gitHubFollowersUrl">
@@ -75,16 +78,6 @@
               height="30"
               width="168"
               :src="gitHubFollowersImageUrl" />
-          </a>
-        </u-tooltip>
-        <u-tooltip v-slot="{ trigger }" text="Sponsor me on GitHub">
-          <a v-bind="trigger" :href="gitHubSponsorsUrl">
-            <img
-              class="about__github-image"
-              alt="GitHub sponsors"
-              height="30"
-              width="121"
-              :src="gitHubSponsorsImageUrl" />
           </a>
         </u-tooltip>
         <u-tooltip
@@ -392,12 +385,6 @@ export default {
     },
     gitHubUrl() {
       return this.metadata.author.gitHub.url;
-    },
-    gitHubSponsorsUrl() {
-      return `https://github.com/sponsors/${this.metadata.author.gitHub.user}`;
-    },
-    gitHubSponsorsImageUrl() {
-      return `https://img.shields.io/github/sponsors/${this.metadata.author.gitHub.user}?logo=github&style=social`;
     },
     gitHubFollowersUrl() {
       return `https://github.com/${this.metadata.author.gitHub.user}?tab=followers`;

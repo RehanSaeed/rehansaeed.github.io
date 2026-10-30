@@ -164,7 +164,6 @@ for (const width of [375, 1280]) {
           ),
       ).toEqual([
         "GitHub follower count",
-        "GitHub sponsors",
         expect.stringMatching(
           /^GitHub watch subscriptions across my \d+ public account-owned repositories: \d+$/,
         ),
