@@ -1,17 +1,40 @@
 <template>
   <div
     class="portfolio-statistics"
+    :class="{ 'portfolio-statistics--borderless': borderless }"
     :data-downloads="statistics.downloads"
     :data-stars="statistics.stars">
     <div class="portfolio-statistics__totals">
       <u-number-ticker
         title="My Package Downloads"
         :number="statistics.downloads"
-        :rate="downloadRate" />
+        :rate="downloadRate">
+        <template #info>
+          <u-tooltip v-slot="{ trigger }" :text="downloadInfo">
+            <u-button
+              v-bind="trigger"
+              class="portfolio-statistics__info"
+              aria-label="About package downloads">
+              <u-icon name="fa-solid:info-circle" />
+            </u-button>
+          </u-tooltip>
+        </template>
+      </u-number-ticker>
       <u-number-ticker
         title="My GitHub Stars"
         :number="statistics.stars"
-        :rate="starRate" />
+        :rate="starRate">
+        <template #info>
+          <u-tooltip v-slot="{ trigger }" :text="starInfo">
+            <u-button
+              v-bind="trigger"
+              class="portfolio-statistics__info"
+              aria-label="About GitHub stars">
+              <u-icon name="fa-solid:info-circle" />
+            </u-button>
+          </u-tooltip>
+        </template>
+      </u-number-ticker>
     </div>
   </div>
 </template>
@@ -19,6 +42,11 @@
 <script setup lang="ts">
 import statistics from "#blog-portfolio-statistics";
 import { canProjectCounter } from "#shared/utils/ticker";
+
+defineProps<{ borderless?: boolean }>();
+
+const downloadInfo = `Verified total: ${statistics.downloads.toLocaleString("en-GB")} lifetime package downloads across the published open source projects in my portfolio. Downloads are not unique people. The number animates using package lifetime averages, not a live feed. Counts refresh when the site builds.`;
+const starInfo = `Verified total: ${statistics.stars.toLocaleString("en-GB")} GitHub stars across the published open source projects in my portfolio, including listed organisation-owned repositories. The number animates illustratively at an average of one increase every 15 seconds, not live activity. Counts refresh when the site builds.`;
 
 const now = ref(0);
 const downloadRate = computed(() =>
@@ -54,5 +82,24 @@ onMounted(() => {
   max-inline-size: var(--global-space-card-max-width);
   min-inline-size: 0;
   font-size: max(16px, 0.85em);
+}
+
+.portfolio-statistics--borderless {
+  .number-ticker {
+    border: 0;
+    background: none;
+  }
+
+  .portfolio-statistics__info {
+    display: grid;
+    place-items: center;
+    inline-size: 1.25rem;
+    block-size: 1.5rem;
+    font-size: 1rem;
+  }
+
+  .number-ticker__title {
+    min-block-size: 0;
+  }
 }
 </style>

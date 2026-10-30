@@ -98,7 +98,7 @@ unitTest(
   },
 );
 
-test("Portfolio totals match the listed projects and About uses the account stars badge", async ({
+test("Portfolio totals match the listed projects and About shares the star total", async ({
   request,
 }) => {
   const portfolio = await request.get("/portfolio/");
@@ -151,7 +151,7 @@ test("Portfolio totals match the listed projects and About uses the account star
     stars.toLocaleString("en-GB"),
   );
   expect(totals.children("p")).toHaveLength(0);
-  expect(totals.find("button")).toHaveLength(0);
+  expect(totals.find("button")).toHaveLength(2);
   expect(tickers.first().find(".number-ticker__accessible").text()).toBe(
     downloads.toLocaleString("en-GB"),
   );
@@ -165,12 +165,22 @@ test("Portfolio totals match the listed projects and About uses the account star
   const about = await request.get("/about/");
   expect(about.ok()).toBe(true);
   const aboutHtml = load(await about.text());
-  expect(aboutHtml(".portfolio-statistics, .number-ticker")).toHaveLength(0);
-  expect(
-    aboutHtml('.about__github-images img[alt*="stars received"]').attr("src"),
-  ).toBe(
-    "https://img.shields.io/github/stars/RehanSaeed?affiliations=OWNER&style=social",
+  const aboutTickers = aboutHtml(".about__statistics .number-ticker");
+  expect(aboutTickers).toHaveLength(2);
+  expect(aboutTickers.first().find(".number-ticker__title").text()).toBe(
+    "My Package Downloads",
   );
+  expect(aboutTickers.first().find(".number-ticker__accessible").text()).toBe(
+    downloads.toLocaleString("en-GB"),
+  );
+  const aboutStars = aboutTickers.last();
+  expect(aboutStars.find(".number-ticker__title").text()).toBe(
+    "My GitHub Stars",
+  );
+  expect(aboutStars.find(".number-ticker__accessible").text()).toBe(
+    stars.toLocaleString("en-GB"),
+  );
+  expect(aboutHtml('img[src*="shields.io/github/stars/"]')).toHaveLength(0);
   const watchersBadge = aboutHtml(
     '.about__github-images img[alt^="GitHub watch subscriptions"]',
   );
@@ -189,25 +199,57 @@ for (const width of [320, 375, 1280]) {
       await page.emulateMedia({ colorScheme });
       await page.clock.install();
       await page.goto("/about/");
-      const badge = page.getByRole("img", {
-        name: "GitHub stars received on my account's repositories",
-        exact: true,
-      });
-      await expect(badge).toBeVisible();
-      await expect(badge).toHaveAttribute(
-        "src",
-        "https://img.shields.io/github/stars/RehanSaeed?affiliations=OWNER&style=social",
-      );
-      await expect(page.locator(".portfolio-statistics")).toHaveCount(0);
+      const aboutTickers = page.locator(".about__statistics .number-ticker");
+      await expect(aboutTickers).toHaveCount(2);
+      await expect(aboutTickers.locator("h3")).toHaveText([
+        "My Package Downloads",
+        "My GitHub Stars",
+      ]);
+      const aboutStars = aboutTickers.last();
+      await expect(aboutStars).toBeVisible();
+      await expect(aboutStars.locator("h3")).toHaveText("My GitHub Stars");
+      const starTotal = await page
+        .locator(".about__statistics")
+        .getAttribute("data-stars");
+      await expect(
+        page.locator('img[src*="shields.io/github/stars/"]'),
+      ).toHaveCount(0);
       expect(
-        await badge.evaluate((image) => {
-          const bounds = image.getBoundingClientRect();
+        await aboutStars.evaluate((ticker) => {
+          const bounds = ticker.getBoundingClientRect();
+          const badges = document
+            .querySelector(".about__github-images")!
+            .getBoundingClientRect();
           return {
-            height: bounds.height,
+            border: getComputedStyle(ticker).borderTopWidth,
+            aboveBadges: bounds.bottom <= badges.top,
             fits: bounds.left >= 0 && bounds.right <= window.innerWidth,
           };
         }),
-      ).toEqual({ height: 30, fits: true });
+      ).toEqual({ border: "0px", aboveBadges: true, fits: true });
+      expect(
+        await aboutTickers.evaluateAll((tickers) => {
+          const [downloads, stars] = tickers.map((ticker) =>
+            ticker.getBoundingClientRect(),
+          );
+          return {
+            sideBySide:
+              downloads!.top === stars!.top && downloads!.right <= stars!.left,
+            borderless: tickers.every(
+              (ticker) => getComputedStyle(ticker).borderTopWidth === "0px",
+            ),
+            fits: tickers.every((ticker) => {
+              const bounds = ticker.getBoundingClientRect();
+              const digits = ticker.querySelector(".number-ticker__digits")!;
+              return (
+                bounds.left >= 0 &&
+                bounds.right <= window.innerWidth &&
+                digits.scrollWidth <= digits.clientWidth
+              );
+            }),
+          };
+        }),
+      ).toEqual({ sideBySide: true, borderless: true, fits: true });
       const watchersBadge = page.getByRole("img", {
         name: /^GitHub watch subscriptions/,
       });
@@ -244,6 +286,7 @@ for (const width of [320, 375, 1280]) {
       await expect(totals).toBeVisible();
       await expect(totals).toHaveAttribute("data-downloads", /^\d+$/);
       await expect(totals).toHaveAttribute("data-stars", /^\d+$/);
+      await expect(totals).toHaveAttribute("data-stars", starTotal!);
       await expect(totals.locator(".number-ticker__title")).toHaveText([
         "My Package Downloads",
         "My GitHub Stars",
@@ -308,6 +351,9 @@ for (const width of [320, 375, 1280]) {
       const bounds = await totals.boundingBox();
       expect(bounds!.x).toBeGreaterThanOrEqual(0);
       expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
+      await expect(
+        page.locator(".portfolio__open-source .portfolio-card").first(),
+      ).toBeVisible();
       const aligned = await page.evaluate(() => {
         const tickers = document
           .querySelector(".portfolio-statistics__totals")!
@@ -391,6 +437,55 @@ for (const width of [320, 375, 1280]) {
   });
 }
 
+for (const path of ["/about/", "/portfolio/"]) {
+  test(`Statistics info tooltips support hover, keyboard and Escape on ${path}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 375, height: 900 });
+    await page.goto(path, { waitUntil: "domcontentloaded" });
+    const downloads = page.getByRole("button", {
+      name: "About package downloads",
+      exact: true,
+    });
+    const stars = page.getByRole("button", {
+      name: "About GitHub stars",
+      exact: true,
+    });
+    await expect(downloads).toBeEnabled();
+    await expect(downloads.locator("svg path")).toHaveCount(1);
+    await expect(stars.locator("svg path")).toHaveCount(1);
+    await downloads.hover();
+    const tooltip = page.getByRole("tooltip");
+    await expect(tooltip).toBeVisible();
+    await expect(tooltip).toContainText("Verified total:");
+    await expect(tooltip).toContainText("not unique people");
+    await expect(tooltip).toContainText("lifetime averages, not a live feed");
+    await expect(downloads).toHaveAccessibleDescription(
+      await tooltip.innerText(),
+    );
+    await page.keyboard.press("Escape");
+    await expect(tooltip).toHaveCount(0);
+    await page.mouse.move(0, 0);
+    await stars.focus();
+    await expect(tooltip).toBeVisible();
+    await expect(tooltip).toContainText(
+      "listed organisation-owned repositories",
+    );
+    await expect(tooltip).toContainText("one increase every 15 seconds");
+    await expect(stars).toHaveAccessibleDescription(await tooltip.innerText());
+    await expect(tooltip).toHaveAttribute("data-positioned", "true");
+    expect(
+      await tooltip.evaluate((element) => {
+        const bounds = element.getBoundingClientRect();
+        return bounds.left >= 0 && bounds.right <= innerWidth;
+      }),
+    ).toBe(true);
+    await page.keyboard.press("Escape");
+    await expect(tooltip).toHaveCount(0);
+    await expect(stars).toBeFocused();
+  });
+}
+
 test("Portfolio uses lifetime download rates and a visible fifteen-second star cadence", async ({
   page,
 }) => {
@@ -423,5 +518,5 @@ test("Portfolio uses lifetime download rates and a visible fifteen-second star c
   await expect(stars).toHaveAttribute("data-value", String(starValue + 2));
   await expect(
     page.locator(".portfolio-statistics").getByRole("button"),
-  ).toHaveCount(0);
+  ).toHaveCount(2);
 });

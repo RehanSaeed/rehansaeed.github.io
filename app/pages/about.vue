@@ -65,19 +65,8 @@
         <a :href="gitHubUrl">GitHub profile</a> and of course there are other
         commercial projects that I cannot disclose.
       </p>
+      <u-portfolio-statistics class="about__statistics" borderless />
       <div class="about__github-images">
-        <u-tooltip
-          v-slot="{ trigger }"
-          text="Stars received by my account-owned repositories; organisation-owned projects are excluded.">
-          <a v-bind="trigger" :href="gitHubUrl">
-            <img
-              class="about__github-image"
-              alt="GitHub stars received on my account's repositories"
-              height="30"
-              width="135"
-              :src="gitHubStarsImageUrl" />
-          </a>
-        </u-tooltip>
         <u-tooltip v-slot="{ trigger }" text="View my GitHub followers">
           <a v-bind="trigger" :href="gitHubFollowersUrl">
             <img
@@ -416,9 +405,6 @@ export default {
     gitHubFollowersImageUrl() {
       return `https://img.shields.io/github/followers/${this.metadata.author.gitHub.user}?style=social`;
     },
-    gitHubStarsImageUrl() {
-      return `https://img.shields.io/github/stars/${this.metadata.author.gitHub.user}?affiliations=OWNER&style=social`;
-    },
     gitHubWatchersImageUrl() {
       return `https://img.shields.io/badge/Watchers-${this.watchers.watchers}-blue?logo=github&style=social`;
     },
@@ -483,6 +469,7 @@ export default {
 <style lang="scss">
 .about {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--global-space-fluid-5);
   justify-items: center;
 }
@@ -498,6 +485,9 @@ export default {
 
 .about__container {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-inline-size: 0;
+  max-inline-size: 100%;
   justify-items: center;
 
   &:last-child {
@@ -513,6 +503,10 @@ export default {
 
 .about__social-links {
   margin-block-end: var(--global-space-fluid-3);
+}
+
+.about__statistics {
+  margin-block-end: var(--global-space-fixed-5);
 }
 
 .about__github-images,

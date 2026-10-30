@@ -52,14 +52,20 @@ Random pauses and jumps preserve the average and retain fractional increments.
 Optional `paused` and `locale` props support other uses; the default locale is
 `en-GB`. Reduced-motion users and screen readers receive the supplied number.
 Hidden tabs suspend timers and catch up at the average rate on return.
-Portfolio displays only the two title-and-number cards, without text or controls.
+Portfolio displays two title-and-number cards with accessible info buttons using
+the shared tooltip component. Their tooltips explain scope, verified counts and
+illustrative animation; there is no pause control or explanatory paragraph.
 The pair uses the same maximum width and font sizing as compact project cards so
 their outer edges align.
 
-About uses Shields.io's built-in GitHub account stars badge alongside Followers
-and Sponsors. It refreshes independently and counts account-owned repositories
-(`affiliations=OWNER`), not the curated Portfolio projects or organisation-hosted
-repositories, so the two totals can differ.
+About uses the same Portfolio download and star totals and animations, including
+listed organisation-hosted projects. The `borderless` option on
+`u-portfolio-statistics` shows both titles and tickers without outer card borders
+above the Followers, Sponsors and Watchers badges, rather than an account-only
+stars badge.
+
+The shared number ticker has an optional `info` slot beside its centred title;
+ordinary title/number/rate usage does not require it.
 
 The matching Watchers badge sums `watchers.totalCount` from GitHub GraphQL across
 all public repositories owned by the account in `site.json`, including forks and
