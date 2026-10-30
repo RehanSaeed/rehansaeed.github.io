@@ -107,7 +107,7 @@ test("Exports complete monthly history and signs a read-only OAuth assertion", a
     ]);
     expect(body.dateRanges[0]).toEqual({
       startDate: "2024-01-15",
-      endDate: new Date(Date.now() - 4 * 86_400_000).toISOString().slice(0, 10),
+      endDate: "today",
     });
     expect(body.dimensionFilter.filter).toMatchObject({
       fieldName: "hostName",
@@ -151,13 +151,15 @@ test("Exports complete monthly history and signs a read-only OAuth assertion", a
 });
 
 test("Retrieves all report pages instead of truncating history", async ({}, info) => {
+  Date.now = () => Date.parse("2026-10-30T00:30:00Z");
   const dir = info.outputPath("cache");
   await mkdir(dir, { recursive: true });
   const offsets: number[] = [];
   globalThis.fetch = async (input, init) => {
     if (String(input).includes("oauth2"))
       return Response.json({ access_token: "test" });
-    const { offset } = JSON.parse(String(init?.body));
+    const { offset, dateRanges } = JSON.parse(String(init?.body));
+    expect(dateRanges[0].endDate).toBe(offset ? "2026-10-30" : "today");
     offsets.push(offset);
     return Response.json({
       ...report([row("/example/", offset ? "20240201" : "20240115", "2")]),
@@ -175,7 +177,7 @@ test("Retrieves all report pages instead of truncating history", async ({}, info
   ).toEqual([2, 2]);
 });
 
-test("Starts at publication for newer posts and omits posts outside the processed window", async ({}, info) => {
+test("Starts at publication for newer posts and omits future posts", async ({}, info) => {
   const dir = info.outputPath("cache");
   await mkdir(dir, { recursive: true });
   globalThis.fetch = async (input) =>
@@ -236,13 +238,22 @@ test("Invalid configuration is explicit and does not expose the service-account 
     ),
   ).rejects.toThrow("Invalid GA4 reporting configuration.");
   process.env.GA4_START_DATE = "9999-01-01";
+  globalThis.fetch = async (input) =>
+    Response.json(
+      String(input).includes("oauth2") ? { access_token: "test" } : report([]),
+    );
   await expect(
     postTrafficSnapshot(
       info.outputPath("unused"),
       [entry()],
       "https://rehansaeed.com",
     ),
-  ).rejects.toThrow("at least four days ago");
+  ).rejects.toMatchObject({
+    cause: {
+      message:
+        "GA4_START_DATE must not be after today in the reporting timezone.",
+    },
+  });
 });
 
 for (const failure of [
@@ -421,19 +432,91 @@ test("Fresh caches refresh when reporting coverage or the published article set 
   expect(calls).toBe(6);
 });
 
-test("Processing cutoff leaves more than 48 hours even at UTC midnight for western timezones", async ({}, info) => {
+for (const [timeZone, instant, endDate] of [
+  ["America/Los_Angeles", "2026-10-30T00:30:00Z", "2026-10-29"],
+  ["Pacific/Kiritimati", "2026-10-30T12:30:00Z", "2026-10-31"],
+  ["Europe/London", "2026-10-30T12:30:00Z", "2026-10-30"],
+] as const) {
+  test(`Includes today's article and traffic in ${timeZone}`, async ({}, info) => {
+    const dir = info.outputPath("cache");
+    await mkdir(dir, { recursive: true });
+    Date.now = () => Date.parse(instant);
+    process.env.GA4_START_DATE = endDate;
+    const requestedEnds: string[] = [];
+    globalThis.fetch = async (input, init) => {
+      if (String(input).includes("oauth2"))
+        return Response.json({ access_token: "test" });
+      const body = JSON.parse(String(init?.body));
+      requestedEnds.push(body.dateRanges[0].endDate);
+      return Response.json({
+        ...report([row("/today/", endDate.replaceAll("-", ""), "2", "6")]),
+        metadata: { timeZone },
+      });
+    };
+    const snapshot = await postTrafficSnapshot(
+      dir,
+      [entry("/today/", endDate), entry("/future/", "9999-01-01")],
+      "https://rehansaeed.com",
+    );
+    expect(requestedEnds).toEqual(["today"]);
+    expect(Object.keys(snapshot!.posts)).toEqual(["/today/"]);
+    expect(snapshot!.updated).toBe(instant.replace("Z", ".000Z"));
+    expect(snapshot!.posts["/today/"]).toEqual({
+      startDate: endDate,
+      endDate,
+      months: [{ month: endDate.slice(0, 7), views: 2, engagementSeconds: 6 }],
+      days: [{ date: endDate, views: 2, engagementSeconds: 6 }],
+    });
+  });
+}
+
+test("Fresh delayed snapshots refresh, reuse today's data and roll over at property midnight", async ({}, info) => {
   const dir = info.outputPath("cache");
   await mkdir(dir, { recursive: true });
-  Date.now = () => Date.parse("2026-10-25T00:00:00Z");
-  globalThis.fetch = async (input, init) => {
-    if (String(input).includes("oauth2"))
-      return Response.json({ access_token: "test" });
-    const { endDate } = JSON.parse(String(init?.body)).dateRanges[0];
-    const latestEndOfDay = Date.parse(`${endDate}T23:59:59-12:00`);
-    expect(Date.now() - latestEndOfDay).toBeGreaterThan(48 * 60 * 60 * 1000);
-    return Response.json(report([]));
+  Date.now = () => Date.parse("2026-10-30T00:30:00Z");
+  let calls = 0;
+  globalThis.fetch = async (input) => {
+    calls++;
+    return Response.json(
+      String(input).includes("oauth2")
+        ? { access_token: "test" }
+        : { ...report([]), metadata: { timeZone: "America/Los_Angeles" } },
+    );
   };
   await postTrafficSnapshot(dir, [entry()], "https://rehansaeed.com");
+  const file = info.outputPath("cache", "blog-traffic.json");
+  const cached = JSON.parse(await readFile(file, "utf8"));
+  const history = cached.snapshot.posts["/example/"];
+  history.endDate = "2026-10-25";
+  history.days = trafficDays("2026-09-26", history.endDate).map((date) => ({
+    date,
+    views: 0,
+    engagementSeconds: 0,
+  }));
+  await writeFile(file, JSON.stringify(cached));
+  const refreshed = await postTrafficSnapshot(
+    dir,
+    [entry(), entry("/today/", "2026-10-29")],
+    "https://rehansaeed.com",
+  );
+  expect(calls).toBe(4);
+  expect(refreshed!.posts["/today/"]!.endDate).toBe("2026-10-29");
+  expect(
+    await postTrafficSnapshot(
+      dir,
+      [entry(), entry("/today/", "2026-10-29")],
+      "https://rehansaeed.com",
+    ),
+  ).toEqual(refreshed);
+  expect(calls).toBe(4);
+  Date.now = () => Date.parse("2026-10-30T07:01:00Z");
+  const nextDay = await postTrafficSnapshot(
+    dir,
+    [entry(), entry("/today/", "2026-10-29")],
+    "https://rehansaeed.com",
+  );
+  expect(calls).toBe(6);
+  expect(nextDay!.posts["/today/"]!.endDate).toBe("2026-10-30");
 });
 
 test("Engagement requires complete finite nonnegative totals but accepts old view-only snapshots", () => {
@@ -542,8 +625,8 @@ test("Date presets select monthly or daily data relative to the reporting cutoff
   expect(formatTrafficDuration(59.5)).toBe("1m 0s");
 });
 
-test("Exports exactly the last 30 processed days without another GA4 query", async ({}, info) => {
-  Date.now = () => Date.parse("2024-03-04T12:00:00Z");
+test("Exports exactly the last 30 calendar days through today without another GA4 query", async ({}, info) => {
+  Date.now = () => Date.parse("2024-02-29T12:00:00Z");
   const dir = info.outputPath("cache");
   await mkdir(dir, { recursive: true });
   globalThis.fetch = async (input) =>

@@ -67,7 +67,7 @@ export const trafficHistorySchema = z
         context.addIssue({
           code: "custom",
           message:
-            "Daily traffic must cover the last 30 processed days or the shorter tracking interval.",
+            "Daily traffic must cover the last 30 calendar days or the shorter tracking interval.",
         });
       }
       for (const month of history.months) {

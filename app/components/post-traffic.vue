@@ -154,7 +154,7 @@ const dateFormat = new Intl.DateTimeFormat("en-GB", {
 const date = (value: string) => dateFormat.format(new Date(value));
 const sourceText = computed(() =>
   data.value
-    ? `Source: Google Analytics 4 (${data.value.timeZone}). Updated ${date(data.value.updated)}. Repeat views are included; these are not unique visitors. Engagement is recorded foreground time per view, not reading completion. Switch metrics to see views or seconds per view. Presets end at the reporting cutoff; Last month shows the last 30 processed days. Monthly buckets may be partial. Blockers and consent choices can reduce recorded traffic.`
+    ? `Source: Google Analytics 4 (${data.value.timeZone}). Updated ${date(data.value.updated)}. Repeat views are included; these are not unique visitors. Engagement is recorded foreground time per view, not reading completion. Switch metrics to see views or seconds per view. Presets end at the snapshot's latest date; Last month shows the last 30 calendar days. Recent figures are provisional while Google Analytics processes incoming data. Monthly buckets may be partial. Blockers and consent choices can reduce recorded traffic.`
     : "",
 );
 const total = computed(
