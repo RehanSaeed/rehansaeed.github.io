@@ -24,6 +24,12 @@ const snapshot: TrafficSnapshot = {
   },
 };
 
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    sessionStorage.setItem("article-traffic-visible", "true");
+  });
+});
+
 async function expectAlignedScale(chart: Locator) {
   const edges = await chart
     .locator(".post-traffic__scale span")
