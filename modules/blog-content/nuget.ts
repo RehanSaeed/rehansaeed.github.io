@@ -8,8 +8,9 @@ import type { ContentEntry } from "./scan";
 const packageSchema = z.object({
   id: z.string().regex(/^[A-Za-z0-9][A-Za-z0-9_.-]*$/),
   downloads: z.number().int().nonnegative(),
+  createdAt: z.iso.datetime({ offset: true }).optional(),
 });
-const cacheSchema = z.object({
+export const cacheSchema = z.object({
   updated: z.number(),
   snapshots: z.record(z.string(), packageSchema),
 });
@@ -62,7 +63,11 @@ export async function portfolioDownloads(
   const fresh =
     cached &&
     Date.now() - cached.updated < 60 * 60 * 1000 &&
-    ids.every((id) => cached.snapshots[id]?.id.toLowerCase() === id);
+    ids.every(
+      (id) =>
+        cached.snapshots[id]?.id.toLowerCase() === id &&
+        cached.snapshots[id]?.createdAt,
+    );
   const snapshots: z.infer<typeof cacheSchema>["snapshots"] = {};
   let complete = true;
   for (const id of ids) {
@@ -75,6 +80,7 @@ export async function portfolioDownloads(
       const url = new URL("https://www.nuget.org/api/v2/FindPackagesById()");
       url.searchParams.set("id", `'${id}'`);
       url.searchParams.set("$top", "1");
+      url.searchParams.set("$orderby", "Created asc");
       url.searchParams.set("semVerLevel", "2.0.0");
       const response = await fetch(url, {
         signal: AbortSignal.timeout(15_000),
@@ -94,6 +100,9 @@ export async function portfolioDownloads(
         downloads: downloadCountSchema.parse(
           entry.find("d\\:DownloadCount").text(),
         ),
+        createdAt: packageSchema.shape.createdAt
+          .unwrap()
+          .parse(entry.find("d\\:Created").text()),
       };
     } catch (error) {
       if (!saved || saved.id.toLowerCase() !== id) {
@@ -112,7 +121,10 @@ export async function portfolioDownloads(
   if (!fresh) {
     await writeFile(
       path,
-      JSON.stringify({ updated: complete ? Date.now() : 0, snapshots }),
+      JSON.stringify({
+        updated: complete ? Date.now() : 0,
+        snapshots,
+      }),
     );
   }
   return Object.fromEntries(

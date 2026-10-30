@@ -24,7 +24,10 @@ test("Portfolio popularity refreshes expired counts and reuses fresh counts", as
   globalThis.fetch = async () => {
     calls++;
     return new Response(
-      JSON.stringify({ stargazers_count: stars, forks_count: 3 }),
+      JSON.stringify({
+        stargazers_count: stars,
+        forks_count: 3,
+      }),
     );
   };
   try {
@@ -37,13 +40,28 @@ test("Portfolio popularity refreshes expired counts and reuses fresh counts", as
     stars = 30;
     expect(await portfolioSnapshots(dir, [entry])).toEqual(snapshots);
     expect(calls).toBe(1);
+    const expiredAt = Date.now() - 2 * 60 * 60 * 1000;
     await writeFile(
       info.outputPath("portfolio-cache", "blog-portfolio.json"),
-      JSON.stringify({ updated: 0, snapshots }),
+      JSON.stringify({
+        updated: expiredAt,
+        snapshots,
+        previous: { updated: expiredAt - 60 * 60 * 1000, snapshots },
+      }),
     );
     const refreshed = await portfolioSnapshots(dir, [entry]);
     expect(refreshed[entry.data.permalink]?.stars).toBe(30);
     expect(calls).toBe(2);
+    const saved = JSON.parse(
+      await readFile(
+        info.outputPath("portfolio-cache", "blog-portfolio.json"),
+        "utf8",
+      ),
+    );
+    expect(saved).toEqual({
+      updated: expect.any(Number),
+      snapshots: refreshed,
+    });
   } finally {
     globalThis.fetch = originalFetch;
   }
@@ -69,7 +87,12 @@ test("A newly added project cannot be omitted by a fresh popularity cache", asyn
   );
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async () =>
-    new Response(JSON.stringify({ stargazers_count: 50, forks_count: 4 }));
+    new Response(
+      JSON.stringify({
+        stargazers_count: 50,
+        forks_count: 4,
+      }),
+    );
   try {
     const snapshots = await portfolioSnapshots(dir, [first, second]);
     expect(Object.keys(snapshots)).toHaveLength(2);

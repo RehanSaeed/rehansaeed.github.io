@@ -37,8 +37,12 @@ const hoverOpenDelayMs = 300;
 const closeDelayMs = 120;
 
 const props = withDefaults(
-  defineProps<{ text: string; placement?: Placement }>(),
-  { placement: "top" },
+  defineProps<{
+    text: string;
+    placement?: Placement;
+    toggleOnClick?: boolean;
+  }>(),
+  { placement: "top", toggleOnClick: false },
 );
 const id = useId();
 const bubble = useTemplateRef("bubble");
@@ -150,8 +154,20 @@ const onPointerLeave = () => {
 };
 
 const onPointerDown = () => {
+  if (props.toggleOnClick) {
+    return;
+  }
   focused = false;
   dismiss();
+};
+
+const onClick = (event: MouseEvent) => {
+  if (!props.toggleOnClick || open.value) {
+    dismiss();
+    return;
+  }
+  focused = true;
+  show(event);
 };
 
 const onFocus = (event: FocusEvent) => {
@@ -189,12 +205,13 @@ const onBubbleLeave = () => {
 
 const trigger = computed(() => ({
   "aria-describedby": open.value ? id : undefined,
+  "aria-expanded": props.toggleOnClick ? open.value : undefined,
   onPointerenter: onPointerEnter,
   onPointerleave: onPointerLeave,
   onPointerdown: onPointerDown,
   onFocus,
   onBlur,
-  onClick: dismiss,
+  onClick,
 }));
 
 const onEscape = (event: KeyboardEvent) => {
