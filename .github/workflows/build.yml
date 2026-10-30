@@ -14,7 +14,7 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
   schedule:
-    - cron: "17 5 * * *"
+    - cron: "17 5 * * 1"
 
 permissions:
   contents: read
