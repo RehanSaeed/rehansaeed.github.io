@@ -110,8 +110,9 @@ test("Shared ticker needs title, number and rate and follows the supplied averag
 }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await mountTicker(page);
-  const ticker = page.getByRole("article", { name: "Downloads" });
-  await expect(ticker.getByRole("heading")).toHaveText("Downloads");
+  const ticker = page.locator("dl.number-ticker");
+  await expect(ticker.getByRole("term")).toHaveText("Downloads");
+  await expect(ticker.getByRole("definition")).toHaveCount(1);
   await expect(ticker.locator(".number-ticker__value")).toHaveAttribute(
     "aria-live",
     "off",
@@ -124,7 +125,15 @@ test("Shared ticker needs title, number and rate and follows the supplied averag
   await expect(ticker.locator(".number-ticker__accessible")).toHaveText(
     "1,000",
   );
-  await expect(ticker.locator("h3, p")).toHaveCount(2);
+  await expect(ticker).toMatchAriaSnapshot(`
+    - term: Downloads
+    - definition: 1,000
+  `);
+  await expect(ticker.getByRole("heading")).toHaveCount(0);
+  await expect(ticker.locator(".number-ticker__digits")).toHaveAttribute(
+    "aria-hidden",
+    "true",
+  );
   await expect(ticker.getByRole("button")).toHaveCount(0);
 });
 
@@ -176,6 +185,10 @@ test("Reduced motion prevents ticking and changing the preference stops animatio
   await expect(ticker).toHaveAttribute("data-state", "paused");
   await page.clock.runFor(5000);
   await expect(ticker).toHaveAttribute("data-value", "1002");
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(ticker).toHaveAttribute("data-state", "running");
+  await page.clock.runFor(1000);
+  await expect(ticker).toHaveAttribute("data-value", "1004");
 });
 
 test("Slow rates retain fractional increments instead of inventing one count every second", async ({

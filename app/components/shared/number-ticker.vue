@@ -1,17 +1,16 @@
 <template>
-  <article
+  <dl
     class="number-ticker"
-    :aria-label="title"
     :data-value="displayValue"
     :data-rate="rate"
     :data-state="running ? 'running' : 'paused'">
-    <div
+    <dt
       class="number-ticker__header"
       :class="{ 'number-ticker__header--with-info': $slots.info }">
-      <h3 class="number-ticker__title">{{ title }}</h3>
+      <span class="number-ticker__title">{{ title }}</span>
       <slot name="info" />
-    </div>
-    <p class="number-ticker__value" aria-live="off">
+    </dt>
+    <dd class="number-ticker__value" aria-live="off">
       <span class="number-ticker__accessible">{{ exactValue }}</span>
       <span class="number-ticker__digits" aria-hidden="true">
         <span
@@ -28,8 +27,8 @@
           </Transition>
         </span>
       </span>
-    </p>
-  </article>
+    </dd>
+  </dl>
 </template>
 
 <script setup lang="ts">
@@ -140,7 +139,7 @@ onBeforeUnmount(() => {
 }
 
 .number-ticker__header--with-info {
-  grid-template-columns: 1.25rem minmax(0, 1fr) 1.25rem;
+  grid-template-columns: 1.5rem minmax(0, 1fr) 1.5rem;
   gap: 0.25rem;
 
   .number-ticker__title {

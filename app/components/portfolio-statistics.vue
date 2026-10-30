@@ -10,7 +10,7 @@
         :number="statistics.downloads"
         :rate="downloadRate">
         <template #info>
-          <u-tooltip v-slot="{ trigger }" :text="downloadInfo">
+          <u-tooltip v-slot="{ trigger }" :text="downloadInfo" toggle-on-click>
             <u-button
               v-bind="trigger"
               class="portfolio-statistics__info"
@@ -25,7 +25,7 @@
         :number="statistics.stars"
         :rate="starRate">
         <template #info>
-          <u-tooltip v-slot="{ trigger }" :text="starInfo">
+          <u-tooltip v-slot="{ trigger }" :text="starInfo" toggle-on-click>
             <u-button
               v-bind="trigger"
               class="portfolio-statistics__info"
@@ -88,9 +88,15 @@ onMounted(() => {
 .portfolio-statistics__info {
   display: grid;
   place-items: center;
-  inline-size: 1.25rem;
+  inline-size: 1.5rem;
   block-size: 1.5rem;
   font-size: 1rem;
+  touch-action: manipulation;
+
+  &:focus-visible {
+    outline: 2px solid var(--global-accent-color);
+    outline-offset: 3px;
+  }
 }
 
 .portfolio-statistics--borderless {

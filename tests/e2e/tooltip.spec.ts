@@ -271,17 +271,17 @@ test("About image links describe their destinations without changing their layou
       count: 2,
     },
     {
-      selector: ".github-badges a:nth-child(1)",
+      selector: ".github-badges li:nth-child(1) a",
       text: "View my GitHub followers",
       count: 1,
     },
     {
-      selector: ".github-badges a:nth-child(3)",
+      selector: ".github-badges li:nth-child(3) a",
       text: "Sponsor me on GitHub",
       count: 1,
     },
     {
-      selector: ".github-badges a:nth-child(2)",
+      selector: ".github-badges li:nth-child(2) a",
       text: "Total watch subscriptions across my public, account-owned repositories, including forks and archived repositories but excluding organisation-owned repositories. A person watching several repositories is counted once per repository. Refreshed when this site builds.",
       count: 1,
     },
