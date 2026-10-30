@@ -1024,6 +1024,18 @@ test("Muting and unmount prevent late tag previews", async ({ page }) => {
 test("Search opening, typing, result hover and selection, and dismissal stay silent", async ({
   page,
 }) => {
+  await page.addInitScript(() => {
+    const focus = HTMLInputElement.prototype.focus;
+    HTMLInputElement.prototype.focus = function (
+      this: HTMLInputElement,
+      options?: FocusOptions,
+    ) {
+      focus.call(this, options);
+      if (this.classList.contains("search__input")) {
+        this.setAttribute("data-test-autofocused", "true");
+      }
+    };
+  });
   await page.goto("/");
   await ready(page);
   await page.getByRole("button", { name: "Open search", exact: true }).click();
@@ -1047,10 +1059,13 @@ test("Search opening, typing, result hover and selection, and dismissal stay sil
     page.getByRole("dialog", { name: "Search", exact: true }),
   ).toBeVisible();
   expect(await playedSounds(page)).toEqual([]);
-  await page
-    .getByRole("searchbox", { name: "Search", exact: true })
-    .press("Tab");
-  await page.getByRole("button", { name: "Close Search", exact: true }).focus();
+  const search = page.getByRole("searchbox", { name: "Search", exact: true });
+  const close = page.getByRole("button", { name: "Close Search", exact: true });
+  // The dialog's delayed autofocus must finish before testing focus elsewhere.
+  await expect(search).toHaveAttribute("data-test-autofocused", "true");
+  await expect(search).toHaveValue("ASP.NET");
+  await search.press("Tab");
+  await close.focus();
   const tooltip = page.getByRole("tooltip", {
     name: "Close Search",
     exact: true,
@@ -1061,6 +1076,8 @@ test("Search opening, typing, result hover and selection, and dismissal stay sil
   await expect(
     page.getByRole("dialog", { name: "Search", exact: true }),
   ).toBeVisible();
+  await expect(close).toBeFocused();
+  await expect(search).toHaveValue("ASP.NET");
   expect(await playedSounds(page)).toEqual([]);
   await page.keyboard.press("Escape");
   await expect(
