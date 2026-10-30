@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import {
   Comment,
   Fragment,
@@ -6,10 +6,13 @@ import {
   h,
   normalizeClass,
   normalizeStyle,
+  type CSSProperties,
+  type VNode,
+  type VNodeArrayChildren,
 } from "vue";
 
 // Vue's stringifyStyle lives in @vue/shared, which the browser build of vue doesn't re-export.
-const stringifyStyle = (style) =>
+const stringifyStyle = (style: CSSProperties | string | undefined) =>
   typeof style === "string"
     ? style
     : Object.entries(style ?? {})
@@ -22,7 +25,7 @@ const stringifyStyle = (style) =>
         })
         .join("");
 
-const escapeHtml = (value) =>
+const escapeHtml = (value: unknown) =>
   String(value)
     .replace(/&/g, "&amp;")
     .replace(/"/g, "&quot;")
@@ -30,7 +33,7 @@ const escapeHtml = (value) =>
     .replace(/>/g, "&gt;");
 
 // Serialises the slotted SVG vnodes to markup so they can be used as a CSS mask image.
-const toHtml = (vnodes) =>
+const toHtml = (vnodes?: (VNode | VNodeArrayChildren[number])[]): string =>
   (vnodes ?? [])
     .map((vnode) => {
       if (vnode == null || typeof vnode === "boolean") {
@@ -39,6 +42,9 @@ const toHtml = (vnodes) =>
       if (typeof vnode !== "object") {
         return escapeHtml(vnode);
       }
+      if (Array.isArray(vnode)) {
+        return toHtml(vnode);
+      }
       if (vnode.type === Comment) {
         return "";
       }
@@ -46,7 +52,7 @@ const toHtml = (vnodes) =>
         return escapeHtml(vnode.children);
       }
       if (vnode.type === Fragment) {
-        return toHtml(vnode.children);
+        return Array.isArray(vnode.children) ? toHtml(vnode.children) : "";
       }
       if (typeof vnode.type !== "string") {
         return "";
@@ -81,7 +87,7 @@ const toHtml = (vnodes) =>
     })
     .join("");
 
-export default {
+export default defineComponent({
   name: "u-skeleton",
   data() {
     return {
@@ -116,7 +122,7 @@ export default {
       style,
     });
   },
-};
+});
 </script>
 <style lang="scss">
 .skeleton {

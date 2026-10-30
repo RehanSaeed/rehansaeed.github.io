@@ -6,7 +6,7 @@ const [source, topArgument] = process.argv.slice(2);
 const top = Number(topArgument);
 if (!source || topArgument === undefined || !Number.isInteger(top) || top < 0) {
     throw new Error(
-        'Usage: node scripts/profile-images.mjs "<portrait.jpg>" <square-crop-top>',
+        'Usage: node scripts/profile-images.mts "<portrait.jpg>" <square-crop-top>',
     );
 }
 
@@ -26,7 +26,7 @@ const square = portrait.clone().extract({
     width,
     height: width,
 });
-const publicFile = (path) =>
+const publicFile = (path: string) =>
     fileURLToPath(new URL(`../public/${path}`, import.meta.url));
 const authorDirectory = "images/author/Muhammad-Rehan-Saeed";
 

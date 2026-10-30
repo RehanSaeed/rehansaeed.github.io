@@ -14,16 +14,19 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import type { PropType } from "vue";
+import type { PostMeta } from "~/types/content";
+
+export default defineComponent({
   name: "u-post-meta",
   props: {
     meta: {
-      type: Object,
+      type: Object as PropType<PostMeta>,
       required: true,
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

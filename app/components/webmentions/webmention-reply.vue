@@ -22,8 +22,11 @@
   </article>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import type { PropType } from "vue";
+import type { Webmention } from "~/types/webmentions";
+
+export default defineComponent({
   name: "u-webmention-reply",
   directives: {
     ugcLinks(element) {
@@ -35,7 +38,7 @@ export default {
   props: {
     reply: {
       required: true,
-      type: Object,
+      type: Object as PropType<Webmention>,
     },
   },
   computed: {
@@ -56,16 +59,16 @@ export default {
       }
     },
     name() {
-      return this.reply.data.author.name;
+      return this.reply.data.author?.name ?? "Anonymous";
     },
     photo() {
-      return this.reply.data.author.photo;
+      return this.reply.data.author?.photo ?? "";
     },
     timestamp() {
-      return this.reply.data.published;
+      return this.reply.data.published ?? this.reply.verified_date;
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

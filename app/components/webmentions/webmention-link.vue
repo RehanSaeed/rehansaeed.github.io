@@ -13,13 +13,16 @@
   </article>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import type { PropType } from "vue";
+import type { Webmention } from "~/types/webmentions";
+
+export default defineComponent({
   name: "u-webmention-link",
   props: {
     link: {
       required: true,
-      type: Object,
+      type: Object as PropType<Webmention>,
     },
   },
   computed: {
@@ -36,7 +39,7 @@ export default {
       return this.link.data.published ?? this.link.verified_date;
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

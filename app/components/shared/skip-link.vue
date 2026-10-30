@@ -4,10 +4,10 @@
   >
 </template>
 
-<script>
-export default {
+<script lang="ts">
+export default defineComponent({
   name: "u-skip-link",
-};
+});
 </script>
 
 <style lang="scss" scoped>

@@ -1,5 +1,5 @@
 // Captures a parity snapshot of a running site (live or a locally served `dist`).
-// Usage: node scripts/parity/snapshot.mjs --base https://rehansaeed.com --out tests/parity/baseline
+// Usage: node scripts/parity/snapshot.mts --base https://rehansaeed.com --out tests/parity/baseline
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { parseArgs } from "node:util";
@@ -20,16 +20,20 @@ const ORIGIN_TOKEN = "{origin}";
 const LIVE_ORIGIN = "https://rehansaeed.com";
 
 // Normalise absolute URLs so live and local snapshots are comparable.
-const norm = (value) =>
-    typeof value === "string"
+function norm(value: string): string;
+function norm<T>(value: T): T;
+function norm(value: unknown): unknown {
+    return typeof value === "string"
         ? value
               .split(origin)
               .join(ORIGIN_TOKEN)
               .split(LIVE_ORIGIN)
               .join(ORIGIN_TOKEN)
         : value;
+}
 
-const normDeep = (value) => {
+function normDeep<T>(value: T): T;
+function normDeep(value: unknown): unknown {
     if (Array.isArray(value)) return value.map(normDeep);
     if (value && typeof value === "object") {
         return Object.fromEntries(
@@ -37,9 +41,9 @@ const normDeep = (value) => {
         );
     }
     return norm(value);
-};
+}
 
-const get = async (path) => {
+const get = async (path: string) => {
     const response = await fetch(base + path, { redirect: "manual" });
     return {
         status: response.status,
@@ -49,11 +53,12 @@ const get = async (path) => {
     };
 };
 
-const text = ($el) => $el.text().replace(/\s+/g, " ").trim();
+const text = ($el: { text(): string }) =>
+    $el.text().replace(/\s+/g, " ").trim();
 
-const extractHead = (html) => {
+const extractHead = (html: string) => {
     const $ = cheerio.load(html);
-    const meta = {};
+    const meta: Record<string, string | string[]> = {};
     $("meta").each((_, el) => {
         const key = $(el).attr("property") ?? $(el).attr("name");
         if (!key || key === "viewport" || key === "generator") return;
@@ -61,10 +66,11 @@ const extractHead = (html) => {
         meta[key] = key in meta ? [meta[key], content].flat() : content;
     });
 
-    const links = {};
+    const links: Record<string, string | string[]> = {};
     $("link[rel]").each((_, el) => {
         const rel = $(el).attr("rel");
         if (
+            !rel ||
             !/^(canonical|prev|next|alternate|search|manifest|me|webmention|pingback)$/.test(
                 rel,
             )
@@ -80,10 +86,10 @@ const extractHead = (html) => {
         links[rel] = rel in links ? [links[rel], value].flat() : value;
     });
 
-    const jsonLd = [];
+    const jsonLd: unknown[] = [];
     $('script[type="application/ld+json"]').each((_, el) => {
         try {
-            jsonLd.push(normDeep(JSON.parse($(el).html())));
+            jsonLd.push(normDeep(JSON.parse($(el).html() ?? "null")));
         } catch {
             jsonLd.push({ invalid: $(el).html() });
         }
@@ -107,8 +113,12 @@ const extractHead = (html) => {
     };
 };
 
-const pool = async (items, size, worker) => {
-    const results = new Array(items.length);
+const pool = async <T, R>(
+    items: T[],
+    size: number,
+    worker: (item: T) => Promise<R>,
+) => {
+    const results = new Array<R>(items.length);
     let next = 0;
     await Promise.all(
         Array.from({ length: size }, async () => {
@@ -121,7 +131,7 @@ const pool = async (items, size, worker) => {
     return results;
 };
 
-const summariseRss = (xml) => {
+const summariseRss = (xml: string) => {
     const $ = cheerio.load(xml, { xml: true });
     return {
         title: text($("channel > title")),
@@ -141,7 +151,7 @@ const summariseRss = (xml) => {
     };
 };
 
-const summariseAtom = (xml) => {
+const summariseAtom = (xml: string) => {
     const $ = cheerio.load(xml, { xml: true });
     return {
         title: text($("feed > title")),
@@ -158,8 +168,21 @@ const summariseAtom = (xml) => {
     };
 };
 
-const summariseJsonFeed = (body) => {
-    const feed = JSON.parse(body);
+const summariseJsonFeed = (body: string) => {
+    const feed: {
+        version: string;
+        title: string;
+        home_page_url: string;
+        feed_url: string;
+        items?: {
+            id: string;
+            url: string;
+            title: string;
+            date_published: string;
+            date_modified?: string;
+            tags?: string[];
+        }[];
+    } = JSON.parse(body);
     return {
         version: feed.version,
         title: feed.title,
@@ -176,7 +199,7 @@ const summariseJsonFeed = (body) => {
     };
 };
 
-const summariseSitemap = (xml) => {
+const summariseSitemap = (xml: string) => {
     const $ = cheerio.load(xml, { xml: true });
     return {
         urls: $("url")
@@ -191,7 +214,7 @@ const summariseSitemap = (xml) => {
     };
 };
 
-const artifact = async (path, summarise) => {
+const artifact = async (path: string, summarise?: (body: string) => object) => {
     const response = await get(path);
     if (response.status !== 200) return { status: response.status };
     try {
@@ -214,7 +237,12 @@ const main = async () => {
         .sort();
 
     console.log(`Snapshotting ${urls.length} pages from ${base}`);
-    const pages = {};
+    const pages: Record<
+        string,
+        { status: number } & (
+            ReturnType<typeof extractHead> | { location: string | null }
+        )
+    > = {};
     let done = 0;
     await pool(urls, Number(args.concurrency), async (path) => {
         const response = await get(path);

@@ -2,19 +2,41 @@ import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { parse } from "yaml";
+import type siteConfiguration from "../../site.json";
+import type {
+    ArtifactSnapshots,
+    LegacySchema,
+    PageSnapshot,
+    SchemaGraph,
+} from "./types.mts";
 
 const expectedDir = process.argv[2] ?? "tests/parity/baseline";
 const actualDir = process.argv[3] ?? ".parity/local";
-const load = async (dir, file) =>
+const load = async <T,>(dir: string, file: string): Promise<T> =>
     JSON.parse(await readFile(join(dir, file), "utf8"));
-const live = await load(expectedDir, "pages.json");
-const local = await load(actualDir, "pages.json");
-const liveArtifacts = await load(expectedDir, "artifacts.json");
-const localArtifacts = await load(actualDir, "artifacts.json");
+const live = await load<Record<string, PageSnapshot<LegacySchema>>>(
+    expectedDir,
+    "pages.json",
+);
+const local = await load<Record<string, PageSnapshot<SchemaGraph>>>(
+    actualDir,
+    "pages.json",
+);
+const liveArtifacts = await load<ArtifactSnapshots<LegacySchema>>(
+    expectedDir,
+    "artifacts.json",
+);
+const localArtifacts = await load<ArtifactSnapshots<SchemaGraph>>(
+    actualDir,
+    "artifacts.json",
+);
 const excluded = new Set(["/streaming/border/", "/streaming/thumbnail/"]);
-const postDates = new Map();
-const postTags = new Map();
-const correctedImageDimensions = {
+const postDates = new Map<string, string>();
+const postTags = new Map<string, string[]>();
+const correctedImageDimensions: Record<
+    string,
+    { width: string; height: string } | undefined
+> = {
     "{origin}/images/hero/Git-1366x768.png": {
         width: "1200",
         height: "768",
@@ -24,9 +46,15 @@ const correctedImageDimensions = {
         height: "640",
     },
 };
-const site = JSON.parse(await readFile("site.json", "utf8"));
+const site: typeof siteConfiguration = JSON.parse(
+    await readFile("site.json", "utf8"),
+);
 
-function verifySchema(path, expected, actual) {
+function verifySchema(
+    path: string,
+    expected: LegacySchema[],
+    actual: SchemaGraph[],
+) {
     if (path === "/404") {
         assert.deepEqual(actual, []);
         return;
@@ -39,6 +67,11 @@ function verifySchema(path, expected, actual) {
     const person = nodes.find((node) => node["@id"] === "{origin}/#identity");
     const publisher = nodes.find(
         (node) => node["@id"] === "{origin}/#publisher",
+    );
+    assert(person, `${path}: missing identity`);
+    assert(
+        publisher?.["@type"] === "Organization",
+        `${path}: missing publisher`,
     );
     assert.equal(person.name, site.author.name);
     assert.equal(person.url, "{origin}/about/");
@@ -53,7 +86,7 @@ function verifySchema(path, expected, actual) {
         if (schema["@type"] !== "Article") continue;
         const article = nodes.find((node) => node["@type"] === "Article");
         assert(article, `${path}: preserved Article`);
-        for (const field of ["headline", "description", "url"]) {
+        for (const field of ["headline", "description", "url"] as const) {
             assert.equal(
                 article[field] ?? (field === "description" ? "" : undefined),
                 schema[field],
@@ -65,7 +98,8 @@ function verifySchema(path, expected, actual) {
             schema.keywords,
             `${path}: Article keywords`,
         );
-        for (const field of ["datePublished", "dateModified"]) {
+        for (const field of ["datePublished", "dateModified"] as const) {
+            assert(schema[field], `${path}: missing legacy Article ${field}`);
             assert.equal(
                 Date.parse(article[field]),
                 Date.parse(schema[field]),
@@ -86,6 +120,7 @@ function verifySchema(path, expected, actual) {
         const webpage = nodes.find(
             (node) => node["@id"] === article.mainEntityOfPage["@id"],
         );
+        assert(webpage, `${path}: missing article webpage`);
         assert.equal(webpage.url, schema.url);
     }
 }
@@ -93,7 +128,9 @@ function verifySchema(path, expected, actual) {
 for (const file of await readdir("content/posts", { recursive: true })) {
     if (!file.endsWith("index.md")) continue;
     const source = await readFile(join("content/posts", file), "utf8");
-    const data = parse(source.match(/^---\r?\n([\s\S]+?)\r?\n---/)[1]);
+    const frontmatter = source.match(/^---\r?\n([\s\S]+?)\r?\n---/);
+    assert(frontmatter, `${file}: missing front matter`);
+    const data = parse(frontmatter[1]);
     if (!data.published) excluded.add(data.permalink);
     else
         postDates.set(
@@ -107,7 +144,11 @@ for (const file of await readdir("content/posts", { recursive: true })) {
 }
 
 // Only the explicitly approved migration/SEO changes are applied to the reference.
-function approvedPage(path, source, actual) {
+function approvedPage(
+    path: string,
+    source: PageSnapshot<LegacySchema>,
+    actual: PageSnapshot<SchemaGraph>,
+) {
     const page = structuredClone(source);
     page.lang = "en-GB";
     delete page.meta["gridsome:hash"];
@@ -115,13 +156,17 @@ function approvedPage(path, source, actual) {
     page.meta["msapplication-TileImage"] = "{origin}/favicon.png";
     page.meta["twitter:card"] = "summary_large_image";
     for (const key of ["description", "og:description", "keywords"]) {
-        if (page.meta[key] === "") delete page.meta[key];
+        if (page.meta[key] === "") Reflect.deleteProperty(page.meta, key);
     }
     if (page.links.canonical) page.links.canonical = `{origin}${path}`;
     if (path === "/" || /^\/\d+\/$/.test(path))
         page.meta["og:url"] = `{origin}${path}`;
     if (excluded.has(path)) page.meta.robots = "noindex, follow";
-    const dimensions = correctedImageDimensions[page.meta["og:image"]];
+    const heroImage = page.meta["og:image"];
+    const dimensions =
+        typeof heroImage === "string"
+            ? correctedImageDimensions[heroImage]
+            : undefined;
     if (dimensions) {
         page.meta["og:image:width"] = dimensions.width;
         page.meta["og:image:height"] = dimensions.height;
@@ -143,7 +188,6 @@ function approvedPage(path, source, actual) {
         }
     }
     verifySchema(path, page.jsonLd, actual.jsonLd);
-    page.jsonLd = actual.jsonLd;
     page.meta["og:type"] ??= "website";
     page.meta["og:title"] ??= page.title;
     page.meta["og:locale"] ??= "en_GB";
@@ -160,6 +204,7 @@ function approvedPage(path, source, actual) {
     }
     if (source.meta["og:image"]) {
         const image = actual.meta["og:image"];
+        assert(typeof image === "string", `${path}: missing social image URL`);
         assert.match(image, /^\{origin\}\/_og\/s\/o_[a-f0-9]+\.png$/);
         const title = /^\/\d+\/$/.test(path)
             ? `Blog - Page ${path.split("/")[1]}`
@@ -181,7 +226,7 @@ function approvedPage(path, source, actual) {
             path === "/" ? "/index.md" : `${path.replace(/\/$/, "")}.md`;
         page.links.alternate.push(`${markdown} | text/markdown`);
     }
-    return page;
+    return { ...page, jsonLd: actual.jsonLd };
 }
 assert.deepEqual(
     Object.keys(local).sort(),
@@ -201,7 +246,7 @@ assert.deepEqual(
     "404 response and head",
 );
 
-for (const path of ["/rss.xml", "/feed/index.xml"]) {
+for (const path of ["/rss.xml", "/feed/index.xml"] as const) {
     const expected = structuredClone(liveArtifacts[path]);
     expected.link = "{origin}/";
     for (const item of expected.items)
@@ -261,8 +306,8 @@ assert.deepEqual(
     },
     "Explicit search/input/training Robots policy",
 );
-for (const path of ["/security.txt", "/opensearch.xml"]) {
-    const normalize = (value) => ({
+for (const path of ["/security.txt", "/opensearch.xml"] as const) {
+    const normalize = (value: { status: number; body: string }) => ({
         ...value,
         body: value.body.replaceAll("\r\n", "\n"),
     });
@@ -278,6 +323,7 @@ delete oldManifest.screenshots;
 const { icons, scope, id, screenshots, ...manifest } =
     localArtifacts["/manifest.webmanifest"];
 assert.deepEqual(manifest, oldManifest, "Preserved PWA manifest fields");
+assert.ok(screenshots, "PWA install previews must be present");
 assert.deepEqual(
     screenshots.map(({ src, sizes, type, form_factor }) => ({
         src,
@@ -301,7 +347,10 @@ assert.deepEqual(
     ]),
     "Refreshed PWA install previews",
 );
-assert.ok(screenshots.every(({ label }) => label), "PWA preview labels");
+assert.ok(
+    screenshots.every(({ label }) => label),
+    "PWA preview labels",
+);
 assert.equal(scope, "/");
 assert.equal(id, "/");
 assert.deepEqual(
@@ -317,7 +366,7 @@ assert.ok(
         (icon) => icon.purpose === "maskable" && icon.sizes === "512x512",
     ),
 );
-for (const path of ["/service-worker.js", "/flexsearch.json"]) {
+for (const path of ["/service-worker.js", "/flexsearch.json"] as const) {
     assert.equal(localArtifacts[path].status, 200);
     assert.ok(localArtifacts[path].bytes > 0);
 }

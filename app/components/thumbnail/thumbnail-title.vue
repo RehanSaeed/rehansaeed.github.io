@@ -15,23 +15,25 @@
   </section>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { queryString } from "~/utils/query";
+
+export default defineComponent({
   data() {
     return {
       title: "",
       subtitle: "",
-      titleFontSize: undefined,
+      titleFontSize: "",
       titleJustify: "",
       titleAlign: "",
-      titleWidth: undefined,
+      titleWidth: "",
     };
   },
   methods: {
-    toEm: function (value) {
+    toEm: function (value: string) {
       return value + "em";
     },
-    toPx(value) {
+    toPx(value: string) {
       return value + "px";
     },
   },
@@ -45,14 +47,14 @@ export default {
       "title-width": titleWidth,
     } = this.$route.query;
 
-    this.title = title;
-    this.subtitle = subtitle;
-    this.titleFontSize = titleFontSize || 3.5;
-    this.titleJustify = titleJustify || "start";
-    this.titleAlign = titleAlign || "end";
-    this.titleWidth = titleWidth;
+    this.title = queryString(title) ?? "";
+    this.subtitle = queryString(subtitle) ?? "";
+    this.titleFontSize = queryString(titleFontSize) || "3.5";
+    this.titleJustify = queryString(titleJustify) || "start";
+    this.titleAlign = queryString(titleAlign) || "end";
+    this.titleWidth = queryString(titleWidth) ?? "";
   },
-};
+});
 </script>
 
 <style lang="scss">

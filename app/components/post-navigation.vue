@@ -56,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { getImageMetadata } from "~/framework/images.js";
+import { getImageMetadata } from "~/framework/images";
 import { contentImageSizes } from "#shared/utils/images";
 
 const props = defineProps<{ permalink: string }>();

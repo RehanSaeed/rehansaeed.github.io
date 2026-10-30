@@ -17,15 +17,16 @@
   </picture>
 </template>
 
-<script>
+<script lang="ts">
 import { getAvifSource } from "#shared/utils/images";
+import { queryString } from "~/utils/query";
 
-export default {
+export default defineComponent({
   inheritAttrs: false,
   data() {
     return {
       image: "",
-      imageRotate: undefined,
+      imageRotate: "",
       imageWidth: "0",
       imageHeight: "0",
       imageX: "0",
@@ -47,19 +48,22 @@ export default {
     },
   },
   methods: {
-    toPx(value) {
+    toPx(value: string) {
       return value + "px";
     },
   },
   mounted() {
-    this.image = this.$route.query[this.name];
-    this.imageRotate = this.$route.query[`${this.name}-rotate`];
-    this.imageWidth = this.$route.query[`${this.name}-width`] || "1920";
-    this.imageHeight = this.$route.query[`${this.name}-height`] || "1080";
-    this.imageX = this.$route.query[`${this.name}-x`] || "0";
-    this.imageY = this.$route.query[`${this.name}-y`] || "0";
+    this.image = queryString(this.$route.query[this.name]) ?? "";
+    this.imageRotate =
+      queryString(this.$route.query[`${this.name}-rotate`]) ?? "";
+    this.imageWidth =
+      queryString(this.$route.query[`${this.name}-width`]) || "1920";
+    this.imageHeight =
+      queryString(this.$route.query[`${this.name}-height`]) || "1080";
+    this.imageX = queryString(this.$route.query[`${this.name}-x`]) || "0";
+    this.imageY = queryString(this.$route.query[`${this.name}-y`]) || "0";
   },
-};
+});
 </script>
 
 <style lang="scss">

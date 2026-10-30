@@ -36,8 +36,10 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import type { PropType } from "vue";
+
+export default defineComponent({
   name: "u-share-button",
   setup() {
     return { metadata: useAppConfig().site };
@@ -56,7 +58,7 @@ export default {
       type: String,
     },
     tags: {
-      type: Array,
+      type: Array as PropType<string[]>,
     },
   },
   computed: {
@@ -126,7 +128,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

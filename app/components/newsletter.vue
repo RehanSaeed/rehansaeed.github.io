@@ -38,13 +38,13 @@
   </u-card>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+export default defineComponent({
   name: "u-newsletter",
   setup() {
     return { metadata: useAppConfig().site };
   },
-};
+});
 </script>
 
 <style lang="scss">

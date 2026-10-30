@@ -2,10 +2,10 @@
   <div class="scroll-indicator" />
 </template>
 
-<script>
-export default {
+<script lang="ts">
+export default defineComponent({
   name: "u-scroll-indicator",
-};
+});
 </script>
 
 <style lang="scss">

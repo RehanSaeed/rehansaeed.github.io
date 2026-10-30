@@ -18,21 +18,25 @@
       class="search-dialogue">
       <u-search
         :is-open="isOpen"
-        :search="$route.query.search"
+        :search="queryString($route.query.search)"
         @selected="onSelected" />
     </u-dialogue>
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { queryString } from "~/utils/query";
 import {
   searchOpened,
   searchClosed,
   searchResultSelected,
 } from "~/framework/analytics";
 
-export default {
+export default defineComponent({
   name: "u-search-button",
+  setup() {
+    return { queryString };
+  },
   data() {
     return {
       isOpen: false,
@@ -47,7 +51,7 @@ export default {
       this.isOpen = false;
       searchClosed();
     },
-    onSelected(searchTerm) {
+    onSelected(searchTerm: string) {
       this.isOpen = false;
       searchResultSelected(searchTerm);
     },
@@ -57,7 +61,7 @@ export default {
       this.onOpen();
     }
   },
-};
+});
 </script>
 
 <style lang="scss">

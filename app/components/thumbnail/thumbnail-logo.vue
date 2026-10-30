@@ -7,8 +7,10 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { queryString } from "~/utils/query";
+
+export default defineComponent({
   data() {
     return {
       noLogo: false,
@@ -23,11 +25,11 @@ export default {
       "logo-align": logoAlign,
     } = this.$route.query;
 
-    this.noLogo = noLogo;
-    this.logoJustify = logoJustify || "end";
-    this.logoAlign = logoAlign || "start";
+    this.noLogo = Boolean(noLogo);
+    this.logoJustify = queryString(logoJustify) || "end";
+    this.logoAlign = queryString(logoAlign) || "start";
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

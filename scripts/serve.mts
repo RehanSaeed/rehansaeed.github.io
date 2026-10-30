@@ -4,7 +4,7 @@ import { resolve, extname, relative, isAbsolute, join } from "node:path";
 
 const root = resolve(process.argv[2] ?? "dist");
 const port = Number(process.env.PORT ?? 8080);
-const types = {
+const types: Record<string, string> = {
     ".html": "text/html",
     ".js": "text/javascript",
     ".css": "text/css",
@@ -27,8 +27,12 @@ await stat(join(root, "404.html"));
 
 createServer(async (request, response) => {
     try {
-        if (!["GET", "HEAD"].includes(request.method)) {
+        if (!request.method || !["GET", "HEAD"].includes(request.method)) {
             response.writeHead(405, { Allow: "GET, HEAD" }).end();
+            return;
+        }
+        if (!request.url) {
+            response.writeHead(400).end();
             return;
         }
         const url = new URL(request.url, "http://localhost");
@@ -54,7 +58,10 @@ createServer(async (request, response) => {
             }
             await stat(file);
         } catch (error) {
-            if (error.code !== "ENOENT" && error.code !== "ENOTDIR")
+            if (
+                !(error instanceof Error && "code" in error) ||
+                (error.code !== "ENOENT" && error.code !== "ENOTDIR")
+            )
                 throw error;
             file = join(root, "404.html");
             status = 404;

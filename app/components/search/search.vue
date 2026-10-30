@@ -22,19 +22,20 @@
   </section>
 </template>
 
-<script>
+<script lang="ts">
 import { Document } from "flexsearch";
 import { useId } from "vue";
+import type { SearchDocument } from "#shared/types/search";
 
 const minimumSearchTermLength = 3;
 const resultLimit = 8;
-let indexPromise;
+let indexPromise: Promise<Document<SearchDocument>> | undefined;
 
 // Downloads the prerendered /flexsearch.json once and builds the index in the browser.
 function loadIndex() {
-  indexPromise ??= $fetch("/flexsearch.json")
+  indexPromise ??= $fetch<SearchDocument[]>("/flexsearch.json")
     .then((documents) => {
-      const index = new Document({
+      const index = new Document<SearchDocument>({
         tokenize: "forward",
         document: {
           id: "id",
@@ -54,7 +55,7 @@ function loadIndex() {
   return indexPromise;
 }
 
-export default {
+export default defineComponent({
   name: "u-search",
   emits: ["selected"],
   props: {
@@ -69,7 +70,7 @@ export default {
     const { polite } = useAnnouncer();
     return { inputId: `site-search-${useId()}`, announceResults: polite };
   },
-  data() {
+  data(): { searchTerm: string; searchResults: SearchDocument[] } {
     return {
       searchTerm: "",
       searchResults: [],
@@ -96,7 +97,11 @@ export default {
         this.searchResults = index
           .search(searchTerm, { limit: resultLimit, enrich: true, merge: true })
           .slice(0, resultLimit)
-          .map((result) => result.doc);
+          .map((result) => {
+            if (!result.doc)
+              throw new Error("Search result is missing its document.");
+            return result.doc;
+          });
         this.announceResults(
           `${this.searchResults.length} search ${this.searchResults.length === 1 ? "result" : "results"}.`,
         );
@@ -119,7 +124,9 @@ export default {
       if (this.isOpen) {
         loadIndex().catch(() => {});
         setTimeout(() => {
-          this.$refs.search.focus();
+          if (this.$refs.search instanceof HTMLInputElement) {
+            this.$refs.search.focus();
+          }
         }, 100);
       }
     },
@@ -129,7 +136,7 @@ export default {
       this.searchTerm = this.search;
     }
   },
-};
+});
 </script>
 
 <style lang="scss">

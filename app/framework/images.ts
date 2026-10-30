@@ -1,9 +1,12 @@
 import images from "#blog-image-metadata";
 
-export function getImageMetadata(url) {
+const metadata: Record<string, { width: number; height: number } | undefined> =
+  images;
+
+export function getImageMetadata(url: string) {
   const urlMatches = url.match(/(.*)\/(.+)-(\d+)x(\d+)/);
-  const dimensions = images[new URL(url, "https://image.invalid").pathname];
-  if (!urlMatches || !dimensions) {
+  const dimensions = metadata[new URL(url, "https://image.invalid").pathname];
+  if (!urlMatches?.[2] || !dimensions) {
     throw new Error(`Missing build-time image metadata: ${url}`);
   }
   return {
@@ -13,10 +16,10 @@ export function getImageMetadata(url) {
   };
 }
 
-export function getSchemaImageObject(url) {
+export function getSchemaImageObject(url: string) {
   const imageMeta = getImageMetadata(url);
   return {
-    "@type": "ImageObject",
+    "@type": "ImageObject" as const,
     url: url,
     caption: imageMeta.alt,
     width: imageMeta.width,

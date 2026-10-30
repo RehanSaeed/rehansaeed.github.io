@@ -36,8 +36,8 @@
   </nav>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+export default defineComponent({
   name: "u-navigation",
   computed: {
     blogPage() {
@@ -54,11 +54,11 @@ export default {
     return { metadata: useAppConfig().site };
   },
   methods: {
-    getIsCurrentPage(path) {
+    getIsCurrentPage(path: string) {
       return this.$route.path === path ? "page" : undefined;
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

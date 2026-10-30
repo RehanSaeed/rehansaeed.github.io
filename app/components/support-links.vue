@@ -42,13 +42,13 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+export default defineComponent({
   name: "u-support-links",
   setup() {
     return { metadata: useAppConfig().site };
   },
-};
+});
 </script>
 
 <style lang="scss">

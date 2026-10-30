@@ -1,21 +1,28 @@
 import assert from "node:assert/strict";
-import { spawn } from "node:child_process";
+import { spawn, type ChildProcess } from "node:child_process";
 import { chromium, expect } from "@playwright/test";
 import { once } from "node:events";
+
+declare global {
+    interface Window {
+        __activationComplete: Promise<boolean>;
+    }
+}
 
 const legacy = process.argv[2];
 if (!legacy)
     throw new Error(
-        "Usage: node scripts/parity/sw-cutover.mjs <archived-Gridsome-dist>",
+        "Usage: node scripts/parity/sw-cutover.mts <archived-Gridsome-dist>",
     );
 const port = "8092";
 const origin = `http://localhost:${port}`;
-let server;
-const start = async (root) => {
-    server = spawn(process.execPath, ["scripts/serve.mjs", root], {
+let server: ChildProcess | undefined;
+const start = async (root: string) => {
+    server = spawn(process.execPath, ["scripts/serve.mts", root], {
         env: { ...process.env, PORT: port },
         stdio: ["ignore", "pipe", "inherit"],
     });
+    assert(server.stdout, "Static server stdout is unavailable.");
     await Promise.race([
         once(server.stdout, "data"),
         once(server, "exit").then(([code]) => {
@@ -72,6 +79,8 @@ try {
     });
     await page.evaluate(async () => {
         const registration = await navigator.serviceWorker.getRegistration();
+        if (!registration)
+            throw new Error("Legacy worker registration is unavailable.");
         await registration.update();
     });
     const worker = await installing;
@@ -88,7 +97,7 @@ try {
                 page.evaluate(async () =>
                     Boolean(
                         (await navigator.serviceWorker.getRegistration())
-                            .waiting,
+                            ?.waiting,
                     ),
                 ),
             { timeout: 180_000 },

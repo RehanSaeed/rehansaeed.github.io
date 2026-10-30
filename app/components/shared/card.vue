@@ -11,8 +11,8 @@
   </component>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+export default defineComponent({
   name: "u-card",
   props: {
     compact: {
@@ -29,7 +29,7 @@ export default {
       type: String,
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

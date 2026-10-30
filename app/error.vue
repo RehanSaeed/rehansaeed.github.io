@@ -13,13 +13,10 @@
   </NuxtLayout>
 </template>
 
-<script setup>
-defineProps({
-  error: {
-    type: Object,
-    required: true,
-  },
-});
+<script setup lang="ts">
+import type { NuxtError } from "#app";
+
+defineProps<{ error: NuxtError }>();
 
 useHead({
   title: "Not Found",

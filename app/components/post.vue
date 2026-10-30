@@ -32,15 +32,18 @@
   </u-card>
 </template>
 
-<script>
-import { getImageMetadata } from "~/framework/images.js";
+<script lang="ts">
+import type { PropType } from "vue";
+import type { PostContent } from "~/types/content";
+import { getImageMetadata } from "~/framework/images";
 import { contentImageSizes } from "#shared/utils/images";
 
-export default {
+export default defineComponent({
   name: "u-post",
   props: {
     post: {
-      type: Object,
+      type: Object as PropType<PostContent>,
+      required: true,
     },
   },
   computed: {
@@ -51,7 +54,7 @@ export default {
       return getImageMetadata(this.post.heroImage);
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

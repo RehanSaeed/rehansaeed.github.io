@@ -14,8 +14,8 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+export default defineComponent({
   name: "u-support-button",
   data() {
     return {
@@ -33,5 +33,5 @@ export default {
       this.open();
     },
   },
-};
+});
 </script>

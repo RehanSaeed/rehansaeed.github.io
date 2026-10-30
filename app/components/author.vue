@@ -54,8 +54,8 @@
   </section>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+export default defineComponent({
   name: "u-author",
   props: {
     headingId: {
@@ -68,7 +68,7 @@ export default {
       winkGradientId: `${useId()}-wink-skin`,
     };
   },
-};
+});
 </script>
 
 <style lang="scss">

@@ -2,13 +2,10 @@
   <article class="border" :style="style"></article>
 </template>
 
-<script setup>
-definePageMeta({ layout: "empty" });
-useHead({ meta: [{ name: "robots", content: "noindex, follow" }] });
-</script>
+<script lang="ts">
+import { queryString } from "~/utils/query";
 
-<script>
-export default {
+export default defineComponent({
   components: {},
   computed: {
     borderRadius() {
@@ -21,10 +18,10 @@ export default {
       return (this.$route.query["duration"] ?? "5") + "s";
     },
     hue1() {
-      return this.$route.query["hue1"] ?? "0";
+      return queryString(this.$route.query["hue1"]) ?? "0";
     },
     hue2() {
-      return this.$route.query["hue2"] ?? "0";
+      return queryString(this.$route.query["hue2"]) ?? "0";
     },
     saturation1() {
       return (this.$route.query["saturation1"] ?? "0") + "%";
@@ -63,7 +60,12 @@ export default {
   mounted() {
     document.body.style.backgroundColor = "transparent";
   },
-};
+});
+</script>
+
+<script setup lang="ts">
+definePageMeta({ layout: "empty" });
+useHead({ meta: [{ name: "robots", content: "noindex, follow" }] });
 </script>
 
 <style lang="scss">

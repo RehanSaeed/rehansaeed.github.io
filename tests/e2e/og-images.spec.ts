@@ -309,7 +309,7 @@ ${hasImage ? '<meta property="og:image" content="https://rehansaeed.com/_og/s/o_
     }
     const output = join(directory, "gallery.html");
     await promisify(execFile)(process.execPath, [
-      join("scripts", "og-images.mjs"),
+      join("scripts", "og-images.mts"),
       output,
       directory,
     ]);

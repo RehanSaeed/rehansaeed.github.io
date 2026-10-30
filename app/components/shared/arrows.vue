@@ -10,10 +10,10 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+export default defineComponent({
   name: "u-arrows",
-};
+});
 </script>
 
 <style lang="scss">

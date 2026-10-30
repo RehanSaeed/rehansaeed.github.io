@@ -5,12 +5,16 @@
   </u-link-button>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import type { PropType } from "vue";
+import type { PostContent } from "~/types/content";
+
+export default defineComponent({
   name: "u-edit-post-button",
   props: {
     post: {
-      type: Object,
+      type: Object as PropType<Pick<PostContent, "stem" | "extension">>,
+      required: true,
     },
   },
   setup() {
@@ -22,5 +26,5 @@ export default {
       return `${url}/tree/${branch}/content/${this.post.stem}.${this.post.extension}`;
     },
   },
-};
+});
 </script>
