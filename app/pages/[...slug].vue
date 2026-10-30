@@ -12,7 +12,6 @@
       <u-post-meta
         :meta="post"
         :traffic-toggle="post.published"
-        :traffic-visible="trafficVisible"
         @toggle-traffic="toggleTraffic" />
     </div>
 

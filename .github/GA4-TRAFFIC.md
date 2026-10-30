@@ -16,8 +16,10 @@ analytics credentials or private reporting API calls reach the browser.
 Traffic is hidden by default. Click or tap the article's publication date five
 times to show it; repeat the gesture to hide it. Leave no more than three seconds
 between activations, otherwise the count resets. The date retains its existing
-appearance and absolute-date tooltip. Its native button also supports five
-activations with Enter or Space and announces its state to assistive technology.
+appearance, ordinary text cursor and absolute-date hover tooltip. An empty,
+non-focusable pointer target is hidden from the accessibility tree; the actual
+date remains readable as ordinary text. There is no button, tab stop, keyboard
+shortcut or screen-reader hint advertising the gesture.
 Article listings, update dates and unpublished drafts do not have this switch.
 
 The choice is kept in `sessionStorage` for the current tab, including reloads and
