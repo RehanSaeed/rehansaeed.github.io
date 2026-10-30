@@ -144,21 +144,20 @@ onBeforeUnmount(() => {
 
 .number-ticker__header {
   display: grid;
+  grid-template-areas: "title";
   align-items: center;
   inline-size: 100%;
 }
 
 .number-ticker__header--with-info {
   grid-template-columns: 1.5rem minmax(0, 1fr) 1.5rem;
+  grid-template-areas: ". title info";
   gap: 0.25rem;
-
-  .number-ticker__title {
-    grid-column: 2;
-  }
 }
 
 .number-ticker__title {
   display: grid;
+  grid-area: title;
   align-content: center;
   margin: 0;
   min-block-size: 2.6em;
@@ -169,6 +168,7 @@ onBeforeUnmount(() => {
 
 .number-ticker__info {
   display: grid;
+  grid-area: info;
   place-items: center;
   inline-size: 1.5rem;
   block-size: 1.5rem;
