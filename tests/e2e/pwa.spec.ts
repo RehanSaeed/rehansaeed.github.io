@@ -218,7 +218,9 @@ test("Prompt failures are reported and a fresh eligibility event can recover", a
 }) => {
   const errors: string[] = [];
   page.on("console", (message) => {
-    if (message.type() === "error") errors.push(message.text());
+    if (message.type() === "error") {
+      errors.push(message.text());
+    }
   });
   await page.goto("/");
   await expect(page.getByRole("button", { name: "Open search" })).toBeEnabled();
@@ -274,7 +276,9 @@ for (const fails of [false, true]) {
       pwa.needRefresh = true;
       pwa.updateServiceWorker = async () => {
         document.documentElement.dataset.packageUpdateCalls = "1";
-        if (fails) throw new Error("Test package update failure");
+        if (fails) {
+          throw new Error("Test package update failure");
+        }
         pwa.needRefresh = false;
       };
     }, fails);

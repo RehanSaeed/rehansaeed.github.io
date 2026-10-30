@@ -30,9 +30,13 @@ onMounted(() => {
       try {
         const mermaid = await loadMermaid();
         await document.fonts.ready;
-        if (cancelled) return;
+        if (cancelled) {
+          return;
+        }
         const result = await mermaid.render(id, code);
-        if (!cancelled) svg.value = result.svg;
+        if (!cancelled) {
+          svg.value = result.svg;
+        }
       } catch (error) {
         if (!cancelled) {
           failed.value = true;

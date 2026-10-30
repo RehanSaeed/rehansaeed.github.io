@@ -54,8 +54,9 @@ createServer(async (request, response) => {
             }
             await stat(file);
         } catch (error) {
-            if (error.code !== "ENOENT" && error.code !== "ENOTDIR")
+            if (error.code !== "ENOENT" && error.code !== "ENOTDIR") {
                 throw error;
+            }
             file = join(root, "404.html");
             status = 404;
         }

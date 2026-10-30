@@ -23,10 +23,13 @@ for (const width of [375, 1280]) {
     const imageSource = await image.getAttribute("src");
     const samples = await portrait.evaluate((element) => {
       const eyelid = element.querySelector(".author__eyelid");
-      if (!eyelid) throw new Error("Missing eyelid");
+      if (!eyelid) {
+        throw new Error("Missing eyelid");
+      }
       const animations = eyelid.getAnimations();
-      if (animations.length !== 1)
+      if (animations.length !== 1) {
         throw new Error("Expected one wink animation");
+      }
       const animation = animations[0];
       animation.pause();
       const timing = animation.effect!.getTiming();

@@ -50,7 +50,9 @@ function verifySchema(path, expected, actual) {
         "{origin}/images/schema/Publisher-600x60.png",
     );
     for (const schema of expected) {
-        if (schema["@type"] !== "Article") continue;
+        if (schema["@type"] !== "Article") {
+            continue;
+        }
         const article = nodes.find((node) => node["@type"] === "Article");
         assert(article, `${path}: preserved Article`);
         for (const field of ["headline", "description", "url"]) {
@@ -91,11 +93,14 @@ function verifySchema(path, expected, actual) {
 }
 
 for (const file of await readdir("content/posts", { recursive: true })) {
-    if (!file.endsWith("index.md")) continue;
+    if (!file.endsWith("index.md")) {
+        continue;
+    }
     const source = await readFile(join("content/posts", file), "utf8");
     const data = parse(source.match(/^---\r?\n([\s\S]+?)\r?\n---/)[1]);
-    if (!data.published) excluded.add(data.permalink);
-    else
+    if (!data.published) {
+        excluded.add(data.permalink);
+    } else {
         postDates.set(
             `{origin}${data.permalink}`,
             new Date(data.dateModified ?? data.date)
@@ -103,6 +108,7 @@ for (const file of await readdir("content/posts", { recursive: true })) {
                 .replace(/T00:00:00\.000Z$/, "")
                 .replace(/\.000Z$/, "Z"),
         );
+    }
     postTags.set(`{origin}${data.permalink}`, data.tags ?? []);
 }
 
@@ -115,12 +121,19 @@ function approvedPage(path, source, actual) {
     page.meta["msapplication-TileImage"] = "{origin}/favicon.png";
     page.meta["twitter:card"] = "summary_large_image";
     for (const key of ["description", "og:description", "keywords"]) {
-        if (page.meta[key] === "") delete page.meta[key];
+        if (page.meta[key] === "") {
+            delete page.meta[key];
+        }
     }
-    if (page.links.canonical) page.links.canonical = `{origin}${path}`;
-    if (path === "/" || /^\/\d+\/$/.test(path))
+    if (page.links.canonical) {
+        page.links.canonical = `{origin}${path}`;
+    }
+    if (path === "/" || /^\/\d+\/$/.test(path)) {
         page.meta["og:url"] = `{origin}${path}`;
-    if (excluded.has(path)) page.meta.robots = "noindex, follow";
+    }
+    if (excluded.has(path)) {
+        page.meta.robots = "noindex, follow";
+    }
     const dimensions = correctedImageDimensions[page.meta["og:image"]];
     if (dimensions) {
         page.meta["og:image:width"] = dimensions.width;
@@ -148,10 +161,12 @@ function approvedPage(path, source, actual) {
     page.meta["og:title"] ??= page.title;
     page.meta["og:locale"] ??= "en_GB";
     page.meta["og:site_name"] ??= site.name;
-    if (!("description" in source.meta))
+    if (!("description" in source.meta)) {
         page.meta.description ??= site.description;
-    if (!("og:description" in source.meta))
+    }
+    if (!("og:description" in source.meta)) {
         page.meta["og:description"] ??= page.meta.description;
+    }
     if (path !== "/404") {
         page.meta.robots ??=
             "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
@@ -204,8 +219,9 @@ assert.deepEqual(
 for (const path of ["/rss.xml", "/feed/index.xml"]) {
     const expected = structuredClone(liveArtifacts[path]);
     expected.link = "{origin}/";
-    for (const item of expected.items)
+    for (const item of expected.items) {
         item.categories = postTags.get(item.link);
+    }
     assert.deepEqual(
         localArtifacts[path],
         expected,
@@ -213,7 +229,9 @@ for (const path of ["/rss.xml", "/feed/index.xml"]) {
     );
 }
 const json = structuredClone(liveArtifacts["/feed.json"]);
-for (const item of json.items) item.tags = postTags.get(item.url);
+for (const item of json.items) {
+    item.tags = postTags.get(item.url);
+}
 assert.deepEqual(
     localArtifacts["/feed.json"],
     json,
@@ -301,7 +319,10 @@ assert.deepEqual(
     ]),
     "Refreshed PWA install previews",
 );
-assert.ok(screenshots.every(({ label }) => label), "PWA preview labels");
+assert.ok(
+    screenshots.every(({ label }) => label),
+    "PWA preview labels",
+);
 assert.equal(scope, "/");
 assert.equal(id, "/");
 assert.deepEqual(

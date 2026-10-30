@@ -39,7 +39,9 @@ const load = async (dir, file) =>
 
 const differences = [];
 const compare = (path, expected, actual) => {
-    if (ignored(path) || isDeepStrictEqual(expected, actual)) return;
+    if (ignored(path) || isDeepStrictEqual(expected, actual)) {
+        return;
+    }
     const isObject = (value) =>
         value && typeof value === "object" && !Array.isArray(value);
     if (isObject(expected) && isObject(actual)) {
@@ -59,10 +61,12 @@ for (const file of ["pages.json", "artifacts.json"]) {
     const actual = await load(actualDir, file);
     const missing = Object.keys(expected).filter((key) => !(key in actual));
     const extra = Object.keys(actual).filter((key) => !(key in expected));
-    for (const key of missing)
+    for (const key of missing) {
         differences.push({ path: key, expected: "present", actual: "missing" });
-    for (const key of extra)
+    }
+    for (const key of extra) {
         differences.push({ path: key, expected: "absent", actual: "extra" });
+    }
     for (const key of Object.keys(expected).filter((k) => k in actual)) {
         compare(key, expected[key], actual[key]);
     }

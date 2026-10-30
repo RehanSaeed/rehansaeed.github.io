@@ -5,7 +5,9 @@ import { prepareImageCache } from "./cache";
 export default defineNuxtModule({
   meta: { name: "image-cache" },
   async setup(_options, nuxt) {
-    if (nuxt.options.dev || !nuxt.options.nitro.static) return;
+    if (nuxt.options.dev || !nuxt.options.nitro.static) {
+      return;
+    }
 
     const cache = await prepareImageCache(nuxt.options.rootDir);
     const logger = useLogger("image-cache");

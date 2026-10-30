@@ -89,7 +89,9 @@ test.describe("All-pages audit regressions", () => {
         const contentImages = $(".post__content img").filter((_, element) =>
           ($(element).attr("src") ?? "").includes("/content-images/"),
         );
-        if (contentImages.length) posts++;
+        if (contentImages.length) {
+          posts++;
+        }
         for (const element of contentImages) {
           const image = $(element);
           const src = decodeURIComponent(image.attr("src")!);
@@ -174,7 +176,9 @@ test.describe("All-pages audit regressions", () => {
           await expect
             .poll(() =>
               image.evaluate(async (image: HTMLImageElement) => {
-                if (!image.complete || !image.naturalWidth) return false;
+                if (!image.complete || !image.naturalWidth) {
+                  return false;
+                }
                 const required = Math.min(
                   Number(image.getAttribute("width")),
                   image.getBoundingClientRect().width * window.devicePixelRatio,
@@ -237,7 +241,9 @@ test.describe("All-pages audit regressions", () => {
   }) => {
     const requests: string[] = [];
     page.on("request", (request) => {
-      if (request.url().includes("/Border.png")) requests.push(request.url());
+      if (request.url().includes("/Border.png")) {
+        requests.push(request.url());
+      }
     });
     await page.goto("/wpf-metro-part4-elysium-extra/");
     const image = page.locator('.post__content img[alt$="Borders"]');
