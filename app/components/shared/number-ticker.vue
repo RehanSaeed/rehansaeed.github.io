@@ -3,12 +3,12 @@
     <dt
       class="number-ticker__header"
       :class="{ 'number-ticker__header--with-info': info }">
-      <span class="number-ticker__title">{{ title }}</span>
+      <span class="number-ticker__title">{{ label }}</span>
       <u-tooltip v-if="info" v-slot="{ trigger }" :text="info" toggle-on-click>
         <u-button
           v-bind="trigger"
           class="number-ticker__info"
-          :aria-label="title">
+          :aria-label="label">
           <u-icon name="fa-solid:info-circle" />
         </u-button>
       </u-tooltip>
@@ -39,7 +39,7 @@ import { advanceCounter } from "#shared/utils/ticker";
 
 const props = withDefaults(
   defineProps<{
-    title: string;
+    label: string;
     number: number;
     rate: number;
     locale?: string;

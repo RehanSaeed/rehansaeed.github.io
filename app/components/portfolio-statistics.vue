@@ -6,12 +6,12 @@
     :data-stars="statistics.stars">
     <div class="portfolio-statistics__totals">
       <u-number-ticker
-        title="Package Downloads"
+        label="Package Downloads"
         :number="statistics.downloads"
         :rate="downloadRate"
         :info="downloadInfo" />
       <u-number-ticker
-        title="GitHub Stars"
+        label="GitHub Stars"
         :number="statistics.stars"
         :rate="starRate"
         :info="starInfo" />
