@@ -28,7 +28,7 @@ include only published open source entries, counting each repository and package
 once (case-insensitively). Add projects and packages to those entries rather than
 editing the displayed totals.
 
-Counts are cached locally for an hour and refreshed by the weekly Monday 05:17 UTC
+Counts are cached locally for an hour and refreshed by the daily 05:17 UTC
 build, pushes to `main` and manual builds. Source failures retain saved counts with
 a warning; without saved counts the build fails. No observation history or
 cross-build CI cache is needed.
@@ -72,7 +72,7 @@ The matching Watchers badge sums `watchers.totalCount` from GitHub GraphQL acros
 all public repositories owned by the account in `site.json`, including forks and
 archived repositories. It paginates beyond 100 repositories and counts watch
 subscriptions, not unique people. This build-time total uses the existing
-`GITHUB_TOKEN`, a one-hour local cache and the weekly rebuild. Failed requests
+`GITHUB_TOKEN`, a one-hour local cache and the daily rebuild. Failed requests
 retain saved counts with a warning and retry next build; without saved counts the
 build fails. Do not use REST's `watchers_count`, which counts stars instead.
 
