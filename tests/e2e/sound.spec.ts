@@ -120,7 +120,9 @@ test.beforeEach(async ({ page }) => {
         (buffer) => {
           window.soundProbe.decoded++;
           const name = dataNames.get(args[0]);
-          if (name) bufferNames.set(buffer, name);
+          if (name) {
+            bufferNames.set(buffer, name);
+          }
         },
         () => {},
       );
@@ -250,7 +252,9 @@ test("A saved mute stays silent and requests no samples until enabled", async ({
   );
   const requests: string[] = [];
   page.on("request", (request) => {
-    if (request.url().includes("/sounds/")) requests.push(request.url());
+    if (request.url().includes("/sounds/")) {
+      requests.push(request.url());
+    }
   });
   await page.goto("/");
   await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "false");
@@ -363,7 +367,9 @@ test("An early mute survives delayed preference restoration without loading audi
   });
   const requests: string[] = [];
   page.on("request", (request) => {
-    if (request.url().includes("/sounds/")) requests.push(request.url());
+    if (request.url().includes("/sounds/")) {
+      requests.push(request.url());
+    }
   });
   await page.goto("/");
   await soundToggle(page).click();
@@ -403,8 +409,9 @@ test("Sound icons animate in both directions without replacing SVGs", async ({
   }
   for (const enabled of [false, true]) {
     const frame = await button.evaluate(async (element) => {
-      if (!(element instanceof HTMLButtonElement))
+      if (!(element instanceof HTMLButtonElement)) {
         throw new Error("Expected a native sound button");
+      }
       element.click();
       await new Promise(requestAnimationFrame);
       const animations = element.getAnimations({ subtree: true });
@@ -436,8 +443,9 @@ test("Sound icons animate in both directions without replacing SVGs", async ({
       expect(icon.transform).not.toBe("matrix(1, 0, 0, 1, 0, 0)");
     }
     await button.evaluate((element) => {
-      for (const animation of element.getAnimations({ subtree: true }))
+      for (const animation of element.getAnimations({ subtree: true })) {
         animation.finish();
+      }
     });
     await expectSoundState(page, enabled);
     for (const icon of icons) {
@@ -603,7 +611,9 @@ test("Rapid actions interrupt previous effects and muting stops active playback"
   await enable(page);
   await page.evaluate(() => {
     const theme = document.querySelector<HTMLButtonElement>(".theme-button")!;
-    for (let i = 0; i < 4; i++) theme.click();
+    for (let i = 0; i < 4; i++) {
+      theme.click();
+    }
     document
       .querySelector<HTMLButtonElement>(".sound-control__button")!
       .click();
@@ -906,7 +916,9 @@ for (const control of ["theme", "enable"] as const) {
     }
     await expect.poll(() => playback(page)).toHaveLength(1);
     const confirmation = await playedSounds(page);
-    if (control === "enable") expect(confirmation).toEqual(["enable-sound"]);
+    if (control === "enable") {
+      expect(confirmation).toEqual(["enable-sound"]);
+    }
     await page.locator(".tags__link").first().hover();
     await page.waitForTimeout(150);
     await page.mouse.move(1, 1);
@@ -1144,7 +1156,9 @@ test("A saved mute fetches nothing and silences social hover, tags and navigatio
   );
   const requests: string[] = [];
   page.on("request", (request) => {
-    if (request.url().includes("/sounds/")) requests.push(request.url());
+    if (request.url().includes("/sounds/")) {
+      requests.push(request.url());
+    }
   });
   await page.goto("/");
   await expectSoundState(page, false);
@@ -1403,7 +1417,9 @@ test("Recorded icon sounds and original controls have distinct waveforms and tim
             value * (0.5 - 0.5 * Math.cos((2 * Math.PI * index) / (size - 1))),
         );
       const energy = frame.reduce((sum, value) => sum + value * value, 0);
-      if (energy < 1e-8) continue;
+      if (energy < 1e-8) {
+        continue;
+      }
       const powers: number[] = [];
       for (let bin = 1; bin < size / 2; bin++) {
         let real = 0;

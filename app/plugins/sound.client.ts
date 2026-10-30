@@ -27,7 +27,9 @@ export default defineNuxtPlugin((app) => {
   }
 
   function stop() {
-    if (!activeSource) return;
+    if (!activeSource) {
+      return;
+    }
     const source = activeSource;
     activeSource = undefined;
     source.onended = null;
@@ -36,7 +38,9 @@ export default defineNuxtPlugin((app) => {
   }
 
   function abortLoads() {
-    for (const controller of loading.values()) controller.abort();
+    for (const controller of loading.values()) {
+      controller.abort();
+    }
     loading.clear();
   }
 
@@ -51,9 +55,13 @@ export default defineNuxtPlugin((app) => {
         throw new Error(`Loading ${name} failed with HTTP ${response.status}.`);
       }
       const data = await response.arrayBuffer();
-      if (controller.signal.aborted || disposed) return;
+      if (controller.signal.aborted || disposed) {
+        return;
+      }
       const buffer = await audio.decodeAudioData(data);
-      if (!controller.signal.aborted && !disposed) sounds.set(name, buffer);
+      if (!controller.signal.aborted && !disposed) {
+        sounds.set(name, buffer);
+      }
     } catch (cause) {
       if (!controller.signal.aborted && !disposed) {
         report(
@@ -62,7 +70,9 @@ export default defineNuxtPlugin((app) => {
         );
       }
     } finally {
-      if (loading.get(name) === controller) loading.delete(name);
+      if (loading.get(name) === controller) {
+        loading.delete(name);
+      }
     }
   }
 
@@ -109,10 +119,14 @@ export default defineNuxtPlugin((app) => {
   }
 
   function setEnabled(value: boolean, persist = true) {
-    if (disposed) return;
+    if (disposed) {
+      return;
+    }
     const confirm = persist && value && !enabled.value;
     const version = ++preferenceVersion;
-    if (persist) preferenceChanged = true;
+    if (persist) {
+      preferenceChanged = true;
+    }
     enabled.value = value;
     error.value = "";
     if (value) {
@@ -121,7 +135,9 @@ export default defineNuxtPlugin((app) => {
       const unlocked = persist ? unlock() : undefined;
       if (confirm) {
         void Promise.all([prepared, unlocked]).then(() => {
-          if (version === preferenceVersion) play("enable-sound");
+          if (version === preferenceVersion) {
+            play("enable-sound");
+          }
         });
       }
     } else {
@@ -140,11 +156,17 @@ export default defineNuxtPlugin((app) => {
   }
 
   function play(name: SoundEffect) {
-    if (!enabled.value || disposed) return;
+    if (!enabled.value || disposed) {
+      return;
+    }
     // Hover accents must not cut off a confirmation or deliberate action.
-    if (previewSounds.has(name) && activeSource) return;
+    if (previewSounds.has(name) && activeSource) {
+      return;
+    }
     const buffer = sounds.get(name);
-    if (!buffer || !context || !volume) return;
+    if (!buffer || !context || !volume) {
+      return;
+    }
     if (context.state !== "running") {
       // Resume during the gesture, but never replay a stale click after unlocking.
       unlock();
@@ -165,7 +187,9 @@ export default defineNuxtPlugin((app) => {
       source.start();
       activeSource = source;
       return () => {
-        if (activeSource === source) stop();
+        if (activeSource === source) {
+          stop();
+        }
       };
     } catch (cause) {
       source?.disconnect();
@@ -187,7 +211,9 @@ export default defineNuxtPlugin((app) => {
 
   // Async layouts can still be hydrating at app:mounted.
   onNuxtReady(() => {
-    if (disposed) return;
+    if (disposed) {
+      return;
+    }
     try {
       // The user may interact before Nuxt's idle callback restores storage.
       if (!preferenceChanged) {
@@ -204,7 +230,9 @@ export default defineNuxtPlugin((app) => {
   });
 
   function dispose() {
-    if (disposed) return;
+    if (disposed) {
+      return;
+    }
     disposed = true;
     window.removeEventListener("storage", storageChanged);
     window.removeEventListener("pointerdown", unlock, true);
@@ -221,7 +249,9 @@ export default defineNuxtPlugin((app) => {
   }
   window.addEventListener("pointerdown", unlock, true);
   window.addEventListener("keydown", unlock, true);
-  if (import.meta.hot) import.meta.hot.dispose(dispose);
+  if (import.meta.hot) {
+    import.meta.hot.dispose(dispose);
+  }
   app.vueApp.onUnmount(dispose);
 
   return { provide: { soundEffect: { setEnabled, play } } };
