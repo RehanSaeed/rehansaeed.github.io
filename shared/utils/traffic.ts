@@ -140,8 +140,9 @@ export function selectTrafficRange(
   range: 0 | 12 | 30,
 ): TrafficSeries {
   if (range === 30) {
-    if (!history.days)
+    if (!history.days) {
       throw new Error("Daily traffic is unavailable in this snapshot.");
+    }
     return {
       startDate: history.days[0]!.date,
       endDate: history.endDate,
@@ -194,7 +195,8 @@ export function trafficDays(startDate: string, endDate: string): string[] {
     let time = Date.parse(startDate);
     time <= Date.parse(endDate);
     time += 86_400_000
-  )
+  ) {
     days.push(new Date(time).toISOString().slice(0, 10));
+  }
   return days;
 }

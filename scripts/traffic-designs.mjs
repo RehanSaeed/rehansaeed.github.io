@@ -30,8 +30,9 @@ const result = await build({
           ![component, chart, tooltip].some(
             (file) => id.replaceAll("/", "\\") === file.replaceAll("/", "\\"),
           )
-        )
+        ) {
           return;
+        }
         return code.replace(
           '<script setup lang="ts">',
           `<script setup lang="ts">
@@ -66,8 +67,9 @@ const preview = {
     .map((file) => String(file.source))
     .join("\n"),
 };
-if (!preview.js || !preview.css)
+if (!preview.js || !preview.css) {
   throw new Error("Traffic preview did not produce its JavaScript and styles.");
+}
 const html = (await readFile(join(directory, "index.html"), "utf8")).replace(
   "__TRAFFIC_PREVIEW__",
   () => JSON.stringify(preview).replaceAll("<", "\\u003c"),

@@ -309,7 +309,9 @@ export async function postTrafficSnapshot(
         const path = row.dimensionValues[1]!.value;
         const permalink = path.endsWith("/") ? path : `${path}/`;
         const publicationDate = published.get(permalink);
-        if (!publicationDate || date < publicationDate) continue;
+        if (!publicationDate || date < publicationDate) {
+          continue;
+        }
         const months =
           counts.get(permalink) ?? new Map<string, TrafficTotals>();
         const totals = {
@@ -340,7 +342,9 @@ export async function postTrafficSnapshot(
         posts.flatMap(({ permalink, date }) => {
           const startDate =
             date > settings.startDate ? date : settings.startDate;
-          if (startDate > endDate) return [];
+          if (startDate > endDate) {
+            return [];
+          }
           return [
             [
               permalink,

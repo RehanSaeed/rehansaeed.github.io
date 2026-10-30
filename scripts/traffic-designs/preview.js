@@ -73,7 +73,9 @@ document.head.append(style);
 
 function decorate() {
   const line = document.querySelector(".post-traffic__line");
-  if (!line) return;
+  if (!line) {
+    return;
+  }
   const svg = line.ownerSVGElement;
   if (!svg.querySelector("defs")) {
     const definitions = document.createElementNS(svg.namespaceURI, "defs");
@@ -128,7 +130,9 @@ function decorate() {
       polygon.classList.add(className);
       svg.insertBefore(polygon, line);
     }
-    if (polygon.getAttribute("d") !== value) polygon.setAttribute("d", value);
+    if (polygon.getAttribute("d") !== value) {
+      polygon.setAttribute("d", value);
+    }
   }
   const source = document.querySelector(".post-traffic__events");
   for (const plot of document.querySelectorAll(".post-traffic__plot")) {
@@ -145,7 +149,9 @@ function decorate() {
       plot.append(label);
     }
     const text = source.textContent.trim();
-    if (label.textContent !== text) label.textContent = text;
+    if (label.textContent !== text) {
+      label.textContent = text;
+    }
     const position = Number(path.getAttribute("d").split(" ")[1]) / 6;
     label.style.left = `${position}%`;
     label.style.maxWidth = `calc(${position > 50 ? position : 100 - position}% - 8px)`;
@@ -154,7 +160,7 @@ function decorate() {
 }
 function reportHeight() {
   const card = document.querySelector(".post-traffic");
-  if (card)
+  if (card) {
     parent.postMessage(
       {
         type: "traffic-preview-height",
@@ -162,6 +168,7 @@ function reportHeight() {
       },
       "*",
     );
+  }
 }
 const observer = new MutationObserver(() => {
   decorate();
@@ -176,8 +183,12 @@ observer.observe(document.querySelector("#app"), {
 });
 new ResizeObserver(reportHeight).observe(document.body);
 window.addEventListener("message", (event) => {
-  if (event.source !== parent || event.data?.type !== "traffic-preview-config")
+  if (
+    event.source !== parent ||
+    event.data?.type !== "traffic-preview-config"
+  ) {
     return;
+  }
   const { theme, layout, fill, opacity, points, grid, annotation } = event.data;
   if (
     !["light", "dark"].includes(theme) ||
@@ -198,8 +209,9 @@ window.addEventListener("message", (event) => {
     !["none", "solid", "gradient"].includes(fill) ||
     !Number.isFinite(opacity) ||
     !["below", "inside"].includes(annotation)
-  )
+  ) {
     return;
+  }
   document.documentElement.dataset.theme = theme;
   Object.assign(document.body.dataset, {
     layout,

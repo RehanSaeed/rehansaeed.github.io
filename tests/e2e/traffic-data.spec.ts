@@ -65,9 +65,11 @@ test.afterEach(() => {
     "GA4_START_DATE",
     "GA4_SERVICE_ACCOUNT_JSON",
   ]) {
-    if (originalEnv[key] === undefined)
+    if (originalEnv[key] === undefined) {
       Reflect.deleteProperty(process.env, key);
-    else process.env[key] = originalEnv[key];
+    } else {
+      process.env[key] = originalEnv[key];
+    }
   }
 });
 
@@ -156,8 +158,9 @@ test("Retrieves all report pages instead of truncating history", async ({}, info
   await mkdir(dir, { recursive: true });
   const offsets: number[] = [];
   globalThis.fetch = async (input, init) => {
-    if (String(input).includes("oauth2"))
+    if (String(input).includes("oauth2")) {
       return Response.json({ access_token: "test" });
+    }
     const { offset, dateRanges } = JSON.parse(String(init?.body));
     expect(dateRanges[0].endDate).toBe(offset ? "2026-10-30" : "today");
     offsets.push(offset);
@@ -272,9 +275,12 @@ for (const failure of [
     const dir = info.outputPath("cache");
     await mkdir(dir, { recursive: true });
     globalThis.fetch = async (input) => {
-      if (String(input).includes("oauth2"))
+      if (String(input).includes("oauth2")) {
         return Response.json({ access_token: "test" });
-      if (failure === "http") return new Response(null, { status: 503 });
+      }
+      if (failure === "http") {
+        return new Response(null, { status: 503 });
+      }
       const response = report(
         failure === "incomplete-pagination"
           ? []
@@ -444,8 +450,9 @@ for (const [timeZone, instant, endDate] of [
     process.env.GA4_START_DATE = endDate;
     const requestedEnds: string[] = [];
     globalThis.fetch = async (input, init) => {
-      if (String(input).includes("oauth2"))
+      if (String(input).includes("oauth2")) {
         return Response.json({ access_token: "test" });
+      }
       const body = JSON.parse(String(init?.body));
       requestedEnds.push(body.dateRanges[0].endDate);
       return Response.json({
@@ -567,8 +574,9 @@ test("A fresh view-only cache is upgraded instead of hiding engagement for a day
   await postTrafficSnapshot(dir, [entry()], "https://rehansaeed.com");
   const file = info.outputPath("cache", "blog-traffic.json");
   const saved = JSON.parse(await readFile(file, "utf8"));
-  for (const month of saved.snapshot.posts["/example/"].months)
+  for (const month of saved.snapshot.posts["/example/"].months) {
     delete month.engagementSeconds;
+  }
   delete saved.snapshot.posts["/example/"].days;
   await writeFile(file, JSON.stringify(saved));
   const updated = await postTrafficSnapshot(

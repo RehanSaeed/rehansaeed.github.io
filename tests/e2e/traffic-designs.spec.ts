@@ -11,8 +11,9 @@ test("Twelve real-component treatments and their controls work without external 
 }) => {
   const external: string[] = [];
   page.on("request", (request) => {
-    if (request.url().startsWith("http") && !request.url().startsWith(url!))
+    if (request.url().startsWith("http") && !request.url().startsWith(url!)) {
       external.push(request.url());
+    }
   });
   await page.goto(url!, { waitUntil: "domcontentloaded" });
   const frame = page.frameLocator("#selected");
@@ -121,10 +122,11 @@ test("Twelve real-component treatments and their controls work without external 
   await page.getByLabel("Show all twelve").check();
   const comparisons = page.locator(".comparison iframe");
   await expect(comparisons).toHaveCount(12);
-  for (let index = 0; index < 12; index++)
+  for (let index = 0; index < 12; index++) {
     await expect(
       comparisons.nth(index).contentFrame().locator(".post-traffic__point"),
     ).toHaveCount(57);
+  }
   expect(external).toEqual([]);
 });
 
