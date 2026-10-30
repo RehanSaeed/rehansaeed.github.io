@@ -50,18 +50,36 @@ The About page progressively enhances its static map with
 [MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/) and
 [OpenFreeMap](https://openfreemap.org/) tiles. No account, API token, environment
 variable or paid map subscription is required for local development or deployment.
-The map uses OpenFreeMap's Positron and Dark styles to follow the site theme.
+The map uses OpenFreeMap's Positron and Dark styles, with white countries and
+water, borders and pins coloured using the site's purple theme tokens. The author
+pin marks a representative East London point near Stratford, not a street address.
+Its default framing shows the UK and Europe, not street-level London. Keep that
+regional view for reduced-motion users as well.
 Keep the map's OpenMapTiles and OpenStreetMap attribution visible.
 
 The renderer, worker and styles are loaded only when the map approaches the
-viewport. Reduced-motion users start directly at London without the fly-in.
+viewport. Reduced-motion users start directly at the regional view without the fly-in.
 Without JavaScript or WebGL, or if the map service fails, the photo pin and
 self-hosted Natural Earth map remain available.
 
 OpenFreeMap's public service currently has no map-view or request limits for
 normal use, but is donation-funded and provides no availability guarantee.
-Visitors make external requests for styles, tiles, sprites and fonts; no
-visitor-location lookup is performed. Retain the fallback and review
+Visitors make external requests for styles, tiles, sprites and fonts.
+Once the interactive map loads, it also requests an approximate IP location from
+[GeoJS](https://www.geojs.io/docs/v1/endpoints/geo/) automatically. GeoJS receives
+the visitor's IP address; the request omits credentials and the referrer. No GPS
+permission is requested, and the application does not persist coordinates or send
+them to analytics. IP locations can be inaccurate, especially with VPNs.
+The map adds a second purple pin and a dotted line to London, and widens the
+regional view to include both locations, unless the visitor has already moved
+the map. Theme changes must restore the connection layer as well as its colours.
+The caption calculates an approximate great-circle distance in miles from the
+validated IP coordinates; never hardcode a visitor location or an example distance.
+GeoJS is linked in the map credits rather than a separate explanatory paragraph.
+A failed, invalid or eight-second timed-out lookup shows an accessible notice
+without breaking the map. Lookup requests are aborted on navigation and are not made for the static
+fallback. Tests must mock GeoJS rather than use real visitor locations.
+Retain the fallback and review
 [OpenFreeMap's terms](https://openfreemap.org/tos/) when changing the integration.
 
 ## Dependency updates

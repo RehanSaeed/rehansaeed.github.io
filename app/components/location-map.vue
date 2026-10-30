@@ -8,7 +8,7 @@
           ref="mapContainer"
           class="location-map__canvas"
           role="region"
-          aria-label="Interactive map centred on London, United Kingdom"
+          aria-label="Interactive map showing London and your approximate location when available"
           :aria-hidden="!mapReady"
           :inert="!mapReady" />
         <svg
@@ -67,8 +67,8 @@
               North Sea
             </text>
           </g>
-          <!-- London: 51.5074 N, 0.1278 W, using the same projection as the land. -->
-          <g class="location-map__pin" transform="translate(317.3 261.3)">
+          <!-- East London: 51.54 N, 0.005 W, using the same projection as the land. -->
+          <g class="location-map__pin" transform="translate(319.9 260.3)">
             <circle class="location-map__halo" r="13" />
             <circle r="4" />
             <path d="M0 0C-8-16-36-40-36-62a36 36 0 1 1 72 0C36-40 8-16 0 0Z" />
@@ -100,12 +100,26 @@
               height="62" />
           </picture>
         </div>
+        <div
+          ref="visitorTemplate"
+          class="location-map__visitor"
+          role="img"
+          aria-label="Your approximate location">
+          <svg viewBox="0 0 72 98" aria-hidden="true">
+            <path
+              d="M36 98C28 82 0 58 0 36a36 36 0 1 1 72 0C72 58 44 82 36 98Z" />
+            <circle cx="36" cy="36" r="28" />
+            <text x="36" y="42" text-anchor="middle">You</text>
+          </svg>
+          <span>You (approx.)</span>
+        </div>
       </div>
       <figcaption class="location-map__caption">
-        <span>
-          <strong>I'm from London.</strong>
-          <span class="location-map__country">United Kingdom</span>
-        </span>
+        I'm from London<span v-if="distanceMiles !== undefined"
+          >, roughly
+          <em>{{ distanceMiles.toLocaleString("en-GB") }} miles</em> away from
+          your current location, according to your IP address</span
+        >.
         <small v-if="!mapReady">
           Map data:
           <a href="https://www.naturalearthdata.com/">Natural Earth</a>
@@ -114,22 +128,50 @@
       <p v-if="mapStatus" class="location-map__notice" role="status">
         {{ mapStatus }}
       </p>
+      <p v-if="locationStatus" class="location-map__notice" role="status">
+        {{ locationStatus }}
+      </p>
     </figure>
   </u-intersect>
 </template>
 
 <script setup lang="ts">
-import type { Map as MapLibreMap, Marker as MapLibreMarker } from "maplibre-gl";
+import type {
+  ExpressionSpecification,
+  Map as MapLibreMap,
+  Marker as MapLibreMarker,
+} from "maplibre-gl";
+import { z } from "zod";
+import { distanceInMiles } from "#shared/utils/location";
 
-const london: [number, number] = [-0.1278, 51.5074];
+const london: [number, number] = [-0.005, 51.54];
+const europe: [[number, number], [number, number]] = [
+  [-14, 34],
+  [36, 65],
+];
+const coordinate = (min: number, max: number) =>
+  z.string().trim().min(1).transform(Number).pipe(z.number().min(min).max(max));
+const locationSchema = z.object({
+  longitude: coordinate(-180, 180),
+  latitude: coordinate(-85, 85),
+});
 const avatarClipId = `${useId()}-location-avatar`;
 const mapContainer = ref<HTMLDivElement>();
 const markerTemplate = ref<HTMLDivElement>();
+const visitorTemplate = ref<HTMLDivElement>();
 const mapReady = ref(false);
 const mapStatus = ref("");
+const locationStatus = ref("");
+const distanceMiles = ref<number>();
 let map: MapLibreMap | undefined;
 let marker: MapLibreMarker | undefined;
+let visitorMarker: MapLibreMarker | undefined;
+let visitorLocation: [number, number] | undefined;
+let locationController: AbortController | undefined;
 let resizeObserver: ResizeObserver | undefined;
+let reduceMotion = false;
+let styleReady = false;
+let userMovedMap = false;
 let disposed = false;
 
 function mapStyle() {
@@ -139,12 +181,18 @@ function mapStyle() {
 }
 
 function removeMap() {
+  locationController?.abort();
+  visitorMarker?.remove();
+  visitorMarker = undefined;
   marker?.remove();
   marker = undefined;
   const previous = map;
   map = undefined;
   previous?.remove();
   mapReady.value = false;
+  styleReady = false;
+  locationStatus.value = "";
+  distanceMiles.value = undefined;
   resizeObserver?.disconnect();
 }
 
@@ -158,10 +206,178 @@ function failMap(error: unknown) {
   removeMap();
 }
 
+function frameMap(animate: boolean) {
+  if (!map || userMovedMap) return;
+  const [west, south] = europe[0];
+  const [east, north] = europe[1];
+  const outsideEurope =
+    visitorLocation &&
+    (visitorLocation[0] < west ||
+      visitorLocation[0] > east ||
+      visitorLocation[1] < south ||
+      visitorLocation[1] > north);
+  map.fitBounds(
+    [
+      [
+        Math.min(west, visitorLocation?.[0] ?? west),
+        Math.min(south, visitorLocation?.[1] ?? south),
+      ],
+      [
+        Math.max(east, visitorLocation?.[0] ?? east),
+        Math.max(north, visitorLocation?.[1] ?? north),
+      ],
+    ],
+    {
+      padding: {
+        top: outsideEurope ? 104 : 48,
+        bottom: 24,
+        left: 48,
+        right: 48,
+      },
+      maxZoom: 3.2,
+      pitch: 0,
+      bearing: 0,
+      duration: animate && !reduceMotion ? 3000 : 0,
+    },
+  );
+}
+
+function applyMapPalette() {
+  if (!map || !mapContainer.value) return;
+  try {
+    const theme = getComputedStyle(mapContainer.value);
+    const colour = (name: string) =>
+      theme.getPropertyValue(`--global-${name}-color`).trim();
+    const land = theme.getPropertyValue("--location-map-land-color").trim();
+    const landLabel = theme
+      .getPropertyValue("--location-map-land-label-color")
+      .trim();
+    const tint = (amount: number): ExpressionSpecification => [
+      "interpolate",
+      ["linear"],
+      amount,
+      0,
+      colour("background"),
+      1,
+      colour("accent"),
+    ];
+    for (const layer of map.getStyle().layers) {
+      if (layer.type === "background") {
+        map.setPaintProperty(layer.id, "background-color", land);
+      } else if (layer.type === "fill") {
+        map.setPaintProperty(
+          layer.id,
+          "fill-color",
+          layer["source-layer"] === "water" ? tint(0.35) : land,
+        );
+      } else if (layer.type === "line") {
+        map.setPaintProperty(
+          layer.id,
+          "line-color",
+          layer.id === "visitor-connection" ? colour("accent") : tint(0.5),
+        );
+      } else if (layer.type === "symbol" && layer.layout?.["text-field"]) {
+        const water = ["water_name", "waterway"].includes(
+          layer["source-layer"] ?? "",
+        );
+        map.setPaintProperty(
+          layer.id,
+          "text-color",
+          water ? colour("body") : landLabel,
+        );
+        map.setPaintProperty(
+          layer.id,
+          "text-halo-color",
+          water ? tint(0.35) : land,
+        );
+      }
+    }
+    updateConnection();
+  } catch (error) {
+    failMap(error);
+  }
+}
+
+function updateConnection() {
+  if (!map || !visitorLocation || !styleReady) return;
+  const id = "visitor-connection";
+  if (map.getSource(id)) return;
+  map.addSource(id, {
+    type: "geojson",
+    data: {
+      type: "Feature",
+      properties: {},
+      geometry: {
+        type: "LineString",
+        coordinates: [london, visitorLocation],
+      },
+    },
+  });
+  map.addLayer(
+    {
+      id,
+      source: id,
+      type: "line",
+      layout: { "line-cap": "round", "line-join": "round" },
+      paint: {
+        "line-color": getComputedStyle(map.getContainer())
+          .getPropertyValue("--global-accent-color")
+          .trim(),
+        "line-width": 2,
+        "line-dasharray": [0.1, 2],
+      },
+    },
+    map.getStyle().layers.find((layer) => layer.type === "symbol")?.id,
+  );
+}
+
+async function loadVisitorLocation(maplibregl: typeof import("maplibre-gl")) {
+  const controller = new AbortController();
+  locationController = controller;
+  const timeout = setTimeout(() => controller.abort(), 8000);
+  try {
+    const response = await fetch("https://get.geojs.io/v1/ip/geo.json", {
+      signal: controller.signal,
+      credentials: "omit",
+      referrerPolicy: "no-referrer",
+      cache: "no-store",
+    });
+    if (!response.ok) {
+      throw new Error(`Location service returned HTTP ${response.status}.`);
+    }
+    const location = locationSchema.parse(await response.json());
+    if (disposed || !map) return;
+    visitorLocation = [location.longitude, location.latitude];
+    distanceMiles.value = Math.round(distanceInMiles(london, visitorLocation));
+    const element = visitorTemplate.value?.cloneNode(true);
+    if (!(element instanceof HTMLElement)) {
+      throw new Error("Could not create the visitor marker.");
+    }
+    visitorMarker = new maplibregl.Marker({ element, anchor: "bottom" })
+      .setLngLat(visitorLocation)
+      .addTo(map);
+    updateConnection();
+    frameMap(true);
+  } catch (error) {
+    if (disposed || !map) return;
+    visitorMarker?.remove();
+    visitorMarker = undefined;
+    visitorLocation = undefined;
+    distanceMiles.value = undefined;
+    console.warn("[location-map] Could not find approximate location.", error);
+    locationStatus.value =
+      "Your approximate location is unavailable. Showing London and Europe.";
+  } finally {
+    clearTimeout(timeout);
+    if (locationController === controller) locationController = undefined;
+  }
+}
+
 function updateTheme() {
   if (!map) return;
   try {
-    map.setStyle(mapStyle());
+    styleReady = false;
+    map.setStyle(mapStyle(), { diff: false });
   } catch (error) {
     failMap(error);
   }
@@ -180,17 +396,21 @@ async function loadMap() {
       throw new Error("The map container or photo marker is missing.");
     }
     maplibregl.setWorkerUrl(workerUrl);
-    const reduceMotion = window.matchMedia(
+    reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
     map = new maplibregl.Map({
       container: mapContainer.value,
       style: mapStyle(),
-      center: reduceMotion ? london : [-15, 54],
-      zoom: reduceMotion ? 9 : 3,
+      center: [-15, 54],
+      zoom: 1.5,
       cooperativeGestures: true,
       renderWorldCopies: false,
+      attributionControl: {
+        customAttribution: '<a href="https://www.geojs.io/">GeoJS</a>',
+      },
     });
+    if (reduceMotion) frameMap(false);
     map.scrollZoom.disable();
     map.addControl(
       new maplibregl.NavigationControl({ showCompass: false }),
@@ -203,24 +423,28 @@ async function loadMap() {
     marker = new maplibregl.Marker({ element: photoPin, anchor: "bottom" })
       .setLngLat(london)
       .addTo(map);
-    map.getCanvas().setAttribute("aria-label", "Map of London, United Kingdom");
+    map
+      .getCanvas()
+      .setAttribute("aria-label", "Map showing London, the UK and Europe");
+    map.on("movestart", (event) => {
+      if (event.originalEvent) userMovedMap = true;
+    });
+    map.on("style.load", () => {
+      styleReady = true;
+      applyMapPalette();
+    });
     map.once("error", ({ error }) => failMap(error));
     map.once("load", () => {
       if (disposed || !map) return;
       mapReady.value = true;
       mapStatus.value = "";
-      if (!reduceMotion) {
-        map.flyTo({
-          center: london,
-          zoom: 9,
-          pitch: 30,
-          bearing: -10,
-          duration: 3000,
-          essential: false,
-        });
-      }
+      frameMap(true);
+      void loadVisitorLocation(maplibregl);
     });
-    resizeObserver = new ResizeObserver(() => map?.resize());
+    resizeObserver = new ResizeObserver(() => {
+      map?.resize();
+      if (mapReady.value) frameMap(false);
+    });
     resizeObserver.observe(mapContainer.value);
   } catch (error) {
     if (!disposed) failMap(error);
@@ -240,6 +464,9 @@ onBeforeUnmount(() => {
 
 <style lang="scss">
 .location-map {
+  --location-map-land-color: white;
+  --location-map-land-label-color: var(--global-body-color);
+
   inline-size: 100%;
   max-inline-size: 36rem;
   min-inline-size: 0;
@@ -248,6 +475,10 @@ onBeforeUnmount(() => {
   border: var(--global-border-width-1) solid var(--global-border-color);
   border-radius: var(--global-border-radius);
   background: var(--global-background-color);
+}
+
+[data-theme="dark"] .location-map {
+  --location-map-land-label-color: var(--global-background-color);
 }
 
 .location-map__viewport {
@@ -307,6 +538,43 @@ onBeforeUnmount(() => {
   font-size: var(--global-font-size-1);
 }
 
+.location-map__visitor {
+  inline-size: 48px;
+  block-size: 66px;
+  pointer-events: none;
+
+  svg {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    fill: var(--global-accent-color);
+  }
+
+  circle {
+    fill: var(--global-content-background-color);
+  }
+
+  text {
+    fill: var(--global-accent-color);
+    font-size: 20px;
+    font-weight: var(--global-font-weight-bold);
+  }
+
+  span {
+    position: absolute;
+    inset-block-end: calc(100% + 0.5rem);
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    padding: 0.25rem 0.5rem;
+    border: var(--global-border-width-1) solid var(--global-accent-color);
+    border-radius: var(--global-border-radius);
+    background: var(--global-content-background-color);
+    color: var(--global-body-color);
+    font-size: 12px;
+    white-space: nowrap;
+  }
+}
+
 .location-map__illustration {
   display: block;
   inline-size: 100%;
@@ -326,18 +594,19 @@ onBeforeUnmount(() => {
 }
 
 .location-map__land {
-  fill: var(--global-content-background-color);
+  fill: var(--location-map-land-color);
   stroke: var(--global-accent-color);
   stroke-opacity: 0.3;
   stroke-linejoin: round;
 }
 
 .location-map__labels {
-  fill: var(--global-body-color);
+  fill: var(--location-map-land-label-color);
   font-size: 17px;
 }
 
 .location-map__sea-label {
+  fill: var(--global-body-color);
   font-style: italic;
 }
 
@@ -350,26 +619,18 @@ onBeforeUnmount(() => {
 }
 
 .location-map__city {
-  fill: var(--global-title-color);
+  fill: var(--location-map-land-label-color);
   font-size: 24px;
   font-weight: var(--global-font-weight-bold);
 }
 
 .location-map__caption {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--global-space-fixed-3);
+  display: block;
   padding: var(--global-space-fixed-4);
 
   small {
+    display: block;
     font-size: max(12px, 0.65em);
   }
-}
-
-.location-map__country {
-  display: block;
-  font-size: var(--global-font-size-1);
 }
 </style>
