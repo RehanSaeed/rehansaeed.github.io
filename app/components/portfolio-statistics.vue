@@ -3,9 +3,7 @@
     class="portfolio-statistics"
     :class="{ 'portfolio-statistics--borderless': borderless }"
     :data-downloads="statistics.downloads"
-    :data-stars="statistics.stars"
-    :data-followers="accountStats ? account.followers : undefined"
-    :data-watchers="accountStats ? account.watchers : undefined">
+    :data-stars="statistics.stars">
     <div class="portfolio-statistics__totals">
       <u-number-ticker
         title="Package Downloads"
@@ -37,53 +35,19 @@
           </u-tooltip>
         </template>
       </u-number-ticker>
-      <u-number-ticker
-        v-if="accountStats"
-        title="GitHub Followers"
-        :number="account.followers"
-        :rate="0">
-        <template #info>
-          <u-tooltip v-slot="{ trigger }" :text="followerInfo">
-            <u-button
-              v-bind="trigger"
-              class="portfolio-statistics__info"
-              aria-label="About GitHub followers">
-              <u-icon name="fa-solid:info-circle" />
-            </u-button>
-          </u-tooltip>
-        </template>
-      </u-number-ticker>
-      <u-number-ticker
-        v-if="accountStats"
-        title="GitHub Watchers"
-        :number="account.watchers"
-        :rate="0">
-        <template #info>
-          <u-tooltip v-slot="{ trigger }" :text="watcherInfo">
-            <u-button
-              v-bind="trigger"
-              class="portfolio-statistics__info"
-              aria-label="About GitHub watchers">
-              <u-icon name="fa-solid:info-circle" />
-            </u-button>
-          </u-tooltip>
-        </template>
-      </u-number-ticker>
     </div>
+    <u-github-badges />
   </div>
 </template>
 
 <script setup lang="ts">
 import statistics from "#blog-portfolio-statistics";
-import account from "#blog-github-watchers";
 import { canProjectCounter } from "#shared/utils/ticker";
 
-defineProps<{ borderless?: boolean; accountStats?: boolean }>();
+defineProps<{ borderless?: boolean }>();
 
 const downloadInfo = `Verified total: ${statistics.downloads.toLocaleString("en-GB")} lifetime package downloads across the published open source projects in my portfolio. Downloads are not unique people. The number animates using package lifetime averages, not a live feed. Counts refresh when the site builds.`;
 const starInfo = `Verified total: ${statistics.stars.toLocaleString("en-GB")} GitHub stars across the published open source projects in my portfolio, including listed organisation-owned repositories. The number animates illustratively at an average of one increase every 15 seconds, not live activity. Counts refresh when the site builds.`;
-const followerInfo = `Verified total: ${account.followers.toLocaleString("en-GB")} people following my GitHub account. This is a build snapshot, not an animated estimate or live feed. The badge below refreshes independently, so its count can differ.`;
-const watcherInfo = `Verified total: ${account.watchers.toLocaleString("en-GB")} watch subscriptions across my ${account.repositories} public, account-owned repositories, including forks and archived repositories. Organisation-owned repositories are excluded. A person watching several repositories is counted once per repository. This is a build snapshot, not an animated estimate or live feed.`;
 
 const now = ref(0);
 const downloadRate = computed(() =>

@@ -4,7 +4,6 @@ import { useLogger } from "nuxt/kit";
 import { z } from "zod";
 
 const countsSchema = z.object({
-  followers: z.number().int().nonnegative(),
   watchers: z.number().int().nonnegative(),
   repositories: z.number().int().nonnegative(),
 });
@@ -15,7 +14,6 @@ const cacheSchema = countsSchema.extend({
 const responseSchema = z.object({
   data: z.object({
     user: z.object({
-      followers: z.object({ totalCount: z.number().int().nonnegative() }),
       repositories: z.object({
         nodes: z.array(
           z.object({
@@ -34,7 +32,6 @@ const responseSchema = z.object({
 const query = `
   query AccountWatchers($owner: String!, $cursor: String) {
     user(login: $owner) {
-      followers { totalCount }
       repositories(first: 100, after: $cursor, ownerAffiliations: [OWNER], privacy: PUBLIC) {
         nodes { watchers { totalCount } }
         pageInfo { hasNextPage endCursor }
@@ -70,7 +67,6 @@ export async function accountWatchers(dataDir: string, owner: string) {
     let cursor: string | null = null;
     const cursors = new Set<string>();
     let watchers = 0;
-    let followers = 0;
     let repositories = 0;
     while (true) {
       const response = await fetch("https://api.github.com/graphql", {
@@ -93,7 +89,6 @@ export async function accountWatchers(dataDir: string, owner: string) {
         );
       }
       const batch = result.data.user.repositories;
-      if (cursor === null) followers = result.data.user.followers.totalCount;
       repositories += batch.nodes.length;
       watchers += batch.nodes.reduce(
         (sum, repository) => sum + repository.watchers.totalCount,
@@ -106,7 +101,7 @@ export async function accountWatchers(dataDir: string, owner: string) {
       }
       cursors.add(cursor);
     }
-    const counts = { followers, watchers, repositories };
+    const counts = { watchers, repositories };
     await writeFile(
       path,
       JSON.stringify({ owner, updated: Date.now(), ...counts }),

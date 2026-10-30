@@ -158,12 +158,13 @@ for (const width of [375, 1280]) {
       ).toBeGreaterThan(youtubeIndex);
       expect(
         await page
-          .locator(".about__github-image")
+          .locator(".github-badges img")
           .evaluateAll((images) =>
             images.map((image) => image.getAttribute("alt")),
           ),
       ).toEqual([
         "GitHub follower count",
+        "GitHub sponsors",
         expect.stringMatching(
           /^GitHub watch subscriptions across my \d+ public account-owned repositories: \d+$/,
         ),
@@ -171,14 +172,14 @@ for (const width of [375, 1280]) {
       expect(
         await page
           .locator(
-            ".about__container > .about__github-images, .about__container > .about__youtube-images, .about__container > .about_awards-images, .about__container > .about__mvp-images",
+            ".about__statistics > .github-badges, .about__container > .about__youtube-images, .about__container > .about_awards-images, .about__container > .about__mvp-images",
           )
           .evaluateAll((sections) =>
             sections.map((section) => section.className),
           ),
       ).toEqual([
         "about__youtube-images",
-        "about__github-images",
+        "github-badges",
         "about_awards-images",
         "about__mvp-images",
       ]);
