@@ -54,8 +54,7 @@
           <u-button
             v-for="option in ranges"
             :key="option.value"
-            bordered
-            :primary="range === option.value"
+            :variant="range === option.value ? 'primary' : 'secondary'"
             :aria-pressed="range === option.value"
             :disabled="option.value === 30 && !availableHistory?.days"
             @click="range = option.value">
@@ -64,15 +63,13 @@
         </div>
         <div class="post-traffic__mode" role="group" aria-label="Chart metric">
           <u-button
-            bordered
-            :primary="metric === 'views'"
+            :variant="metric === 'views' ? 'primary' : 'secondary'"
             :aria-pressed="metric === 'views'"
             @click="metric = 'views'">
             Traffic
           </u-button>
           <u-button
-            bordered
-            :primary="metric === 'engagement'"
+            :variant="metric === 'engagement' ? 'primary' : 'secondary'"
             :aria-pressed="metric === 'engagement'"
             @click="metric = 'engagement'">
             Engagement
