@@ -1,37 +1,43 @@
 <template>
-  <dl class="number-ticker">
-    <dt
-      class="number-ticker__header"
-      :class="{ 'number-ticker__header--with-info': info }">
-      <span class="number-ticker__title">{{ label }}</span>
-      <u-tooltip v-if="info" v-slot="{ trigger }" :text="info" toggle-on-click>
-        <u-button
-          v-bind="trigger"
-          class="number-ticker__info"
-          :aria-label="label">
-          <u-icon name="fa-solid:info-circle" />
-        </u-button>
-      </u-tooltip>
-    </dt>
-    <dd class="number-ticker__value" aria-live="off">
-      <span class="number-ticker__accessible">{{ exactValue }}</span>
-      <span class="number-ticker__digits" aria-hidden="true">
-        <span
-          v-for="(character, index) of formattedValue"
-          :key="formattedValue.length - index"
-          class="number-ticker__cell"
-          :class="{
-            'number-ticker__cell--separator': !/\p{N}/u.test(character),
-          }">
-          <Transition name="number-ticker-digit">
-            <span :key="character" class="number-ticker__digit">{{
-              character
-            }}</span>
-          </Transition>
+  <u-intersect @change="intersectionChanged">
+    <dl class="number-ticker">
+      <dt
+        class="number-ticker__header"
+        :class="{ 'number-ticker__header--with-info': info }">
+        <span class="number-ticker__title">{{ label }}</span>
+        <u-tooltip
+          v-if="info"
+          v-slot="{ trigger }"
+          :text="info"
+          toggle-on-click>
+          <u-button
+            v-bind="trigger"
+            class="number-ticker__info"
+            :aria-label="label">
+            <u-icon name="fa-solid:info-circle" />
+          </u-button>
+        </u-tooltip>
+      </dt>
+      <dd class="number-ticker__value" aria-live="off">
+        <span class="number-ticker__accessible">{{ exactValue }}</span>
+        <span class="number-ticker__digits" aria-hidden="true">
+          <span
+            v-for="(character, index) of formattedValue"
+            :key="formattedValue.length - index"
+            class="number-ticker__cell"
+            :class="{
+              'number-ticker__cell--separator': !/\p{N}/u.test(character),
+            }">
+            <Transition name="number-ticker-digit">
+              <span :key="character" class="number-ticker__digit">{{
+                character
+              }}</span>
+            </Transition>
+          </span>
         </span>
-      </span>
-    </dd>
-  </dl>
+      </dd>
+    </dl>
+  </u-intersect>
 </template>
 
 <script setup lang="ts">
@@ -58,6 +64,7 @@ let timer: ReturnType<typeof setInterval> | undefined;
 let remainder = 0;
 let lastTick = 0;
 let motion: MediaQueryList | undefined;
+let inViewport = false;
 
 const clearTimer = () => {
   if (timer !== undefined) {
@@ -66,14 +73,14 @@ const clearTimer = () => {
   timer = undefined;
 };
 
-const tick = () => {
+const tick = (random = Math.random()) => {
   const now = Date.now();
   const seconds = Math.max(0, (now - lastTick) / 1000);
   const next = advanceCounter(
     { value: displayValue.value, remainder },
     props.rate,
     seconds,
-    seconds > 5 ? 0.5 : Math.random(),
+    seconds > 5 ? 0.5 : random,
   );
   displayValue.value = next.value;
   remainder = next.remainder;
@@ -81,23 +88,26 @@ const tick = () => {
 };
 
 const syncAnimation = () => {
-  clearTimer();
   running.value = !!motion && !motion.matches && props.rate !== 0;
-  if (!running.value) {
-    return;
-  }
   lastTick = Date.now();
-  if (!document.hidden) {
-    timer = setInterval(tick, 1000);
-  }
+  visibilityChanged();
 };
 
 const visibilityChanged = () => {
   clearTimer();
-  if (running.value && !document.hidden) {
-    tick();
+  if (running.value && inViewport && !document.hidden) {
+    tick(0.5);
     timer = setInterval(tick, 1000);
   }
+};
+
+const intersectionChanged = (entries: IntersectionObserverEntry[]) => {
+  const visible = entries.some((entry) => entry.isIntersecting);
+  if (visible === inViewport) {
+    return;
+  }
+  inViewport = visible;
+  visibilityChanged();
 };
 
 watch([() => props.number, () => props.rate], () => {
