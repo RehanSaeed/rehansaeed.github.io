@@ -14,8 +14,9 @@ defineProps<{
 
 <style lang="scss">
 .statistic {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
   margin: 0;
   min-inline-size: 0;
 }
