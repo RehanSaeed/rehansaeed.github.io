@@ -1,18 +1,31 @@
-export function useLinkSound(isEnabled: () => boolean) {
+import {
+  linkSoundProfiles,
+  type LinkSound,
+  type LinkSoundProfile,
+} from "#shared/utils/sounds";
+
+export function useLinkSound(setting: () => boolean | LinkSound | undefined) {
   const { enabled, play } = useSoundEffect();
   let timer: ReturnType<typeof setTimeout> | undefined;
+  const profile = computed<LinkSoundProfile | undefined>(() => {
+    const value = setting();
+    return value
+      ? linkSoundProfiles[value === true ? "navigation" : value]
+      : undefined;
+  });
 
   function cancelPreview() {
     clearTimeout(timer);
   }
 
   function getLink(event: Event) {
-    if (!isEnabled() || !(event.target instanceof Element)) return;
+    if (!profile.value || !(event.target instanceof Element)) return;
     const link = event.target.closest<HTMLAnchorElement>("a[href]");
     if (
       !link ||
       link.closest("[data-sound-link]") !== event.currentTarget ||
-      link.hasAttribute("download")
+      link.hasAttribute("download") ||
+      link.getAttribute("aria-disabled") === "true"
     ) {
       return;
     }
@@ -20,13 +33,14 @@ export function useLinkSound(isEnabled: () => boolean) {
   }
 
   const trigger = computed(() =>
-    isEnabled()
+    profile.value
       ? {
           "data-sound-link": "",
           onPointerover(event: PointerEvent) {
             const link = getLink(event);
             if (
               !enabled.value ||
+              !profile.value?.hover ||
               event.pointerType !== "mouse" ||
               !link ||
               (event.relatedTarget instanceof Node &&
@@ -36,7 +50,8 @@ export function useLinkSound(isEnabled: () => boolean) {
             }
             cancelPreview();
             // Ignore quick pointer passes and let activation replace the preview.
-            timer = setTimeout(() => play("link-hover"), 100);
+            const sound = profile.value.hover;
+            timer = setTimeout(() => play(sound), 100);
           },
           onPointerout(event: PointerEvent) {
             const link = getLink(event);
@@ -51,16 +66,18 @@ export function useLinkSound(isEnabled: () => boolean) {
           onPointerdown: cancelPreview,
           onFocusin(event: FocusEvent) {
             const link = getLink(event);
-            if (link?.matches(":focus-visible")) {
+            if (profile.value?.hover && link?.matches(":focus-visible")) {
               cancelPreview();
-              play("link-hover");
+              play(profile.value.hover);
             }
           },
           onFocusout: cancelPreview,
           onClickCapture(event: MouseEvent) {
             cancelPreview();
+            const link = getLink(event);
             if (
-              getLink(event) &&
+              link &&
+              profile.value &&
               !event.defaultPrevented &&
               event.button === 0 &&
               !event.altKey &&
@@ -68,7 +85,20 @@ export function useLinkSound(isEnabled: () => boolean) {
               !event.metaKey &&
               !event.shiftKey
             ) {
-              play("link-activate");
+              let sound = profile.value.activate;
+              if (setting() === "content") {
+                const url = new URL(link.href);
+                if (url.origin !== location.origin) {
+                  sound = "external-open";
+                } else if (
+                  url.pathname === location.pathname &&
+                  url.search === location.search &&
+                  url.hash
+                ) {
+                  sound = "anchor-jump";
+                }
+              }
+              play(sound);
             }
           },
         }
@@ -78,6 +108,7 @@ export function useLinkSound(isEnabled: () => boolean) {
   watch(enabled, (value) => {
     if (!value) cancelPreview();
   });
+  watch(profile, cancelPreview);
   onBeforeUnmount(cancelPreview);
   return trigger;
 }

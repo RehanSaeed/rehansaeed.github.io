@@ -1,8 +1,8 @@
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import type { Page } from "@playwright/test";
 import type { NuxtApp } from "nuxt/app";
-import { soundNames } from "../../shared/utils/sounds";
+import { soundNames, soundPath } from "../../shared/utils/sounds";
 import { delayClientScripts, expect, test } from "./fixtures";
 
 declare global {
@@ -10,6 +10,7 @@ declare global {
     soundProbe: {
       decoded: number;
       starts: number[];
+      played: string[];
       stops: number;
       context?: AudioContext;
       gain?: GainNode;
@@ -22,6 +23,15 @@ const soundToggle = (page: Page) =>
 const themeToggle = (page: Page) =>
   page.getByRole("button", { name: "Toggle dark/light" });
 const playback = (page: Page) => page.evaluate(() => window.soundProbe.starts);
+const playedSounds = (page: Page) =>
+  page.evaluate(() => window.soundProbe.played);
+
+async function clearPlayback(page: Page) {
+  await page.evaluate(() => {
+    window.soundProbe.starts = [];
+    window.soundProbe.played = [];
+  });
+}
 
 async function ready(page: Page) {
   await expect
@@ -58,7 +68,20 @@ async function expectSoundState(page: Page, enabled: boolean) {
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
-    window.soundProbe = { decoded: 0, starts: [], stops: 0 };
+    window.soundProbe = { decoded: 0, starts: [], played: [], stops: 0 };
+    const dataNames = new WeakMap<ArrayBuffer, string>();
+    const bufferNames = new WeakMap<AudioBuffer, string>();
+    const arrayBuffer = Response.prototype.arrayBuffer;
+    Response.prototype.arrayBuffer = async function () {
+      const data = await arrayBuffer.call(this);
+      if (this.url.includes("/sounds/")) {
+        dataNames.set(
+          data,
+          new URL(this.url).pathname.split("/").pop()!.replace(".wav", ""),
+        );
+      }
+      return data;
+    };
     const NativeAudioContext = window.AudioContext;
     window.AudioContext = class extends NativeAudioContext {
       constructor(options?: AudioContextOptions) {
@@ -76,7 +99,11 @@ test.beforeEach(async ({ page }) => {
     AudioContext.prototype.decodeAudioData = function (...args) {
       const result = decode.apply(this, args);
       void result.then(
-        () => window.soundProbe.decoded++,
+        (buffer) => {
+          window.soundProbe.decoded++;
+          const name = dataNames.get(args[0]);
+          if (name) bufferNames.set(buffer, name);
+        },
         () => {},
       );
       return result;
@@ -90,6 +117,9 @@ test.beforeEach(async ({ page }) => {
       source.start = function (...args) {
         if (source.buffer && source.buffer.duration > 0.01) {
           window.soundProbe.starts.push(source.buffer.duration);
+          window.soundProbe.played.push(
+            bufferNames.get(source.buffer) ?? "unknown",
+          );
         }
         return start.apply(this, args);
       };
@@ -253,7 +283,7 @@ test("Early preference changes are not restarted by delayed restoration", async 
     release = resolve;
   });
   const requests: string[] = [];
-  await page.route("**/sounds/v1/*.wav", async (route) => {
+  await page.route(`**${soundPath}/*.wav`, async (route) => {
     requests.push(route.request().url());
     await blocked;
     await route.continue();
@@ -438,7 +468,7 @@ test("A cold enable confirms after loading without replaying other actions", asy
     release = resolve;
   });
   const requests: string[] = [];
-  await page.route("**/sounds/v1/*.wav", async (route) => {
+  await page.route(`**${soundPath}/*.wav`, async (route) => {
     requests.push(route.request().url());
     await blocked;
     await route.continue();
@@ -591,7 +621,7 @@ test("Playback failures are reported without blocking the action", async ({
   await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "false");
 });
 
-test("Sounds on explicit dialog dismissal once, but not on deep links or result navigation", async ({
+test("Sounds on explicit dialog dismissal and result selection, but not deep links", async ({
   page,
 }) => {
   await page.goto("/");
@@ -627,10 +657,13 @@ test("Sounds on explicit dialog dismissal once, but not on deep links or result 
   await expect(
     page.getByRole("dialog", { name: "Search", exact: true }),
   ).toBeHidden();
-  expect(await playback(page)).toEqual([]);
+  await expect.poll(() => playedSounds(page)).toContain("search-select");
+  expect(
+    (await playedSounds(page)).filter((name) => name === "search-select"),
+  ).toHaveLength(1);
 });
 
-test("Coffee and fallback Share dialogs reuse the open and close palette", async ({
+test("Coffee and fallback Share dialogs have distinct open sounds and explicit close cues", async ({
   page,
 }) => {
   await page.addInitScript(() => {
@@ -639,7 +672,7 @@ test("Coffee and fallback Share dialogs reuse the open and close palette", async
   await page.goto("/");
   await enable(page);
   await page.locator(".post-card__title").first().click();
-  await page.evaluate(() => (window.soundProbe.starts = []));
+  await clearPlayback(page);
   await page
     .getByRole("button", { name: "Buy me a Coffee", exact: true })
     .click();
@@ -650,9 +683,17 @@ test("Coffee and fallback Share dialogs reuse the open and close palette", async
   await expect.poll(() => playback(page)).toHaveLength(3);
   await page.getByRole("button", { name: "Close Share", exact: true }).click();
   await expect.poll(() => playback(page)).toHaveLength(4);
+  expect(await playedSounds(page)).toEqual([
+    "coffee-open",
+    "dialog-close",
+    "share-open",
+    "dialog-close",
+  ]);
 });
 
-test("Native sharing stays synchronous and silent", async ({ page }) => {
+test("Native sharing stays synchronous and plays only its opening cue", async ({
+  page,
+}) => {
   await page.addInitScript(() => {
     Object.defineProperty(navigator, "share", {
       value: () => {
@@ -664,26 +705,55 @@ test("Native sharing stays synchronous and silent", async ({ page }) => {
   await page.goto("/");
   await enable(page);
   await page.locator(".post-card__title").first().click();
-  await page.evaluate(() => (window.soundProbe.starts = []));
+  await clearPlayback(page);
   await page.getByRole("button", { name: "Share", exact: true }).click();
   await expect(page.locator("html")).toHaveAttribute("data-shared", "true");
-  expect(await playback(page)).toEqual([]);
+  expect(await playedSounds(page)).toEqual(["share-open"]);
 });
 
-for (const { name, path, selector } of [
-  { name: "header navigation", path: "/", selector: ".navigation__item" },
-  { name: "post cards", path: "/", selector: ".post-card__title a" },
-  { name: "tags", path: "/", selector: ".tags__link" },
-  { name: "pagination", path: "/", selector: ".pager__next-button" },
+for (const { name, path, selector, sound } of [
+  {
+    name: "header navigation",
+    path: "/",
+    selector: ".navigation__item",
+    sound: "link-hover",
+  },
+  {
+    name: "post cards",
+    path: "/",
+    selector: ".post-card__title a",
+    sound: "card-hover",
+  },
+  { name: "tags", path: "/", selector: ".tags__link", sound: "tag-hover" },
+  {
+    name: "pagination",
+    path: "/",
+    selector: ".pager__next-button",
+    sound: "card-hover",
+  },
   {
     name: "portfolio cards",
     path: "/portfolio/",
     selector: ".portfolio-card__title a",
+    sound: "card-hover",
   },
   {
     name: "adjacent posts",
     path: "/on-the-etiquette-of-pull-request-comments/",
     selector: ".post-navigation__link",
+    sound: "card-hover",
+  },
+  {
+    name: "social links",
+    path: "/",
+    selector: ".social__link",
+    sound: "social-hover",
+  },
+  {
+    name: "search results",
+    path: "/?search=ASP.NET",
+    selector: ".search-result__link",
+    sound: "card-hover",
   },
 ]) {
   test(`Previews ${name} once for intentional mouse hover`, async ({
@@ -694,7 +764,7 @@ for (const { name, path, selector } of [
     const link = page.locator(selector).first();
     await link.hover();
     await expect.poll(() => playback(page)).toHaveLength(1);
-    expect((await playback(page))[0]).toBeCloseTo(0.06, 3);
+    expect(await playedSounds(page)).toEqual([sound]);
     await link.evaluate((element) => {
       element.dispatchEvent(
         new PointerEvent("pointerover", {
@@ -709,6 +779,178 @@ for (const { name, path, selector } of [
   });
 }
 
+for (const { name, path, selector, sound } of [
+  {
+    name: "post cards",
+    path: "/",
+    selector: ".post-card__title a",
+    sound: "card-open",
+  },
+  { name: "tags", path: "/", selector: ".tags__link", sound: "tag-select" },
+  {
+    name: "next page",
+    path: "/",
+    selector: ".pager__next-button",
+    sound: "page-next",
+  },
+  {
+    name: "previous page",
+    path: "/2/",
+    selector: ".pager__previous-button",
+    sound: "page-previous",
+  },
+  {
+    name: "portfolio cards",
+    path: "/portfolio/",
+    selector: ".portfolio-card__title a",
+    sound: "card-open",
+  },
+  {
+    name: "next article",
+    path: "/on-the-etiquette-of-pull-request-comments/",
+    selector: ".post-navigation__card--next a",
+    sound: "page-next",
+  },
+  {
+    name: "previous article",
+    path: "/on-the-etiquette-of-pull-request-comments/",
+    selector: ".post-navigation__card--prev a",
+    sound: "page-previous",
+  },
+  {
+    name: "social icons",
+    path: "/",
+    selector: ".social__link",
+    sound: "external-open",
+  },
+  {
+    name: "footer links",
+    path: "/",
+    selector: '.footer__text a[href="https://nuxt.com"]',
+    sound: "external-open",
+  },
+  {
+    name: "article links",
+    path: "/on-the-etiquette-of-pull-request-comments/",
+    selector: ".post__content p a",
+    sound: "external-open",
+  },
+  {
+    name: "internal article links",
+    path: "/on-the-etiquette-of-pull-request-comments/",
+    selector: '.post__content a[href="/stop-brace-wars-use-stylecop/"]',
+    sound: "link-activate",
+  },
+  {
+    name: "heading anchors",
+    path: "/on-the-etiquette-of-pull-request-comments/",
+    selector: ".anchor-link",
+    sound: "anchor-jump",
+  },
+  {
+    name: "edit source",
+    path: "/on-the-etiquette-of-pull-request-comments/",
+    selector: ".post__edit",
+    sound: "external-open",
+  },
+]) {
+  test(`Uses a distinct action sound for ${name} without duplicate layout feedback`, async ({
+    page,
+  }) => {
+    await page.goto(path);
+    await ready(page);
+    await page
+      .locator(selector)
+      .first()
+      .evaluate((element: HTMLAnchorElement) => {
+        element.addEventListener("click", (event) => event.preventDefault(), {
+          capture: true,
+          once: true,
+        });
+        element.click();
+      });
+    expect(await playedSounds(page)).toEqual([sound]);
+  });
+}
+
+test("Support links have bell previews and external activation without replaying the dialog cue", async ({
+  page,
+}) => {
+  await page.goto("/on-the-etiquette-of-pull-request-comments/");
+  await ready(page);
+  await page
+    .getByRole("button", { name: "Buy me a Coffee", exact: true })
+    .click();
+  await expect.poll(() => playedSounds(page)).toEqual(["coffee-open"]);
+  await page.waitForTimeout(300);
+  await clearPlayback(page);
+  const link = page.locator(".support-links .link-button").first();
+  await link.hover();
+  await expect.poll(() => playedSounds(page)).toEqual(["social-hover"]);
+  await link.evaluate((element: HTMLAnchorElement) => {
+    element.addEventListener("click", (event) => event.preventDefault(), {
+      once: true,
+    });
+    element.click();
+  });
+  expect(await playedSounds(page)).toEqual(["social-hover", "external-open"]);
+});
+
+test("Newsletter validation and typing stay silent; valid submission has a send cue, not success", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await ready(page);
+  const form = page.locator(".newsletter__form");
+  await form.evaluate((element) => {
+    element.addEventListener("submit", (event) => event.preventDefault());
+  });
+  await form.getByRole("button", { name: "Subscribe", exact: true }).click();
+  expect(await playedSounds(page)).toEqual([]);
+  await form.getByRole("textbox").fill("reader@example.com");
+  expect(await playedSounds(page)).toEqual([]);
+  await form.getByRole("button", { name: "Subscribe", exact: true }).click();
+  await expect.poll(() => playedSounds(page)).toEqual(["form-submit"]);
+});
+
+test("Content links have no hover cue and preserve modified, disabled and download behaviour", async ({
+  page,
+}) => {
+  await page.goto("/on-the-etiquette-of-pull-request-comments/");
+  await ready(page);
+  const link = page.locator(".post__content p a").first();
+  await link.hover();
+  await page.waitForTimeout(150);
+  await link.evaluate((element) => {
+    element.addEventListener("click", (event) => event.preventDefault());
+    for (const options of [
+      { ctrlKey: true },
+      { metaKey: true },
+      { shiftKey: true },
+      { altKey: true },
+      { button: 1 },
+    ]) {
+      element.dispatchEvent(
+        new MouseEvent("click", {
+          bubbles: true,
+          cancelable: true,
+          ...options,
+        }),
+      );
+    }
+    element.setAttribute("download", "");
+    element.dispatchEvent(
+      new MouseEvent("click", { bubbles: true, cancelable: true }),
+    );
+    element.removeAttribute("download");
+    element.setAttribute("aria-disabled", "true");
+    element.dispatchEvent(
+      new MouseEvent("click", { bubbles: true, cancelable: true }),
+    );
+  });
+  expect(await playedSounds(page)).toEqual([]);
+});
+
 test("Nested tag links activate once and keyboard navigation retains native behaviour", async ({
   page,
 }) => {
@@ -719,9 +961,7 @@ test("Nested tag links activate once and keyboard navigation retains native beha
   await tag.click();
   await expect(page).toHaveURL(new RegExp(`${href}$`));
   expect(
-    (await playback(page)).filter(
-      (duration) => Math.abs(duration - 0.075) < 0.001,
-    ),
+    (await playedSounds(page)).filter((name) => name === "tag-select"),
   ).toHaveLength(1);
 
   await page.goto("/");
@@ -734,10 +974,10 @@ test("Nested tag links activate once and keyboard navigation retains native beha
   await about.press("Enter");
   await expect(page).toHaveURL(/\/about\/$/);
   await expect.poll(() => playback(page)).toHaveLength(2);
-  expect((await playback(page))[1]).toBeCloseTo(0.075, 3);
+  expect(await playedSounds(page)).toEqual(["link-hover", "link-activate"]);
 });
 
-test("Quick passes, touch hover, modified clicks and inline article links stay silent", async ({
+test("Quick passes, touch hover, modified clicks and inline-link hover stay silent", async ({
   page,
 }) => {
   await page.goto("/on-the-etiquette-of-pull-request-comments/");
@@ -813,11 +1053,76 @@ test("Link previews do not interrupt a deliberate action cue", async ({
   await page.keyboard.press("Tab");
   await page.evaluate(() => {
     document.querySelector<HTMLButtonElement>(".theme-button")!.click();
-    document.querySelector<HTMLAnchorElement>(".navigation__item")!.focus();
+    for (const selector of [
+      ".navigation__item",
+      ".post-card__title a",
+      ".tags__link",
+      ".social__link",
+    ]) {
+      document.querySelector<HTMLAnchorElement>(selector)!.focus();
+    }
   });
   expect(await playback(page)).toHaveLength(1);
-  expect((await playback(page))[0]).toBeCloseTo(0.09, 3);
+  expect(await playedSounds(page)).toEqual([
+    (await page.locator("html").getAttribute("data-theme")) === "dark"
+      ? "toggle-on"
+      : "toggle-off",
+  ]);
   expect(await page.evaluate(() => window.soundProbe.stops)).toBe(0);
+});
+
+test("A saved mute also silences social, content, support, sharing and newsletter actions", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("sound-effect-enabled", "false");
+    Object.defineProperty(navigator, "share", {
+      value: () => Promise.resolve(),
+    });
+  });
+  const requests: string[] = [];
+  page.on("request", (request) => {
+    if (request.url().includes("/sounds/")) requests.push(request.url());
+  });
+  await page.goto("/on-the-etiquette-of-pull-request-comments/");
+  await expectSoundState(page, false);
+  for (const selector of [
+    ".social__link",
+    ".post__content p a",
+    ".post__edit",
+    ".anchor-link",
+  ]) {
+    const link = page.locator(selector).first();
+    await link.evaluate((element: HTMLAnchorElement) => {
+      element.addEventListener("click", (event) => event.preventDefault(), {
+        once: true,
+      });
+      element.dispatchEvent(
+        new PointerEvent("pointerover", {
+          bubbles: true,
+          pointerType: "mouse",
+        }),
+      );
+      element.click();
+    });
+  }
+  await page.getByRole("button", { name: "Share", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Buy me a Coffee", exact: true })
+    .click();
+  await page.locator(".support-links .link-button").first().hover();
+  await page.keyboard.press("Escape");
+  await page
+    .locator(".newsletter__form")
+    .evaluate((element: HTMLFormElement) => {
+      element.addEventListener("submit", (event) => event.preventDefault());
+      element.querySelector<HTMLInputElement>('[type="email"]')!.value =
+        "reader@example.com";
+      element.requestSubmit();
+    });
+  await page.waitForTimeout(150);
+  expect(await playedSounds(page)).toEqual([]);
+  expect(requests).toEqual([]);
 });
 
 for (const outcome of ["accepted", "dismissed", "error"] as const) {
@@ -915,7 +1220,7 @@ test("Update notifications stay silent until explicitly dismissed or applied", a
   );
   await notice.getByRole("button", { name: "Update now", exact: true }).click();
   await expect.poll(() => playback(page)).toHaveLength(2);
-  expect((await playback(page))[1]).toBeCloseTo(0.075, 3);
+  expect((await playedSounds(page))[1]).toBe("update-start");
 });
 
 test("Late samples do not replay clicks or sound after muting", async ({
@@ -928,7 +1233,7 @@ test("Late samples do not replay clicks or sound after muting", async ({
   const blocked = new Promise<void>((resolve) => {
     release = resolve;
   });
-  await page.route("**/sounds/v1/*.wav", async (route) => {
+  await page.route(`**${soundPath}/*.wav`, async (route) => {
     await blocked;
     await route.continue();
   });
@@ -950,7 +1255,7 @@ test("Late samples do not replay clicks or sound after muting", async ({
 test("Failed samples are reported without breaking controls and can be retried", async ({
   page,
 }) => {
-  await page.route("**/sounds/v1/*.wav", (route) => route.abort());
+  await page.route(`**${soundPath}/*.wav`, (route) => route.abort());
   await page.goto("/");
   await expect(page.locator(".sound-control__error")).toContainText(
     "could not be loaded",
@@ -963,7 +1268,7 @@ test("Failed samples are reported without breaking controls and can be retried",
   await page.keyboard.press("Escape");
   expect(await playback(page)).toEqual([]);
   await soundToggle(page).click();
-  await page.unroute("**/sounds/v1/*.wav");
+  await page.unroute(`**${soundPath}/*.wav`);
   await enable(page);
   await expect(page.locator(".sound-control__error")).toHaveCount(0);
   await expect.poll(() => playback(page)).toHaveLength(1);
@@ -1029,10 +1334,16 @@ for (const width of [375, 1280]) {
 }
 
 test("Original samples are small, quiet mono WAVs with click-free endpoints", async () => {
+  expect(
+    (await readdir(join("public", "sounds", "v2")))
+      .filter((name) => name.endsWith(".wav"))
+      .map((name) => name.replace(".wav", ""))
+      .sort(),
+  ).toEqual([...soundNames].sort());
   let bytes = 0;
   for (const name of soundNames) {
     const buffer = await readFile(
-      join("public", "sounds", "v1", `${name}.wav`),
+      join("public", "sounds", "v2", `${name}.wav`),
     );
     bytes += buffer.length;
     expect(buffer.toString("ascii", 0, 4)).toBe("RIFF");
@@ -1045,7 +1356,7 @@ test("Original samples are small, quiet mono WAVs with click-free endpoints", as
     expect(buffer.readInt16LE(buffer.length - 2)).toBe(0);
     const duration = (buffer.length - 44) / 2 / 22050;
     expect(duration).toBeGreaterThanOrEqual(0.05);
-    expect(duration).toBeLessThanOrEqual(0.2);
+    expect(duration).toBeLessThanOrEqual(0.3);
     let peak = 0;
     for (let offset = 44; offset < buffer.length; offset += 2) {
       peak = Math.max(peak, Math.abs(buffer.readInt16LE(offset)) / 32768);
@@ -1053,7 +1364,68 @@ test("Original samples are small, quiet mono WAVs with click-free endpoints", as
     expect(peak).toBeGreaterThan(0);
     expect(peak).toBeLessThan(0.3);
   }
-  expect(bytes).toBeLessThan(40000);
+  expect(bytes).toBeLessThan(150000);
+});
+
+test("The original palette has different timbres, not pitch-shifted copies of one chirp", async () => {
+  const samples = new Map<string, number[]>();
+  const fingerprints = new Set<string>();
+  for (const name of soundNames) {
+    const buffer = await readFile(
+      join("public", "sounds", "v2", `${name}.wav`),
+    );
+    const values: number[] = [];
+    for (let offset = 44; offset < buffer.length; offset += 2) {
+      values.push(buffer.readInt16LE(offset) / 32768);
+    }
+    samples.set(name, values);
+    fingerprints.add(buffer.subarray(44).toString("base64"));
+  }
+  expect(fingerprints.size).toBe(soundNames.length);
+
+  function flatness(values: number[]) {
+    const size = 256;
+    let total = 0;
+    let weight = 0;
+    for (let start = 0; start + size <= values.length; start += size) {
+      const frame = values
+        .slice(start, start + size)
+        .map(
+          (value, index) =>
+            value * (0.5 - 0.5 * Math.cos((2 * Math.PI * index) / (size - 1))),
+        );
+      const energy = frame.reduce((sum, value) => sum + value * value, 0);
+      if (energy < 1e-8) continue;
+      const powers: number[] = [];
+      for (let bin = 1; bin < size / 2; bin++) {
+        let real = 0;
+        let imaginary = 0;
+        for (let index = 0; index < size; index++) {
+          const phase = (2 * Math.PI * bin * index) / size;
+          real += frame[index]! * Math.cos(phase);
+          imaginary += frame[index]! * Math.sin(phase);
+        }
+        powers.push(real * real + imaginary * imaginary + 1e-16);
+      }
+      const arithmetic =
+        powers.reduce((sum, value) => sum + value, 0) / powers.length;
+      const geometric = Math.exp(
+        powers.reduce((sum, value) => sum + Math.log(value), 0) / powers.length,
+      );
+      total += (geometric / arithmetic) * energy;
+      weight += energy;
+    }
+    return total / weight;
+  }
+
+  // Paper/noise and pitched plucks must have measurably different spectra.
+  const paper = flatness(samples.get("card-open")!);
+  const pluck = flatness(samples.get("link-hover")!);
+  expect(paper).toBeGreaterThan(0.1);
+  expect(pluck).toBeLessThan(0.02);
+  expect(paper).toBeGreaterThan(pluck * 10);
+  expect(flatness(samples.get("page-next")!)).toBeGreaterThan(0.05);
+  expect(flatness(samples.get("social-hover")!)).toBeLessThan(0.02);
 });
 
 test.describe("Sound runtime cache", () => {
@@ -1100,14 +1472,17 @@ test.describe("Sound runtime cache", () => {
     await enable(page);
     await expect.poll(cachedSounds).toHaveLength(soundNames.length);
     const originalSounds = await cachedSounds();
+    expect(
+      originalSounds.every((path) => path.startsWith(`${soundPath}/`)),
+    ).toBe(true);
     const futureSounds = [
-      "/sounds/v1/future-1.wav",
-      "/sounds/v1/future-2.wav",
-      "/sounds/v1/future-3.wav",
-      "/sounds/v2/future-4.wav",
+      "/sounds/v2/future-1.wav",
+      "/sounds/v2/future-2.wav",
+      "/sounds/v2/future-3.wav",
+      "/sounds/v3/future-4.wav",
     ];
     const sample = await readFile(
-      join("public", "sounds", "v1", "toggle-on.wav"),
+      join("public", "sounds", "v2", "toggle-on.wav"),
     );
     const futurePattern = "**/sounds/v*/future-*.wav";
     await context.route(futurePattern, (route) =>

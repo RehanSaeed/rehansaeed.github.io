@@ -1,4 +1,11 @@
-import { soundNames, type SoundEffect } from "#shared/utils/sounds";
+import { soundNames, soundPath, type SoundEffect } from "#shared/utils/sounds";
+
+const previewSounds = new Set<SoundEffect>([
+  "link-hover",
+  "card-hover",
+  "tag-hover",
+  "social-hover",
+]);
 
 const preferenceKey = "sound-effect-enabled";
 
@@ -37,7 +44,7 @@ export default defineNuxtPlugin((app) => {
     const controller = new AbortController();
     loading.set(name, controller);
     try {
-      const response = await fetch(`/sounds/v1/${name}.wav`, {
+      const response = await fetch(`${soundPath}/${name}.wav`, {
         signal: controller.signal,
       });
       if (!response.ok) {
@@ -135,7 +142,7 @@ export default defineNuxtPlugin((app) => {
   function play(name: SoundEffect) {
     if (!enabled.value || disposed) return;
     // A navigation preview must not cut off a confirmation or deliberate action.
-    if (name === "link-hover" && activeSource) return;
+    if (previewSounds.has(name) && activeSource) return;
     const buffer = sounds.get(name);
     if (!buffer || !context || !volume) return;
     if (context.state !== "running") {
