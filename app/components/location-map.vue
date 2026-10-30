@@ -85,15 +85,19 @@
       </div>
       <div class="location-map__marker-template" aria-hidden="true">
         <div ref="markerTemplate" class="location-map__marker">
-          <svg viewBox="0 0 72 98" aria-hidden="true">
+          <svg
+            class="location-map__marker-shape"
+            viewBox="0 0 72 98"
+            aria-hidden="true">
             <path
               d="M36 98C28 82 0 58 0 36a36 36 0 1 1 72 0C72 58 44 82 36 98Z" />
           </svg>
-          <picture>
+          <picture class="location-map__portrait">
             <source
               type="image/avif"
               srcset="/images/author/Muhammad-Rehan-Saeed/Logo-192x192.avif" />
             <img
+              class="location-map__avatar"
               src="/images/author/Muhammad-Rehan-Saeed/Logo-192x192.png"
               alt=""
               width="62"
@@ -105,13 +109,22 @@
           class="location-map__visitor"
           role="img"
           aria-label="Your approximate location">
-          <svg viewBox="0 0 72 98" aria-hidden="true">
+          <svg
+            class="location-map__marker-shape"
+            viewBox="0 0 72 98"
+            aria-hidden="true">
             <path
               d="M36 98C28 82 0 58 0 36a36 36 0 1 1 72 0C72 58 44 82 36 98Z" />
-            <circle cx="36" cy="36" r="28" />
-            <text x="36" y="42" text-anchor="middle">You</text>
+            <circle class="location-map__visitor-face" cx="36" cy="36" r="28" />
+            <text
+              class="location-map__visitor-text"
+              x="36"
+              y="42"
+              text-anchor="middle">
+              You
+            </text>
           </svg>
-          <span>You (approx.)</span>
+          <span class="location-map__visitor-label">You (approx.)</span>
         </div>
       </div>
       <figcaption class="location-map__caption">
@@ -120,7 +133,7 @@
           <em>{{ distanceMiles.toLocaleString("en-GB") }} miles</em> away from
           your current location, according to your IP address</span
         >.
-        <small v-if="!mapReady">
+        <small v-if="!mapReady" class="location-map__attribution">
           Map data:
           <a href="https://www.naturalearthdata.com/">Natural Earth</a>
         </small>
@@ -319,13 +332,19 @@ function updateConnection() {
     },
   });
   const theme = getComputedStyle(map.getContainer());
+  const pixels = (name: string) =>
+    Number.parseFloat(theme.getPropertyValue(`--location-map-${name}`));
   for (const [layerId, width, colour] of [
     [
       `${id}-outline`,
-      8,
+      pixels("connection-outline-width"),
       theme.getPropertyValue("--location-map-connection-outline-color").trim(),
     ],
-    [id, 5, theme.getPropertyValue("--global-accent-color").trim()],
+    [
+      id,
+      pixels("connection-width"),
+      theme.getPropertyValue("--global-accent-color").trim(),
+    ],
   ] as const) {
     map.addLayer(
       {
@@ -337,7 +356,10 @@ function updateConnection() {
           "line-color": colour,
           "line-width": width,
           // Dash units scale with width; align both layers in screen pixels.
-          "line-dasharray": [0.3 / width, 12 / width],
+          "line-dasharray": [
+            pixels("connection-dot-length") / width,
+            pixels("connection-gap") / width,
+          ],
         },
       },
       map.getStyle().layers.find((layer) => layer.type === "symbol")?.id,
@@ -470,12 +492,42 @@ onBeforeUnmount(() => {
 
 <style lang="scss">
 .location-map {
+  --location-map-max-inline-size: 36rem;
+  --location-map-aspect-ratio: 8 / 5;
+  --location-map-marker-inline-size: 72px;
+  --location-map-marker-block-size: 98px;
+  --location-map-avatar-size: 62px;
+  --location-map-avatar-inset: calc(
+    (var(--location-map-marker-inline-size) - var(--location-map-avatar-size)) /
+      2
+  );
+  --location-map-visitor-inline-size: 48px;
+  --location-map-visitor-block-size: 66px;
+  --location-map-visitor-text-size: 20px;
+  --location-map-small-font-size: 12px;
+  --location-map-label-font-size: 17px;
+  --location-map-city-font-size: 24px;
+  --location-map-avatar-border-radius: 50%;
+  --location-map-connection-width: 5px;
+  --location-map-connection-outline-width: 8px;
+  --location-map-connection-dot-length: 0.3px;
+  --location-map-connection-gap: 12px;
+  --location-map-grid-opacity: 0.1;
+  --location-map-grid-dasharray: 3 8;
+  --location-map-land-border-opacity: 0.3;
+  --location-map-halo-opacity: 0.2;
   --location-map-land-color: white;
   --location-map-land-label-color: var(--global-body-color);
   --location-map-connection-outline-color: var(--location-map-land-color);
+  --location-map-water-color: color-mix(
+    in srgb,
+    var(--global-alternate-accent-color) 25%,
+    var(--global-background-color)
+  );
 
+  display: grid;
   inline-size: 100%;
-  max-inline-size: 36rem;
+  max-inline-size: var(--location-map-max-inline-size);
   min-inline-size: 0;
   margin: 0 0 var(--global-space-fixed-5);
   overflow: hidden;
@@ -490,8 +542,9 @@ onBeforeUnmount(() => {
 }
 
 .location-map__viewport {
+  display: grid;
   position: relative;
-  aspect-ratio: 8 / 5;
+  aspect-ratio: var(--location-map-aspect-ratio);
 }
 
 .location-map .location-map__canvas {
@@ -517,26 +570,32 @@ onBeforeUnmount(() => {
 }
 
 .location-map__marker {
-  inline-size: 72px;
-  block-size: 98px;
+  display: grid;
+  place-items: start center;
+  inline-size: var(--location-map-marker-inline-size);
+  block-size: var(--location-map-marker-block-size);
   pointer-events: none;
+}
 
-  svg {
-    display: block;
-    inline-size: 100%;
-    block-size: 100%;
-    fill: var(--global-accent-color);
-  }
+.location-map__marker-shape {
+  display: block;
+  grid-area: 1 / 1;
+  inline-size: 100%;
+  block-size: 100%;
+  fill: var(--global-accent-color);
+}
 
-  img {
-    position: absolute;
-    inset-block-start: 5px;
-    inset-inline-start: 5px;
-    inline-size: 62px;
-    block-size: 62px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
+.location-map__portrait {
+  grid-area: 1 / 1;
+  margin-block-start: var(--location-map-avatar-inset);
+}
+
+.location-map__avatar {
+  display: block;
+  inline-size: var(--location-map-avatar-size);
+  block-size: var(--location-map-avatar-size);
+  border-radius: var(--location-map-avatar-border-radius);
+  object-fit: cover;
 }
 
 .location-map__notice {
@@ -547,70 +606,61 @@ onBeforeUnmount(() => {
 }
 
 .location-map__visitor {
-  inline-size: 48px;
-  block-size: 66px;
+  display: grid;
+  inline-size: var(--location-map-visitor-inline-size);
+  block-size: var(--location-map-visitor-block-size);
   pointer-events: none;
+}
 
-  svg {
-    display: block;
-    inline-size: 100%;
-    block-size: 100%;
-    fill: var(--global-accent-color);
-  }
+.location-map__visitor-face {
+  fill: var(--global-content-background-color);
+}
 
-  circle {
-    fill: var(--global-content-background-color);
-  }
+.location-map__visitor-text {
+  fill: var(--global-accent-color);
+  font-size: var(--location-map-visitor-text-size);
+  font-weight: var(--global-font-weight-bold);
+}
 
-  text {
-    fill: var(--global-accent-color);
-    font-size: 20px;
-    font-weight: var(--global-font-weight-bold);
-  }
-
-  span {
-    position: absolute;
-    inset-block-end: calc(100% + 0.5rem);
-    inset-inline-start: 50%;
-    transform: translateX(-50%);
-    padding: 0.25rem 0.5rem;
-    border: var(--global-border-width-1) solid var(--global-accent-color);
-    border-radius: var(--global-border-radius);
-    background: var(--global-content-background-color);
-    color: var(--global-body-color);
-    font-size: 12px;
-    white-space: nowrap;
-  }
+.location-map__visitor-label {
+  position: absolute;
+  inset-block-end: calc(100% + var(--global-space-fixed-2));
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  padding: var(--global-space-fixed-1) var(--global-space-fixed-2);
+  border: var(--global-border-width-1) solid var(--global-accent-color);
+  border-radius: var(--global-border-radius);
+  background: var(--global-content-background-color);
+  color: var(--global-body-color);
+  font-size: var(--location-map-small-font-size);
+  white-space: nowrap;
 }
 
 .location-map__illustration {
   display: block;
+  grid-area: 1 / 1;
   inline-size: 100%;
   block-size: auto;
-  background: color-mix(
-    in srgb,
-    var(--global-alternate-accent-color) 25%,
-    var(--global-background-color)
-  );
+  background: var(--location-map-water-color);
 }
 
 .location-map__grid {
   fill: none;
   stroke: var(--global-accent-color);
-  stroke-opacity: 0.1;
-  stroke-dasharray: 3 8;
+  stroke-opacity: var(--location-map-grid-opacity);
+  stroke-dasharray: var(--location-map-grid-dasharray);
 }
 
 .location-map__land {
   fill: var(--location-map-land-color);
   stroke: var(--global-accent-color);
-  stroke-opacity: 0.3;
+  stroke-opacity: var(--location-map-land-border-opacity);
   stroke-linejoin: round;
 }
 
 .location-map__labels {
   fill: var(--location-map-land-label-color);
-  font-size: 17px;
+  font-size: var(--location-map-label-font-size);
 }
 
 .location-map__sea-label {
@@ -623,22 +673,25 @@ onBeforeUnmount(() => {
 }
 
 .location-map__halo {
-  fill-opacity: 0.2;
+  fill-opacity: var(--location-map-halo-opacity);
 }
 
 .location-map__city {
   fill: var(--location-map-land-label-color);
-  font-size: 24px;
+  font-size: var(--location-map-city-font-size);
   font-weight: var(--global-font-weight-bold);
 }
 
 .location-map__caption {
   display: block;
   padding: var(--global-space-fixed-4);
+}
 
-  small {
-    display: block;
-    font-size: max(12px, 0.65em);
-  }
+.location-map__attribution {
+  display: block;
+  font-size: max(
+    var(--location-map-small-font-size),
+    var(--global-font-size-0)
+  );
 }
 </style>
