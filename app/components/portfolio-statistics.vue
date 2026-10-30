@@ -8,7 +8,7 @@
     :data-watchers="accountStats ? account.watchers : undefined">
     <div class="portfolio-statistics__totals">
       <u-number-ticker
-        title="My Package Downloads"
+        title="Package Downloads"
         :number="statistics.downloads"
         :rate="downloadRate">
         <template #info>
@@ -23,7 +23,7 @@
         </template>
       </u-number-ticker>
       <u-number-ticker
-        title="My GitHub Stars"
+        title="GitHub Stars"
         :number="statistics.stars"
         :rate="starRate">
         <template #info>
@@ -39,7 +39,7 @@
       </u-number-ticker>
       <u-number-ticker
         v-if="accountStats"
-        title="My GitHub Followers"
+        title="GitHub Followers"
         :number="account.followers"
         :rate="0">
         <template #info>
@@ -55,7 +55,7 @@
       </u-number-ticker>
       <u-number-ticker
         v-if="accountStats"
-        title="My GitHub Watchers"
+        title="GitHub Watchers"
         :number="account.watchers"
         :rate="0">
         <template #info>
