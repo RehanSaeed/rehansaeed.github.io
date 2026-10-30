@@ -24,7 +24,7 @@ defineProps<{
   order: -1;
   margin: 0;
   font-family: var(--font-heading);
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-size: var(--global-font-size-8);
   font-weight: var(--global-font-weight-normal);
   line-height: 1.2;
   overflow-wrap: anywhere;
