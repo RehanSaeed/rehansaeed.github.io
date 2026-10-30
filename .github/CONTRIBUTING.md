@@ -20,67 +20,6 @@ Link an existing issue if it provides useful context, but an issue is not requir
   `npx playwright test <test-file> --repeat-each=10 --retries=0` to investigate
   suspected timing or rendering issues without retries hiding failures.
 
-## Portfolio statistics
-
-The build fetches GitHub stars and lifetime NuGet download counts for the projects
-and package IDs in `content/portfolio/`. The totals on Portfolio
-include only published open source entries, counting each repository and package
-once (case-insensitively). Add projects and packages to those entries rather than
-editing the displayed totals.
-
-Counts are cached locally for an hour and refreshed by the daily 05:17 UTC
-build, pushes to `main` and manual builds. Source failures retain saved counts with
-a warning; without saved counts the build fails. No observation history or
-cross-build CI cache is needed.
-
-Portfolio's download animation uses lifetime averages, not live API counts.
-The star animation deliberately averages one increase every 15 seconds for
-illustration, not the measured growth rate; the supplied snapshot and accessible
-numbers remain exact. Sum each package's downloads divided by its age in seconds.
-NuGet's `FindPackagesById()` request obtains the earliest release with `Created asc`,
-`$top=1` and `semVerLevel=2.0.0`. Invalid creation dates disable the download rate;
-failed or over-14-day-old source snapshots disable the corresponding animation.
-
-The shared `app/components/shared/number-ticker.vue` accepts a title, number and
-average rate per second, independently of Portfolio:
-
-```vue
-<u-number-ticker title="Downloads" :number="1000" :rate="2.5" />
-```
-
-Random pauses and jumps preserve the average and retain fractional increments.
-Optional `paused` and `locale` props support other uses; the default locale is
-`en-GB`. Reduced-motion users and screen readers receive the supplied number.
-Hidden tabs suspend timers and catch up at the average rate on return.
-Portfolio displays two title-and-number cards with accessible info buttons using
-the shared tooltip component. Their tooltips explain scope, verified counts and
-illustrative animation; there is no pause control or explanatory paragraph.
-The pair uses the same maximum width and font sizing as compact project cards so
-their outer edges align.
-
-About uses the same Portfolio download and star totals and animations, including
-listed organisation-hosted projects. The `borderless` option on
-`u-portfolio-statistics` shows titles and tickers without outer card borders.
-Both pages show Followers, Watchers and Sponsors badges beneath the two tickers
-using `app/components/github-badges.vue`. There are no Followers or Watchers
-tickers or an account-only stars badge.
-
-The shared number ticker has an optional `info` slot beside its centred title;
-ordinary title/number/rate usage does not require it.
-
-The matching Watchers badge sums `watchers.totalCount` from GitHub GraphQL across
-all public repositories owned by the account in `site.json`, including forks and
-archived repositories. It paginates beyond 100 repositories and counts watch
-subscriptions, not unique people. This build-time total uses the existing
-`GITHUB_TOKEN`, a one-hour local cache and the daily rebuild. Failed requests
-retain saved counts with a warning and retry next build; without saved counts the
-build fails. Do not use REST's `watchers_count`, which counts stars instead.
-
-The Followers and Sponsors Shields badges refresh independently.
-Shields also supports individual NuGet download badges. An
-aggregate download badge can use the build's Portfolio total, just as the
-Watchers badge uses the build's account total.
-
 ## Images
 
 Keep PNG originals for images with transparency and JPG originals for photographs;
