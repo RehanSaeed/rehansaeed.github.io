@@ -208,33 +208,27 @@ function failMap(error: unknown) {
 
 function frameMap(animate: boolean) {
   if (!map || userMovedMap) return;
-  const [west, south] = europe[0];
-  const [east, north] = europe[1];
-  const outsideEurope =
-    visitorLocation &&
-    (visitorLocation[0] < west ||
-      visitorLocation[0] > east ||
-      visitorLocation[1] < south ||
-      visitorLocation[1] > north);
   map.fitBounds(
-    [
-      [
-        Math.min(west, visitorLocation?.[0] ?? west),
-        Math.min(south, visitorLocation?.[1] ?? south),
-      ],
-      [
-        Math.max(east, visitorLocation?.[0] ?? east),
-        Math.max(north, visitorLocation?.[1] ?? north),
-      ],
-    ],
+    visitorLocation
+      ? [
+          [
+            Math.min(london[0], visitorLocation[0]),
+            Math.min(london[1], visitorLocation[1]),
+          ],
+          [
+            Math.max(london[0], visitorLocation[0]),
+            Math.max(london[1], visitorLocation[1]),
+          ],
+        ]
+      : europe,
     {
       padding: {
-        top: outsideEurope ? 104 : 48,
+        top: visitorLocation ? 104 : 48,
         bottom: 24,
         left: 48,
         right: 48,
       },
-      maxZoom: 3.2,
+      maxZoom: visitorLocation ? 12 : 3.2,
       pitch: 0,
       bearing: 0,
       duration: animate && !reduceMotion ? 3000 : 0,
