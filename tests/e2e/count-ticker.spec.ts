@@ -264,7 +264,11 @@ test("Ticker styles, statistics and badges preserve dimensions and follow shared
     </dl>
     </div>
     <ul class="github-badges">
-      <li><a href="#badge"><img alt="GitHub badge" width="135" height="30"></a></li>
+      <li class="github-badges__item">
+        <a class="github-badges__link" href="#badge">
+          <img class="github-badges__image" alt="GitHub badge" width="135" height="30">
+        </a>
+      </li>
     </ul>
     </div>
     </body></html>
@@ -279,6 +283,10 @@ test("Ticker styles, statistics and badges preserve dimensions and follow shared
   const totals = page.locator(".portfolio-statistics__totals");
   const badge = page.getByRole("img", { name: "GitHub badge" });
   const badgeLink = page.getByRole("link", { name: "GitHub badge" });
+  await expect(page.locator(".github-badges__item")).toHaveCSS(
+    "display",
+    "flex",
+  );
   await expect(digits).toHaveCSS("display", "grid");
   await expect(digits).toHaveCSS("grid-auto-flow", "column");
   await expect(digits).toHaveCSS("grid-auto-columns", "max-content");

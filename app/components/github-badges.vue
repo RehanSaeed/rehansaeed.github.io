@@ -1,9 +1,13 @@
 <template>
   <ul class="github-badges" role="list" aria-label="GitHub links">
-    <li>
+    <li class="github-badges__item">
       <u-tooltip v-slot="{ trigger }" text="View my GitHub followers">
-        <a v-bind="trigger" :href="`https://github.com/${user}?tab=followers`">
+        <a
+          v-bind="trigger"
+          class="github-badges__link"
+          :href="`https://github.com/${user}?tab=followers`">
           <img
+            class="github-badges__image"
             alt="GitHub follower count"
             height="30"
             width="168"
@@ -11,12 +15,16 @@
         </a>
       </u-tooltip>
     </li>
-    <li>
+    <li class="github-badges__item">
       <u-tooltip
         v-slot="{ trigger }"
         text="Total watch subscriptions across my public, account-owned repositories, including forks and archived repositories but excluding organisation-owned repositories. A person watching several repositories is counted once per repository. Refreshed when this site builds.">
-        <a v-bind="trigger" :href="site.author.gitHub.url">
+        <a
+          v-bind="trigger"
+          class="github-badges__link"
+          :href="site.author.gitHub.url">
           <img
+            class="github-badges__image"
             :alt="`GitHub watch subscriptions across my ${watchers.repositories} public account-owned repositories: ${watchers.watchers}`"
             height="30"
             width="165"
@@ -24,10 +32,14 @@
         </a>
       </u-tooltip>
     </li>
-    <li>
+    <li class="github-badges__item">
       <u-tooltip v-slot="{ trigger }" text="Sponsor me on GitHub">
-        <a v-bind="trigger" :href="`https://github.com/sponsors/${user}`">
+        <a
+          v-bind="trigger"
+          class="github-badges__link"
+          :href="`https://github.com/sponsors/${user}`">
           <img
+            class="github-badges__image"
             alt="GitHub sponsors"
             height="30"
             width="121"
@@ -58,24 +70,24 @@ const user = site.author.gitHub.user;
   margin: 0;
   padding: 0;
   list-style: none;
+}
 
-  li {
-    display: flex;
-    margin: 0;
+.github-badges__item {
+  display: flex;
+  margin: 0;
+}
+
+.github-badges__link {
+  display: inline-flex;
+  touch-action: manipulation;
+
+  &:focus-visible {
+    outline: var(--global-border-width-2) solid var(--global-accent-color);
+    outline-offset: var(--global-focus-outline-offset);
   }
+}
 
-  a {
-    display: inline-flex;
-    touch-action: manipulation;
-
-    &:focus-visible {
-      outline: var(--global-border-width-2) solid var(--global-accent-color);
-      outline-offset: var(--global-focus-outline-offset);
-    }
-  }
-
-  img {
-    block-size: var(--github-badges-image-height);
-  }
+.github-badges__image {
+  block-size: var(--github-badges-image-height);
 }
 </style>

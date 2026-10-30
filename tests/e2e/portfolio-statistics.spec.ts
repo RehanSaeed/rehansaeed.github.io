@@ -196,7 +196,13 @@ test("Portfolio totals match the listed projects and About shares the star total
   ];
   for (const html of [$, aboutHtml]) {
     expect(html('ul.github-badges[aria-label="GitHub links"]')).toHaveLength(1);
-    expect(html(".github-badges > li")).toHaveLength(3);
+    expect(html(".github-badges > li.github-badges__item")).toHaveLength(3);
+    expect(html(".github-badges__item > a.github-badges__link")).toHaveLength(
+      3,
+    );
+    expect(
+      html(".github-badges__link > img.github-badges__image"),
+    ).toHaveLength(3);
     expect(
       html(".github-badges img")
         .map((_, img) => html(img).attr("src"))
