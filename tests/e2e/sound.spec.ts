@@ -11,6 +11,7 @@ declare global {
       decoded: number;
       starts: number[];
       played: string[];
+      active: number;
       stops: number;
       context?: AudioContext;
       gain?: GainNode;
@@ -27,13 +28,18 @@ const playedSounds = (page: Page) =>
   page.evaluate(() => window.soundProbe.played);
 
 async function clearPlayback(page: Page) {
+  await expect
+    .poll(() => page.evaluate(() => window.soundProbe.active))
+    .toBe(0);
   await page.evaluate(() => {
     window.soundProbe.starts = [];
     window.soundProbe.played = [];
+    window.soundProbe.stops = 0;
   });
 }
 
 async function ready(page: Page) {
+  await page.mouse.move(1, 1);
   await expect
     .poll(() => page.evaluate(() => window.soundProbe.decoded))
     .toBe(soundNames.length);
@@ -68,7 +74,13 @@ async function expectSoundState(page: Page, enabled: boolean) {
 
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
-    window.soundProbe = { decoded: 0, starts: [], played: [], stops: 0 };
+    window.soundProbe = {
+      decoded: 0,
+      starts: [],
+      played: [],
+      active: 0,
+      stops: 0,
+    };
     const dataNames = new WeakMap<ArrayBuffer, string>();
     const bufferNames = new WeakMap<AudioBuffer, string>();
     const arrayBuffer = Response.prototype.arrayBuffer;
@@ -114,12 +126,16 @@ test.beforeEach(async ({ page }) => {
       const source = createSource.call(this);
       const start = source.start;
       const stop = source.stop;
+      source.addEventListener("ended", () => window.soundProbe.active--, {
+        once: true,
+      });
       source.start = function (...args) {
         if (source.buffer && source.buffer.duration > 0.01) {
           window.soundProbe.starts.push(source.buffer.duration);
           window.soundProbe.played.push(
             bufferNames.get(source.buffer) ?? "unknown",
           );
+          window.soundProbe.active++;
         }
         return start.apply(this, args);
       };
@@ -149,6 +165,29 @@ test("Defaults to on without autoplay, and interaction plays a cue", async ({
   await ready(page);
   await themeToggle(page).click();
   await expect.poll(() => playback(page)).toHaveLength(1);
+});
+
+test("Sound capture preserves descendant buttons when event timestamps are identical", async ({
+  page,
+}) => {
+  await page.clock.setFixedTime(new Date("2026-01-01T12:00:00Z"));
+  await page.goto("/");
+  await ready(page);
+  await page.getByRole("button", { name: "Open search", exact: true }).click();
+  await expect(
+    page.getByRole("dialog", { name: "Search", exact: true }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Close Search", exact: true }).click();
+  await expect
+    .poll(() => playedSounds(page))
+    .toEqual(["dialog-open", "dialog-close"]);
+  await soundToggle(page).click();
+  await expectSoundState(page, false);
+  await soundToggle(page).click();
+  await expectSoundState(page, true);
+  await expect
+    .poll(() => playedSounds(page))
+    .toEqual(["dialog-open", "dialog-close", "toggle-on"]);
 });
 
 for (const colorScheme of ["light", "dark"] as const) {
@@ -968,6 +1007,7 @@ test("Nested tag links activate once and keyboard navigation retains native beha
   await ready(page);
   const about = page.getByRole("link", { name: "About", exact: true }).first();
   await page.keyboard.press("Tab");
+  await clearPlayback(page);
   await about.focus();
   await expect.poll(() => playback(page)).toHaveLength(1);
   expect((await playback(page))[0]).toBeCloseTo(0.06, 3);
@@ -1051,6 +1091,7 @@ test("Link previews do not interrupt a deliberate action cue", async ({
   await page.goto("/");
   await ready(page);
   await page.keyboard.press("Tab");
+  await clearPlayback(page);
   await page.evaluate(() => {
     document.querySelector<HTMLButtonElement>(".theme-button")!.click();
     for (const selector of [
