@@ -1,4 +1,8 @@
 @use "abstracts/type";
+@use "abstracts/visually-hidden";
+
+$code-line-height: 1.3;
+$code-padding: 0.85rem;
 
 // Code blocks are highlighted at build time by Shiki (see nuxt.config.ts and ProsePre.vue):
 // <div class="code-title"><span>Title</span></div>
@@ -9,7 +13,7 @@
 
 code,
 pre[class*="language-"] {
-  --code-line-height: 1.3;
+  --code-line-height: #{$code-line-height};
 
   font-family: var(--global-font-family-monospace);
   direction: ltr;
@@ -42,7 +46,7 @@ pre[class*="language-"] ::selection {
 
 /* Code blocks */
 pre[class*="language-"] {
-  padding: 0.85rem;
+  padding: $code-padding;
   margin: 1.275rem 0;
   overflow-x: auto; // Remove when browser support is good enough.
   overflow-inline: auto;
@@ -73,6 +77,317 @@ pre[class*="language-"] {
   font-style: var(--shiki-default-font-style);
   font-weight: var(--shiki-default-font-weight);
   text-decoration: var(--shiki-default-text-decoration);
+}
+
+.code-block {
+  min-inline-size: 0;
+  margin-block: 1.275rem;
+
+  pre[class*="language-"] {
+    margin-block: 0.5rem 0;
+  }
+
+  .code-title {
+    margin-block: 0.5rem 0;
+  }
+
+  .line-highlight {
+    position: relative;
+  }
+}
+
+.code-block__toolbar,
+.code-block__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--global-font-size-1);
+}
+
+.code-block__tabs button,
+.code-block__toolbar button:not(.button) {
+  min-block-size: 2.75rem;
+  padding: 0.4rem 0.75rem;
+  border: var(--global-border-width-1) solid var(--global-border-color);
+  border-radius: var(--global-border-radius);
+  background: var(--global-content-background-color);
+  color: var(--global-title-color);
+  font: inherit;
+  cursor: pointer;
+
+  &:hover,
+  &[aria-selected="true"],
+  &[aria-pressed="true"] {
+    border-color: var(--global-accent-color);
+    color: var(--global-accent-color);
+  }
+
+  &:disabled {
+    cursor: progress;
+  }
+}
+
+.code-block__tabs button:focus-visible,
+.code-block__toolbar button:focus-visible {
+  outline: 2px solid var(--global-accent-color);
+  outline-offset: 2px;
+}
+
+.code-block__tabs {
+  gap: 0;
+  align-items: stretch;
+  border-block-end: var(--global-border-width-1) solid
+    var(--global-border-color);
+
+  button {
+    margin-block-end: calc(-1 * var(--global-border-width-1));
+    border-color: transparent;
+    border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
+    background: transparent;
+
+    &:hover {
+      border-color: transparent;
+    }
+
+    &[aria-selected="true"] {
+      border-color: var(--global-border-color);
+      border-block-end-color: var(--global-content-background-color);
+      background: var(--global-content-background-color);
+    }
+
+    &:focus-visible {
+      outline-offset: -3px;
+    }
+  }
+}
+
+.code-block--group {
+  --code-border-start: 0px;
+}
+
+.code-block--group pre[class*="language-"] {
+  margin-block-start: 0;
+  border-color: var(--global-border-color);
+  border-block-start: 0;
+  border-start-start-radius: 0;
+  border-start-end-radius: 0;
+}
+
+.code-block--tabs-attached pre[class*="language-"] {
+  border-start-end-radius: var(--global-border-radius);
+}
+
+.code-block--tabs-underline .code-block__tabs button {
+  margin-block-end: 0;
+  border: 0;
+  border-block-end: 3px solid transparent;
+  border-radius: 0;
+
+  &[aria-selected="true"] {
+    border-block-end-color: var(--global-accent-color);
+    background: transparent;
+  }
+}
+
+.code-block--tabs-segmented .code-block__tabs,
+.code-block--tabs-pills .code-block__tabs,
+.code-block--tabs-editor .code-block__tabs,
+.code-block--tabs-editor-wide .code-block__tabs {
+  padding: 0.35rem;
+  border: var(--global-border-width-1) solid var(--global-border-color);
+  border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
+  background: var(--global-background-color);
+}
+
+.code-block--tabs-segmented .code-block__tabs {
+  gap: 0.25rem;
+
+  button {
+    flex: 1;
+    margin: 0;
+    border-radius: var(--global-border-radius);
+
+    &[aria-selected="true"] {
+      border-color: var(--global-border-color);
+      box-shadow: var(--global-shadow-1);
+    }
+  }
+}
+
+.code-block--tabs-pills .code-block__tabs {
+  gap: 0.35rem;
+
+  button {
+    margin: 0;
+    padding-inline: 1rem;
+    border-radius: 2rem;
+
+    &[aria-selected="true"] {
+      border-color: var(--global-accent-color);
+      background: var(--global-content-background-color);
+    }
+  }
+}
+
+.code-block--tabs-editor .code-block__tabs,
+.code-block--tabs-editor-wide .code-block__tabs {
+  padding: 0;
+
+  button {
+    margin: 0;
+    border: 0;
+    border-block-start: 3px solid transparent;
+    border-inline-end: var(--global-border-width-1) solid
+      var(--global-border-color);
+    border-radius: 0;
+    font-family: var(--global-font-family-monospace);
+
+    &:first-child {
+      border-start-start-radius: var(--global-border-radius);
+    }
+
+    &[aria-selected="true"] {
+      border-block-start-color: var(--global-accent-color);
+      background: var(--global-content-background-color);
+    }
+  }
+}
+
+.code-block--tabs-editor-wide .code-block__tabs button {
+  flex: 1;
+  min-inline-size: 0;
+
+  &:last-child {
+    border-inline-end: 0;
+    border-start-end-radius: var(--global-border-radius);
+  }
+}
+
+.code-block__toolbar {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 0.4rem;
+  inset-inline-end: 0.25rem;
+  gap: 0.25rem;
+  flex-wrap: nowrap;
+  opacity: 0;
+  pointer-events: none;
+
+  button {
+    display: grid;
+    place-items: center;
+    inline-size: 2.25rem;
+    min-block-size: 2.25rem;
+    padding: 0;
+    font-size: 1rem;
+    &:not(.button) {
+      box-shadow: var(--global-shadow-1);
+    }
+  }
+}
+
+.line-highlight:has(.code-block__pre--single-line) .code-block__toolbar {
+  // Align with the first code line, not the height added by scrolling or wrapping.
+  inset-block-start: calc(
+    var(--code-border-start, var(--global-border-width-1)) + #{$code-padding} +
+      #{$code-line-height * 0.5}em
+  );
+  transform: translateY(-50%);
+}
+
+.code-block--controls-soft .code-block__toolbar .button {
+  border-radius: var(--global-border-radius);
+}
+
+.code-block--controls-grouped .code-block__toolbar {
+  gap: 0;
+  border: var(--global-border-width-1) solid var(--global-border-color);
+  border-radius: var(--global-border-radius);
+  background: var(--global-content-background-color);
+  box-shadow: var(--global-shadow-1);
+
+  .code-block__action + .code-block__action {
+    border-inline-start: var(--global-border-width-1) solid
+      var(--global-border-color);
+  }
+}
+
+.code-block:hover .code-block__toolbar,
+.code-block:focus-within .code-block__toolbar {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.code-block__icon {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  transform: rotate(-45deg) scale(0.5);
+
+  &--active {
+    opacity: 1;
+    visibility: visible;
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+.code-block__status {
+  display: block;
+  margin-block-start: 0.5rem;
+  font-size: var(--global-font-size-1);
+
+  &--hidden {
+    @include visually-hidden.visually-hidden();
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .code-block__toolbar {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .code-block__toolbar button {
+    inline-size: 2.75rem;
+    min-block-size: 2.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .code-block__toolbar {
+    transition: opacity var(--global-duration-1) ease-out;
+  }
+
+  .code-block__icon {
+    transition:
+      opacity var(--global-duration-2) var(--ease-in-out-cubic),
+      transform var(--global-duration-2) var(--ease-in-out-cubic),
+      visibility var(--global-duration-2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .code-block__toolbar .button,
+  .code-block__toolbar .button::before {
+    transition: none;
+  }
+}
+
+.code-block--wrapped pre[class*="language-"],
+.code-block--wrapped code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.code-block--wrapped .line {
+  display: inline;
+}
+
+// Keep source newlines without adding block-level breaks when lines wrap.
+.code-block--wrapped .shiki .line.highlight {
+  display: inline;
+  box-decoration-break: clone;
 }
 
 // Code Title
@@ -183,6 +498,10 @@ pre.language-powershell,
 [data-theme="dark"] pre.language-powershell {
   background-color: hsl(215 98% 17%);
   color: #ffffff;
+
+  code {
+    color: inherit;
+  }
 
   &.shiki span {
     color: var(--shiki-dark);

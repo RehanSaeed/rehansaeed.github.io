@@ -68,7 +68,11 @@ export default defineNuxtConfig({
         "feather:search",
         "feather:sun",
         "feather:x",
+        "lucide:check",
+        "lucide:copy",
         "lucide:house-heart",
+        "lucide:move-right",
+        "lucide:wrap-text",
         "simple-icons:bluesky",
         "simple-icons:buymeacoffee",
       ],
@@ -506,6 +510,15 @@ export default defineNuxtConfig({
     // Nuxt prerenders static page routes by their path. Give them the canonical trailing slash so
     // "/about" and the crawled "/about/" aren't both rendered to dist/about/index.html.
     "pages:extend": (pages) => {
+      if (process.env.NODE_ENV === "development") {
+        pages.push({
+          name: "code-control-playground",
+          path: "/dev/code-controls/",
+          file: fileURLToPath(
+            new URL("./app/dev/code-controls.vue", import.meta.url),
+          ),
+        });
+      }
       for (const page of pages) {
         if (page.path !== "/" && !page.path.includes(":")) {
           page.path = page.path.replace(/\/?$/, "/");

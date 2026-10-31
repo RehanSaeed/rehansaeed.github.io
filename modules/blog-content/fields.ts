@@ -7,8 +7,7 @@ import { stripFrontMatter } from "./scan";
 import type { ImageDimensions } from "../../shared/utils/images";
 
 type MinimarkNode =
-  | string
-  | [string, Record<string, unknown>, ...MinimarkNode[]];
+  string | [string, Record<string, unknown>, ...MinimarkNode[]];
 
 /** Renames `keep-p`/`keep-h2` etc. (see markdown.ts) back to their real tags once MDC has compiled. */
 export function restoreKeptTags(nodes: MinimarkNode[] | undefined): void {
@@ -186,7 +185,8 @@ function toHtml(nodes: MinimarkNode[]): string {
  * Replaces the children of each `<pre><code>` with an HTML string, rendered by ProsePre with
  * v-html. Vue does not hydrate v-html, so Cloudflare's email obfuscation rewriting addresses
  * inside code cannot cause hydration mismatches. It also keeps thousands of token spans out of
- * the virtual DOM. The raw `code` prop is dropped, as nothing uses it.
+ * the virtual DOM. Code groups reuse the same build-time output for each alternative.
+ * The raw `code` prop is dropped; copying uses the rendered code's textContent.
  */
 export function prerenderCodeBlocks(nodes: MinimarkNode[] | undefined): void {
   for (const node of nodes ?? []) {
@@ -195,12 +195,35 @@ export function prerenderCodeBlocks(nodes: MinimarkNode[] | undefined): void {
     }
     const code = node[2];
     if (node[0] === "pre" && Array.isArray(code) && code[0] === "code") {
+      const className = classOf(node[1]);
+      if (className) {
+        node[1].class = className;
+        delete node[1].className;
+      }
       node[1].html = toHtml(code.slice(2) as MinimarkNode[]);
       delete node[1].code;
       node.length = 2;
       continue;
     }
     prerenderCodeBlocks(node.slice(2) as MinimarkNode[]);
+    if (node[0] === "code-group") {
+      const blocks = (node.slice(2) as MinimarkNode[]).filter(
+        (child) => typeof child !== "string",
+      );
+      if (
+        blocks.length < 2 ||
+        blocks.some(
+          (child) => child[0] !== "pre" || typeof child[1].html !== "string",
+        )
+      ) {
+        throw new Error(
+          "A code-group must contain at least two highlighted code blocks.",
+        );
+      }
+      node[0] = "pre";
+      node[1] = { alternatives: blocks.map((child) => child[1]) };
+      node.length = 2;
+    }
   }
 }
 
