@@ -182,6 +182,7 @@ let visitorMarker: MapLibreMarker | undefined;
 let visitorLocation: [number, number] | undefined;
 let locationController: AbortController | undefined;
 let resizeObserver: ResizeObserver | undefined;
+let attributionTimeout: ReturnType<typeof setTimeout> | undefined;
 let reduceMotion = false;
 let styleReady = false;
 let userMovedMap = false;
@@ -208,6 +209,7 @@ const createMarker = (
 };
 
 function removeMap() {
+  clearTimeout(attributionTimeout);
   locationController?.abort();
   visitorMarker?.remove();
   visitorMarker = undefined;
@@ -441,6 +443,7 @@ async function loadMap() {
       cooperativeGestures: true,
       renderWorldCopies: false,
       attributionControl: {
+        compact: true,
         customAttribution: '<a href="https://www.geojs.io/">GeoJS</a>',
       },
     });
@@ -466,6 +469,16 @@ async function loadMap() {
       if (disposed || !map) return;
       mapReady.value = true;
       mapStatus.value = "";
+      attributionTimeout = setTimeout(() => {
+        const attribution = map
+          ?.getContainer()
+          .querySelector(".maplibregl-ctrl-attrib");
+        if (attribution?.classList.contains("maplibregl-compact-show")) {
+          attribution
+            .querySelector<HTMLElement>(".maplibregl-ctrl-attrib-button")
+            ?.click();
+        }
+      }, 5000);
       frameMap(true);
       void loadVisitorLocation(maplibregl);
     });
@@ -508,10 +521,10 @@ onBeforeUnmount(() => {
   --location-map-label-font-size: 17px;
   --location-map-city-font-size: 24px;
   --location-map-avatar-border-radius: 50%;
-  --location-map-connection-width: 5px;
-  --location-map-connection-outline-width: 8px;
+  --location-map-connection-width: 8px;
+  --location-map-connection-outline-width: 11px;
   --location-map-connection-dot-length: 0.3px;
-  --location-map-connection-gap: 12px;
+  --location-map-connection-gap: 16px;
   --location-map-grid-opacity: 0.1;
   --location-map-grid-dasharray: 3 8;
   --location-map-land-border-opacity: 0.3;
