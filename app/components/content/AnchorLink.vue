@@ -7,7 +7,12 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{ href: string; label: string }>();
+defineProps<{
+  /** URL used for the link. */
+  href: string;
+  /** Accessible text describing the control or link. */
+  label: string;
+}>();
 </script>
 
 <style lang="scss" scoped>

@@ -20,6 +20,7 @@ export default {
   name: "u-time",
   inheritAttrs: false,
   props: {
+    /** ISO date or timestamp represented by the time element. */
     datetime: {
       type: String,
       required: true,

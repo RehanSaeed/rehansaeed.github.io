@@ -1,5 +1,7 @@
 export interface ImageDimensions {
+  /** Image width in pixels. */
   width: number;
+  /** Image height in pixels. */
   height: number;
 }
 

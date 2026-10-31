@@ -12,7 +12,10 @@
 <script setup lang="ts">
 import { loadMermaid } from "~/utils/mermaid";
 
-const props = defineProps<{ code: string }>();
+const props = defineProps<{
+  /** Mermaid source to render as a diagram. */
+  code: string;
+}>();
 const id = `mermaid-${useId().replace(/:/g, "-")}`;
 const svg = ref("");
 const failed = ref(false);

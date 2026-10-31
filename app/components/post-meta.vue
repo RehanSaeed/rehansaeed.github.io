@@ -18,6 +18,7 @@
 export default {
   name: "u-post-meta",
   props: {
+    /** Metadata associated with the content. */
     meta: {
       type: Object,
       required: true,

@@ -33,6 +33,7 @@ export default {
     };
   },
   props: {
+    /** Name identifying the icon or selected thumbnail image. */
     name: {
       required: true,
       type: String,

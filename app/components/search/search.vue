@@ -58,9 +58,11 @@ export default {
   name: "u-search",
   emits: ["selected"],
   props: {
+    /** Whether the search or dialog is open. */
     isOpen: {
       type: Boolean,
     },
+    /** Initial search term supplied when opening search. */
     search: {
       type: String,
     },

@@ -58,6 +58,7 @@
 export default {
   name: "u-author",
   props: {
+    /** Fragment identifier for the author heading. */
     headingId: {
       type: String,
     },

@@ -55,6 +55,7 @@
 export default {
   emits: ["update:background"],
   props: {
+    /** Selected thumbnail background image or colour. */
     background: {
       default: "",
       type: String,

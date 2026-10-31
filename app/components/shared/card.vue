@@ -15,15 +15,19 @@
 export default {
   name: "u-card",
   props: {
+    /** Whether the card uses compact spacing. */
     compact: {
       type: Boolean,
     },
+    /** Whether the card can receive keyboard focus. */
     focusable: {
       type: Boolean,
     },
+    /** Whether the card displays its hover treatment. */
     hoverable: {
       type: Boolean,
     },
+    /** HTML element used for the card. */
     tag: {
       default: "section",
       type: String,

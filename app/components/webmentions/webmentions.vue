@@ -90,6 +90,7 @@ export default {
     };
   },
   props: {
+    /** Canonical URL associated with this component. */
     url: {
       required: true,
       type: String,

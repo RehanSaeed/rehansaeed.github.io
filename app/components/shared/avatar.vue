@@ -34,26 +34,32 @@ export default {
     return { imageFailed: false };
   },
   props: {
+    /** Accessible text describing the control or link. */
     label: {
       required: true,
       type: String,
     },
+    /** Alternative text describing the image; empty for decorative images. */
     alt: {
       required: true,
       type: String,
     },
+    /** Source URL of the image. */
     src: {
       required: true,
       type: String,
     },
+    /** Image loading strategy. */
     loading: {
       required: false,
       type: String,
     },
+    /** Internal route used for navigation. */
     to: {
       required: false,
       type: String,
     },
+    /** URL used for the link. */
     href: {
       required: false,
       type: String,

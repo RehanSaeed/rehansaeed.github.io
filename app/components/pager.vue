@@ -32,6 +32,7 @@ import { previousUrl, nextUrl } from "~/framework/paging.js";
 export default {
   name: "BlogPager",
   props: {
+    /** Pagination metadata for the current page. */
     pageInfo: {
       required: true,
       type: Object,

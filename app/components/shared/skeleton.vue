@@ -89,10 +89,12 @@ export default {
     };
   },
   props: {
+    /** Whether the skeleton represents content that is still loading. */
     isBusy: {
       default: true,
       type: Boolean,
     },
+    /** CSS repeat behaviour of the skeleton's SVG mask. */
     maskRepeat: {
       default: "no-repeat space",
       type: String,
