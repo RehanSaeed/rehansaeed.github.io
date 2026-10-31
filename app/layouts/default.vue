@@ -1,19 +1,22 @@
 <template>
   <u-scroll-custom-property>
-    <div id="app">
-      <u-skip-link />
-
+    <div>
       <u-scroll-indicator />
+      <div class="site-shell">
+        <div id="app">
+          <u-skip-link />
 
-      <u-navigation class="navigation" />
+          <u-navigation class="navigation" />
 
-      <transition name="fade" appear>
-        <main id="main" class="main" tabindex="-1">
-          <slot />
-        </main>
-      </transition>
+          <transition name="fade" appear>
+            <main id="main" class="main" tabindex="-1">
+              <slot />
+            </main>
+          </transition>
 
-      <u-footer class="footer" />
+          <u-footer class="footer" />
+        </div>
+      </div>
     </div>
   </u-scroll-custom-property>
 </template>
@@ -21,7 +24,25 @@
 <style lang="scss">
 @use "~/assets/style/abstracts/breakpoints";
 
-@include breakpoints.respond-above(xl) {
+.site-shell {
+  container: site / inline-size;
+  // Match media-query em units to the browser's default font, not fluid type.
+  font-size: initial;
+}
+
+#app {
+  font-size: 1rem;
+}
+
+@include breakpoints.container-below(site, sm) {
+  #app {
+    --global-line-length-min: 0;
+    --global-space-main: 0;
+    --global-space-content-min-width: calc(var(--global-space-fluid-6) * 2);
+  }
+}
+
+@include breakpoints.container-above(site, xl) {
   .navigation {
     position: sticky;
     inset-block-start: 0;
@@ -32,10 +53,6 @@
 .main {
   margin: 0 auto;
   padding-inline: var(--global-space-main);
-
-  @include breakpoints.respond-below(sm) {
-    padding-inline: 0;
-  }
 }
 
 .footer {
