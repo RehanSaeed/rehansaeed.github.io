@@ -8,16 +8,19 @@ export default {
     };
   },
   props: {
+    /** Visibility ratio at which intersection events fire. */
     threshold: {
       type: Array,
       required: false,
       default: () => [0, 0.2],
     },
+    /** Element used as the intersection observer's viewport. */
     root: {
       type: typeof HTMLElement !== "undefined" ? HTMLElement : Object,
       required: false,
       default: () => null,
     },
+    /** Margin applied around the intersection observer's viewport. */
     rootMargin: {
       type: String,
       required: false,

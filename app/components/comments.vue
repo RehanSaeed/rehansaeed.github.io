@@ -45,7 +45,12 @@
 import type { CommentSnapshot } from "#shared/utils/comments";
 
 defineOptions({ name: "BlogComments" });
-const props = defineProps<{ title: string; snapshot: CommentSnapshot }>();
+const props = defineProps<{
+  /** Title displayed for this content. */
+  title: string;
+  /** Saved issue and comments used before refreshing from GitHub. */
+  snapshot: CommentSnapshot;
+}>();
 const current = shallowRef(props.snapshot);
 const unavailable = ref(false);
 const repository = useAppConfig().site.repository;

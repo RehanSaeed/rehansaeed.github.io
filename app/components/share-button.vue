@@ -49,12 +49,15 @@ export default {
     };
   },
   props: {
+    /** Title displayed for this content. */
     title: {
       type: String,
     },
+    /** Canonical URL associated with this component. */
     url: {
       type: String,
     },
+    /** Tags associated with the content. */
     tags: {
       type: Array,
     },

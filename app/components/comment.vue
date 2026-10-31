@@ -73,7 +73,10 @@ import {
 } from "~/utils/comment-presentation";
 import type { GitHubComment } from "#shared/utils/comments";
 
-const props = defineProps<{ comment: GitHubComment }>();
+const props = defineProps<{
+  /** GitHub comment to display. */
+  comment: GitHubComment;
+}>();
 const association = computed(() =>
   commentAssociation(props.comment.author_association),
 );

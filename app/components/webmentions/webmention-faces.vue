@@ -19,6 +19,7 @@ import { getDisplayDateFromString } from "~/framework/date.js";
 export default {
   name: "u-webmention-faces",
   props: {
+    /** Web mentions whose authors are displayed. */
     mentions: {
       required: true,
       type: Array,

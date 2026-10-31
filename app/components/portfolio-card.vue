@@ -100,6 +100,7 @@ import { contentImageSizes } from "#shared/utils/images";
 export default {
   name: "u-portfolio-card",
   props: {
+    /** Portfolio entry to display. */
     portfolio: {
       required: true,
       type: Object,

@@ -39,6 +39,7 @@ import { contentImageSizes } from "#shared/utils/images";
 export default {
   name: "u-post",
   props: {
+    /** Post metadata used to render this component. */
     post: {
       type: Object,
     },

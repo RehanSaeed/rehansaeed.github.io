@@ -43,14 +43,17 @@ export default {
     return { titleId: useId() };
   },
   props: {
+    /** Whether the dialog fills the viewport. */
     fullscreen: {
       default: false,
       type: Boolean,
     },
+    /** Whether the search or dialog is open. */
     isOpen: {
       default: false,
       type: Boolean,
     },
+    /** Title displayed for this content. */
     title: {
       required: true,
       type: String,

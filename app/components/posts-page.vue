@@ -21,6 +21,7 @@ import { nextUrl, previousUrl } from "~/framework/paging.js";
 const postsPerPage = 10;
 
 const props = defineProps({
+  /** Page number to display. */
   page: {
     type: Number,
     default: 1,

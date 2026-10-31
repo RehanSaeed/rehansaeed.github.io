@@ -25,31 +25,39 @@ import { headingId } from "#shared/utils/headings";
 export default {
   name: "u-heading",
   props: {
+    /** Identifier used for the heading and its fragment link. */
     id: {
       required: true,
       type: String,
     },
+    /** Semantic heading level. */
     level: {
       default: "1",
       type: String,
     },
+    /** Visual heading size, independent of its semantic level. */
     size: {
       default: null,
       type: String,
     },
+    /** URL used for the link. */
     href: {
       type: String,
     },
+    /** Relationship attributes applied to the link. */
     rel: {
       type: String,
     },
+    /** Internal route used for navigation. */
     to: {
       type: String,
     },
+    /** Whether to centre the heading. */
     center: {
       default: false,
       type: Boolean,
     },
+    /** Additional CSS classes applied to the heading link. */
     linkClass: {
       type: String,
     },

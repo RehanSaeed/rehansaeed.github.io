@@ -37,6 +37,7 @@ export default {
     },
   },
   props: {
+    /** Indexed content entry to display as a search result. */
     searchResult: {
       type: Object,
       required: true,

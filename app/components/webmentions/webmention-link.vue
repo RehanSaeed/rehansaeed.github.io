@@ -17,6 +17,7 @@
 export default {
   name: "u-webmention-link",
   props: {
+    /** Web mention linking to the current content. */
     link: {
       required: true,
       type: Object,

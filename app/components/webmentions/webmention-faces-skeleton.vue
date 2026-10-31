@@ -21,10 +21,12 @@ export default {
     };
   },
   props: {
+    /** Amount by which adjacent avatar placeholders overlap. */
     overlap: {
       default: 10,
       type: Number,
     },
+    /** Radius of each avatar placeholder. */
     radius: {
       default: 25,
       type: Number,

@@ -9,6 +9,7 @@
 export default {
   name: "u-edit-post-button",
   props: {
+    /** Post metadata used to render this component. */
     post: {
       type: Object,
     },

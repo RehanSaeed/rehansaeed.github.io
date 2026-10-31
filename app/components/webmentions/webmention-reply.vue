@@ -33,6 +33,7 @@ export default {
     },
   },
   props: {
+    /** Web mention reply to display. */
     reply: {
       required: true,
       type: Object,

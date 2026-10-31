@@ -21,24 +21,31 @@ import { NuxtLink } from "#components";
 export default {
   name: "u-link-button",
   props: {
+    /** Whether the link button has a border. */
     bordered: {
       type: Boolean,
     },
+    /** Whether the link button uses contrasting colours. */
     contrast: {
       type: Boolean,
     },
+    /** Whether the link button uses the primary appearance. */
     primary: {
       type: Boolean,
     },
+    /** Accessible text describing the control or link. */
     label: {
       type: String,
     },
+    /** Internal route used for navigation. */
     to: {
       type: String,
     },
+    /** URL used for the link. */
     href: {
       type: String,
     },
+    /** Relationship attributes applied to the link. */
     rel: {
       type: String,
     },

@@ -20,6 +20,7 @@ export default {
     return { tagPath };
   },
   props: {
+    /** Tags associated with the content. */
     tags: {
       required: true,
       type: Array,

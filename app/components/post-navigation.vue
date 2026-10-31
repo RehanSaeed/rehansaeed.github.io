@@ -59,7 +59,10 @@
 import { getImageMetadata } from "~/framework/images.js";
 import { contentImageSizes } from "#shared/utils/images";
 
-const props = defineProps<{ permalink: string }>();
+const props = defineProps<{
+  /** Stable public URL of the content. */
+  permalink: string;
+}>();
 
 const { data: posts } = await useAsyncData("post-navigation", () =>
   queryCollection("posts")

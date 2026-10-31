@@ -46,10 +46,12 @@ import { contentImageSizes } from "#shared/utils/images";
 export default {
   name: "u-post-card",
   props: {
+    /** Whether to load the post's hero image eagerly. */
     priority: {
       type: Boolean,
       default: false,
     },
+    /** Post metadata used to render this component. */
     post: {
       type: Object,
     },
