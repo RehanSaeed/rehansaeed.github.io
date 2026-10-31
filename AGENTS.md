@@ -43,21 +43,10 @@ authorise publishing the article or posting to social media.
 - Use accessible HTML with native controls, accessible names and labels, and
   keyboard support. Use ARIA only when native HTML semantics are insufficient.
 
-## Accessibility and Responsive Design
-
-- Support both light and dark modes.
-- Support Windows High Contrast Mode, including CSS `forced-colors`, without
-  losing visible controls, focus indicators or meaningful content.
-- Keep layouts responsive and usable at up to 200% browser zoom and display
-  scaling, without clipping content or making controls inaccessible.
-- Support the Windows Narrator screen reader with meaningful reading order,
-  accessible names, roles and states, and announcements for dynamic updates.
-- For UI changes, verify both colour modes, High Contrast Mode, responsiveness
-  at 200% zoom and display scaling, and Windows Narrator behaviour. Report any
-  checks that could not be performed rather than claiming support was verified.
-
 ## CSS
 
+- Do not use inline styles (`style` attributes or Vue `:style` bindings). Put
+  styling in component stylesheets and use intrinsic HTML sizing where suitable.
 - Follow Block Element Modifier (BEM) naming for CSS classes.
 - Use CSS logical properties instead of physical properties where applicable.
 - Prefer CSS Grid to Flexbox for layout; use Flexbox when wrapping content is
@@ -71,6 +60,19 @@ authorise publishing the article or posting to social media.
 - Use TypeScript for application code.
 - Use modern functions and APIs supported by the project's target environments.
 - Use JSDoc to document public-facing properties.
+
+## Accessibility and Responsive Design
+
+- Support both light and dark modes.
+- Support Windows High Contrast Mode, including CSS `forced-colors`, without
+  losing visible controls, focus indicators or meaningful content.
+- Keep layouts responsive and usable at up to 200% browser zoom and display
+  scaling, without clipping content or making controls inaccessible.
+- Support the Windows Narrator screen reader with meaningful reading order,
+  accessible names, roles and states, and announcements for dynamic updates.
+- For UI changes, verify both colour modes, High Contrast Mode, responsiveness
+  at 200% zoom and display scaling, and Windows Narrator behaviour. Report any
+  checks that could not be performed rather than claiming support was verified.
 
 ## Testing, Builds and CI
 
@@ -102,24 +104,8 @@ authorise publishing the article or posting to social media.
   checks that could not be run. Distinguish local validation, CI results and
   manual accessibility checks.
 
-## Image Optimisation
-
-- Optimise new or modified raster images before committing, preferably using
-  [Squoosh](https://squoosh.app/). Do not recompress unrelated existing images.
-- Resize images to appropriate display dimensions and compare the optimised
-  output with the original. Preserve acceptable visual quality, transparency and
-  any required metadata. Keep filenames and declared dimensions accurate.
-- Preserve lossless output where exact pixels matter, including reviewed
-  screenshots, logos and shortcut icons; do not apply lossy or palette-reducing
-  compression to these assets without explicit approval.
-- Keep images covered by `.gitattributes` tracked with Git LFS.
-- If compression tooling is unavailable, report that explicitly rather than
-  claiming the image was optimised.
-
 ## Nuxt Components
 
-- Do not use inline styles (`style` attributes or Vue `:style` bindings). Put
-  styling in component stylesheets and use intrinsic HTML sizing where suitable.
 - Use Nuxt's build-time component auto-imports for template usage instead of
   explicit imports and Options API `components` registrations. Auto-imports
   include only used components and add no runtime registration overhead compared
@@ -333,3 +319,17 @@ posts or communities where they are inappropriate.
 - Check previous conversation results and the platform before retrying an uncertain
   submission. Never duplicate posts on a retry or treat an article edit as
   permission to repost.
+
+## Image Optimisation
+
+- Optimise new or modified raster images before committing, preferably using
+  [Squoosh](https://squoosh.app/). Do not recompress unrelated existing images.
+- Resize images to appropriate display dimensions and compare the optimised
+  output with the original. Preserve acceptable visual quality, transparency and
+  any required metadata. Keep filenames and declared dimensions accurate.
+- Preserve lossless output where exact pixels matter, including reviewed
+  screenshots, logos and shortcut icons; do not apply lossy or palette-reducing
+  compression to these assets without explicit approval.
+- Keep images covered by `.gitattributes` tracked with Git LFS.
+- If compression tooling is unavailable, report that explicitly rather than
+  claiming the image was optimised.
