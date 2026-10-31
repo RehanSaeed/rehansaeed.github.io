@@ -1,3 +1,4 @@
+import type { E2EFixtures } from "./fixtures";
 import sharp from "sharp";
 import { expect, test } from "./fixtures";
 
@@ -6,9 +7,7 @@ const postPath =
 const api = /^https:\/\/webmention\.io\/api\/mentions\?/;
 const published = "2026-01-02T00:00:00Z";
 
-test("Likes and reposts tolerate anonymous authors and missing or broken photos", async ({
-  page,
-}) => {
+async function verifyAnonymousWebmentions({ page }: Pick<E2EFixtures, "page">) {
   const photo = "https://avatars.githubusercontent.com/webmention-valid.png";
   const broken = "https://avatars.githubusercontent.com/webmention-broken.png";
   const corrupt =
@@ -125,6 +124,16 @@ test("Likes and reposts tolerate anonymous authors and missing or broken photos"
     "9 Reposts",
   );
   expect(pageErrors).toEqual([]);
+}
+
+test("Likes and reposts tolerate anonymous authors and missing or broken photos", async ({
+  page,
+}) => {
+  await expect(
+    verifyAnonymousWebmentions({
+      page,
+    }),
+  ).resolves.toBeUndefined();
 });
 
 test("Webmention links are user-generated without changing editorial links", async ({

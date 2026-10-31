@@ -79,23 +79,28 @@ unitTest(
   },
 );
 
+function verifyUniqueIds() {
+  const routes = readFileSync(
+    join(process.cwd(), "tests/parity/urls.txt"),
+    "utf8",
+  )
+    .trim()
+    .split(/\r?\n/);
+  for (const path of [...routes, "/404.html"]) {
+    const file = path.endsWith(".html") ? path : `${path}index.html`;
+    const $ = load(readFileSync(join(process.cwd(), "dist", file), "utf8"));
+    const ids = $("[id]")
+      .map((_, element) => $(element).attr("id"))
+      .get();
+    expect(ids, path).toHaveLength(new Set(ids).size);
+  }
+  return true;
+}
+
 unitTest(
   "Every generated reference page and the custom 404 have unique IDs",
   () => {
-    const routes = readFileSync(
-      join(process.cwd(), "tests/parity/urls.txt"),
-      "utf8",
-    )
-      .trim()
-      .split(/\r?\n/);
-    for (const path of [...routes, "/404.html"]) {
-      const file = path.endsWith(".html") ? path : `${path}index.html`;
-      const $ = load(readFileSync(join(process.cwd(), "dist", file), "utf8"));
-      const ids = $("[id]")
-        .map((_, element) => $(element).attr("id"))
-        .get();
-      expect(ids.length, path).toBe(new Set(ids).size);
-    }
+    expect(verifyUniqueIds()).toBe(true);
   },
 );
 
@@ -118,6 +123,7 @@ test("Adjacent Markdown links remain visibly separated after hydration", async (
 for (const timezoneId of ["Europe/London", "America/New_York", "Asia/Tokyo"]) {
   test.describe(`Date hydration in ${timezoneId}`, () => {
     test.use({ timezoneId });
+
     test("Starts in UTC and deliberately switches to the browser date after mounting", async ({
       page,
     }) => {
@@ -171,5 +177,5 @@ test("Search has a unique labelled input and cannot duplicate page or result hea
   const ids = await page
     .locator("[id]")
     .evaluateAll((nodes) => nodes.map((node) => node.id));
-  expect(ids.length).toBe(new Set(ids).size);
+  expect(ids).toHaveLength(new Set(ids).size);
 });

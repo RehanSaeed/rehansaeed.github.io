@@ -1,3 +1,4 @@
+import type { E2EFixtures } from "./fixtures";
 import { readFileSync } from "node:fs";
 import { mkdir, mkdtemp, readFile, rm } from "node:fs/promises";
 import { join } from "node:path";
@@ -9,6 +10,8 @@ import {
   searchResultSelected,
 } from "../../app/framework/analytics";
 import { commentSnapshots } from "../../modules/blog-content/comments";
+import { cacheSchema, graphSchema, requestUrl } from "./data";
+import { z } from "zod";
 
 const postPath =
   "/optimally-configuring-open-telemetry-tracing-for-asp-net-core/";
@@ -28,67 +31,76 @@ const comment: GitHubComment = {
 };
 
 test.describe("Migration completion", () => {
-  for (const batchVisibilityChanges of [false, true]) {
-    test(
-      batchVisibilityChanges
-        ? "Refreshes comments after batched visibility changes, including cached reloads"
-        : "Keeps comments in SSR and refreshes them without rebuilding",
-      async ({ page }) => {
-        if (batchVisibilityChanges) {
-          await page.addInitScript(() => {
-            const NativeObserver = window.IntersectionObserver;
-            window.IntersectionObserver = class extends NativeObserver {
-              constructor(
-                callback: IntersectionObserverCallback,
-                options?: IntersectionObserverInit,
-              ) {
-                super((entries, observer) => {
-                  const batch = entries.flatMap((entry) =>
-                    entry.target.matches(".comments") && entry.isIntersecting
-                      ? [
-                          new Proxy(entry, {
-                            get(target, property) {
-                              return property === "isIntersecting"
-                                ? false
-                                : Reflect.get(target, property, target);
-                            },
-                          }),
-                          entry,
-                        ]
-                      : [entry],
-                  );
-                  callback(batch, observer);
-                }, options);
-              }
-            };
-          });
-        }
-        let requests = 0;
-        await page.route(commentsPath, (route) => {
-          requests++;
-          return route.fulfill({ json: [comment] });
+  for (const { batchVisibilityChanges, title } of [
+    {
+      batchVisibilityChanges: false,
+      title: "Keeps comments in SSR and refreshes them without rebuilding",
+    },
+    {
+      batchVisibilityChanges: true,
+      title:
+        "Refreshes comments after batched visibility changes, including cached reloads",
+    },
+  ]) {
+    async function verifyCommentRefresh({ page }: Pick<E2EFixtures, "page">) {
+      if (batchVisibilityChanges) {
+        await page.addInitScript(() => {
+          const NativeObserver = window.IntersectionObserver;
+          window.IntersectionObserver = class extends NativeObserver {
+            constructor(
+              callback: IntersectionObserverCallback,
+              options?: IntersectionObserverInit,
+            ) {
+              super((entries, observer) => {
+                const batch = entries.flatMap((entry) =>
+                  entry.target.matches(".comments") && entry.isIntersecting
+                    ? [
+                        new Proxy(entry, {
+                          get(target, property): unknown {
+                            return property === "isIntersecting"
+                              ? false
+                              : Reflect.get(target, property, target);
+                          },
+                        }),
+                        entry,
+                      ]
+                    : [entry],
+                );
+                callback(batch, observer);
+              }, options);
+            }
+          };
         });
-        const response = await page.goto(postPath);
-        expect(await response!.text()).toContain('class="comment"');
-        await page.locator(".comments").scrollIntoViewIfNeeded();
-        await expect(page.locator(".comment__content")).toHaveCount(1);
-        await expect(page.locator(".comment__content")).toHaveText(
-          "A new live comment.",
-        );
-        await expect(page.locator(".comments__github")).toHaveAttribute(
-          "href",
-          /issues\/607$/,
-        );
-        expect(requests).toBe(1);
-        await page.reload();
-        await page.locator(".comments").scrollIntoViewIfNeeded();
-        await expect(page.locator(".comment__content")).toHaveCount(1);
-        await expect(page.locator(".comment__content")).toHaveText(
-          "A new live comment.",
-        );
-        expect(requests).toBe(1);
-      },
-    );
+      }
+      let requests = 0;
+      await page.route(commentsPath, (route) => {
+        requests++;
+        return route.fulfill({ json: [comment] });
+      });
+      const response = await page.goto(postPath);
+      expect(await response!.text()).toContain('class="comment"');
+      await page.locator(".comments").scrollIntoViewIfNeeded();
+      await expect(page.locator(".comment__content")).toHaveCount(1);
+      await expect(page.locator(".comment__content")).toHaveText(
+        "A new live comment.",
+      );
+      await expect(page.locator(".comments__github")).toHaveAttribute(
+        "href",
+        /issues\/607$/,
+      );
+      expect(requests).toBe(1);
+      await page.reload();
+      await page.locator(".comments").scrollIntoViewIfNeeded();
+      await expect(page.locator(".comment__content")).toHaveCount(1);
+      await expect(page.locator(".comment__content")).toHaveText(
+        "A new live comment.",
+      );
+      expect(requests).toBe(1);
+    }
+
+    test(title, async ({ page }) => {
+      await expect(verifyCommentRefresh({ page })).resolves.toBeUndefined();
+    });
   }
 
   test("Retains the static comments with an explicit message when GitHub is unavailable", async ({
@@ -143,38 +155,44 @@ test.describe("Migration completion", () => {
     );
   });
 
-  test("Retries incomplete build snapshots instead of caching failures as fresh", async () => {
+  async function verifySnapshotRetries() {
     await mkdir(join(process.cwd(), ".parity"), { recursive: true });
     const directory = await mkdtemp(
       join(process.cwd(), ".parity", "comment-cache-"),
     );
     const originalFetch = globalThis.fetch;
     let attempts = 0;
-    globalThis.fetch = async (input) => {
-      if (String(input).includes("/issues?")) {
-        return new Response(
-          JSON.stringify([
-            {
-              number: 607,
-              title: "[Comment] Test snapshot",
-              html_url:
-                "https://github.com/RehanSaeed/rehansaeed.github.io/issues/607",
-            },
-          ]),
+    globalThis.fetch = (input) => {
+      if (requestUrl(input).includes("/issues?")) {
+        return Promise.resolve(
+          new Response(
+            JSON.stringify([
+              {
+                number: 607,
+                title: "[Comment] Test snapshot",
+                html_url:
+                  "https://github.com/RehanSaeed/rehansaeed.github.io/issues/607",
+              },
+            ]),
+          ),
         );
       }
       attempts++;
-      return attempts === 1
-        ? new Response("Rate limit", { status: 403 })
-        : new Response(JSON.stringify([comment]));
+      return Promise.resolve(
+        attempts === 1
+          ? new Response("Rate limit", { status: 403 })
+          : new Response(JSON.stringify([comment])),
+      );
     };
     try {
       expect(
         (await commentSnapshots(directory))["Test snapshot"]?.comments,
       ).toEqual([]);
       expect(
-        JSON.parse(
-          await readFile(join(directory, "blog-comments.json"), "utf8"),
+        cacheSchema.parse(
+          JSON.parse(
+            await readFile(join(directory, "blog-comments.json"), "utf8"),
+          ),
         ).updated,
       ).toBe(0);
       expect(
@@ -185,11 +203,13 @@ test.describe("Migration completion", () => {
       globalThis.fetch = originalFetch;
       await rm(directory, { recursive: true, force: true });
     }
+  }
+
+  test("Retries incomplete build snapshots instead of caching failures as fresh", async () => {
+    await expect(verifySnapshotRetries()).resolves.toBeUndefined();
   });
 
-  test("Loads GA4 only when configured and initializes it once with default storage", async ({
-    page,
-  }) => {
+  async function verifyGa4Initialization({ page }: Pick<E2EFixtures, "page">) {
     let loads = 0;
     await page.route("**/www.googletagmanager.com/gtag/js?*", (route) => {
       loads++;
@@ -200,11 +220,31 @@ test.describe("Migration completion", () => {
       (await response!.text()).match(
         /googleAnalyticsId:"(G-[A-Z0-9]+)"/,
       )?.[1] ?? "";
-    await page.waitForFunction(() => typeof window.gtag === "function");
+    await page.waitForFunction(
+      () => typeof Reflect.get(window, "gtag") === "function",
+    );
     const state = () =>
-      page.evaluate(() => ({
-        calls: window.dataLayer.map((entry) => Array.from(entry)),
-      }));
+      page.evaluate(() => {
+        const dataLayer: unknown = Reflect.get(window, "dataLayer");
+        if (!Array.isArray(dataLayer)) {
+          throw new Error("Expected an analytics data layer");
+        }
+        return {
+          calls: dataLayer.map((entry: unknown) => {
+            if (
+              typeof entry !== "object" ||
+              entry === null ||
+              !("length" in entry) ||
+              typeof entry.length !== "number"
+            ) {
+              throw new Error("Expected an array-like analytics call");
+            }
+            return Array.from({ length: entry.length }, (_, index): unknown =>
+              Reflect.get(entry, String(index)),
+            );
+          }),
+        };
+      });
     if (id) {
       await expect.poll(() => loads).toBe(1);
       await expect
@@ -229,6 +269,16 @@ test.describe("Migration completion", () => {
     expect(
       calls.some((call) => call[0] === "event" && call[1] === "page_view"),
     ).toBe(false);
+  }
+
+  test("Loads GA4 only when configured and initializes it once with default storage", async ({
+    page,
+  }) => {
+    await expect(
+      verifyGa4Initialization({
+        page,
+      }),
+    ).resolves.toBeUndefined();
   });
 
   test("Reserves card image dimensions and prioritizes only the first post", async ({
@@ -253,9 +303,15 @@ test.describe("Migration completion", () => {
     expect(source).not.toContain('ga("send"');
     expect(source).toContain('action.replaceAll("-", "_")');
     // Helpers are safe during SSR, where no browser tracker exists.
-    expect(() => appThemeLoaded("light")).not.toThrow();
-    expect(() => pwaInstallPromoClicked("button", true)).not.toThrow();
-    expect(() => searchResultSelected("ASP.NET")).not.toThrow();
+    expect(() => {
+      appThemeLoaded("light");
+    }).not.toThrow();
+    expect(() => {
+      pwaInstallPromoClicked("button", true);
+    }).not.toThrow();
+    expect(() => {
+      searchResultSelected("ASP.NET");
+    }).not.toThrow();
   });
 
   for (const [width, fontSize, spacing] of [
@@ -272,10 +328,10 @@ test.describe("Migration completion", () => {
         const probe = document.createElement("div");
         probe.style.width = "var(--global-space-fluid-6)";
         document.body.append(probe);
-        const spacing = parseFloat(getComputedStyle(probe).width);
+        const spacing = Number.parseFloat(getComputedStyle(probe).width);
         probe.remove();
         return {
-          fontSize: parseFloat(
+          fontSize: Number.parseFloat(
             getComputedStyle(document.documentElement).fontSize,
           ),
           spacing,
@@ -308,25 +364,26 @@ test.describe("Migration completion", () => {
       "/images/icons/favicon-180x180.png",
     );
     await page.goto("/on-the-etiquette-of-pull-request-comments/");
-    const graph = JSON.parse(
-      (await page
-        .locator('script[type="application/ld+json"]')
-        .textContent()) ?? "",
+    const graph = graphSchema.parse(
+      JSON.parse(
+        (await page
+          .locator('script[type="application/ld+json"]')
+          .textContent()) ?? "",
+      ),
     );
-    const schema = graph["@graph"].find(
-      (node: { "@type": string }) => node["@type"] === "Article",
-    );
+    const schema = graph["@graph"].find((node) => node["@type"] === "Article");
     const webpage = graph["@graph"].find(
-      (node: { "@id": string }) =>
-        node["@id"] === schema.mainEntityOfPage["@id"],
+      (node) => node["@id"] === schema!.mainEntityOfPage!["@id"],
     );
-    expect(webpage.url).toBe(
+    expect(webpage!.url).toBe(
       "https://rehansaeed.com/on-the-etiquette-of-pull-request-comments/",
     );
-    expect(schema.dateModified).toBe(schema.datePublished);
-    expect(schema.image[0]).toHaveProperty("caption");
+    expect(schema!.dateModified).toBe(schema!.datePublished);
+    expect(z.array(z.unknown()).parse(schema!.image)[0]).toHaveProperty(
+      "caption",
+    );
     const author = graph["@graph"].find(
-      (node: { "@id": string }) => node["@id"] === schema.author["@id"],
+      (node) => node["@id"] === schema!.author!["@id"],
     );
     expect(author).toHaveProperty("image");
     expect(author).not.toHaveProperty("logo");

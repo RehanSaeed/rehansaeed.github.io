@@ -1,3 +1,4 @@
+import type { E2EFixtures } from "./fixtures";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { test as unitTest } from "@playwright/test";
@@ -7,70 +8,74 @@ import { listFiles } from "../../modules/blog-content/scan";
 import { getAvifSource } from "../../shared/utils/images";
 import { expect, test } from "./fixtures";
 
+async function verifyAvifCompanions() {
+  unitTest.setTimeout(300_000);
+  let count = 0;
+  let originalBytes = 0;
+  let avifBytes = 0;
+  for (const directory of ["public", "content"]) {
+    const files = await listFiles(directory);
+    const checked = new Set<string>();
+    for (const file of files) {
+      expect(file).not.toMatch(/\.jpeg$/i);
+      expect(file).not.toMatch(/\.(png|jpg)\.avif$/i);
+      if (!/\.(png|jpg)$/.test(file)) {
+        continue;
+      }
+      const basename = file.replace(/\.(png|jpg)$/, "");
+      const preferredSource = files.includes(`${basename}.png`)
+        ? `${basename}.png`
+        : file;
+      const original = await readFile(join(directory, preferredSource));
+      const avif = await readFile(join(directory, `${basename}.avif`));
+      const source = await sharp(original).metadata();
+      const encoded = await sharp(avif).metadata();
+      expect(encoded.format, file).toBe("heif");
+      expect(encoded.compression, file).toBe("av1");
+      expect(encoded.autoOrient, file).toEqual(source.autoOrient);
+      expect(encoded.hasAlpha, file).toBe(source.hasAlpha);
+      expect(encoded.exif, file).toBeUndefined();
+      expect(encoded.xmp, file).toBeUndefined();
+      await sharp(avif).raw().toBuffer();
+      if (!checked.has(basename)) {
+        originalBytes += original.length;
+        avifBytes += avif.length;
+        checked.add(basename);
+      }
+      if (file.endsWith(".jpg") && preferredSource.endsWith(".png")) {
+        // AVIF bitstreams can differ between platform-specific encoder builds.
+        const expected = await sharp(
+          await sharp(original)
+            .autoOrient()
+            .avif({ quality: 60, effort: 4, chromaSubsampling: "4:4:4" })
+            .toBuffer(),
+        )
+          .ensureAlpha()
+          .raw()
+          .toBuffer();
+        const actual = await sharp(avif).ensureAlpha().raw().toBuffer();
+        expect(actual, file).toHaveLength(expected.length);
+        const meanError =
+          actual.reduce(
+            (sum, value, index) => sum + Math.abs(value - expected[index]!),
+            0,
+          ) / actual.length;
+        expect(
+          meanError,
+          `${file}: shared AVIF matches the PNG-derived image`,
+        ).toBeLessThan(3);
+      }
+      count++;
+    }
+  }
+  expect(count).toBeGreaterThan(300);
+  expect(avifBytes).toBeLessThan(originalBytes);
+}
+
 unitTest(
   "Every PNG/JPG has a plain AVIF companion, preferring PNG for shared basenames",
   async () => {
-    unitTest.setTimeout(300_000);
-    let count = 0;
-    let originalBytes = 0;
-    let avifBytes = 0;
-    for (const directory of ["public", "content"]) {
-      const files = await listFiles(directory);
-      const checked = new Set<string>();
-      for (const file of files) {
-        expect(file).not.toMatch(/\.jpeg$/i);
-        expect(file).not.toMatch(/\.(png|jpg)\.avif$/i);
-        if (!/\.(png|jpg)$/.test(file)) {
-          continue;
-        }
-        const basename = file.replace(/\.(png|jpg)$/, "");
-        const preferredSource = files.includes(`${basename}.png`)
-          ? `${basename}.png`
-          : file;
-        const original = await readFile(join(directory, preferredSource));
-        const avif = await readFile(join(directory, `${basename}.avif`));
-        const source = await sharp(original).metadata();
-        const encoded = await sharp(avif).metadata();
-        expect(encoded.format, file).toBe("heif");
-        expect(encoded.compression, file).toBe("av1");
-        expect(encoded.autoOrient, file).toEqual(source.autoOrient);
-        expect(encoded.hasAlpha, file).toBe(source.hasAlpha);
-        expect(encoded.exif, file).toBeUndefined();
-        expect(encoded.xmp, file).toBeUndefined();
-        await sharp(avif).raw().toBuffer();
-        if (!checked.has(basename)) {
-          originalBytes += original.length;
-          avifBytes += avif.length;
-          checked.add(basename);
-        }
-        if (file.endsWith(".jpg") && preferredSource.endsWith(".png")) {
-          // AVIF bitstreams can differ between platform-specific encoder builds.
-          const expected = await sharp(
-            await sharp(original)
-              .autoOrient()
-              .avif({ quality: 60, effort: 4, chromaSubsampling: "4:4:4" })
-              .toBuffer(),
-          )
-            .ensureAlpha()
-            .raw()
-            .toBuffer();
-          const actual = await sharp(avif).ensureAlpha().raw().toBuffer();
-          expect(actual.length, file).toBe(expected.length);
-          const meanError =
-            actual.reduce(
-              (sum, value, index) => sum + Math.abs(value - expected[index]!),
-              0,
-            ) / actual.length;
-          expect(
-            meanError,
-            `${file}: shared AVIF matches the PNG-derived image`,
-          ).toBeLessThan(3);
-        }
-        count++;
-      }
-    }
-    expect(count).toBeGreaterThan(300);
-    expect(avifBytes).toBeLessThan(originalBytes);
+    await expect(verifyAvifCompanions()).resolves.toBeUndefined();
   },
 );
 
@@ -90,32 +95,34 @@ unitTest(
   },
 );
 
+async function verifyOfflineImagePrecache() {
+  const worker = await readFile(join("dist", "service-worker.js"), "utf8");
+  const urls = [...worker.matchAll(/\burl:"((?:[^"\\]|\\.)*)"/g)].map(
+    (match) => JSON.parse(`"${match[1]}"`) as string,
+  );
+  expect(urls.length).toBeGreaterThan(500);
+  expect(urls.some((url) => /^_ipx\/.*\bf_avif[,&/]/.test(url))).toBe(true);
+  expect(urls.includes("images/hero/Schema.NET-1366x768.avif")).toBe(true);
+  expect(urls).toContain("images/icons/favicon-192x192.png");
+  expect(urls).toContain("images/screenshots/blog-wide.png");
+  for (const url of urls) {
+    if (url.startsWith("_ipx/") && /\.(png|jpe?g|webp|avif)$/i.test(url)) {
+      expect(
+        url,
+        "responsive content is AVIF regardless of URL extension",
+      ).toMatch(/^_ipx\/[^/]*\bf_avif(?:[,/&]|$)/);
+    } else if (/\.(png|jpe?g|webp)$/i.test(url)) {
+      expect(url, "only compatibility PNGs are precached").toMatch(
+        /^(favicon\.png|images\/(?:icons|screenshots)\/.*\.png)$/,
+      );
+    }
+  }
+}
+
 unitTest(
   "Offline precaching keeps AVIF content, compatibility PNGs and runtime search heroes",
   async () => {
-    const worker = await readFile(join("dist", "service-worker.js"), "utf8");
-    const urls = [...worker.matchAll(/\burl:"((?:[^"\\]|\\.)*)"/g)].map(
-      (match) => JSON.parse(`"${match[1]}"`) as string,
-    );
-    expect(urls.length).toBeGreaterThan(500);
-    expect(urls.some((url) => /^_ipx\/.*\bf_avif[,&/]/.test(url))).toBe(true);
-    expect(
-      urls.some((url) => url === "images/hero/Schema.NET-1366x768.avif"),
-    ).toBe(true);
-    expect(urls).toContain("images/icons/favicon-192x192.png");
-    expect(urls).toContain("images/screenshots/blog-wide.png");
-    for (const url of urls) {
-      if (url.startsWith("_ipx/") && /\.(png|jpe?g|webp|avif)$/i.test(url)) {
-        expect(
-          url,
-          "responsive content is AVIF regardless of URL extension",
-        ).toMatch(/^_ipx\/[^/]*\bf_avif(?:[,/&]|$)/);
-      } else if (/\.(png|jpe?g|webp)$/i.test(url)) {
-        expect(url, "only compatibility PNGs are precached").toMatch(
-          /^(favicon\.png|images\/(?:icons|screenshots)\/.*\.png)$/,
-        );
-      }
-    }
+    await expect(verifyOfflineImagePrecache()).resolves.toBeUndefined();
   },
 );
 
@@ -134,7 +141,7 @@ unitTest(
       for (const element of images) {
         const image = $(element);
         const source = image.parent("picture").children("source");
-        expect(source.length, path).toBe(1);
+        expect(source, path).toHaveLength(1);
         expect(source.attr("type"), path).toBe("image/avif");
         expect(source.attr("srcset"), path).toContain("f_avif");
         expect(image.attr("src"), path).toMatch(/f_(png|jpg)[,&/]/);
@@ -166,9 +173,7 @@ test("Browsers choose AVIF for responsive pictures", async ({ page }) => {
   );
 });
 
-test("About award sources match their CSS widths without changing their frames", async ({
-  page,
-}) => {
+async function verifyAwardImageWidths({ page }: Pick<E2EFixtures, "page">) {
   await page.goto("/about/");
   const badges = page.locator(".about__badge-image");
   await expect(badges).toHaveCount(10);
@@ -198,6 +203,12 @@ test("About award sources match their CSS widths without changing their frames",
     "srcset",
     /s_322x99.* 322w.*s_644x198.* 644w/,
   );
+}
+
+test("About award sources match their CSS widths without changing their frames", async ({
+  page,
+}) => {
+  await expect(verifyAwardImageWidths({ page })).resolves.toBeUndefined();
 });
 
 test("Picture wrappers use block layout across the site", async ({ page }) => {

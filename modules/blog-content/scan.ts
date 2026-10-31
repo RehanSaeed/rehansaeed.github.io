@@ -3,20 +3,24 @@ import { join, relative, sep } from "node:path";
 import { parse as parseYaml } from "yaml";
 
 export interface FrontMatter {
-  title: string;
-  heroImage: string;
-  permalink: string;
-  published: boolean;
-  tags?: string[];
-  kind?: "open-source" | "microsoft";
-  nugetPackages?: { id: string }[];
+  /** Title displayed for this content. */ title: string;
+  /** Path to the content's hero image. */ heroImage: string;
+  /** Stable public URL of the content. */ permalink: string;
+  /** Whether the content is approved for publication. */ published: boolean;
+  /** Tags associated with the content. */ tags?: string[];
+  /** Portfolio category identifying open-source or Microsoft work. */ kind?:
+    "open-source" | "microsoft";
+  /** NuGet packages whose download counts contribute to this entry. */ nugetPackages?: {
+    /** NuGet package identifier. */ id: string;
+  }[];
 }
 
 export interface ContentEntry {
   /** Path relative to the content directory, using forward slashes. */
   path: string;
-  collection: "posts" | "portfolio";
-  data: FrontMatter;
+  /** Content collection containing this entry. */ collection:
+    "posts" | "portfolio";
+  /** Front matter parsed from the content file. */ data: FrontMatter;
 }
 
 const frontMatterPattern = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/;

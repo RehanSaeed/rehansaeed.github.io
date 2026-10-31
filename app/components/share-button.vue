@@ -36,8 +36,9 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent, type PropType } from "vue";
+export default defineComponent({
   name: "u-share-button",
   setup() {
     return { metadata: useAppConfig().site };
@@ -49,14 +50,14 @@ export default {
     };
   },
   props: {
-    title: {
+    /** Title displayed for this content. */ title: {
       type: String,
     },
-    url: {
+    /** Canonical URL associated with this component. */ url: {
       type: String,
     },
-    tags: {
-      type: Array,
+    /** Tags associated with the content. */ tags: {
+      type: Array as PropType<string[]>,
     },
   },
   computed: {
@@ -109,24 +110,31 @@ export default {
     open() {
       this.isDialogueOpen = true;
     },
-    share() {
-      navigator.share({
-        title: this.internalTitle,
-        url: this.internalUrl,
-      });
+    async share() {
+      try {
+        await navigator.share({
+          title: this.internalTitle,
+          url: this.internalUrl,
+        });
+      } catch (error) {
+        if (!(error instanceof DOMException && error.name === "AbortError")) {
+          console.error("Unable to share the page", error);
+          this.open();
+        }
+      }
     },
     onClose() {
       this.isDialogueOpen = false;
     },
     onClick() {
       if (this.isSupported) {
-        this.share();
+        void this.share();
       } else {
         this.open();
       }
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

@@ -1,3 +1,4 @@
+import type { E2EFixtures } from "./fixtures";
 import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import type { Locator, Page } from "@playwright/test";
@@ -114,9 +115,9 @@ test("Shared icons encapsulate inline styling and decorative defaults", async ({
   const sizing = await inlineIcon.evaluate((icon) => {
     const style = getComputedStyle(icon);
     return {
-      width: parseFloat(style.inlineSize),
-      height: parseFloat(style.blockSize),
-      fontSize: parseFloat(style.fontSize),
+      width: Number.parseFloat(style.inlineSize),
+      height: Number.parseFloat(style.blockSize),
+      fontSize: Number.parseFloat(style.fontSize),
     };
   });
   expect(sizing.width).toBeCloseTo(sizing.fontSize, 1);
@@ -131,9 +132,7 @@ test("Shared icons encapsulate inline styling and decorative defaults", async ({
   await expect(logo).toHaveAttribute("aria-hidden", "true");
 });
 
-test("Coffee icons inherit their button text colour in both themes", async ({
-  page,
-}) => {
+async function verifyCoffeeIconColours({ page }: Pick<E2EFixtures, "page">) {
   await page.goto(post);
   await ready(page);
   const button = page.getByRole("button", {
@@ -169,6 +168,16 @@ test("Coffee icons inherit their button text colour in both themes", async ({
       );
     }
   }
+}
+
+test("Coffee icons inherit their button text colour in both themes", async ({
+  page,
+}) => {
+  await expect(
+    verifyCoffeeIconColours({
+      page,
+    }),
+  ).resolves.toBeUndefined();
 });
 
 test.describe("Offline icons", () => {
@@ -180,6 +189,8 @@ test.describe("Offline icons", () => {
     baseURL,
     browserName,
   }) => {
+    // Playwright's Firefox offline emulation bypasses the worker being tested.
+    // eslint-disable-next-line playwright/no-skipped-test
     test.skip(
       browserName === "firefox",
       "Playwright's Firefox offline mode bypasses service workers.",
@@ -206,15 +217,15 @@ test.describe("Offline icons", () => {
     await page.evaluate(async () => {
       await navigator.serviceWorker.ready;
       if (!navigator.serviceWorker.controller) {
-        await new Promise((resolve) =>
+        await new Promise((resolve) => {
           navigator.serviceWorker.addEventListener(
             "controllerchange",
             resolve,
             {
               once: true,
             },
-          ),
-        );
+          );
+        });
       }
     });
     await context.setOffline(true);
@@ -307,7 +318,7 @@ test.describe("Icon areas", () => {
           "https://not-webmention.io/api/mentions",
           "https://webmention.io.example/api/mentions",
           "https://example.com/?source=webmention.io",
-        ].map(async (url) => (await fetch(url)).json()),
+        ].map(async (url): Promise<unknown> => (await fetch(url)).json()),
       ),
     );
     expect(responses).toEqual([{ links: [] }, [], [], []]);
@@ -323,10 +334,9 @@ test.describe("Icon areas", () => {
         await page.setViewportSize(viewport);
         await page.emulateMedia({ colorScheme });
         // Icon comparisons must not depend on automatic-theme persistence.
-        await page.addInitScript(
-          (theme) => localStorage.setItem("theme", theme),
-          colorScheme,
-        );
+        await page.addInitScript((theme) => {
+          localStorage.setItem("theme", theme);
+        }, colorScheme);
         const shot = async (name: string, target?: Locator) => {
           await expect(page.locator("html")).toHaveAttribute(
             "data-theme",
@@ -360,7 +370,7 @@ test.describe("Icon areas", () => {
         await expect(search.locator("svg.icon")).toHaveCount(1);
         await shot("search-dialog", search);
         await search.getByRole("button", { name: "Close Search" }).click();
-        await expect(search).not.toBeVisible();
+        await expect(search).toBeHidden();
 
         await page.goto(post);
         await ready(page);
@@ -413,7 +423,9 @@ test.describe("Icon areas", () => {
           9,
         );
         await shot("about-social", page.locator(".about__social-links"));
-        await page.evaluate(() => window.scrollTo(0, 0));
+        await page.evaluate(() => {
+          window.scrollTo(0, 0);
+        });
         await page.evaluate(() => {
           const app =
             document.querySelector<NuxtRoot>("#__nuxt")!.__vue_app__!.config
@@ -426,7 +438,7 @@ test.describe("Icon areas", () => {
         await update
           .getByRole("button", { name: "Dismiss site update" })
           .click();
-        await expect(update).not.toBeVisible();
+        await expect(update).toBeHidden();
 
         await page.goto("/streaming/thumbnail/?background=dark");
         await ready(page);

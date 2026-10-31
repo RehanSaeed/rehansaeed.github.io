@@ -15,24 +15,25 @@
   </section>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from "vue";
+export default defineComponent({
   data() {
     return {
       title: "",
       subtitle: "",
-      titleFontSize: undefined,
+      titleFontSize: "3.5",
       titleJustify: "",
       titleAlign: "",
-      titleWidth: undefined,
+      titleWidth: "",
     };
   },
   methods: {
-    toEm: function (value) {
-      return value + "em";
+    toEm(value: string) {
+      return `${value}em`;
     },
-    toPx(value) {
-      return value + "px";
+    toPx(value: string) {
+      return value ? `${value}px` : undefined;
     },
   },
   mounted() {
@@ -45,14 +46,14 @@ export default {
       "title-width": titleWidth,
     } = this.$route.query;
 
-    this.title = title;
-    this.subtitle = subtitle;
-    this.titleFontSize = titleFontSize || 3.5;
-    this.titleJustify = titleJustify || "start";
-    this.titleAlign = titleAlign || "end";
-    this.titleWidth = titleWidth;
+    this.title = String(title ?? "");
+    this.subtitle = String(subtitle ?? "");
+    this.titleFontSize = String(titleFontSize || 3.5);
+    this.titleJustify = String(titleJustify || "start");
+    this.titleAlign = String(titleAlign || "end");
+    this.titleWidth = String(titleWidth ?? "");
   },
-};
+});
 </script>
 
 <style lang="scss">

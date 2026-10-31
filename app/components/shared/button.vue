@@ -19,16 +19,16 @@ import { defineComponent, type PropType } from "vue";
 export default defineComponent({
   name: "u-button",
   props: {
-    disabled: {
+    /** Whether the button is disabled. */ disabled: {
       type: Boolean,
     },
-    variant: {
+    /** Visual variant of the button. */ variant: {
       type: String as PropType<"plain" | "secondary" | "primary">,
       default: "plain",
       validator: (value: string) =>
         ["plain", "secondary", "primary"].includes(value),
     },
-    submit: {
+    /** Whether the button submits its containing form. */ submit: {
       type: Boolean,
     },
   },

@@ -21,12 +21,12 @@
 defineOptions({ inheritAttrs: false });
 const props = withDefaults(
   defineProps<{
-    language?: string;
-    filename?: string;
-    highlights?: number[];
-    meta?: string;
-    html?: string;
-    class?: string;
+    /** Language used for syntax highlighting. */ language?: string;
+    /** Optional filename displayed with the code block. */ filename?: string;
+    /** Line numbers to highlight in the code block. */ highlights?: number[];
+    /** Code-fence metadata controlling features such as line numbers. */ meta?: string;
+    /** Prerendered, syntax-highlighted code markup. */ html?: string;
+    /** Additional CSS classes supplied by the Markdown renderer. */ class?: string;
   }>(),
   { language: "text", html: "" },
 );

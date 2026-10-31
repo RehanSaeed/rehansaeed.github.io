@@ -73,6 +73,10 @@ jobs:
         run: npm run typecheck
       - name: "Lint"
         run: npm run lint
+      - name: "Test Lint Configuration"
+        run: npm run test:lint
+      - name: "Test Shared Utilities"
+        run: npm run test:unit
       - name: "Package Browser Test Site"
         run: tar -cf playwright-site.tar dist .data/blog-image-metadata.json
       - name: "Upload Browser Test Site"

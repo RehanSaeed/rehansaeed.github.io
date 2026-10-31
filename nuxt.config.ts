@@ -33,6 +33,15 @@ export default defineNuxtConfig({
     "@nuxt/fonts",
   ],
 
+  eslint: {
+    config: {
+      typescript: {
+        strict: true,
+        tsconfigPath: "./tsconfig.json",
+      },
+    },
+  },
+
   icon: {
     componentName: "NuxtIcon",
     // GitHub Pages and offline navigation have no runtime icon API.

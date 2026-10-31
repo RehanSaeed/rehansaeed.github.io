@@ -1,20 +1,20 @@
+import type { E2EFixtures } from "./fixtures";
 import { delayClientScripts, expect, test } from "./fixtures";
 
 test.use({ reducedMotion: "no-preference" });
 
 for (const theme of ["light", "dark"] as const) {
   for (const saved of [false, true]) {
-    test(`${saved ? "Saved" : "System"} ${theme} theme is applied before body parsing on load and refresh`, async ({
+    async function verifyInitialThemeTiming({
       page,
-    }) => {
+    }: Pick<E2EFixtures, "page">) {
       await page.emulateMedia({
         colorScheme: saved ? (theme === "dark" ? "light" : "dark") : theme,
       });
       if (saved) {
-        await page.addInitScript(
-          (theme) => localStorage.setItem("theme", theme),
-          theme,
-        );
+        await page.addInitScript((theme) => {
+          localStorage.setItem("theme", theme);
+        }, theme);
       }
       await page.route(
         (url) => url.pathname === "/",
@@ -46,7 +46,7 @@ for (const theme of ["light", "dark"] as const) {
             const script = Array.from(
               document.head.querySelectorAll("script"),
             ).find((script) =>
-              script.textContent?.includes("window.__setPreferredTheme"),
+              script.textContent.includes("window.__setPreferredTheme"),
             );
             const styles = Array.from(
               document.head.querySelectorAll('style, link[rel="stylesheet"]'),
@@ -83,6 +83,16 @@ for (const theme of ["light", "dark"] as const) {
       } finally {
         await scripts.dispose();
       }
+    }
+
+    test(`${saved ? "Saved" : "System"} ${theme} theme is applied before body parsing on load and refresh`, async ({
+      page,
+    }) => {
+      await expect(
+        verifyInitialThemeTiming({
+          page,
+        }),
+      ).resolves.toBeUndefined();
     });
   }
 }
@@ -117,7 +127,7 @@ for (const initialTheme of ["light", "dark"] as const) {
       );
     });
 
-    const samples = await toggle.evaluate((button) => {
+    const samples = await toggle.evaluate((button: HTMLButtonElement) => {
       const arrows = Array.from(document.querySelectorAll(".arrows__arrow"));
       // Firefox can still be transitioning from the initial transparent body.
       for (const animation of document.getAnimations()) {

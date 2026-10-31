@@ -15,7 +15,8 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from "vue";
+export default defineComponent({
   data() {
     return {
       background: "dark",
@@ -26,8 +27,8 @@ export default {
       return this.background ? "thumbnail--background-" + this.background : "";
     },
     backgroundImage() {
-      return this.background?.startsWith("/") ||
-        this.background?.startsWith("http")
+      return this.background.startsWith("/") ||
+        this.background.startsWith("http")
         ? `url("${this.background}")`
         : "";
     },
@@ -38,7 +39,7 @@ export default {
 
     this.background = background;
   },
-};
+});
 </script>
 
 <script setup>

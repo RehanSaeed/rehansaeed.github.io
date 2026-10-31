@@ -1,6 +1,8 @@
+import type { E2EFixtures } from "./fixtures";
 import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
 import type { NuxtApp } from "nuxt/app";
+import { manifestSchema } from "./data";
 
 async function announcePrompt(
   page: Page,
@@ -10,11 +12,12 @@ async function announcePrompt(
     const event = Object.assign(
       new Event("beforeinstallprompt", { cancelable: true }),
       {
-        prompt: async () => {
+        prompt: () => {
           const root = document.documentElement;
           root.dataset.promptCalls = String(
             Number(root.dataset.promptCalls ?? 0) + 1,
           );
+          return Promise.resolve();
         },
       },
     );
@@ -42,7 +45,7 @@ test("Manifest preserves install identity and serves valid desktop and mobile pr
 }) => {
   const response = await request.get("/manifest.webmanifest");
   expect(response.ok()).toBe(true);
-  const manifest = await response.json();
+  const manifest = manifestSchema.parse(await response.json());
   expect(manifest).toMatchObject({
     id: "/",
     start_url: "/",
@@ -53,11 +56,10 @@ test("Manifest preserves install identity and serves valid desktop and mobile pr
   expect(manifest.prefer_related_applications).not.toBe(true);
   for (const size of [192, 512]) {
     const icon = manifest.icons.find(
-      (icon: { sizes: string; purpose: string }) =>
-        icon.sizes === `${size}x${size}` && icon.purpose === "any",
+      (icon) => icon.sizes === `${size}x${size}` && icon.purpose === "any",
     );
     expect(icon).toBeDefined();
-    const image = await request.get(icon.src);
+    const image = await request.get(icon!.src);
     expect(image.ok()).toBe(true);
     const png = await image.body();
     expect(png.readUInt32BE(16)).toBe(size);
@@ -94,6 +96,8 @@ test("Chrome reports no manifest installability errors", async ({
   context,
   browserName,
 }) => {
+  // Only Chromium exposes the CDP installability API exercised by this test.
+  // eslint-disable-next-line playwright/no-skipped-test
   test.skip(browserName !== "chromium", "Chrome DevTools protocol is required");
   await page.goto("/");
   const session = await context.newCDPSession(page);
@@ -173,6 +177,8 @@ test("Install prompt captured before component mount survives client navigation"
   page,
 }) => {
   await page.addInitScript(() => {
+    // Preserve the original method and receiver while intercepting registration.
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     const addEventListener = window.addEventListener;
     window.addEventListener = function (
       ...args: Parameters<typeof window.addEventListener>
@@ -189,8 +195,9 @@ test("Install prompt captured before component mount survives client navigation"
           Object.assign(
             new Event("beforeinstallprompt", { cancelable: true }),
             {
-              prompt: async () => {
+              prompt: () => {
                 document.documentElement.dataset.promptCalls = "1";
+                return Promise.resolve();
               },
               userChoice: Promise.resolve({ outcome: "dismissed" }),
             },
@@ -259,9 +266,9 @@ test("Installed display modes do not offer another installation", async ({
 });
 
 for (const fails of [false, true]) {
-  test(`Update notice delegates to the package${fails ? " and reports failures" : ""}`, async ({
+  async function verifyPackageUpdateNotice({
     page,
-  }) => {
+  }: Pick<E2EFixtures, "page">) {
     await page.goto("/");
     await expect(
       page.getByRole("button", { name: "Open search" }),
@@ -274,12 +281,13 @@ for (const fails of [false, true]) {
       >("#__nuxt")!;
       const pwa = root.__vue_app__.config.globalProperties.$nuxt.$pwa!;
       pwa.needRefresh = true;
-      pwa.updateServiceWorker = async () => {
+      pwa.updateServiceWorker = () => {
         document.documentElement.dataset.packageUpdateCalls = "1";
         if (fails) {
-          throw new Error("Test package update failure");
+          return Promise.reject(new Error("Test package update failure"));
         }
         pwa.needRefresh = false;
+        return Promise.resolve();
       };
     }, fails);
     const notice = page.getByRole("region", { name: "Site update" });
@@ -301,5 +309,15 @@ for (const fails of [false, true]) {
     } else {
       await expect(notice).toHaveCount(0);
     }
+  }
+
+  test(`Update notice delegates to the package${fails ? " and reports failures" : ""}`, async ({
+    page,
+  }) => {
+    await expect(
+      verifyPackageUpdateNotice({
+        page,
+      }),
+    ).resolves.toBeUndefined();
   });
 }

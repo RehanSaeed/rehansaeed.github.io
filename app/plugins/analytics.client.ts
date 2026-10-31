@@ -8,8 +8,10 @@ export default defineNuxtPlugin({
   name: "analytics",
   enforce: "pre",
   setup(nuxtApp) {
-    window.dataLayer ??= [];
-    window.gtag = (...args) => window.dataLayer.push(args);
+    const dataLayer = (window.dataLayer ??= []);
+    window.gtag = (...args) => {
+      dataLayer.push(args);
+    };
     const displayMode = window.matchMedia(
       "(display-mode: standalone), (display-mode: minimal-ui), (display-mode: fullscreen)",
     );
@@ -19,11 +21,15 @@ export default defineNuxtPlugin({
         : displayMode.matches
           ? "standalone"
           : "browser tab";
-    onNuxtReady(() => appLaunchDomContentLoaded(launchMode()));
-    displayMode.addEventListener("change", () =>
-      appLaunchDisplayModeChanged(launchMode()),
-    );
-    window.addEventListener("appinstalled", () => pwaInstallAppInstalled());
+    onNuxtReady(() => {
+      appLaunchDomContentLoaded(launchMode());
+    });
+    displayMode.addEventListener("change", () => {
+      appLaunchDisplayModeChanged(launchMode());
+    });
+    window.addEventListener("appinstalled", () => {
+      pwaInstallAppInstalled();
+    });
     nuxtApp.hook("service-worker:registration-failed", ({ error }) => {
       console.error("[pwa] Service worker registration failed.", error);
     });

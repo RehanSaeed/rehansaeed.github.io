@@ -1,13 +1,17 @@
+import type { E2EFixtures } from "./fixtures";
 import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { test as unitTest } from "@playwright/test";
 import { decode } from "../../app/framework/obfuscate";
 import { delayClientScripts, expect, test } from "./fixtures";
+import { z } from "zod";
 
 async function contactAddress() {
-  const site = JSON.parse(
-    await readFile(join(process.cwd(), "site.json"), "utf8"),
-  );
+  const site = z
+    .object({ author: z.object({ email: z.string() }) })
+    .parse(
+      JSON.parse(await readFile(join(process.cwd(), "site.json"), "utf8")),
+    );
   const address = decode(site.author.email);
   expect(site.author.email === address).toBe(false);
   expect(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address)).toBe(true);
@@ -70,7 +74,7 @@ test("Contact address stays hidden before and after hydration", async ({
 });
 
 for (const activation of ["click", "Enter"] as const) {
-  test(`Contact mailto is created only on ${activation}`, async ({ page }) => {
+  async function verifyContactActivation({ page }: Pick<E2EFixtures, "page">) {
     const address = await contactAddress();
     await page.goto("/about/");
     await expect(
@@ -106,5 +110,9 @@ for (const activation of ["click", "Enter"] as const) {
       expect(url.searchParams.get("body")).toContain("raise a GitHub issue");
       await expect(page).toHaveURL(/\/about\/$/);
     }
+  }
+
+  test(`Contact mailto is created only on ${activation}`, async ({ page }) => {
+    await expect(verifyContactActivation({ page })).resolves.toBeUndefined();
   });
 }

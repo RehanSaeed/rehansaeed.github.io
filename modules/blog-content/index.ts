@@ -139,11 +139,8 @@ export default defineNuxtModule({
 
     // @nuxt/content reads these options lazily when it creates its
     // parser, after module setup. Order matters: the object key order is the plugin order.
-    const content = (nuxt.options.content ||= {} as never) as Exclude<
-      typeof nuxt.options.content,
-      false
-    >;
-    const markdown = ((content.build ??= {}).markdown ??= {});
+    const content = (nuxt.options.content ||= {} as never);
+    const markdown = (content.build.markdown ??= {});
     markdown.remarkPlugins = {
       ...markdown.remarkPlugins,
       // CommonMark + GFM only; no MDC component syntax.
@@ -190,7 +187,9 @@ export default defineNuxtModule({
         const snapshot = portfolio[String(content.permalink)];
         const packages = downloads[String(content.permalink)];
         if (!snapshot || !packages) {
-          throw new Error(`Missing portfolio popularity: ${content.permalink}`);
+          throw new Error(
+            `Missing portfolio popularity: ${String(content.permalink)}`,
+          );
         }
         Object.assign(content, snapshot, packages);
       }

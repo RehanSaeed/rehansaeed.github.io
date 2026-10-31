@@ -172,7 +172,9 @@ test.describe("Parity", () => {
 
   test("Stored theme is applied before first paint", async ({ page }) => {
     await page.emulateMedia({ colorScheme: "light" });
-    await page.addInitScript(() => localStorage.setItem("theme", "dark"));
+    await page.addInitScript(() => {
+      localStorage.setItem("theme", "dark");
+    });
     await page.goto("/", { waitUntil: "domcontentloaded" });
 
     expect(
@@ -267,6 +269,8 @@ test.describe("Service worker", () => {
   });
 
   test("Works offline", async ({ page, context, browserName }) => {
+    // Firefox's offline emulation bypasses service workers, invalidating this check.
+    // eslint-disable-next-line playwright/no-skipped-test
     test.skip(
       browserName === "firefox",
       "Playwright's Firefox offline mode bypasses service workers.",
@@ -279,9 +283,9 @@ test.describe("Service worker", () => {
     await page.evaluate(async () => {
       await navigator.serviceWorker.ready;
       if (!navigator.serviceWorker.controller) {
-        await new Promise((resolve) =>
-          navigator.serviceWorker.addEventListener("controllerchange", resolve),
-        );
+        await new Promise((resolve) => {
+          navigator.serviceWorker.addEventListener("controllerchange", resolve);
+        });
       }
     });
     await context.setOffline(true);

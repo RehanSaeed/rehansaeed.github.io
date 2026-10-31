@@ -1,23 +1,17 @@
 import { z } from "zod";
 import sanitizeHtml from "sanitize-html";
 
-const githubUrl = z
-  .string()
-  .url()
-  .refine((value) => {
-    const url = new URL(value);
-    return url.protocol === "https:" && url.hostname === "github.com";
-  });
-const avatarUrl = z
-  .string()
-  .url()
-  .refine((value) => {
-    const url = new URL(value);
-    return (
-      url.protocol === "https:" &&
-      url.hostname === "avatars.githubusercontent.com"
-    );
-  });
+const githubUrl = z.url().refine((value) => {
+  const url = new URL(value);
+  return url.protocol === "https:" && url.hostname === "github.com";
+});
+const avatarUrl = z.url().refine((value) => {
+  const url = new URL(value);
+  return (
+    url.protocol === "https:" &&
+    url.hostname === "avatars.githubusercontent.com"
+  );
+});
 
 export const issueSchema = z.object({
   number: z.number().int().positive(),
@@ -28,8 +22,8 @@ export const commentSchema = z.object({
   id: z.number().int().positive(),
   html_url: githubUrl,
   body_html: z.string(),
-  created_at: z.string().datetime(),
-  updated_at: z.string().datetime().optional(),
+  created_at: z.iso.datetime(),
+  updated_at: z.iso.datetime().optional(),
   author_association: z
     .string()
     .regex(/^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)*$/)

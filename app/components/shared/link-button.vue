@@ -16,30 +16,31 @@
 </template>
 
 <script>
+import { defineComponent } from "vue";
 import { NuxtLink } from "#components";
 
-export default {
+export default defineComponent({
   name: "u-link-button",
   props: {
-    bordered: {
+    /** Whether the link button has a border. */ bordered: {
       type: Boolean,
     },
-    contrast: {
+    /** Whether the link button uses contrasting colours. */ contrast: {
       type: Boolean,
     },
-    primary: {
+    /** Whether the link button uses the primary appearance. */ primary: {
       type: Boolean,
     },
-    label: {
+    /** Accessible text describing the control or link. */ label: {
       type: String,
     },
-    to: {
+    /** Internal route used for navigation. */ to: {
       type: String,
     },
-    href: {
+    /** URL used for the link. */ href: {
       type: String,
     },
-    rel: {
+    /** Relationship attributes applied to the link. */ rel: {
       type: String,
     },
   },
@@ -48,7 +49,7 @@ export default {
       return this.to ? NuxtLink : "a";
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

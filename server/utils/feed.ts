@@ -16,16 +16,19 @@ const urlAttributePattern = /\b(href|src)="([^"]*)"/g;
  * co-located images (e.g. `images/foo.png`) at their copies under contentImagesBaseURL.
  */
 function absoluteUrls(html: string, contentDir: string): string {
-  return html.replace(urlAttributePattern, (match, attribute, value) => {
-    if (value.startsWith("/") && !value.startsWith("//")) {
-      return `${attribute}="${site.url}${value}"`;
-    }
-    if (relativeImagePattern.test(value)) {
-      const path = posix.join(contentImagesBaseURL, contentDir, value);
-      return `${attribute}="${site.url}${path}"`;
-    }
-    return match;
-  });
+  return html.replace(
+    urlAttributePattern,
+    (match: string, attribute: string, value: string) => {
+      if (value.startsWith("/") && !value.startsWith("//")) {
+        return `${attribute}="${site.url}${value}"`;
+      }
+      if (relativeImagePattern.test(value)) {
+        const path = posix.join(contentImagesBaseURL, contentDir, value);
+        return `${attribute}="${site.url}${path}"`;
+      }
+      return match;
+    },
+  );
 }
 
 /** The RSS, Atom and JSON feeds of published posts. */

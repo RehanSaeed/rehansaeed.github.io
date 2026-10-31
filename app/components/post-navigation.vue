@@ -3,6 +3,7 @@
     v-if="previous || next"
     class="post-navigation"
     aria-label="Post navigation">
+    <!-- eslint-disable-next-line vuejs-accessibility/no-redundant-roles -- Preserve list semantics in Safari when list-style is none. -->
     <ul class="post-navigation__list" role="list">
       <u-card
         v-for="item in neighbours"
@@ -59,7 +60,9 @@
 import { getImageMetadata } from "~/framework/images.js";
 import { contentImageSizes } from "#shared/utils/images";
 
-const props = defineProps<{ permalink: string }>();
+const props = defineProps<{
+  /** Stable public URL of the content. */ permalink: string;
+}>();
 
 const { data: posts } = await useAsyncData("post-navigation", () =>
   queryCollection("posts")

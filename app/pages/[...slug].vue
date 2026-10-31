@@ -77,7 +77,7 @@ const date = post.value.date;
 const dateModified = post.value.dateModified ?? date;
 const image = site.url + post.value.heroImage;
 const url = site.url + post.value.permalink;
-const tags = post.value.tags ?? [];
+const tags = post.value.tags;
 const headings = post.value.headings ?? [];
 
 useBlogOgImage(title, post.value.heroImage, author);

@@ -1,6 +1,6 @@
 export interface ImageDimensions {
-  width: number;
-  height: number;
+  /** Image width in pixels. */ width: number;
+  /** Image height in pixels. */ height: number;
 }
 
 // Conservatively covers the full-bleed images in the capped, fluid content column.

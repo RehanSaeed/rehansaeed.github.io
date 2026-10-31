@@ -22,20 +22,28 @@
   </article>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent, type PropType } from "vue";
+import {
+  webMentionTimestamp,
+  webMentionUrl,
+  type WebMention,
+} from "#shared/utils/webmentions";
+export default defineComponent({
   name: "u-webmention-reply",
   directives: {
-    ugcLinks(element) {
-      for (const link of element.querySelectorAll("a[href]")) {
+    ugcLinks(element: HTMLElement) {
+      for (const link of element.querySelectorAll<HTMLAnchorElement>(
+        "a[href]",
+      )) {
         link.relList.add("ugc", "nofollow");
       }
     },
   },
   props: {
-    reply: {
+    /** Web mention reply to display. */ reply: {
       required: true,
-      type: Object,
+      type: Object as PropType<WebMention>,
     },
   },
   computed: {
@@ -43,12 +51,12 @@ export default {
       return `webmention-reply-${this.reply.id}`;
     },
     url() {
-      return this.reply.data.url;
+      return webMentionUrl(this.reply);
     },
     content() {
       if (
         this.reply.activity.type === "link" &&
-        !this.reply.data.url.startsWith("https://twitter.com")
+        !this.url.startsWith("https://twitter.com")
       ) {
         return this.reply.activity.sentence_html;
       } else {
@@ -56,16 +64,16 @@ export default {
       }
     },
     name() {
-      return this.reply.data.author.name;
+      return this.reply.data.author?.name || "Anonymous";
     },
     photo() {
-      return this.reply.data.author.photo;
+      return this.reply.data.author?.photo || "";
     },
     timestamp() {
-      return this.reply.data.published;
+      return webMentionTimestamp(this.reply);
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

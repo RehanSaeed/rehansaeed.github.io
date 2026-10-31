@@ -8,7 +8,8 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from "vue";
+export default defineComponent({
   data() {
     return {
       noLogo: false,
@@ -27,7 +28,7 @@ export default {
     this.logoJustify = logoJustify || "end";
     this.logoAlign = logoAlign || "start";
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>

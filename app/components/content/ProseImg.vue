@@ -25,9 +25,9 @@
 import { contentImageSizes, getAvifSource } from "#shared/utils/images";
 
 defineProps<{
-  src: string;
-  alt?: string;
-  width?: number | string;
-  height?: number | string;
+  /** Source URL of the image. */ src: string;
+  /** Alternative text describing the image; empty for decorative images. */ alt?: string;
+  /** Image width in pixels. */ width?: number | string;
+  /** Image height in pixels. */ height?: number | string;
 }>();
 </script>

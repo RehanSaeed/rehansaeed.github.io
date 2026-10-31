@@ -169,7 +169,7 @@ for (const width of [375, 1280]) {
             ".about__container > .about__github-images, .about__container > .about__youtube-images, .about__container > .about_awards-images, .about__container > .about__mvp-images",
           )
           .evaluateAll((sections) =>
-            sections.map((section) => section.className),
+            sections.map((section) => section.getAttribute("class")),
           ),
       ).toEqual([
         "about__youtube-images",

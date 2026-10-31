@@ -76,8 +76,14 @@ authorise publishing the article or posting to social media.
 
 - Use Prettier for formatting and ESLint for linting, following the repository's
   configuration.
+- Keep Nuxt's strict type-aware TypeScript linting, recommended Vue accessibility
+  and Playwright rules, public-property JSDoc checks, and selected Unicorn rules
+  enabled. Do not use `all` presets. Document public component props and exported
+  interface, object type and class properties with meaningful JSDoc descriptions.
 - Add or update tests for behaviour changes and regression tests for bug fixes.
   Test observable behaviour, not implementation details.
+- Run `npm run test:lint` for lint-configuration changes and `npm run test:unit`
+  for changes to the tested shared utilities.
 - Run the smallest relevant checks while developing. Before handing off
   application or dependency changes, run `npm run build`, `npm run typecheck`,
   `npm run lint`, and relevant Playwright tests. Instruction-only changes need

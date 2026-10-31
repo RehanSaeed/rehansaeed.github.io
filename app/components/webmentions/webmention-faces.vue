@@ -13,21 +13,23 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent, type PropType } from "vue";
 import { getDisplayDateFromString } from "~/framework/date.js";
+import type { WebMention } from "#shared/utils/webmentions";
 
-export default {
+export default defineComponent({
   name: "u-webmention-faces",
   props: {
-    mentions: {
+    /** Web mentions whose authors are displayed. */ mentions: {
       required: true,
-      type: Array,
+      type: Array as PropType<WebMention[]>,
     },
   },
   methods: {
-    getLabel(mention, name) {
+    getLabel(mention: WebMention, name: string): string {
       if (mention.data.published) {
-        return `${name} - ${getDisplayDateFromString(mention.data.published)}`;
+        return `${name} - ${getDisplayDateFromString(mention.data.published) ?? ""}`;
       }
       return name;
     },
@@ -45,7 +47,7 @@ export default {
       });
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

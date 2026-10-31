@@ -27,12 +27,13 @@
 </template>
 
 <script>
+import { defineComponent } from "vue";
 import { previousUrl, nextUrl } from "~/framework/paging.js";
 
-export default {
+export default defineComponent({
   name: "BlogPager",
   props: {
-    pageInfo: {
+    /** Pagination metadata for the current page. */ pageInfo: {
       required: true,
       type: Object,
     },
@@ -45,7 +46,7 @@ export default {
       return nextUrl(this.pageInfo);
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

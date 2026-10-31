@@ -12,7 +12,8 @@ export function pageHeadingId(
       if (!Array.isArray(node)) {
         continue;
       }
-      const [, properties, ...children] = node;
+      const childrenAndProperties: unknown[] = node;
+      const [, properties, ...children] = childrenAndProperties;
       if (
         properties !== null &&
         typeof properties === "object" &&
