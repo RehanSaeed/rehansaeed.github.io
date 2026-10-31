@@ -60,6 +60,10 @@ authorise publishing the article or posting to social media.
 - Use TypeScript for application code.
 - Use modern functions and APIs supported by the project's target environments.
 - Use JSDoc to document public-facing properties.
+- Use the existing [Zod](https://zod.dev/) dependency for runtime data validation.
+  Validate external JSON as `unknown` and infer TypeScript types from schemas
+  instead of asserting that responses match an interface. Reuse shared schemas
+  and surface validation failures through the existing error-handling paths.
 
 ## Accessibility and Responsive Design
 
