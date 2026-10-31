@@ -11,23 +11,30 @@
   </u-skeleton>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import {
+  defineComponent,
+  markRaw,
+  useTemplateRef,
+  type ComponentPublicInstance,
+} from "vue";
+export default defineComponent({
   name: "u-webmention-faces-skeleton",
+  setup() {
+    return { skeleton: useTemplateRef<ComponentPublicInstance>("skeleton") };
+  },
   data() {
     return {
-      resizeObserver: undefined,
+      resizeObserver: null as ResizeObserver | null,
       width: 0,
     };
   },
   props: {
-    /** Amount by which adjacent avatar placeholders overlap. */
-    overlap: {
+    /** Amount by which adjacent avatar placeholders overlap. */ overlap: {
       default: 10,
       type: Number,
     },
-    /** Radius of each avatar placeholder. */
-    radius: {
+    /** Radius of each avatar placeholder. */ radius: {
       default: 25,
       type: Number,
     },
@@ -47,7 +54,7 @@ export default {
     },
   },
   methods: {
-    getXPosition(n) {
+    getXPosition(n: number) {
       const x = n * (this.radius * 2) - this.radius;
       const nOverlap = n * this.overlap;
       const offset = this.overlap;
@@ -55,17 +62,25 @@ export default {
     },
   },
   mounted() {
-    this.resizeObserver = new ResizeObserver((entries) => {
-      this.width = Math.floor(entries[0].contentRect.width);
-    });
-    this.$nextTick(() => {
-      this.resizeObserver.observe(this.$refs.skeleton.$el);
+    this.resizeObserver = markRaw(
+      new ResizeObserver((entries) => {
+        const entry = entries[0];
+        if (entry) {
+          this.width = Math.floor(entry.contentRect.width);
+        }
+      }),
+    );
+    void this.$nextTick(() => {
+      const element: unknown = this.skeleton?.$el;
+      if (element instanceof Element) {
+        this.resizeObserver?.observe(element);
+      }
     });
   },
   unmounted() {
-    this.resizeObserver.disconnect();
+    this.resizeObserver?.disconnect();
   },
-};
+});
 </script>
 
 <style lang="scss">

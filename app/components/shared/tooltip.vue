@@ -38,16 +38,14 @@ const closeDelayMs = 120;
 
 const props = withDefaults(
   defineProps<{
-    /** Text displayed in the tooltip. */
-    text: string;
-    /** Preferred side of the trigger on which to place the tooltip. */
-    placement?: Placement;
+    /** Text displayed in the tooltip. */ text: string;
+    /** Preferred side of the trigger on which to place the tooltip. */ placement?: Placement;
   }>(),
   { placement: "top" },
 );
 const id = useId();
-const bubble = useTemplateRef("bubble");
-const arrowElement = useTemplateRef("arrowElement");
+const bubble = useTemplateRef<HTMLDivElement>("bubble");
+const arrowElement = useTemplateRef<HTMLSpanElement>("arrowElement");
 const open = ref(false);
 const teleportTarget = shallowRef<HTMLElement | string>("body");
 const anchor = shallowRef<HTMLElement | null>(null);

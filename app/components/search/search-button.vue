@@ -18,25 +18,32 @@
       class="search-dialogue">
       <u-search
         :is-open="isOpen"
-        :search="$route.query.search"
+        :search="initialSearch"
         @selected="onSelected" />
     </u-dialogue>
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from "vue";
 import {
   searchOpened,
   searchClosed,
   searchResultSelected,
 } from "~/framework/analytics";
 
-export default {
+export default defineComponent({
   name: "u-search-button",
   data() {
     return {
       isOpen: false,
     };
+  },
+  computed: {
+    initialSearch() {
+      const value = this.$route.query.search;
+      return (Array.isArray(value) ? value[0] : value) ?? undefined;
+    },
   },
   methods: {
     onOpen() {
@@ -47,7 +54,7 @@ export default {
       this.isOpen = false;
       searchClosed();
     },
-    onSelected(searchTerm) {
+    onSelected(searchTerm: string) {
       this.isOpen = false;
       searchResultSelected(searchTerm);
     },
@@ -57,7 +64,7 @@ export default {
       this.onOpen();
     }
   },
-};
+});
 </script>
 
 <style lang="scss">

@@ -24,43 +24,38 @@
 </template>
 
 <script>
+import { defineComponent } from "vue";
 import { NuxtLink } from "#components";
 import { getAvifSource } from "#shared/utils/images";
 
-export default {
+export default defineComponent({
   name: "u-avatar",
   inheritAttrs: false,
   data() {
     return { imageFailed: false };
   },
   props: {
-    /** Accessible text describing the control or link. */
-    label: {
+    /** Accessible text describing the control or link. */ label: {
       required: true,
       type: String,
     },
-    /** Alternative text describing the image; empty for decorative images. */
-    alt: {
+    /** Alternative text describing the image; empty for decorative images. */ alt: {
       required: true,
       type: String,
     },
-    /** Source URL of the image. */
-    src: {
+    /** Source URL of the image. */ src: {
       required: true,
       type: String,
     },
-    /** Image loading strategy. */
-    loading: {
+    /** Image loading strategy. */ loading: {
       required: false,
       type: String,
     },
-    /** Internal route used for navigation. */
-    to: {
+    /** Internal route used for navigation. */ to: {
       required: false,
       type: String,
     },
-    /** URL used for the link. */
-    href: {
+    /** URL used for the link. */ href: {
       required: false,
       type: String,
     },
@@ -86,7 +81,7 @@ export default {
       return this.to ? NuxtLink : "a";
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

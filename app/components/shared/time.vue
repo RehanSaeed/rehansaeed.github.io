@@ -11,17 +11,17 @@
 </template>
 
 <script>
+import { defineComponent } from "vue";
 import {
   getAbsoluteDisplayDateFromString,
   getDisplayDateFromString,
 } from "~/framework/date.js";
 
-export default {
+export default defineComponent({
   name: "u-time",
   inheritAttrs: false,
   props: {
-    /** ISO date or timestamp represented by the time element. */
-    datetime: {
+    /** ISO date or timestamp represented by the time element. */ datetime: {
       type: String,
       required: true,
     },
@@ -43,5 +43,5 @@ export default {
   mounted() {
     this.isMounted = true;
   },
-};
+});
 </script>

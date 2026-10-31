@@ -37,6 +37,7 @@
       <!-- eslint-disable-next-line vue/no-v-html -- safeComment sanitizes both saved and refreshed GitHub markup. -->
       <div class="comment__content" v-html="comment.body_html" />
       <footer v-if="reactions.length" class="comment__footer">
+        <!-- eslint-disable-next-line vuejs-accessibility/no-redundant-roles -- Preserve list semantics in Safari when list-style is none. -->
         <ul class="comment__reactions" aria-label="Reactions" role="list">
           <li
             v-for="reaction in reactions"
@@ -74,8 +75,7 @@ import {
 import type { GitHubComment } from "#shared/utils/comments";
 
 const props = defineProps<{
-  /** GitHub comment to display. */
-  comment: GitHubComment;
+  /** GitHub comment to display. */ comment: GitHubComment;
 }>();
 const association = computed(() =>
   commentAssociation(props.comment.author_association),

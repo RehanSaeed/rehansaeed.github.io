@@ -57,7 +57,7 @@ export default defineContentConfig({
       source: "portfolio/**/index.md",
       schema: schema.extend({
         kind: z.enum(["open-source", "microsoft"]).default("open-source"),
-        heroImageSource: z.string().url().optional(),
+        heroImageSource: z.url().optional(),
         position: z.number().int().nonnegative().default(0),
         repository: z
           .string()

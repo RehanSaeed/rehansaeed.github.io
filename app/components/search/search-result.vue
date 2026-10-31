@@ -25,10 +25,12 @@
   </article>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent, type PropType } from "vue";
 import { getAvifSource } from "#shared/utils/images";
+import type { SearchDocument } from "#shared/utils/search";
 
-export default {
+export default defineComponent({
   name: "u-search-result",
   emits: ["selected"],
   computed: {
@@ -37,9 +39,8 @@ export default {
     },
   },
   props: {
-    /** Indexed content entry to display as a search result. */
-    searchResult: {
-      type: Object,
+    /** Indexed content entry to display as a search result. */ searchResult: {
+      type: Object as PropType<SearchDocument>,
       required: true,
     },
   },
@@ -48,7 +49,7 @@ export default {
       this.$emit("selected");
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

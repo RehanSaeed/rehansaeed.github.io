@@ -10,10 +10,8 @@
 defineOptions({ name: "u-icon" });
 
 defineProps<{
-  /** Name identifying the icon or selected thumbnail image. */
-  name: string;
-  /** Whether the icon flows inline with surrounding text. */
-  inline?: boolean;
+  /** Name identifying the icon or selected thumbnail image. */ name: string;
+  /** Whether the icon flows inline with surrounding text. */ inline?: boolean;
 }>();
 </script>
 

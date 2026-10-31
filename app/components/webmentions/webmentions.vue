@@ -76,68 +76,82 @@
   </u-intersect>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from "vue";
+import { z } from "zod";
+import {
+  webMentionSchema,
+  webMentionTimestamp,
+  webMentionUrl,
+  type WebMention,
+} from "#shared/utils/webmentions";
+export default defineComponent({
   name: "u-webmentions",
   data() {
     return {
       isLoading: true,
       hasError: false,
-      likes: [],
-      reposts: [],
-      links: [],
-      replies: [],
+      likes: [] as WebMention[],
+      reposts: [] as WebMention[],
+      links: [] as WebMention[],
+      replies: [] as WebMention[],
     };
   },
   props: {
-    /** Canonical URL associated with this component. */
-    url: {
+    /** Canonical URL associated with this component. */ url: {
       required: true,
       type: String,
     },
   },
   computed: {
     likesDescription() {
-      return `${this.likes?.length ?? 0} ${this.pluralise(
-        this.likes?.length,
+      return `${this.likes.length} ${this.pluralise(
+        this.likes.length,
         "Like",
         "Likes",
       )}`;
     },
     repostsDescription() {
-      return `${this.reposts?.length ?? 0} ${this.pluralise(
-        this.reposts?.length,
+      return `${this.reposts.length} ${this.pluralise(
+        this.reposts.length,
         "Repost",
         "Reposts",
       )}`;
     },
     linksDescription() {
-      return `${this.links?.length ?? 0} Linked`;
+      return `${this.links.length} Linked`;
     },
     repliesDescription() {
-      return `${this.replies?.length ?? 0} ${this.pluralise(
-        this.replies?.length,
+      return `${this.replies.length} ${this.pluralise(
+        this.replies.length,
         "Reply",
         "Replies",
       )}`;
     },
   },
   methods: {
-    pluralise(count, one, many) {
+    pluralise(count: number, one: string, many: string) {
       return count === 1 ? one : many;
     },
-    async getMentions(page, perPage) {
+    async getMentions(page: number, perPage: number) {
       const response = await fetch(
         `https://webmention.io/api/mentions?page=${page}&per-page=${perPage}&target=${this.url}&sort-by=published&sort-dir=up`,
       );
       if (!response.ok) {
         throw new Error(`Unable to load Web Mentions: HTTP ${response.status}`);
       }
-      const list = await response.json();
-      if (!Array.isArray(list.links)) {
-        throw new Error(
-          "Invalid Web Mentions response: expected a links array",
-        );
+      const responseBody: unknown = await response.json();
+      const list = z
+        .object({ links: z.array(webMentionSchema) })
+        .parse(responseBody);
+      for (const mention of list.links) {
+        if (
+          mention.activity.type === "link" ||
+          mention.activity.type === "reply"
+        ) {
+          webMentionUrl(mention);
+          webMentionTimestamp(mention);
+        }
       }
       return list.links;
     },
@@ -168,7 +182,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

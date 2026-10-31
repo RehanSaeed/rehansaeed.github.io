@@ -3,9 +3,10 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from "vue";
+export default defineComponent({
   name: "u-scroll-indicator",
-};
+});
 </script>
 
 <style lang="scss">

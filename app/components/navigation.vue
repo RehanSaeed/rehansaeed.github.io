@@ -37,7 +37,8 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from "vue";
+export default defineComponent({
   name: "u-navigation",
   computed: {
     blogPage() {
@@ -58,7 +59,7 @@ export default {
       return this.$route.path === path ? "page" : undefined;
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

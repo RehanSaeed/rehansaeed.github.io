@@ -8,10 +8,8 @@
 
 <script setup lang="ts">
 defineProps<{
-  /** URL used for the link. */
-  href: string;
-  /** Accessible text describing the control or link. */
-  label: string;
+  /** URL used for the link. */ href: string;
+  /** Accessible text describing the control or link. */ label: string;
 }>();
 </script>
 

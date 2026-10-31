@@ -34,6 +34,10 @@ export async function fitOgTitleLines(
     throw new Error("BlogTakumi title has no measured text");
   }
   const lines = new Map<number, { text: string; width: number }>();
+  const titleStyle: unknown = title.style;
+  if (titleStyle != null && typeof titleStyle !== "object") {
+    throw new Error("Unexpected BlogTakumi title style");
+  }
   for (const run of measured.runs) {
     const line = lines.get(run.y) ?? { text: "", width: 0 };
     line.text += run.text;
@@ -53,7 +57,7 @@ export async function fitOgTitleLines(
       type: "text",
       text: line.text,
       style: {
-        ...title.style,
+        ...(titleStyle ?? {}),
         alignSelf: "flex-start",
         width: Math.min(1088, Math.ceil(line.width) + 48),
         padding: "12px 24px",

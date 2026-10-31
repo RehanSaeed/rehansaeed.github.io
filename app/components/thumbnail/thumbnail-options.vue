@@ -3,9 +3,12 @@
     <h2 class="thumbnail-options__title">General</h2>
     <section class="thumbnail-options__section">
       <fieldset class="thumbnail-options__fieldset">
-        <label class="thumbnail-options__label">background</label>
+        <label class="thumbnail-options__label" for="thumbnail-background"
+          >background</label
+        >
         <input
           class="thumbnail-options__input"
+          id="thumbnail-background"
           placeholder="none|light|dark|/images/hero/Code-1600x900.jpg"
           :value="background"
           @input="$emit('update:background', $event.target.value)" />
@@ -52,16 +55,16 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from "vue";
+export default defineComponent({
   emits: ["update:background"],
   props: {
-    /** Selected thumbnail background image or colour. */
-    background: {
+    /** Selected thumbnail background image or colour. */ background: {
       default: "",
       type: String,
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

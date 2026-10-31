@@ -26,12 +26,13 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from "vue";
+export default defineComponent({
   name: "u-footer",
   setup() {
     return { metadata: useAppConfig().site };
   },
-};
+});
 </script>
 
 <style lang="scss">

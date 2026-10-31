@@ -16,15 +16,17 @@
   </u-tooltip>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from "vue";
 import { appThemeChanged, appThemeLoaded } from "~/framework/analytics";
 
-export default {
+export default defineComponent({
   name: "u-theme-button",
   inheritAttrs: false,
   data() {
     return {
       darkTheme: false,
+      themeListener: null as (() => void) | null,
     };
   },
   computed: {
@@ -47,14 +49,19 @@ export default {
   },
   mounted() {
     this.setTheme();
-    window.addEventListener("__themeChanged", this.setTheme);
+    this.themeListener = () => {
+      this.setTheme();
+    };
+    window.addEventListener("__themeChanged", this.themeListener);
 
     appThemeLoaded(this.theme);
   },
   beforeUnmount() {
-    window.removeEventListener("__themeChanged", this.setTheme);
+    if (this.themeListener) {
+      window.removeEventListener("__themeChanged", this.themeListener);
+    }
   },
-};
+});
 </script>
 
 <style lang="scss">

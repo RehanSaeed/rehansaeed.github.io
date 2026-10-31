@@ -19,46 +19,39 @@
 </template>
 
 <script>
+import { defineComponent } from "vue";
 import { NuxtLink } from "#components";
 import { headingId } from "#shared/utils/headings";
 
-export default {
+export default defineComponent({
   name: "u-heading",
   props: {
-    /** Identifier used for the heading and its fragment link. */
-    id: {
+    /** Identifier used for the heading and its fragment link. */ id: {
       required: true,
       type: String,
     },
-    /** Semantic heading level. */
-    level: {
+    /** Semantic heading level. */ level: {
       default: "1",
       type: String,
     },
-    /** Visual heading size, independent of its semantic level. */
-    size: {
+    /** Visual heading size, independent of its semantic level. */ size: {
       default: null,
       type: String,
     },
-    /** URL used for the link. */
-    href: {
+    /** URL used for the link. */ href: {
       type: String,
     },
-    /** Relationship attributes applied to the link. */
-    rel: {
+    /** Relationship attributes applied to the link. */ rel: {
       type: String,
     },
-    /** Internal route used for navigation. */
-    to: {
+    /** Internal route used for navigation. */ to: {
       type: String,
     },
-    /** Whether to centre the heading. */
-    center: {
+    /** Whether to centre the heading. */ center: {
       default: false,
       type: Boolean,
     },
-    /** Additional CSS classes applied to the heading link. */
-    linkClass: {
+    /** Additional CSS classes applied to the heading link. */ linkClass: {
       type: String,
     },
   },
@@ -83,7 +76,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

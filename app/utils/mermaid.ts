@@ -11,7 +11,7 @@ export function loadMermaid() {
       });
       return mermaid;
     })
-    .catch((error) => {
+    .catch((error: unknown) => {
       renderer = undefined;
       throw error;
     });

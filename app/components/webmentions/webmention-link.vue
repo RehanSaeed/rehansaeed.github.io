@@ -13,14 +13,19 @@
   </article>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent, type PropType } from "vue";
+import {
+  webMentionTimestamp,
+  webMentionUrl,
+  type WebMention,
+} from "#shared/utils/webmentions";
+export default defineComponent({
   name: "u-webmention-link",
   props: {
-    /** Web mention linking to the current content. */
-    link: {
+    /** Web mention linking to the current content. */ link: {
       required: true,
-      type: Object,
+      type: Object as PropType<WebMention>,
     },
   },
   computed: {
@@ -28,16 +33,16 @@ export default {
       return `webmention-link-${this.link.id}`;
     },
     url() {
-      return this.link.source;
+      return webMentionUrl(this.link);
     },
     name() {
       return new URL(this.url).hostname;
     },
     timestamp() {
-      return this.link.data.published ?? this.link.verified_date;
+      return webMentionTimestamp(this.link);
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

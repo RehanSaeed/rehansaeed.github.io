@@ -15,8 +15,7 @@
 
 <script setup>
 defineProps({
-  /** Nuxt error used to render the error page. */
-  error: {
+  /** Nuxt error used to render the error page. */ error: {
     type: Object,
     required: true,
   },

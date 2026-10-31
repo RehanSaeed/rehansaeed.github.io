@@ -327,8 +327,9 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from "vue";
+export default defineComponent({
   name: "u-about",
   setup() {
     const metadata = useAppConfig().site;
@@ -373,6 +374,7 @@ export default {
   data() {
     return {
       theme: "light",
+      themeListener: null as EventListener | null,
     };
   },
   computed: {
@@ -433,7 +435,7 @@ export default {
     },
   },
   methods: {
-    youtubeBadgeImageUrl(statistic, label) {
+    youtubeBadgeImageUrl(statistic: string, label: string) {
       const query = new URLSearchParams({
         url: `https://api.socialcounts.org/youtube-live-subscriber-count/${this.metadata.author.youtube.user}`,
         query: `$.counters.api.${statistic}`,
@@ -443,22 +445,28 @@ export default {
       });
       return `https://img.shields.io/badge/dynamic/json?${query}`;
     },
-    setTheme(e) {
-      this.theme = e.detail;
+    setTheme(event: Event) {
+      if (event instanceof CustomEvent) {
+        const theme: unknown = event.detail;
+        if (theme === "light" || theme === "dark") {
+          this.theme = theme;
+        }
+      }
     },
   },
   mounted() {
-    if (window) {
-      this.theme = window.__theme;
-      window.addEventListener("__themeChanged", this.setTheme);
-    }
+    this.theme = window.__theme;
+    this.themeListener = (event: Event) => {
+      this.setTheme(event);
+    };
+    window.addEventListener("__themeChanged", this.themeListener);
   },
   unmounted() {
-    if (window) {
-      window.removeEventListener("__themeChanged", this.setTheme);
+    if (this.themeListener) {
+      window.removeEventListener("__themeChanged", this.themeListener);
     }
   },
-};
+});
 </script>
 
 <style lang="scss">
