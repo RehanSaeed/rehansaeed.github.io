@@ -44,7 +44,9 @@
 export default {
   name: "u-newsletter",
   setup() {
-    return { metadata: useAppConfig().site };
+    return {
+      metadata: useAppConfig().site,
+    };
   },
 };
 </script>

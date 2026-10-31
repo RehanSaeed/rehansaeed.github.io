@@ -344,7 +344,7 @@ test.describe("Icon areas", () => {
           page.getByRole("button", { name: "Install the app" }),
         ).toBeVisible();
         await expect(page.locator(".navigation svg.icon:visible")).toHaveCount(
-          3,
+          4,
         );
         await shot("header-controls");
         await expect(page.locator(".main .author svg.icon")).toHaveCount(9);

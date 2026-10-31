@@ -67,6 +67,8 @@ export default defineNuxtConfig({
         "feather:rotate-cw",
         "feather:search",
         "feather:sun",
+        "feather:volume-2",
+        "feather:volume-x",
         "feather:x",
         "lucide:house-heart",
         "simple-icons:bluesky",
@@ -317,6 +319,18 @@ export default defineNuxtConfig({
       navigateFallback: null,
       directoryIndex: "index.html",
       cleanupOutdatedCaches: true,
+      runtimeCaching: [
+        {
+          urlPattern: ({ url, sameOrigin }) =>
+            sameOrigin && /^\/sounds\/v\d+\/[^/]+\.wav$/.test(url.pathname),
+          handler: "CacheFirst",
+          options: {
+            cacheName: "ui-sounds-v1",
+            cacheableResponse: { statuses: [200] },
+            expiration: { maxAgeSeconds: 60 * 60 * 24 * 365 },
+          },
+        },
+      ],
       // The feeds are around 1 MB each.
       maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
     },

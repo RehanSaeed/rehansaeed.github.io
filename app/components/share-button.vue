@@ -40,7 +40,9 @@
 export default {
   name: "u-share-button",
   setup() {
-    return { metadata: useAppConfig().site };
+    return {
+      metadata: useAppConfig().site,
+    };
   },
   data() {
     return {

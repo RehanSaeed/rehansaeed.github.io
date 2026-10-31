@@ -1,6 +1,6 @@
 <template>
   <div>
-    <u-button variant="secondary" @click="onClick">
+    <u-button variant="secondary" @click="open">
       <u-icon name="simple-icons:buymeacoffee" inline />
       Buy me a Coffee
     </u-button>
@@ -28,9 +28,6 @@ export default {
     },
     close() {
       this.isDialogueOpen = false;
-    },
-    onClick() {
-      this.open();
     },
   },
 };

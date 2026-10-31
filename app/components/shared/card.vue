@@ -11,25 +11,16 @@
   </component>
 </template>
 
-<script>
-export default {
-  name: "u-card",
-  props: {
-    compact: {
-      type: Boolean,
-    },
-    focusable: {
-      type: Boolean,
-    },
-    hoverable: {
-      type: Boolean,
-    },
-    tag: {
-      default: "section",
-      type: String,
-    },
-  },
-};
+<script setup lang="ts">
+withDefaults(
+  defineProps<{
+    compact?: boolean;
+    focusable?: boolean;
+    hoverable?: boolean;
+    tag?: string;
+  }>(),
+  { tag: "section" },
+);
 </script>
 
 <style lang="scss">

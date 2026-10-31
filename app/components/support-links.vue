@@ -46,7 +46,9 @@
 export default {
   name: "u-support-links",
   setup() {
-    return { metadata: useAppConfig().site };
+    return {
+      metadata: useAppConfig().site,
+    };
   },
 };
 </script>

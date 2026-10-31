@@ -1,0 +1,73 @@
+All WAV samples in this directory are available under CC0 1.0 Universal:
+https://creativecommons.org/publicdomain/zero/1.0/
+
+This applies only to these sound assets, not the rest of the repository.
+Sources and licences were checked on 2026-10-30.
+
+RECORDED ICON SOUNDS
+
+github-meow.wav
+  Source: "Cat Purr & Meow", cat_mewfood.wav, by Kerzoven.
+  Page: https://opengameart.org/content/cat-purr-meow
+  Download: https://opengameart.org/sites/default/files/cat_mewfood.wav
+  Licence: CC0 1.0 Universal, explicitly selected on the source page.
+  Original SHA-256:
+    3550f080882b52e236c8810a353756b2e0395fb7dadf0aeface0a06893cd181f
+  Edit: first short mew, 0.04-0.42 seconds, at its original speed.
+  Match: the cat/Octocat silhouette of the GitHub icon.
+
+bluesky-wings.wav
+  Source: "Flight Bird #1", sound 2891, by Joseph SARDIN / BigSoundBank.
+  Page: https://bigsoundbank.com/flight-bird-1-s2891.html
+  Download: https://bigsoundbank.com/UPLOAD/bwf-en/2891.wav
+  Licence: CC0 1.0 Universal.
+  Licence page: https://bigsoundbank.com/licenses.html
+  Original SHA-256:
+    5ec60d7de3e085642484a0aefdc75d0d7932cd3009a23395d6d1ef19a51ebd2f
+  Edit: 0.25-1.55 seconds, played at double speed (0.65 seconds).
+  Match: stylised wing motion for the Bluesky butterfly.
+  This is recorded bird-wing FOLEY, not a recording of a real butterfly.
+  The source page explicitly identifies it as a studio sound-effect technique.
+
+email-paper.wav
+  Source: "Paper", sound 0785, by Joseph SARDIN / BigSoundBank.
+  Page: https://bigsoundbank.com/paper-s0785.html
+  Download: https://bigsoundbank.com/UPLOAD/bwf-en/0785.wav
+  Licence: CC0 1.0 Universal.
+  Licence page: https://bigsoundbank.com/licenses.html
+  Original SHA-256:
+    d39ec62e16243b1b9ccb1f0f7f1176449900061cb0a0b48de4957d063cac7599
+  Edit: one paper-handling gesture, 0.17-0.83 seconds, at its original speed.
+  Match: paper handling for the email envelope, not an actual envelope recording.
+
+Each recording is converted to 22,050Hz mono signed 16-bit PCM, faded in for
+5ms and out for 20ms, and peak-normalised to 0.08 before the app's gain of 0.25.
+No platform notification sounds or brand sound marks are included.
+Attribution is not required by CC0, but the creators are credited above.
+
+ORIGINAL CONTROL SOUNDS
+
+toggle-on.wav, toggle-off.wav, enable-sound.wav and tag-hover.wav are original
+mathematical synthesis, dedicated to the public domain under CC0 1.0 Universal.
+They are unchanged from v3. They contain no third-party recordings.
+
+REGENERATION AND PLACEMENT
+
+Run node scripts/sounds.mjs from the repository root with Node.js and FFmpeg on
+PATH. This requires network access to the three public source downloads.
+Only asset regeneration needs FFmpeg; the app, build and tests do not.
+The script verifies the original SHA-256 hashes before decoding, applies the
+edits above and writes all seven WAVs. It fails if a download, hash or decode
+fails. No original full-length recordings are deployed.
+The recorded edits were generated with FFmpeg N-120424-g03b9180fe3-20250731.
+
+Only GitHub, Bluesky and Email have icon hover sounds. YouTube, Twitch,
+LinkedIn, Stack Overflow, Mastodon and RSS remain silent.
+Hover requires a 100ms mouse dwell, stops on pointer exit/down, and never adds
+an activation sound. Touch and keyboard focus are silent.
+Existing theme, explicit sound-enabling and tag-hover feedback is retained.
+Ordinary navigation, cards, search, sharing, dialogs, newsletter submission
+and installation/update controls remain silent.
+
+Older versioned directories remain unchanged for cached clients. The current
+app requests only v4 assets; old synthetic social accents are no longer used.

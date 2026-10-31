@@ -5,13 +5,13 @@
       class="dialog"
       :class="{ 'dialog--fullscreen': fullscreen }"
       :aria-labelledby="titleId"
-      @cancel.prevent="close"
+      @cancel.prevent="onDismiss"
       @close="onNativeClose">
       <div class="dialog__container">
         <u-heading :id="titleId" level="2" class="dialog__title">{{
           title
         }}</u-heading>
-        <form class="dialog__form" method="dialog" @submit.prevent="close">
+        <form class="dialog__form" method="dialog" @submit.prevent="onDismiss">
           <u-tooltip
             v-slot="{ trigger }"
             :text="`Close ${title}`"
@@ -68,6 +68,9 @@ export default {
       if (!event.currentTarget.open) {
         this.close();
       }
+    },
+    onDismiss() {
+      this.close();
     },
     close() {
       if (this.isOpen) {

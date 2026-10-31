@@ -4,6 +4,7 @@ import { compileScript, parse } from "vue/compiler-sfc";
 import { ref } from "vue";
 import { ModuleKind, transpileModule } from "typescript";
 import { expect, test } from "@playwright/test";
+import type { SoundEffect } from "../../shared/utils/sounds";
 
 const { descriptor } = parse(
   readFileSync("app/components/site-update.vue", "utf8"),
@@ -15,10 +16,15 @@ const source = transpileModule(
 
 function mountUpdate() {
   const errors: unknown[] = [];
+  const sounds: SoundEffect[] = [];
   let calls = 0;
+  let dismissals = 0;
   const pwa = {
     updateServiceWorker: async () => {
       calls++;
+    },
+    cancelPrompt: () => {
+      dismissals++;
     },
   };
   const module = {
@@ -29,6 +35,7 @@ function mountUpdate() {
           context: object,
         ) => {
           update: () => Promise<void>;
+          dismiss: () => void;
           updating: { value: boolean };
           error: { value: string };
         };
@@ -40,6 +47,9 @@ function mountUpdate() {
     require: () => ({ defineComponent: (options: unknown) => options }),
     ref,
     useNuxtApp: () => ({ $pwa: pwa }),
+    useSoundEffect: () => ({
+      play: (sound: SoundEffect) => sounds.push(sound),
+    }),
     console: {
       error: (...args: unknown[]) => {
         errors.push(args);
@@ -47,7 +57,14 @@ function mountUpdate() {
     },
   });
   const state = module.exports.default.setup({}, { expose: () => {} });
-  return { state, pwa, errors, calls: () => calls };
+  return {
+    state,
+    pwa,
+    errors,
+    sounds,
+    calls: () => calls,
+    dismissals: () => dismissals,
+  };
 }
 
 test("Update now delegates activation and reload handling to the package", async () => {
@@ -57,6 +74,7 @@ test("Update now delegates activation and reload handling to the package", async
   expect(app.errors).toHaveLength(0);
   expect(app.state.updating.value).toBe(false);
   expect(app.state.error.value).toBe("");
+  expect(app.sounds).toEqual([]);
 });
 
 test("Concurrent update clicks invoke the package only once", async () => {
@@ -73,9 +91,20 @@ test("Concurrent update clicks invoke the package only once", async () => {
   expect(app.state.updating.value).toBe(true);
   await app.state.update();
   expect(calls).toBe(1);
+  expect(app.sounds).toEqual([]);
   complete();
   await update;
   expect(app.state.updating.value).toBe(false);
+  expect(app.sounds).toEqual([]);
+});
+
+test("Explicit dismissal stays silent and delegates to the package", () => {
+  const app = mountUpdate();
+  expect(app.sounds).toEqual([]);
+  expect(app.dismissals()).toBe(0);
+  app.state.dismiss();
+  expect(app.dismissals()).toBe(1);
+  expect(app.sounds).toEqual([]);
 });
 
 test("A package failure is reported and can be retried successfully", async () => {
@@ -91,4 +120,5 @@ test("A package failure is reported and can be retried successfully", async () =
   await app.state.update();
   expect(app.state.error.value).toBe("");
   expect(app.state.updating.value).toBe(false);
+  expect(app.sounds).toEqual([]);
 });
