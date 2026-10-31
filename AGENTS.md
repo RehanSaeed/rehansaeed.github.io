@@ -37,6 +37,10 @@ authorise publishing the article or posting to social media.
 - Keep work focused on the requested article and its promotion. Do not change the
   website, install publishing integrations or require Buffer as part of drafting.
 
+## HTML
+
+- Use semantic HTML elements that reflect the content's meaning and purpose.
+
 ## CSS
 
 - Follow Block Element Modifier (BEM) naming for CSS classes.
