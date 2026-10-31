@@ -1,14 +1,12 @@
 <template>
   <u-tooltip v-slot="{ trigger }" :text="datetime">
     <time
-      v-bind="{ ...$attrs, ...($slots.default ? {} : trigger) }"
+      v-bind="{ ...$attrs, ...trigger }"
       class="time"
       :datetime="datetime"
-      :tabindex="$slots.default ? undefined : 0">
-      <slot :trigger="trigger" :text="datetimeDisplay" :ready="isMounted">{{
-        datetimeDisplay
-      }}</slot>
-    </time>
+      tabindex="0"
+      >{{ datetimeDisplay }}</time
+    >
   </u-tooltip>
 </template>
 

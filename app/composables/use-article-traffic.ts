@@ -1,6 +1,8 @@
 export function useArticleTraffic() {
   const visible = useState("article-traffic-visible", () => false);
   const initialized = useState("article-traffic-initialized", () => false);
+  let activations = 0;
+  let lastActivation = 0;
 
   onMounted(() => {
     if (initialized.value) {
@@ -24,5 +26,15 @@ export function useArticleTraffic() {
     }
   }
 
-  return { visible, toggle };
+  function activate() {
+    const now = Date.now();
+    activations = now - lastActivation > 3000 ? 1 : activations + 1;
+    lastActivation = now;
+    if (activations === 5) {
+      activations = 0;
+      toggle();
+    }
+  }
+
+  return { visible, activate };
 }
