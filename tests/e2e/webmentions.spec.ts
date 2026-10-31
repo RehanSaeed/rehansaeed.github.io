@@ -240,7 +240,69 @@ test("Webmention links are user-generated without changing editorial links", asy
   ).not.toHaveAttribute("rel", /ugc/);
 });
 
-for (const failure of ["network", "http", "json", "shape"]) {
+test("Only the canonical Twitter origin selects tweet content for photo links", async ({
+  page,
+}) => {
+  const links = [
+    ["https://twitter.com/reader/status/1", true],
+    ["https://twitter.com:443/reader/status/2", true],
+    ["https://twitter.com.evil.example/reader/status/4", false],
+    ["https://twitter.com@evil.example/reader/status/5", false],
+    ["https://example.com/?target=https://twitter.com/reader/status/6", false],
+    ["http://twitter.com/reader/status/7", false],
+    ["https://twitter.com:8443/reader/status/8", false],
+    ["https://sub.twitter.com/reader/status/9", false],
+    ["https://TWITTER.COM/reader/status/3", true],
+  ] as const;
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.route(api, (route) =>
+    route.fulfill({
+      json: {
+        links: links.map(([url], index) => ({
+          id: `origin-${index}`,
+          activity: {
+            type: "link",
+            sentence_html: `<p>Sentence ${index}</p>`,
+          },
+          data: {
+            url,
+            published,
+            author: { name: "Reader", photo: "https://example.com/avatar.png" },
+            content: `<p>Content ${index}</p>`,
+          },
+        })),
+      },
+    }),
+  );
+  await page.goto(postPath);
+  await expect(
+    page.getByRole("button", { name: "Open search", exact: true }),
+  ).toBeEnabled({ timeout: 60_000 });
+  const mentions = page.locator(".webmentions");
+  await mentions.scrollIntoViewIfNeeded();
+  await expect(mentions).toHaveAttribute("aria-busy", "false");
+  const replies = mentions.locator(".webmention-reply");
+  await expect(replies).toHaveCount(links.length);
+  for (const [index, [url, isTwitter]] of links.entries()) {
+    await expect(
+      replies.nth(index).locator(".webmention-reply__author a"),
+    ).toHaveAttribute("href", url);
+    await expect(
+      replies.nth(index).locator(".webmention-reply__content"),
+    ).toHaveText(`${isTwitter ? "Content" : "Sentence"} ${index}`);
+  }
+  expect(errors).toEqual([]);
+});
+
+for (const failure of [
+  "network",
+  "http",
+  "json",
+  "shape",
+  "link-url",
+  "reply-url",
+]) {
   test(`A ${failure} failure is visible and retry loads the mentions`, async ({
     page,
   }) => {
@@ -248,6 +310,27 @@ for (const failure of ["network", "http", "json", "shape"]) {
     let resume!: () => void;
     const retry = new Promise<void>((resolve) => {
       resume = resolve;
+    });
+    const pageErrors: string[] = [];
+    const loggedErrors: Promise<string>[] = [];
+    page.on("pageerror", (error) => pageErrors.push(error.message));
+    page.on("console", (message) => {
+      if (
+        message.type() === "error" &&
+        message.text().startsWith("Unable to load Web Mentions")
+      ) {
+        loggedErrors.push(
+          Promise.all(
+            message
+              .args()
+              .map((argument) =>
+                argument.evaluate((value: unknown) =>
+                  value instanceof Error ? value.message : String(value),
+                ),
+              ),
+          ).then((arguments_) => arguments_.join(" ")),
+        );
+      }
     });
     await page.route(api, async (route) => {
       requests++;
@@ -262,6 +345,22 @@ for (const failure of ["network", "http", "json", "shape"]) {
           return route.fulfill({
             contentType: "application/json",
             body: "invalid json",
+          });
+        }
+        if (failure === "link-url" || failure === "reply-url") {
+          return route.fulfill({
+            json: {
+              links: [
+                {
+                  id: 1,
+                  source: "not an absolute URL",
+                  activity: {
+                    type: failure === "link-url" ? "link" : "reply",
+                  },
+                  data: { url: "not an absolute URL", published },
+                },
+              ],
+            },
           });
         }
         return route.fulfill({ json: { links: null } });
@@ -330,6 +429,14 @@ for (const failure of ["network", "http", "json", "shape"]) {
       mentions.getByRole("link", { name: "Anonymous - 2 January 2026" }),
     ).toBeVisible();
     expect(requests).toBe(2);
+    if (failure === "link-url" || failure === "reply-url") {
+      expect(await Promise.all(loggedErrors)).toEqual(
+        expect.arrayContaining([
+          expect.stringMatching(/Unable to load Web Mentions.*invalid URL/s),
+        ]),
+      );
+      expect(pageErrors).toEqual([]);
+    }
   });
 }
 

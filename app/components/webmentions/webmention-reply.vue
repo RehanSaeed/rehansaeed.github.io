@@ -56,7 +56,7 @@ export default defineComponent({
     content() {
       if (
         this.reply.activity.type === "link" &&
-        !this.url.startsWith("https://twitter.com")
+        new URL(this.url).origin !== "https://twitter.com"
       ) {
         return this.reply.activity.sentence_html;
       } else {

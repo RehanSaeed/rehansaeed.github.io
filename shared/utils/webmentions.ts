@@ -31,6 +31,9 @@ export function webMentionUrl(mention: WebMention): string {
   if (!url) {
     throw new Error(`Web Mention ${mention.id} has no URL for its activity`);
   }
+  if (!URL.canParse(url)) {
+    throw new Error(`Web Mention ${mention.id} has an invalid URL`);
+  }
   return url;
 }
 
