@@ -93,6 +93,15 @@ async function expectDottedConnection(page: Page) {
   const canvas = figure.locator(".maplibregl-canvas");
   const author = figure.locator(".maplibregl-marker.location-map__marker");
   const visitor = figure.locator(".maplibregl-marker.location-map__visitor");
+  const radius = await figure.evaluate((element) =>
+    Math.ceil(
+      Number.parseFloat(
+        getComputedStyle(element).getPropertyValue(
+          "--location-map-connection-outline-width",
+        ),
+      ) / 2,
+    ),
+  );
   const luminance = (pixel: Uint8Array) =>
     [...pixel].reduce((sum, channel, index) => {
       const value = channel / 255;
@@ -142,13 +151,16 @@ async function expectDottedConnection(page: Page) {
             bounds.y) *
             (info.height / bounds.height),
         );
-        const background = pixelAt(x + normal[0]! * 12, y + normal[1]! * 12);
+        const background = pixelAt(
+          x + normal[0]! * (radius + 8),
+          y + normal[1]! * (radius + 8),
+        );
         const backgroundLuminance = luminance(background);
         const surface = [...background].every((channel) => channel > 250)
           ? samples.land
           : samples.water;
         let visible = false;
-        for (let across = -4; across <= 4; across++) {
+        for (let across = -radius; across <= radius; across++) {
           const foreground = luminance(
             pixelAt(x + normal[0]! * across, y + normal[1]! * across),
           );
@@ -406,6 +418,33 @@ test("The free map loads on approach, shows Europe and follows the purple theme"
   await expect(page).toHaveURL(/\/$/);
   await expect(page.locator(".maplibregl-map")).toHaveCount(0);
   expect(mapboxRequests).toEqual([]);
+});
+
+test("Map credits collapse after five seconds and can be reopened", async ({
+  page,
+}) => {
+  await mockOpenFreeMap(page);
+  await page.goto("/about/", { waitUntil: "domcontentloaded" });
+  await requireWebGL(page);
+  const figure = page.locator(".location-map");
+  await figure.scrollIntoViewIfNeeded();
+  await expect(figure).toHaveClass(/location-map--interactive/);
+  const credits = figure.locator(".maplibregl-ctrl-attrib-inner");
+  const toggle = figure.locator(".maplibregl-ctrl-attrib-button");
+  await expect(credits).toBeVisible();
+  await expect(credits).toContainText("Mock map data");
+  await expect(credits.getByRole("link", { name: "GeoJS" })).toBeVisible();
+  await expect(credits).toBeHidden({ timeout: 7000 });
+  await expect(toggle).toBeVisible();
+  await toggle.click();
+  await expect(credits).toBeVisible();
+  await toggle.click();
+  await expect(credits).toBeHidden();
+  await page.getByRole("button", { name: "Toggle dark/light" }).click();
+  await expect(toggle).toBeVisible();
+  await toggle.click();
+  await expect(credits).toBeVisible();
+  await expect(credits).toContainText("Mock map data");
 });
 
 test("The animated fly-in ends at the regional view with London visible", async ({
