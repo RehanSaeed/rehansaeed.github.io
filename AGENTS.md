@@ -72,6 +72,36 @@ authorise publishing the article or posting to social media.
 - Use modern functions and APIs supported by the project's target environments.
 - Use JSDoc to document public-facing properties.
 
+## Testing, Builds and CI
+
+- Use Prettier for formatting and ESLint for linting, following the repository's
+  configuration.
+- Add or update tests for behaviour changes and regression tests for bug fixes.
+  Test observable behaviour, not implementation details.
+- Run the smallest relevant checks while developing. Before handing off
+  application or dependency changes, run `npm run build`, `npm run typecheck`,
+  `npm run lint`, and relevant Playwright tests. Instruction-only changes need
+  a focused Prettier check.
+- Treat a build as successful only when the command exits successfully,
+  including SEO verification. A successful build does not prove accessibility,
+  browser behaviour or article code samples are correct.
+- Do not hide failures by skipping tests, weakening assertions, increasing
+  retries, disabling checks or changing visual baselines without reviewing the
+  differences. Investigate flaky tests with
+  `npx playwright test <test-file> --repeat-each=10 --retries=0`.
+- After pushing, inspect GitHub Actions for the latest commit. Report pending,
+  failed, cancelled or skipped checks accurately; do not describe them as passed.
+- Investigate failed jobs using their logs and artifacts. Fix failures caused by
+  the changes; report unrelated failures explicitly.
+- Require successful generation, type checking, linting, Chrome/Edge/Firefox
+  tests and CodeQL before declaring the PR ready to merge. Never bypass required
+  checks or merge without explicit approval.
+- The Build and CodeQL workflows skip draft PRs. Skipped draft checks are not
+  validation evidence.
+- Record exact validation commands and outcomes in the PR description, including
+  checks that could not be run. Distinguish local validation, CI results and
+  manual accessibility checks.
+
 ## Image Optimisation
 
 - Optimise new or modified raster images before committing, preferably using
