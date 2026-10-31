@@ -9,7 +9,7 @@
         :to="post.permalink"
         >{{ title }}</u-heading
       >
-      <u-post-meta :meta="post" />
+      <u-post-meta :meta="post" @click="post.published && activateTraffic()" />
     </div>
 
     <u-arrows class="post-page__arrows" />
@@ -24,6 +24,13 @@
       class="post-page__comments"
       :title="title"
       :snapshot="post.comments" />
+
+    <LazyUPostTraffic
+      v-if="post.published && trafficVisible"
+      class="post-page__traffic"
+      :permalink="post.permalink"
+      :published="post.date"
+      :modified="post.dateModified" />
   </div>
 </template>
 
@@ -33,6 +40,8 @@ import { pageHeadingId } from "#shared/utils/headings";
 
 const site = useAppConfig().site;
 const route = useRoute();
+const { visible: trafficVisible, activate: activateTraffic } =
+  useArticleTraffic();
 // Drafts are routed too; they are only left out of listings and feeds.
 const permalink = route.path.endsWith("/") ? route.path : `${route.path}/`;
 

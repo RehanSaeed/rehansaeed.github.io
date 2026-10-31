@@ -7,6 +7,7 @@ export interface FrontMatter {
   heroImage: string;
   permalink: string;
   published: boolean;
+  date?: string;
   tags?: string[];
   kind?: "open-source" | "microsoft";
   nugetPackages?: { id: string }[];

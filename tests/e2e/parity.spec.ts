@@ -127,9 +127,19 @@ test.describe("Parity", () => {
     const response = await page.goto(
       "/on-the-etiquette-of-pull-request-comments/",
     );
-    expect(await response!.text()).toMatch(
-      /<time[^>]*datetime="2022-08-02[^"]*"[^>]*>\s*2 August 2022\s*<\/time>/,
+    const prerenderedDate = await page.evaluate(
+      (html) => {
+        const document = new DOMParser().parseFromString(html, "text/html");
+        const time = document.querySelector("time.dt-published");
+        return {
+          datetime: time?.getAttribute("datetime"),
+          text: time?.textContent?.trim(),
+        };
+      },
+      await response!.text(),
     );
+    expect(prerenderedDate.datetime).toMatch(/^2022-08-02/);
+    expect(prerenderedDate.text).toBe("2 August 2022");
     await expect(page.locator("time").first()).toHaveText("3 days ago");
 
     await page.goto("/open-uk-honouree/");

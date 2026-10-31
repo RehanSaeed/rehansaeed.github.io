@@ -13,6 +13,8 @@ on:
       - main
     types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
+  schedule:
+    - cron: "23 6 * * *"
 
 permissions:
   contents: read
@@ -22,7 +24,7 @@ permissions:
 jobs:
   build:
     name: Generate
-    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    if: (github.event_name != 'pull_request' || !github.event.pull_request.draft) && (github.event_name != 'schedule' || vars.GA4_PROPERTY_ID != '')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -63,12 +65,29 @@ jobs:
           key: ipx-${{ runner.os }}-${{ runner.arch }}-${{ steps.node.outputs.node-version }}-${{ hashFiles('package-lock.json', 'nuxt.config.ts', 'modules/image-cache/**', 'modules/blog-content/paths.ts', 'public/**', 'content/**/*.png', 'content/**/*.jpg', 'content/**/*.jpeg', 'content/**/*.gif', 'content/**/*.svg', 'content/**/*.webp', 'content/**/*.avif') }}-${{ github.sha }}
           restore-keys: |
             ipx-${{ runner.os }}-${{ runner.arch }}-${{ steps.node.outputs.node-version }}-${{ hashFiles('package-lock.json', 'nuxt.config.ts', 'modules/image-cache/**', 'modules/blog-content/paths.ts', 'public/**', 'content/**/*.png', 'content/**/*.jpg', 'content/**/*.jpeg', 'content/**/*.gif', 'content/**/*.svg', 'content/**/*.webp', 'content/**/*.avif') }}-
+      - name: "Restore Article Traffic"
+        if: github.event_name != 'pull_request'
+        uses: actions/cache/restore@v6.1.0
+        with:
+          path: .data/blog-traffic.json
+          key: traffic-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            traffic-${{ runner.os }}-
       - name: "NPM Build"
         run: npm run build
         env:
           TZ: UTC
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NUXT_PUBLIC_GOOGLE_ANALYTICS_ID: ${{ vars.GA4_MEASUREMENT_ID }}
+          GA4_PROPERTY_ID: ${{ github.event_name != 'pull_request' && vars.GA4_PROPERTY_ID || '' }}
+          GA4_START_DATE: ${{ github.event_name != 'pull_request' && vars.GA4_START_DATE || '' }}
+          GA4_SERVICE_ACCOUNT_JSON: ${{ github.event_name != 'pull_request' && secrets.GA4_SERVICE_ACCOUNT_JSON || '' }}
+      - name: "Save Article Traffic"
+        if: github.event_name != 'pull_request' && vars.GA4_PROPERTY_ID != ''
+        uses: actions/cache/save@v6.1.0
+        with:
+          path: .data/blog-traffic.json
+          key: traffic-${{ runner.os }}-${{ github.run_id }}-${{ github.run_attempt }}
       - name: "Type Check"
         run: npm run typecheck
       - name: "Lint"
@@ -163,7 +182,7 @@ jobs:
 
   checks:
     name: Build
-    if: always() && (github.event_name != 'pull_request' || !github.event.pull_request.draft)
+    if: always() && (github.event_name != 'pull_request' || !github.event.pull_request.draft) && (github.event_name != 'schedule' || vars.GA4_PROPERTY_ID != '')
     needs: [build, test]
     runs-on: ubuntu-latest
     steps:
