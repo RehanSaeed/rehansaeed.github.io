@@ -43,6 +43,19 @@ authorise publishing the article or posting to social media.
 - Use accessible HTML with native controls, accessible names and labels, and
   keyboard support. Use ARIA only when native HTML semantics are insufficient.
 
+## Accessibility and Responsive Design
+
+- Support both light and dark modes.
+- Support Windows High Contrast Mode, including CSS `forced-colors`, without
+  losing visible controls, focus indicators or meaningful content.
+- Keep layouts responsive and usable at up to 200% browser zoom and display
+  scaling, without clipping content or making controls inaccessible.
+- Support the Windows Narrator screen reader with meaningful reading order,
+  accessible names, roles and states, and announcements for dynamic updates.
+- For UI changes, verify both colour modes, High Contrast Mode, responsiveness
+  at 200% zoom and display scaling, and Windows Narrator behaviour. Report any
+  checks that could not be performed rather than claiming support was verified.
+
 ## CSS
 
 - Follow Block Element Modifier (BEM) naming for CSS classes.
