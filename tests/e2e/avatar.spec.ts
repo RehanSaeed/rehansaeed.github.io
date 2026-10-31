@@ -1,3 +1,4 @@
+import type { E2EFixtures } from "./fixtures";
 import sharp from "sharp";
 import { expect, test } from "./fixtures";
 
@@ -17,9 +18,9 @@ for (const deviceScaleFactor of [1, 2]) {
 
     for (const colorScheme of ["light", "dark"] as const) {
       for (const width of [375, 1280]) {
-        test(`Keep images and borders joined during hover and focus in ${colorScheme} at ${width}px`, async ({
+        async function verifyAvatarInteraction({
           page,
-        }) => {
+        }: Pick<E2EFixtures, "page">) {
           test.slow();
           await page.setViewportSize({ width, height: 900 });
           await page.emulateMedia({ colorScheme });
@@ -91,7 +92,9 @@ for (const deviceScaleFactor of [1, 2]) {
 
             for (const interaction of ["hover", "focus"] as const) {
               await page.mouse.move(0, 0);
-              await avatar.evaluate((element: HTMLElement) => element.blur());
+              await avatar.evaluate((element: HTMLElement) => {
+                element.blur();
+              });
               await avatar.evaluate((element) => {
                 for (const animation of element.getAnimations({
                   subtree: true,
@@ -125,7 +128,7 @@ for (const deviceScaleFactor of [1, 2]) {
                   return {
                     frame: [frame.x, frame.y, frame.width, frame.height],
                     image: [bounds.x, bounds.y, bounds.width, bounds.height],
-                    border: parseFloat(border.borderTopWidth),
+                    border: Number.parseFloat(border.borderTopWidth),
                     scale: frame.width / element.clientWidth,
                     opacity: getComputedStyle(element).opacity,
                   };
@@ -161,6 +164,14 @@ for (const deviceScaleFactor of [1, 2]) {
               }
             }
           }
+        }
+
+        test(`Keep images and borders joined during hover and focus in ${colorScheme} at ${width}px`, async ({
+          page,
+        }) => {
+          await expect(
+            verifyAvatarInteraction({ page }),
+          ).resolves.toBeUndefined();
         });
       }
     }

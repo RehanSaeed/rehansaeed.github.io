@@ -1,3 +1,4 @@
+import type { E2EFixtures } from "./fixtures";
 import sharp from "sharp";
 import { expect, test } from "./fixtures";
 
@@ -6,9 +7,7 @@ const postPath =
 const api = /^https:\/\/webmention\.io\/api\/mentions\?/;
 const published = "2026-01-02T00:00:00Z";
 
-test("Likes and reposts tolerate anonymous authors and missing or broken photos", async ({
-  page,
-}) => {
+async function verifyAnonymousWebmentions({ page }: Pick<E2EFixtures, "page">) {
   const photo = "https://avatars.githubusercontent.com/webmention-valid.png";
   const broken = "https://avatars.githubusercontent.com/webmention-broken.png";
   const corrupt =
@@ -125,6 +124,16 @@ test("Likes and reposts tolerate anonymous authors and missing or broken photos"
     "9 Reposts",
   );
   expect(pageErrors).toEqual([]);
+}
+
+test("Likes and reposts tolerate anonymous authors and missing or broken photos", async ({
+  page,
+}) => {
+  await expect(
+    verifyAnonymousWebmentions({
+      page,
+    }),
+  ).resolves.toBeUndefined();
 });
 
 test("Webmention links are user-generated without changing editorial links", async ({
@@ -240,9 +249,7 @@ test("Webmention links are user-generated without changing editorial links", asy
   ).not.toHaveAttribute("rel", /ugc/);
 });
 
-test("Only the canonical Twitter origin selects tweet content for photo links", async ({
-  page,
-}) => {
+async function verifyTwitterOrigins({ page }: Pick<E2EFixtures, "page">) {
   const links = [
     ["https://twitter.com/reader/status/1", true],
     ["https://twitter.com:443/reader/status/2", true],
@@ -253,6 +260,7 @@ test("Only the canonical Twitter origin selects tweet content for photo links", 
     ["https://twitter.com:8443/reader/status/8", false],
     ["https://sub.twitter.com/reader/status/9", false],
     ["https://TWITTER.COM/reader/status/3", true],
+    ["https://twitter.com-example.com/reader/status/10", false],
   ] as const;
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
@@ -293,6 +301,12 @@ test("Only the canonical Twitter origin selects tweet content for photo links", 
     ).toHaveText(`${isTwitter ? "Content" : "Sentence"} ${index}`);
   }
   expect(errors).toEqual([]);
+}
+
+test("Only the canonical Twitter origin selects tweet content for photo links", async ({
+  page,
+}) => {
+  await expect(verifyTwitterOrigins({ page })).resolves.toBeUndefined();
 });
 
 for (const failure of [
@@ -303,9 +317,7 @@ for (const failure of [
   "link-url",
   "reply-url",
 ]) {
-  test(`A ${failure} failure is visible and retry loads the mentions`, async ({
-    page,
-  }) => {
+  async function verifyWebmentionFailure({ page }: Pick<E2EFixtures, "page">) {
     let requests = 0;
     let resume!: () => void;
     const retry = new Promise<void>((resolve) => {
@@ -437,6 +449,12 @@ for (const failure of [
       );
       expect(pageErrors).toEqual([]);
     }
+  }
+
+  test(`A ${failure} failure is visible and retry loads the mentions`, async ({
+    page,
+  }) => {
+    await expect(verifyWebmentionFailure({ page })).resolves.toBeUndefined();
   });
 }
 

@@ -1,4 +1,18 @@
-import { test as base, expect, type Page, type Route } from "@playwright/test";
+import {
+  test as base,
+  expect,
+  type Page,
+  type Route,
+  type PlaywrightTestArgs,
+  type PlaywrightTestOptions,
+  type PlaywrightWorkerArgs,
+  type PlaywrightWorkerOptions,
+} from "@playwright/test";
+
+export type E2EFixtures = PlaywrightTestArgs &
+  PlaywrightTestOptions &
+  PlaywrightWorkerArgs &
+  PlaywrightWorkerOptions;
 
 export async function delayClientScripts(page: Page) {
   let resume!: () => void;
@@ -33,8 +47,11 @@ export async function delayClientScripts(page: Page) {
 }
 
 export type AnalyticsEvent = {
+  /** Analytics event category shared by Universal Analytics and GA4. */
   category: string;
+  /** Historical hyphenated action name. */
   action: string;
+  /** Optional context recorded with the event. */
   label?: string;
 };
 
@@ -52,7 +69,7 @@ const universalAnalyticsStub = `(function () {
  */
 export const getAnalyticsEvents = (page: Page): Promise<AnalyticsEvent[]> =>
   page.evaluate(() => {
-    const events: { category: string; action: string; label?: string }[] = [];
+    const events: AnalyticsEvent[] = [];
     const w = window as unknown as {
       __gaCalls?: unknown[][];
       dataLayer?: ArrayLike<unknown>[];
@@ -79,7 +96,7 @@ export const getAnalyticsEvents = (page: Page): Promise<AnalyticsEvent[]> =>
     }
 
     for (const entry of w.dataLayer ?? []) {
-      const args = Array.from(entry ?? []);
+      const args = Array.from(entry);
       if (args[0] !== "event") {
         continue;
       }

@@ -88,6 +88,7 @@
     "postinstall": "nuxt prepare",
     "prepare": "husky",
     "test": "playwright test --project=chrome --project=edge --project=firefox",
+    "test:unit": "node --test tests/unit/*.test.mts",
     "test:debug": "playwright test --ui",
     "test:chrome": "playwright test --project=chrome",
     "test:edge": "playwright test --project=edge",

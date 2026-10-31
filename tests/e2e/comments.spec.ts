@@ -1,3 +1,4 @@
+import type { E2EFixtures } from "./fixtures";
 import { expect, test } from "./fixtures";
 import { load } from "cheerio";
 import { commentSchema, type GitHubComment } from "../../shared/utils/comments";
@@ -111,7 +112,7 @@ test.describe("GitHub comments", () => {
       const response = await page.goto(`${postPath}#comments`);
       const saved = load(await response!.text());
       expect(saved(".comment__association").first().text()).toBe("Owner");
-      expect(saved(".comments__list > article.comment").length).toBe(
+      expect(saved(".comments__list > article.comment")).toHaveLength(
         saved(".comment").length,
       );
       await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
@@ -246,8 +247,8 @@ test.describe("GitHub comments", () => {
         expect(reaction.emojiSize).toBe(reaction.countSize);
         expect(reaction.centerDifference).toBeLessThanOrEqual(1);
       }
-      expect(parseFloat(layout.timestampFont)).toBeLessThan(
-        parseFloat(layout.bodyFont),
+      expect(Number.parseFloat(layout.timestampFont)).toBeLessThan(
+        Number.parseFloat(layout.bodyFont),
       );
       expect(layout.overflow).toBe(false);
       await githubLink.focus();
@@ -476,9 +477,9 @@ test.describe("GitHub comments", () => {
 
   for (const width of [375, 1280]) {
     for (const unavailable of [false, true]) {
-      test(`Omits the empty divider and spacing at ${width}px when live comments are ${unavailable ? "unavailable" : "empty"}`, async ({
+      async function verifyEmptyCommentLayout({
         page,
-      }) => {
+      }: Pick<E2EFixtures, "page">) {
         await page.setViewportSize({ width, height: 900 });
         await page.route("https://api.github.com/**", (route) =>
           route.fulfill(
@@ -514,10 +515,20 @@ test.describe("GitHub comments", () => {
             card.getBoundingClientRect().bottom -
             card.querySelector(".comments__header")!.getBoundingClientRect()
               .bottom,
-          padding: parseFloat(getComputedStyle(card).paddingBlockEnd),
+          padding: Number.parseFloat(getComputedStyle(card).paddingBlockEnd),
         }));
         expect(layout.bottomSpace).toBeCloseTo(layout.padding, 1);
         await expect(page.locator(".comments__github")).toBeVisible();
+      }
+
+      test(`Omits the empty divider and spacing at ${width}px when live comments are ${unavailable ? "unavailable" : "empty"}`, async ({
+        page,
+      }) => {
+        await expect(
+          verifyEmptyCommentLayout({
+            page,
+          }),
+        ).resolves.toBeUndefined();
       });
     }
   }
@@ -597,7 +608,7 @@ test.describe("GitHub comments", () => {
         const footer = first.querySelector(".comment__footer")!;
         const deleted = element.querySelector(".comment--without-avatar")!;
         const deletedBody = deleted.querySelector(".comment__body")!;
-        const bodyGap = parseFloat(getComputedStyle(body).rowGap);
+        const bodyGap = Number.parseFloat(getComputedStyle(body).rowGap);
         const sectionHeader = element.querySelector(".comments__header")!;
         const title = element.querySelector(".comments__title")!;
         const summary = element.querySelector(".comments__summary")!;
@@ -608,7 +619,9 @@ test.describe("GitHub comments", () => {
           titleGap:
             summary.getBoundingClientRect().top -
             title.getBoundingClientRect().bottom,
-          expectedTitleGap: parseFloat(getComputedStyle(sectionHeader).rowGap),
+          expectedTitleGap: Number.parseFloat(
+            getComputedStyle(sectionHeader).rowGap,
+          ),
           listStartGap:
             firstParagraph.getBoundingClientRect().top -
             list.getBoundingClientRect().top,
@@ -644,7 +657,7 @@ test.describe("GitHub comments", () => {
             return (
               style.display === "flex" &&
               style.flexWrap === "wrap" &&
-              parseFloat(style.gap) > 0
+              Number.parseFloat(style.gap) > 0
             );
           }),
           deletedWidth: deleted.getBoundingClientRect().width,
@@ -743,14 +756,18 @@ test.describe("GitHub comments", () => {
           return {
             nameDateGap: date.top - identity.bottom,
             avatarGap: identity.left - avatar.right,
-            avatarColumnGap: parseFloat(getComputedStyle(element).columnGap),
+            avatarColumnGap: Number.parseFloat(
+              getComputedStyle(element).columnGap,
+            ),
             minimumAvatarGap:
-              parseFloat(getComputedStyle(document.documentElement).fontSize) *
-              0.75,
+              Number.parseFloat(
+                getComputedStyle(document.documentElement).fontSize,
+              ) * 0.75,
             dateContentGap: main.getBoundingClientRect().top - date.bottom,
             minimumContentGap:
-              parseFloat(getComputedStyle(document.documentElement).fontSize) *
-              0.75,
+              Number.parseFloat(
+                getComputedStyle(document.documentElement).fontSize,
+              ) * 0.75,
             paragraphsFit: Array.from(main.querySelectorAll("p")).every(
               (paragraph) => {
                 const bounds = paragraph.getBoundingClientRect();
@@ -760,7 +777,9 @@ test.describe("GitHub comments", () => {
               },
             ),
             rightInset: cardBounds.right - body.right,
-            cardPadding: parseFloat(getComputedStyle(card).paddingInlineEnd),
+            cardPadding: Number.parseFloat(
+              getComputedStyle(card).paddingInlineEnd,
+            ),
             badgeColor: getComputedStyle(badge).color,
             accent,
             badgeBackground: getComputedStyle(badge).backgroundColor,
@@ -769,7 +788,9 @@ test.describe("GitHub comments", () => {
               element.querySelectorAll(".badge"),
             ).every(
               (badge) =>
-                parseFloat(getComputedStyle(badge).borderTopLeftRadius) >=
+                Number.parseFloat(
+                  getComputedStyle(badge).borderTopLeftRadius,
+                ) >=
                 badge.getBoundingClientRect().height / 2,
             ),
           };

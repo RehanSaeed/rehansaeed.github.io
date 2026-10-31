@@ -3,6 +3,8 @@ import { join } from "node:path";
 import { delayClientScripts, expect, test } from "./fixtures";
 import { parse } from "yaml";
 import { timeToRead } from "../../modules/blog-content/fields";
+import { workflowSchema } from "./data";
+import { z } from "zod";
 
 const postPath = "/on-the-etiquette-of-pull-request-comments/";
 
@@ -271,19 +273,29 @@ test.describe("Nuxt best practices", () => {
   });
 
   test("Runs lint in CI and before committing supported source files", () => {
-    const workflow = parse(
-      readFileSync(
-        join(process.cwd(), ".github", "workflows", "build.yml"),
-        "utf8",
+    const workflow = workflowSchema.parse(
+      parse(
+        readFileSync(
+          join(process.cwd(), ".github", "workflows", "build.yml"),
+          "utf8",
+        ),
       ),
     );
-    expect(workflow.jobs.build.steps).toContainEqual({
+    expect(workflow.jobs.build!.steps).toContainEqual({
       name: "Lint",
       run: "npm run lint",
     });
-    const packageJson = JSON.parse(
-      readFileSync(join(process.cwd(), "package.json"), "utf8"),
-    );
+    const packageJson = z
+      .object({
+        scripts: z.record(z.string(), z.string()),
+        "lint-staged": z.record(
+          z.string(),
+          z.union([z.string(), z.array(z.string())]),
+        ),
+      })
+      .parse(
+        JSON.parse(readFileSync(join(process.cwd(), "package.json"), "utf8")),
+      );
     expect(packageJson.scripts.lint).toBe("eslint . --max-warnings=0");
     expect(packageJson["lint-staged"]["*.{js,mjs,cjs,ts,mts,cts,vue}"]).toEqual(
       ["eslint --fix --max-warnings=0", "prettier --write"],
@@ -295,7 +307,7 @@ test.describe("Nuxt best practices", () => {
   }) => {
     const response = await request.get(`${postPath}_payload.json`);
     expect(response.ok()).toBe(true);
-    const payload = await response.json();
+    const payload = z.array(z.unknown()).parse(await response.json());
     const post = payload.find(
       (value: unknown) =>
         value !== null &&
@@ -309,7 +321,12 @@ test.describe("Nuxt best practices", () => {
     expect(post).toHaveProperty("extension");
     const feed = await request.get("/feed.json");
     expect(feed.ok()).toBe(true);
-    expect((await feed.json()).items[0].content_html).toContain("<p>");
+    const feedData = z
+      .object({
+        items: z.array(z.object({ content_html: z.string() })),
+      })
+      .parse(await feed.json());
+    expect(feedData.items[0]!.content_html).toContain("<p>");
   });
 
   test("Renders every Mermaid diagram after hydration and client navigation", async ({
@@ -336,7 +353,7 @@ test.describe("Nuxt best practices", () => {
     await expect(diagrams).toHaveCount(2, { timeout: 15_000 });
     for (const diagram of await diagrams.all()) {
       await expect(diagram).toBeAttached();
-      expect(await diagram.getAttribute("viewBox")).toBeTruthy();
+      await expect(diagram).toHaveAttribute("viewBox", /.+/);
     }
     const ids = await diagrams.evaluateAll((nodes) =>
       nodes.map((node) => node.id),
@@ -385,16 +402,21 @@ test.describe("Nuxt best practices", () => {
       ["build.yml", "build"],
       ["codeql-analysis.yml", "analyze"],
     ] as const) {
-      const workflow = parse(
-        readFileSync(join(process.cwd(), ".github", "workflows", file), "utf8"),
+      const workflow = workflowSchema.parse(
+        parse(
+          readFileSync(
+            join(process.cwd(), ".github", "workflows", file),
+            "utf8",
+          ),
+        ),
       );
-      expect(workflow.on.pull_request.types).toEqual([
+      expect(workflow.on!.pull_request.types).toEqual([
         "opened",
         "synchronize",
         "reopened",
         "ready_for_review",
       ]);
-      expect(workflow.jobs[job].if).toBe(
+      expect(workflow.jobs[job]!.if).toBe(
         "github.event_name != 'pull_request' || !github.event.pull_request.draft",
       );
     }

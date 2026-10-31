@@ -24,250 +24,256 @@ const pngPixelHashes: Record<number, string> = {
   512: "b982693776b546944236652c3c61c77728ba813c43de6dad0b4d1673e776ed06",
 };
 
+async function verifyVectorPortraits() {
+  const paths: string[] = [];
+  for (const filename of [
+    join("public", "favicon.svg"),
+    join("public", authorDirectory, "Logo.svg"),
+    join("app", "assets", "icons", "rehan.svg"),
+  ]) {
+    const source = await readFile(filename, "utf8");
+    const portrait = [...source.matchAll(/<path\b[^>]*\bd="([^"]+)"/g)].map(
+      (match) => match[1],
+    );
+    expect(portrait, filename).toHaveLength(2);
+    // Expand implicit commands so lossless SVGO serialization keeps the D1 fingerprint.
+    expect(portrait[0], filename).not.toMatch(/[^MLC\d\s,.-]/);
+    const d1Commands = [...portrait[0].matchAll(/([MLC])([^MLC]*)/g)].flatMap(
+      ([, command, coordinates]) => {
+        const numbers = coordinates.match(/-?\d*\.?\d+/g)!.map(Number);
+        const arity = command === "C" ? 6 : 2;
+        expect(numbers.length % arity, filename).toBe(0);
+        return Array.from({ length: numbers.length / arity }, (_, index) => [
+          command === "M" && index > 0 ? "L" : command,
+          ...numbers.slice(index * arity, (index + 1) * arity),
+        ]);
+      },
+    );
+    expect(
+      createHash("sha256").update(JSON.stringify(d1Commands)).digest("hex"),
+      `${filename}: unchanged D1 face, hair and shirt`,
+    ).toBe("754c884b163959c22b514afa8c029c976d0e6042fa035e9f2a332ce18ae0f216");
+    paths.push(JSON.stringify(portrait));
+    expect(source, filename).not.toMatch(/<image\b|data:image/);
+    const { data, info } = await sharp(
+      Buffer.from(
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 245" width="245" height="245">${portrait.map((d) => `<path fill="#6b17e8" fill-rule="evenodd" d="${d}" />`).join("")}</svg>`,
+      ),
+    )
+      .ensureAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    expect([info.width, info.height]).toEqual([245, 245]);
+    const filled = data.filter(
+      (value, index) => index % 4 === 3 && value === 255,
+    );
+    expect(filled.length).toBeGreaterThan(12_000);
+    expect(filled.length).toBeLessThan(30_000);
+    let earPixels = 0;
+    for (let y = 90; y < 123; y++) {
+      for (let x = 173; x < 181; x++) {
+        if (data[(y * info.width + x) * 4 + 3] > 127) {
+          earPixels++;
+        }
+      }
+    }
+    expect(earPixels, `${filename}: restored ear contour`).toBeGreaterThan(25);
+
+    const { data: ear, info: earInfo } = await sharp(
+      Buffer.from(
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 245" width="980" height="980"><path fill="#6b17e8" fill-rule="evenodd" d="${portrait[1]}" /></svg>`,
+      ),
+    )
+      .ensureAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    const earFilled = ear.filter(
+      (value, index) => index % 4 === 3 && value > 127,
+    );
+    expect(earFilled.length, `${filename}: fuller R6 ear`).toBeGreaterThan(
+      3_500,
+    );
+    expect(earFilled.length, `${filename}: retained ear detail`).toBeLessThan(
+      4_300,
+    );
+    for (const [x, y] of [
+      [174, 92],
+      [176, 110],
+      [173, 116],
+    ]) {
+      expect(
+        ear[(y * 4 * earInfo.width + x * 4) * 4 + 3],
+        `${filename}: filled R6 ear at (${x}, ${y})`,
+      ).toBe(255);
+    }
+    for (const [x, y] of [
+      [173, 101],
+      [170.75, 112.5],
+      [171.5, 121],
+    ]) {
+      expect(
+        ear[(y * 4 * earInfo.width + x * 4) * 4 + 3],
+        `${filename}: inner ear negative space at (${x}, ${y})`,
+      ).toBe(0);
+    }
+  }
+  expect(new Set(paths).size).toBe(1);
+}
+
 unitTest(
   "Purple avatars share a vector portrait with no embedded photo",
   async () => {
-    const paths: string[] = [];
-    for (const filename of [
-      join("public", "favicon.svg"),
-      join("public", authorDirectory, "Logo.svg"),
-      join("app", "assets", "icons", "rehan.svg"),
-    ]) {
-      const source = await readFile(filename, "utf8");
-      const portrait = [...source.matchAll(/<path\b[^>]*\bd="([^"]+)"/g)].map(
-        (match) => match[1],
-      );
-      expect(portrait, filename).toHaveLength(2);
-      // Expand implicit commands so lossless SVGO serialization keeps the D1 fingerprint.
-      expect(portrait[0], filename).not.toMatch(/[^MLC\d\s,.-]/);
-      const d1Commands = [...portrait[0].matchAll(/([MLC])([^MLC]*)/g)].flatMap(
-        ([, command, coordinates]) => {
-          const numbers = coordinates.match(/-?\d*\.?\d+/g)!.map(Number);
-          const arity = command === "C" ? 6 : 2;
-          expect(numbers.length % arity, filename).toBe(0);
-          return Array.from({ length: numbers.length / arity }, (_, index) => [
-            command === "M" && index > 0 ? "L" : command,
-            ...numbers.slice(index * arity, (index + 1) * arity),
-          ]);
-        },
-      );
-      expect(
-        createHash("sha256").update(JSON.stringify(d1Commands)).digest("hex"),
-        `${filename}: unchanged D1 face, hair and shirt`,
-      ).toBe(
-        "754c884b163959c22b514afa8c029c976d0e6042fa035e9f2a332ce18ae0f216",
-      );
-      paths.push(JSON.stringify(portrait));
-      expect(source, filename).not.toMatch(/<image\b|data:image/);
-      const { data, info } = await sharp(
-        Buffer.from(
-          `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 245" width="245" height="245">${portrait.map((d) => `<path fill="#6b17e8" fill-rule="evenodd" d="${d}" />`).join("")}</svg>`,
-        ),
-      )
-        .ensureAlpha()
-        .raw()
-        .toBuffer({ resolveWithObject: true });
-      expect([info.width, info.height]).toEqual([245, 245]);
-      const filled = data.filter(
-        (value, index) => index % 4 === 3 && value === 255,
-      );
-      expect(filled.length).toBeGreaterThan(12_000);
-      expect(filled.length).toBeLessThan(30_000);
-      let earPixels = 0;
-      for (let y = 90; y < 123; y++) {
-        for (let x = 173; x < 181; x++) {
-          if (data[(y * info.width + x) * 4 + 3] > 127) {
-            earPixels++;
-          }
-        }
-      }
-      expect(earPixels, `${filename}: restored ear contour`).toBeGreaterThan(
-        25,
-      );
-
-      const { data: ear, info: earInfo } = await sharp(
-        Buffer.from(
-          `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 245" width="980" height="980"><path fill="#6b17e8" fill-rule="evenodd" d="${portrait[1]}" /></svg>`,
-        ),
-      )
-        .ensureAlpha()
-        .raw()
-        .toBuffer({ resolveWithObject: true });
-      const earFilled = ear.filter(
-        (value, index) => index % 4 === 3 && value > 127,
-      );
-      expect(earFilled.length, `${filename}: fuller R6 ear`).toBeGreaterThan(
-        3_500,
-      );
-      expect(earFilled.length, `${filename}: retained ear detail`).toBeLessThan(
-        4_300,
-      );
-      for (const [x, y] of [
-        [174, 92],
-        [176, 110],
-        [173, 116],
-      ]) {
-        expect(
-          ear[(y * 4 * earInfo.width + x * 4) * 4 + 3],
-          `${filename}: filled R6 ear at (${x}, ${y})`,
-        ).toBe(255);
-      }
-      for (const [x, y] of [
-        [173, 101],
-        [170.75, 112.5],
-        [171.5, 121],
-      ]) {
-        expect(
-          ear[(y * 4 * earInfo.width + x * 4) * 4 + 3],
-          `${filename}: inner ear negative space at (${x}, ${y})`,
-        ).toBe(0);
-      }
-    }
-    expect(new Set(paths).size).toBe(1);
+    await expect(verifyVectorPortraits()).resolves.toBeUndefined();
   },
 );
+
+async function verifyThumbnailLogoPixels() {
+  const source = await readFile(
+    join("app", "assets", "icons", "rehan.svg"),
+    "utf8",
+  );
+  const previous = source.replace(/\s*<rect\b[^>]*\/>/, "");
+  const portrait = source.match(/<path\b[^>]*\bd="([^"]+)"/)?.[1];
+  if (!portrait) {
+    throw new Error("The personal icon has no portrait path");
+  }
+  const spot = portrait.slice(portrait.lastIndexOf("M"));
+  const render = (svg: string) =>
+    sharp(Buffer.from(svg.replaceAll("currentColor", "#6b17e8")))
+      .resize(980, 980)
+      .ensureAlpha()
+      .raw()
+      .toBuffer();
+  const [pixels, original, mask] = await Promise.all([
+    render(source),
+    render(previous),
+    render(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 245"><path d="${spot}" /></svg>`,
+    ),
+  ]);
+  const sample = (200 * 4 * 980 + 29 * 4) * 4;
+  expect(
+    original[sample + 3],
+    "The original shoulder spot is transparent",
+  ).toBe(0);
+  expect([...pixels.subarray(sample, sample + 4)]).toEqual([107, 23, 232, 255]);
+  let changed = 0;
+  for (let offset = 0; offset < pixels.length; offset += 4) {
+    if (
+      pixels
+        .subarray(offset, offset + 4)
+        .equals(original.subarray(offset, offset + 4))
+    ) {
+      continue;
+    }
+    expect(
+      mask[offset + 3],
+      "Only pixels in the original shoulder spot may change",
+    ).toBeGreaterThan(0);
+    expect([...pixels.subarray(offset, offset + 4)]).toEqual([
+      107, 23, 232, 255,
+    ]);
+    changed++;
+  }
+  expect(changed, "The shoulder spot is filled").toBeGreaterThan(0);
+
+  const $ = load(
+    await readFile(
+      join("dist", "streaming", "thumbnail", "index.html"),
+      "utf8",
+    ),
+  );
+  const logo = $(".thumbnail-logo svg")
+    .attr("width", "980")
+    .attr("height", "980");
+  expect(logo).toHaveLength(1);
+  const generated = await render(logo.toString());
+  expect([...generated.subarray(sample, sample + 4)]).toEqual([
+    107, 23, 232, 255,
+  ]);
+}
 
 unitTest(
   "The thumbnail logo fills its left-shoulder spot without changing the rest of the portrait",
   async () => {
-    const source = await readFile(
-      join("app", "assets", "icons", "rehan.svg"),
-      "utf8",
-    );
-    const previous = source.replace(/\s*<rect\b[^>]*\/>/, "");
-    const portrait = source.match(/<path\b[^>]*\bd="([^"]+)"/)?.[1];
-    if (!portrait) {
-      throw new Error("The personal icon has no portrait path");
-    }
-    const spot = portrait.slice(portrait.lastIndexOf("M"));
-    const render = (svg: string) =>
-      sharp(Buffer.from(svg.replaceAll("currentColor", "#6b17e8")))
-        .resize(980, 980)
-        .ensureAlpha()
-        .raw()
-        .toBuffer();
-    const [pixels, original, mask] = await Promise.all([
-      render(source),
-      render(previous),
-      render(
-        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 245"><path d="${spot}" /></svg>`,
-      ),
-    ]);
-    const sample = (200 * 4 * 980 + 29 * 4) * 4;
-    expect(
-      original[sample + 3],
-      "The original shoulder spot is transparent",
-    ).toBe(0);
-    expect([...pixels.subarray(sample, sample + 4)]).toEqual([
-      107, 23, 232, 255,
-    ]);
-    let changed = 0;
-    for (let offset = 0; offset < pixels.length; offset += 4) {
-      if (
-        pixels
-          .subarray(offset, offset + 4)
-          .equals(original.subarray(offset, offset + 4))
-      ) {
-        continue;
-      }
-      expect(
-        mask[offset + 3],
-        "Only pixels in the original shoulder spot may change",
-      ).toBeGreaterThan(0);
-      expect([...pixels.subarray(offset, offset + 4)]).toEqual([
-        107, 23, 232, 255,
-      ]);
-      changed++;
-    }
-    expect(changed, "The shoulder spot is filled").toBeGreaterThan(0);
-
-    const $ = load(
-      await readFile(
-        join("dist", "streaming", "thumbnail", "index.html"),
-        "utf8",
-      ),
-    );
-    const logo = $(".thumbnail-logo svg")
-      .attr("width", "980")
-      .attr("height", "980");
-    expect(logo).toHaveLength(1);
-    const generated = await render(logo.toString());
-    expect([...generated.subarray(sample, sample + 4)]).toEqual([
-      107, 23, 232, 255,
-    ]);
+    await expect(verifyThumbnailLogoPixels()).resolves.toBeUndefined();
   },
 );
+
+async function verifyCircleLogoPixels() {
+  const source = await readFile(
+    join("public", authorDirectory, "Logo.svg"),
+    "utf8",
+  );
+  const previous = source
+    .replace(/\s*<polygon\b[^>]*\/>/, "")
+    .replace('r="108"', 'r="107.5"');
+  const render = (svg: string) =>
+    sharp(Buffer.from(svg)).resize(980, 980).ensureAlpha().raw().toBuffer();
+  const [pixels, original] = await Promise.all([
+    render(source),
+    render(previous),
+  ]);
+  expect(
+    pixels
+      .subarray(0, 720 * 980 * 4)
+      .equals(original.subarray(0, 720 * 980 * 4)),
+    "Face, hair and ear pixels above the shoulders remain identical",
+  ).toBe(true);
+  const regions = {
+    left: { checked: 0, previousGaps: 0 },
+    right: { checked: 0, previousGaps: 0 },
+    bottom: { checked: 0, previousGaps: 0 },
+    spot: { checked: 0, previousGaps: 0 },
+  };
+  for (let y = 0; y < 980; y++) {
+    for (let x = 0; x < 980; x++) {
+      const sx = (x + 0.5) / 4;
+      const sy = (y + 0.5) / 4;
+      if (Math.hypot(sx - 122.5, sy - 122.5) > 107.25) {
+        continue;
+      }
+      const region =
+        sx < 39 && sy > 206.55 - 0.48 * sx + 0.5
+          ? "left"
+          : sx > 205.5 && sy > 88.03 + 0.4616 * sx + 0.5
+            ? "right"
+            : sx > 42 && sx < 46 && sy > 188 && sy < 189
+              ? "spot"
+              : sy > 227
+                ? "bottom"
+                : undefined;
+      if (!region) {
+        continue;
+      }
+      const offset = (y * 980 + x) * 4;
+      regions[region].checked++;
+      if (
+        original[offset] === 249 &&
+        original[offset + 1] === 250 &&
+        original[offset + 2] === 251
+      ) {
+        regions[region].previousGaps++;
+      }
+      expect(
+        [...pixels.subarray(offset, offset + 4)],
+        `${region}: no white gap at (${sx}, ${sy})`,
+      ).toEqual([107, 23, 232, 255]);
+    }
+  }
+  for (const [region, coverage] of Object.entries(regions)) {
+    expect(coverage.checked, `${region}: coverage`).toBeGreaterThan(0);
+    expect(
+      coverage.previousGaps,
+      `${region}: detects the previous white gap`,
+    ).toBeGreaterThan(0);
+  }
+}
 
 unitTest(
   "The circle logo joins both shoulders and torso to the ring without changing the portrait",
   async () => {
-    const source = await readFile(
-      join("public", authorDirectory, "Logo.svg"),
-      "utf8",
-    );
-    const previous = source
-      .replace(/\s*<polygon\b[^>]*\/>/, "")
-      .replace('r="108"', 'r="107.5"');
-    const render = (svg: string) =>
-      sharp(Buffer.from(svg)).resize(980, 980).ensureAlpha().raw().toBuffer();
-    const [pixels, original] = await Promise.all([
-      render(source),
-      render(previous),
-    ]);
-    expect(
-      pixels
-        .subarray(0, 720 * 980 * 4)
-        .equals(original.subarray(0, 720 * 980 * 4)),
-      "Face, hair and ear pixels above the shoulders remain identical",
-    ).toBe(true);
-    const regions = {
-      left: { checked: 0, previousGaps: 0 },
-      right: { checked: 0, previousGaps: 0 },
-      bottom: { checked: 0, previousGaps: 0 },
-      spot: { checked: 0, previousGaps: 0 },
-    };
-    for (let y = 0; y < 980; y++) {
-      for (let x = 0; x < 980; x++) {
-        const sx = (x + 0.5) / 4;
-        const sy = (y + 0.5) / 4;
-        if (Math.hypot(sx - 122.5, sy - 122.5) > 107.25) {
-          continue;
-        }
-        const region =
-          sx < 39 && sy > 206.55 - 0.48 * sx + 0.5
-            ? "left"
-            : sx > 205.5 && sy > 88.03 + 0.4616 * sx + 0.5
-              ? "right"
-              : sx > 42 && sx < 46 && sy > 188 && sy < 189
-                ? "spot"
-                : sy > 227
-                  ? "bottom"
-                  : undefined;
-        if (!region) {
-          continue;
-        }
-        const offset = (y * 980 + x) * 4;
-        regions[region].checked++;
-        if (
-          original[offset] === 249 &&
-          original[offset + 1] === 250 &&
-          original[offset + 2] === 251
-        ) {
-          regions[region].previousGaps++;
-        }
-        expect(
-          [...pixels.subarray(offset, offset + 4)],
-          `${region}: no white gap at (${sx}, ${sy})`,
-        ).toEqual([107, 23, 232, 255]);
-      }
-    }
-    for (const [region, coverage] of Object.entries(regions)) {
-      expect(coverage.checked, `${region}: coverage`).toBeGreaterThan(0);
-      expect(
-        coverage.previousGaps,
-        `${region}: detects the previous white gap`,
-      ).toBeGreaterThan(0);
-    }
+    await expect(verifyCircleLogoPixels()).resolves.toBeUndefined();
   },
 );
 
@@ -286,104 +292,112 @@ unitTest(
   },
 );
 
+async function verifyProfilePhotoMetadata() {
+  const images = [
+    {
+      path: `${authorDirectory}/Profile-320x480.jpg`,
+      width: 320,
+      height: 480,
+    },
+    ...[64, 192, 512].map((size) => ({
+      path: `${authorDirectory}/Logo-${size}x${size}.png`,
+      width: size,
+      height: size,
+    })),
+    ...iconSizes.map((size) => ({
+      path: `images/icons/favicon-${size}x${size}.png`,
+      width: size,
+      height: size,
+    })),
+    { path: "favicon.png", width: 512, height: 512 },
+  ];
+  for (const { path, width, height } of images) {
+    const metadata = await sharp(join("public", path)).metadata();
+    expect([metadata.width, metadata.height], path).toEqual([width, height]);
+    expect(metadata.exif, path).toBeUndefined();
+    expect(metadata.xmp, path).toBeUndefined();
+    if (metadata.format === "png") {
+      expect(metadata.isPalette, `${path}: no palette quantization`).toBe(
+        false,
+      );
+      const pixels = await sharp(join("public", path))
+        .toColourspace("srgb")
+        .ensureAlpha()
+        .raw()
+        .toBuffer();
+      expect(
+        createHash("sha256").update(pixels).digest("hex"),
+        `${path}: lossless decoded sRGB pixels and alpha`,
+      ).toBe(pngPixelHashes[width]);
+      if (width === 512) {
+        const colors = new Set<number>();
+        for (let index = 0; index < pixels.length; index += 4) {
+          colors.add(pixels.readUInt32LE(index));
+        }
+        expect(
+          colors.size,
+          `${path}: retained photographic colour detail`,
+        ).toBeGreaterThan(40_000);
+      }
+    }
+  }
+  for (const size of [192, 512]) {
+    expect(
+      await readFile(
+        join("public", authorDirectory, `Logo-${size}x${size}.png`),
+      ),
+    ).toEqual(
+      await readFile(
+        join("public", "images", "icons", `favicon-${size}x${size}.png`),
+      ),
+    );
+  }
+  expect(await readFile(join("public", "favicon.png"))).toEqual(
+    await readFile(join("public", authorDirectory, "Logo-512x512.png")),
+  );
+}
+
 unitTest(
   "Profile photos retain their published dimensions without metadata",
   async () => {
-    const images = [
-      {
-        path: `${authorDirectory}/Profile-320x480.jpg`,
-        width: 320,
-        height: 480,
-      },
-      ...[64, 192, 512].map((size) => ({
-        path: `${authorDirectory}/Logo-${size}x${size}.png`,
-        width: size,
-        height: size,
-      })),
-      ...iconSizes.map((size) => ({
-        path: `images/icons/favicon-${size}x${size}.png`,
-        width: size,
-        height: size,
-      })),
-      { path: "favicon.png", width: 512, height: 512 },
-    ];
-    for (const { path, width, height } of images) {
-      const metadata = await sharp(join("public", path)).metadata();
-      expect([metadata.width, metadata.height], path).toEqual([width, height]);
-      expect(metadata.exif, path).toBeUndefined();
-      expect(metadata.xmp, path).toBeUndefined();
-      if (metadata.format === "png") {
-        expect(metadata.isPalette, `${path}: no palette quantization`).toBe(
-          false,
-        );
-        const pixels = await sharp(join("public", path))
-          .toColourspace("srgb")
-          .ensureAlpha()
-          .raw()
-          .toBuffer();
-        expect(
-          createHash("sha256").update(pixels).digest("hex"),
-          `${path}: lossless decoded sRGB pixels and alpha`,
-        ).toBe(pngPixelHashes[width]);
-        if (width === 512) {
-          const colors = new Set<number>();
-          for (let index = 0; index < pixels.length; index += 4) {
-            colors.add(pixels.readUInt32LE(index));
-          }
-          expect(
-            colors.size,
-            `${path}: retained photographic colour detail`,
-          ).toBeGreaterThan(40_000);
-        }
-      }
-    }
-    for (const size of [192, 512]) {
-      expect(
-        await readFile(
-          join("public", authorDirectory, `Logo-${size}x${size}.png`),
-        ),
-      ).toEqual(
+    await expect(verifyProfilePhotoMetadata()).resolves.toBeUndefined();
+  },
+);
+
+async function verifyIcoProfilePhotos() {
+  const ico = await readFile(join("public", "favicon.ico"));
+  expect(ico.readUInt16LE(0)).toBe(0);
+  expect(ico.readUInt16LE(2)).toBe(1);
+  const sizes: number[] = [];
+  for (let index = 0; index < ico.readUInt16LE(4); index++) {
+    const entry = 6 + index * 16;
+    const size = ico[entry] || 256;
+    expect(ico[entry + 1] || 256).toBe(size);
+    sizes.push(size);
+    const length = ico.readUInt32LE(entry + 8);
+    const offset = ico.readUInt32LE(entry + 12);
+    const image = ico.subarray(offset, offset + length);
+    const metadata = await sharp(image).metadata();
+    expect([metadata.width, metadata.height]).toEqual([size, size]);
+    expect(metadata.isPalette, `${size}px ICO: no palette quantization`).toBe(
+      false,
+    );
+    await sharp(image).raw().toBuffer();
+    if (iconSizes.includes(size)) {
+      expect(image).toEqual(
         await readFile(
           join("public", "images", "icons", `favicon-${size}x${size}.png`),
         ),
       );
     }
-    expect(await readFile(join("public", "favicon.png"))).toEqual(
-      await readFile(join("public", authorDirectory, "Logo-512x512.png")),
-    );
-  },
-);
+  }
+  expect(sizes).toEqual([48, 32, 16]);
+}
 
 unitTest(
   "The favicon contains decodable square profile photos at every ICO size",
   async () => {
-    const ico = await readFile(join("public", "favicon.ico"));
-    expect(ico.readUInt16LE(0)).toBe(0);
-    expect(ico.readUInt16LE(2)).toBe(1);
-    const sizes: number[] = [];
-    for (let index = 0; index < ico.readUInt16LE(4); index++) {
-      const entry = 6 + index * 16;
-      const size = ico[entry] || 256;
-      expect(ico[entry + 1] || 256).toBe(size);
-      sizes.push(size);
-      const length = ico.readUInt32LE(entry + 8);
-      const offset = ico.readUInt32LE(entry + 12);
-      const image = ico.subarray(offset, offset + length);
-      const metadata = await sharp(image).metadata();
-      expect([metadata.width, metadata.height]).toEqual([size, size]);
-      expect(metadata.isPalette, `${size}px ICO: no palette quantization`).toBe(
-        false,
-      );
-      await sharp(image).raw().toBuffer();
-      if (iconSizes.includes(size)) {
-        expect(image).toEqual(
-          await readFile(
-            join("public", "images", "icons", `favicon-${size}x${size}.png`),
-          ),
-        );
-      }
-    }
-    expect(sizes).toEqual([48, 32, 16]);
+    await expect(verifyIcoProfilePhotos()).resolves.toBeUndefined();
   },
 );
 

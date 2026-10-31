@@ -1,11 +1,16 @@
+import type { E2EFixtures } from "./fixtures";
 import { load } from "cheerio";
 import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
 import type { NuxtApp } from "nuxt/app";
+import type { Router } from "vue-router";
+import { graphSchema } from "./data";
 import { filterMarkdownSitemap } from "../../modules/blog-content/seo";
 
 type NuxtRoot = HTMLElement & {
-  __vue_app__?: { config: { globalProperties: { $nuxt: NuxtApp } } };
+  __vue_app__?: {
+    config: { globalProperties: { $nuxt: NuxtApp & { $router: Router } } };
+  };
 };
 
 async function announceUpdate(page: Page) {
@@ -117,9 +122,9 @@ test("Client-side pagination preserves one canonical and its crawler response ha
   // without shipping the schema resolver in the browser bundle.
   const $ = load(await (await request.get("/2/")).text());
   const scripts = $('script[type="application/ld+json"]');
-  expect(scripts.length).toBe(1);
-  const graph = JSON.parse(scripts.text());
-  const ids = graph["@graph"].map((node: { "@id": string }) => node["@id"]);
+  expect(scripts).toHaveLength(1);
+  const graph = graphSchema.parse(JSON.parse(scripts.text()));
+  const ids = graph["@graph"].map((node) => node["@id"]);
   expect(new Set(ids).size).toBe(ids.length);
   expect(ids).toContain("https://rehansaeed.com/2/#webpage");
   expect(ids).not.toContain("https://rehansaeed.com/#webpage");
@@ -224,10 +229,10 @@ test("A package update without a worker does not force a document reload", async
 
 for (const width of [320, 375, 1280]) {
   for (const colorScheme of ["light", "dark"] as const) {
-    test(`Update notice is compact, nonmodal and dismissible at ${width}px in ${colorScheme} mode`, async ({
+    async function verifyUpdateNoticeLayout({
       page,
       baseURL,
-    }) => {
+    }: Pick<E2EFixtures, "page" | "baseURL">) {
       await page.setViewportSize({ width, height: 800 });
       await page.emulateMedia({ colorScheme });
       await page.route(
@@ -299,6 +304,18 @@ for (const width of [320, 375, 1280]) {
       await dismiss.click();
       await expect(notice).toHaveCount(0);
       expect(documentNavigations).toBe(0);
+    }
+
+    test(`Update notice is compact, nonmodal and dismissible at ${width}px in ${colorScheme} mode`, async ({
+      page,
+      baseURL,
+    }) => {
+      await expect(
+        verifyUpdateNoticeLayout({
+          page,
+          baseURL,
+        }),
+      ).resolves.toBeUndefined();
     });
   }
 }
