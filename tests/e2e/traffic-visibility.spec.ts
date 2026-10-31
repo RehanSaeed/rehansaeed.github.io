@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { expect, test as unitTest, type Locator } from "@playwright/test";
 import { test } from "./fixtures";
 import type { TrafficSnapshot } from "../../shared/utils/traffic";
+import { getDisplayDateFromString } from "../../app/framework/date.js";
 
 const path = "/ai-gone-rogue/";
 const previous = "/on-the-etiquette-of-pull-request-comments/";
@@ -216,6 +217,10 @@ test.describe("Touch article-metadata gesture", () => {
     const date = page.locator(".dt-published");
     const gesture = page.locator(gestureSelector);
     await expect(gesture).toBeAttached();
+    await expect(date).toHaveText(
+      getDisplayDateFromString((await date.getAttribute("datetime"))!),
+    );
+    await page.evaluate(() => document.fonts.ready.then(() => undefined));
     const before = await date.boundingBox();
     for (let index = 0; index < 5; index++) {
       await gesture.tap();
