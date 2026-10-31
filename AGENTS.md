@@ -37,6 +37,22 @@ authorise publishing the article or posting to social media.
 - Keep work focused on the requested article and its promotion. Do not change the
   website, install publishing integrations or require Buffer as part of drafting.
 
+## CSS
+
+- Follow Block Element Modifier (BEM) naming for CSS classes.
+- Use CSS logical properties instead of physical properties where applicable.
+- Prefer CSS Grid to Flexbox for layout; use Flexbox when wrapping content is
+  better suited to it.
+- Follow [CSS General Rules of Thumb](https://rehansaeed.com/css-general-rules-of-thumb/).
+- Group and sort CSS properties following
+  [A System for Grouping & Sorting CSS Properties](https://rehansaeed.com/system-for-grouping-and-sorting-css-properties/).
+
+## TypeScript
+
+- Use TypeScript for application code.
+- Use modern functions and APIs supported by the project's target environments.
+- Use JSDoc to document public-facing properties.
+
 ## Image Optimisation
 
 - Optimise new or modified raster images before committing, preferably using
