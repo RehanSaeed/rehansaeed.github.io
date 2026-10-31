@@ -69,7 +69,7 @@
     "nuxt-link-checker": "6.0.1",
     "prettier": "3.9.10",
     "remark-toc": "9.0.0",
-    "sass-embedded": "1.107.0",
+    "sass-embedded": "1.107.1",
     "sharp": "0.35.5",
     "typescript": "6.0.3",
     "unist-util-visit": "5.2.0",
