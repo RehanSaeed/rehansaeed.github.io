@@ -40,6 +40,8 @@ authorise publishing the article or posting to social media.
 ## HTML
 
 - Use semantic HTML elements that reflect the content's meaning and purpose.
+- Use accessible HTML with native controls, accessible names and labels, and
+  keyboard support. Use ARIA only when native HTML semantics are insufficient.
 
 ## CSS
 
