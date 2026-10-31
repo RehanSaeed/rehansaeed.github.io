@@ -12,6 +12,10 @@ async function openAbout(page: Page) {
     route.fulfill({ status: 503, body: "Map unavailable during About tests" }),
   );
   await page.goto("/about/", { waitUntil: "domcontentloaded" });
+  await page.waitForFunction(() => {
+    const root = document.querySelector("#__nuxt");
+    return root && Boolean(Reflect.get(root, "__vue_app__"));
+  });
 }
 
 unitTest(
@@ -25,6 +29,25 @@ unitTest(
         ),
       ).toEqual({ width, height: 300 });
     }
+  },
+);
+
+unitTest(
+  "The reused OpenUK medal photograph has accurate dimensions",
+  async () => {
+    expect(
+      await readImageDimensions(
+        join(
+          process.cwd(),
+          "content",
+          "posts",
+          "2022",
+          "open-uk-honouree",
+          "images",
+          "Medal.jpg",
+        ),
+      ),
+    ).toEqual({ width: 800, height: 449 });
   },
 );
 
@@ -89,7 +112,7 @@ for (const width of [320, 375, 768, 1440]) {
       const article = page.getByRole("article");
       await expect(article.getByRole("heading", { level: 1 })).toHaveCount(1);
       await expect(article.getByRole("heading", { level: 1 })).toHaveText(
-        /Software is\s*a human\s*endeavour\./,
+        "Hello, I'm Rehan.",
       );
       await expect(article.getByRole("blockquote")).toContainText(
         "If it’s written in HTML/CSS/JS, C# or .NET",
@@ -101,6 +124,7 @@ for (const width of [320, 375, 768, 1440]) {
           .locator(":scope > section[id]")
           .evaluateAll((sections) => sections.map((section) => section.id)),
       ).toEqual([
+        "location",
         "youtube",
         "github",
         "awards",
@@ -108,14 +132,32 @@ for (const width of [320, 375, 768, 1440]) {
         "microsoft-mvp",
       ]);
       await expect(article.locator(".about__sources")).toHaveCount(0);
+      await expect(article.locator('[class*="about__timeline"]')).toHaveCount(
+        0,
+      );
+      await expect(
+        article.getByText("Read the timeline as a table"),
+      ).toHaveCount(0);
       await expect(article.locator(".location-map")).toHaveCount(1);
+      const location = article.getByRole("region", {
+        name: "London",
+        exact: true,
+      });
+      await expect(
+        location.getByRole("heading", {
+          name: "London",
+          level: 2,
+          exact: true,
+        }),
+      ).toHaveCount(1);
+      await expect(location.locator(".location-map")).toHaveCount(1);
       await expect(
         article.locator(
           ".about__masthead, .about__motion-toggle, .about__person",
         ),
       ).toHaveCount(0);
       await expect(article.locator(".about__hero")).toContainText(
-        "I am a professional Software Developer at Microsoft.",
+        "I'm a software developer at Microsoft.",
       );
       await expect(
         article
@@ -159,6 +201,53 @@ for (const width of [320, 375, 768, 1440]) {
       await expect(article).not.toContainText("Start with the useful bits.");
       await expect(article).not.toContainText("Make the failure legible.");
       await expect(article).not.toContainText("Give information a shape.");
+      await expect(article.locator(".about__honour-media picture")).toHaveCount(
+        2,
+      );
+      const mvpCopy = await article.locator(".about__mvp-copy").boundingBox();
+      const mvpMedia = await article.locator(".about__mvp-media").boundingBox();
+      if (!mvpCopy || !mvpMedia) {
+        throw new Error(
+          "The MVP copy and original artwork must both be laid out",
+        );
+      }
+      if (width >= 900) {
+        expect(mvpCopy.x).toBeGreaterThanOrEqual(mvpMedia.x + mvpMedia.width);
+        expect(Math.abs(mvpMedia.y - mvpCopy.y)).toBeLessThan(1);
+      } else {
+        expect(mvpMedia.y).toBeGreaterThanOrEqual(mvpCopy.y + mvpCopy.height);
+      }
+      expect(mvpMedia.width).toBeLessThanOrEqual(360);
+      const headings = await article
+        .locator(":scope > section[id]")
+        .evaluateAll((sections) =>
+          sections.map((section) => {
+            const heading = section.querySelector("h2");
+            if (!heading)
+              throw new Error("Every About section needs a heading");
+            const bounds = section.getBoundingClientRect();
+            return {
+              id: section.id,
+              x: heading.getBoundingClientRect().x,
+              start:
+                bounds.x +
+                parseFloat(getComputedStyle(section).paddingInlineStart),
+              width: bounds.width,
+            };
+          }),
+        );
+      for (const heading of headings) {
+        if (
+          width >= 900 &&
+          ["youtube", "awards", "microsoft-mvp"].includes(heading.id)
+        ) {
+          expect(heading.x - heading.start).toBeGreaterThan(
+            heading.width * 0.2,
+          );
+        } else {
+          expect(Math.abs(heading.x - heading.start)).toBeLessThan(1);
+        }
+      }
       const galleries = page.getByRole("list", {
         name: /^\d{4} credentials and participation$/,
       });
@@ -336,16 +425,29 @@ test("Sections animate into view as the reader scrolls", async ({ page }) => {
   await openAbout(page);
   await expect(page.locator(".about")).toHaveClass(/about--motion/);
   for (const selector of [
+    "#location .about__section-heading",
     "#youtube .about__feature-copy",
     "#github .about__work-header",
     "#awards .about__recognition-header",
-    "#stackoverflow",
-    "#microsoft-mvp",
+    "#stackoverflow .about__answers-copy",
+    "#microsoft-mvp .about__mvp-copy",
   ]) {
     const section = page.locator(selector);
     await section.scrollIntoViewIfNeeded();
     await expect(section).toHaveAttribute("data-revealed", "");
   }
+});
+
+test("Badge hover movement respects reduced motion", async ({ page }) => {
+  await openAbout(page);
+  const badge = page.locator(".about__credentials a").first();
+  const image = badge.locator("img");
+  await badge.hover();
+  await expect(image).toHaveCSS("transform", "none");
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(image).not.toHaveCSS("transform", "none");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(image).toHaveCSS("transform", "none");
 });
 
 test("The introduction link works with the keyboard", async ({ page }) => {
