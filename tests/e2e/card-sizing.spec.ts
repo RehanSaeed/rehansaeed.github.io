@@ -25,7 +25,9 @@ for (const width of [375, 1280, 1920]) {
           fontSize: Number.parseFloat(style.fontSize),
           padding: Number.parseFloat(style.paddingTop),
           columns: getComputedStyle(
-            element.parentElement!,
+            element.closest(
+              ".posts__items, .tag-page__items, .portfolio__items",
+            )!,
           ).gridTemplateColumns.split(" ").length,
         };
       });
@@ -36,7 +38,9 @@ for (const width of [375, 1280, 1920]) {
       ).toBe(width);
       if (width === 1920) {
         const original = await card.evaluate((element) => {
-          const grid = element.parentElement!;
+          const grid = element.closest(
+            ".posts__items, .tag-page__items, .portfolio__items",
+          )!;
           const cards = [...grid.querySelectorAll(".card--compact")];
           cards.forEach((card) => card.classList.remove("card--compact"));
           const bounds = element.getBoundingClientRect();

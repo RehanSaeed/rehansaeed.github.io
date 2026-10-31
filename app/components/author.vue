@@ -42,7 +42,7 @@
       :id="headingId || metadata.name"
       class="author__site-title"
       link-class="u-url u-uid p-name"
-      level="1"
+      :level="headingLevel"
       :href="metadata.url"
       center
       >{{ metadata.name }}</u-heading
@@ -60,6 +60,10 @@ export default {
   props: {
     headingId: {
       type: String,
+    },
+    headingLevel: {
+      type: String,
+      default: "1",
     },
   },
   setup() {
@@ -128,6 +132,7 @@ export default {
 
 .author__site-title {
   font-size: var(--global-font-size-8);
+  margin-block-start: 0;
 }
 
 .author__description {

@@ -1,5 +1,5 @@
 <template>
-  <nav class="navigation">
+  <nav class="navigation" aria-label="Main">
     <u-link-button class="navigation__image-container" label="Home" to="/">
       <NuxtPicture
         format="avif"
@@ -11,23 +11,29 @@
         sizes="50px"
         height="50" />
     </u-link-button>
-    <div class="navigation__items-left">
-      <u-link-button class="navigation__item" to="/" :aria-current="blogPage"
-        >Blog</u-link-button
-      >
-      <u-link-button
-        class="navigation__item"
-        to="/portfolio/"
-        :aria-current="portfolioPage"
-        >Portfolio</u-link-button
-      >
-      <u-link-button
-        class="navigation__item"
-        to="/about/"
-        :aria-current="aboutPage"
-        >About</u-link-button
-      >
-    </div>
+    <ul class="navigation__items-left" role="list">
+      <li>
+        <u-link-button class="navigation__item" to="/" :aria-current="blogPage"
+          >Blog</u-link-button
+        >
+      </li>
+      <li>
+        <u-link-button
+          class="navigation__item"
+          to="/portfolio/"
+          :aria-current="portfolioPage"
+          >Portfolio</u-link-button
+        >
+      </li>
+      <li>
+        <u-link-button
+          class="navigation__item"
+          to="/about/"
+          :aria-current="aboutPage"
+          >About</u-link-button
+        >
+      </li>
+    </ul>
     <div class="navigation__items-right">
       <u-search-button class="navigation__search" />
       <u-theme-button class="navigation__toggle-theme" />
@@ -77,7 +83,7 @@ export default {
 
   font-size: var(--global-font-size-3);
   padding: var(--global-space-fluid-5);
-  visibility: hidden;
+  pointer-events: none;
 }
 
 .navigation__image-container {
@@ -92,7 +98,7 @@ export default {
   inline-size: 2.5rem;
   block-size: 2.5rem;
   line-height: 0;
-  visibility: visible;
+  pointer-events: auto;
   will-change: auto;
 }
 
@@ -116,7 +122,7 @@ export default {
 }
 
 .navigation__item {
-  visibility: visible;
+  pointer-events: auto;
 }
 
 .navigation__item[aria-current="page"] {
@@ -126,7 +132,7 @@ export default {
 .navigation__search,
 .navigation__toggle-theme,
 .navigation__install {
-  visibility: visible;
+  pointer-events: auto;
 }
 
 @include breakpoints.respond-above(xl) {
