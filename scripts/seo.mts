@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { load } from "cheerio";
 import sharp from "sharp";
 import { parse } from "yaml";
-import type { SchemaGraph } from "./parity/types.mts";
+import type { SchemaGraph } from "./parity/schema.mts";
 import type siteConfiguration from "../site.json";
 
 const directory = process.argv[2] ?? "dist";

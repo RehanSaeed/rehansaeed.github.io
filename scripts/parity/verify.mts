@@ -3,12 +3,8 @@ import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { parse } from "yaml";
 import type siteConfiguration from "../../site.json";
-import type {
-    ArtifactSnapshots,
-    LegacySchema,
-    PageSnapshot,
-    SchemaGraph,
-} from "./types.mts";
+import type { LegacySchema, SchemaGraph } from "./schema.mts";
+import type { ArtifactSnapshots, PageSnapshot } from "./snapshots.mts";
 
 const expectedDir = process.argv[2] ?? "tests/parity/baseline";
 const actualDir = process.argv[3] ?? ".parity/local";
