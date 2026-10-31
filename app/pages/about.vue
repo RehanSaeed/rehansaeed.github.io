@@ -8,29 +8,19 @@
       <div class="about__intro">
         <div>
           <p class="about__eyebrow">Muhammad Rehan Saeed</p>
-          <h1 id="about">Software is<br />a <em>human</em><br />endeavour.</h1>
+          <h1 id="about">Hello, I'm Rehan.</h1>
           <p class="about__standfirst">
-            A little about my professional career, open source projects and the
-            things I share along the way.
+            I'm a software developer at Microsoft. I contribute to open source
+            and share what I learn.
           </p>
           <div class="about__prose">
-            <p><strong>Hello, I'm Rehan.</strong></p>
-            <p>
-              I am a professional Software Developer at Microsoft. Although I
-              work for Microsoft, my opinions are my own.
-            </p>
+            <p>Although I work for Microsoft, my opinions are my own.</p>
             <blockquote class="about__quote">
               <p>
                 If it’s written in HTML/CSS/JS, C# or .NET, I have probably
                 written something using it in anger!
               </p>
-              <footer>— Muhammad Rehan Saeed</footer>
             </blockquote>
-            <p class="about__source-note">
-              In my own words:
-              <a :href="metadata.author.gitHub.url">GitHub biography</a> and
-              <a :href="credlyUrl">Credly profile</a>.
-            </p>
           </div>
           <a class="about__text-link" href="#youtube">
             Explore the work <span aria-hidden="true">&darr;</span>
@@ -48,22 +38,32 @@
             loading="eager"
             fetchpriority="high"
             src="/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg" />
-          <figcaption>
-            The person behind the code.<br />
-            Software developer, open source contributor and blogger.
-          </figcaption>
         </figure>
-      </div>
-      <div class="about__hero-footer">
-        <p>Scroll to explore. Read at your own pace.</p>
       </div>
     </header>
 
     <section
+      id="location"
       class="about__location about__section"
-      aria-label="London, United Kingdom"
-      data-reveal>
-      <u-location-map />
+      aria-labelledby="location-title">
+      <header class="about__section-heading" data-reveal>
+        <div>
+          <p class="about__eyebrow">Where I am</p>
+          <h2 id="location-title">London</h2>
+        </div>
+        <div>
+          <p class="about__standfirst">
+            I'm based in London. See how far away you are.
+          </p>
+          <p>
+            The map uses an approximate location from your IP address. The
+            distance is measured in a straight line, not along a travel route.
+          </p>
+        </div>
+      </header>
+      <div class="about__map-frame" data-reveal>
+        <u-location-map />
+      </div>
     </section>
 
     <section
@@ -71,17 +71,20 @@
       class="about__youtube about__section"
       aria-labelledby="youtube-title">
       <div class="about__feature-copy" data-reveal>
+        <p class="about__eyebrow">Watch &amp; learn</p>
         <h2 id="youtube-title">YouTube</h2>
         <p class="about__standfirst">
-          I occasionally appear on YouTube and Twitch where you can watch my
+          I occasionally stream or appear on YouTube and Twitch, sharing my
           software development escapades.
         </p>
-        <a class="about__text-link" :href="metadata.author.youtube.url"
-          >Watch on YouTube &rarr;</a
-        >
-        <a class="about__text-link" :href="metadata.author.twitch.url"
-          >Find me on Twitch &rarr;</a
-        >
+        <div class="about__actions">
+          <a class="about__text-link" :href="metadata.author.youtube.url"
+            >Watch on YouTube &rarr;</a
+          >
+          <a class="about__text-link" :href="metadata.author.twitch.url"
+            >Find me on Twitch &rarr;</a
+          >
+        </div>
         <div class="about__youtube-images">
           <a :href="metadata.author.youtube.url">
             <img
@@ -104,7 +107,7 @@
         </div>
       </div>
       <figure class="about__youtube-feature" data-reveal>
-        <a :href="metadata.author.youtube.url">
+        <a class="about__image-link" :href="metadata.author.youtube.url">
           <NuxtPicture
             format="avif"
             legacy-format="jpg"
@@ -117,8 +120,8 @@
             src="/images/hero/My-YouTube-1920x1080.jpg" />
         </a>
         <figcaption>
-          My YouTube channel. Follow the image to browse my videos; no video
-          player loads until you visit the channel.
+          Software development on video. Explore the videos on my YouTube
+          channel.
         </figcaption>
       </figure>
     </section>
@@ -127,54 +130,60 @@
       id="github"
       class="about__work about__section"
       aria-labelledby="work-title">
-      <header class="about__work-header" data-reveal>
-        <h2 id="work-title">GitHub</h2>
-        <p class="about__standfirst">
-          You can see some of the open source projects that I have founded and
-          maintained in my
-          <NuxtLink to="/portfolio/">portfolio</NuxtLink>.
-        </p>
-        <p>
-          There are many others I have contributed to which you can see in my
-          <a :href="metadata.author.gitHub.url">GitHub profile</a>, and of
-          course there are other commercial projects that I cannot disclose.
-        </p>
-        <a class="about__text-link" :href="metadata.author.gitHub.sponsorsUrl">
-          Sponsor my open source work &rarr;
-        </a>
-        <div class="about__github-images">
-          <a :href="metadata.author.gitHub.url">
-            <img
-              class="about__github-image"
-              alt="GitHub stars"
-              width="135"
-              height="30"
-              loading="lazy"
-              :src="`https://img.shields.io/github/stars/${metadata.author.gitHub.user}?style=social`" />
+      <header class="about__work-header about__section-heading" data-reveal>
+        <div>
+          <p class="about__eyebrow">Open source</p>
+          <h2 id="work-title">GitHub</h2>
+        </div>
+        <div>
+          <p class="about__standfirst">
+            I build, maintain and contribute to open source software.
+          </p>
+          <p>
+            My <NuxtLink to="/portfolio/">portfolio</NuxtLink> introduces the
+            projects I've founded and maintained. Follow the day-to-day work on
+            my <a :href="metadata.author.gitHub.url">GitHub profile</a>; my
+            commercial projects aren't included here.
+          </p>
+          <a
+            class="about__text-link"
+            :href="metadata.author.gitHub.sponsorsUrl">
+            Support my open source work &rarr;
           </a>
-          <a :href="`${metadata.author.gitHub.url}?tab=followers`">
-            <img
-              class="about__github-image"
-              alt="GitHub follower count"
-              width="168"
-              height="30"
-              loading="lazy"
-              :src="`https://img.shields.io/github/followers/${metadata.author.gitHub.user}?style=social`" />
-          </a>
-          <a :href="metadata.author.gitHub.sponsorsUrl">
-            <img
-              class="about__github-image"
-              alt="GitHub sponsors"
-              width="121"
-              height="30"
-              loading="lazy"
-              :src="`https://img.shields.io/github/sponsors/${metadata.author.gitHub.user}?logo=github&style=social`" />
-          </a>
+          <div class="about__github-images">
+            <a :href="metadata.author.gitHub.url">
+              <img
+                class="about__github-image"
+                alt="GitHub stars"
+                width="135"
+                height="30"
+                loading="lazy"
+                :src="`https://img.shields.io/github/stars/${metadata.author.gitHub.user}?style=social`" />
+            </a>
+            <a :href="`${metadata.author.gitHub.url}?tab=followers`">
+              <img
+                class="about__github-image"
+                alt="GitHub follower count"
+                width="168"
+                height="30"
+                loading="lazy"
+                :src="`https://img.shields.io/github/followers/${metadata.author.gitHub.user}?style=social`" />
+            </a>
+            <a :href="metadata.author.gitHub.sponsorsUrl">
+              <img
+                class="about__github-image"
+                alt="GitHub sponsors"
+                width="121"
+                height="30"
+                loading="lazy"
+                :src="`https://img.shields.io/github/sponsors/${metadata.author.gitHub.user}?logo=github&style=social`" />
+            </a>
+          </div>
         </div>
       </header>
 
       <figure class="about__github-statistics" data-reveal>
-        <a :href="metadata.author.gitHub.url">
+        <a class="about__image-link" :href="metadata.author.gitHub.url">
           <picture>
             <source
               media="(prefers-reduced-motion: reduce)"
@@ -191,7 +200,7 @@
           </picture>
         </a>
         <figcaption>
-          My GitHub contribution graphic, generated by my profile repository.
+          A generated snapshot of my GitHub contribution activity.
           <a :href="metadata.author.gitHub.url"
             >View current activity on GitHub</a
           >.
@@ -203,15 +212,19 @@
       id="awards"
       class="about__recognition about__section"
       aria-labelledby="recognition-title">
-      <header class="about__recognition-header" data-reveal>
-        <h2 id="recognition-title">Awards</h2>
+      <header
+        class="about__recognition-header about__section-heading about__section-heading--reverse"
+        data-reveal>
+        <div>
+          <p class="about__eyebrow">Community</p>
+          <h2 id="recognition-title">Awards</h2>
+        </div>
         <p class="about__standfirst">
-          Community recognition, participation and credentials. Different
-          things, with different meanings.
+          Open source, hackathons and security communities.
         </p>
       </header>
       <figure class="about__honour" data-reveal>
-        <a href="/open-uk-honouree/">
+        <div class="about__honour-media">
           <NuxtPicture
             format="avif"
             legacy-format="jpg"
@@ -222,30 +235,42 @@
             sizes="sm:322px md:644px"
             loading="lazy"
             src="/images/about/Open-UK-Honours-2022-1288x396.jpg" />
-        </a>
+          <a class="about__image-link" href="/open-uk-honouree/">
+            <NuxtPicture
+              format="avif"
+              legacy-format="jpg"
+              :img-attrs="{ class: 'about__medal-image' }"
+              alt="My OpenUK 2022 honouree medal"
+              height="449"
+              width="800"
+              sizes="sm:320px md:400px"
+              loading="lazy"
+              src="/content-images/posts/2022/open-uk-honouree/images/Medal.jpg" />
+          </a>
+        </div>
         <figcaption>
           <span class="about__eyebrow">2022 / OpenUK</span>
-          <h3>Recognition from the open technology community.</h3>
+          <h3>An unexpected honour.</h3>
           <p>
-            I was included in OpenUK's 2022 Honours List for open source
-            software. This is OpenUK's community recognition, not a UK state
-            honour.
-          </p>
-          <p class="about__source-note">
-            <a href="/open-uk-honouree/">My account of the award</a> ·
+            In 2022,
             <a
               href="https://openuk.uk/community/openuk-honours-lists/2022honourslist/">
-              OpenUK's 2022 list
-            </a>
+              OpenUK included me in its Honours List</a
+            >
+            for open source software. Being contacted out of the blue to receive
+            a medal came as a surprise.
           </p>
+          <a class="about__text-link" href="/open-uk-honouree/"
+            >Read the story behind the medal &rarr;</a
+          >
         </figcaption>
       </figure>
       <div class="about__credential-intro" data-reveal>
-        <h3>Participation is part of the story, too.</h3>
+        <h3>Building with other people.</h3>
         <p>
-          Here are some of my hackathon participation and security recognition
-          badges. Participant badges show participation, not competition wins.
-          The years belong to the badges; they are not a career timeline.
+          Hackathons and security communities are part of that story, too. These
+          badges record participation and security recognition, grouped by the
+          year shown on each badge.
         </p>
       </div>
       <section
@@ -287,29 +312,35 @@
         </ul>
       </section>
       <p class="about__source-note">
-        Badge artwork and labels are also shown on my
-        <a :href="metadata.author.gitHub.url">GitHub profile</a>.
-        <a :href="credlyUrl">Consult Credly for issuer records</a>; this gallery
-        is not a complete or live credential record.
+        <a :href="credlyUrl">Explore the badge records on Credly &rarr;</a>
       </p>
     </section>
 
     <section
       id="stackoverflow"
       class="about__answers about__section"
-      aria-labelledby="answers-title"
-      data-reveal>
-      <h2 id="answers-title">Stack Overflow</h2>
-      <p class="about__standfirst">
-        I have been fairly active on Stack Overflow. You can view my
-        <a :href="metadata.author.stackOverflow.url">Stack Overflow profile</a>
-        and see my contribution to the community.
-      </p>
-      <a class="about__text-link" :href="metadata.author.stackOverflow.url">
-        Browse my questions and answers &rarr;
-      </a>
-      <figure class="about__stack-overflow">
-        <a :href="metadata.author.stackOverflow.url">
+      aria-labelledby="answers-title">
+      <div class="about__answers-copy" data-reveal>
+        <p class="about__eyebrow">Questions &amp; answers</p>
+        <h2 id="answers-title">Stack Overflow</h2>
+        <p class="about__standfirst">
+          Some of the most useful software knowledge starts with a good
+          question.
+        </p>
+        <p>
+          I've been fairly active on Stack Overflow. My profile brings together
+          the questions I've asked, the answers I've shared and my contribution
+          to the community.
+        </p>
+        <a class="about__text-link" :href="metadata.author.stackOverflow.url">
+          Browse my questions and answers &rarr;
+        </a>
+      </div>
+      <figure class="about__stack-overflow" data-reveal>
+        <p class="about__eyebrow">My community profile</p>
+        <a
+          class="about__profile-link"
+          :href="metadata.author.stackOverflow.url">
           <img
             class="about__stack-overflow-image"
             alt="Stack Overflow profile statistics"
@@ -319,8 +350,8 @@
             :src="stackOverflowProfileUrl" />
         </a>
         <figcaption>
-          My profile image is supplied by Stack Overflow. Follow it to see my
-          questions, answers and current reputation.
+          Reputation and badges from Stack Overflow. Open the profile for my
+          questions, answers and current statistics.
         </figcaption>
       </figure>
     </section>
@@ -328,36 +359,37 @@
     <section
       id="microsoft-mvp"
       class="about__mvp about__section"
-      aria-labelledby="alumni-title"
-      data-reveal>
-      <h2 id="alumni-title">Microsoft MVP</h2>
+      aria-labelledby="alumni-title">
       <div class="about__alumni">
-        <a
-          href="https://mvp.microsoft.com/en-us/PublicProfile/5001654?fullName=Muhammad%20Rehan%20Saeed">
-          <NuxtPicture
-            format="avif"
-            legacy-format="png"
-            :img-attrs="{ class: 'about__mvp-image' }"
-            alt="Microsoft Most Valuable Professional (MVP)"
-            height="303"
-            width="750"
-            sizes="208px"
-            loading="lazy"
-            src="/images/about/Microsoft-Most-Valuable-Professional-750x303.png" />
-        </a>
-        <div>
-          <h3>Before Microsoft: the MVP years.</h3>
+        <div class="about__mvp-copy" data-reveal>
+          <header>
+            <p class="about__eyebrow">An earlier chapter</p>
+            <h2 id="alumni-title">Microsoft MVP</h2>
+          </header>
+          <p class="about__standfirst">
+            Community recognition from before I joined Microsoft.
+          </p>
           <p>
             Before I joined Microsoft, I was a Microsoft Most Valuable
-            Professional (MVP). Once I joined Microsoft, I had to give up this
-            award. The alumni badge below is not a current MVP award.
+            Professional (MVP). Joining Microsoft meant giving up the award, but
+            it's still a part of my story.
           </p>
-          <p class="about__source-note">
-            My
-            <a :href="metadata.author.gitHub.url">self-reported biography</a>
-            and <a href="/open-uk-honouree/">2022 account</a> describe this
-            earlier chapter.
-          </p>
+        </div>
+        <div class="about__mvp-media" data-reveal>
+          <a
+            class="about__mvp-artwork"
+            href="https://mvp.microsoft.com/en-us/PublicProfile/5001654?fullName=Muhammad%20Rehan%20Saeed">
+            <NuxtPicture
+              format="avif"
+              legacy-format="png"
+              :img-attrs="{ class: 'about__mvp-image' }"
+              alt="Microsoft Most Valuable Professional (MVP)"
+              height="303"
+              width="750"
+              sizes="sm:280px md:360px"
+              loading="lazy"
+              src="/images/about/Microsoft-Most-Valuable-Professional-750x303.png" />
+          </a>
           <figure class="about__alumni-badge">
             <a :href="credlyUrl">
               <NuxtPicture
@@ -373,7 +405,8 @@
                 src="/images/about/Microsoft-Most-Valuable-Professional-Alumni-2023-300x300.png" />
             </a>
             <figcaption>
-              MVP alumni status — not a current MVP award.
+              The alumni badge marks that earlier recognition, rather than a
+              current MVP award.
             </figcaption>
           </figure>
         </div>

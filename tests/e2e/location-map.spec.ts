@@ -79,7 +79,7 @@ async function expectWhiteLand(page: Page) {
   await expect
     .poll(async () => {
       const pixel = await sharp(await canvas.screenshot())
-        .extract({ left: 2, top: 2, width: 1, height: 1 })
+        .extract({ left: 16, top: 16, width: 1, height: 1 })
         .removeAlpha()
         .raw()
         .toBuffer();
@@ -93,13 +93,15 @@ async function expectDottedConnection(page: Page) {
   const canvas = figure.locator(".maplibregl-canvas");
   const author = figure.locator(".maplibregl-marker.location-map__marker");
   const visitor = figure.locator(".maplibregl-marker.location-map__visitor");
-  const accent = await visitor
-    .locator("path")
-    .evaluate((element) =>
-      getComputedStyle(element).fill.match(/\d+/g)!.map(Number),
-    );
-  const channel = accent.indexOf(Math.min(...accent));
-  const threshold = 255 - (255 - accent[channel]!) * 0.4;
+  const luminance = (pixel: Uint8Array) =>
+    [...pixel].reduce((sum, channel, index) => {
+      const value = channel / 255;
+      return (
+        sum +
+        (value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4) *
+          [0.2126, 0.7152, 0.0722][index]!
+      );
+    }, 0);
   await expect
     .poll(async () => {
       const bounds = (await canvas.boundingBox())!;
@@ -109,8 +111,23 @@ async function expectDottedConnection(page: Page) {
         .removeAlpha()
         .raw()
         .toBuffer({ resolveWithObject: true });
-      let dots = 0;
-      let gaps = 0;
+      const samples = {
+        land: { dots: 0, gaps: 0 },
+        water: { dots: 0, gaps: 0 },
+      };
+      const dx =
+        (to.x + to.width / 2 - from.x - from.width / 2) *
+        (info.width / bounds.width);
+      const dy =
+        (to.y + to.height - from.y - from.height) *
+        (info.height / bounds.height);
+      const length = Math.hypot(dx, dy);
+      const normal = [-dy / length, dx / length];
+      const pixelAt = (x: number, y: number) => {
+        const offset =
+          (Math.round(y) * info.width + Math.round(x)) * info.channels;
+        return data.subarray(offset, offset + 3);
+      };
       for (let step = 0; step < 80; step++) {
         const t = 0.3 + step / 200;
         const x = Math.round(
@@ -125,22 +142,32 @@ async function expectDottedConnection(page: Page) {
             bounds.y) *
             (info.height / bounds.height),
         );
-        let coloured = false;
-        for (let dy = -1; dy <= 1; dy++) {
-          const offset = ((y + dy) * info.width + x) * info.channels;
-          if (data[offset + channel]! < threshold) {
-            coloured = true;
-          }
+        const background = pixelAt(x + normal[0]! * 12, y + normal[1]! * 12);
+        const backgroundLuminance = luminance(background);
+        const surface = [...background].every((channel) => channel > 250)
+          ? samples.land
+          : samples.water;
+        let visible = false;
+        for (let across = -4; across <= 4; across++) {
+          const foreground = luminance(
+            pixelAt(x + normal[0]! * across, y + normal[1]! * across),
+          );
+          const contrast =
+            (Math.max(foreground, backgroundLuminance) + 0.05) /
+            (Math.min(foreground, backgroundLuminance) + 0.05);
+          if (contrast >= 3) visible = true;
         }
-        if (coloured) dots++;
-        else gaps++;
+        if (visible) surface.dots++;
+        else surface.gaps++;
       }
-      return dots > 3 && gaps > 3;
+      return Object.values(samples).every(
+        ({ dots, gaps }) => dots > 3 && gaps > 3,
+      );
     })
     .toBe(true);
 }
 
-async function mockOpenFreeMap(page: Page) {
+async function mockOpenFreeMap(page: Page, showWater = false) {
   const styles: string[] = [];
   await page.route("https://tiles.openfreemap.org/styles/*", (route) => {
     const url = new URL(route.request().url());
@@ -152,7 +179,29 @@ async function mockOpenFreeMap(page: Page) {
         sources: {
           "mock-map-data": {
             type: "geojson",
-            data: { type: "FeatureCollection", features: [] },
+            data: {
+              type: "FeatureCollection",
+              features: showWater
+                ? [
+                    {
+                      type: "Feature",
+                      properties: {},
+                      geometry: {
+                        type: "Polygon",
+                        coordinates: [
+                          [
+                            [-180, -85],
+                            [-40, -85],
+                            [-40, 85],
+                            [-180, 85],
+                            [-180, -85],
+                          ],
+                        ],
+                      },
+                    },
+                  ]
+                : [],
+            },
             attribution: "Mock map data",
           },
         },
@@ -162,6 +211,16 @@ async function mockOpenFreeMap(page: Page) {
             type: "background",
             paint: {
               "background-color": style === "dark" ? "#102737" : "#ede8fa",
+            },
+          },
+          {
+            // Keep this flat test surface independent of fill-layer recolouring.
+            id: "water",
+            type: "fill-extrusion",
+            source: "mock-map-data",
+            paint: {
+              "fill-extrusion-color": style === "dark" ? "#4b416e" : "#c5a5ef",
+              "fill-extrusion-height": 0,
             },
           },
           { id: "places", type: "circle", source: "mock-map-data" },
@@ -310,13 +369,16 @@ test("The free map loads on approach, shows Europe and follows the purple theme"
   );
   const pin = figure.locator(".maplibregl-marker.location-map__marker");
   await expect(pin).toHaveCount(1);
-  const avatar = pin.locator("img");
+  await expect(pin).toHaveCSS("display", "grid");
+  const avatar = pin.locator(".location-map__avatar");
   await expect(avatar).toHaveAttribute("src", photo);
   await avatar.evaluate((image: HTMLImageElement) => image.decode());
   expect(
     await avatar.evaluate((image: HTMLImageElement) => image.naturalWidth),
   ).toBe(192);
   await expect(avatar).toHaveCSS("border-radius", "50%");
+  await expect(avatar).toHaveCSS("width", "62px");
+  await expect(avatar).toHaveCSS("height", "62px");
   await expect(figure.locator(".maplibregl-ctrl-attrib")).toBeVisible();
   await expect(figure.locator(".maplibregl-ctrl-attrib")).toContainText(
     "Mock map data",
@@ -406,7 +468,7 @@ for (const colorScheme of ["light", "dark"] as const) {
       .poll(() => styles)
       .toEqual([colorScheme === "dark" ? "dark" : "positron"]);
     await expect(figure.locator(".maplibregl-canvas")).toBeVisible();
-    const avatar = figure.locator(".maplibregl-marker img");
+    const avatar = figure.locator(".maplibregl-marker .location-map__avatar");
     await avatar.evaluate((image: HTMLImageElement) => image.decode());
     const bounds = await figure.boundingBox();
     expect(bounds!.x).toBeGreaterThanOrEqual(0);
@@ -446,7 +508,7 @@ for (const [place, longitude, latitude] of [
       expect(route.request().headers()["referer"]).toBeUndefined();
       return route.fulfill({ json: { longitude, latitude } });
     });
-    await mockOpenFreeMap(page);
+    await mockOpenFreeMap(page, place === "New York");
     await page.goto("/about/", { waitUntil: "domcontentloaded" });
     await requireWebGL(page);
     const figure = page.locator(".location-map");

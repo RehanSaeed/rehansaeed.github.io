@@ -26,7 +26,7 @@
   }
 
   h1 {
-    font-size: clamp(2.25rem, 5.5vw, 5.5rem);
+    font-size: clamp(2.25rem, 4vw, 4rem);
   }
 
   h2 {
@@ -100,14 +100,6 @@
   padding-block: 1.5rem 2rem;
 }
 
-.about__hero-footer {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
 .about .about__eyebrow {
   color: var(--cp-accent);
   font-size: 0.75rem;
@@ -118,16 +110,11 @@
   text-transform: uppercase;
 }
 
-.about__hero-footer {
-  color: var(--cp-text-muted);
-  font-size: 0.75rem;
-}
-
 .about__intro {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 320px);
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
   align-items: start;
-  gap: clamp(2rem, 6vw, 7rem);
+  gap: clamp(2rem, 5vw, 5rem);
   max-inline-size: 1440px;
   margin-inline: auto;
   padding-block: 4rem;
@@ -138,25 +125,47 @@
   max-inline-size: 43ch;
 }
 
-.about__portrait {
-  padding-block-start: 3rem;
-}
-
 .about__location {
   display: grid;
   justify-items: center;
-  padding-block: 2rem;
+}
+
+.about__section-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: clamp(2rem, 4vw, 5rem);
+  inline-size: 100%;
+  margin-block-end: 3rem;
+}
+
+.about__section-heading > .about__standfirst {
+  align-self: center;
+}
+
+.about__map-frame {
+  display: grid;
+  justify-items: center;
+  inline-size: 100%;
 }
 
 .about__youtube {
   display: grid;
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-  gap: 3rem;
+  gap: clamp(2rem, 4vw, 4rem);
   align-items: center;
 }
 
-.about__feature-copy .about__text-link {
-  margin-inline-end: 1.5rem;
+.about__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.5rem;
+}
+
+.about__image-link {
+  display: block;
+  overflow: hidden;
+  border-radius: var(--global-border-radius);
 }
 
 .about__youtube-image {
@@ -184,8 +193,12 @@
 }
 
 .about__github-statistics {
-  max-inline-size: 1000px;
-  margin-block: 3rem;
+  max-inline-size: 1100px;
+  margin-inline: auto;
+}
+
+.about__github-statistics figcaption {
+  border-block-start: 1px solid var(--cp-border);
 }
 
 .about__github-statistics-image {
@@ -194,8 +207,35 @@
   block-size: auto;
 }
 
+.about__answers {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 5rem);
+}
+
 .about__stack-overflow {
-  margin-block-start: 2rem;
+  display: grid;
+  justify-items: start;
+  gap: 1.5rem;
+  min-inline-size: 0;
+  padding: clamp(1.25rem, 3vw, 3rem);
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--global-border-radius);
+}
+
+.about__stack-overflow figcaption {
+  padding: 0;
+}
+
+.about__stack-overflow .about__eyebrow {
+  margin: 0;
+}
+
+.about__profile-link {
+  display: inline-flex;
+  border-radius: var(--global-border-radius);
 }
 
 .about__stack-overflow-image {
@@ -219,17 +259,8 @@
   padding-block: 0.75rem;
 }
 
-.about__hero-footer {
-  border-block-start: 1px solid var(--cp-border-strong);
-  padding-block-start: 1rem;
-
-  p {
-    margin: 0;
-  }
-}
-
 .about__section {
-  padding-block: clamp(4rem, 9vw, 8rem);
+  padding-block: clamp(3.5rem, 7vw, 7rem);
 }
 
 .about__prose {
@@ -246,13 +277,8 @@
 
   p {
     font-family: var(--global-font-family-serif);
-    font-size: clamp(1.5rem, 2.75vw, 2.5rem);
+    font-size: clamp(1.2rem, 1.6vw, 1.5rem);
     line-height: 1.35;
-  }
-
-  footer {
-    color: var(--cp-text-muted);
-    font-size: 0.8rem;
   }
 }
 
@@ -267,10 +293,6 @@
   border-block: 1px solid var(--cp-border);
 }
 
-.about__work-header {
-  max-inline-size: 1000px;
-}
-
 .about__recognition {
   background: var(--cp-bg-elevated);
   border-block: 1px solid var(--cp-border);
@@ -278,15 +300,35 @@
 
 .about__honour {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
   align-items: center;
   gap: 3rem;
-  padding-block: 3rem;
+  padding-block: 0 3rem;
   border-block-end: 1px solid var(--cp-border-strong);
   margin-block-end: 3rem;
 }
 
+.about__honour-media {
+  display: grid;
+  gap: 1.5rem;
+  inline-size: 100%;
+  max-inline-size: 400px;
+  justify-self: center;
+}
+
+.about__honour figcaption {
+  padding: 0;
+  font-size: 1rem;
+}
+
 .about__honour-image {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+}
+
+.about__medal-image {
+  display: block;
   inline-size: 100%;
   block-size: auto;
 }
@@ -296,14 +338,18 @@
 }
 
 .about__credential-group {
+  display: grid;
+  grid-template-columns: minmax(4rem, 0.2fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(1.5rem, 4vw, 4rem);
   margin-block: 3rem;
 }
 
 .about .about__credentials {
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 180px), 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
+  gap: clamp(1rem, 3vw, 2rem);
   padding: 0;
   margin: 0;
 
@@ -339,29 +385,53 @@
 }
 
 .about__credential-year {
+  position: sticky;
+  inset-block-start: 7rem;
   color: var(--cp-text);
   font-family: var(--font-heading);
-  font-size: 1.5rem;
+  font-size: 2rem;
   margin-block: 0 1.5rem;
 }
 
 .about__alumni {
   display: grid;
-  grid-template-columns: 208px minmax(0, 1fr);
-  align-items: center;
-  gap: 3rem;
-  padding-block-start: 3rem;
-  margin-block-start: 3rem;
-  border-block-start: 1px solid var(--cp-border-strong);
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: clamp(2rem, 4vw, 4rem);
+}
 
-  h3 {
-    font-size: 2rem;
-  }
+.about__mvp-media {
+  display: grid;
+  gap: 2rem;
+  inline-size: 100%;
+  max-inline-size: 360px;
+  justify-self: center;
+}
+
+.about__mvp-artwork {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+  border: 1px solid var(--cp-border);
+  border-radius: var(--global-border-radius);
+  background: var(--cp-bg);
+}
+
+.about__mvp-artwork:hover,
+.about__mvp-artwork:focus-visible {
+  border-color: var(--cp-accent);
+}
+
+.about__mvp-artwork picture {
+  display: block;
+  inline-size: 100%;
+  max-inline-size: 360px;
 }
 
 .about__mvp-image {
   display: block;
-  inline-size: 208px;
+  inline-size: 100%;
   block-size: auto;
 }
 
@@ -371,7 +441,14 @@
 }
 
 .about__alumni-badge {
-  margin-block-start: 2rem;
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 1rem;
+}
+
+.about__alumni-badge figcaption {
+  padding: 0;
 }
 
 .about:not(.about--motion) *,
@@ -385,6 +462,21 @@
   .about--motion {
     [data-revealed] {
       animation: about-arrive 650ms ease-out both;
+    }
+
+    .about__youtube-image,
+    .about__medal-image,
+    .about__badge-image {
+      transition: transform 300ms ease-out;
+    }
+
+    .about__image-link:is(:hover, :focus-visible) .about__youtube-image,
+    .about__image-link:is(:hover, :focus-visible) .about__medal-image {
+      transform: scale(1.025);
+    }
+
+    .about__credentials a:is(:hover, :focus-visible) .about__badge-image {
+      transform: translateY(-4px);
     }
   }
 }
@@ -400,12 +492,45 @@
   }
 }
 
-@media (width < 700px) {
-  .about__intro,
+@media (width >= 900px) {
+  .about__section-heading--reverse > :first-child,
+  .about__youtube > .about__feature-copy,
+  .about__mvp-copy {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .about__section-heading--reverse > :last-child,
+  .about__youtube-feature,
+  .about__mvp-media {
+    grid-column: 1;
+    grid-row: 1;
+  }
+}
+
+@media (width < 900px) {
+  .about__section-heading,
   .about__youtube,
   .about__honour,
+  .about__answers,
   .about__alumni {
     grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .about__credential-group {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .about__credential-year {
+    position: static;
+  }
+}
+
+@media (width < 700px) {
+  .about__intro {
+    grid-template-columns: minmax(0, 1fr);
     gap: 2rem;
   }
 
