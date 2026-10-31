@@ -19,15 +19,6 @@ Link an existing issue if it provides useful context, but an issue is not requir
 - CI rejects flaky Playwright tests even if a retry passes. Use
   `npx playwright test <test-file> --repeat-each=10 --retries=0` to investigate
   suspected timing or rendering issues without retries hiding failures.
-- Write application code and Vue script blocks in TypeScript. Node utilities use
-  `.mts` so the supported Node version can run them directly without a loader or
-  compilation step. `npm run typecheck` checks both Nuxt and these utilities.
-- Keep TypeScript strict mode enabled in `nuxt.config.ts` and
-  `tsconfig.scripts.json`.
-- Keep `eslint.config.mjs` in JavaScript for ESLint's native config loader,
-  `lighthouserc.js` in CommonJS for Lighthouse CI, and
-  `public/service-worker-update-policy.js` as directly served browser JavaScript.
-  Inline browser scripts and historical article examples are not TypeScript sources.
 
 ## Images
 
