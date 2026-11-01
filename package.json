@@ -36,6 +36,7 @@
     "feed": "6.0.0",
     "flexsearch": "0.8.212",
     "katex": "0.19.1",
+    "maplibre-gl": "6.16.0",
     "mermaid": "12.2.0",
     "nuxt": "4.6.3",
     "nuxt-og-image": "7.0.7",
