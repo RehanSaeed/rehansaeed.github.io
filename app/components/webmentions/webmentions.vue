@@ -172,10 +172,12 @@ export default {
 </script>
 
 <style lang="scss">
-@use "~/assets/style/abstracts/breakpoints";
-
 .webmentions {
+  --global-line-length-min: 0;
+
+  container: webmentions / inline-size;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
 
   content-visibility: auto;
   contain-intrinsic-size: 704px;
@@ -190,16 +192,16 @@ export default {
 
 .webmentions__help {
   grid-column: 1;
-  grid-row: 1;
+  grid-row: 2;
   align-self: center;
-  justify-self: end;
+  justify-self: start;
   margin-block-end: var(--global-space-fixed-4);
 }
 
-@include breakpoints.respond-below(md) {
+@container webmentions (width > 30em) {
   .webmentions__help {
-    grid-row: 2;
-    justify-self: start;
+    grid-row: 1;
+    justify-self: end;
   }
 }
 
