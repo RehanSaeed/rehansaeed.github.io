@@ -52,6 +52,29 @@ test("Vue accessibility checks images and accepts explicit label associations", 
   );
   assert.ok(rules.includes("vuejs-accessibility/alt-text"));
   assert.ok(!rules.includes("vuejs-accessibility/label-has-for"));
+
+  const autofocusInput = `<input
+    autofocus
+    aria-label="Search" />`;
+  const noAutofocus = "vuejs-accessibility/no-autofocus";
+  const unscoped = await ruleIds(
+    `<template>${autofocusInput}</template>`,
+    "app/components/search/search.vue",
+  );
+  assert.ok(unscoped.includes(noAutofocus));
+  const scopedInput = `<!-- eslint-disable ${noAutofocus} -->
+    ${autofocusInput}
+    <!-- eslint-enable ${noAutofocus} -->`;
+  const scoped = await ruleIds(
+    `<template>${scopedInput}</template>`,
+    "app/components/search/search.vue",
+  );
+  assert.ok(!scoped.includes(noAutofocus));
+  const elsewhere = await ruleIds(
+    `<template>${scopedInput}${autofocusInput}</template>`,
+    "app/components/search/search.vue",
+  );
+  assert.equal(elsewhere.filter((rule) => rule === noAutofocus).length, 1);
 });
 
 test("Vue accessibility checks Nuxt image components inside links", async () => {
