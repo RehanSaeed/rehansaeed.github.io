@@ -65,6 +65,19 @@ authorise publishing the article or posting to social media.
   instead of asserting that responses match an interface. Reuse shared schemas
   and surface validation failures through the existing error-handling paths.
 
+## Contact Email Privacy
+
+- Keep the author's contact email obfuscated in `site.json` using the existing
+  `app/framework/obfuscate.js` helpers. Never write the decoded address into
+  tracked files, including tests, documentation or agent guidance, or commit
+  messages and pull request descriptions.
+- Test the expected obfuscated value and decode it at runtime for mailto
+  assertions. Preserve the existing protection against exposing the decoded
+  address in generated pages, payloads and scripts before link activation.
+- Check staged changes for plaintext contact addresses before committing.
+  Automatic app checkpoints can capture uncommitted files, so never use tracked
+  files as temporary storage for the decoded address.
+
 ## Accessibility and Responsive Design
 
 - Support both light and dark modes.

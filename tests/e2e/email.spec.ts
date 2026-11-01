@@ -9,6 +9,9 @@ async function contactAddress() {
     await readFile(join(process.cwd(), "site.json"), "utf8"),
   );
   const address = decode(site.author.email);
+  expect(site.author.email).toBe(
+    "9cfff3f2e8fdffe8dceef9f4fdf2effdf9f9f8b2fff3f1",
+  );
   expect(site.author.email === address).toBe(false);
   expect(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address)).toBe(true);
   return address;
