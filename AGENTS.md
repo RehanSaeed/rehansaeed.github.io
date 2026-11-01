@@ -65,6 +65,19 @@ authorise publishing the article or posting to social media.
   instead of asserting that responses match an interface. Reuse shared schemas
   and surface validation failures through the existing error-handling paths.
 
+## Contact Email Privacy
+
+- Keep contact email addresses obfuscated using the existing obfuscation helpers.
+  Never write decoded addresses into tracked files, including tests,
+  documentation or agent guidance, or commit messages and pull request
+  descriptions.
+- Test expected obfuscated values and decode them at runtime for mailto
+  assertions. Preserve the existing protection against exposing decoded
+  addresses in generated pages, payloads and scripts before link activation.
+- Check staged changes for plaintext contact addresses before committing.
+  Automatic app checkpoints can capture uncommitted files, so never use tracked
+  files as temporary storage for decoded addresses.
+
 ## Accessibility and Responsive Design
 
 - Support both light and dark modes.
