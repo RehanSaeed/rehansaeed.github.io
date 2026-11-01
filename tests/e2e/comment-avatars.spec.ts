@@ -1,3 +1,4 @@
+import type { E2EFixtures } from "./fixtures";
 import { expect, test } from "./fixtures";
 
 const postPath =
@@ -19,9 +20,9 @@ test.beforeEach(async ({ page }) => {
 
 for (const colorScheme of ["light", "dark"] as const) {
   for (const width of [375, 1280]) {
-    test(`Comment avatars use the shared circular frame in ${colorScheme} at ${width}px`, async ({
+    async function verifyCommentAvatarFrames({
       page,
-    }) => {
+    }: Pick<E2EFixtures, "page">) {
       await page.setViewportSize({ width, height: 900 });
       await page.emulateMedia({ colorScheme });
       await page.route(commentsPath, (route) =>
@@ -72,13 +73,18 @@ for (const colorScheme of ["light", "dark"] as const) {
       expect(bounds!.width).toBe(bounds!.height);
       const expectedSize = await avatar.evaluate(
         () =>
-          3 * parseFloat(getComputedStyle(document.documentElement).fontSize),
+          3 *
+          Number.parseFloat(
+            getComputedStyle(document.documentElement).fontSize,
+          ),
       );
       expect(bounds!.width).toBeCloseTo(expectedSize, 1);
 
       for (const interaction of ["hover", "focus"] as const) {
         await page.mouse.move(0, 0);
-        await avatar.evaluate((element: HTMLElement) => element.blur());
+        await avatar.evaluate((element: HTMLElement) => {
+          element.blur();
+        });
         if (interaction === "hover") {
           await avatar.hover();
         } else {
@@ -121,6 +127,16 @@ for (const colorScheme of ["light", "dark"] as const) {
         expect(frame.border).toBe(accent);
         expect(frame.radius).toBe("100%");
       }
+    }
+
+    test(`Comment avatars use the shared circular frame in ${colorScheme} at ${width}px`, async ({
+      page,
+    }) => {
+      await expect(
+        verifyCommentAvatarFrames({
+          page,
+        }),
+      ).resolves.toBeUndefined();
     });
   }
 }

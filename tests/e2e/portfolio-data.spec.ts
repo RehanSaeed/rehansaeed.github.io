@@ -2,6 +2,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { expect, test } from "@playwright/test";
 import { portfolioSnapshots } from "../../modules/blog-content/portfolio";
 import type { ContentEntry } from "../../modules/blog-content/scan";
+import { cacheSchema } from "./data";
 
 const project = (repository: string): ContentEntry => ({
   path: `portfolio/${repository}/index.md`,
@@ -21,10 +22,10 @@ test("Portfolio popularity refreshes expired counts and reuses fresh counts", as
   const originalFetch = globalThis.fetch;
   let calls = 0;
   let stars = 20;
-  globalThis.fetch = async () => {
+  globalThis.fetch = () => {
     calls++;
-    return new Response(
-      JSON.stringify({ stargazers_count: stars, forks_count: 3 }),
+    return Promise.resolve(
+      new Response(JSON.stringify({ stargazers_count: stars, forks_count: 3 })),
     );
   };
   try {
@@ -68,8 +69,10 @@ test("A newly added project cannot be omitted by a fresh popularity cache", asyn
     }),
   );
   const originalFetch = globalThis.fetch;
-  globalThis.fetch = async () =>
-    new Response(JSON.stringify({ stargazers_count: 50, forks_count: 4 }));
+  globalThis.fetch = () =>
+    Promise.resolve(
+      new Response(JSON.stringify({ stargazers_count: 50, forks_count: 4 })),
+    );
   try {
     const snapshots = await portfolioSnapshots(dir, [first, second]);
     expect(Object.keys(snapshots)).toHaveLength(2);
@@ -93,10 +96,12 @@ test("Unavailable GitHub preserves saved popularity and schedules another refres
   const file = info.outputPath("portfolio-cache", "blog-portfolio.json");
   await writeFile(file, JSON.stringify({ updated: 0, snapshots }));
   const originalFetch = globalThis.fetch;
-  globalThis.fetch = async () => new Response(null, { status: 503 });
+  globalThis.fetch = () => Promise.resolve(new Response(null, { status: 503 }));
   try {
     expect(await portfolioSnapshots(dir, [entry])).toEqual(snapshots);
-    expect(JSON.parse(await readFile(file, "utf8")).updated).toBe(0);
+    expect(
+      cacheSchema.parse(JSON.parse(await readFile(file, "utf8"))).updated,
+    ).toBe(0);
   } finally {
     globalThis.fetch = originalFetch;
   }
@@ -113,7 +118,7 @@ test("Missing or invalid GitHub counts fail instead of fabricating zero populari
       new Response(JSON.stringify({ stargazers_count: -1, forks_count: 3 })),
       new Response(JSON.stringify({ stargazers_count: "20", forks_count: 3 })),
     ]) {
-      globalThis.fetch = async () => response;
+      globalThis.fetch = () => Promise.resolve(response);
       await expect(portfolioSnapshots(dir, entries)).rejects.toThrow(
         "GitHub popularity unavailable for example/project.",
       );
@@ -145,9 +150,10 @@ test("Microsoft work does not request or fabricate GitHub statistics", async ({}
   entry.data.kind = "microsoft";
   entry.data.permalink = "https://blogs.windows.com/example/";
   const originalFetch = globalThis.fetch;
-  globalThis.fetch = async () => {
-    throw new Error("Microsoft product links must not reach the GitHub API.");
-  };
+  globalThis.fetch = () =>
+    Promise.reject(
+      new Error("Microsoft product links must not reach the GitHub API."),
+    );
   try {
     expect(await portfolioSnapshots(dir, [entry])).toEqual({});
   } finally {

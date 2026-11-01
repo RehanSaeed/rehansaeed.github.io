@@ -156,7 +156,9 @@ test("A saved dark theme displays the sun before hydration", async ({
     colorScheme: "light",
     reducedMotion: "no-preference",
   });
-  await page.addInitScript(() => localStorage.setItem("theme", "dark"));
+  await page.addInitScript(() => {
+    localStorage.setItem("theme", "dark");
+  });
   const scripts = await delayClientScripts(page);
   try {
     await page.goto("/", { waitUntil: "commit" });

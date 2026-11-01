@@ -1,3 +1,4 @@
+import type { E2EFixtures } from "./fixtures";
 import type { Locator } from "@playwright/test";
 import { expect, test } from "./fixtures";
 
@@ -28,9 +29,9 @@ for (const { name, path, selector } of [
   { name: "Footer", path: "/", selector: ".footer .social" },
   { name: "About", path: "/about/", selector: ".about__social-links" },
 ]) {
-  test(`${name} social buttons grow by 50% with easing without shifting neighbours`, async ({
+  async function verifySocialButtonTransitions({
     page,
-  }) => {
+  }: Pick<E2EFixtures, "page">) {
     await page.goto(path);
     await expect(
       page.getByRole("button", { name: "Open search", exact: true }),
@@ -49,7 +50,7 @@ for (const { name, path, selector } of [
         const style = getComputedStyle(element);
         const properties = style.transitionProperty.split(", ");
         const durations = style.transitionDuration.split(", ");
-        return parseFloat(
+        return Number.parseFloat(
           durations[properties.indexOf("transform") % durations.length]!,
         );
       });
@@ -82,5 +83,15 @@ for (const { name, path, selector } of [
       expect(restored?.width).toBeCloseTo(original!.width, 1);
       expect(restored?.height).toBeCloseTo(original!.height, 1);
     }
+  }
+
+  test(`${name} social buttons grow by 50% with easing without shifting neighbours`, async ({
+    page,
+  }) => {
+    await expect(
+      verifySocialButtonTransitions({
+        page,
+      }),
+    ).resolves.toBeUndefined();
   });
 }

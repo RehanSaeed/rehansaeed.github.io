@@ -1,3 +1,4 @@
+import type { E2EFixtures } from "./fixtures";
 import { load } from "cheerio";
 import sharp from "sharp";
 import { expect, test } from "./fixtures";
@@ -55,6 +56,7 @@ const nugetPackages: Record<string, string[]> = {
   "RehanSaeed/Serilog.Enrichers.Span": ["Serilog.Enrichers.Span"],
   "RehanSaeed/Elysium-Extra": ["Elysium.Extra"],
 };
+
 test("All portfolio cards and popularity ordering are present in static HTML", async ({
   request,
 }) => {
@@ -153,9 +155,9 @@ test("All portfolio cards and popularity ordering are present in static HTML", a
   });
 });
 
-test("Microsoft work precedes open source and links to public product articles without repository badges", async ({
+async function verifyMicrosoftPortfolioCards({
   request,
-}) => {
+}: Pick<E2EFixtures, "request">) {
   const response = await request.get("/portfolio/");
   const $ = load(await response.text());
   expect($(".portfolio-card")).toHaveLength(repositories.length + 4);
@@ -267,23 +269,34 @@ test("Microsoft work precedes open source and links to public product articles w
     expect(imageResponse.ok()).toBe(true);
     await expectFilledCompanionCorners(await imageResponse.body());
   }
-  const graph = JSON.parse($('script[type="application/ld+json"]').text());
-  const list = graph["@graph"].find(
-    (node: { "@type": string }) => node["@type"] === "ItemList",
+  const { graphSchema } = await import("./data");
+  const graph = graphSchema.parse(
+    JSON.parse($('script[type="application/ld+json"]').text()),
   );
-  expect(list.itemListElement.map((item: { url: string }) => item.url)).toEqual(
+  const list = graph["@graph"].find((node) => node["@type"] === "ItemList");
+  expect(list!.itemListElement!.map((item) => item.url)).toEqual(
     $(".portfolio-card__title a")
       .map((_, link) => $(link).attr("href"))
       .get(),
   );
+}
+
+test("Microsoft work precedes open source and links to public product articles without repository badges", async ({
+  request,
+}) => {
+  await expect(
+    verifyMicrosoftPortfolioCards({
+      request,
+    }),
+  ).resolves.toBeUndefined();
 });
 
 for (const width of [375, 1280]) {
   for (const colorScheme of ["light", "dark"] as const) {
-    test(`Portfolio badges follow titles at ${width}px in ${colorScheme} mode`, async ({
+    async function verifyPortfolioBadgeLayout({
       page,
       request,
-    }) => {
+    }: Pick<E2EFixtures, "page" | "request">) {
       await page.setViewportSize({ width, height: 900 });
       await page.emulateMedia({ colorScheme });
       await page.route("https://img.shields.io/**", (route) => {
@@ -357,11 +370,10 @@ for (const width of [375, 1280]) {
       expect(heroBox!.width / heroBox!.height).toBeCloseTo(1600 / 900, 2);
       for (const card of await cards.all()) {
         await card.scrollIntoViewIfNeeded();
-        const permalink = await card
-          .locator(".portfolio-card__title a")
-          .getAttribute("href");
-        expect(permalink).toBeTruthy();
-        const repository = new URL(permalink!).pathname.slice(1);
+        const titleLink = card.locator(".portfolio-card__title a");
+        await expect(titleLink).toHaveAttribute("href", /.+/);
+        const permalink = (await titleLink.getAttribute("href"))!;
+        const repository = new URL(permalink).pathname.slice(1);
         expect(repositories).toContain(repository);
         expect(
           await card
@@ -551,6 +563,18 @@ for (const width of [375, 1280]) {
       await expect
         .poll(() => page.evaluate(() => document.documentElement.scrollWidth))
         .toBe(width);
+    }
+
+    test(`Portfolio badges follow titles at ${width}px in ${colorScheme} mode`, async ({
+      page,
+      request,
+    }) => {
+      await expect(
+        verifyPortfolioBadgeLayout({
+          page,
+          request,
+        }),
+      ).resolves.toBeUndefined();
     });
   }
 }

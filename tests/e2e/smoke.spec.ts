@@ -19,7 +19,11 @@ test.describe("Smoke", () => {
       const $ = load(await response.text());
       const unresolved = $("*")
         .toArray()
-        .map((element) => element.tagName)
+        .map((element) =>
+          "name" in element && typeof element.name === "string"
+            ? element.name
+            : "",
+        )
         .filter((tag) => tag.startsWith("u-"));
       expect(unresolved, path).toEqual([]);
       expect(
@@ -56,12 +60,12 @@ test.describe("Smoke", () => {
       expect(response.ok()).toBe(true);
       const $ = load(await response.text());
       const staticLink = $(`footer .social a[aria-label="${name}"]`);
-      expect(staticLink.length).toBe(1);
+      expect(staticLink).toHaveLength(1);
       expect(staticLink.attr("href")).toBe(url);
       expect(staticLink.attr("rel")).toBe("me");
       expect(staticLink.prev().attr("aria-label")).toBe(previous);
       const staticIcon = staticLink.find("svg.icon");
-      expect(staticIcon.length).toBe(1);
+      expect(staticIcon).toHaveLength(1);
       expect(staticIcon.attr("aria-hidden")).toBe("true");
       expect(staticIcon.find("path").length).toBeGreaterThan(0);
 

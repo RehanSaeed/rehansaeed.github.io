@@ -1,10 +1,13 @@
+import type { TestInfo } from "@playwright/test";
+import type { E2EFixtures } from "./fixtures";
 import sharp from "sharp";
 import { expect, test } from "./fixtures";
 
 for (const width of [375, 1280]) {
-  test(`The author winks every 15 seconds without moving the portrait at ${width}px`, async ({
-    page,
-  }, testInfo) => {
+  async function verifyAuthorWink(
+    { page }: Pick<E2EFixtures, "page">,
+    testInfo: TestInfo,
+  ) {
     await page.setViewportSize({ width, height: 900 });
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.goto("/");
@@ -113,6 +116,12 @@ for (const width of [375, 1280]) {
     expect(changed, "The wink visibly changes the eye overlay").toBeGreaterThan(
       5,
     );
+  }
+
+  test(`The author winks every 15 seconds without moving the portrait at ${width}px`, async ({
+    page,
+  }, testInfo) => {
+    await expect(verifyAuthorWink({ page }, testInfo)).resolves.toBeUndefined();
   });
 }
 

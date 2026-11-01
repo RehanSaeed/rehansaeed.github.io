@@ -1,3 +1,4 @@
+import type { E2EFixtures } from "./fixtures";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { join } from "node:path";
@@ -67,9 +68,7 @@ for (const variant of variants) {
 }
 
 for (const theme of ["light", "dark"]) {
-  test(`Variants preserve geometry, interactions and forwarding in ${theme}`, async ({
-    page,
-  }) => {
+  async function verifyButtonVariants({ page }: Pick<E2EFixtures, "page">) {
     await page.setContent(
       `<html data-theme="${theme}"><body><div id="app"></div></body></html>`,
     );
@@ -228,9 +227,11 @@ for (const theme of ["light", "dark"]) {
     const clicks = await output.getAttribute("data-clicks");
     for (const control of [plain, secondary, primary, submit]) {
       await expect(control).toBeDisabled();
+      // Disabled controls cannot pass actionability checks; exercise their disabled hover styles.
       await control.hover({ force: true });
       await expect(control).toHaveCSS("color", tokens.disabled);
       await expect(control).toHaveCSS("cursor", "not-allowed");
+      // Deliberately dispatch a click to verify disabled controls do not invoke their handlers.
       await control.click({ force: true });
     }
     await expect(output).toHaveAttribute("data-clicks", clicks!);
@@ -241,6 +242,16 @@ for (const theme of ["light", "dark"]) {
     await page.getByRole("button", { name: "Toggle disabled" }).click();
     await expect(primary).toBeEnabled();
     await expect(primary).toHaveCSS("background-color", tokens.accent);
+  }
+
+  test(`Variants preserve geometry, interactions and forwarding in ${theme}`, async ({
+    page,
+  }) => {
+    await expect(
+      verifyButtonVariants({
+        page,
+      }),
+    ).resolves.toBeUndefined();
   });
 }
 

@@ -3,13 +3,62 @@ import { readFileSync, readdirSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { parse } from "yaml";
-import { expect, test } from "@playwright/test";
+import { expect, test, type Route } from "@playwright/test";
+import { z } from "zod";
+import { requestUrl, workflowSchema } from "./data";
 import {
     checkCsp,
     checkPagesSettings,
     verifyArtifact,
     verifyPublished,
 } from "../../scripts/pages.mjs";
+
+const deploymentStepSchema =
+    workflowSchema.shape.jobs.valueType.shape.steps.element.extend({
+        if: z.string().optional(),
+        run: z.string().optional(),
+    });
+const deploymentJobSchema = workflowSchema.shape.jobs.valueType.extend({
+    name: z.string().optional(),
+    needs: z.union([z.string(), z.array(z.string())]).optional(),
+    environment: z.looseObject({ name: z.string() }).optional(),
+    concurrency: z
+        .looseObject({ "cancel-in-progress": z.boolean().optional() })
+        .optional(),
+    steps: z.array(deploymentStepSchema),
+});
+const deploymentWorkflowSchema = workflowSchema.extend({
+    permissions: z.record(z.string(), z.string()),
+    jobs: z.record(z.string(), deploymentJobSchema),
+});
+
+function readBuildWorkflow() {
+    return deploymentWorkflowSchema.parse(
+        parse(readFileSync(".github/workflows/build.yml", "utf8")),
+    );
+}
+
+function requireJob(
+    workflow: z.infer<typeof deploymentWorkflowSchema>,
+    name: string,
+) {
+    const job = workflow.jobs[name];
+    if (!job) {
+        throw new Error(`Missing workflow job: ${name}`);
+    }
+    return job;
+}
+
+function requireStep(
+    steps: z.infer<typeof deploymentStepSchema>[],
+    name: string,
+) {
+    const step = steps.find((candidate) => candidate.name === name);
+    if (!step) {
+        throw new Error(`Missing workflow step: ${name}`);
+    }
+    return step;
+}
 
 const oldPolicy =
     "default-src 'self'; script-src 'self' https://www.google-analytics.com/analytics.js 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.github.com https://webmention.io https://www.google-analytics.com; font-src 'self' data:; frame-src 'self' https://www.youtube-nocookie.com; img-src 'self' data: https:; worker-src 'self'";
@@ -24,33 +73,43 @@ const policy = oldPolicy
     );
 
 test("Pages settings reject an unprepared source or lost custom domain", () => {
-    expect(() =>
-        checkPagesSettings({ build_type: "legacy", cname: "rehansaeed.com" }),
-    ).toThrow("Switch Settings");
-    expect(() =>
-        checkPagesSettings({ build_type: "workflow", cname: null }),
-    ).toThrow("custom domain");
-    expect(() =>
-        checkPagesSettings({ build_type: "workflow", cname: "rehansaeed.com" }),
-    ).not.toThrow();
+    expect(() => {
+        checkPagesSettings({ build_type: "legacy", cname: "rehansaeed.com" });
+    }).toThrow("Switch Settings");
+    expect(() => {
+        checkPagesSettings({ build_type: "workflow", cname: null });
+    }).toThrow("custom domain");
+    expect(() => {
+        checkPagesSettings({ build_type: "workflow", cname: "rehansaeed.com" });
+    }).not.toThrow();
 });
 
 test("GA4 requires both vendor scripts and regional collection origins in every enforced policy", () => {
-    expect(() => checkCsp([oldPolicy], "")).not.toThrow();
-    expect(() => checkCsp([oldPolicy], "G-LOCALTEST")).toThrow(
-        "googletagmanager",
-    );
+    expect(() => {
+        checkCsp([oldPolicy], "");
+    }).not.toThrow();
+    expect(() => {
+        checkCsp([oldPolicy], "G-LOCALTEST");
+    }).toThrow("googletagmanager");
     const scriptsOnly = oldPolicy.replace(
         "script-src 'self'",
         "script-src 'self' https://www.googletagmanager.com",
     );
-    expect(() => checkCsp([scriptsOnly], "G-LOCALTEST")).toThrow("connect-src");
-    expect(() => checkCsp([policy], "G-LOCALTEST")).not.toThrow();
-    expect(() => checkCsp([policy, oldPolicy], "G-LOCALTEST")).toThrow();
-    expect(() =>
-        checkCsp([`${policy}; script-src-elem 'none'`], "G-LOCALTEST"),
-    ).toThrow();
-    expect(() => checkCsp(["default-src 'self'"], "G-LOCALTEST")).toThrow();
+    expect(() => {
+        checkCsp([scriptsOnly], "G-LOCALTEST");
+    }).toThrow("connect-src");
+    expect(() => {
+        checkCsp([policy], "G-LOCALTEST");
+    }).not.toThrow();
+    expect(() => {
+        checkCsp([policy, oldPolicy], "G-LOCALTEST");
+    }).toThrow();
+    expect(() => {
+        checkCsp([`${policy}; script-src-elem 'none'`], "G-LOCALTEST");
+    }).toThrow();
+    expect(() => {
+        checkCsp(["default-src 'self'"], "G-LOCALTEST");
+    }).toThrow();
 });
 
 test("Published artifact respects Pages limits and resolves all routes and local resources case-sensitively", async () => {
@@ -84,60 +143,54 @@ test("Image compression automation is removed while CI still checks Git LFS poin
             "calibreapp/image-actions@",
         );
     }
-    const build = parse(readFileSync(".github/workflows/build.yml", "utf8"));
-    expect(
-        build.jobs.build.steps.find(
-            (step: { name: string }) => step.name === "Check Git LFS Pointers",
-        ).run,
-    ).toBe("git lfs fsck --pointers");
+    const build = requireJob(readBuildWorkflow(), "build");
+    expect(requireStep(build.steps, "Check Git LFS Pointers").run).toBe(
+        "git lfs fsck --pointers",
+    );
 });
 
 test("Deployment is main-only, gated by successful build/tests/preflight and preserves hidden public files", () => {
-    const workflow = parse(readFileSync(".github/workflows/build.yml", "utf8"));
+    const workflow = readBuildWorkflow();
+    const deploy = requireJob(workflow, "deploy");
+    const build = requireJob(workflow, "build");
     const condition =
         "github.event_name != 'pull_request' && github.ref == 'refs/heads/main'";
-    expect(workflow.jobs.deploy.if).toBe(condition);
-    expect(workflow.jobs.deploy.needs).toEqual(["build", "test"]);
-    expect(workflow.jobs.deploy.permissions).toEqual({
+    expect(deploy.if).toBe(condition);
+    expect(deploy.needs).toEqual(["build", "test"]);
+    expect(deploy.permissions).toEqual({
         contents: "read",
         pages: "write",
         "id-token": "write",
     });
-    expect(workflow.jobs.deploy.environment.name).toBe("github-pages");
-    expect(workflow.jobs.deploy.concurrency["cancel-in-progress"]).toBe(false);
-    const steps = workflow.jobs.build.steps;
+    expect(deploy.environment?.name).toBe("github-pages");
+    expect(deploy.concurrency?.["cancel-in-progress"]).toBe(false);
+    const steps = build.steps;
     const check = steps.findIndex(
-        (step: { name: string }) => step.name === "Check Pages Cutover",
+        (step) => step.name === "Check Pages Cutover",
     );
     const upload = steps.findIndex(
-        (step: { name: string }) => step.name === "Upload Pages Artifact",
+        (step) => step.name === "Upload Pages Artifact",
     );
     expect(check).toBeGreaterThan(-1);
     expect(check).toBeLessThan(upload);
-    expect(steps[check].if).toBe(condition);
-    expect(steps[upload].if).toBe(condition);
-    expect(steps[upload].with).toEqual({
+    expect(steps[check]?.if).toBe(condition);
+    expect(steps[upload]?.if).toBe(condition);
+    expect(steps[upload]?.with).toEqual({
         path: "dist",
         "include-hidden-files": true,
     });
     expect(workflow.permissions.pages).toBe("read");
-    const deployment = workflow.jobs.deploy.steps;
+    const deployment = deploy.steps;
     expect(
-        deployment.some(
-            (step: { name: string }) => step.name === "Verify Published Site",
-        ),
+        deployment.some((step) => step.name === "Verify Published Site"),
     ).toBe(true);
-    expect(
-        deployment.some((step: { run?: string }) =>
-            step.run?.includes("npm ci"),
-        ),
-    ).toBe(false);
+    expect(deployment.some((step) => step.run?.includes("npm ci"))).toBe(false);
 });
 
 test("Browser suites run in parallel against one complete build without dropping coverage", () => {
-    const workflow = parse(readFileSync(".github/workflows/build.yml", "utf8"));
-    const build = workflow.jobs.build;
-    const browserTests = workflow.jobs.test;
+    const workflow = readBuildWorkflow();
+    const build = requireJob(workflow, "build");
+    const browserTests = requireJob(workflow, "test");
     expect(build.name).toBe("Generate");
     expect(workflow.jobs.checks).toEqual({
         name: "Build",
@@ -164,51 +217,56 @@ test("Browser suites run in parallel against one complete build without dropping
         name: "Package Browser Test Site",
         run: "tar -cf playwright-site.tar dist .data/blog-image-metadata.json",
     });
-    const upload = build.steps.find(
-        (step: { name: string }) => step.name === "Upload Browser Test Site",
+    const upload = requireStep(build.steps, "Upload Browser Test Site");
+    const download = requireStep(
+        browserTests.steps,
+        "Download Browser Test Site",
     );
-    const download = browserTests.steps.find(
-        (step: { name: string }) => step.name === "Download Browser Test Site",
-    );
-    expect(upload.with.name).toBe("playwright-site");
-    expect(upload.with.path).toBe("playwright-site.tar");
-    expect(upload.with["if-no-files-found"]).toBe("error");
-    expect(download.with.name).toBe(upload.with.name);
+    expect(upload.with?.name).toBe("playwright-site");
+    expect(upload.with?.path).toBe("playwright-site.tar");
+    expect(upload.with?.["if-no-files-found"]).toBe("error");
+    expect(download.with?.name).toBe(upload.with?.name);
     const steps = browserTests.steps;
     const extract = steps.findIndex(
-        (step: { name: string }) => step.name === "Extract Browser Test Site",
+        (step) => step.name === "Extract Browser Test Site",
     );
-    const run = steps.findIndex(
-        (step: { name: string }) => step.name === "Playwright Test",
-    );
+    const run = steps.findIndex((step) => step.name === "Playwright Test");
     expect(extract).toBeGreaterThan(
-        steps.findIndex(
-            (step: { name: string }) => step.name === "NPM Install",
-        ),
+        steps.findIndex((step) => step.name === "NPM Install"),
     );
     expect(extract).toBeLessThan(run);
-    expect(steps[extract].run).toBe("tar -xf playwright-site.tar");
-    expect(steps[run].run).toBe(
+    expect(steps[extract]?.run).toBe("tar -xf playwright-site.tar");
+    expect(steps[run]?.run).toBe(
         "npx playwright test --project=${{ matrix.browser }}",
     );
-    expect(
-        steps.some((step: { run?: string }) => step.run === "npm run build"),
-    ).toBe(false);
+    expect(steps.some((step) => step.run === "npm run build")).toBe(false);
     for (const name of [
         "Cache Playwright Browsers",
         "Install Playwright Browsers",
         "Install Playwright Dependencies",
     ]) {
-        expect(
-            steps.find((step: { name: string }) => step.name === name).if,
-        ).toContain("matrix.browser == 'firefox'");
+        expect(requireStep(steps, name).if).toContain(
+            "matrix.browser == 'firefox'",
+        );
     }
-    const report = steps.find(
-        (step: { name: string }) => step.name === "Upload Playwright Report",
-    );
+    const report = requireStep(steps, "Upload Playwright Report");
     expect(report.if).toBe("failure()");
-    expect(report.with.name).toBe("playwright-report-${{ matrix.browser }}");
+    expect(report.with?.name).toBe("playwright-report-${{ matrix.browser }}");
 });
+
+function publishedProbeResponse(
+    input: RequestInfo | URL,
+    state: { revision: string; body: string; html: string; status: number },
+): Promise<Response> {
+    const url = requestUrl(input);
+    return Promise.resolve(
+        url.endsWith("/deployment.json")
+            ? Response.json({ revision: state.revision })
+            : new Response(url.endsWith("/") ? state.html : state.body, {
+                  status: state.status,
+              }),
+    );
+}
 
 test("Post-deployment verification detects stale releases, assets and statuses without changing hosting", async () => {
     const original = globalThis.fetch;
@@ -233,12 +291,8 @@ test("Post-deployment verification detects stale releases, assets and statuses w
         let html =
             '<title>Blog</title><main id="main"></main><script>CDN addition</script>';
         let status = 200;
-        globalThis.fetch = async (url) =>
-            String(url).endsWith("/deployment.json")
-                ? Response.json({ revision })
-                : new Response(String(url).endsWith("/") ? html : body, {
-                      status,
-                  });
+        globalThis.fetch = (url) =>
+            publishedProbeResponse(url, { revision, body, html, status });
         await expect(
             verifyPublished("https://example.test", deployment, 1, 0),
         ).rejects.toThrow("another deployment");
@@ -264,53 +318,61 @@ test("Post-deployment verification detects stale releases, assets and statuses w
     }
 });
 
+async function handleGa4Probe(
+    route: Route,
+    requests: string[],
+    loaderRequests: string[],
+) {
+    const url = new URL(route.request().url());
+    if (
+        [
+            "www.googletagmanager.com",
+            "region1.google-analytics.com",
+            "www.google.com",
+        ].includes(url.hostname)
+    ) {
+        // Keep the explicit probes separate from the app's configured GA4 loader.
+        if (url.searchParams.has("csp-probe")) {
+            requests.push(url.hostname);
+        } else {
+            loaderRequests.push(url.href);
+        }
+        await route.fulfill({
+            status: 200,
+            headers: { "Access-Control-Allow-Origin": "*" },
+            contentType: "text/javascript",
+            body: "",
+        });
+    } else if (route.request().resourceType() === "document") {
+        const response = await route.fetch();
+        // Enable the real app loader even in artifacts built without a GA4 ID.
+        const body = (await response.text()).replace(
+            /googleAnalyticsId:"[^"]*"/,
+            'googleAnalyticsId:"G-APPTEST"',
+        );
+        expect(body).toContain('googleAnalyticsId:"G-APPTEST"');
+        await route.fulfill({
+            response,
+            body,
+            headers: {
+                ...response.headers(),
+                "content-length": String(Buffer.byteLength(body)),
+                "content-security-policy": policy,
+            },
+        });
+    } else {
+        await route.continue();
+    }
+}
+
 test("GA4 vendor and collector loads pass the corrected CSP without sending tracking data", async ({
     page,
 }) => {
     const requests: string[] = [];
     const loaderRequests: string[] = [];
-    await page.route("**/*", async (route) => {
-        const url = new URL(route.request().url());
-        if (
-            [
-                "www.googletagmanager.com",
-                "region1.google-analytics.com",
-                "www.google.com",
-            ].includes(url.hostname)
-        ) {
-            // Keep the explicit probes separate from the app's configured GA4 loader.
-            if (url.searchParams.has("csp-probe")) {
-                requests.push(url.hostname);
-            } else {
-                loaderRequests.push(url.href);
-            }
-            await route.fulfill({
-                status: 200,
-                headers: { "Access-Control-Allow-Origin": "*" },
-                contentType: "text/javascript",
-                body: "",
-            });
-        } else if (route.request().resourceType() === "document") {
-            const response = await route.fetch();
-            // Enable the real app loader even in artifacts built without a GA4 ID.
-            const body = (await response.text()).replace(
-                /googleAnalyticsId:"[^"]*"/,
-                'googleAnalyticsId:"G-APPTEST"',
-            );
-            expect(body).toContain('googleAnalyticsId:"G-APPTEST"');
-            await route.fulfill({
-                response,
-                body,
-                headers: {
-                    ...response.headers(),
-                    "content-length": String(Buffer.byteLength(body)),
-                    "content-security-policy": policy,
-                },
-            });
-        } else {
-            await route.continue();
-        }
-    });
+    await page.route("**/*", (route) =>
+        handleGa4Probe(route, requests, loaderRequests),
+    );
     const violations: string[] = [];
     page.on("console", (message) => {
         if (/content security policy/i.test(message.text())) {
@@ -328,8 +390,12 @@ test("GA4 vendor and collector loads pass the corrected CSP without sending trac
             new Promise<void>((resolve, reject) => {
                 const script = document.createElement("script");
                 script.src = src;
-                script.onload = () => resolve();
-                script.onerror = () => reject(new Error("Vendor blocked"));
+                script.onload = () => {
+                    resolve();
+                };
+                script.onerror = () => {
+                    reject(new Error("Vendor blocked"));
+                };
                 document.head.appendChild(script);
             });
         await loadVendor(
