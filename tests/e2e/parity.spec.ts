@@ -270,6 +270,7 @@ test.describe("Service worker", () => {
 
   test("Works offline", async ({ page, context, browserName }) => {
     // Firefox's offline emulation bypasses service workers, invalidating this check.
+    // eslint-disable-next-line playwright/no-skipped-test
     test.skip(
       browserName === "firefox",
       "Playwright's Firefox offline mode bypasses service workers.",

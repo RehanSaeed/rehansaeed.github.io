@@ -44,6 +44,7 @@ for (const colorScheme of ["light", "dark"] as const) {
     await tooltip.hover();
     await expect(tooltip).toBeVisible();
     // Hovering the tooltip must keep it open beyond the delayed close deadline.
+    // eslint-disable-next-line playwright/no-wait-for-timeout
     await page.waitForTimeout(200);
     await expect(tooltip).toBeVisible();
     await page.keyboard.press("Escape");
@@ -212,6 +213,7 @@ test("Tooltip triggers retain native layout and touch activation", async ({
   await expect(search).toBeEnabled();
   await search.dispatchEvent("pointerenter", { pointerType: "touch" });
   // A touch pointer must not open a tooltip after the hover delay has elapsed.
+  // eslint-disable-next-line playwright/no-wait-for-timeout
   await page.waitForTimeout(400);
   await expect(page.getByRole("tooltip")).toHaveCount(0);
   await search.click();

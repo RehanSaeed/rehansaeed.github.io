@@ -228,10 +228,12 @@ for (const theme of ["light", "dark"]) {
     for (const control of [plain, secondary, primary, submit]) {
       await expect(control).toBeDisabled();
       // Disabled controls cannot pass actionability checks; exercise their disabled hover styles.
+      // eslint-disable-next-line playwright/no-force-option
       await control.hover({ force: true });
       await expect(control).toHaveCSS("color", tokens.disabled);
       await expect(control).toHaveCSS("cursor", "not-allowed");
       // Deliberately dispatch a click to verify disabled controls do not invoke their handlers.
+      // eslint-disable-next-line playwright/no-force-option
       await control.click({ force: true });
     }
     await expect(output).toHaveAttribute("data-clicks", clicks!);

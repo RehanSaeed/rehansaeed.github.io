@@ -97,6 +97,7 @@ test("Chrome reports no manifest installability errors", async ({
   browserName,
 }) => {
   // Only Chromium exposes the CDP installability API exercised by this test.
+  // eslint-disable-next-line playwright/no-skipped-test
   test.skip(browserName !== "chromium", "Chrome DevTools protocol is required");
   await page.goto("/");
   const session = await context.newCDPSession(page);
@@ -177,6 +178,7 @@ test("Install prompt captured before component mount survives client navigation"
 }) => {
   await page.addInitScript(() => {
     // Preserve the original method and receiver while intercepting registration.
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     const addEventListener = window.addEventListener;
     window.addEventListener = function (
       ...args: Parameters<typeof window.addEventListener>

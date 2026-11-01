@@ -190,6 +190,7 @@ test.describe("Offline icons", () => {
     browserName,
   }) => {
     // Playwright's Firefox offline emulation bypasses the worker being tested.
+    // eslint-disable-next-line playwright/no-skipped-test
     test.skip(
       browserName === "firefox",
       "Playwright's Firefox offline mode bypasses service workers.",
