@@ -22,19 +22,26 @@
   </section>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent, useId } from "vue";
+import type { RouteLocationNormalized } from "vue-router";
 import { Document } from "flexsearch";
-import { useId } from "vue";
+import { z } from "zod";
+import {
+  searchDocumentSchema,
+  type SearchDocument,
+} from "#shared/utils/search";
 
 const minimumSearchTermLength = 3;
 const resultLimit = 8;
-let indexPromise;
+let indexPromise: Promise<Document<SearchDocument>> | undefined;
 
 // Downloads the prerendered /flexsearch.json once and builds the index in the browser.
 function loadIndex() {
-  indexPromise ??= $fetch("/flexsearch.json")
-    .then((documents) => {
-      const index = new Document({
+  indexPromise ??= $fetch<unknown>("/flexsearch.json")
+    .then((response) => {
+      const documents = z.array(searchDocumentSchema).parse(response);
+      const index = new Document<SearchDocument>({
         tokenize: "forward",
         document: {
           id: "id",
@@ -47,23 +54,21 @@ function loadIndex() {
       }
       return index;
     })
-    .catch((error) => {
+    .catch((error: unknown) => {
       indexPromise = undefined;
       throw error;
     });
   return indexPromise;
 }
 
-export default {
+export default defineComponent({
   name: "u-search",
   emits: ["selected"],
   props: {
-    /** Whether the search or dialog is open. */
-    isOpen: {
+    /** Whether the search or dialog is open. */ isOpen: {
       type: Boolean,
     },
-    /** Initial search term supplied when opening search. */
-    search: {
+    /** Initial search term supplied when opening search. */ search: {
       type: String,
     },
   },
@@ -74,7 +79,7 @@ export default {
   data() {
     return {
       searchTerm: "",
-      searchResults: [],
+      searchResults: [] as SearchDocument[],
     };
   },
   methods: {
@@ -98,7 +103,12 @@ export default {
         this.searchResults = index
           .search(searchTerm, { limit: resultLimit, enrich: true, merge: true })
           .slice(0, resultLimit)
-          .map((result) => result.doc);
+          .map((result) => {
+            if (!result.doc) {
+              throw new Error("The search index returned a missing document");
+            }
+            return result.doc;
+          });
         this.announceResults(
           `${this.searchResults.length} search ${this.searchResults.length === 1 ? "result" : "results"}.`,
         );
@@ -108,20 +118,25 @@ export default {
     },
   },
   watch: {
-    $route(to, from) {
+    $route(to: RouteLocationNormalized, from: RouteLocationNormalized) {
       // Nuxt can update the route object after hydration without navigating, e.g. on deep links with ?search=.
       if (to.path !== from.path) {
         this.searchTerm = "";
       }
     },
     searchTerm() {
-      this.updateSearchResults();
+      void this.updateSearchResults();
     },
     isOpen() {
       if (this.isOpen) {
-        loadIndex().catch(() => {});
+        void loadIndex().catch((error: unknown) => {
+          console.error("Unable to load the search index", error);
+        });
         setTimeout(() => {
-          this.$refs.search.focus();
+          const input = this.$refs.search;
+          if (input instanceof HTMLInputElement) {
+            input.focus();
+          }
         }, 100);
       }
     },
@@ -131,7 +146,7 @@ export default {
       this.searchTerm = this.search;
     }
   },
-};
+});
 </script>
 
 <style lang="scss">

@@ -55,11 +55,11 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from "vue";
+export default defineComponent({
   name: "u-author",
   props: {
-    /** Fragment identifier for the author heading. */
-    headingId: {
+    /** Fragment identifier for the author heading. */ headingId: {
       type: String,
     },
   },
@@ -69,7 +69,7 @@ export default {
       winkGradientId: `${useId()}-wink-skin`,
     };
   },
-};
+});
 </script>
 
 <style lang="scss">

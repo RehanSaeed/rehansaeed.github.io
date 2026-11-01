@@ -370,12 +370,12 @@ export function rehypeHeadingAnchors() {
       if (
         node.type !== "element" ||
         !/^h[1-6]$/.test(node.tagName ?? "") ||
-        !node.properties?.id
+        typeof node.properties?.id !== "string"
       ) {
         return;
       }
-      const id = String(node.properties.id);
-      node.tagName = `${keepTagPrefix}${node.tagName}`;
+      const id = node.properties.id;
+      node.tagName = `${keepTagPrefix}${node.tagName ?? ""}`;
       node.children = [
         {
           type: "element",
@@ -397,5 +397,6 @@ export const externalLinksOptions = {
   target: "_blank",
   rel: ["nofollow", "noopener", "noreferrer"],
   test: (element: Node) =>
-    !String(element.properties?.href ?? "").startsWith("//"),
+    typeof element.properties?.href !== "string" ||
+    !element.properties.href.startsWith("//"),
 };

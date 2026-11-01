@@ -12,28 +12,25 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from "vue";
+export default defineComponent({
   name: "u-card",
   props: {
-    /** Whether the card uses compact spacing. */
-    compact: {
+    /** Whether the card uses compact spacing. */ compact: {
       type: Boolean,
     },
-    /** Whether the card can receive keyboard focus. */
-    focusable: {
+    /** Whether the card can receive keyboard focus. */ focusable: {
       type: Boolean,
     },
-    /** Whether the card displays its hover treatment. */
-    hoverable: {
+    /** Whether the card displays its hover treatment. */ hoverable: {
       type: Boolean,
     },
-    /** HTML element used for the card. */
-    tag: {
+    /** HTML element used for the card. */ tag: {
       default: "section",
       type: String,
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

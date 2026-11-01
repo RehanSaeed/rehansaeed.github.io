@@ -15,16 +15,16 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from "vue";
+export default defineComponent({
   name: "u-post-meta",
   props: {
-    /** Metadata associated with the content. */
-    meta: {
+    /** Metadata associated with the content. */ meta: {
       type: Object,
       required: true,
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

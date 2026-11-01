@@ -12,21 +12,21 @@
 </template>
 
 <script>
+import { defineComponent } from "vue";
 import { tagPath } from "#shared/utils/tag";
 
-export default {
+export default defineComponent({
   name: "u-tags",
   setup() {
     return { tagPath };
   },
   props: {
-    /** Tags associated with the content. */
-    tags: {
+    /** Tags associated with the content. */ tags: {
       required: true,
       type: Array,
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

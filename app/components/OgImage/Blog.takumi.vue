@@ -85,11 +85,8 @@
 <script setup lang="ts">
 defineOptions({ name: "BlogOgImage" });
 defineProps<{
-  /** Title displayed for this content. */
-  title: string;
-  /** Author name displayed on the social preview. */
-  author: string;
-  /** Path to the content's hero image. */
-  heroImage: string;
+  /** Title displayed for this content. */ title: string;
+  /** Author name displayed on the social preview. */ author: string;
+  /** Path to the content's hero image. */ heroImage: string;
 }>();
 </script>

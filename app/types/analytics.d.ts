@@ -2,7 +2,9 @@ export {};
 
 declare global {
   interface Window {
-    dataLayer: unknown[][];
+    /** Queued analytics commands, initialised by the analytics plugin. */
+    dataLayer?: unknown[][];
+    /** Sends a command to the analytics queue. */
     gtag: (
       command: string,
       name: string | Date,

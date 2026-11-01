@@ -93,17 +93,33 @@
   </u-card>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent, type PropType } from "vue";
+import type { PortfolioCollectionItem } from "@nuxt/content";
 import { getImageMetadata } from "~/framework/images.js";
 import { contentImageSizes } from "#shared/utils/images";
 
-export default {
+export default defineComponent({
   name: "u-portfolio-card",
   props: {
-    /** Portfolio entry to display. */
-    portfolio: {
+    /** Portfolio entry to display. */ portfolio: {
       required: true,
-      type: Object,
+      type: Object as PropType<
+        Pick<
+          PortfolioCollectionItem,
+          | "id"
+          | "title"
+          | "description"
+          | "heroImage"
+          | "permalink"
+          | "tags"
+          | "repository"
+          | "stars"
+          | "forks"
+          | "nugetPackages"
+          | "nugetDownloads"
+        >
+      >,
     },
   },
   computed: {
@@ -114,7 +130,7 @@ export default {
       return getImageMetadata(this.portfolio.heroImage);
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

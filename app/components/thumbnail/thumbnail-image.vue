@@ -3,6 +3,7 @@
     <source v-if="avifSource" type="image/avif" :srcset="avifSource" />
     <img
       v-bind="$attrs"
+      :alt="typeof $attrs.alt === 'string' ? $attrs.alt : ''"
       class="thumbnail-image"
       :src="image"
       :style="{
@@ -17,15 +18,16 @@
   </picture>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from "vue";
 import { getAvifSource } from "#shared/utils/images";
 
-export default {
+export default defineComponent({
   inheritAttrs: false,
   data() {
     return {
       image: "",
-      imageRotate: undefined,
+      imageRotate: "",
       imageWidth: "0",
       imageHeight: "0",
       imageX: "0",
@@ -33,8 +35,7 @@ export default {
     };
   },
   props: {
-    /** Name identifying the icon or selected thumbnail image. */
-    name: {
+    /** Name identifying the icon or selected thumbnail image. */ name: {
       required: true,
       type: String,
     },
@@ -48,19 +49,21 @@ export default {
     },
   },
   methods: {
-    toPx(value) {
-      return value + "px";
+    toPx(value: string) {
+      return `${value}px`;
     },
   },
   mounted() {
-    this.image = this.$route.query[this.name];
-    this.imageRotate = this.$route.query[`${this.name}-rotate`];
-    this.imageWidth = this.$route.query[`${this.name}-width`] || "1920";
-    this.imageHeight = this.$route.query[`${this.name}-height`] || "1080";
-    this.imageX = this.$route.query[`${this.name}-x`] || "0";
-    this.imageY = this.$route.query[`${this.name}-y`] || "0";
+    this.image = String(this.$route.query[this.name] ?? "");
+    this.imageRotate = String(this.$route.query[`${this.name}-rotate`] ?? "");
+    this.imageWidth = String(this.$route.query[`${this.name}-width`] || "1920");
+    this.imageHeight = String(
+      this.$route.query[`${this.name}-height`] || "1080",
+    );
+    this.imageX = String(this.$route.query[`${this.name}-x`] || "0");
+    this.imageY = String(this.$route.query[`${this.name}-y`] || "0");
   },
-};
+});
 </script>
 
 <style lang="scss">

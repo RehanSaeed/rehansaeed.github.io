@@ -15,7 +15,8 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from "vue";
+export default defineComponent({
   name: "u-support-button",
   data() {
     return {
@@ -33,5 +34,5 @@ export default {
       this.open();
     },
   },
-};
+});
 </script>

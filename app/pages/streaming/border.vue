@@ -2,68 +2,28 @@
   <article class="border" :style="style"></article>
 </template>
 
-<script setup>
+<script setup lang="ts">
 definePageMeta({ layout: "empty" });
 useHead({ meta: [{ name: "robots", content: "noindex, follow" }] });
-</script>
-
-<script>
-export default {
-  components: {},
-  computed: {
-    borderRadius() {
-      return (this.$route.query["border-radius"] ?? "0") + "px";
-    },
-    borderWidth() {
-      return (this.$route.query["border-width"] ?? "20") + "px";
-    },
-    duration() {
-      return (this.$route.query["duration"] ?? "5") + "s";
-    },
-    hue1() {
-      return this.$route.query["hue1"] ?? "0";
-    },
-    hue2() {
-      return this.$route.query["hue2"] ?? "0";
-    },
-    saturation1() {
-      return (this.$route.query["saturation1"] ?? "0") + "%";
-    },
-    saturation2() {
-      return (this.$route.query["saturation2"] ?? "0") + "%";
-    },
-    lightness1() {
-      return (this.$route.query["lightness1"] ?? "100") + "%";
-    },
-    lightness2() {
-      return (this.$route.query["lightness2"] ?? "70") + "%";
-    },
-    width() {
-      return (this.$route.query["width"] ?? "1920") + "px";
-    },
-    height() {
-      return (this.$route.query["height"] ?? "1080") + "px";
-    },
-    style() {
-      return {
-        "--border-radius": this.borderRadius,
-        "--border-width": this.borderWidth,
-        "--duration": this.duration,
-        "--hue1": this.hue1,
-        "--hue2": this.hue2,
-        "--saturation1": this.saturation1,
-        "--saturation2": this.saturation2,
-        "--lightness1": this.lightness1,
-        "--lightness2": this.lightness2,
-        "--width": this.width,
-        "--height": this.height,
-      };
-    },
-  },
-  mounted() {
-    document.body.style.backgroundColor = "transparent";
-  },
-};
+const route = useRoute();
+const queryValue = (name: string, fallback: string) =>
+  String(route.query[name] ?? fallback);
+const style = computed(() => ({
+  "--border-radius": `${queryValue("border-radius", "0")}px`,
+  "--border-width": `${queryValue("border-width", "20")}px`,
+  "--duration": `${queryValue("duration", "5")}s`,
+  "--hue1": queryValue("hue1", "0"),
+  "--hue2": queryValue("hue2", "0"),
+  "--saturation1": `${queryValue("saturation1", "0")}%`,
+  "--saturation2": `${queryValue("saturation2", "0")}%`,
+  "--lightness1": `${queryValue("lightness1", "100")}%`,
+  "--lightness2": `${queryValue("lightness2", "70")}%`,
+  "--width": `${queryValue("width", "1920")}px`,
+  "--height": `${queryValue("height", "1080")}px`,
+}));
+onMounted(() => {
+  document.body.style.backgroundColor = "transparent";
+});
 </script>
 
 <style lang="scss">

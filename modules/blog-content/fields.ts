@@ -7,8 +7,7 @@ import { stripFrontMatter } from "./scan";
 import type { ImageDimensions } from "../../shared/utils/images";
 
 type MinimarkNode =
-  | string
-  | [string, Record<string, unknown>, ...MinimarkNode[]];
+  string | [string, Record<string, unknown>, ...MinimarkNode[]];
 
 /** Renames `keep-p`/`keep-h2` etc. (see markdown.ts) back to their real tags once MDC has compiled. */
 export function restoreKeptTags(nodes: MinimarkNode[] | undefined): void {
@@ -119,7 +118,7 @@ export function rewriteRelativeImages(
     }
     const props = node[1];
     for (const key of ["src", "href"]) {
-      const value = props?.[key];
+      const value = props[key];
       if (
         typeof value === "string" &&
         !absoluteUrlPattern.test(value) &&
@@ -225,7 +224,7 @@ export function findEmailsOutsideCode(
     if (node[0] === "pre") {
       continue;
     }
-    for (const value of Object.values(node[1] ?? {})) {
+    for (const value of Object.values(node[1])) {
       if (typeof value === "string" && value.startsWith("mailto:")) {
         out.push(value);
       }

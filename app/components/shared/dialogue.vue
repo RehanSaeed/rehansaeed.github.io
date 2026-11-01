@@ -33,42 +33,46 @@
   </Transition>
 </template>
 
-<script>
-import { useId } from "vue";
+<script lang="ts">
+import { defineComponent, useId } from "vue";
 
-export default {
+export default defineComponent({
   name: "u-dialogue",
   emits: ["close"],
   setup() {
     return { titleId: useId() };
   },
   props: {
-    /** Whether the dialog fills the viewport. */
-    fullscreen: {
+    /** Whether the dialog fills the viewport. */ fullscreen: {
       default: false,
       type: Boolean,
     },
-    /** Whether the search or dialog is open. */
-    isOpen: {
+    /** Whether the search or dialog is open. */ isOpen: {
       default: false,
       type: Boolean,
     },
-    /** Title displayed for this content. */
-    title: {
+    /** Title displayed for this content. */ title: {
       required: true,
       type: String,
     },
   },
   methods: {
-    open(dialog) {
-      dialog.showModal();
+    open(dialog: Element) {
+      if (dialog instanceof HTMLDialogElement) {
+        dialog.showModal();
+      }
     },
-    hide(dialog) {
-      dialog.close();
+    hide(dialog: Element) {
+      if (dialog instanceof HTMLDialogElement) {
+        dialog.close();
+      }
     },
-    onNativeClose(event) {
+    onNativeClose(event: Event) {
       // A queued close event can arrive after the dialog has reopened.
-      if (!event.currentTarget.open) {
+      if (
+        event.currentTarget instanceof HTMLDialogElement &&
+        !event.currentTarget.open
+      ) {
         this.close();
       }
     },
@@ -78,7 +82,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style lang="scss">
