@@ -6,6 +6,7 @@
         class="search__input"
         ref="search"
         :id="inputId"
+        autofocus
         v-model="searchTerm"
         placeholder="Search"
         inputmode="search"
