@@ -19,12 +19,14 @@
       <u-heading id="portfolio-microsoft" level="2" center
         >Contributions at Microsoft</u-heading
       >
-      <div class="portfolio__items">
-        <u-portfolio-card
-          v-for="item of microsoftProjects"
-          :key="item.id"
-          :portfolio="item" />
-      </div>
+      <ul
+        class="portfolio__items"
+        aria-labelledby="portfolio-microsoft"
+        role="list">
+        <li v-for="item of microsoftProjects" :key="item.id">
+          <u-portfolio-card :portfolio="item" />
+        </li>
+      </ul>
     </section>
 
     <section
@@ -33,12 +35,14 @@
       <u-heading id="portfolio-open-source" level="2" center
         >Open Source</u-heading
       >
-      <div class="portfolio__items">
-        <u-portfolio-card
-          v-for="item of openSourceProjects"
-          :key="item.id"
-          :portfolio="item" />
-      </div>
+      <ul
+        class="portfolio__items"
+        aria-labelledby="portfolio-open-source"
+        role="list">
+        <li v-for="item of openSourceProjects" :key="item.id">
+          <u-portfolio-card :portfolio="item" />
+        </li>
+      </ul>
     </section>
   </div>
 </template>
@@ -152,6 +156,10 @@ useSchemaOrg([
 .portfolio__section {
   display: grid;
   gap: var(--global-space-fluid-5);
+}
+
+.portfolio__items > li {
+  display: grid;
 }
 
 .portfolio__section > h2 {

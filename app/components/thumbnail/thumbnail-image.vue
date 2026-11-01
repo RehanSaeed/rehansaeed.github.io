@@ -4,6 +4,7 @@
     <img
       v-bind="$attrs"
       class="thumbnail-image"
+      alt=""
       :src="image"
       :style="{
         rotate: imageRotateDegrees,

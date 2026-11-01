@@ -4,24 +4,27 @@
 
     <u-newsletter class="footer__newsletter" />
 
-    <u-author class="footer_author" heading-id="footer-author" />
+    <u-author
+      class="footer_author"
+      heading-id="footer-author"
+      heading-level="2" />
 
-    <section class="footer__text">
+    <p class="footer__text">
       <span class="footer__copyright"
         >Copyright © {{ new Date().getFullYear() }}
         {{ metadata.author.name }}</span
       >
-      <span>|</span>
+      <span aria-hidden="true">|</span>
       <span class="footer__copyright"><a href="/sitemap.xml">Sitemap</a></span>
-      <span>|</span>
+      <span aria-hidden="true">|</span>
       <span class="footer__links"
         >Built with <a href="https://nuxt.com">Nuxt</a></span
       >
-      <span>|</span>
+      <span aria-hidden="true">|</span>
       <span class="footer__links"
         >Code on <a :href="metadata.repository.url">GitHub</a></span
       >
-    </section>
+    </p>
   </footer>
 </template>
 
@@ -51,6 +54,7 @@ export default {
   align-items: center;
   justify-content: center;
   padding-block-end: var(--global-space-fluid-5);
+  margin-block-end: 0;
   text-align: center;
   font-size: var(--global-font-size-1);
 

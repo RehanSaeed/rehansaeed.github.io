@@ -29,7 +29,7 @@ export default {
     },
     /** HTML element used for the card. */
     tag: {
-      default: "section",
+      default: "div",
       type: String,
     },
   },

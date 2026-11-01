@@ -74,7 +74,13 @@ export default {
 }
 
 .post__content {
-  > h2:first-child {
+  @for $level from 1 through 5 {
+    .post-heading--#{$level} {
+      font-size: var(--global-font-size-#{8 - $level});
+    }
+  }
+
+  > .post-heading--2:first-child {
     margin-block-start: 0;
   }
 

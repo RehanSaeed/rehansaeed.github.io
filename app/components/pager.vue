@@ -1,8 +1,8 @@
 <template>
-  <div class="pager">
+  <nav class="pager" aria-label="Pagination">
     <u-link-button
+      v-if="pageInfo.hasPreviousPage"
       class="pager__previous-button"
-      :class="{ 'pager__button--none': !pageInfo.hasPreviousPage }"
       bordered
       contrast
       :to="previousUrl"
@@ -16,14 +16,14 @@
     </p>
 
     <u-link-button
+      v-if="pageInfo.hasNextPage"
       class="pager__next-button"
-      :class="{ 'pager__button--none': !pageInfo.hasNextPage }"
       bordered
       contrast
       :to="nextUrl"
       >Next</u-link-button
     >
-  </div>
+  </nav>
 </template>
 
 <script>
@@ -79,9 +79,5 @@ export default {
 
 .pager__next-button {
   grid-area: next;
-}
-
-.pager__button--none {
-  display: none;
 }
 </style>
