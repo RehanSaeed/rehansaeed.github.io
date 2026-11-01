@@ -4,7 +4,6 @@
       <label class="search__label" :for="inputId">Search</label>
       <input
         class="search__input"
-        ref="search"
         :id="inputId"
         autofocus
         v-model="searchTerm"
@@ -132,12 +131,6 @@ export default defineComponent({
         void loadIndex().catch((error: unknown) => {
           console.error("Unable to load the search index", error);
         });
-        setTimeout(() => {
-          const input = this.$refs.search;
-          if (input instanceof HTMLInputElement) {
-            input.focus();
-          }
-        }, 100);
       }
     },
   },
