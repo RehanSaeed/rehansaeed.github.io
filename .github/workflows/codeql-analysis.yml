@@ -29,10 +29,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ["javascript-typescript"]
-        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python' ]
-        # Learn more:
-        # https://docs.github.com/en/free-pro-team@latest/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#changing-the-languages-that-are-analyzed
+        # Both aliases scan JavaScript and TypeScript. Keep both existing main
+        # baseline identities so PR comparisons do not lose either configuration.
+        # https://docs.github.com/en/code-security/reference/code-scanning/workflow-configuration-options#languages-to-be-analyzed
+        language: ["javascript", "javascript-typescript"]
 
     steps:
       - name: Checkout repository
@@ -66,3 +66,6 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
+        with:
+          # Pin the existing categories rather than creating a third baseline.
+          category: ".github/workflows/codeql-analysis.yml:analyze/language:${{ matrix.language }}"
