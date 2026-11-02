@@ -123,19 +123,20 @@ test("A failed image-output save cannot mark a cold cache as complete", async ()
 });
 
 test("CI persists only the responsive image cache before generation", async () => {
-  const workflow = parse(await readFile(".github/workflows/build.yml", "utf8"));
-  const steps = workflow.jobs.build.steps;
+  const { workflowSchema } = await import("./data");
+  const workflow = workflowSchema.parse(
+    parse(await readFile(".github/workflows/build.yml", "utf8")),
+  );
+  const steps = workflow.jobs.build!.steps;
   const cacheIndex = steps.findIndex(
-    (step: { name: string }) => step.name === "Cache Responsive Images",
+    (step) => step.name === "Cache Responsive Images",
   );
   expect(cacheIndex).toBeGreaterThan(-1);
   expect(cacheIndex).toBeLessThan(
-    steps.findIndex((step: { name: string }) => step.name === "NPM Build"),
+    steps.findIndex((step) => step.name === "NPM Build"),
   );
-  expect(steps[cacheIndex].with.path).toBe(".cache/nuxt-images");
-  expect(
-    steps.find((step: { name: string }) => step.name === "Setup Node").id,
-  ).toBe("node");
+  expect(steps[cacheIndex]!.with!.path).toBe(".cache/nuxt-images");
+  expect(steps.find((step) => step.name === "Setup Node")!.id).toBe("node");
   for (const input of [
     "runner.os",
     "runner.arch",
@@ -147,9 +148,9 @@ test("CI persists only the responsive image cache before generation", async () =
     "content/**/*.png",
     "github.sha",
   ]) {
-    expect(steps[cacheIndex].with.key).toContain(input);
+    expect(steps[cacheIndex]!.with!.key).toContain(input);
   }
-  expect(steps[cacheIndex].with["restore-keys"].trim()).toBe(
-    steps[cacheIndex].with.key.replace("${{ github.sha }}", ""),
+  expect(steps[cacheIndex]!.with!["restore-keys"]!.trim()).toBe(
+    steps[cacheIndex]!.with!.key!.replace("${{ github.sha }}", ""),
   );
 });

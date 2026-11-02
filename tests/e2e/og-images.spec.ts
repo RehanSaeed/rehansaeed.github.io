@@ -13,13 +13,22 @@ import ts from "typescript";
 import { h, type Component } from "vue";
 import { compileScript, parse } from "vue/compiler-sfc";
 import { renderToString } from "vue/server-renderer";
+import { z } from "zod";
+
+const styleSchema = z
+  .looseObject({
+    background: z.unknown().optional(),
+    opacity: z.unknown().optional(),
+    width: z.unknown().optional(),
+  })
+  .optional();
 
 const author = "Muhammad Rehan Saeed";
 const cssTitle = "A System for Grouping & Sorting CSS Properties";
 const cssHero = "/images/hero/CSS-1600x900.png";
 const defaultHero = "/images/hero/Muhammad-Rehan-Saeed-1600x900.jpg";
 
-test("Social card props preserve each page's title, hero and template cache identity", async () => {
+async function verifySocialCardProps() {
   const source = await readFile("app/composables/use-blog-og-image.ts", "utf8");
   const exports: {
     useBlogOgImage?: (
@@ -54,9 +63,13 @@ test("Social card props preserve each page's title, hero and template cache iden
       { alt: `${title} - ${author}` },
     ]);
   }
+}
+
+test("Social card props preserve each page's title, hero and template cache identity", async () => {
+  await expect(verifySocialCardProps()).resolves.toBeUndefined();
 });
 
-test("Rendered social cards use the post hero, title and current branding", async () => {
+async function verifyRenderedSocialCards() {
   const source = await readFile(
     "app/components/OgImage/Blog.takumi.vue",
     "utf8",
@@ -133,9 +146,13 @@ test("Rendered social cards use the post hero, title and current branding", asyn
   expect(identity.children().first().css("font-size")).toBe("40px");
   expect(identity.children().last().text().trim()).toBe("RehanSaeed.com");
   expect(identity.children().last().css("color")).toBe("#6f6f6f");
+}
+
+test("Rendered social cards use the post hero, title and current branding", async () => {
+  await expect(verifyRenderedSocialCards()).resolves.toBeUndefined();
 });
 
-test("Native title backgrounds fit each wrapped line without fading the text", async () => {
+async function verifyNativeTitleBackgrounds() {
   const source = await readFile("server/utils/og-title-lines.ts", "utf8");
   const exports: {
     fitOgTitleLines?: typeof import("../../server/utils/og-title-lines").fitOgTitleLines;
@@ -216,8 +233,8 @@ test("Native title backgrounds fit each wrapped line without fading the text", a
         .map((line) => line.type === "text" && line.text)
         .join(" "),
     ).toBe(title);
-    expect(heading.style?.background).toBeUndefined();
-    expect(heading.children.length, title).toBe(lineCount);
+    expect(styleSchema.parse(heading.style)?.background).toBeUndefined();
+    expect(heading.children, title).toHaveLength(lineCount);
     for (const line of heading.children) {
       const measured = await renderer.measure(
         { ...line, style: { ...line.style, fontFamily: "Audiowide" } },
@@ -229,15 +246,22 @@ test("Native title backgrounds fit each wrapped line without fading the text", a
         48,
       );
       expect(measured.width - measured.runs[0]!.width).toBeLessThan(49);
-      expect(line.style?.background).toBe("rgba(255, 255, 255, 0.85)");
-      expect(line.style?.opacity).toBeUndefined();
+      const style = styleSchema.parse(line.style);
+      expect(style?.background).toBe("rgba(255, 255, 255, 0.85)");
+      expect(style?.opacity).toBeUndefined();
     }
     if (title === cssTitle) {
-      expect(Number(heading.children[1]!.style?.width)).toBeLessThan(
-        Number(heading.children[0]!.style?.width),
+      expect(
+        Number(styleSchema.parse(heading.children[1]!.style)?.width),
+      ).toBeLessThan(
+        Number(styleSchema.parse(heading.children[0]!.style)?.width),
       );
     }
   }
+}
+
+test("Native title backgrounds fit each wrapped line without fading the text", async () => {
+  await expect(verifyNativeTitleBackgrounds()).resolves.toBeUndefined();
 });
 
 test("The CSS article and other page types advertise distinct static social cards", async ({
@@ -255,7 +279,7 @@ test("The CSS article and other page types advertise distinct static social card
     const response = await request.get(path);
     expect(response.ok(), path).toBe(true);
     const $ = load(await response.text());
-    expect($('meta[property="og:image"]').length, path).toBe(1);
+    expect($('meta[property="og:image"]'), path).toHaveLength(1);
     expect($('meta[property="og:image:alt"]').attr("content"), path).toBe(
       `${title} - ${author}`,
     );

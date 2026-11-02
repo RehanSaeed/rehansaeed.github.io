@@ -79,23 +79,28 @@ unitTest(
   },
 );
 
+function verifyUniqueIds() {
+  const routes = readFileSync(
+    join(process.cwd(), "tests/parity/urls.txt"),
+    "utf8",
+  )
+    .trim()
+    .split(/\r?\n/);
+  for (const path of [...routes, "/404.html"]) {
+    const file = path.endsWith(".html") ? path : `${path}index.html`;
+    const $ = load(readFileSync(join(process.cwd(), "dist", file), "utf8"));
+    const ids = $("[id]")
+      .map((_, element) => $(element).attr("id"))
+      .get();
+    expect(ids, path).toHaveLength(new Set(ids).size);
+  }
+  return true;
+}
+
 unitTest(
   "Every generated reference page and the custom 404 have unique IDs",
   () => {
-    const routes = readFileSync(
-      join(process.cwd(), "tests/parity/urls.txt"),
-      "utf8",
-    )
-      .trim()
-      .split(/\r?\n/);
-    for (const path of [...routes, "/404.html"]) {
-      const file = path.endsWith(".html") ? path : `${path}index.html`;
-      const $ = load(readFileSync(join(process.cwd(), "dist", file), "utf8"));
-      const ids = $("[id]")
-        .map((_, element) => $(element).attr("id"))
-        .get();
-      expect(ids.length, path).toBe(new Set(ids).size);
-    }
+    expect(verifyUniqueIds()).toBe(true);
   },
 );
 
@@ -115,9 +120,43 @@ test("Adjacent Markdown links remain visibly separated after hydration", async (
   ).toHaveText("Link Empty Link");
 });
 
+test("Thumbnail without a background query hydrates with a 1920x1080 canvas and labelled background field", async ({
+  page,
+}) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  const scripts = await delayClientScripts(page);
+  try {
+    await page.goto("/streaming/thumbnail/", { waitUntil: "commit" });
+    const thumbnail = page.locator("article.thumbnail");
+    const background = page.getByRole("textbox", {
+      name: "background",
+      exact: true,
+    });
+    await expect(background).toHaveValue("dark");
+    scripts.resume();
+    await expect(background).toHaveValue("");
+    await expect(thumbnail).toBeVisible();
+    expect(
+      await thumbnail.evaluate((element: HTMLElement) => ({
+        width: element.offsetWidth,
+        height: element.offsetHeight,
+      })),
+    ).toEqual({ width: 1920, height: 1080 });
+    await background.fill("light");
+    await expect(thumbnail).toHaveClass(
+      "thumbnail thumbnail--background-light",
+    );
+    expect(errors).toEqual([]);
+  } finally {
+    await scripts.dispose();
+  }
+});
+
 for (const timezoneId of ["Europe/London", "America/New_York", "Asia/Tokyo"]) {
   test.describe(`Date hydration in ${timezoneId}`, () => {
     test.use({ timezoneId });
+
     test("Starts in UTC and deliberately switches to the browser date after mounting", async ({
       page,
     }) => {
@@ -171,5 +210,5 @@ test("Search has a unique labelled input and cannot duplicate page or result hea
   const ids = await page
     .locator("[id]")
     .evaluateAll((nodes) => nodes.map((node) => node.id));
-  expect(ids.length).toBe(new Set(ids).size);
+  expect(ids).toHaveLength(new Set(ids).size);
 });

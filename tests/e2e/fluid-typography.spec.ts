@@ -1,15 +1,9 @@
+import type { E2EFixtures } from "./fixtures";
 import { expect, test } from "./fixtures";
 
 for (const defaultFontSize of [16, 32]) {
   for (const fallback of [false, true]) {
-    test(`Fluid typography ${fallback ? "fallback" : "enhancement"} with a ${defaultFontSize}px default font`, async ({
-      page,
-      browserName,
-    }) => {
-      test.skip(
-        defaultFontSize !== 16 && browserName !== "chromium",
-        "Changing the browser's default font size requires Chromium CDP.",
-      );
+    async function verifyFluidTypography({ page }: Pick<E2EFixtures, "page">) {
       if (defaultFontSize !== 16) {
         const session = await page.context().newCDPSession(page);
         await session.send("Page.setFontSizes", {
@@ -119,8 +113,26 @@ for (const defaultFontSize of [16, 32]) {
         expect(Math.abs(actual.spacing - original.spacing)).toBeLessThan(
           fontTolerance * 4.5 + 0.02,
         );
-        await style.evaluate((element) => element.remove());
+        await style.evaluate((element) =>
+          element.parentNode?.removeChild(element),
+        );
       }
+    }
+
+    test(`Fluid typography ${fallback ? "fallback" : "enhancement"} with a ${defaultFontSize}px default font`, async ({
+      page,
+      browserName,
+    }) => {
+      // Non-default browser font sizes can only be configured through Chromium CDP.
+      test.skip(
+        defaultFontSize !== 16 && browserName !== "chromium",
+        "Changing the browser's default font size requires Chromium CDP.",
+      );
+      await expect(
+        verifyFluidTypography({
+          page,
+        }),
+      ).resolves.toBeUndefined();
     });
   }
 }

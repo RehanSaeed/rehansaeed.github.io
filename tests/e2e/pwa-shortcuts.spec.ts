@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import sharp from "sharp";
 import { expect, test } from "@playwright/test";
+import { manifestSchema } from "./data";
 
 const shortcuts = [
   { name: "Blog", slug: "blog", url: "/" },
@@ -9,7 +10,7 @@ const shortcuts = [
   { name: "About", slug: "about", url: "/about/" },
 ];
 
-test("PWA shortcut PNGs match their branded SVG sources", async () => {
+async function verifyShortcutArtwork() {
   for (const { slug } of shortcuts) {
     const filename = join("public", "images", "icons", slug);
     const image = sharp(`${filename}.png`);
@@ -50,6 +51,10 @@ test("PWA shortcut PNGs match their branded SVG sources", async () => {
     expect(outsideSafeCircle, `${slug}: mask-safe artwork`).toBe(0);
     expect(foreground, `${slug}: visible glyph`).toBeGreaterThan(1_000);
   }
+}
+
+test("PWA shortcut PNGs match their branded SVG sources", async () => {
+  await expect(verifyShortcutArtwork()).resolves.toBeUndefined();
 });
 
 test("The manifest serves the redesigned icons for all three shortcuts", async ({
@@ -57,7 +62,7 @@ test("The manifest serves the redesigned icons for all three shortcuts", async (
 }) => {
   const response = await request.get("/manifest.webmanifest");
   expect(response.ok()).toBe(true);
-  const manifest = await response.json();
+  const manifest = manifestSchema.parse(await response.json());
   expect(manifest.shortcuts).toHaveLength(shortcuts.length);
   for (const { name, slug, url } of shortcuts) {
     const shortcut = manifest.shortcuts.find(
@@ -67,7 +72,7 @@ test("The manifest serves the redesigned icons for all three shortcuts", async (
       url,
       icons: [{ src: `/images/icons/${slug}.png?v=2`, sizes: "192x192" }],
     });
-    const icon = await request.get(shortcut.icons[0].src);
+    const icon = await request.get(shortcut!.icons[0]!.src);
     expect(icon.ok()).toBe(true);
     expect(icon.headers()["content-type"]).toContain("image/png");
     expect(await icon.body()).toEqual(

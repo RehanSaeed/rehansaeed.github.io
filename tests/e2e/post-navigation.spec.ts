@@ -1,3 +1,4 @@
+import type { E2EFixtures } from "./fixtures";
 import { globSync, readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
 import { load } from "cheerio";
@@ -30,9 +31,9 @@ const published = posts
             : 0,
   );
 
-test("Every published post has the correct static chronological neighbours", async ({
+async function verifyChronologicalNeighbours({
   request,
-}) => {
+}: Pick<E2EFixtures, "request">) {
   test.setTimeout(120_000);
   expect(published.length).toBeGreaterThan(2);
   const readingTimes = new Map<string, string>();
@@ -42,10 +43,10 @@ test("Every published post has the correct static chronological neighbours", asy
     expect(response.status(), post.permalink).toBe(200);
     const $ = load(await response.text());
     const nav = $('nav[aria-label="Post navigation"]');
-    expect(nav.length, post.permalink).toBe(1);
+    expect(nav, post.permalink).toHaveLength(1);
     expect(nav.hasClass("post-navigation")).toBe(true);
-    expect(nav.children("ul.post-navigation__list").length).toBe(1);
-    expect(nav.find("> ul > li > a").length).toBe(nav.find("a").length);
+    expect(nav.children("ul.post-navigation__list")).toHaveLength(1);
+    expect(nav.find("> ul > li > a")).toHaveLength(nav.find("a").length);
     for (const element of nav.find("[style]")) {
       expect($(element).attr("style")).toBe("");
     }
@@ -60,13 +61,13 @@ test("Every published post has the correct static chronological neighbours", asy
     ];
     for (const neighbour of neighbours) {
       const link = nav.find(`a[rel="${neighbour.rel}"]`);
-      expect(link.length, `${post.permalink}: ${neighbour.rel}`).toBe(
+      expect(link, `${post.permalink}: ${neighbour.rel}`).toHaveLength(
         neighbour.post ? 1 : 0,
       );
       if (neighbour.post) {
         expect(link.hasClass("post-navigation__link")).toBe(true);
-        expect(link.children().length).toBe(3);
-        expect(link.find("div").length).toBe(0);
+        expect(link.children()).toHaveLength(3);
+        expect(link.find("div")).toHaveLength(0);
         expect(
           link
             .parent()
@@ -75,8 +76,8 @@ test("Every published post has the correct static chronological neighbours", asy
             ),
         ).toBe(true);
         expect(
-          link.find("a, button, input, select, textarea, [tabindex]").length,
-        ).toBe(0);
+          link.find("a, button, input, select, textarea, [tabindex]"),
+        ).toHaveLength(0);
         expect(link.attr("href")).toBe(neighbour.post.permalink);
         expect(link.text()).toContain(neighbour.label);
         expect(link.text()).toContain(neighbour.post.title);
@@ -87,7 +88,7 @@ test("Every published post has the correct static chronological neighbours", asy
             .split(" ")
             .map((id) => link.find(`#${id}`).text().trim()),
         ).toEqual([neighbour.label, neighbour.post.title]);
-        expect(link.children("h2.post-navigation__title").length).toBe(1);
+        expect(link.children("h2.post-navigation__title")).toHaveLength(1);
         const image = link.find("img");
         expect(image.attr("alt")).toBe("");
         expect(image.attr("loading")).toBe("lazy");
@@ -105,12 +106,12 @@ test("Every published post has the correct static chronological neighbours", asy
         expect(image.attr("src")).toContain(
           neighbour.post.heroImage.endsWith(".png") ? "f_png" : "f_jpg",
         );
-        expect(link.find('svg.icon[aria-hidden="true"]').length).toBe(1);
+        expect(link.find('svg.icon[aria-hidden="true"]')).toHaveLength(1);
         expect(
           link.find("svg.icon path, svg.icon line, svg.icon polyline").length,
         ).toBeGreaterThan(0);
         expect(link.find("time").attr("datetime")).toMatch(/^PT\d+M$/);
-        expect(link.find("> p.post-navigation__meta > time").length).toBe(1);
+        expect(link.find("> p.post-navigation__meta > time")).toHaveLength(1);
         neighbourTimes.push({
           permalink: neighbour.post.permalink,
           text: link
@@ -120,7 +121,7 @@ test("Every published post has the correct static chronological neighbours", asy
         });
       }
     }
-    expect(nav.find("a").length).toBe(
+    expect(nav.find("a")).toHaveLength(
       index === 0 || index === published.length - 1 ? 1 : 2,
     );
     expect($(".post-page__content").next().is(nav)).toBe(true);
@@ -130,6 +131,16 @@ test("Every published post has the correct static chronological neighbours", asy
       readingTimes.get(neighbour.permalink),
     );
   }
+}
+
+test("Every published post has the correct static chronological neighbours", async ({
+  request,
+}) => {
+  await expect(
+    verifyChronologicalNeighbours({
+      request,
+    }),
+  ).resolves.toBeUndefined();
 });
 
 test("Drafts remain directly accessible without post navigation", async ({
@@ -141,192 +152,193 @@ test("Drafts remain directly accessible without post navigation", async ({
     const response = await request.get(post.permalink);
     expect(response.status(), post.permalink).toBe(200);
     const $ = load(await response.text());
-    expect($('nav[aria-label="Post navigation"]').length).toBe(0);
+    expect($('nav[aria-label="Post navigation"]')).toHaveLength(0);
   }
 });
 
 for (const width of [1280, 768, 375, 320]) {
+  async function verifyPostLinkNavigation({
+    page,
+    baseURL,
+  }: Pick<E2EFixtures, "page" | "baseURL">) {
+    const iconRequests: string[] = [];
+    page.on("request", (request) => {
+      if (/iconify|_nuxt_icon/.test(request.url())) {
+        iconRequests.push(request.url());
+      }
+    });
+    await page.route(
+      (url) => url.origin !== new URL(baseURL!).origin,
+      (route) => route.fulfill({ status: 204 }),
+    );
+    await page.setViewportSize({ width, height: 900 });
+    const longestTitleIndex = published.reduce(
+      (longest, post, index) =>
+        post.title.length > published[longest]!.title.length ? index : longest,
+      0,
+    );
+    const index = Math.min(
+      Math.max(longestTitleIndex + 1, 1),
+      published.length - 2,
+    );
+    const post = published[index]!;
+    const older = published[index - 1]!;
+    const newer = published[index + 1]!;
+    await page.goto(post.permalink, { waitUntil: "domcontentloaded" });
+    await page.waitForFunction(
+      () =>
+        !!document.querySelector<HTMLElement & { __vue_app__?: unknown }>(
+          "#__nuxt",
+        )?.__vue_app__,
+    );
+    const nav = page.getByRole("navigation", { name: "Post navigation" });
+    const previous = nav.getByRole("link", {
+      name: `Previous post ${older.title}`,
+      exact: true,
+    });
+    const next = nav.getByRole("link", {
+      name: `Next post ${newer.title}`,
+      exact: true,
+    });
+    await expect(previous).toBeVisible();
+    await expect(next).toBeVisible();
+    await expect(nav.getByRole("list")).toBeVisible();
+    await expect(nav.getByRole("listitem")).toHaveCount(2);
+    await expect(nav.getByRole("heading", { level: 2 })).toHaveCount(2);
+    await expect(nav.locator("svg.icon")).toHaveCount(2);
+    await expect(nav.locator("picture")).toHaveCount(2);
+    for (const link of [previous, next]) {
+      const box = await link.boundingBox();
+      expect(box).not.toBeNull();
+      expect(box!.x).toBeGreaterThanOrEqual(0);
+      expect(box!.x + box!.width).toBeLessThanOrEqual(width);
+    }
+    await nav.scrollIntoViewIfNeeded();
+    await expect
+      .poll(() =>
+        nav
+          .locator("img")
+          .evaluateAll((images) =>
+            images.every(
+              (image) =>
+                image instanceof HTMLImageElement &&
+                image.complete &&
+                image.naturalWidth > 0 &&
+                image.currentSrc.includes("f_avif"),
+            ),
+          ),
+      )
+      .toBe(true);
+    await page.evaluate(() => document.fonts.ready);
+    for (const theme of ["light", "dark"]) {
+      await page.evaluate((value) => {
+        document.documentElement.dataset.theme = value;
+      }, theme);
+      const cards = await nav.locator("a").evaluateAll((links) =>
+        links.map((link) => {
+          const image = link.querySelector("img")!;
+          const direction = link.querySelector(".post-navigation__direction")!;
+          const meta = link.querySelector(".post-navigation__meta")!;
+          const time = meta.lastElementChild!;
+          const title = link.querySelector("h2")!;
+          const box = link.getBoundingClientRect();
+          const directionBox = direction.getBoundingClientRect();
+          const timeBox = time.getBoundingClientRect();
+          const metaBox = meta.getBoundingClientRect();
+          const titleBox = title.getBoundingClientRect();
+          const imageBox = image.getBoundingClientRect();
+          return {
+            top: box.top,
+            captionTop: metaBox.top,
+            captionHeight: titleBox.bottom - metaBox.top,
+            titleTop: titleBox.top,
+            captionBackground: getComputedStyle(link, "::before")
+              .backgroundImage,
+            pictureDisplay: getComputedStyle(image.parentElement!).display,
+            surfaceColor: getComputedStyle(link.parentElement!).backgroundColor,
+            extension: box.height - imageBox.height,
+            expectedExtension:
+              4 *
+              Number.parseFloat(
+                getComputedStyle(document.documentElement).fontSize,
+              ),
+            gridAreas: getComputedStyle(link).gridTemplateAreas,
+            metadataDisplay: getComputedStyle(meta).display,
+            directionDisplay: getComputedStyle(direction).display,
+            ratio: imageBox.width / imageBox.height,
+            // Resized image variants round pixels; layout uses source dimensions.
+            imageRatio:
+              Number(image.getAttribute("width")) /
+              Number(image.getAttribute("height")),
+            sameRow:
+              Math.abs(
+                directionBox.top +
+                  directionBox.height / 2 -
+                  (timeBox.top + timeBox.height / 2),
+              ) < 1,
+            opposite:
+              link.rel === "prev"
+                ? directionBox.right < timeBox.left
+                : timeBox.right < directionBox.left,
+            captionFits: [title, meta].every((element) => {
+              const rect = element.getBoundingClientRect();
+              return (
+                rect.top >= box.top - 1 &&
+                rect.bottom <= box.bottom + 1 &&
+                rect.left >= box.left - 1 &&
+                rect.right <= box.right + 1
+              );
+            }),
+          };
+        }),
+      );
+      for (const card of cards) {
+        expect(card.ratio).toBeCloseTo(card.imageRatio, 2);
+        expect(card.sameRow).toBe(true);
+        expect(card.opposite).toBe(true);
+        expect(card.captionFits).toBe(true);
+        expect(card.pictureDisplay).toBe("block");
+        expect(card.extension).toBeCloseTo(card.expectedExtension, 0);
+        expect(card.gridAreas).toBe('"picture" "meta" "title"');
+        expect(card.metadataDisplay).toBe("grid");
+        expect(card.directionDisplay).toBe("grid");
+        expect(card.captionBackground).toContain("/ 0.65");
+        expect(card.captionBackground).toContain("/ 0.88");
+        expect(card.captionBackground).toContain(card.surfaceColor);
+      }
+      if (Math.abs(cards[0]!.top - cards[1]!.top) < 1) {
+        expect(cards[0]!.captionTop).toBeCloseTo(cards[1]!.captionTop, 1);
+        expect(cards[0]!.titleTop).toBeCloseTo(cards[1]!.titleTop, 1);
+        expect(cards[0]!.captionHeight).toBeCloseTo(cards[1]!.captionHeight, 1);
+      }
+    }
+    await previous.focus();
+    await page.keyboard.press("Tab");
+    await expect(next).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(newer.permalink);
+    await expect(page.locator(".post-page__title-container h1")).toHaveText(
+      newer.title,
+    );
+    await nav
+      .getByRole("link", { name: `Previous post ${post.title}` })
+      .click();
+    await expect(page).toHaveURL(post.permalink);
+    await expect(previous).toHaveAttribute("href", older.permalink);
+    await previous.click();
+    await expect(page).toHaveURL(older.permalink);
+    await expect(page.locator(".post-page__title-container h1")).toHaveText(
+      older.title,
+    );
+    expect(iconRequests).toEqual([]);
+  }
+
   browserTest(
     `Post links support keyboard and client navigation at ${width}px`,
     async ({ page, baseURL }) => {
-      const iconRequests: string[] = [];
-      page.on("request", (request) => {
-        if (/iconify|_nuxt_icon/.test(request.url())) {
-          iconRequests.push(request.url());
-        }
-      });
-      await page.route(
-        (url) => url.origin !== new URL(baseURL!).origin,
-        (route) => route.fulfill({ status: 204 }),
-      );
-      await page.setViewportSize({ width, height: 900 });
-      const longestTitleIndex = published.reduce(
-        (longest, post, index) =>
-          post.title.length > published[longest]!.title.length
-            ? index
-            : longest,
-        0,
-      );
-      const index = Math.min(
-        Math.max(longestTitleIndex + 1, 1),
-        published.length - 2,
-      );
-      const post = published[index]!;
-      const older = published[index - 1]!;
-      const newer = published[index + 1]!;
-      await page.goto(post.permalink, { waitUntil: "domcontentloaded" });
-      await page.waitForFunction(
-        () =>
-          !!document.querySelector<HTMLElement & { __vue_app__?: unknown }>(
-            "#__nuxt",
-          )?.__vue_app__,
-      );
-      const nav = page.getByRole("navigation", { name: "Post navigation" });
-      const previous = nav.getByRole("link", {
-        name: `Previous post ${older.title}`,
-        exact: true,
-      });
-      const next = nav.getByRole("link", {
-        name: `Next post ${newer.title}`,
-        exact: true,
-      });
-      await expect(previous).toBeVisible();
-      await expect(next).toBeVisible();
-      await expect(nav.getByRole("list")).toBeVisible();
-      await expect(nav.getByRole("listitem")).toHaveCount(2);
-      await expect(nav.getByRole("heading", { level: 2 })).toHaveCount(2);
-      await expect(nav.locator("svg.icon")).toHaveCount(2);
-      await expect(nav.locator("picture")).toHaveCount(2);
-      for (const link of [previous, next]) {
-        const box = await link.boundingBox();
-        expect(box).not.toBeNull();
-        expect(box!.x).toBeGreaterThanOrEqual(0);
-        expect(box!.x + box!.width).toBeLessThanOrEqual(width);
-      }
-      await nav.scrollIntoViewIfNeeded();
-      await expect
-        .poll(() =>
-          nav
-            .locator("img")
-            .evaluateAll((images) =>
-              images.every(
-                (image) =>
-                  image instanceof HTMLImageElement &&
-                  image.complete &&
-                  image.naturalWidth > 0 &&
-                  image.currentSrc.includes("f_avif"),
-              ),
-            ),
-        )
-        .toBe(true);
-      await page.evaluate(() => document.fonts.ready);
-      for (const theme of ["light", "dark"]) {
-        await page.evaluate((value) => {
-          document.documentElement.dataset.theme = value;
-        }, theme);
-        const cards = await nav.locator("a").evaluateAll((links) =>
-          links.map((link) => {
-            const image = link.querySelector("img")!;
-            const direction = link.querySelector(
-              ".post-navigation__direction",
-            )!;
-            const meta = link.querySelector(".post-navigation__meta")!;
-            const time = meta.lastElementChild!;
-            const title = link.querySelector("h2")!;
-            const box = link.getBoundingClientRect();
-            const directionBox = direction.getBoundingClientRect();
-            const timeBox = time.getBoundingClientRect();
-            const metaBox = meta.getBoundingClientRect();
-            const titleBox = title.getBoundingClientRect();
-            const imageBox = image.getBoundingClientRect();
-            return {
-              top: box.top,
-              captionTop: metaBox.top,
-              captionHeight: titleBox.bottom - metaBox.top,
-              titleTop: titleBox.top,
-              captionBackground: getComputedStyle(link, "::before")
-                .backgroundImage,
-              pictureDisplay: getComputedStyle(image.parentElement!).display,
-              surfaceColor: getComputedStyle(link.parentElement!)
-                .backgroundColor,
-              extension: box.height - imageBox.height,
-              expectedExtension:
-                4 *
-                Number.parseFloat(
-                  getComputedStyle(document.documentElement).fontSize,
-                ),
-              gridAreas: getComputedStyle(link).gridTemplateAreas,
-              metadataDisplay: getComputedStyle(meta).display,
-              directionDisplay: getComputedStyle(direction).display,
-              ratio: imageBox.width / imageBox.height,
-              // Resized image variants round pixels; layout uses source dimensions.
-              imageRatio:
-                Number(image.getAttribute("width")) /
-                Number(image.getAttribute("height")),
-              sameRow:
-                Math.abs(
-                  directionBox.top +
-                    directionBox.height / 2 -
-                    (timeBox.top + timeBox.height / 2),
-                ) < 1,
-              opposite:
-                link.rel === "prev"
-                  ? directionBox.right < timeBox.left
-                  : timeBox.right < directionBox.left,
-              captionFits: [title, meta].every((element) => {
-                const rect = element.getBoundingClientRect();
-                return (
-                  rect.top >= box.top - 1 &&
-                  rect.bottom <= box.bottom + 1 &&
-                  rect.left >= box.left - 1 &&
-                  rect.right <= box.right + 1
-                );
-              }),
-            };
-          }),
-        );
-        for (const card of cards) {
-          expect(card.ratio).toBeCloseTo(card.imageRatio, 2);
-          expect(card.sameRow).toBe(true);
-          expect(card.opposite).toBe(true);
-          expect(card.captionFits).toBe(true);
-          expect(card.pictureDisplay).toBe("block");
-          expect(card.extension).toBeCloseTo(card.expectedExtension, 0);
-          expect(card.gridAreas).toBe('"picture" "meta" "title"');
-          expect(card.metadataDisplay).toBe("grid");
-          expect(card.directionDisplay).toBe("grid");
-          expect(card.captionBackground).toContain("/ 0.65");
-          expect(card.captionBackground).toContain("/ 0.88");
-          expect(card.captionBackground).toContain(card.surfaceColor);
-        }
-        if (Math.abs(cards[0]!.top - cards[1]!.top) < 1) {
-          expect(cards[0]!.captionTop).toBeCloseTo(cards[1]!.captionTop, 1);
-          expect(cards[0]!.titleTop).toBeCloseTo(cards[1]!.titleTop, 1);
-          expect(cards[0]!.captionHeight).toBeCloseTo(
-            cards[1]!.captionHeight,
-            1,
-          );
-        }
-      }
-      await previous.focus();
-      await page.keyboard.press("Tab");
-      await expect(next).toBeFocused();
-      await page.keyboard.press("Enter");
-      await expect(page).toHaveURL(newer.permalink);
-      await expect(page.locator(".post-page__title-container h1")).toHaveText(
-        newer.title,
-      );
-      await nav
-        .getByRole("link", { name: `Previous post ${post.title}` })
-        .click();
-      await expect(page).toHaveURL(post.permalink);
-      await expect(previous).toHaveAttribute("href", older.permalink);
-      await previous.click();
-      await expect(page).toHaveURL(older.permalink);
-      await expect(page.locator(".post-page__title-container h1")).toHaveText(
-        older.title,
-      );
-      expect(iconRequests).toEqual([]);
+      await expect(
+        verifyPostLinkNavigation({ page, baseURL }),
+      ).resolves.toBeUndefined();
     },
   );
 }

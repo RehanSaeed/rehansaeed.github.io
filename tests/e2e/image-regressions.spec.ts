@@ -1,3 +1,4 @@
+import type { E2EFixtures } from "./fixtures";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { load } from "cheerio";
@@ -5,6 +6,8 @@ import { test as unitTest } from "@playwright/test";
 import { expect, test } from "./fixtures";
 import { readImageDimensions } from "../../modules/blog-content/images";
 import { rewriteRelativeImages } from "../../modules/blog-content/fields";
+import { dimensionsSchema, graphSchema } from "./data";
+import { z } from "zod";
 
 const pricingPath =
   "/pluralsight-vs-linkedin-learning-vs-frontendmasters-vs-egghead-io-vs-youtube/";
@@ -54,63 +57,71 @@ test.describe("All-pages audit regressions", () => {
           ],
         ],
       ]);
-      expect(() =>
+      expect(() => {
         rewriteRelativeImages(
           [["img", { src: "./images/missing.png" }]],
           "posts/example",
           {},
-        ),
-      ).toThrow("Missing intrinsic image dimensions");
+        );
+      }).toThrow("Missing intrinsic image dimensions");
     },
   );
 
-  unitTest(
-    "Every generated Markdown image reserves its intrinsic ratio and remains lazy",
-    () => {
-      const metadata: Record<string, { width: number; height: number }> =
+  function verifyMarkdownImageDimensions() {
+    const metadata = z
+      .record(z.string(), dimensionsSchema)
+      .parse(
         JSON.parse(
           readFileSync(
             join(process.cwd(), ".data", "blog-image-metadata.json"),
             "utf8",
           ),
-        );
-      const urls = readFileSync(
-        join(process.cwd(), "tests", "parity", "urls.txt"),
-        "utf8",
-      )
-        .trim()
-        .split(/\r?\n/);
-      let images = 0;
-      let posts = 0;
-      for (const path of urls) {
-        const $ = load(
-          readFileSync(join(process.cwd(), "dist", path, "index.html"), "utf8"),
-        );
-        const contentImages = $(".post__content img").filter((_, element) =>
-          ($(element).attr("src") ?? "").includes("/content-images/"),
-        );
-        if (contentImages.length) {
-          posts++;
-        }
-        for (const element of contentImages) {
-          const image = $(element);
-          const src = decodeURIComponent(image.attr("src")!);
-          const url = src.slice(src.indexOf("/content-images/"));
-          expect(
-            {
-              width: Number(image.attr("width")),
-              height: Number(image.attr("height")),
-            },
-            `${path}: ${url}`,
-          ).toEqual(metadata[url]);
-          expect(image.attr("loading"), `${path}: ${url}`).toBe("lazy");
-          expect(image.attr("srcset"), `${path}: ${url}`).toMatch(/\d+w/);
-          expect(image.attr("sizes"), `${path}: ${url}`).toBeTruthy();
-          images++;
-        }
+        ),
+      );
+    const urls = readFileSync(
+      join(process.cwd(), "tests", "parity", "urls.txt"),
+      "utf8",
+    )
+      .trim()
+      .split(/\r?\n/);
+    let images = 0;
+    let posts = 0;
+    for (const path of urls) {
+      const $ = load(
+        readFileSync(join(process.cwd(), "dist", path, "index.html"), "utf8"),
+      );
+      const contentImages = $(".post__content img").filter((_, element) =>
+        ($(element).attr("src") ?? "").includes("/content-images/"),
+      );
+      if (contentImages.length) {
+        posts++;
       }
-      expect(images).toBe(178);
-      expect(posts).toBe(42);
+      for (const element of contentImages) {
+        const image = $(element);
+        const src = decodeURIComponent(image.attr("src")!);
+        const url = src.slice(src.indexOf("/content-images/"));
+        expect(
+          {
+            width: Number(image.attr("width")),
+            height: Number(image.attr("height")),
+          },
+          `${path}: ${url}`,
+        ).toEqual(metadata[url]);
+        expect(image.attr("loading"), `${path}: ${url}`).toBe("lazy");
+        expect(image.attr("srcset"), `${path}: ${url}`).toMatch(/\d+w/);
+        expect(image.attr("sizes"), `${path}: ${url}`).toBeTruthy();
+        images++;
+      }
+    }
+    expect(images).toBe(178);
+    expect(posts).toBe(42);
+    return true;
+  }
+
+  unitTest(
+    "Every generated Markdown image reserves its intrinsic ratio and remains lazy",
+    () => {
+      expect(verifyMarkdownImageDimensions()).toBe(true);
     },
   );
 
@@ -120,9 +131,7 @@ test.describe("All-pages audit regressions", () => {
     ["/3/", 1200, 768, "Git"],
     ["/10/", 1024, 640, "Elysium"],
   ] as const) {
-    test(`Preserves the ${alt ? "card" : "hero"} aspect ratio and correct image metadata on ${path}`, async ({
-      page,
-    }) => {
+    async function verifyImageAspectRatio({ page }: Pick<E2EFixtures, "page">) {
       await page.goto(path);
       const image = page.locator(
         alt ? `.post-card__image[alt="${alt}"]` : ".post__photo",
@@ -147,23 +156,44 @@ test.describe("All-pages audit regressions", () => {
         await expect(
           page.locator('meta[property="og:image:height"]'),
         ).toHaveAttribute("content", "630");
-        const graph = JSON.parse(
-          (await page
-            .locator('script[type="application/ld+json"]')
-            .textContent())!,
+        const graph = graphSchema.parse(
+          JSON.parse(
+            (await page
+              .locator('script[type="application/ld+json"]')
+              .textContent())!,
+          ),
         );
         const article = graph["@graph"].find(
-          (node: { "@type": string }) => node["@type"] === "Article",
+          (node) => node["@type"] === "Article",
         );
-        expect(Number(article.image[0].width)).toBe(width);
-        expect(Number(article.image[0].height)).toBe(height);
+        const images = z
+          .array(
+            z.object({
+              width: z.union([z.number(), z.string()]),
+              height: z.union([z.number(), z.string()]),
+            }),
+          )
+          .parse(article!.image);
+        expect(Number(images[0]!.width)).toBe(width);
+        expect(Number(images[0]!.height)).toBe(height);
       }
+    }
+
+    test(`Preserves the ${alt ? "card" : "hero"} aspect ratio and correct image metadata on ${path}`, async ({
+      page,
+    }) => {
+      await expect(
+        verifyImageAspectRatio({
+          page,
+        }),
+      ).resolves.toBeUndefined();
     });
   }
 
   for (const deviceScaleFactor of [1, 2]) {
     test.describe(`Responsive images at ${deviceScaleFactor}x density`, () => {
       test.use({ deviceScaleFactor });
+
       test("Selects sufficient pixels for fluid cards across viewport sizes", async ({
         page,
       }) => {

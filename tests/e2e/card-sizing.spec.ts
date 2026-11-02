@@ -1,9 +1,8 @@
+import type { E2EFixtures } from "./fixtures";
 import { expect, test } from "./fixtures";
 
 for (const width of [375, 1280, 1920]) {
-  test(`Blog and Portfolio cards share modest compact sizing at ${width}px`, async ({
-    page,
-  }) => {
+  async function verifyCardSizing({ page }: Pick<E2EFixtures, "page">) {
     await page.setViewportSize({ width, height: 1080 });
     const measurements = [];
     for (const path of ["/", "/2/", "/tag/net/", "/portfolio/"]) {
@@ -38,7 +37,9 @@ for (const width of [375, 1280, 1920]) {
         const original = await card.evaluate((element) => {
           const grid = element.parentElement!;
           const cards = [...grid.querySelectorAll(".card--compact")];
-          cards.forEach((card) => card.classList.remove("card--compact"));
+          cards.forEach((card) => {
+            card.classList.remove("card--compact");
+          });
           const bounds = element.getBoundingClientRect();
           const style = getComputedStyle(element);
           const result = {
@@ -49,7 +50,9 @@ for (const width of [375, 1280, 1920]) {
             columns:
               getComputedStyle(grid).gridTemplateColumns.split(" ").length,
           };
-          cards.forEach((card) => card.classList.add("card--compact"));
+          cards.forEach((card) => {
+            card.classList.add("card--compact");
+          });
           return result;
         });
         expect(compact.columns).toBe(original.columns);
@@ -67,5 +70,15 @@ for (const width of [375, 1280, 1920]) {
       expect(size.padding).toBeCloseTo(reference.padding, 1);
       expect(size.fontSize).toBeCloseTo(reference.fontSize, 1);
     }
+  }
+
+  test(`Blog and Portfolio cards share modest compact sizing at ${width}px`, async ({
+    page,
+  }) => {
+    await expect(
+      verifyCardSizing({
+        page,
+      }),
+    ).resolves.toBeUndefined();
   });
 }

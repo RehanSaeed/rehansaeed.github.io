@@ -52,8 +52,20 @@ async function readyForScreenshot(page: Page) {
         return image.complete
           ? Promise.resolve()
           : new Promise<void>((resolve) => {
-              image.addEventListener("load", () => resolve(), { once: true });
-              image.addEventListener("error", () => resolve(), { once: true });
+              image.addEventListener(
+                "load",
+                () => {
+                  resolve();
+                },
+                { once: true },
+              );
+              image.addEventListener(
+                "error",
+                () => {
+                  resolve();
+                },
+                { once: true },
+              );
             });
       }),
     );
@@ -70,8 +82,9 @@ async function checkGeometry(page: Page, info: TestInfo, name: string) {
     await mkdir(dirname(file), { recursive: true });
     await writeFile(file, JSON.stringify(geometry));
   } else {
-    const reference: { width: number; height: number } = JSON.parse(
-      await readFile(file, "utf8"),
+    const { dimensionsSchema } = await import("./data");
+    const reference = dimensionsSchema.parse(
+      JSON.parse(await readFile(file, "utf8")),
     );
     expect(geometry.width).toBe(reference.width);
     expect(Math.abs(geometry.height - reference.height)).toBeLessThanOrEqual(2);

@@ -1,3 +1,4 @@
+import type { E2EFixtures } from "./fixtures";
 import { expect, test } from "./fixtures";
 
 const dialogs = [
@@ -11,9 +12,9 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
     test.use({ reducedMotion });
 
     for (const { title, trigger } of dialogs) {
-      test(`${title} closes and reopens with keyboard focus restored`, async ({
+      async function verifyDialogFocusRestoration({
         page,
-      }) => {
+      }: Pick<E2EFixtures, "page">) {
         // Exercise the share dialog rather than the platform's native share UI.
         await page.addInitScript(() => {
           Object.defineProperty(navigator, "share", { value: undefined });
@@ -42,6 +43,7 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
 
         await opener.click();
         await expect(dialog).toBeVisible();
+        // Check absence after the tooltip's opening delay, not just immediately.
         await page.waitForTimeout(350);
         await expect(page.getByRole("tooltip")).toHaveCount(0);
         await page.keyboard.press("Escape");
@@ -50,6 +52,7 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
 
         await opener.press("Enter");
         await expect(dialog).toBeVisible();
+        // Keyboard reopening must not schedule a delayed tooltip either.
         await page.waitForTimeout(350);
         await expect(page.getByRole("tooltip")).toHaveCount(0);
         const close = dialog.getByRole("button", {
@@ -72,6 +75,16 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
         await page.keyboard.press("Escape");
         await expect(closedDialog).toBeHidden();
         await expect(opener).toBeFocused();
+      }
+
+      test(`${title} closes and reopens with keyboard focus restored`, async ({
+        page,
+      }) => {
+        await expect(
+          verifyDialogFocusRestoration({
+            page,
+          }),
+        ).resolves.toBeUndefined();
       });
     }
   });
@@ -92,7 +105,13 @@ test.describe("Dialog transitions", () => {
     await expect(dialog).toBeVisible();
     await dialog.evaluate(async (element: HTMLDialogElement) => {
       const closed = new Promise<void>((resolve) => {
-        element.addEventListener("close", () => resolve(), { once: true });
+        element.addEventListener(
+          "close",
+          () => {
+            resolve();
+          },
+          { once: true },
+        );
       });
       element.close();
       element.showModal();
@@ -103,7 +122,9 @@ test.describe("Dialog transitions", () => {
     await expect(dialog).toHaveJSProperty("open", true);
     await expect(dialog).toBeVisible();
 
-    await dialog.evaluate((element: HTMLDialogElement) => element.close());
+    await dialog.evaluate((element: HTMLDialogElement) => {
+      element.close();
+    });
     await expect(dialog).toBeHidden();
     await expect(
       page.getByRole("button", { name: "Open search", exact: true }),

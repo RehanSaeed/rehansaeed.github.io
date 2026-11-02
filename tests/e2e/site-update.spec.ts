@@ -17,8 +17,9 @@ function mountUpdate() {
   const errors: unknown[] = [];
   let calls = 0;
   const pwa = {
-    updateServiceWorker: async () => {
+    updateServiceWorker: () => {
       calls++;
+      return Promise.resolve();
     },
   };
   const module = {
@@ -80,14 +81,13 @@ test("Concurrent update clicks invoke the package only once", async () => {
 
 test("A package failure is reported and can be retried successfully", async () => {
   const app = mountUpdate();
-  app.pwa.updateServiceWorker = async () => {
-    throw new Error("Package update failure");
-  };
+  app.pwa.updateServiceWorker = () =>
+    Promise.reject(new Error("Package update failure"));
   await app.state.update();
   expect(app.errors).toHaveLength(1);
   expect(app.state.error.value).toContain("The update is not ready.");
   expect(app.state.updating.value).toBe(false);
-  app.pwa.updateServiceWorker = async () => {};
+  app.pwa.updateServiceWorker = () => Promise.resolve();
   await app.state.update();
   expect(app.state.error.value).toBe("");
   expect(app.state.updating.value).toBe(false);

@@ -2,8 +2,10 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { expect, test } from "@playwright/test";
 import { portfolioDownloads } from "../../modules/blog-content/nuget";
 import type { ContentEntry } from "../../modules/blog-content/scan";
+import { cacheSchema, requestUrl } from "./data";
 
 const originalFetch = globalThis.fetch;
+
 test.afterEach(() => {
   globalThis.fetch = originalFetch;
 });
@@ -30,13 +32,15 @@ test("NuGet sums package-wide counts once and refreshes only expired snapshots",
   const entry = project("Example.First", "Example.Second");
   let firstCount = 100;
   let calls = 0;
-  globalThis.fetch = async (input) => {
+  globalThis.fetch = (input) => {
     calls++;
-    const url = new URL(String(input));
+    const url = new URL(requestUrl(input));
     expect(url.origin).toBe("https://www.nuget.org");
     expect(url.searchParams.get("semVerLevel")).toBe("2.0.0");
     const id = url.searchParams.get("id")!.replaceAll("'", "");
-    return response(id, id === "example.first" ? firstCount : 50);
+    return Promise.resolve(
+      response(id, id === "example.first" ? firstCount : 50),
+    );
   };
   const snapshots = await portfolioDownloads(dir, [entry]);
   expect(snapshots[entry.data.permalink]).toEqual({
@@ -51,7 +55,7 @@ test("NuGet sums package-wide counts once and refreshes only expired snapshots",
   expect(await portfolioDownloads(dir, [entry])).toEqual(snapshots);
   expect(calls).toBe(2);
   const file = info.outputPath("cache", "blog-nuget.json");
-  const saved = JSON.parse(await readFile(file, "utf8"));
+  const saved = cacheSchema.parse(JSON.parse(await readFile(file, "utf8")));
   await writeFile(file, JSON.stringify({ ...saved, updated: 0 }));
   expect(
     (await portfolioDownloads(dir, [entry]))[entry.data.permalink]
@@ -64,12 +68,12 @@ test("A new NuGet package invalidates a fresh snapshot and cannot disappear from
   const dir = info.outputPath("cache");
   await mkdir(dir, { recursive: true });
   let calls = 0;
-  globalThis.fetch = async (input) => {
+  globalThis.fetch = (input) => {
     calls++;
-    const id = new URL(String(input)).searchParams
+    const id = new URL(requestUrl(input)).searchParams
       .get("id")!
       .replaceAll("'", "");
-    return response(id, 100);
+    return Promise.resolve(response(id, 100));
   };
   await portfolioDownloads(dir, [project("Example.First")]);
   const entry = project("Example.First", "Example.Second");
@@ -82,14 +86,16 @@ test("NuGet failures preserve validated saved counts and schedule another refres
   const dir = info.outputPath("cache");
   await mkdir(dir, { recursive: true });
   const entry = project("Example.Package");
-  globalThis.fetch = async () => response("Example.Package", 100);
+  globalThis.fetch = () => Promise.resolve(response("Example.Package", 100));
   const snapshots = await portfolioDownloads(dir, [entry]);
   const file = info.outputPath("cache", "blog-nuget.json");
-  const saved = JSON.parse(await readFile(file, "utf8"));
+  const saved = cacheSchema.parse(JSON.parse(await readFile(file, "utf8")));
   await writeFile(file, JSON.stringify({ ...saved, updated: 0 }));
-  globalThis.fetch = async () => new Response(null, { status: 503 });
+  globalThis.fetch = () => Promise.resolve(new Response(null, { status: 503 }));
   expect(await portfolioDownloads(dir, [entry])).toEqual(snapshots);
-  expect(JSON.parse(await readFile(file, "utf8")).updated).toBe(0);
+  expect(
+    cacheSchema.parse(JSON.parse(await readFile(file, "utf8"))).updated,
+  ).toBe(0);
 });
 
 test("Missing, malformed and mismatched NuGet counts fail instead of inventing popularity", async ({}, info) => {
@@ -105,7 +111,7 @@ test("Missing, malformed and mismatched NuGet counts fail instead of inventing p
     response("Example.Package", "1.5"),
     response("Example.Package", "9007199254740992"),
   ]) {
-    globalThis.fetch = async () => invalid;
+    globalThis.fetch = () => Promise.resolve(invalid);
     await expect(
       portfolioDownloads(dir, [project("Example.Package")]),
     ).rejects.toThrow("NuGet downloads unavailable for example.package.");
@@ -113,9 +119,10 @@ test("Missing, malformed and mismatched NuGet counts fail instead of inventing p
 });
 
 test("Repeated case-insensitive package IDs cannot double-count downloads", async ({}, info) => {
-  globalThis.fetch = async () => {
-    throw new Error("No request should be made for invalid package lists.");
-  };
+  globalThis.fetch = () =>
+    Promise.reject(
+      new Error("No request should be made for invalid package lists."),
+    );
   await expect(
     portfolioDownloads(info.outputPath("unused"), [
       project("Example.Package", "example.package"),
@@ -133,9 +140,8 @@ test("Projects without packages have a known zero and Microsoft work makes no Nu
   const microsoft = project("Do.Not.Fetch");
   microsoft.data.kind = "microsoft";
   microsoft.data.permalink = "https://blogs.windows.com/example/";
-  globalThis.fetch = async () => {
-    throw new Error("Neither project should make a NuGet request.");
-  };
+  globalThis.fetch = () =>
+    Promise.reject(new Error("Neither project should make a NuGet request."));
   expect(await portfolioDownloads(dir, [openSource, microsoft])).toEqual({
     [openSource.data.permalink]: { nugetDownloads: 0, nugetPackages: [] },
   });
