@@ -8,6 +8,7 @@ import {
   type PlaywrightWorkerArgs,
   type PlaywrightWorkerOptions,
 } from "@playwright/test";
+import { observeServiceWorkerRegistration } from "./service-worker";
 
 export type E2EFixtures = PlaywrightTestArgs &
   PlaywrightTestOptions &
@@ -114,7 +115,15 @@ export const getAnalyticsEvents = (page: Page): Promise<AnalyticsEvent[]> =>
     );
   });
 
-export const test = base.extend<{ analytics: void }>({
+export const test = base.extend<{
+  /** Stubbed analytics and external embeds. */
+  analytics: void;
+  /** Native worker readiness with explicit registration and installation failures. */
+  serviceWorkerReady: () => Promise<string | undefined>;
+}>({
+  serviceWorkerReady: async ({ page }, use) => {
+    await use(await observeServiceWorkerRegistration(page));
+  },
   analytics: [
     async ({ page }, use) => {
       await page.route(

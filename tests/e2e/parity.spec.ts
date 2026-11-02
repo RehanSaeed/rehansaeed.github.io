@@ -257,18 +257,25 @@ test.describe("Parity", () => {
 test.describe("Service worker", () => {
   test.use({ serviceWorkers: "allow" });
 
-  test("Registers at /service-worker.js", async ({ page, baseURL }) => {
+  test("Registers at /service-worker.js", async ({
+    page,
+    baseURL,
+    serviceWorkerReady,
+  }) => {
     test.slow();
     await page.goto("/");
 
     // ready only resolves once the precache install succeeds and the worker activates.
-    const scriptURL = await page.evaluate(
-      async () => (await navigator.serviceWorker.ready).active?.scriptURL,
-    );
+    const scriptURL = await serviceWorkerReady();
     expect(scriptURL).toBe(new URL("/service-worker.js", baseURL).href);
   });
 
-  test("Works offline", async ({ page, context, browserName }) => {
+  test("Works offline", async ({
+    page,
+    context,
+    browserName,
+    serviceWorkerReady,
+  }) => {
     // Firefox's offline emulation bypasses service workers, invalidating this check.
     // eslint-disable-next-line playwright/no-skipped-test
     test.skip(
@@ -280,8 +287,8 @@ test.describe("Service worker", () => {
     const cdp = await context.newCDPSession(page);
     await cdp.send("Network.setCacheDisabled", { cacheDisabled: true });
     await page.goto("/");
+    await serviceWorkerReady();
     await page.evaluate(async () => {
-      await navigator.serviceWorker.ready;
       if (!navigator.serviceWorker.controller) {
         await new Promise((resolve) => {
           navigator.serviceWorker.addEventListener("controllerchange", resolve);
