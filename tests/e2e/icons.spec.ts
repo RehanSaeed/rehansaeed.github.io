@@ -188,6 +188,7 @@ test.describe("Offline icons", () => {
     context,
     baseURL,
     browserName,
+    serviceWorkerReady,
   }) => {
     // Playwright's Firefox offline emulation bypasses the worker being tested.
     // eslint-disable-next-line playwright/no-skipped-test
@@ -214,8 +215,8 @@ test.describe("Offline icons", () => {
     await cdp.send("Network.setCacheDisabled", { cacheDisabled: true });
     await page.goto("/");
     await ready(page);
+    await serviceWorkerReady();
     await page.evaluate(async () => {
-      await navigator.serviceWorker.ready;
       if (!navigator.serviceWorker.controller) {
         await new Promise((resolve) => {
           navigator.serviceWorker.addEventListener(
