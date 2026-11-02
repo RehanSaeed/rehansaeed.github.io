@@ -124,6 +124,7 @@ for (const defaultFontSize of [16, 32]) {
       browserName,
     }) => {
       // Non-default browser font sizes can only be configured through Chromium CDP.
+      // eslint-disable-next-line playwright/no-skipped-test
       test.skip(
         defaultFontSize !== 16 && browserName !== "chromium",
         "Changing the browser's default font size requires Chromium CDP.",

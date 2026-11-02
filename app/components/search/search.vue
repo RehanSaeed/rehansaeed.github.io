@@ -2,6 +2,8 @@
   <section class="search" aria-label="site">
     <form class="search__form" role="search" @submit.prevent>
       <label class="search__label" :for="inputId">Search</label>
+      <!-- Opening search deliberately moves focus to its input. -->
+      <!-- eslint-disable vuejs-accessibility/no-autofocus -->
       <input
         class="search__input"
         :id="inputId"
@@ -10,6 +12,7 @@
         placeholder="Search"
         inputmode="search"
         type="search" />
+      <!-- eslint-enable vuejs-accessibility/no-autofocus -->
     </form>
     <div class="search__results">
       <u-search-result
