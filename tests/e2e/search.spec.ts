@@ -4,6 +4,79 @@ import { expect, test } from "./fixtures";
 const openSearch = (page: Page) =>
   page.getByRole("button", { name: "Open search" }).click();
 
+for (const reducedMotion of ["no-preference", "reduce"] as const) {
+  test.describe(`Search focus with ${reducedMotion} motion`, () => {
+    test.use({ reducedMotion });
+
+    test("Opening and reopening focus the input and keyboard dismissal restores the opener", async ({
+      page,
+    }) => {
+      await page.goto("/");
+      const opener = page.getByRole("button", {
+        name: "Open search",
+        exact: true,
+      });
+      const input = page.getByRole("searchbox", {
+        name: "Search",
+        exact: true,
+      });
+      const dialog = page.getByRole("dialog", {
+        name: "Search",
+        exact: true,
+        includeHidden: true,
+      });
+
+      await expect(opener).toBeEnabled();
+      await opener.focus();
+      await opener.press("Enter");
+      await expect(input).toBeFocused();
+      await page.keyboard.type("Schema.NET");
+      await expect(input).toHaveValue("Schema.NET");
+      await expect(
+        page.locator(".search-result__link").first(),
+      ).toHaveAttribute("href", "https://github.com/RehanSaeed/Schema.NET");
+
+      await dialog
+        .getByRole("button", { name: "Close Search", exact: true })
+        .press("Enter");
+      await expect(dialog).toBeHidden();
+      await expect(opener).toBeFocused();
+
+      await opener.press("Enter");
+      await expect(input).toBeFocused();
+      await expect(input).toHaveValue("Schema.NET");
+      // A populated native search input consumes Escape to clear the query first.
+      await page.keyboard.press("Escape");
+      await expect(input).toHaveValue("");
+      await expect(input).toBeFocused();
+      await expect(dialog).toBeVisible();
+      await page.keyboard.press("Escape");
+      await expect(dialog).toBeHidden();
+      await expect(opener).toBeFocused();
+
+      await opener.press("Enter");
+      await expect(input).toBeFocused();
+      await page.keyboard.press("Escape");
+      await expect(dialog).toBeHidden();
+      await expect(opener).toBeFocused();
+    });
+
+    test("A search deep link focuses the prefilled input", async ({ page }) => {
+      await page.goto("/?search=Schema.NET");
+      const input = page.getByRole("searchbox", {
+        name: "Search",
+        exact: true,
+      });
+
+      await expect(input).toBeFocused();
+      await expect(input).toHaveValue("Schema.NET");
+      await expect(
+        page.locator(".search-result__link").first(),
+      ).toHaveAttribute("href", "https://github.com/RehanSaeed/Schema.NET");
+    });
+  });
+}
+
 test.describe("Search", () => {
   test("Open search", async ({ page }) => {
     await page.goto("/");
