@@ -23,7 +23,13 @@ const test = base.extend<{ workerSite: WorkerSite }>({
     });
     const server = createServer((request, response) => {
       const url = new URL(request.url!, "http://localhost");
-      const mode = url.searchParams.get("mode");
+      const requestedMode = url.searchParams.get("mode");
+      const mode =
+        requestedMode === "reject"
+          ? "reject"
+          : requestedMode === "invalid"
+            ? "invalid"
+            : "activate";
       if (url.pathname === "/worker.js") {
         response.writeHead(200, {
           "Content-Type": "text/javascript",
@@ -79,6 +85,22 @@ const test = base.extend<{ workerSite: WorkerSite }>({
 });
 
 test.use({ serviceWorkers: "allow" });
+
+test("Worker test pages do not reflect unrecognised registration modes", async ({
+  request,
+  workerSite,
+}) => {
+  const response = await request.get(
+    `${workerSite.origin}/?mode=unrecognised-mode`,
+  );
+  const html = await response.text();
+
+  expect(response.ok()).toBe(true);
+  expect(html).toContain(
+    'navigator.serviceWorker.register("/worker.js?mode=activate")',
+  );
+  expect(html).not.toContain("unrecognised-mode");
+});
 
 test("Readiness waits for a real worker to finish installing", async ({
   page,
