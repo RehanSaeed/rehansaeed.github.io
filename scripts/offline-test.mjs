@@ -267,7 +267,18 @@ async function launch(profile) {
       console.error("Browser error:", message.text());
     }
   });
-  return context.pages()[0];
+  const page = context.pages()[0];
+  page.on("pageerror", (error) => {
+    console.error("Browser page error:", error);
+  });
+  page.on("requestfailed", (request) => {
+    console.error(
+      "Browser request failed:",
+      request.url(),
+      request.failure()?.errorText,
+    );
+  });
+  return page;
 }
 async function command(page, command, override) {
   const integrity =
@@ -782,6 +793,10 @@ try {
         controller: navigator.serviceWorker.controller?.scriptURL,
         active: (await navigator.serviceWorker.getRegistration("/"))?.active
           ?.scriptURL,
+        document: document.readyState,
+        resources: performance
+          .getEntriesByType("resource")
+          .map(({ name, duration }) => ({ name, duration })),
       })),
     );
   }

@@ -143,6 +143,8 @@ worker.addEventListener("message", (event: WorkerMessage) => {
   );
 });
 
+const requestKeys = new Map<string, Map<string, string>>();
+
 async function savedResponse(request: Request) {
   const { id } = await generationPromise;
   const coreName = `blog-offline-core-${id}`;
@@ -153,13 +155,22 @@ async function savedResponse(request: Request) {
       continue;
     }
     const saved = await readOfflineGeneration(savedId);
-    const entry = saved.entries.find((entry) =>
-      candidates.includes(new URL(entry.url, location.origin).href),
-    );
-    if (entry) {
+    const keys =
+      requestKeys.get(saved.id) ??
+      new Map(
+        saved.entries.map((entry) => [
+          new URL(entry.url, location.origin).href,
+          offlineKey(entry, location.origin),
+        ]),
+      );
+    requestKeys.set(saved.id, keys);
+    const key = candidates
+      .map((candidate) => keys.get(candidate))
+      .find((key) => key !== undefined);
+    if (key) {
       const response = await (
         await caches.open(offlineCache(saved.id))
-      ).match(offlineKey(entry, location.origin));
+      ).match(key);
       if (response) {
         return response;
       }
