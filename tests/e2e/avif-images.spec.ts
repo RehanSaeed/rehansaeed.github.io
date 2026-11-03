@@ -1,12 +1,13 @@
 import type { E2EFixtures } from "./fixtures";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { test as unitTest } from "@playwright/test";
+import { test as unitTest, type Page } from "@playwright/test";
 import { load } from "cheerio";
 import sharp from "sharp";
 import { listFiles } from "../../modules/blog-content/scan";
 import { getAvifSource } from "../../shared/utils/images";
 import { expect, test } from "./fixtures";
+import { controlled, saved, test as offlineTest } from "./offline-fixtures";
 
 async function verifyAvifCompanions() {
   unitTest.setTimeout(300_000);
@@ -330,64 +331,85 @@ test.describe("Native fallback without JavaScript", () => {
   }
 });
 
-unitTest(
+async function verifyCachedPictures(page: Page) {
+  await expect(page.getByRole("button", { name: "Open search" })).toBeEnabled();
+  const images = page.locator("img[data-nuxt-pic]");
+  expect(await images.count()).toBeGreaterThan(0);
+  for (const image of await images.filter({ visible: true }).all()) {
+    await image.scrollIntoViewIfNeeded();
+  }
+  // Include hidden marker templates in the offline-loading assertions.
+  for (const image of await images.all()) {
+    await expect
+      .poll(() =>
+        image.evaluate(
+          (node: HTMLImageElement) =>
+            node.complete &&
+            node.naturalWidth > 0 &&
+            node.currentSrc.includes("f_avif"),
+        ),
+      )
+      .toBe(true);
+    await expect
+      .poll(() =>
+        image.evaluate(async (node: HTMLImageElement) =>
+          Boolean(await caches.match(node.currentSrc)),
+        ),
+      )
+      .toBe(true);
+  }
+}
+
+async function verifyCachedSearchHero(page: Page) {
+  await page.getByRole("button", { name: "Open search" }).click();
+  await page
+    .getByRole("searchbox", { name: "Search", exact: true })
+    .fill("Schema.NET");
+  const hero = page.locator(".search-result__image").first();
+  await expect
+    .poll(() =>
+      hero.evaluate(
+        (image: HTMLImageElement) =>
+          image.complete &&
+          image.naturalWidth > 0 &&
+          image.currentSrc.endsWith("/Schema.NET-1366x768.avif"),
+      ),
+    )
+    .toBe(true);
+  await expect
+    .poll(() =>
+      hero.evaluate(async (image: HTMLImageElement) =>
+        Boolean(await caches.match(image.currentSrc)),
+      ),
+    )
+    .toBe(true);
+}
+
+offlineTest(
   "Offline pages and search load AVIF without downloading content fallbacks",
-  async ({ browser, baseURL }) => {
-    unitTest.setTimeout(180_000);
-    const context = await browser.newContext({
-      baseURL,
-      serviceWorkers: "allow",
+  async ({ page, site }) => {
+    offlineTest.setTimeout(180_000);
+    const response = await page.goto(`${site.origin}/`, {
+      waitUntil: "domcontentloaded",
     });
-    try {
-      const page = await context.newPage();
-      await page.goto("/", { waitUntil: "domcontentloaded" });
-      await page.evaluate(async () => {
-        await navigator.serviceWorker.register("/service-worker.js");
-        await navigator.serviceWorker.ready;
+    expect(response?.ok()).toBe(true);
+    await controlled(page);
+    for (const path of ["/about/", "/asp-net-mvc-boilerplate/"]) {
+      await page.goto(`${site.origin}${path}`, {
+        waitUntil: "domcontentloaded",
       });
-      await page.waitForFunction(() => !!navigator.serviceWorker.controller);
-      await context.setOffline(true);
-      for (const path of ["/about/", "/asp-net-mvc-boilerplate/"]) {
-        await page.goto(path, { waitUntil: "domcontentloaded" });
-        await expect(
-          page.getByRole("button", { name: "Open search" }),
-        ).toBeEnabled();
-        const images = page.locator("img[data-nuxt-pic]");
-        expect(await images.count()).toBeGreaterThan(0);
-        for (const image of await images.filter({ visible: true }).all()) {
-          await image.scrollIntoViewIfNeeded();
-        }
-        // Include hidden marker templates in the offline-loading assertions.
-        for (const image of await images.all()) {
-          await expect
-            .poll(() =>
-              image.evaluate(
-                (node: HTMLImageElement) =>
-                  node.complete &&
-                  node.naturalWidth > 0 &&
-                  node.currentSrc.includes("f_avif"),
-              ),
-            )
-            .toBe(true);
-        }
-      }
-      await page.getByRole("button", { name: "Open search" }).click();
-      await page
-        .getByRole("searchbox", { name: "Search", exact: true })
-        .fill("Schema.NET");
-      const hero = page.locator(".search-result__image").first();
-      await expect
-        .poll(() =>
-          hero.evaluate(
-            (image: HTMLImageElement) =>
-              image.complete &&
-              image.naturalWidth > 0 &&
-              image.currentSrc.endsWith("/Schema.NET-1366x768.avif"),
-          ),
-        )
-        .toBe(true);
-    } finally {
-      await context.close();
+      await verifyCachedPictures(page);
+      await saved(page, path);
     }
+    await verifyCachedSearchHero(page);
+    await page.getByRole("button", { name: "Close Search" }).click();
+    await site.stop();
+    for (const path of ["/about/", "/asp-net-mvc-boilerplate/"]) {
+      await page.goto(`${site.origin}${path}`, {
+        waitUntil: "domcontentloaded",
+      });
+      await verifyCachedPictures(page);
+    }
+    await verifyCachedSearchHero(page);
   },
 );

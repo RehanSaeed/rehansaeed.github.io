@@ -1,182 +1,13 @@
-import { createServer } from "node:http";
-import { readFile, stat } from "node:fs/promises";
-import { join, extname, resolve, relative } from "node:path";
-import { once } from "node:events";
-import { generateSW } from "workbox-build";
-import { expect, test as base } from "@playwright/test";
-import type { Page } from "@playwright/test";
+import { createHash } from "node:crypto";
+import { globSync } from "node:fs";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
+import { expect } from "@playwright/test";
 import type { Router } from "vue-router";
+import { controlled, saved, test } from "./offline-fixtures";
 
 const article = "/on-the-etiquette-of-pull-request-comments/";
 const unvisited = "/gitattributes-best-practices/";
-const types: Record<string, string> = {
-  ".html": "text/html",
-  ".js": "text/javascript",
-  ".css": "text/css",
-  ".json": "application/json",
-  ".woff2": "font/woff2",
-  ".png": "image/png",
-  ".avif": "image/avif",
-  ".svg": "image/svg+xml",
-};
-
-const test = base.extend<{
-  site: {
-    origin: string;
-    stop: () => Promise<void>;
-    start: () => Promise<void>;
-    useLegacy: (source: string | undefined) => void;
-  };
-}>({
-  site: async ({}, use) => {
-    let legacy: string | undefined;
-    const root = resolve("dist");
-    const server = createServer((request, response) => {
-      void (async () => {
-        const url = new URL(request.url!, "http://localhost");
-        let file = resolve(root, `.${decodeURIComponent(url.pathname)}`);
-        if (relative(root, file).startsWith("..")) {
-          response.writeHead(403).end();
-          return;
-        }
-        let status = 200;
-        let body: Buffer | string;
-        if (
-          url.pathname === "/private/_payload.json" ||
-          url.pathname === "/authorised/_payload.json"
-        ) {
-          response.writeHead(200, {
-            "Content-Type": "application/json",
-            "Cache-Control": url.pathname.startsWith("/private/")
-              ? "private, no-store"
-              : "no-cache, must-revalidate",
-          });
-          response.end("{}");
-          return;
-        }
-        if (url.pathname === "/service-worker.js" && legacy) {
-          body = legacy;
-        } else {
-          try {
-            if ((await stat(file)).isDirectory()) {
-              file = join(file, "index.html");
-            }
-            body = await readFile(file);
-          } catch (error) {
-            if (
-              !(error instanceof Error) ||
-              !("code" in error) ||
-              !["ENOENT", "ENOTDIR"].includes(String(error.code))
-            ) {
-              throw error;
-            }
-            status = 404;
-            file = join(root, "404.html");
-            body = await readFile(file);
-          }
-        }
-        response.writeHead(status, {
-          "Content-Type": types[extname(file)] ?? "application/octet-stream",
-          "Cache-Control": "no-cache, must-revalidate",
-        });
-        response.end(body);
-      })().catch((error: unknown) => {
-        console.error("Offline test server failed:", error);
-        response.writeHead(500).end();
-      });
-    });
-    server.listen(0, "127.0.0.1");
-    await once(server, "listening");
-    const address = server.address();
-    if (!address || typeof address === "string") {
-      throw new Error("Offline test server has no TCP address.");
-    }
-    const port = address.port;
-    const stop = async () => {
-      const closed = once(server, "close");
-      server.close();
-      server.closeAllConnections();
-      await closed;
-    };
-    try {
-      await use({
-        origin: `http://127.0.0.1:${port}`,
-        stop,
-        start: async () => {
-          server.listen(port, "127.0.0.1");
-          await once(server, "listening");
-        },
-        useLegacy: (source) => {
-          legacy = source;
-        },
-      });
-    } finally {
-      if (server.listening) {
-        await stop();
-      }
-    }
-  },
-});
-
-test.use({ serviceWorkers: "allow" });
-
-test.beforeEach(async ({ context, site }) => {
-  // Playwright routing disables the browser HTTP cache, including in Firefox.
-  // Worker requests still go to the real server; no route fakes offline replies.
-  await context.route("**/*", (route) =>
-    new URL(route.request().url()).origin === site.origin
-      ? route.continue()
-      : route.fulfill({ contentType: "text/plain", body: "" }),
-  );
-});
-
-async function controlled(page: Page) {
-  await page.evaluate(async () => {
-    await navigator.serviceWorker.ready;
-    if (!navigator.serviceWorker.controller) {
-      await new Promise<void>((resolve) => {
-        navigator.serviceWorker.addEventListener(
-          "controllerchange",
-          () => {
-            resolve();
-          },
-          { once: true },
-        );
-      });
-    }
-  });
-}
-
-async function saved(page: Page, path: string) {
-  await expect
-    .poll(() =>
-      page.evaluate(async (path) => {
-        const pages = await caches.open("blog-pages-v1");
-        const data = await caches.open("blog-data-v1");
-        const required = performance
-          .getEntriesByType("resource")
-          .map((entry) => new URL(entry.name))
-          .filter(
-            (url) =>
-              url.origin === location.origin &&
-              /^\/(?:_nuxt|_fonts)\/.*\.(?:js|css|woff2?)$/.test(url.pathname),
-          );
-        const assetsReady = (
-          await Promise.all(
-            required.map((url) => caches.match(url, { ignoreSearch: true })),
-          )
-        ).every(Boolean);
-        return Boolean(
-          assetsReady &&
-          (await pages.match(new URL(path, location.origin))) &&
-          (await data.match(new URL(`${path}_payload.json`, location.origin), {
-            ignoreSearch: true,
-          })),
-        );
-      }, path),
-    )
-    .toBe(true);
-}
 
 test("Cold installation is small; visited direct and client navigation work with the server stopped", async ({
   page,
@@ -196,6 +27,8 @@ test("Cold installation is small; visited direct and client navigation work with
   await page.getByRole("link", { name: "About", exact: true }).first().click();
   await expect(page).toHaveURL(`${site.origin}/about/`);
   await saved(page, "/about/");
+  // Use the fixture's exact byte lengths: reading cached AVIF bodies through
+  // Firefox automation can hang. Verify image delivery by rendering below.
   const metrics = await page.evaluate(async () => {
     const names = await caches.keys();
     const name = names.find((name) => name.startsWith("blog-essential-v1-"));
@@ -206,7 +39,13 @@ test("Cold installation is small; visited direct and client navigation work with
     const keys = await cache.keys();
     let bytes = 0;
     for (const key of keys) {
-      bytes += (await (await cache.match(key))!.arrayBuffer()).byteLength;
+      const length = Number(
+        (await cache.match(key))!.headers.get("Content-Length"),
+      );
+      if (!Number.isInteger(length) || length <= 0) {
+        throw new Error(`Missing byte length for ${key.url}`);
+      }
+      bytes += length;
     }
     const runtime = [];
     for (const name of names.filter(
@@ -216,7 +55,13 @@ test("Cold installation is small; visited direct and client navigation work with
       const requests = await cache.keys();
       let bytes = 0;
       for (const request of requests) {
-        bytes += (await (await cache.match(request))!.arrayBuffer()).byteLength;
+        const length = Number(
+          (await cache.match(request))!.headers.get("Content-Length"),
+        );
+        if (!Number.isInteger(length) || length <= 0) {
+          throw new Error(`Missing byte length for ${request.url}`);
+        }
+        bytes += length;
       }
       runtime.push({ name, entries: requests.length, bytes });
     }
@@ -236,6 +81,13 @@ test("Cold installation is small; visited direct and client navigation work with
     (await page.goto(`${site.origin}${article}`))!.fromServiceWorker(),
   ).toBe(true);
   await expect(page.locator(".post-page__content")).toBeVisible();
+  await expect
+    .poll(() =>
+      page
+        .locator(".post__photo")
+        .evaluate((image: HTMLImageElement) => image.naturalWidth),
+    )
+    .toBeGreaterThan(0);
   await expect(page.getByRole("button", { name: "Open search" })).toBeEnabled();
   await page.getByRole("link", { name: "About", exact: true }).first().click();
   await expect(page).toHaveURL(`${site.origin}/about/`);
@@ -282,27 +134,40 @@ test("A missing client payload becomes an accessible document fallback", async (
   ).toBeVisible();
 });
 
+async function legacyWorker() {
+  // Representative prior generateSW worker: real Workbox revision keys and
+  // cache naming, bounded content subset so this is not the failing full install.
+  const generated = await readFile(join("dist", "service-worker.js"), "utf8");
+  const workboxModule = generated.match(/define\(\["(\.\/workbox-[^"]+)"/)?.[1];
+  if (!workboxModule) {
+    throw new Error("Cannot locate the generated Workbox module.");
+  }
+  const manifest = await Promise.all(
+    [
+      ...globSync("_nuxt/**/*.{js,css,woff2}", { cwd: "dist" }),
+      `${article.slice(1)}index.html`,
+      `${article.slice(1)}_payload.json`,
+    ].map(async (path) => ({
+      url: path.replaceAll("\\", "/"),
+      revision: createHash("md5")
+        .update(await readFile(join("dist", path)))
+        .digest("hex"),
+    })),
+  );
+  // Reuse the generated AMD loader and the same bundled Workbox release rather
+  // than running a second JS bundler inside a timed browser test.
+  return `${generated.slice(0, generated.indexOf("define(["))}define(
+      [${JSON.stringify(workboxModule)}], function(workbox) {
+        workbox.clientsClaim();
+        workbox.precacheAndRoute(${JSON.stringify(manifest)}, {});
+      });`;
+}
+
 test("An installed full-precache worker updates without removing its usable content", async ({
   page,
   site,
-}, testInfo) => {
-  const legacyPath = testInfo.outputPath("legacy-service-worker.js");
-  // Representative prior generateSW worker: real Workbox revision keys and
-  // cache naming, bounded content subset so this is not the failing full install.
-  await generateSW({
-    swDest: legacyPath,
-    globDirectory: "dist",
-    globPatterns: [
-      "_nuxt/*.{js,css}",
-      "_fonts/*",
-      `${article.slice(1)}index.html`,
-      `${article.slice(1)}_payload.json`,
-    ],
-    inlineWorkboxRuntime: true,
-    clientsClaim: true,
-    maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
-  });
-  site.useLegacy(await readFile(legacyPath, "utf8"));
+}) => {
+  site.useLegacy(await legacyWorker());
   await page.goto(`${site.origin}${article}`);
   await controlled(page);
   const oldNames = await page.evaluate(() =>

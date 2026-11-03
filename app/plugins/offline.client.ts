@@ -2,6 +2,38 @@ export default defineNuxtPlugin((nuxtApp) => {
   const router = useRouter();
   let controlled = false;
   const warmedResources = new Set<string>();
+  const pendingResources = new Set<string>();
+
+  function isLocalResource(name: string) {
+    const url = new URL(name);
+    return (
+      url.origin === location.origin &&
+      /^\/(?:_nuxt|_fonts|_ipx|images|content-images)\//.test(url.pathname)
+    );
+  }
+
+  async function saveResource(url: string, document = false) {
+    if (pendingResources.has(url) || (!document && warmedResources.has(url))) {
+      return;
+    }
+    pendingResources.add(url);
+    try {
+      const response = await fetch(url, {
+        cache: "no-store",
+        headers: document ? { Accept: "text/html" } : {},
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      if (isLocalResource(url)) {
+        warmedResources.add(url);
+      }
+    } catch (error) {
+      console.warn("[offline] Could not cache a visited resource.", url, error);
+    } finally {
+      pendingResources.delete(url);
+    }
+  }
 
   async function saveCurrentPage() {
     if (!controlled) {
@@ -14,38 +46,12 @@ export default defineNuxtPlugin((nuxtApp) => {
       ...performance
         .getEntriesByType("resource")
         .map((entry) => entry.name)
-        .filter((name) => {
-          const url = new URL(name);
-          return (
-            !warmedResources.has(name) &&
-            url.origin === location.origin &&
-            /^\/(?:_nuxt|_fonts|_ipx|images|content-images)\//.test(
-              url.pathname,
-            )
-          );
-        }),
+        .filter(isLocalResource),
     ];
     await Promise.all(
-      [...new Set(resources)].map(async (url) => {
-        try {
-          const response = await fetch(url, {
-            cache: "no-store",
-            headers: url === resources[0] ? { Accept: "text/html" } : {},
-          });
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
-          }
-          if (url !== resources[0] && url !== resources[1]) {
-            warmedResources.add(url);
-          }
-        } catch (error) {
-          console.warn(
-            "[offline] Could not cache a visited resource.",
-            url,
-            error,
-          );
-        }
-      }),
+      [...new Set(resources)].map((url) =>
+        saveResource(url, url === resources[0]),
+      ),
     );
   }
 
@@ -55,8 +61,24 @@ export default defineNuxtPlugin((nuxtApp) => {
     }
     const onControl = () => {
       controlled = Boolean(navigator.serviceWorker.controller);
+      warmedResources.clear();
       void saveCurrentPage();
     };
+    // Module preloads and fonts can finish after control changes or hydration.
+    // Observe those completions rather than assuming a timing snapshot is complete.
+    const resources = new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        if (
+          controlled &&
+          entry instanceof PerformanceResourceTiming &&
+          entry.initiatorType !== "fetch" &&
+          isLocalResource(entry.name)
+        ) {
+          void saveResource(entry.name);
+        }
+      }
+    });
+    resources.observe({ type: "resource", buffered: true });
     navigator.serviceWorker.addEventListener("controllerchange", onControl);
     onControl();
   });
