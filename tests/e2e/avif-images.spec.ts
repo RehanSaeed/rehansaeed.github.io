@@ -7,7 +7,6 @@ import sharp from "sharp";
 import { listFiles } from "../../modules/blog-content/scan";
 import { getAvifSource } from "../../shared/utils/images";
 import { expect, test } from "./fixtures";
-import { observeServiceWorkerRegistration } from "./service-worker";
 
 async function verifyAvifCompanions() {
   unitTest.setTimeout(300_000);
@@ -339,12 +338,11 @@ unitTest(
     });
     try {
       const page = await context.newPage();
-      const serviceWorkerReady = await observeServiceWorkerRegistration(page);
       await page.goto("/", { waitUntil: "domcontentloaded" });
       await page.evaluate(async () => {
         await navigator.serviceWorker.register("/service-worker.js");
+        await navigator.serviceWorker.ready;
       });
-      await serviceWorkerReady();
       await page.waitForFunction(() => !!navigator.serviceWorker.controller);
       await context.setOffline(true);
       for (const path of ["/about/", "/asp-net-mvc-boilerplate/"]) {
