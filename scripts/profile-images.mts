@@ -2,7 +2,8 @@ import { writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 
-const [source, topArgument] = process.argv.slice(2);
+const source = process.argv.at(2);
+const topArgument = process.argv.at(3);
 const top = Number(topArgument);
 if (!source || topArgument === undefined || !Number.isInteger(top) || top < 0) {
     throw new Error(

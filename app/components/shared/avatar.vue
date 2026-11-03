@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
 import { NuxtLink } from "#components";
 import { getAvifSource } from "#shared/utils/images";
 
@@ -49,7 +49,7 @@ export default defineComponent({
     },
     /** Image loading strategy. */ loading: {
       required: false,
-      type: String,
+      type: String as PropType<"eager" | "lazy">,
     },
     /** Internal route used for navigation. */ to: {
       required: false,
@@ -75,7 +75,7 @@ export default defineComponent({
       return getAvifSource(this.src);
     },
     sizeInPixels() {
-      return this.size === "medium" ? "50" : "60";
+      return "60";
     },
     tag() {
       return this.to ? NuxtLink : "a";

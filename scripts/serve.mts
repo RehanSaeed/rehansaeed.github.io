@@ -1,4 +1,8 @@
-import { createServer } from "node:http";
+import {
+    createServer,
+    type IncomingMessage,
+    type ServerResponse,
+} from "node:http";
 import { readFile, stat } from "node:fs/promises";
 import { resolve, extname, relative, isAbsolute, join } from "node:path";
 
@@ -25,7 +29,13 @@ const types: Record<string, string> = {
 };
 await stat(join(root, "404.html"));
 
-createServer(async (request, response) => {
+createServer((request, response) => {
+    void serve(request, response);
+}).listen(port, "127.0.0.1", () => {
+    console.log(`Static preview: http://localhost:${port}`);
+});
+
+async function serve(request: IncomingMessage, response: ServerResponse) {
     try {
         if (!request.method || !["GET", "HEAD"].includes(request.method)) {
             response.writeHead(405, { Allow: "GET, HEAD" }).end();
@@ -80,6 +90,4 @@ createServer(async (request, response) => {
         console.error("Static preview request failed:", error);
         response.writeHead(error instanceof URIError ? 400 : 500).end();
     }
-}).listen(port, "127.0.0.1", () =>
-    console.log(`Static preview: http://localhost:${port}`),
-);
+}

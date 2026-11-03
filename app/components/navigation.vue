@@ -55,7 +55,7 @@ export default defineComponent({
     return { metadata: useAppConfig().site };
   },
   methods: {
-    getIsCurrentPage(path) {
+    getIsCurrentPage(path: string) {
       return this.$route.path === path ? "page" : undefined;
     },
   },

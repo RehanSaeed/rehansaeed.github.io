@@ -35,7 +35,7 @@ function norm(value: unknown): unknown {
 function normDeep<T>(value: T): T;
 function normDeep(value: unknown): unknown {
     if (Array.isArray(value)) {
-        return value.map(normDeep);
+        return (value as unknown[]).map(normDeep);
     }
     if (value && typeof value === "object") {
         return Object.fromEntries(
@@ -123,7 +123,7 @@ const pool = async <T, R>(
     size: number,
     worker: (item: T) => Promise<R>,
 ) => {
-    const results = new Array<R>(items.length);
+    const results: (R | undefined)[] = Array.from({ length: items.length });
     let next = 0;
     await Promise.all(
         Array.from({ length: size }, async () => {
@@ -174,7 +174,7 @@ const summariseAtom = (xml: string) => {
 };
 
 const summariseJsonFeed = (body: string) => {
-    const feed: {
+    const feed = JSON.parse(body) as {
         version: string;
         title: string;
         home_page_url: string;
@@ -187,7 +187,7 @@ const summariseJsonFeed = (body: string) => {
             date_modified?: string;
             tags?: string[];
         }[];
-    } = JSON.parse(body);
+    };
     return {
         version: feed.version,
         title: feed.title,
@@ -278,7 +278,7 @@ const main = async () => {
         "/security.txt": await artifact("/security.txt"),
         "/opensearch.xml": await artifact("/opensearch.xml"),
         "/manifest.webmanifest": await artifact("/manifest.webmanifest", (b) =>
-            normDeep(JSON.parse(b)),
+            normDeep(JSON.parse(b) as Record<string, unknown>),
         ),
         "/service-worker.js": await artifact("/service-worker.js", (b) => ({
             bytes: b.length,

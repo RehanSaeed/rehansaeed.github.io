@@ -47,10 +47,10 @@ async function stop() {
 }
 const oldManifest = JSON.parse(
     await readFile(join(previous, "_nuxt/builds/latest.json"), "utf8"),
-);
+) as { id: string };
 const newManifest = JSON.parse(
     await readFile("dist/_nuxt/builds/latest.json", "utf8"),
-);
+) as { id: string };
 assert.notEqual(
     oldManifest.id,
     newManifest.id,
@@ -85,7 +85,9 @@ try {
         (route) => route.fulfill({ contentType: "text/plain", body: "" }),
     );
     const page = await context.newPage();
-    page.on("pageerror", (cause) => console.error("Update-test error:", cause));
+    page.on("pageerror", (cause) => {
+        console.error("Update-test error:", cause);
+    });
     await start(previous);
     console.log("Installing the previous build's real service worker.");
     await page.goto(origin, { waitUntil: "domcontentloaded" });
@@ -110,8 +112,9 @@ try {
     console.log("Checking for the next build's worker.");
     await page.evaluate(async () => {
         const registration = await navigator.serviceWorker.getRegistration();
-        if (!registration)
+        if (!registration) {
             throw new Error("Previous worker registration is unavailable.");
+        }
         await registration.update();
     });
     const notice = (target: Page) =>

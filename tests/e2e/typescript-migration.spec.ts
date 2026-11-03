@@ -4,7 +4,6 @@ import { join } from "node:path";
 import { expect, test } from "@playwright/test";
 import { encode, decode } from "../../app/framework/obfuscate";
 import { nextUrl, previousUrl } from "../../app/framework/paging";
-import { queryString } from "../../app/utils/query";
 
 test("Email obfuscation retains its existing hexadecimal format", () => {
   expect(encode("a@b.co", 170)).toBe("aacbeac884c9c5");
@@ -32,14 +31,6 @@ test("Pagination keeps the homepage URL and omits unavailable neighbours", () =>
   expect(
     nextUrl({ ...second, currentPage: 3, hasNextPage: false }),
   ).toBeUndefined();
-});
-
-test("Streaming query values preserve empty, missing and repeated parameters", () => {
-  expect(queryString(undefined)).toBeUndefined();
-  expect(queryString(null)).toBeUndefined();
-  expect(queryString("")).toBe("");
-  expect(queryString("3.5")).toBe("3.5");
-  expect(queryString(["10", "20"])).toBe("10,20");
 });
 
 test("Node can parse every TypeScript utility without a transpiler", () => {

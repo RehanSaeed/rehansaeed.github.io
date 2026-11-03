@@ -2,15 +2,15 @@ import assert from "node:assert/strict";
 import { readFile, access } from "node:fs/promises";
 import { join } from "node:path";
 import { load } from "cheerio";
-import sharp from "sharp";
+import sharp, { type Metadata } from "sharp";
 import { parse } from "yaml";
 import type { SchemaGraph } from "./parity/schema.mts";
 import type siteConfiguration from "../site.json";
 
 const directory = process.argv[2] ?? "dist";
-const site: typeof siteConfiguration = JSON.parse(
+const site = JSON.parse(
     await readFile("site.json", "utf8"),
-);
+) as typeof siteConfiguration;
 const read = (file: string) => readFile(join(directory, file), "utf8");
 const localFile = (url: string) => {
     const parsed = new URL(url, site.url);
@@ -47,7 +47,7 @@ const markdownLinks = (text: string) =>
     );
 const discoveryLinks = markdownLinks(discovery);
 const sitemapLinks = markdownLinks(markdownSitemap);
-const images = new Map();
+const images = new Map<string, Metadata>();
 let articles = 0;
 
 for (const url of urls) {
@@ -91,12 +91,14 @@ for (const url of urls) {
             await sharp(join(directory, localFile(image))).metadata(),
         );
     }
-    assert.equal(images.get(image).width, 1200);
-    assert.equal(images.get(image).height, 630);
+    const metadata = images.get(image);
+    assert(metadata, `${path}: missing image metadata`);
+    assert.equal(metadata.width, 1200);
+    assert.equal(metadata.height, 630);
 
     const scripts = $('script[type="application/ld+json"]');
     assert.equal(scripts.length, 1, `${path}: coherent schema graph`);
-    const graph: SchemaGraph = JSON.parse(scripts.text());
+    const graph = JSON.parse(scripts.text()) as SchemaGraph;
     assert.equal(graph["@context"], "https://schema.org");
     const nodes = graph["@graph"];
     const ids = nodes.map((node) => node["@id"]);
@@ -114,7 +116,6 @@ for (const url of urls) {
     assert.equal(webpage.url, url);
     const website = find(`${site.url}/#website`);
     assert.equal(website["@type"], "WebSite");
-    assert(website["@type"] === "WebSite");
     assert.equal(website.publisher["@id"], `${site.url}/#publisher`);
     assert.equal(website.author["@id"], `${site.url}/#identity`);
     assert.equal(find(website.publisher["@id"])["@type"], "Organization");
@@ -156,9 +157,9 @@ for (const url of urls) {
     }
     const list = nodes.find((node) => node["@type"] === "ItemList");
     if (list) {
-        list.itemListElement.forEach((item, index) =>
-            assert.equal(item.position, index + 1),
-        );
+        list.itemListElement.forEach((item, index) => {
+            assert.equal(item.position, index + 1);
+        });
         const cards = $(".post-card__title a, .portfolio-card__title a")
             .map((_, a) => {
                 const href = $(a).attr("href");
@@ -189,7 +190,8 @@ for (const url of urls) {
     const markdown = await read(mdPath);
     const frontmatter = markdown.match(/^---\r?\n([\s\S]+?)\r?\n---/);
     assert(frontmatter, `${path}: Markdown frontmatter`);
-    assert.equal(parse(frontmatter[1]).canonical_url, url);
+    const markdownMetadata = parse(frontmatter[1]) as { canonical_url: string };
+    assert.equal(markdownMetadata.canonical_url, url);
     assert(
         markdown.slice(frontmatter[0].length).trim().length > 50,
         `${path}: empty Markdown`,

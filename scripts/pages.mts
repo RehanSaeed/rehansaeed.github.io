@@ -17,9 +17,9 @@ interface Deployment {
     }[];
 }
 
-const site: typeof siteConfiguration = JSON.parse(
+const site = JSON.parse(
     await readFile(new URL("../site.json", import.meta.url), "utf8"),
-);
+) as typeof siteConfiguration;
 const origin = new URL(site.url).origin;
 const domain = new URL(origin).hostname;
 const digest = (body: string | Buffer) =>
@@ -66,7 +66,7 @@ export async function verifyArtifact(directory: string, routes: string[]) {
             1,
             `Pages artifact contains a hard link: ${name}`,
         );
-        const file = String(name).replaceAll("\\", "/");
+        const file = name.replaceAll("\\", "/");
         assert(
             !/(^|\/)(?:\.git|\.github|\.env(?:\.[^/]*)?|\.data|__link-checker__|node_modules)(?:\/|$)/.test(
                 file,
@@ -169,7 +169,7 @@ function allows(sources: string[], address: string) {
         if (source === "'self'") {
             return url.origin === origin;
         }
-        if (source === "*" || source === `${url.protocol}`) {
+        if (source === "*" || source === url.protocol) {
             return true;
         }
         if (!source.startsWith("https://")) {
@@ -240,7 +240,7 @@ export function checkCsp(policies: string[], analyticsId?: string) {
         );
     }
     for (const policy of policies) {
-        const directives = new Map();
+        const directives = new Map<string, string[]>();
         for (const part of policy.split(";")) {
             const [name, ...sources] = part.trim().split(/\s+/);
             if (name && !directives.has(name)) {
@@ -288,7 +288,9 @@ async function preflight() {
         response.ok,
         `Cannot inspect Pages settings: HTTP ${response.status}`,
     );
-    checkPagesSettings(await response.json());
+    checkPagesSettings(
+        (await response.json()) as Parameters<typeof checkPagesSettings>[0],
+    );
     const live = await fetch(origin, {
         redirect: "manual",
         signal: AbortSignal.timeout(30_000),
@@ -420,7 +422,7 @@ export async function verifyPublished(
                 "Deployment marker is unavailable",
             );
             assert.equal(
-                (await marker.json()).revision,
+                ((await marker.json()) as Deployment).revision,
                 deployment.revision,
                 "The custom domain is still serving another deployment",
             );
@@ -481,9 +483,9 @@ async function main() {
     } else if (mode === "preflight") {
         await preflight();
     } else if (mode === "verify") {
-        const deployment: Deployment = JSON.parse(
+        const deployment = JSON.parse(
             await readFile(join(directory, "deployment.json"), "utf8"),
-        );
+        ) as Deployment;
         assert.equal(
             deployment.revision,
             process.env.GITHUB_SHA ?? deployment.revision,

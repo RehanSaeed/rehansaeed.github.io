@@ -96,7 +96,7 @@
 <script lang="ts">
 import { defineComponent, type PropType } from "vue";
 import type { PortfolioCollectionItem } from "@nuxt/content";
-import { getImageMetadata } from "~/framework/images.js";
+import { getImageMetadata } from "~/framework/images";
 import { contentImageSizes } from "#shared/utils/images";
 
 export default defineComponent({

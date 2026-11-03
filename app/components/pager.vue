@@ -27,15 +27,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { previousUrl, nextUrl } from "~/framework/paging.js";
+import { defineComponent, type PropType } from "vue";
+import type { PageInfo } from "~/framework/paging";
+import { previousUrl, nextUrl } from "~/framework/paging";
 
 export default defineComponent({
   name: "BlogPager",
   props: {
     /** Pagination metadata for the current page. */ pageInfo: {
       required: true,
-      type: Object,
+      type: Object as PropType<PageInfo>,
     },
   },
   computed: {

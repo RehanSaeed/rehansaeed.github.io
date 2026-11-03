@@ -1,5 +1,5 @@
 import { queryCollection } from "@nuxt/content/server";
-import type { SearchDocument } from "../../shared/types/search";
+import type { SearchDocument } from "../../shared/utils/search";
 
 // Prerendered at the existing search-index URL. The browser builds the
 // FlexSearch index from these documents (see app/components/search/search.vue).

@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { defineComponent, type PropType } from "vue";
-import { getDisplayDateFromString } from "~/framework/date.js";
+import { getDisplayDateFromString } from "~/framework/date";
 import type { WebMention } from "#shared/utils/webmentions";
 
 export default defineComponent({

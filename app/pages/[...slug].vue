@@ -36,7 +36,7 @@ const route = useRoute();
 // Drafts are routed too; they are only left out of listings and feeds.
 const permalink = route.path.endsWith("/") ? route.path : `${route.path}/`;
 
-const { data: post } = await useAsyncData(`post-${permalink}`, () =>
+const { data } = await useAsyncData(`post-${permalink}`, () =>
   queryCollection("posts")
     .where("permalink", "=", permalink)
     .select(
@@ -61,7 +61,7 @@ const { data: post } = await useAsyncData(`post-${permalink}`, () =>
     )
     .first(),
 );
-if (!post.value) {
+if (!data.value) {
   throw createError({
     statusCode: 404,
     statusMessage: "Page Not Found",
@@ -69,6 +69,7 @@ if (!post.value) {
   });
 }
 
+const post = computed(() => data.value!);
 const title = post.value.title;
 const titleId = pageHeadingId(title, post.value.body.value);
 const description = post.value.description;

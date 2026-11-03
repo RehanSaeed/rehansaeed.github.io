@@ -115,7 +115,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { decode } from "~/framework/obfuscate.js";
+import { decode } from "~/framework/obfuscate";
 
 export default defineComponent({
   name: "u-social-links",

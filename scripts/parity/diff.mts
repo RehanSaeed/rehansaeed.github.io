@@ -38,7 +38,10 @@ const load = async (
     dir: string,
     file: string,
 ): Promise<Record<string, unknown>> =>
-    JSON.parse(await readFile(join(dir, file), "utf8"));
+    JSON.parse(await readFile(join(dir, file), "utf8")) as Record<
+        string,
+        unknown
+    >;
 
 const differences: { path: string; expected: unknown; actual: unknown }[] = [];
 const compare = (path: string, expected: unknown, actual: unknown) => {

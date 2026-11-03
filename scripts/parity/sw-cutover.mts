@@ -83,16 +83,23 @@ try {
     });
     await page.evaluate(async () => {
         const registration = await navigator.serviceWorker.getRegistration();
-        if (!registration)
+        if (!registration) {
             throw new Error("Legacy worker registration is unavailable.");
+        }
         await registration.update();
     });
     const worker = await installing;
     await worker.evaluate(() => {
         self.__activationComplete = new Promise((resolve) => {
-            self.addEventListener("activate", () => resolve(true), {
-                once: true,
-            });
+            self.addEventListener(
+                "activate",
+                () => {
+                    resolve(true);
+                },
+                {
+                    once: true,
+                },
+            );
         });
     });
     await expect

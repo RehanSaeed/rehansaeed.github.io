@@ -17,13 +17,13 @@ export function decode(encodedString: string) {
   // Holds the final output
   let email = "";
   // Extract the first 2 letters
-  const keyInHex = encodedString.substr(0, 2);
+  const keyInHex = encodedString.slice(0, 2);
   // Convert the hex-encoded key into decimal
   const key = Number.parseInt(keyInHex, 16);
   // Loop through the remaining encoded characters in steps of 2
   for (let n = 2; n < encodedString.length; n += 2) {
     // Get the next pair of characters
-    const charInHex = encodedString.substr(n, 2);
+    const charInHex = encodedString.slice(n, n + 2);
     // Convert hex to decimal
     const char = Number.parseInt(charInHex, 16);
     // XOR the character with the key to get the original character

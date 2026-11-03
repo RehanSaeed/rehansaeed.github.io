@@ -9,7 +9,7 @@ import type { ArtifactSnapshots, PageSnapshot } from "./snapshots.mts";
 const expectedDir = process.argv[2] ?? "tests/parity/baseline";
 const actualDir = process.argv[3] ?? ".parity/local";
 const load = async <T,>(dir: string, file: string): Promise<T> =>
-    JSON.parse(await readFile(join(dir, file), "utf8"));
+    JSON.parse(await readFile(join(dir, file), "utf8")) as T;
 const live = await load<Record<string, PageSnapshot<LegacySchema>>>(
     expectedDir,
     "pages.json",
@@ -42,9 +42,9 @@ const correctedImageDimensions: Record<
         height: "640",
     },
 };
-const site: typeof siteConfiguration = JSON.parse(
+const site = JSON.parse(
     await readFile("site.json", "utf8"),
-);
+) as typeof siteConfiguration;
 
 function verifySchema(
     path: string,
@@ -130,7 +130,13 @@ for (const file of await readdir("content/posts", { recursive: true })) {
     const source = await readFile(join("content/posts", file), "utf8");
     const frontmatter = source.match(/^---\r?\n([\s\S]+?)\r?\n---/);
     assert(frontmatter, `${file}: missing front matter`);
-    const data = parse(frontmatter[1]);
+    const data = parse(frontmatter[1]) as {
+        published: boolean;
+        permalink: string;
+        date: string;
+        dateModified?: string | null;
+        tags?: string[];
+    };
     if (!data.published) {
         excluded.add(data.permalink);
     } else {
@@ -220,16 +226,16 @@ function approvedPage(
         const title = /^\/\d+\/$/.test(path)
             ? `Blog - Page ${path.split("/")[1]}`
             : path.startsWith("/tag/")
-              ? `# ${page.meta["og:title"]}`
+              ? `# ${String(page.meta["og:title"])}`
               : page.meta["og:title"];
         Object.assign(page.meta, {
             "og:image": image,
             "og:image:width": "1200",
             "og:image:height": "630",
             "og:image:type": "image/png",
-            "og:image:alt": `${title} - ${site.author.name}`,
+            "og:image:alt": `${String(title)} - ${site.author.name}`,
             "twitter:image": image,
-            "twitter:image:alt": `${title} - ${site.author.name}`,
+            "twitter:image:alt": `${String(title)} - ${site.author.name}`,
         });
     }
     if (path !== "/404" && !excluded.has(path)) {

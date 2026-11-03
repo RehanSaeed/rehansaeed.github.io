@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
 import { tagPath } from "#shared/utils/tag";
 
 export default defineComponent({
@@ -23,7 +23,7 @@ export default defineComponent({
   props: {
     /** Tags associated with the content. */ tags: {
       required: true,
-      type: Array,
+      type: Array as PropType<string[]>,
     },
   },
 });

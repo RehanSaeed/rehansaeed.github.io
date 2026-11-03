@@ -1,7 +1,11 @@
 export interface PageInfo {
+  /** Current one-based page number. */
   currentPage: number;
+  /** Total number of available pages. */
   totalPages: number;
+  /** Whether a previous page is available. */
   hasPreviousPage: boolean;
+  /** Whether a next page is available. */
   hasNextPage: boolean;
 }
 

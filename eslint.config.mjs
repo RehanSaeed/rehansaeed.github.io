@@ -100,6 +100,15 @@ export default withNuxt(
     },
   },
   {
+    files: ["scripts/**/*.mts"],
+    languageOptions: {
+      parserOptions: {
+        projectService: false,
+        project: "./tsconfig.scripts.json",
+      },
+    },
+  },
+  {
     files: ["tests/**/*.{ts,mts}", "playwright.config.ts", "content.config.ts"],
     languageOptions: {
       parserOptions: {
