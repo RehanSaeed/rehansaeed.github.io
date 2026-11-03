@@ -14,6 +14,8 @@ defineProps<{
 </script>
 
 <style lang="scss" scoped>
+@use "~/assets/style/abstracts/breakpoints";
+
 .anchor-link {
   --heading-anchor-size: var(--global-space-fixed-4);
   --heading-anchor-gap: var(--global-space-fixed-2);
@@ -34,6 +36,13 @@ defineProps<{
   text-decoration: none;
   transition: opacity var(--global-duration-2) ease-out 100ms;
   vertical-align: middle;
+
+  @include breakpoints.respond-below(sm) {
+    float: none;
+    display: inline-flex;
+    margin-inline-start: 0;
+    margin-inline-end: var(--heading-anchor-gap);
+  }
 
   :slotted(svg) {
     display: inline;

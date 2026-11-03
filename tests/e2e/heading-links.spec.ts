@@ -1,6 +1,6 @@
 import { expect, test } from "./fixtures";
 
-for (const width of [320, 375, 576, 768, 1280]) {
+for (const width of [280, 320, 375, 576, 768, 1280]) {
   test(`Heading links fit the post gutter at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto(
@@ -30,7 +30,7 @@ for (const width of [320, 375, 576, 768, 1280]) {
         const range = document.createRange();
         range.selectNodeContents(heading);
         range.setStartAfter(anchor);
-        const textBox = range.getBoundingClientRect();
+        const textBox = range.getClientRects()[0]!;
         const probe = document.createElement("span");
         probe.style.display = "block";
         probe.style.width = "var(--heading-anchor-gap)";
@@ -52,6 +52,7 @@ for (const width of [320, 375, 576, 768, 1280]) {
           anchorWidth: anchorBox.width,
           anchorHeight: anchorBox.height,
           gap,
+          inline: getComputedStyle(anchor).float === "none",
           hitLeftEdge:
             document
               .elementFromPoint(
@@ -66,13 +67,24 @@ for (const width of [320, 375, 576, 768, 1280]) {
       expect(layout.anchorLeft).toBeGreaterThanOrEqual(layout.postLeft);
       expect(layout.iconLeft).toBeGreaterThanOrEqual(layout.postLeft);
       expect(layout.iconRight).toBeLessThanOrEqual(layout.postRight);
-      expect(layout.textLeft).toBeCloseTo(layout.headingLeft, 1);
+      expect(layout.anchorLeft).toBeGreaterThanOrEqual(0);
+      expect(layout.iconRight).toBeLessThanOrEqual(width);
+      if (layout.inline) {
+        expect(layout.anchorLeft).toBeCloseTo(layout.headingLeft, 1);
+        expect(layout.textLeft).toBeGreaterThanOrEqual(
+          layout.iconRight + layout.gap - 1,
+        );
+      } else {
+        expect(layout.textLeft).toBeCloseTo(layout.headingLeft, 1);
+      }
       expect(layout.iconWidth).toBeGreaterThan(0);
       expect(layout.iconWidth).toBeCloseTo(layout.iconHeight, 1);
       expect(layout.iconWidth).toBeCloseTo(layout.anchorWidth, 1);
       expect(layout.iconHeight).toBeCloseTo(layout.anchorHeight, 1);
       expect(layout.offset).toBeCloseTo(
-        Math.min(layout.iconWidth + layout.gap, layout.padding),
+        layout.inline
+          ? 0
+          : Math.min(layout.iconWidth + layout.gap, layout.padding),
         1,
       );
       expect(layout.hitLeftEdge).toBe(true);
