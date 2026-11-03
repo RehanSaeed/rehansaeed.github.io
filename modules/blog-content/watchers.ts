@@ -41,7 +41,7 @@ const query = `
 `;
 const logger = useLogger("blog-content:watchers");
 
-export async function accountWatchers(dataDir: string, owner: string) {
+export const accountWatchers = async (dataDir: string, owner: string) => {
   const path = join(dataDir, "blog-github-watchers.json");
   let cached: z.infer<typeof cacheSchema> | undefined;
   try {
@@ -125,4 +125,4 @@ export async function accountWatchers(dataDir: string, owner: string) {
     await writeFile(path, JSON.stringify({ ...cached, updated: 0 }));
     return countsSchema.parse(cached);
   }
-}
+};

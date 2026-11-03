@@ -7,10 +7,10 @@ export interface CounterGrowth {
 
 export const maximumProjectionAge = 14 * 24 * 60 * 60 * 1000;
 
-export function lifetimeCounterGrowth(
+export const lifetimeCounterGrowth = (
   items: { count: number; createdAt?: string }[],
   observedAt: number,
-): CounterGrowth {
+): CounterGrowth => {
   const unavailable: CounterGrowth = {
     observedAt: observedAt > 0 ? observedAt : null,
     perSecond: null,
@@ -29,9 +29,12 @@ export function lifetimeCounterGrowth(
     perSecond += item.count / seconds;
   }
   return { observedAt, perSecond };
-}
+};
 
-export function canProjectCounter(growth: CounterGrowth, now: number): boolean {
+export const canProjectCounter = (
+  growth: CounterGrowth,
+  now: number,
+): boolean => {
   return (
     growth.perSecond !== null &&
     growth.perSecond !== 0 &&
@@ -39,14 +42,14 @@ export function canProjectCounter(growth: CounterGrowth, now: number): boolean {
     now >= growth.observedAt &&
     now - growth.observedAt <= maximumProjectionAge
   );
-}
+};
 
-export function advanceCounter(
+export const advanceCounter = (
   state: { value: number; remainder: number },
   perSecond: number,
   seconds: number,
   random: number,
-) {
+) => {
   // Half the ticks pause; jumps on the other half preserve a mean-one weight.
   const weight = random < 0.5 ? 0 : 4 * random - 1;
   const movement = state.remainder + perSecond * seconds * weight;
@@ -55,4 +58,4 @@ export function advanceCounter(
     value: Math.max(0, Math.min(Number.MAX_SAFE_INTEGER, state.value + change)),
     remainder: movement - change,
   };
-}
+};

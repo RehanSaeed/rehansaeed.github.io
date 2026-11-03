@@ -5,10 +5,10 @@ import { cacheSchema as popularitySchema } from "./portfolio";
 import { cacheSchema as downloadsSchema } from "./nuget";
 import type { ContentEntry } from "./scan";
 
-export async function portfolioGrowth(
+export const portfolioGrowth = async (
   dataDir: string,
   entries: ContentEntry[],
-) {
+) => {
   const projects = entries.filter(
     ({ collection, data }) =>
       collection === "portfolio" && data.published && data.kind !== "microsoft",
@@ -39,4 +39,4 @@ export async function portfolioGrowth(
     },
     downloads: lifetimeCounterGrowth([...packages.values()], downloads.updated),
   };
-}
+};

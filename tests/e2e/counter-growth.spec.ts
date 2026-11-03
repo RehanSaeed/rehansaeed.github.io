@@ -51,7 +51,7 @@ test("Missing, future and stale observations cannot start a portfolio estimate",
   expect(canProjectCounter({ ...growth, perSecond: 0 }, now)).toBe(false);
 });
 
-function verifyRandomMovement(rate: number) {
+const verifyRandomMovement = (rate: number) => {
   let state = { value: 1000, remainder: 0 };
   const movements = new Set<number>();
   for (let i = 0; i < 10_000; i++) {
@@ -68,7 +68,7 @@ function verifyRandomMovement(rate: number) {
   if (Math.abs(rate) < 1) {
     expect(Math.max(...[...movements].map(Math.abs))).toBe(1);
   }
-}
+};
 
 test("Random second-by-second movement preserves the supplied average and fractional increments", () => {
   for (const rate of [100, 1.087, 0.01, -0.01]) {
@@ -93,11 +93,11 @@ const project: ContentEntry = {
   },
 };
 
-async function saveObservations(
+const saveObservations = async (
   dir: string,
   createdAt: string | undefined = created,
   updated = now,
-) {
+) => {
   await mkdir(dir, { recursive: true });
   await writeFile(
     join(dir, "blog-portfolio.json"),
@@ -125,7 +125,7 @@ async function saveObservations(
       },
     }),
   );
-}
+};
 
 test("Portfolio lifetime rates work on the first observation and deduplicate published scope", async ({}, info) => {
   const dir = info.outputPath("growth");

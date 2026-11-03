@@ -69,7 +69,7 @@ test("Social card props preserve each page's title, hero and template cache iden
   await expect(verifySocialCardProps()).resolves.toBeUndefined();
 });
 
-async function verifyClientSocialCardDeclarations() {
+const verifyClientSocialCardDeclarations = async () => {
   const source = await readFile("app/composables/use-blog-og-image.ts", "utf8");
   const exports: {
     useBlogOgImage?: (title: string) => unknown[];
@@ -92,7 +92,7 @@ async function verifyClientSocialCardDeclarations() {
     throw new Error("Missing social card composable");
   }
   expect(exports.useBlogOgImage("Portfolio")).toEqual([]);
-}
+};
 
 test("Social card declarations do not run again during client hydration", async () => {
   await expect(verifyClientSocialCardDeclarations()).resolves.toBeUndefined();

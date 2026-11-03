@@ -20,11 +20,11 @@ test.afterEach(() => {
   }
 });
 
-function page(
+const page = (
   counts: number[],
   hasNextPage = false,
   endCursor: string | null = null,
-) {
+) => {
   return {
     data: {
       user: {
@@ -38,9 +38,9 @@ function page(
       },
     },
   };
-}
+};
 
-function parseRequestBody(body: BodyInit | null | undefined) {
+const parseRequestBody = (body: BodyInit | null | undefined) => {
   if (typeof body !== "string") {
     throw new TypeError("Expected a JSON request body.");
   }
@@ -50,13 +50,13 @@ function parseRequestBody(body: BodyInit | null | undefined) {
       variables: z.object({ owner: z.string(), cursor: z.string().nullable() }),
     })
     .parse(JSON.parse(body));
-}
+};
 
-function laterPageResponse(calls: number) {
+const laterPageResponse = (calls: number) => {
   return calls === 1
     ? Response.json(page([10], true, "next"))
     : new Response(null, { status: 503 });
-}
+};
 
 test("Account watchers sum true watch subscriptions across every public owned repository page", async ({}, info) => {
   const dir = info.outputPath("watchers-cache");

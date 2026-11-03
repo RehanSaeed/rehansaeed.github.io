@@ -9,7 +9,7 @@ import type { CounterGrowth } from "../../shared/utils/ticker";
 
 const now = Date.UTC(2026, 9, 27, 12);
 
-async function mountTicker(
+const mountTicker = async (
   page: Page,
   options: {
     number?: number;
@@ -25,7 +25,7 @@ async function mountTicker(
       };
     };
   } = {},
-) {
+) => {
   const [component, utilities, vue, intersect, statistics] = await Promise.all([
     readFile(
       join(process.cwd(), "app", "components", "shared", "number-ticker.vue"),
@@ -187,7 +187,7 @@ async function mountTicker(
       });
       app.component("u-intersect", Intersect);
       app.component("u-number-ticker", Ticker);
-      app.component("u-github-badges", { render: () => h("div") });
+      app.component("u-github-badges", { setup: () => () => h("div") });
       app.component(
         "u-tooltip",
         defineComponent({
@@ -204,7 +204,7 @@ async function mountTicker(
           },
         }),
       );
-      app.component("u-icon", { render: () => h("span") });
+      app.component("u-icon", { setup: () => () => h("span") });
       document
         .querySelector("#ticker-test")!
         .classList.toggle("offscreen", options.offscreen ?? false);
@@ -237,7 +237,7 @@ async function mountTicker(
   await page.clock.runFor(50);
   await fixture.evaluate(({ ready }) => ready);
   return fixture;
-}
+};
 
 const moveTicker = async (page: Page, offscreen: boolean) => {
   const intersection = await page.evaluateHandle(() => ({

@@ -1,13 +1,13 @@
 import type { ContentEntry } from "./scan";
 
-export function portfolioStatistics(
+export const portfolioStatistics = (
   entries: ContentEntry[],
   popularity: Record<string, { repository: string; stars: number }>,
   downloads: Record<
     string,
     { nugetPackages: { id: string; downloads: number }[] }
   >,
-) {
+) => {
   const repositories = new Map<string, number>();
   const packages = new Map<string, number>();
   for (const { data, collection } of entries) {
@@ -34,4 +34,4 @@ export function portfolioStatistics(
     repositories: repositories.size,
     packages: packages.size,
   };
-}
+};
