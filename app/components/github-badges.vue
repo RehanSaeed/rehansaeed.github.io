@@ -6,24 +6,21 @@
         :href="`https://github.com/${user}?tab=followers`"
         :src="`https://img.shields.io/github/followers/${user}?style=social`"
         alt="GitHub follower count"
-        tooltip="View my GitHub followers"
-        :width="168" />
+        tooltip="View my GitHub followers" />
     </li>
     <li class="github-badges__item">
       <u-github-badge
         :href="gitHubUrl"
         :src="watchersImageUrl"
         :alt="watchersAlt"
-        tooltip="Watch subscriptions across my public personal repositories, including forks and archives. Counted per repository, not per person. Updated on each site build."
-        :width="165" />
+        tooltip="Watch subscriptions across my public personal repositories, including forks and archives. Counted per repository, not per person. Updated on each site build." />
     </li>
     <li class="github-badges__item">
       <u-github-badge
         :href="`https://github.com/sponsors/${user}`"
         :src="`https://img.shields.io/github/sponsors/${user}?logo=github&style=social`"
         alt="GitHub sponsors"
-        tooltip="Sponsor me on GitHub"
-        :width="121" />
+        tooltip="Sponsor me on GitHub" />
     </li>
   </ul>
 </template>

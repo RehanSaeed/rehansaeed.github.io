@@ -269,6 +269,9 @@ test("Ticker styles, statistics and badges preserve dimensions and follow shared
       }).css;
     })
     .join("\n");
+  const badgeSource = `data:image/svg+xml,${encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="90" height="20"></svg>',
+  )}`;
   await page.setContent(`
     <html data-theme="light"><body>
     <div class="portfolio-statistics">
@@ -293,7 +296,7 @@ test("Ticker styles, statistics and badges preserve dimensions and follow shared
     <ul class="github-badges">
       <li class="github-badges__item">
         <a class="github-badge" href="#badge">
-          <img class="github-badge__image" alt="GitHub badge" width="135" height="30">
+          <img class="github-badge__image" alt="GitHub badge" src="${badgeSource}" height="30">
         </a>
       </li>
     </ul>
@@ -352,6 +355,7 @@ test("Ticker styles, statistics and badges preserve dimensions and follow shared
         `${Math.max(16, 0.85 * rootSize)}px`,
       );
       await expect(badge).toHaveCSS("block-size", "30px");
+      await expect(badge).toHaveCSS("inline-size", "135px");
       const geometry = await digits.evaluate((element) => {
         const style = getComputedStyle(element);
         return {
@@ -392,6 +396,15 @@ test("Ticker styles, statistics and badges preserve dimensions and follow shared
       element.parentNode?.removeChild(element);
     });
   }
+  await badge.evaluate((image) => {
+    image.setAttribute(
+      "src",
+      `data:image/svg+xml,${encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="140" height="20"></svg>',
+      )}`,
+    );
+  });
+  await expect(badge).toHaveCSS("inline-size", "210px");
   await info.focus();
   await page.keyboard.press("Tab");
   await expect(badgeLink).toBeFocused();
@@ -429,6 +442,7 @@ test("Ticker styles, statistics and badges preserve dimensions and follow shared
   await expect(info).toHaveCSS("outline-width", "4px");
   await expect(info).toHaveCSS("outline-offset", "5px");
   await expect(totals).toHaveCSS("font-size", "20px");
+  await expect(badge).toHaveCSS("inline-size", "252px");
   expect(
     await totals.evaluate((element) =>
       Number.parseFloat(getComputedStyle(element).gap),
