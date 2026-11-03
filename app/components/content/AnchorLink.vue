@@ -16,7 +16,20 @@ defineProps<{
 <style lang="scss" scoped>
 @use "~/assets/style/abstracts/breakpoints";
 
+:global([data-section-heading]) {
+  position: relative;
+}
+
+@include breakpoints.respond-below(sm) {
+  :global([data-section-heading] > .heading__text::after) {
+    // Join the final word to the icon without changing the heading's text.
+    content: "\2060";
+  }
+}
+
 .anchor-link {
+  --heading-anchor-size: var(--global-space-fixed-4);
+  --heading-anchor-gap: var(--global-space-fixed-2);
   --heading-anchor-offset: min(
     calc(var(--heading-anchor-size) + var(--heading-anchor-gap)),
     var(--card-space, var(--global-space-fluid-6))

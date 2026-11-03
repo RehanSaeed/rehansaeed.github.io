@@ -1,5 +1,3 @@
-@use "../abstracts/breakpoints";
-
 h1,
 h2,
 h3,
@@ -34,20 +32,6 @@ h6 {
       to {
         background: transparent;
       }
-    }
-  }
-}
-
-[data-section-heading] {
-  --heading-anchor-size: var(--global-space-fixed-4);
-  --heading-anchor-gap: var(--global-space-fixed-2);
-
-  position: relative;
-
-  @include breakpoints.respond-below(sm) {
-    > .heading__text::after {
-      // Join the final word to the icon without changing the heading's text.
-      content: "\2060";
     }
   }
 }
