@@ -204,14 +204,26 @@ async function savedResponse(request: Request) {
 
 worker.addEventListener("fetch", (event: WorkerFetch) => {
   const request = event.request;
-  if (
-    request.method !== "GET" ||
-    new URL(request.url).origin !== location.origin
-  ) {
+  const url = new URL(request.url);
+  if (request.method !== "GET" || url.origin !== location.origin) {
     return;
   }
   event.respondWith(
     (async () => {
+      // Nuxt fingerprints these assets; mutable build metadata must remain network-first.
+      if (
+        url.pathname.startsWith("/_nuxt/") &&
+        !url.pathname.startsWith("/_nuxt/builds/")
+      ) {
+        try {
+          const saved = await savedResponse(request);
+          if (saved) {
+            return saved;
+          }
+        } catch (error) {
+          console.error("[offline] Could not read the saved asset.", error);
+        }
+      }
       try {
         return await fetch(request);
       } catch (error) {

@@ -165,6 +165,10 @@ function fixture() {
     bodies.set(url, body);
     entries.push(entry(url, body));
   }
+  const chunk = `_nuxt/offline-fixture-${version}.js`;
+  const body = `export const generation = "${version}";`;
+  bodies.set(chunk, body);
+  entries.push({ ...entry(chunk, body), revision: null });
   return entries;
 }
 let manifest = fixture();
@@ -203,7 +207,11 @@ const server = createServer(async (request, response) => {
     if (!real && bodies.has(url.pathname === "/" ? "/" : path)) {
       response
         .writeHead(200, {
-          "Content-Type": "text/html",
+          "Content-Type": path.endsWith(".js")
+            ? "text/javascript"
+            : path.endsWith(".json")
+              ? "application/json"
+              : "text/html",
           "Cache-Control": "no-store",
         })
         .end(
@@ -535,6 +543,30 @@ try {
     corrupt = "";
     await command(page, "start");
     await finish(page);
+    const chunkRequests = requests.get("/_nuxt/offline-fixture-A.js");
+    assert.equal(
+      await page.evaluate(async () => {
+        const chunk = await import("/_nuxt/offline-fixture-A.js");
+        return chunk.generation;
+      }),
+      "A",
+    );
+    assert.equal(
+      requests.get("/_nuxt/offline-fixture-A.js"),
+      chunkRequests,
+      "Saved immutable modules must not wait for a failing network connection",
+    );
+    const metadataRequests = requests.get("/_nuxt/builds/latest.json");
+    await page.evaluate(() =>
+      fetch("/_nuxt/builds/latest.json", { cache: "no-store" }).then(
+        (response) => response.json(),
+      ),
+    );
+    assert.equal(
+      requests.get("/_nuxt/builds/latest.json"),
+      metadataRequests + 1,
+      "Mutable deployment metadata must still reach the network",
+    );
     await page.evaluate(() =>
       document.dispatchEvent(new Event("visibilitychange")),
     );
@@ -763,6 +795,47 @@ try {
     await expect(
       page.getByRole("button", { name: "Open search" }),
     ).toBeEnabled();
+    // Prerendered payloads and FlexSearch need not initialise SQLite. Refresh a
+    // real article query to verify the cold content database independently.
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () =>
+            document.querySelector("#__nuxt")?.__vue_app__?.config
+              .globalProperties.$nuxt?.isHydrating,
+        ),
+      )
+      .toBe(false);
+    await page.evaluate(async () => {
+      const app =
+        document.querySelector("#__nuxt")?.__vue_app__?.config.globalProperties
+          .$nuxt;
+      if (!app || app.isHydrating) {
+        throw new Error("The article has not finished hydrating");
+      }
+      const key = `post-${location.pathname}`;
+      let timeout;
+      try {
+        await Promise.race([
+          app.hooks.callHookParallel("app:data:refresh", [key]),
+          new Promise((resolve, reject) => {
+            timeout = setTimeout(
+              () => reject(new Error("Cold offline content query timed out")),
+              5_000,
+            );
+          }),
+        ]);
+      } finally {
+        clearTimeout(timeout);
+      }
+      if (
+        app.payload._errors[key] ||
+        app.payload.data[key]?.permalink !== location.pathname
+      ) {
+        throw new Error("The cold offline article query failed");
+      }
+    });
+    await expect(page.locator(".post__content")).toBeVisible();
     await page.getByRole("button", { name: "Open search" }).click();
     await page.getByRole("searchbox").fill("pull request");
     await expect(page.locator(".search-result__link").first()).toBeVisible();
