@@ -19,7 +19,7 @@
     <li class="github-badges__item">
       <u-tooltip
         v-slot="{ trigger }"
-        text="Total watch subscriptions across my public, account-owned repositories, including forks and archived repositories but excluding organisation-owned repositories. A person watching several repositories is counted once per repository. Refreshed when this site builds.">
+        text="Watch subscriptions across my public personal repositories, including forks and archives. Counted per repository, not per person. Updated on each site build.">
         <a
           v-bind="trigger"
           class="github-badges__link"

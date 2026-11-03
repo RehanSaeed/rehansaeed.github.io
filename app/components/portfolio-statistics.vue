@@ -29,8 +29,8 @@ defineProps<{
   borderless?: boolean;
 }>();
 
-const downloadInfo = `Verified total: ${statistics.downloads.toLocaleString("en-GB")} lifetime package downloads across the published open source projects in my portfolio. Downloads are not unique people. The number animates using package lifetime averages, not a live feed. Counts refresh when the site builds.`;
-const starInfo = `Verified total: ${statistics.stars.toLocaleString("en-GB")} GitHub stars across the published open source projects in my portfolio, including listed organisation-owned repositories. The number animates illustratively at an average of one increase every 15 seconds, not live activity. Counts refresh when the site builds.`;
+const downloadInfo = `Verified total: ${statistics.downloads.toLocaleString("en-GB")} portfolio package downloads, not unique users. Animation uses lifetime averages, not live data. Updated on each site build.`;
+const starInfo = `Verified total: ${statistics.stars.toLocaleString("en-GB")} portfolio stars, including organisation projects. Animation is illustrative, not live data. Updated on each site build.`;
 
 const now = ref(0);
 const downloadRate = computed(() =>

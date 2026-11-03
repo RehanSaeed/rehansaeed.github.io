@@ -585,8 +585,11 @@ for (const path of ["/about/", "/portfolio/"]) {
     const tooltip = page.getByRole("tooltip");
     await expect(tooltip).toBeVisible();
     await expect(tooltip).toContainText("Verified total:");
-    await expect(tooltip).toContainText("not unique people");
-    await expect(tooltip).toContainText("lifetime averages, not a live feed");
+    await expect(tooltip).toContainText(
+      "portfolio package downloads, not unique users",
+    );
+    await expect(tooltip).toContainText("lifetime averages, not live data");
+    await expect(tooltip).toContainText("Updated on each site build.");
     await expect(downloads).toHaveAccessibleDescription(
       await tooltip.innerText(),
     );
@@ -597,9 +600,10 @@ for (const path of ["/about/", "/portfolio/"]) {
     await stars.focus();
     await expect(tooltip).toBeVisible();
     await expect(tooltip).toContainText(
-      "listed organisation-owned repositories",
+      "portfolio stars, including organisation projects",
     );
-    await expect(tooltip).toContainText("one increase every 15 seconds");
+    await expect(tooltip).toContainText("illustrative, not live data");
+    await expect(tooltip).toContainText("Updated on each site build.");
     await expect(stars).toHaveAccessibleDescription(await tooltip.innerText());
     await expect(tooltip).toHaveAttribute("data-positioned", "true");
     expect(
@@ -617,7 +621,7 @@ for (const path of ["/about/", "/portfolio/"]) {
     await expect(badges.getByRole("listitem")).toHaveCount(3);
     for (const [name, text] of [
       ["GitHub follower count", "View my GitHub followers"],
-      [/^GitHub watch subscriptions/, "Total watch subscriptions"],
+      [/^GitHub watch subscriptions/, "Counted per repository, not per person"],
       ["GitHub sponsors", "Sponsor me on GitHub"],
     ] as const) {
       const link = page.getByRole("img", { name, exact: true }).locator("..");
