@@ -30,7 +30,15 @@ const retainedResponse = async ({
     for (const candidate of candidates) {
       const response = await cache.match(candidate, { ignoreSearch: true });
       if (response?.status === 200) {
-        return response;
+        // The retained precache has no runtime age limit. Do not let the
+        // runtime expiration plugin reject it before an offline fetch fails.
+        const headers = new Headers(response.headers);
+        headers.delete("Date");
+        return new Response(response.body, {
+          status: response.status,
+          statusText: response.statusText,
+          headers,
+        });
       }
     }
   }

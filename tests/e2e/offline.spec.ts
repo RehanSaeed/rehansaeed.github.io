@@ -144,7 +144,8 @@ async function legacyWorker() {
   }
   const manifest = await Promise.all(
     [
-      ...globSync("_nuxt/**/*.{js,css,woff2}", { cwd: "dist" }),
+      // Cold hydration also needs the build metadata present in the old full cache.
+      ...globSync("_nuxt/**/*.{js,css,woff2,json}", { cwd: "dist" }),
       `${article.slice(1)}index.html`,
       `${article.slice(1)}_payload.json`,
     ].map(async (path) => ({
