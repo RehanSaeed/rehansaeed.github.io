@@ -13,8 +13,8 @@
           class="avatar__image"
           :alt="alt"
           :src="src"
-          :width="sizeInPixels"
-          :height="sizeInPixels"
+          width="60"
+          height="60"
           :loading="loading"
           @error="onImageError" />
       </picture>
@@ -73,9 +73,6 @@ export default defineComponent({
   computed: {
     avifSource() {
       return getAvifSource(this.src);
-    },
-    sizeInPixels() {
-      return "60";
     },
     tag() {
       return this.to ? NuxtLink : "a";
