@@ -14,7 +14,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { tagPath, tagSlug } from "#shared/utils/tag";
 
 const site = useAppConfig().site;
@@ -62,7 +62,7 @@ if (!data.value) {
 }
 
 const title = data.value.title;
-const posts = computed(() => data.value.posts);
+const posts = computed(() => data.value!.posts);
 const path = tagPath(title);
 const description = `Blog posts authored by ${site.author.name} about ${title}.`;
 const url = site.url + path;

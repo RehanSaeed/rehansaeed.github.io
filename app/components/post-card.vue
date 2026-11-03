@@ -9,7 +9,7 @@
     <div class="post-card__header">
       <NuxtPicture
         format="avif"
-        v-if="post.heroImage"
+        v-if="post.heroImage && imageMeta"
         :img-attrs="{
           class: 'post-card__image',
           fetchpriority: priority ? 'high' : undefined,
@@ -42,7 +42,7 @@
 <script lang="ts">
 import { defineComponent, type PropType } from "vue";
 import type { PostsCollectionItem } from "@nuxt/content";
-import { getImageMetadata } from "~/framework/images.js";
+import { getImageMetadata } from "~/framework/images";
 import { contentImageSizes } from "#shared/utils/images";
 
 export default defineComponent({
@@ -62,10 +62,11 @@ export default defineComponent({
           | "date"
           | "dateModified"
           | "timeToRead"
-          | "heroImage"
           | "permalink"
-          | "tags"
-        > & { poster?: string }
+        > &
+          Partial<Pick<PostsCollectionItem, "heroImage" | "tags">> & {
+            poster?: string;
+          }
       >,
       required: true,
     },
@@ -75,7 +76,9 @@ export default defineComponent({
       return contentImageSizes;
     },
     imageMeta() {
-      return getImageMetadata(this.post.heroImage);
+      return this.post.heroImage
+        ? getImageMetadata(this.post.heroImage)
+        : undefined;
     },
   },
 });

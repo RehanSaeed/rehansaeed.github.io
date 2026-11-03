@@ -36,7 +36,7 @@
   </nav>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
 export default defineComponent({
   name: "u-navigation",
@@ -55,7 +55,7 @@ export default defineComponent({
     return { metadata: useAppConfig().site };
   },
   methods: {
-    getIsCurrentPage(path) {
+    getIsCurrentPage(path: string) {
       return this.$route.path === path ? "page" : undefined;
     },
   },

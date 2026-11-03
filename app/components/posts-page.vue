@@ -15,8 +15,8 @@
   </div>
 </template>
 
-<script setup>
-import { nextUrl, previousUrl } from "~/framework/paging.js";
+<script setup lang="ts">
+import { nextUrl, previousUrl } from "~/framework/paging";
 
 const postsPerPage = 10;
 
@@ -63,7 +63,7 @@ if (!data.value?.posts.length || props.page > totalPages) {
   });
 }
 
-const posts = computed(() => data.value.posts);
+const posts = computed(() => data.value!.posts);
 const pageInfo = {
   totalPages,
   currentPage: props.page,
@@ -99,10 +99,10 @@ useHead({
   title,
   link: [
     { rel: "canonical", href: url },
-    ...[{ rel: "next", href: nextUrl(pageInfo, site.url) }].filter(
+    ...[{ rel: "next" as const, href: nextUrl(pageInfo, site.url) }].filter(
       (x) => x.href,
     ),
-    ...[{ rel: "prev", href: previousUrl(pageInfo, site.url) }].filter(
+    ...[{ rel: "prev" as const, href: previousUrl(pageInfo, site.url) }].filter(
       (x) => x.href,
     ),
   ],

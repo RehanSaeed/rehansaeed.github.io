@@ -7,7 +7,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
 export default defineComponent({
   data() {
@@ -24,9 +24,9 @@ export default defineComponent({
       "logo-align": logoAlign,
     } = this.$route.query;
 
-    this.noLogo = noLogo;
-    this.logoJustify = logoJustify || "end";
-    this.logoAlign = logoAlign || "start";
+    this.noLogo = Boolean(noLogo);
+    this.logoJustify = String(logoJustify || "end");
+    this.logoAlign = String(logoAlign || "start");
   },
 });
 </script>

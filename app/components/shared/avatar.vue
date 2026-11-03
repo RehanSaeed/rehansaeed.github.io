@@ -13,8 +13,8 @@
           class="avatar__image"
           :alt="alt"
           :src="src"
-          :width="sizeInPixels"
-          :height="sizeInPixels"
+          width="60"
+          height="60"
           :loading="loading"
           @error="onImageError" />
       </picture>
@@ -23,8 +23,8 @@
   </u-tooltip>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script lang="ts">
+import { defineComponent, type PropType } from "vue";
 import { NuxtLink } from "#components";
 import { getAvifSource } from "#shared/utils/images";
 
@@ -49,7 +49,7 @@ export default defineComponent({
     },
     /** Image loading strategy. */ loading: {
       required: false,
-      type: String,
+      type: String as PropType<"eager" | "lazy">,
     },
     /** Internal route used for navigation. */ to: {
       required: false,
@@ -73,9 +73,6 @@ export default defineComponent({
   computed: {
     avifSource() {
       return getAvifSource(this.src);
-    },
-    sizeInPixels() {
-      return this.size === "medium" ? "50" : "60";
     },
     tag() {
       return this.to ? NuxtLink : "a";

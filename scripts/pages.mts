@@ -4,13 +4,26 @@ import { execFileSync } from "node:child_process";
 import { lstat, readFile, readdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import type { load as loadHtml } from "cheerio";
+import type siteConfiguration from "../site.json";
+
+interface Deployment {
+    revision: string;
+    files: {
+        path: string;
+        status: number;
+        contains?: string[];
+        sha256?: string;
+    }[];
+}
 
 const site = JSON.parse(
     await readFile(new URL("../site.json", import.meta.url), "utf8"),
-);
+) as typeof siteConfiguration;
 const origin = new URL(site.url).origin;
 const domain = new URL(origin).hostname;
-const digest = (body) => createHash("sha256").update(body).digest("hex");
+const digest = (body: string | Buffer) =>
+    createHash("sha256").update(body).digest("hex");
 const required = [
     "index.html",
     "404.html",
@@ -29,14 +42,14 @@ const required = [
     "index.md",
 ];
 
-function localPath(value, page) {
+function localPath(value: string, page: string) {
     const url = new URL(value, `${origin}${page}`);
     return url.origin === origin ? decodeURIComponent(url.pathname) : null;
 }
 
-export async function verifyArtifact(directory, routes) {
+export async function verifyArtifact(directory: string, routes: string[]) {
     const { load } = await import("cheerio");
-    const files = new Set();
+    const files = new Set<string>();
     let bytes = 0;
     for (const name of await readdir(directory, { recursive: true })) {
         const path = join(directory, name);
@@ -53,7 +66,7 @@ export async function verifyArtifact(directory, routes) {
             1,
             `Pages artifact contains a hard link: ${name}`,
         );
-        const file = String(name).replaceAll("\\", "/");
+        const file = name.replaceAll("\\", "/");
         assert(
             !/(^|\/)(?:\.git|\.github|\.env(?:\.[^/]*)?|\.data|__link-checker__|node_modules)(?:\/|$)/.test(
                 file,
@@ -78,7 +91,7 @@ export async function verifyArtifact(directory, routes) {
         (await readFile(join(directory, "CNAME"), "utf8")).trim(),
         domain,
     );
-    const exists = (path) => {
+    const exists = (path: string) => {
         const file = path.replace(/^\/+/, "");
         return (
             files.has(file || "index.html") ||
@@ -119,7 +132,7 @@ export async function verifyArtifact(directory, routes) {
                     .attr("srcset")
                     ?.split(/,\s+/)
                     .map((part) => part.split(/\s+/)[0]) ?? []),
-            ].filter(Boolean);
+            ].filter((value): value is string => Boolean(value));
             for (const value of references) {
                 const path = localPath(value, page);
                 if (path !== null) {
@@ -134,7 +147,10 @@ export async function verifyArtifact(directory, routes) {
     return { files: files.size, bytes, routes: routes.length };
 }
 
-export function checkPagesSettings(pages) {
+export function checkPagesSettings(pages: {
+    build_type: string;
+    cname: string | null;
+}) {
     assert.equal(
         pages.build_type,
         "workflow",
@@ -147,13 +163,13 @@ export function checkPagesSettings(pages) {
     );
 }
 
-function allows(sources, address) {
+function allows(sources: string[], address: string) {
     const url = new URL(address);
     return sources.some((source) => {
         if (source === "'self'") {
             return url.origin === origin;
         }
-        if (source === "*" || source === `${url.protocol}`) {
+        if (source === "*" || source === url.protocol) {
             return true;
         }
         if (!source.startsWith("https://")) {
@@ -179,8 +195,8 @@ function allows(sources, address) {
     });
 }
 
-export function checkCsp(policies, analyticsId) {
-    const checks = [
+export function checkCsp(policies: string[], analyticsId?: string) {
+    const checks: [string, string[], string][] = [
         [
             "script-src-elem",
             ["script-src", "default-src"],
@@ -224,7 +240,7 @@ export function checkCsp(policies, analyticsId) {
         );
     }
     for (const policy of policies) {
-        const directives = new Map();
+        const directives = new Map<string, string[]>();
         for (const part of policy.split(";")) {
             const [name, ...sources] = part.trim().split(/\s+/);
             if (name && !directives.has(name)) {
@@ -238,7 +254,7 @@ export function checkCsp(policies, analyticsId) {
             if (!effective) {
                 continue;
             }
-            const sources = directives.get(effective);
+            const sources = directives.get(effective)!;
             assert(
                 !sources.includes("'strict-dynamic'"),
                 "The hosting CSP uses strict-dynamic; verify nonce propagation before deployment.",
@@ -272,7 +288,9 @@ async function preflight() {
         response.ok,
         `Cannot inspect Pages settings: HTTP ${response.status}`,
     );
-    checkPagesSettings(await response.json());
+    checkPagesSettings(
+        (await response.json()) as Parameters<typeof checkPagesSettings>[0],
+    );
     const live = await fetch(origin, {
         redirect: "manual",
         signal: AbortSignal.timeout(30_000),
@@ -302,7 +320,7 @@ async function preflight() {
     }
 }
 
-async function writeDeployment(directory) {
+async function writeDeployment(directory: string) {
     const { load } = await import("cheerio");
     const revision =
         process.env.GITHUB_SHA ??
@@ -310,10 +328,14 @@ async function writeDeployment(directory) {
     assert.match(revision, /^[a-f0-9]{40}$/);
     const $ = load(await readFile(join(directory, "index.html"), "utf8"));
     const assets = $("script[src], link[rel=stylesheet]")
-        .map((_, element) =>
-            localPath($(element).attr("src") ?? $(element).attr("href"), "/"),
-        )
+        .map((_, element) => {
+            const reference = $(element).attr("src") ?? $(element).attr("href");
+            assert(reference, "Deployment asset is missing its URL.");
+            return localPath(reference, "/");
+        })
         .get();
+    const image = $("meta[property='og:image']").attr("content");
+    assert(image, "Deployment homepage is missing its social image.");
     const paths = new Set([
         "/",
         "/about/",
@@ -327,7 +349,7 @@ async function writeDeployment(directory) {
         "/llms.txt",
         "/llms-full.txt",
         "/index.md",
-        $("meta[property='og:image']").attr("content").replace(origin, ""),
+        image.replace(origin, ""),
         "/manifest.webmanifest",
         "/service-worker.js",
         ...assets,
@@ -360,7 +382,7 @@ async function writeDeployment(directory) {
     );
 }
 
-function htmlSignals(body, load) {
+function htmlSignals(body: string, load: typeof loadHtml) {
     const $ = load(body);
     return [
         $("head > title").toString(),
@@ -377,8 +399,8 @@ function htmlSignals(body, load) {
 }
 
 export async function verifyPublished(
-    base,
-    deployment,
+    base: string,
+    deployment: Deployment,
     attempts = 12,
     delay = 10_000,
 ) {
@@ -400,7 +422,7 @@ export async function verifyPublished(
                 "Deployment marker is unavailable",
             );
             assert.equal(
-                (await marker.json()).revision,
+                ((await marker.json()) as Deployment).revision,
                 deployment.revision,
                 "The custom domain is still serving another deployment",
             );
@@ -440,7 +462,7 @@ export async function verifyPublished(
                 throw error;
             }
             console.warn(
-                `Deployment verification attempt ${attempt} failed: ${error.message}`,
+                `Deployment verification attempt ${attempt} failed: ${error instanceof Error ? error.message : String(error)}`,
             );
             await new Promise((resolve) =>
                 setTimeout(resolve, Math.min(delay, deadline - Date.now())),
@@ -463,7 +485,7 @@ async function main() {
     } else if (mode === "verify") {
         const deployment = JSON.parse(
             await readFile(join(directory, "deployment.json"), "utf8"),
-        );
+        ) as Deployment;
         assert.equal(
             deployment.revision,
             process.env.GITHUB_SHA ?? deployment.revision,

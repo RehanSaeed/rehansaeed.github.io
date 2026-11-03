@@ -43,7 +43,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const site = useAppConfig().site;
 const title = "Portfolio";
 const description = `Portfolio of work by ${site.author.name}.`;

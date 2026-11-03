@@ -1,17 +1,31 @@
 import assert from "node:assert/strict";
-import { spawn } from "node:child_process";
+import { spawn, type ChildProcessByStdio } from "node:child_process";
+import type { Readable } from "node:stream";
 import { once } from "node:events";
 import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
-import { chromium, expect } from "@playwright/test";
+import { chromium, expect, type Page } from "@playwright/test";
+
+interface NuxtRoot extends Element {
+    __vue_app__?: {
+        config: {
+            globalProperties: {
+                $nuxt: {
+                    $config: { app: { buildId: string } };
+                    $pwa?: { needRefresh: boolean };
+                };
+            };
+        };
+    };
+}
 
 const previous = process.argv[2];
 assert(previous, "Usage: npm run parity:update-cycle -- <previous-Nuxt-dist>");
 const port = process.env.PORT ?? "8093";
 const origin = `http://localhost:${port}`;
-let server;
-async function start(root) {
-    server = spawn(process.execPath, ["scripts/serve.mjs", root], {
+let server: ChildProcessByStdio<null, Readable, null> | undefined;
+async function start(root: string) {
+    server = spawn(process.execPath, ["scripts/serve.mts", root], {
         env: { ...process.env, PORT: port },
         stdio: ["ignore", "pipe", "inherit"],
     });
@@ -33,10 +47,10 @@ async function stop() {
 }
 const oldManifest = JSON.parse(
     await readFile(join(previous, "_nuxt/builds/latest.json"), "utf8"),
-);
+) as { id: string };
 const newManifest = JSON.parse(
     await readFile("dist/_nuxt/builds/latest.json", "utf8"),
-);
+) as { id: string };
 assert.notEqual(
     oldManifest.id,
     newManifest.id,
@@ -71,7 +85,9 @@ try {
         (route) => route.fulfill({ contentType: "text/plain", body: "" }),
     );
     const page = await context.newPage();
-    page.on("pageerror", (cause) => console.error("Update-test error:", cause));
+    page.on("pageerror", (cause) => {
+        console.error("Update-test error:", cause);
+    });
     await start(previous);
     console.log("Installing the previous build's real service worker.");
     await page.goto(origin, { waitUntil: "domcontentloaded" });
@@ -84,10 +100,10 @@ try {
         1,
         "The package must own a single service-worker registration",
     );
-    const buildId = (target) =>
+    const buildId = (target: Page) =>
         target.evaluate(
             () =>
-                document.querySelector("#__nuxt")?.__vue_app__?.config
+                document.querySelector<NuxtRoot>("#__nuxt")?.__vue_app__?.config
                     .globalProperties.$nuxt.$config.app.buildId,
         );
     assert.equal(await buildId(page), oldManifest.id);
@@ -96,9 +112,12 @@ try {
     console.log("Checking for the next build's worker.");
     await page.evaluate(async () => {
         const registration = await navigator.serviceWorker.getRegistration();
+        if (!registration) {
+            throw new Error("Previous worker registration is unavailable.");
+        }
         await registration.update();
     });
-    const notice = (target) =>
+    const notice = (target: Page) =>
         target.getByRole("region", { name: "Site update" });
     await expect(notice(page)).toBeVisible({ timeout: 180_000 });
     console.log("Package update prompt is visible.");
@@ -107,7 +126,7 @@ try {
     assert.equal(await buildId(page), oldManifest.id);
     assert.equal(
         await page.evaluate(async () =>
-            Boolean((await navigator.serviceWorker.getRegistration()).waiting),
+            Boolean((await navigator.serviceWorker.getRegistration())?.waiting),
         ),
         true,
         "Later must leave the update waiting",
@@ -133,7 +152,7 @@ try {
     try {
         await accepted.waitForFunction(
             (id) =>
-                document.querySelector("#__nuxt")?.__vue_app__?.config
+                document.querySelector<NuxtRoot>("#__nuxt")?.__vue_app__?.config
                     .globalProperties.$nuxt.$config.app.buildId === id,
             newManifest.id,
             { timeout: 60_000 },
@@ -145,8 +164,8 @@ try {
                 const registration =
                     await navigator.serviceWorker.getRegistration();
                 const app =
-                    document.querySelector("#__nuxt")?.__vue_app__?.config
-                        .globalProperties.$nuxt;
+                    document.querySelector<NuxtRoot>("#__nuxt")?.__vue_app__
+                        ?.config.globalProperties.$nuxt;
                 return {
                     buildId: app?.$config.app.buildId,
                     needRefresh: app?.$pwa?.needRefresh,

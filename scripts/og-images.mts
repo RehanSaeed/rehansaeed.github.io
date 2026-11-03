@@ -5,7 +5,7 @@ import { pathToFileURL } from "node:url";
 import { load } from "cheerio";
 import sharp from "sharp";
 
-const escape = (value) =>
+const escape = (value: string) =>
     value
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
@@ -66,7 +66,7 @@ export async function createOgImageGallery(directory = "dist") {
             preview = `<a class="preview" download="${escape(
                 url.pathname
                     .split("/")
-                    .pop()
+                    .pop()!
                     .replace(/\.png$/, ".webp"),
             )}"><img src="${images.get(image)}" width="1200" height="630" loading="lazy" alt="${escape(alt)}"></a>`;
         }

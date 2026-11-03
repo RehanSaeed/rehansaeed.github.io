@@ -10,12 +10,12 @@
   </u-tooltip>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
 import {
   getAbsoluteDisplayDateFromString,
   getDisplayDateFromString,
-} from "~/framework/date.js";
+} from "~/framework/date";
 
 export default defineComponent({
   name: "u-time",

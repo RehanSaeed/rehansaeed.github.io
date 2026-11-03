@@ -11,7 +11,7 @@
           id="thumbnail-background"
           placeholder="none|light|dark|/images/hero/Code-1600x900.jpg"
           :value="background"
-          @input="$emit('update:background', $event.target.value)" />
+          @input="onBackgroundInput" />
       </fieldset>
     </section>
 
@@ -54,10 +54,17 @@
   </aside>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
 export default defineComponent({
   emits: ["update:background"],
+  methods: {
+    onBackgroundInput(event: Event) {
+      if (event.target instanceof HTMLInputElement) {
+        this.$emit("update:background", event.target.value);
+      }
+    },
+  },
   props: {
     /** Selected thumbnail background image or colour. */ background: {
       default: "",

@@ -1,10 +1,14 @@
-import { createServer } from "node:http";
+import {
+    createServer,
+    type IncomingMessage,
+    type ServerResponse,
+} from "node:http";
 import { readFile, stat } from "node:fs/promises";
 import { resolve, extname, relative, isAbsolute, join } from "node:path";
 
 const root = resolve(process.argv[2] ?? "dist");
 const port = Number(process.env.PORT ?? 8080);
-const types = {
+const types: Record<string, string> = {
     ".html": "text/html",
     ".js": "text/javascript",
     ".css": "text/css",
@@ -25,10 +29,20 @@ const types = {
 };
 await stat(join(root, "404.html"));
 
-createServer(async (request, response) => {
+createServer((request, response) => {
+    void serve(request, response);
+}).listen(port, "127.0.0.1", () => {
+    console.log(`Static preview: http://localhost:${port}`);
+});
+
+async function serve(request: IncomingMessage, response: ServerResponse) {
     try {
-        if (!["GET", "HEAD"].includes(request.method)) {
+        if (!request.method || !["GET", "HEAD"].includes(request.method)) {
             response.writeHead(405, { Allow: "GET, HEAD" }).end();
+            return;
+        }
+        if (!request.url) {
+            response.writeHead(400).end();
             return;
         }
         const url = new URL(request.url, "http://localhost");
@@ -54,7 +68,10 @@ createServer(async (request, response) => {
             }
             await stat(file);
         } catch (error) {
-            if (error.code !== "ENOENT" && error.code !== "ENOTDIR") {
+            if (
+                !(error instanceof Error && "code" in error) ||
+                (error.code !== "ENOENT" && error.code !== "ENOTDIR")
+            ) {
                 throw error;
             }
             file = join(root, "404.html");
@@ -73,6 +90,4 @@ createServer(async (request, response) => {
         console.error("Static preview request failed:", error);
         response.writeHead(error instanceof URIError ? 400 : 500).end();
     }
-}).listen(port, "127.0.0.1", () =>
-    console.log(`Static preview: http://localhost:${port}`),
-);
+}

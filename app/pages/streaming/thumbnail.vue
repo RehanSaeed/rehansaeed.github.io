@@ -14,7 +14,7 @@
     @update:background="background = $event" />
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
 export default defineComponent({
   data() {
@@ -42,7 +42,7 @@ export default defineComponent({
 });
 </script>
 
-<script setup>
+<script setup lang="ts">
 definePageMeta({ layout: "empty" });
 useHead({ meta: [{ name: "robots", content: "noindex, follow" }] });
 </script>
