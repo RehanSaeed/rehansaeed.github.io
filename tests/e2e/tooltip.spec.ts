@@ -380,6 +380,7 @@ test("Article section links prerender as accessible links and navigate without c
   const iconSize = await link.evaluate((element) => {
     const probe = document.createElement("span");
     probe.style.display = "block";
+    probe.style.position = "absolute";
     probe.style.width = "var(--global-space-fixed-4)";
     element.append(probe);
     const size = getComputedStyle(probe).width;

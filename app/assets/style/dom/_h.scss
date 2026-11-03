@@ -44,7 +44,7 @@ h6 {
 
   @include breakpoints.respond-below(sm) {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) var(--heading-anchor-size);
+    grid-template-columns: minmax(0, max-content) var(--heading-anchor-size);
     column-gap: var(--heading-anchor-gap);
     align-items: start;
 

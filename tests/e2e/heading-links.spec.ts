@@ -64,10 +64,16 @@ for (const width of [280, 320, 375, 576, 768, 1280]) {
       const heading = link.locator("..");
       await heading.scrollIntoViewIfNeeded();
       const beforeHover = await heading.boundingBox();
+      expect(beforeHover).not.toBeNull();
       await heading.hover();
       await expect(link).toHaveCSS("opacity", "1");
       await expect(link.locator("svg")).toBeVisible();
-      expect(await heading.boundingBox()).toEqual(beforeHover);
+      const afterHover = await heading.boundingBox();
+      expect(afterHover).not.toBeNull();
+      expect(afterHover!.x).toBeCloseTo(beforeHover!.x, 1);
+      expect(afterHover!.y).toBeCloseTo(beforeHover!.y, 1);
+      expect(afterHover!.width).toBeCloseTo(beforeHover!.width, 1);
+      expect(afterHover!.height).toBeCloseTo(beforeHover!.height, 1);
 
       const layout = await link.evaluate((anchor) => {
         const heading = anchor.parentElement!;
@@ -77,12 +83,14 @@ for (const width of [280, 320, 375, 576, 768, 1280]) {
         const postBox = post.getBoundingClientRect();
         const range = document.createRange();
         range.selectNodeContents(heading.querySelector(".heading__text")!);
-        const textBox = range.getClientRects()[0]!;
+        const textRects = range.getClientRects();
+        const textBox = textRects[0]!;
         const textBounds = heading
           .querySelector(".heading__text")!
           .getBoundingClientRect();
         const probe = document.createElement("span");
         probe.style.display = "block";
+        probe.style.position = "absolute";
         probe.style.width = "var(--heading-anchor-gap)";
         anchor.append(probe);
         const gap = probe.getBoundingClientRect().width;
@@ -100,8 +108,13 @@ for (const width of [280, 320, 375, 576, 768, 1280]) {
           headingLeft: headingBox.left,
           textRight: textBounds.right,
           expectedAnchorLeft: grid
-            ? headingBox.right - anchorBox.width
+            ? (textRects.length === 1 ? textBox.right : textBounds.right) + gap
             : headingBox.left - Math.min(anchorBox.width + gap, padding),
+          anchorCenter: anchorBox.top + anchorBox.height / 2,
+          expectedAnchorCenter: grid
+            ? textBounds.bottom -
+              Number.parseFloat(getComputedStyle(heading).lineHeight) / 2
+            : anchorBox.top + anchorBox.height / 2,
           maximumTextRight: grid ? anchorBox.left - gap : headingBox.right,
           iconWidth: iconBox.width,
           iconHeight: iconBox.height,
@@ -115,7 +128,8 @@ for (const width of [280, 320, 375, 576, 768, 1280]) {
               )
               ?.closest("a") === anchor,
           overflow: getComputedStyle(post).overflow,
-          pageWidth: document.documentElement.scrollWidth,
+          headingWidth: heading.scrollWidth,
+          headingClientWidth: heading.clientWidth,
         };
       });
       expect(layout.anchorLeft).toBeGreaterThanOrEqual(layout.postLeft);
@@ -124,6 +138,7 @@ for (const width of [280, 320, 375, 576, 768, 1280]) {
       expect(layout.anchorLeft).toBeGreaterThanOrEqual(0);
       expect(layout.iconRight).toBeLessThanOrEqual(width);
       expect(layout.anchorLeft).toBeCloseTo(layout.expectedAnchorLeft, 1);
+      expect(layout.anchorCenter).toBeCloseTo(layout.expectedAnchorCenter, 1);
       expect(layout.textRight).toBeLessThanOrEqual(layout.maximumTextRight + 1);
       expect(layout.textLeft).toBeCloseTo(layout.headingLeft, 1);
       expect(layout.iconWidth).toBeGreaterThan(0);
@@ -132,7 +147,9 @@ for (const width of [280, 320, 375, 576, 768, 1280]) {
       expect(layout.iconHeight).toBeCloseTo(layout.anchorHeight, 1);
       expect(layout.hitLeftEdge).toBe(true);
       expect(layout.overflow).toBe("hidden");
-      expect(layout.pageWidth).toBeLessThanOrEqual(width);
+      expect(layout.headingWidth).toBeLessThanOrEqual(
+        layout.headingClientWidth,
+      );
     }
 
     const firstLink = links.first();

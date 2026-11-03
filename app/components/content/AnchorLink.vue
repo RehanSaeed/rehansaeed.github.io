@@ -40,7 +40,9 @@ defineProps<{
     display: flex;
     grid-column: 2;
     grid-row: 1;
+    align-self: end;
     margin-inline: 0;
+    margin-block-end: calc((1lh - var(--heading-anchor-size)) / 2);
   }
 
   :slotted(svg) {
