@@ -137,8 +137,8 @@ test("Portfolio totals match the listed projects and About shares the star total
   );
   const totals = $(".portfolio__open-source > .portfolio-statistics");
   expect(totals).toHaveLength(1);
-  expect(totals.attr("data-downloads")).toBe(String(downloads));
-  expect(totals.attr("data-stars")).toBe(String(stars));
+  expect(totals.attr("data-downloads")).toBeUndefined();
+  expect(totals.attr("data-stars")).toBeUndefined();
   const tickers = totals.find(".number-ticker");
   expect(tickers).toHaveLength(2);
   expect(
@@ -168,6 +168,10 @@ test("Portfolio totals match the listed projects and About shares the star total
   const about = await request.get("/about/");
   expect(about.ok()).toBe(true);
   const aboutHtml = load(await about.text());
+  expect(
+    aboutHtml(".about__statistics").attr("data-downloads"),
+  ).toBeUndefined();
+  expect(aboutHtml(".about__statistics").attr("data-stars")).toBeUndefined();
   const aboutTickers = aboutHtml(".about__statistics .number-ticker");
   expect(aboutTickers).toHaveLength(2);
   expect(aboutTickers.first().find(".number-ticker__label").text()).toBe(
@@ -238,9 +242,9 @@ for (const width of [320, 375, 1280]) {
       const aboutStars = aboutTickers.nth(1);
       await expect(aboutStars).toBeVisible();
       await expect(aboutStars.getByRole("term")).toHaveText("GitHub Stars");
-      const starTotal = await page
-        .locator(".about__statistics")
-        .getAttribute("data-stars");
+      const snapshots = await aboutTickers
+        .locator(".number-ticker__accessible")
+        .allTextContents();
       await expect(
         page.locator('img[src*="shields.io/github/stars/"]'),
       ).toHaveCount(0);
@@ -342,9 +346,9 @@ for (const width of [320, 375, 1280]) {
       await expect(page).toHaveURL(/\/portfolio\/$/);
       const totals = page.locator(".portfolio-statistics");
       await expect(totals).toBeVisible();
-      await expect(totals).toHaveAttribute("data-downloads", /^\d+$/);
-      await expect(totals).toHaveAttribute("data-stars", /^\d+$/);
-      await expect(totals).toHaveAttribute("data-stars", starTotal!);
+      await expect(totals.locator(".number-ticker__accessible")).toHaveText(
+        snapshots,
+      );
       await expect(totals.locator(".number-ticker__label")).toHaveText([
         "Package Downloads",
         "GitHub Stars",

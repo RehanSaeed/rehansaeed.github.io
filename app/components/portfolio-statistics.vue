@@ -1,9 +1,7 @@
 <template>
   <div
     class="portfolio-statistics"
-    :class="{ 'portfolio-statistics--borderless': borderless }"
-    :data-downloads="statistics.downloads"
-    :data-stars="statistics.stars">
+    :class="{ 'portfolio-statistics--borderless': borderless }">
     <div class="portfolio-statistics__totals">
       <u-number-ticker
         label="Package Downloads"
