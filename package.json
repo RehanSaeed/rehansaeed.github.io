@@ -30,7 +30,7 @@
     "@nuxt/scripts": "2.0.0-beta.16",
     "@nuxtjs/seo": "6.0.1",
     "@nuxtjs/sitemap": "9.1.0",
-    "@sindresorhus/slugify": "3.0.1",
+    "@sindresorhus/slugify": "4.0.0",
     "@vite-pwa/nuxt": "1.1.1",
     "date-fns": "4.4.0",
     "feed": "6.0.0",
