@@ -18,12 +18,26 @@ const types: Record<string, string> = {
 };
 
 export const test = base.extend<{
+  offlineRouting: void;
   site: {
     origin: string;
     stop: () => Promise<void>;
     useLegacy: (source: string | undefined) => void;
   };
 }>({
+  serviceWorkers: "allow",
+  offlineRouting: [
+    async ({ context, site }, use) => {
+      // Routing disables the HTTP cache, including in Firefox. Stop the actual
+      // origin for outages: Firefox's setOffline emulation bypasses service workers.
+      await context.route(
+        (url) => url.origin !== site.origin,
+        (route) => route.fulfill({ contentType: "text/plain", body: "" }),
+      );
+      await use();
+    },
+    { auto: true },
+  ],
   site: async ({}, use) => {
     let legacy: string | undefined;
     const root = resolve("dist");
@@ -108,17 +122,6 @@ export const test = base.extend<{
       }
     }
   },
-});
-
-test.use({ serviceWorkers: "allow" });
-
-test.beforeEach(async ({ context, site }) => {
-  // Routing disables the HTTP cache, including in Firefox. Stop the actual
-  // origin for outages: Firefox's setOffline emulation bypasses service workers.
-  await context.route(
-    (url) => url.origin !== site.origin,
-    (route) => route.fulfill({ contentType: "text/plain", body: "" }),
-  );
 });
 
 export async function controlled(page: Page) {
