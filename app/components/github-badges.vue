@@ -2,51 +2,28 @@
   <!-- eslint-disable-next-line vuejs-accessibility/no-redundant-roles -- Preserve list semantics in Safari when list-style is none. -->
   <ul class="github-badges" role="list" aria-label="GitHub links">
     <li class="github-badges__item">
-      <u-tooltip v-slot="{ trigger }" text="View my GitHub followers">
-        <a
-          v-bind="trigger"
-          class="github-badges__link"
-          :href="`https://github.com/${user}?tab=followers`">
-          <img
-            class="github-badges__image"
-            alt="GitHub follower count"
-            height="30"
-            width="168"
-            :src="`https://img.shields.io/github/followers/${user}?style=social`" />
-        </a>
-      </u-tooltip>
+      <u-github-badge
+        :href="`https://github.com/${user}?tab=followers`"
+        :src="`https://img.shields.io/github/followers/${user}?style=social`"
+        alt="GitHub follower count"
+        tooltip="View my GitHub followers"
+        :width="168" />
     </li>
     <li class="github-badges__item">
-      <u-tooltip
-        v-slot="{ trigger }"
-        text="Watch subscriptions across my public personal repositories, including forks and archives. Counted per repository, not per person. Updated on each site build.">
-        <a
-          v-bind="trigger"
-          class="github-badges__link"
-          :href="site.author.gitHub.url">
-          <img
-            class="github-badges__image"
-            :alt="`GitHub watch subscriptions across my ${watchers.repositories} public account-owned repositories: ${watchers.watchers}`"
-            height="30"
-            width="165"
-            :src="`https://img.shields.io/badge/Watchers-${watchers.watchers}-blue?logo=github&style=social`" />
-        </a>
-      </u-tooltip>
+      <u-github-badge
+        :href="gitHubUrl"
+        :src="watchersImageUrl"
+        :alt="watchersAlt"
+        tooltip="Watch subscriptions across my public personal repositories, including forks and archives. Counted per repository, not per person. Updated on each site build."
+        :width="165" />
     </li>
     <li class="github-badges__item">
-      <u-tooltip v-slot="{ trigger }" text="Sponsor me on GitHub">
-        <a
-          v-bind="trigger"
-          class="github-badges__link"
-          :href="`https://github.com/sponsors/${user}`">
-          <img
-            class="github-badges__image"
-            alt="GitHub sponsors"
-            height="30"
-            width="121"
-            :src="`https://img.shields.io/github/sponsors/${user}?logo=github&style=social`" />
-        </a>
-      </u-tooltip>
+      <u-github-badge
+        :href="`https://github.com/sponsors/${user}`"
+        :src="`https://img.shields.io/github/sponsors/${user}?logo=github&style=social`"
+        alt="GitHub sponsors"
+        tooltip="Sponsor me on GitHub"
+        :width="121" />
     </li>
   </ul>
 </template>
@@ -54,14 +31,13 @@
 <script setup lang="ts">
 import watchers from "#blog-github-watchers";
 
-const site = useAppConfig().site;
-const user = site.author.gitHub.user;
+const { url: gitHubUrl, user } = useAppConfig().site.author.gitHub;
+const watchersImageUrl = `https://img.shields.io/badge/Watchers-${watchers.watchers}-blue?logo=github&style=social`;
+const watchersAlt = `GitHub watch subscriptions across my ${watchers.repositories} public account-owned repositories: ${watchers.watchers}`;
 </script>
 
 <style lang="scss">
 .github-badges {
-  --github-badges-image-height: 30px;
-
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -76,19 +52,5 @@ const user = site.author.gitHub.user;
 .github-badges__item {
   display: flex;
   margin: 0;
-}
-
-.github-badges__link {
-  display: inline-flex;
-  touch-action: manipulation;
-
-  &:focus-visible {
-    outline: var(--global-border-width-2) solid var(--global-accent-color);
-    outline-offset: var(--global-focus-outline-offset);
-  }
-}
-
-.github-badges__image {
-  block-size: var(--github-badges-image-height);
 }
 </style>

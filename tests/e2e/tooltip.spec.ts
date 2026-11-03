@@ -286,7 +286,7 @@ test("About image links describe their destinations without changing their layou
     },
     {
       selector: ".github-badges li:nth-child(2) a",
-      text: "Total watch subscriptions across my public, account-owned repositories, including forks and archived repositories but excluding organisation-owned repositories. A person watching several repositories is counted once per repository. Refreshed when this site builds.",
+      text: "Watch subscriptions across my public personal repositories, including forks and archives. Counted per repository, not per person. Updated on each site build.",
       count: 1,
     },
     {

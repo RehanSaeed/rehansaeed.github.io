@@ -201,12 +201,18 @@ test("Portfolio totals match the listed projects and About shares the star total
   for (const html of [$, aboutHtml]) {
     expect(html('ul.github-badges[aria-label="GitHub links"]')).toHaveLength(1);
     expect(html(".github-badges > li.github-badges__item")).toHaveLength(3);
-    expect(html(".github-badges__item > a.github-badges__link")).toHaveLength(
-      3,
-    );
+    expect(html(".github-badges__item > a.github-badge")).toHaveLength(3);
+    expect(html(".github-badge > img.github-badge__image")).toHaveLength(3);
     expect(
-      html(".github-badges__link > img.github-badges__image"),
-    ).toHaveLength(3);
+      html(".github-badge__image")
+        .map((_, image) => html(image).attr("width"))
+        .get(),
+    ).toEqual(["168", "165", "121"]);
+    expect(
+      html(".github-badge__image")
+        .map((_, image) => html(image).attr("height"))
+        .get(),
+    ).toEqual(["30", "30", "30"]);
     expect(
       html(".github-badges img")
         .map((_, img) => html(img).attr("src"))
@@ -697,6 +703,9 @@ test("Portfolio uses lifetime download rates and a visible fifteen-second star c
   await expect(
     downloads.getByRole("button", { name: "Package Downloads", exact: true }),
   ).toBeEnabled();
+  await downloads.scrollIntoViewIfNeeded();
+  await expect(downloads).toBeInViewport();
+  await expect(page.locator(".number-ticker").last()).toBeInViewport();
   const downloadDigits = downloads.locator(".number-ticker__digits");
   const value = Number(
     (await downloadDigits.textContent())!.replaceAll(",", ""),

@@ -232,22 +232,27 @@ test("Ticker styles, statistics and badges preserve dimensions and follow shared
     "style",
     "_properties.scss",
   );
-  const [component, properties, statistics, badges] = await Promise.all([
-    readFile(
-      join(process.cwd(), "app", "components", "shared", "number-ticker.vue"),
-      "utf8",
-    ),
-    readFile(propertiesPath, "utf8"),
-    readFile(
-      join(process.cwd(), "app", "components", "portfolio-statistics.vue"),
-      "utf8",
-    ),
-    readFile(
-      join(process.cwd(), "app", "components", "github-badges.vue"),
-      "utf8",
-    ),
-  ]);
-  const styles = [component, statistics, badges]
+  const [component, properties, statistics, badges, badgeComponent] =
+    await Promise.all([
+      readFile(
+        join(process.cwd(), "app", "components", "shared", "number-ticker.vue"),
+        "utf8",
+      ),
+      readFile(propertiesPath, "utf8"),
+      readFile(
+        join(process.cwd(), "app", "components", "portfolio-statistics.vue"),
+        "utf8",
+      ),
+      readFile(
+        join(process.cwd(), "app", "components", "github-badges.vue"),
+        "utf8",
+      ),
+      readFile(
+        join(process.cwd(), "app", "components", "github-badge.vue"),
+        "utf8",
+      ),
+    ]);
+  const styles = [component, statistics, badges, badgeComponent]
     .map((source) => {
       const { descriptor } = parse(source);
       return compileString(descriptor.styles[0]!.content, {
@@ -287,8 +292,8 @@ test("Ticker styles, statistics and badges preserve dimensions and follow shared
     </div>
     <ul class="github-badges">
       <li class="github-badges__item">
-        <a class="github-badges__link" href="#badge">
-          <img class="github-badges__image" alt="GitHub badge" width="135" height="30">
+        <a class="github-badge" href="#badge">
+          <img class="github-badge__image" alt="GitHub badge" width="135" height="30">
         </a>
       </li>
     </ul>
@@ -406,7 +411,7 @@ test("Ticker styles, statistics and badges preserve dimensions and follow shared
         --global-focus-outline-offset: 5px;
         --global-font-size-1: 1.25em;
       }
-      .github-badges { --github-badges-image-height: 36px; }
+      .github-badge { --github-badge-image-height: 36px; }
       .number-ticker {
         --number-ticker-font-size-base: 2rem;
         --number-ticker-label-line-height: 1.5;
