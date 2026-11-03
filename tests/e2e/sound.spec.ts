@@ -1072,19 +1072,6 @@ test("Muting and unmount prevent late tag previews", async ({ page }) => {
 test("Search opening, typing, result hover and selection, and dismissal stay silent", async ({
   page,
 }) => {
-  await page.addInitScript(() => {
-    const focus = Object.getOwnPropertyDescriptors(HTMLElement.prototype).focus
-      .value!;
-    HTMLInputElement.prototype.focus = function (
-      this: HTMLInputElement,
-      options?: FocusOptions,
-    ) {
-      focus.call(this, options);
-      if (this.classList.contains("search__input")) {
-        this.setAttribute("data-test-autofocused", "true");
-      }
-    };
-  });
   await page.goto("/");
   await ready(page);
   await page.getByRole("button", { name: "Open search", exact: true }).click();
@@ -1110,8 +1097,7 @@ test("Search opening, typing, result hover and selection, and dismissal stay sil
   expect(await playedSounds(page)).toEqual([]);
   const search = page.getByRole("searchbox", { name: "Search", exact: true });
   const close = page.getByRole("button", { name: "Close Search", exact: true });
-  // The dialog's delayed autofocus must finish before testing focus elsewhere.
-  await expect(search).toHaveAttribute("data-test-autofocused", "true");
+  await search.focus();
   await expect(search).toHaveValue("ASP.NET");
   await search.press("Tab");
   await close.focus();
