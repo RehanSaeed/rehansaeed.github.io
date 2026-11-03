@@ -36,7 +36,7 @@ function mountUpdate() {
           context: object,
         ) => {
           update: () => Promise<void>;
-          dismiss: () => void;
+          dismiss: () => Promise<void>;
           updating: { value: boolean };
           error: { value: string };
         };
@@ -99,11 +99,11 @@ test("Concurrent update clicks invoke the package only once", async () => {
   expect(app.sounds).toEqual([]);
 });
 
-test("Explicit dismissal stays silent and delegates to the package", () => {
+test("Explicit dismissal stays silent and delegates to the package", async () => {
   const app = mountUpdate();
   expect(app.sounds).toEqual([]);
   expect(app.dismissals()).toBe(0);
-  app.state.dismiss();
+  await app.state.dismiss();
   expect(app.dismissals()).toBe(1);
   expect(app.sounds).toEqual([]);
 });

@@ -47,6 +47,7 @@ export default defineNuxtPlugin((app) => {
   async function load(name: SoundEffect, audio: AudioContext) {
     const controller = new AbortController();
     loading.set(name, controller);
+    const cancelled = () => controller.signal.aborted || disposed;
     try {
       const response = await fetch(`${soundPath}/${name}.wav`, {
         signal: controller.signal,
@@ -55,15 +56,15 @@ export default defineNuxtPlugin((app) => {
         throw new Error(`Loading ${name} failed with HTTP ${response.status}.`);
       }
       const data = await response.arrayBuffer();
-      if (controller.signal.aborted || disposed) {
+      if (cancelled()) {
         return;
       }
       const buffer = await audio.decodeAudioData(data);
-      if (!controller.signal.aborted && !disposed) {
+      if (!cancelled()) {
         sounds.set(name, buffer);
       }
     } catch (cause) {
-      if (!controller.signal.aborted && !disposed) {
+      if (!cancelled()) {
         report(
           "Sound effects could not be loaded. Try enabling them again when online.",
           cause,
@@ -169,7 +170,7 @@ export default defineNuxtPlugin((app) => {
     }
     if (context.state !== "running") {
       // Resume during the gesture, but never replay a stale click after unlocking.
-      unlock();
+      void unlock();
       return;
     }
     stop();
@@ -235,8 +236,8 @@ export default defineNuxtPlugin((app) => {
     }
     disposed = true;
     window.removeEventListener("storage", storageChanged);
-    window.removeEventListener("pointerdown", unlock, true);
-    window.removeEventListener("keydown", unlock, true);
+    window.removeEventListener("pointerdown", unlockOnGesture, true);
+    window.removeEventListener("keydown", unlockOnGesture, true);
     abortLoads();
     stop();
     sounds.clear();
@@ -247,8 +248,11 @@ export default defineNuxtPlugin((app) => {
       });
     }
   }
-  window.addEventListener("pointerdown", unlock, true);
-  window.addEventListener("keydown", unlock, true);
+  function unlockOnGesture() {
+    void unlock();
+  }
+  window.addEventListener("pointerdown", unlockOnGesture, true);
+  window.addEventListener("keydown", unlockOnGesture, true);
   if (import.meta.hot) {
     import.meta.hot.dispose(dispose);
   }

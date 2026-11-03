@@ -3,9 +3,9 @@ import { join } from "node:path";
 import type { Page } from "@playwright/test";
 import type { NuxtApp } from "nuxt/app";
 import {
-  hoverSoundNames,
   soundNames,
   soundPath,
+  type SoundEffect,
 } from "../../shared/utils/sounds";
 import { delayClientScripts, expect, test } from "./fixtures";
 
@@ -79,6 +79,7 @@ async function expectSoundState(page: Page, enabled: boolean) {
 }
 
 test.beforeEach(async ({ page }) => {
+  await page.clock.install();
   await page.addInitScript(() => {
     window.soundProbe = {
       decoded: 0,
@@ -89,7 +90,8 @@ test.beforeEach(async ({ page }) => {
     };
     const dataNames = new WeakMap<ArrayBuffer, string>();
     const bufferNames = new WeakMap<AudioBuffer, string>();
-    const arrayBuffer = Response.prototype.arrayBuffer;
+    const arrayBuffer = Object.getOwnPropertyDescriptors(Response.prototype)
+      .arrayBuffer.value!;
     Response.prototype.arrayBuffer = async function () {
       const data = await arrayBuffer.call(this);
       if (this.url.includes("/sounds/")) {
@@ -106,54 +108,53 @@ test.beforeEach(async ({ page }) => {
         super(options);
         window.soundProbe.context = this;
       }
-    };
-    const createGain = AudioContext.prototype.createGain;
-    AudioContext.prototype.createGain = function () {
-      const gain = createGain.call(this);
-      window.soundProbe.gain = gain;
-      return gain;
-    };
-    const decode = AudioContext.prototype.decodeAudioData;
-    AudioContext.prototype.decodeAudioData = function (...args) {
-      const result = decode.apply(this, args);
-      void result.then(
-        (buffer) => {
-          window.soundProbe.decoded++;
-          const name = dataNames.get(args[0]);
-          if (name) {
-            bufferNames.set(buffer, name);
+      override createGain() {
+        const gain = super.createGain();
+        window.soundProbe.gain = gain;
+        return gain;
+      }
+      override decodeAudioData(
+        ...args: Parameters<AudioContext["decodeAudioData"]>
+      ) {
+        const result = super.decodeAudioData(...args);
+        void result.then(
+          (buffer) => {
+            window.soundProbe.decoded++;
+            const name = dataNames.get(args[0]);
+            if (name) {
+              bufferNames.set(buffer, name);
+            }
+          },
+          () => {},
+        );
+        return result;
+      }
+      override createBufferSource() {
+        window.soundProbe.context = this;
+        const source = super.createBufferSource();
+        const start = source.start.bind(source);
+        const stop = source.stop.bind(source);
+        source.addEventListener("ended", () => window.soundProbe.active--, {
+          once: true,
+        });
+        source.start = (...args) => {
+          if (source.buffer && source.buffer.duration > 0.01) {
+            window.soundProbe.starts.push(source.buffer.duration);
+            window.soundProbe.played.push(
+              bufferNames.get(source.buffer) ?? "unknown",
+            );
+            window.soundProbe.active++;
           }
-        },
-        () => {},
-      );
-      return result;
-    };
-    const createSource = AudioContext.prototype.createBufferSource;
-    AudioContext.prototype.createBufferSource = function () {
-      window.soundProbe.context = this;
-      const source = createSource.call(this);
-      const start = source.start;
-      const stop = source.stop;
-      source.addEventListener("ended", () => window.soundProbe.active--, {
-        once: true,
-      });
-      source.start = function (...args) {
-        if (source.buffer && source.buffer.duration > 0.01) {
-          window.soundProbe.starts.push(source.buffer.duration);
-          window.soundProbe.played.push(
-            bufferNames.get(source.buffer) ?? "unknown",
-          );
-          window.soundProbe.active++;
-        }
-        return start.apply(this, args);
-      };
-      source.stop = function (...args) {
-        if (source.buffer && source.buffer.duration > 0.01) {
-          window.soundProbe.stops++;
-        }
-        return stop.apply(this, args);
-      };
-      return source;
+          start(...args);
+        };
+        source.stop = (...args) => {
+          if (source.buffer && source.buffer.duration > 0.01) {
+            window.soundProbe.stops++;
+          }
+          stop(...args);
+        };
+        return source;
+      }
     };
   });
 });
@@ -247,9 +248,9 @@ for (const colorScheme of ["light", "dark"] as const) {
 test("A saved mute stays silent and requests no samples until enabled", async ({
   page,
 }) => {
-  await page.addInitScript(() =>
-    localStorage.setItem("sound-effect-enabled", "false"),
-  );
+  await page.addInitScript(() => {
+    localStorage.setItem("sound-effect-enabled", "false");
+  });
   const requests: string[] = [];
   page.on("request", (request) => {
     if (request.url().includes("/sounds/")) {
@@ -288,9 +289,9 @@ test("Hydration guards the sound toggle", async ({ page }) => {
 test("Unavailable Web Audio is reported without breaking controls", async ({
   page,
 }) => {
-  await page.addInitScript(() =>
-    localStorage.setItem("sound-effect-enabled", "false"),
-  );
+  await page.addInitScript(() => {
+    localStorage.setItem("sound-effect-enabled", "false");
+  });
   await page.goto("/");
   await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "false");
   await page.evaluate(() => {
@@ -510,9 +511,9 @@ test("Enabling confirms once and muting never plays an extra cue", async ({
 test("A cold enable confirms after loading without replaying other actions", async ({
   page,
 }) => {
-  await page.addInitScript(() =>
-    localStorage.setItem("sound-effect-enabled", "false"),
-  );
+  await page.addInitScript(() => {
+    localStorage.setItem("sound-effect-enabled", "false");
+  });
   let release!: () => void;
   const blocked = new Promise<void>((resolve) => {
     release = resolve;
@@ -591,14 +592,18 @@ test("Shares preference across navigation, reloads and tabs without automatic cu
   await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "false");
   await themeToggle(page).click();
   expect(await playback(page)).toEqual([]);
-  await other.evaluate(() => localStorage.removeItem("sound-effect-enabled"));
+  await other.evaluate(() => {
+    localStorage.removeItem("sound-effect-enabled");
+  });
   await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "true");
   expect(await playback(page)).toEqual([]);
   await other.evaluate(() => {
     localStorage.setItem("sound-effect-enabled", "false");
   });
   await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "false");
-  await other.evaluate(() => localStorage.clear());
+  await other.evaluate(() => {
+    localStorage.clear();
+  });
   await expect(soundToggle(page)).toHaveAttribute("aria-pressed", "true");
   expect(await playback(page)).toEqual([]);
   await other.close();
@@ -650,9 +655,9 @@ test("Playback failures are reported without blocking the action", async ({
   await enable(page);
   await page.evaluate(() => {
     const context = window.soundProbe.context!;
-    const createSource = context.createBufferSource;
+    const createSource = context.createBufferSource.bind(context);
     context.createBufferSource = () => {
-      const source = createSource.call(context);
+      const source = createSource();
       source.start = () => {
         throw new DOMException("Playback unavailable", "InvalidStateError");
       };
@@ -716,12 +721,18 @@ for (const { name, path, selector } of [
     await ready(page);
     const link = page.locator(selector).first();
     await link.hover();
-    await page.waitForTimeout(150);
+    await page.clock.runFor(150);
     await link.evaluate((element: HTMLAnchorElement) => {
-      element.addEventListener("click", (event) => event.preventDefault(), {
-        capture: true,
-        once: true,
-      });
+      element.addEventListener(
+        "click",
+        (event) => {
+          event.preventDefault();
+        },
+        {
+          capture: true,
+          once: true,
+        },
+      );
       element.click();
     });
     expect(await playedSounds(page)).toEqual([]);
@@ -743,12 +754,18 @@ for (const [label, sound] of [
     await link.hover();
     await expect.poll(() => playedSounds(page)).toEqual([sound]);
     await link.dispatchEvent("pointerenter", { pointerType: "mouse" });
-    await page.waitForTimeout(150);
+    await page.clock.runFor(150);
     await link.evaluate((element) => {
-      element.addEventListener("click", (event) => event.preventDefault(), {
-        capture: true,
-        once: true,
-      });
+      element.addEventListener(
+        "click",
+        (event) => {
+          event.preventDefault();
+        },
+        {
+          capture: true,
+          once: true,
+        },
+      );
     });
     await link.click();
     expect(await playedSounds(page)).toEqual([sound]);
@@ -771,12 +788,18 @@ for (const label of [
     const link = page.getByRole("link", { name: label, exact: true }).first();
     await expect(link).not.toHaveAttribute("data-sound-hover");
     await link.hover();
-    await page.waitForTimeout(150);
+    await page.clock.runFor(150);
     await link.evaluate((element) => {
-      element.addEventListener("click", (event) => event.preventDefault(), {
-        capture: true,
-        once: true,
-      });
+      element.addEventListener(
+        "click",
+        (event) => {
+          event.preventDefault();
+        },
+        {
+          capture: true,
+          once: true,
+        },
+      );
     });
     await link.click();
     expect(await playedSounds(page)).toEqual([]);
@@ -806,17 +829,23 @@ test("Keyboard focus and activation stay silent, including social icons and tags
     .getByRole("link", { name: "Bluesky", exact: true })
     .first();
   await social.evaluate((element) => {
-    element.addEventListener("click", (event) => event.preventDefault(), {
-      once: true,
-    });
+    element.addEventListener(
+      "click",
+      (event) => {
+        event.preventDefault();
+      },
+      {
+        once: true,
+      },
+    );
   });
   await social.focus();
-  await page.waitForTimeout(150);
+  await page.clock.runFor(150);
   await social.press("Enter");
   const tag = page.locator(".post-card .tags__link").first();
   const href = await tag.getAttribute("href");
   await tag.focus();
-  await page.waitForTimeout(150);
+  await page.clock.runFor(150);
   await tag.press("Enter");
   await expect(page).toHaveURL(new RegExp(`${href}$`));
   expect(await playedSounds(page)).toEqual([]);
@@ -861,7 +890,7 @@ test("Quick passes, touch, downloads, disabled links and pointer-down cancel pre
         new PointerEvent("pointerdown", { pointerType: "mouse" }),
       );
     });
-  await page.waitForTimeout(150);
+  await page.clock.runFor(150);
   expect(await playedSounds(page)).toEqual([]);
 });
 
@@ -873,9 +902,9 @@ for (const event of ["pointerleave", "pointerdown"] as const) {
     await ready(page);
     await page.evaluate(() => {
       const context = window.soundProbe.context!;
-      const createSource = context.createBufferSource;
+      const createSource = context.createBufferSource.bind(context);
       context.createBufferSource = () => {
-        const source = createSource.call(context);
+        const source = createSource();
         source.loop = true;
         return source;
       };
@@ -893,7 +922,21 @@ for (const event of ["pointerleave", "pointerdown"] as const) {
   });
 }
 
-for (const control of ["theme", "enable"] as const) {
+for (const { control, activate, expected } of [
+  {
+    control: "theme",
+    activate: (page: Page) => themeToggle(page).click(),
+    expected: /^toggle-(on|off)$/,
+  },
+  {
+    control: "enable",
+    activate: async (page: Page) => {
+      await soundToggle(page).click();
+      await soundToggle(page).click();
+    },
+    expected: /^enable-sound$/,
+  },
+]) {
   test(`Hover entry and exit never interrupt the ${control} confirmation`, async ({
     page,
   }) => {
@@ -901,26 +944,19 @@ for (const control of ["theme", "enable"] as const) {
     await ready(page);
     await page.evaluate(() => {
       const context = window.soundProbe.context!;
-      const createSource = context.createBufferSource;
+      const createSource = context.createBufferSource.bind(context);
       context.createBufferSource = () => {
-        const source = createSource.call(context);
+        const source = createSource();
         source.loop = true;
         return source;
       };
     });
-    if (control === "theme") {
-      await themeToggle(page).click();
-    } else {
-      await soundToggle(page).click();
-      await soundToggle(page).click();
-    }
+    await activate(page);
     await expect.poll(() => playback(page)).toHaveLength(1);
     const confirmation = await playedSounds(page);
-    if (control === "enable") {
-      expect(confirmation).toEqual(["enable-sound"]);
-    }
+    expect(confirmation).toEqual([expect.stringMatching(expected)]);
     await page.locator(".tags__link").first().hover();
-    await page.waitForTimeout(150);
+    await page.clock.runFor(150);
     await page.mouse.move(1, 1);
     expect(await playedSounds(page)).toEqual(confirmation);
     expect(await page.evaluate(() => window.soundProbe.stops)).toBe(0);
@@ -939,7 +975,17 @@ test("A stale stop callback cannot stop a newer instance of the same sample", as
   const result = await page.evaluate(() => {
     const root = document.querySelector<
       HTMLElement & {
-        __vue_app__: { config: { globalProperties: { $nuxt: NuxtApp } } };
+        __vue_app__: {
+          config: {
+            globalProperties: {
+              $nuxt: {
+                $soundEffect: {
+                  play: (sound: SoundEffect) => (() => void) | undefined;
+                };
+              };
+            };
+          };
+        };
       }
     >("#__nuxt")!;
     const audio = root.__vue_app__.config.globalProperties.$nuxt.$soundEffect;
@@ -961,9 +1007,9 @@ test("Route unmount stops an active tag preview", async ({ page }) => {
   await ready(page);
   await page.evaluate(() => {
     const context = window.soundProbe.context!;
-    const createSource = context.createBufferSource;
+    const createSource = context.createBufferSource.bind(context);
     context.createBufferSource = () => {
-      const source = createSource.call(context);
+      const source = createSource();
       source.loop = true;
       return source;
     };
@@ -973,7 +1019,9 @@ test("Route unmount stops an active tag preview", async ({ page }) => {
   await page
     .locator("nav")
     .getByRole("link", { name: "About", exact: true })
-    .evaluate((element: HTMLAnchorElement) => element.click());
+    .evaluate((element: HTMLAnchorElement) => {
+      element.click();
+    });
   await expect(page).toHaveURL(/\/about\/$/);
   await expect
     .poll(() => page.evaluate(() => window.soundProbe.active))
@@ -995,7 +1043,7 @@ test("Muting and unmount prevent late tag previews", async ({ page }) => {
         .querySelector<HTMLButtonElement>(".sound-control__button")!
         .click();
     });
-  await page.waitForTimeout(150);
+  await page.clock.runFor(150);
   expect(await playedSounds(page)).toEqual([]);
   await soundToggle(page).click();
   await expect.poll(() => playedSounds(page)).toEqual(["enable-sound"]);
@@ -1014,7 +1062,7 @@ test("Muting and unmount prevent late tag previews", async ({ page }) => {
   await expect(page).toHaveURL(/\/about\/$/);
   await expect(page.locator(".post-card .tags__link")).toHaveCount(0);
   const soundsAtUnmount = await playedSounds(page);
-  await page.waitForTimeout(150);
+  await page.clock.runFor(150);
   expect(await playedSounds(page)).toEqual(soundsAtUnmount);
   await expect
     .poll(() => page.evaluate(() => window.soundProbe.active))
@@ -1025,7 +1073,8 @@ test("Search opening, typing, result hover and selection, and dismissal stay sil
   page,
 }) => {
   await page.addInitScript(() => {
-    const focus = HTMLInputElement.prototype.focus;
+    const focus = Object.getOwnPropertyDescriptors(HTMLElement.prototype).focus
+      .value!;
     HTMLInputElement.prototype.focus = function (
       this: HTMLInputElement,
       options?: FocusOptions,
@@ -1044,7 +1093,7 @@ test("Search opening, typing, result hover and selection, and dismissal stay sil
     .fill("ASP.NET");
   const result = page.locator(".search-result__link").first();
   await result.hover();
-  await page.waitForTimeout(150);
+  await page.clock.runFor(150);
   await result.click();
   await expect(
     page.getByRole("dialog", { name: "Search", exact: true }),
@@ -1099,11 +1148,17 @@ test("Coffee, support links and fallback sharing remain silent and functional", 
     .click();
   const support = page.locator(".support-links .link-button").first();
   await support.hover();
-  await page.waitForTimeout(150);
+  await page.clock.runFor(150);
   await support.evaluate((element: HTMLAnchorElement) => {
-    element.addEventListener("click", (event) => event.preventDefault(), {
-      once: true,
-    });
+    element.addEventListener(
+      "click",
+      (event) => {
+        event.preventDefault();
+      },
+      {
+        once: true,
+      },
+    );
     element.click();
   });
   await page.mouse.move(1, 1);
@@ -1168,9 +1223,9 @@ test("Newsletter validation, typing and submission are silent, with no false suc
 test("A saved mute fetches nothing and silences social hover, tags and navigation", async ({
   page,
 }) => {
-  await page.addInitScript(() =>
-    localStorage.setItem("sound-effect-enabled", "false"),
-  );
+  await page.addInitScript(() => {
+    localStorage.setItem("sound-effect-enabled", "false");
+  });
   const requests: string[] = [];
   page.on("request", (request) => {
     if (request.url().includes("/sounds/")) {
@@ -1183,9 +1238,9 @@ test("A saved mute fetches nothing and silences social hover, tags and navigatio
     .getByRole("link", { name: "Bluesky", exact: true })
     .first()
     .hover();
-  await page.waitForTimeout(150);
+  await page.clock.runFor(150);
   await page.locator(".tags__link").first().hover();
-  await page.waitForTimeout(150);
+  await page.clock.runFor(150);
   await page
     .locator("nav")
     .getByRole("link", { name: "About", exact: true })
@@ -1257,9 +1312,9 @@ test("Update notifications, dismissal and applying updates remain silent", async
 test("Late samples do not replay clicks or sound after muting", async ({
   page,
 }) => {
-  await page.addInitScript(() =>
-    localStorage.setItem("sound-effect-enabled", "false"),
-  );
+  await page.addInitScript(() => {
+    localStorage.setItem("sound-effect-enabled", "false");
+  });
   let release!: () => void;
   const blocked = new Promise<void>((resolve) => {
     release = resolve;
@@ -1374,6 +1429,15 @@ test("Samples are small, quiet mono WAVs with complete short gestures and faded 
     "bluesky-wings": 0.65,
     "email-paper": 0.66,
   };
+  const peakLimits: Record<SoundEffect, number> = {
+    "toggle-on": 0.3,
+    "toggle-off": 0.3,
+    "enable-sound": 0.3,
+    "tag-hover": 0.081,
+    "github-meow": 0.081,
+    "bluesky-wings": 0.081,
+    "email-paper": 0.081,
+  };
   expect(
     (await readdir(soundDirectory))
       .filter((name) => name.endsWith(".wav"))
@@ -1401,12 +1465,47 @@ test("Samples are small, quiet mono WAVs with complete short gestures and faded 
     }
     expect(peak).toBeGreaterThan(0);
     expect(peak).toBeLessThan(0.3);
-    if ((hoverSoundNames as readonly string[]).includes(name)) {
-      expect(peak).toBeLessThanOrEqual(0.081);
-    }
+    expect(peak).toBeLessThanOrEqual(peakLimits[name]);
   }
   expect(bytes).toBeLessThan(150000);
 });
+
+function flatness(values: number[]) {
+  const size = 256;
+  let total = 0;
+  let weight = 0;
+  for (let start = 0; start + size <= values.length; start += size) {
+    const frame = values
+      .slice(start, start + size)
+      .map(
+        (value, index) =>
+          value * (0.5 - 0.5 * Math.cos((2 * Math.PI * index) / (size - 1))),
+      );
+    const energy = frame.reduce((sum, value) => sum + value * value, 0);
+    if (energy < 1e-8) {
+      continue;
+    }
+    const powers: number[] = [];
+    for (let bin = 1; bin < size / 2; bin++) {
+      let real = 0;
+      let imaginary = 0;
+      for (let index = 0; index < size; index++) {
+        const phase = (2 * Math.PI * bin * index) / size;
+        real += frame[index]! * Math.cos(phase);
+        imaginary += frame[index]! * Math.sin(phase);
+      }
+      powers.push(real * real + imaginary * imaginary + 1e-16);
+    }
+    const arithmetic =
+      powers.reduce((sum, value) => sum + value, 0) / powers.length;
+    const geometric = Math.exp(
+      powers.reduce((sum, value) => sum + Math.log(value), 0) / powers.length,
+    );
+    total += (geometric / arithmetic) * energy;
+    weight += energy;
+  }
+  return total / weight;
+}
 
 test("Recorded icon sounds and original controls have distinct waveforms and timbres", async () => {
   const samples = new Map<string, number[]>();
@@ -1421,43 +1520,6 @@ test("Recorded icon sounds and original controls have distinct waveforms and tim
     fingerprints.add(buffer.subarray(44).toString("base64"));
   }
   expect(fingerprints.size).toBe(soundNames.length);
-
-  function flatness(values: number[]) {
-    const size = 256;
-    let total = 0;
-    let weight = 0;
-    for (let start = 0; start + size <= values.length; start += size) {
-      const frame = values
-        .slice(start, start + size)
-        .map(
-          (value, index) =>
-            value * (0.5 - 0.5 * Math.cos((2 * Math.PI * index) / (size - 1))),
-        );
-      const energy = frame.reduce((sum, value) => sum + value * value, 0);
-      if (energy < 1e-8) {
-        continue;
-      }
-      const powers: number[] = [];
-      for (let bin = 1; bin < size / 2; bin++) {
-        let real = 0;
-        let imaginary = 0;
-        for (let index = 0; index < size; index++) {
-          const phase = (2 * Math.PI * bin * index) / size;
-          real += frame[index]! * Math.cos(phase);
-          imaginary += frame[index]! * Math.sin(phase);
-        }
-        powers.push(real * real + imaginary * imaginary + 1e-16);
-      }
-      const arithmetic =
-        powers.reduce((sum, value) => sum + value, 0) / powers.length;
-      const geometric = Math.exp(
-        powers.reduce((sum, value) => sum + Math.log(value), 0) / powers.length,
-      );
-      total += (geometric / arithmetic) * energy;
-      weight += energy;
-    }
-    return total / weight;
-  }
 
   // Recorded paper/wing foley is broadband, unlike a voiced mew or a tonal control.
   const paper = flatness(samples.get("email-paper")!);
@@ -1477,6 +1539,8 @@ test.describe("Sound runtime cache", () => {
     context,
     browserName,
   }) => {
+    // Firefox has neither CDP nor service-worker-aware offline emulation.
+    // eslint-disable-next-line playwright/no-skipped-test
     test.skip(
       browserName === "firefox",
       "Firefox offline emulation bypasses service workers.",
@@ -1493,13 +1557,13 @@ test.describe("Sound runtime cache", () => {
     await page.evaluate(async () => {
       await navigator.serviceWorker.ready;
       if (!navigator.serviceWorker.controller) {
-        await new Promise((resolve) =>
+        await new Promise((resolve) => {
           navigator.serviceWorker.addEventListener(
             "controllerchange",
             resolve,
             { once: true },
-          ),
-        );
+          );
+        });
       }
     });
     const cachedSounds = () =>
