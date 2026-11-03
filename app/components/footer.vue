@@ -6,6 +6,12 @@
 
     <u-author class="footer_author" heading-id="footer-author" />
 
+    <p class="footer__offline">
+      Installing the app does not download the entire blog. Articles are cached
+      as you read; unvisited articles are not guaranteed offline.
+      <a href="/offline.html">About offline reading</a>
+    </p>
+
     <section class="footer__text">
       <span class="footer__copyright"
         >Copyright © {{ new Date().getFullYear() }}
@@ -40,6 +46,13 @@ const metadata = useAppConfig().site;
 .footer__newsletter {
   justify-self: center;
   max-inline-size: 100%;
+}
+
+.footer__offline {
+  margin-inline: auto;
+  padding-inline: var(--global-space-fluid-5);
+  max-inline-size: 40rem;
+  text-align: center;
 }
 
 .footer__text {

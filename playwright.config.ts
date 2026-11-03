@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const baseURL = process.env.BASE_URL ?? "http://localhost:8080";
+const baseURL =
+  process.env.BASE_URL ?? `http://localhost:${process.env.PORT ?? "8080"}`;
 const isRemote = !!process.env.BASE_URL;
 const isCI = !!process.env.CI;
 
@@ -51,7 +52,7 @@ export default defineConfig({
     ? undefined
     : {
         command: "npm start",
-        url: "http://localhost:8080",
+        url: baseURL,
         reuseExistingServer: !isCI,
         timeout: 120_000,
       },

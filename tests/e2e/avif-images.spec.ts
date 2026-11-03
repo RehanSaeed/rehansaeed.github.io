@@ -100,11 +100,13 @@ async function verifyOfflineImagePrecache() {
   const urls = [...worker.matchAll(/\burl:"((?:[^"\\]|\\.)*)"/g)].map(
     (match) => JSON.parse(`"${match[1]}"`) as string,
   );
-  expect(urls.length).toBeGreaterThan(500);
-  expect(urls.some((url) => /^_ipx\/.*\bf_avif[,&/]/.test(url))).toBe(true);
-  expect(urls.includes("images/hero/Schema.NET-1366x768.avif")).toBe(true);
+  expect(urls.length).toBeLessThanOrEqual(5);
+  expect(urls).toContain("offline.html");
+  expect(urls).toContain("offline.css");
+  expect(urls.some((url) => url.startsWith("_ipx/"))).toBe(false);
+  expect(urls.some((url) => url.startsWith("images/hero/"))).toBe(false);
   expect(urls).toContain("images/icons/favicon-192x192.png");
-  expect(urls).toContain("images/screenshots/blog-wide.png");
+  expect(urls).not.toContain("images/screenshots/blog-wide.png");
   for (const url of urls) {
     if (url.startsWith("_ipx/") && /\.(png|jpe?g|webp|avif)$/i.test(url)) {
       expect(
@@ -120,7 +122,7 @@ async function verifyOfflineImagePrecache() {
 }
 
 unitTest(
-  "Offline precaching keeps AVIF content, compatibility PNGs and runtime search heroes",
+  "Offline precaching includes only the essential fallback and installation resources",
   async () => {
     await expect(verifyOfflineImagePrecache()).resolves.toBeUndefined();
   },

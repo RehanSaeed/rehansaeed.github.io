@@ -2,6 +2,7 @@ import { mkdirSync } from "node:fs";
 import { dirname, isAbsolute } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { contentPublicDir } from "./modules/blog-content/paths";
+import { runtimeCaching } from "./modules/blog-content/pwa";
 import site from "./site.json";
 
 const contentPublicPath = fileURLToPath(
@@ -222,7 +223,7 @@ export default defineNuxtConfig({
   },
 
   // Keep the existing service worker and manifest URLs so installed users get an update
-  // of the old service worker rather than a second one. The whole site is precached for offline use.
+  // of the old service worker rather than a second one.
   pwa: {
     strategies: "generateSW",
     registerType: "prompt",
@@ -308,31 +309,26 @@ export default defineNuxtConfig({
     },
     workbox: {
       clientsClaim: true,
+      // Only the standalone fallback and installation icon are required to install.
       globPatterns: [
-        "**/*.{js,json,css,html,png,jpg,jpeg,svg,gif,woff2,webp,avif}",
+        "offline.html",
+        "offline.css",
+        "images/icons/favicon-192x192.png",
       ],
-      globIgnores: [
-        "images/items/**/*",
-        "images/reactions/**/*",
-        "images/thumbnails/**/*",
-        // Originals only used by the feeds and social meta. Pages use the /_ipx/ resized copies.
-        "content-images/**/*",
-        "images/hero/**/*.{png,jpg,jpeg}",
-        // Social cards are not needed to read the complete blog offline.
-        "_og/**/*",
-        "_og-static-fonts/**/*",
-        // Precached as /404 and /200, which respond 404 and would fail the whole install.
-        "404.html",
-        "200.html",
-      ],
+      // The Nuxt PWA module adds these globs automatically; they are runtime data.
+      globIgnores: ["**/_payload.json", "_nuxt/builds/**/*.json"],
+      // Keep the standalone fallback's real .html URL (not Nuxt's clean route transform).
+      manifestTransforms: [],
+      cacheId: "blog-essential-v1",
       // Also ignore Nuxt's payload cache buster and shortcut icon URL versions offline.
       ignoreURLParametersMatching: [/^utm_/, /^fbclid$/, /^_b$/, /^v$/],
       // No SPA fallback. Clean URLs resolve to their prerendered index.html.
       navigateFallback: null,
       directoryIndex: "index.html",
-      cleanupOutdatedCaches: true,
-      // The feeds are around 1 MB each.
-      maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+      // Keep the prior full precache usable through the runtime migration plugin.
+      cleanupOutdatedCaches: false,
+      runtimeCaching,
+      maximumFileSizeToCacheInBytes: 256 * 1024,
     },
   },
 
@@ -525,37 +521,6 @@ export default defineNuxtConfig({
           page.path = page.path.replace(/\/?$/, "/");
         }
       }
-    },
-    // @vite-pwa/nuxt's default manifest transform turns "about/index.html" into "about", but pages
-    // use trailing slashes ("/about/"), which then misses the precache when offline. Run first so
-    // these entries become "about/" and the module's transform skips them.
-    "pwa:beforeBuildServiceWorker": (options) => {
-      options.workbox.manifestTransforms = [
-        (entries) => {
-          for (const entry of entries) {
-            entry.url = entry.url.replace(/\/index\.html$/, "/");
-          }
-          return {
-            manifest: entries.filter((entry) => {
-              const url = decodeURIComponent(entry.url);
-              if (url.startsWith("_ipx/")) {
-                return (
-                  !/\.(png|jpe?g|webp|avif)$/i.test(url) ||
-                  /^_ipx\/[^/]*\bf_avif(?:[,/&]|$)/.test(url)
-                );
-              }
-              // Icons and installation screenshots still need their PNG URLs.
-              return (
-                !/\.(png|jpe?g|webp)$/i.test(url) ||
-                url === "favicon.png" ||
-                url.startsWith("images/icons/") ||
-                url.startsWith("images/screenshots/")
-              );
-            }),
-          };
-        },
-        ...(options.workbox.manifestTransforms ?? []),
-      ];
     },
     "nitro:config": (nitro) => {
       // Nuxt Scripts beta.16 passes a raw Windows path to Nitro's ESM driver import.
