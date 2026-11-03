@@ -363,7 +363,7 @@ export function remarkHeadingIds() {
   };
 }
 
-/** remark-autolink-headings: a prepended anchor icon link to the id set by remarkHeadingIds. */
+/** Add a trailing section link to the id set by remarkHeadingIds. */
 export function rehypeHeadingAnchors() {
   return (tree: Node) => {
     walk(tree, (node) => {
@@ -376,14 +376,20 @@ export function rehypeHeadingAnchors() {
       }
       const id = node.properties.id;
       node.tagName = `${keepTagPrefix}${node.tagName ?? ""}`;
+      node.properties["data-section-heading"] = "";
       node.children = [
+        {
+          type: "element",
+          tagName: "span",
+          properties: { className: ["heading__text"] },
+          children: node.children ?? [],
+        },
         {
           type: "element",
           tagName: "anchor-link",
           properties: { href: `#${id}`, label: "Link to this section" },
           children: [structuredClone(anchorIcon)],
         },
-        ...(node.children ?? []),
       ];
     });
   };

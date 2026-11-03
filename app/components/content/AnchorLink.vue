@@ -14,20 +14,48 @@ defineProps<{
 </script>
 
 <style lang="scss" scoped>
+@use "~/assets/style/abstracts/breakpoints";
+
+:global([data-section-heading]) {
+  position: relative;
+}
+
+@include breakpoints.respond-below(sm) {
+  :global([data-section-heading] > .heading__text::after) {
+    // Join the final word to the icon without changing the heading's text.
+    content: "\2060";
+  }
+}
+
 .anchor-link {
+  --heading-anchor-size: var(--global-space-fixed-4);
+  --heading-anchor-gap: var(--global-space-fixed-2);
+  --heading-anchor-offset: min(
+    calc(var(--heading-anchor-size) + var(--heading-anchor-gap)),
+    var(--card-space, var(--global-space-fluid-6))
+  );
+
   color: var(--global-link-color);
-  float: inline-start;
-  margin-inline-start: -30px;
+  position: absolute;
+  inset-inline-start: calc(-1 * var(--heading-anchor-offset));
+  inset-block-start: calc((1lh - var(--heading-anchor-size)) / 2);
+  display: inline-flex;
   opacity: 0;
-  margin-inline-end: 8px;
-  inline-size: 22px;
-  block-size: 22px;
+  inline-size: var(--heading-anchor-size);
+  block-size: var(--heading-anchor-size);
   text-decoration: none;
   transition: opacity var(--global-duration-2) ease-out 100ms;
   vertical-align: middle;
 
+  @include breakpoints.respond-below(sm) {
+    position: static;
+    margin-inline-start: var(--heading-anchor-gap);
+  }
+
   :slotted(svg) {
-    display: inline;
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
   }
 
   :is(h1, h2, h3, h4, h5, h6):hover &,
