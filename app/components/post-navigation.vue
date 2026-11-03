@@ -17,8 +17,7 @@
           class="post-navigation__link"
           :to="item.post.permalink"
           :rel="item.rel"
-          :aria-labelledby="`post-navigation-${item.rel}-label post-navigation-${item.rel}-title`"
-          :aria-describedby="`post-navigation-${item.rel}-time`">
+          :aria-labelledby="`post-navigation-${item.rel}-label post-navigation-${item.rel}-time post-navigation-${item.rel}-title`">
           <NuxtPicture
             class="post-navigation__picture"
             :img-attrs="{ class: 'post-navigation__image' }"

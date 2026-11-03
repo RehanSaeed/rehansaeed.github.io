@@ -87,7 +87,11 @@ async function verifyChronologicalNeighbours({
             .attr("aria-labelledby")!
             .split(" ")
             .map((id) => link.find(`#${id}`).text().trim()),
-        ).toEqual([neighbour.label, neighbour.post.title]);
+        ).toEqual([
+          neighbour.label,
+          link.find("time").text().trim(),
+          neighbour.post.title,
+        ]);
         expect(link.children("h2.post-navigation__title")).toHaveLength(1);
         const image = link.find("img");
         expect(image.attr("alt")).toBe("");
@@ -114,10 +118,7 @@ async function verifyChronologicalNeighbours({
         expect(link.find("> p.post-navigation__meta > time")).toHaveLength(1);
         neighbourTimes.push({
           permalink: neighbour.post.permalink,
-          text: link
-            .find(`#${link.attr("aria-describedby")}`)
-            .text()
-            .trim(),
+          text: link.find("time").text().trim(),
         });
       }
     }

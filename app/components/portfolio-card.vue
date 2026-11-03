@@ -11,15 +11,17 @@
         format="avif"
         :alt="portfolio.title"
         v-if="portfolio.heroImage"
-        :img-attrs="{ class: 'portfolio-card__image' }"
+        :img-attrs="{
+          class: 'portfolio-card__image',
+          fetchpriority: priority ? 'high' : undefined,
+        }"
         :legacy-format="portfolio.heroImage.endsWith('.png') ? 'png' : 'jpg'"
         :src="portfolio.heroImage"
         :width="imageMeta.width"
         :height="imageMeta.height"
         :sizes="contentImageSizes"
         densities="x1 x2"
-        :loading="priority ? 'eager' : 'lazy'"
-        :fetchpriority="priority ? 'high' : undefined" />
+        :loading="priority ? 'eager' : 'lazy'" />
     </figure>
     <div class="portfolio-card__content">
       <u-heading

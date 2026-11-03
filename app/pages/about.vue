@@ -12,7 +12,7 @@
     <u-card class="about__container" tag="article">
       <NuxtPicture
         format="avif"
-        :img-attrs="{ class: 'about__image' }"
+        :img-attrs="{ class: 'about__image', fetchpriority: 'high' }"
         legacy-format="jpg"
         alt="Muhammad Rehan Saeed"
         height="480"
@@ -20,7 +20,6 @@
         sizes="320px"
         src="/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg"
         loading="eager"
-        fetchpriority="high"
         quality="100" />
       <u-heading :id="metadata.author.name" level="2" class="about__title">{{
         metadata.author.name
