@@ -1,5 +1,7 @@
 export interface CounterGrowth {
+  /** Snapshot timestamp in milliseconds, or null when unavailable. */
   observedAt: number | null;
+  /** Average change per second, or null when it cannot be calculated. */
   perSecond: number | null;
 }
 

@@ -66,7 +66,7 @@ export async function portfolioDownloads(
     ids.every(
       (id) =>
         cached.snapshots[id]?.id.toLowerCase() === id &&
-        cached.snapshots[id]?.createdAt,
+        cached.snapshots[id].createdAt,
     );
   const snapshots: z.infer<typeof cacheSchema>["snapshots"] = {};
   let complete = true;

@@ -1,4 +1,5 @@
 <template>
+  <!-- eslint-disable-next-line vuejs-accessibility/no-redundant-roles -- Preserve list semantics in Safari when list-style is none. -->
   <ul class="github-badges" role="list" aria-label="GitHub links">
     <li class="github-badges__item">
       <u-tooltip v-slot="{ trigger }" text="View my GitHub followers">

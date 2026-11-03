@@ -70,7 +70,8 @@ export async function accountWatchers(dataDir: string, owner: string) {
     const cursors = new Set<string>();
     let watchers = 0;
     let repositories = 0;
-    while (true) {
+    let hasNextPage = false;
+    do {
       const response = await fetch("https://api.github.com/graphql", {
         method: "POST",
         headers: {
@@ -96,15 +97,15 @@ export async function accountWatchers(dataDir: string, owner: string) {
         (sum, repository) => sum + repository.watchers.totalCount,
         0,
       );
-      if (!batch.pageInfo.hasNextPage) {
-        break;
+      hasNextPage = batch.pageInfo.hasNextPage;
+      if (hasNextPage) {
+        cursor = batch.pageInfo.endCursor;
+        if (!cursor || cursors.has(cursor) || batch.nodes.length === 0) {
+          throw new Error("GitHub watchers pagination did not advance.");
+        }
+        cursors.add(cursor);
       }
-      cursor = batch.pageInfo.endCursor;
-      if (!cursor || cursors.has(cursor) || batch.nodes.length === 0) {
-        throw new Error("GitHub watchers pagination did not advance.");
-      }
-      cursors.add(cursor);
-    }
+    } while (hasNextPage);
     const counts = { watchers, repositories };
     await writeFile(
       path,

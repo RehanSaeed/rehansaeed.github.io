@@ -45,10 +45,15 @@ import { advanceCounter } from "#shared/utils/ticker";
 
 const props = withDefaults(
   defineProps<{
+    /** Metric name displayed above the counter and used for its info control. */
     label: string;
+    /** Verified snapshot value retained for screen readers. */
     number: number;
+    /** Average change per second used for illustrative animation. */
     rate: number;
+    /** Locale used to format the snapshot and animated digits. */
     locale?: string;
+    /** Optional explanation displayed by the metric's info control. */
     info?: string;
   }>(),
   { locale: "en-GB" },

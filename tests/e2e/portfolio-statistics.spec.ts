@@ -391,22 +391,18 @@ for (const width of [320, 375, 1280]) {
             .locator(".number-ticker__label")
             .evaluate((heading) => getComputedStyle(heading).fontFamily),
         ).toContain("Audiowide");
-        if (width === 1280) {
-          expect(
-            await ticker
-              .locator(".number-ticker__label")
-              .evaluate((heading) =>
-                Number.parseFloat(getComputedStyle(heading).fontSize),
-              ),
-          ).toBeGreaterThanOrEqual(20);
-          expect(
-            await ticker
-              .locator(".number-ticker__value")
-              .evaluate((value) =>
-                Number.parseFloat(getComputedStyle(value).fontSize),
-              ),
-          ).toBeGreaterThanOrEqual(40);
-        }
+        const labelSize = await ticker
+          .locator(".number-ticker__label")
+          .evaluate((heading) =>
+            Number.parseFloat(getComputedStyle(heading).fontSize),
+          );
+        const valueSize = await ticker
+          .locator(".number-ticker__value")
+          .evaluate((value) =>
+            Number.parseFloat(getComputedStyle(value).fontSize),
+          );
+        expect(labelSize).toBeGreaterThanOrEqual(width === 1280 ? 20 : 0);
+        expect(valueSize).toBeGreaterThanOrEqual(width === 1280 ? 40 : 0);
         const cardBounds = (await ticker.boundingBox())!;
         const cardCentre = cardBounds.x + cardBounds.width / 2;
         for (const selector of [
@@ -425,9 +421,9 @@ for (const width of [320, 375, 1280]) {
             (element) => element.scrollWidth <= element.clientWidth,
           ),
         ).toBe(true);
-        const before = await digits.textContent();
+        const before = await digits.evaluate((element) => element.textContent);
         await page.clock.runFor(2100);
-        expect(await digits.textContent()).toBe(before);
+        await expect(digits).toHaveText(before);
       }
       expect(
         await page.evaluate(() => document.documentElement.scrollWidth),
@@ -500,7 +496,7 @@ for (const width of [320, 375, 1280]) {
     await expect(page.locator(".number-ticker")).toHaveCount(2);
     await expect(page.locator(".number-ticker__digit").first()).toHaveCSS(
       "display",
-      "flex",
+      "grid",
     );
     await page.evaluate(() => document.fonts.ready);
     for (const colorScheme of ["light", "dark"] as const) {
@@ -516,7 +512,7 @@ for (const width of [320, 375, 1280]) {
               throw new Error("Missing font measurement context");
             }
             canvas.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
-            const metrics = canvas.measureText(digit.textContent!);
+            const metrics = canvas.measureText(digit.textContent);
             const range = document.createRange();
             range.selectNodeContents(digit);
             const text = range.getBoundingClientRect();
@@ -650,11 +646,11 @@ for (const path of ["/about/", "/portfolio/"]) {
 
 test.describe("Statistics touch controls", () => {
   test.use({ hasTouch: true });
+  // eslint-disable-next-line playwright/no-skipped-test -- Firefox cannot create a hasTouch browser context.
   test.skip(
     ({ browserName }) => browserName === "firefox",
     "Playwright does not support touch emulation in Firefox.",
   );
-
   for (const path of ["/about/", "/portfolio/"]) {
     test(`Statistics info opens and closes on tap on ${path}`, async ({
       page,

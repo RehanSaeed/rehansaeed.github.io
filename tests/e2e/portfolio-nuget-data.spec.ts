@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { expect, test } from "@playwright/test";
+import { z } from "zod";
 import { portfolioDownloads } from "../../modules/blog-content/nuget";
 import type { ContentEntry } from "../../modules/blog-content/scan";
 import { cacheSchema, requestUrl } from "./data";
@@ -74,7 +75,12 @@ test("NuGet sums package-wide counts once and refreshes only expired snapshots",
       ?.nugetDownloads,
   ).toBe(350);
   expect(calls).toBe(4);
-  const refreshed = JSON.parse(await readFile(file, "utf8"));
+  const refreshed = z
+    .object({
+      updated: z.number(),
+      snapshots: z.record(z.string(), z.looseObject({ downloads: z.number() })),
+    })
+    .parse(JSON.parse(await readFile(file, "utf8")));
   expect(Object.keys(refreshed).sort()).toEqual(["snapshots", "updated"]);
   expect(refreshed.snapshots["example.first"].downloads).toBe(300);
 });

@@ -73,7 +73,11 @@ async function mountTicker(
       const intervals = new Set<number>();
       const setInterval = window.setInterval.bind(window);
       const clearInterval = window.clearInterval.bind(window);
-      window.setInterval = (handler, timeout, ...args) => {
+      window.setInterval = (
+        handler: TimerHandler,
+        timeout?: number,
+        ...args: unknown[]
+      ) => {
         const timer = setInterval(handler, timeout, ...args);
         intervals.add(timer);
         return timer;
@@ -118,9 +122,17 @@ async function mountTicker(
             JSON.stringify(utilitiesUrl),
           ),
       );
-      const { createApp, h, ref } = await import(vueUrl);
-      const { default: Ticker } = await import(componentUrl);
-      const { default: Intersect } = await import(moduleUrl(intersectSource));
+      const { createApp, h, ref } = (await import(
+        vueUrl
+      )) as typeof import("vue");
+      const { default: Ticker } = (await import(componentUrl)) as {
+        default: import("vue").Component;
+      };
+      const { default: Intersect } = (await import(
+        moduleUrl(
+          intersectSource.replace(/(["'])vue\1/g, JSON.stringify(vueUrl)),
+        )
+      )) as { default: import("vue").Component };
       Math.random = () => 0.5;
       const number = ref(options.number ?? 1000);
       const rate = ref(options.rate ?? 2);
@@ -149,16 +161,16 @@ async function mountTicker(
             model.value = Number(input.value);
           });
       }
-      document
-        .querySelector("button")!
-        .addEventListener("click", () => app.unmount());
+      document.querySelector("button")!.addEventListener("click", () => {
+        app.unmount();
+      });
       return { ready, intervals, observers };
     },
     {
       componentSource,
       utilitiesSource: transpile(utilities),
       vue,
-      intersectSource,
+      intersectSource: transpile(intersectSource),
       options,
     },
   );
@@ -170,9 +182,15 @@ async function mountTicker(
 const moveTicker = async (page: Page, offscreen: boolean) => {
   const intersection = await page.evaluateHandle(() => ({
     changed: new Promise<void>((resolve) => {
-      document.addEventListener("ticker-intersection", () => resolve(), {
-        once: true,
-      });
+      document.addEventListener(
+        "ticker-intersection",
+        () => {
+          resolve();
+        },
+        {
+          once: true,
+        },
+      );
     }),
   }));
   await page.locator("#ticker-test").evaluate((element, offscreen) => {
@@ -189,9 +207,13 @@ const changeReducedMotion = async (
 ) => {
   const change = await page.evaluateHandle(() => ({
     changed: new Promise<void>((resolve) => {
-      window
-        .matchMedia("(prefers-reduced-motion: reduce)")
-        .addEventListener("change", () => resolve(), { once: true });
+      window.matchMedia("(prefers-reduced-motion: reduce)").addEventListener(
+        "change",
+        () => {
+          resolve();
+        },
+        { once: true },
+      );
     }),
   }));
   await page.emulateMedia({ reducedMotion });
@@ -361,7 +383,9 @@ test("Ticker styles, statistics and badges preserve dimensions and follow shared
         expect(cell.glyphCenter).toBeCloseTo(cell.left + cell.width / 2, 1);
       }
     }
-    await rootStyle.evaluate((element) => element.remove());
+    await rootStyle.evaluate((element) => {
+      element.parentNode?.removeChild(element);
+    });
   }
   await info.focus();
   await page.keyboard.press("Tab");
@@ -426,9 +450,9 @@ test("Ticker styles, statistics and badges preserve dimensions and follow shared
   await expect(badgeLink).toBeFocused();
   await expect(badgeLink).toHaveCSS("outline-width", "4px");
   await expect(badgeLink).toHaveCSS("outline-offset", "5px");
-  await header.evaluate((element) =>
-    element.classList.remove("number-ticker__header--with-info"),
-  );
+  await header.evaluate((element) => {
+    element.classList.remove("number-ticker__header--with-info");
+  });
   await expect(header).toHaveCSS("grid-template-areas", '"label"');
 });
 

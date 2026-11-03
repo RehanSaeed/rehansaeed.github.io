@@ -55,7 +55,7 @@ test("Portfolio popularity refreshes expired counts and reuses fresh counts", as
     const refreshed = await portfolioSnapshots(dir, [entry]);
     expect(refreshed[entry.data.permalink]?.stars).toBe(30);
     expect(calls).toBe(2);
-    const saved = JSON.parse(
+    const saved: unknown = JSON.parse(
       await readFile(
         info.outputPath("portfolio-cache", "blog-portfolio.json"),
         "utf8",

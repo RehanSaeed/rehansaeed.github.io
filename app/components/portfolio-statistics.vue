@@ -24,7 +24,10 @@
 import statistics from "#blog-portfolio-statistics";
 import { canProjectCounter } from "#shared/utils/ticker";
 
-defineProps<{ borderless?: boolean }>();
+defineProps<{
+  /** Display the counters without card borders or backgrounds. */
+  borderless?: boolean;
+}>();
 
 const downloadInfo = `Verified total: ${statistics.downloads.toLocaleString("en-GB")} lifetime package downloads across the published open source projects in my portfolio. Downloads are not unique people. The number animates using package lifetime averages, not a live feed. Counts refresh when the site builds.`;
 const starInfo = `Verified total: ${statistics.stars.toLocaleString("en-GB")} GitHub stars across the published open source projects in my portfolio, including listed organisation-owned repositories. The number animates illustratively at an average of one increase every 15 seconds, not live activity. Counts refresh when the site builds.`;
@@ -32,7 +35,7 @@ const starInfo = `Verified total: ${statistics.stars.toLocaleString("en-GB")} Gi
 const now = ref(0);
 const downloadRate = computed(() =>
   canProjectCounter(statistics.growth.downloads, now.value)
-    ? statistics.growth.downloads.perSecond!
+    ? statistics.growth.downloads.perSecond
     : 0,
 );
 const starRate = computed(() =>
