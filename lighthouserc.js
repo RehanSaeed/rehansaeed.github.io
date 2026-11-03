@@ -1,38 +1,10 @@
 const { chromium } = require("@playwright/test");
 
-// LHCI's bundled preset still references audits retired by Lighthouse 13.
-const retiredAudits = [
-  "dom-size",
-  "duplicated-javascript",
-  "efficient-animated-content",
-  "first-meaningful-paint",
-  "font-display",
-  "font-size",
-  "interaction-to-next-paint-insight",
-  "lcp-lazy-loaded",
-  "lcp-phases-insight",
-  "legacy-javascript",
-  "modern-image-formats",
-  "no-document-write",
-  "offscreen-images",
-  "prioritize-lcp-image",
-  "render-blocking-resources",
-  "third-party-facades",
-  "uses-long-cache-ttl",
-  "uses-optimized-images",
-  "uses-passive-event-listeners",
-  "uses-rel-preconnect",
-  "uses-responsive-images",
-  "uses-text-compression",
-  "viewport",
-];
-
 module.exports = {
   ci: {
     assert: {
       preset: "lighthouse:recommended",
       assertions: {
-        ...Object.fromEntries(retiredAudits.map((id) => [id, "off"])),
         "categories:accessibility": ["error", { minScore: 1 }],
         "categories:best-practices": ["error", { minScore: 1 }],
         "categories:seo": ["error", { minScore: 1 }],
