@@ -1,3 +1,5 @@
+@use "../abstracts/breakpoints";
+
 h1,
 h2,
 h3,
@@ -32,6 +34,24 @@ h6 {
       to {
         background: transparent;
       }
+    }
+  }
+}
+
+[data-section-heading] {
+  --heading-anchor-size: var(--global-space-fixed-4);
+  --heading-anchor-gap: var(--global-space-fixed-2);
+
+  @include breakpoints.respond-below(sm) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--heading-anchor-size);
+    column-gap: var(--heading-anchor-gap);
+    align-items: start;
+
+    > .heading__text {
+      grid-column: 1;
+      grid-row: 1;
+      min-inline-size: 0;
     }
   }
 }

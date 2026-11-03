@@ -1,4 +1,49 @@
 import { expect, test } from "./fixtures";
+import { rehypeHeadingAnchors } from "../../modules/blog-content/markdown";
+
+test("Section heading grid preserves inline text markup and fragment IDs", () => {
+  const children = [
+    { type: "text", value: "A heading with " },
+    {
+      type: "element",
+      tagName: "em",
+      children: [{ type: "text", value: "emphasis" }],
+    },
+    {
+      type: "element",
+      tagName: "a",
+      properties: { href: "/about/" },
+      children: [{ type: "text", value: " and a link" }],
+    },
+  ];
+  const tree = {
+    type: "root",
+    children: [
+      {
+        type: "element",
+        tagName: "h2",
+        properties: { id: "example" },
+        children,
+      },
+    ],
+  };
+  rehypeHeadingAnchors()(tree);
+  expect(tree.children[0]).toMatchObject({
+    tagName: "keep-h2",
+    properties: { id: "example", "data-section-heading": "" },
+    children: [
+      {
+        tagName: "anchor-link",
+        properties: { href: "#example", label: "Link to this section" },
+      },
+      {
+        tagName: "span",
+        properties: { className: ["heading__text"] },
+        children,
+      },
+    ],
+  });
+});
 
 for (const width of [280, 320, 375, 576, 768, 1280]) {
   test(`Heading links fit the post gutter at ${width}px`, async ({ page }) => {
@@ -17,9 +62,12 @@ for (const width of [280, 320, 375, 576, 768, 1280]) {
 
     for (const link of await links.all()) {
       const heading = link.locator("..");
+      await heading.scrollIntoViewIfNeeded();
+      const beforeHover = await heading.boundingBox();
       await heading.hover();
       await expect(link).toHaveCSS("opacity", "1");
       await expect(link.locator("svg")).toBeVisible();
+      expect(await heading.boundingBox()).toEqual(beforeHover);
 
       const layout = await link.evaluate((anchor) => {
         const heading = anchor.parentElement!;
@@ -28,15 +76,20 @@ for (const width of [280, 320, 375, 576, 768, 1280]) {
         const iconBox = anchor.querySelector("svg")!.getBoundingClientRect();
         const postBox = post.getBoundingClientRect();
         const range = document.createRange();
-        range.selectNodeContents(heading);
-        range.setStartAfter(anchor);
+        range.selectNodeContents(heading.querySelector(".heading__text")!);
         const textBox = range.getClientRects()[0]!;
+        const textBounds = heading
+          .querySelector(".heading__text")!
+          .getBoundingClientRect();
         const probe = document.createElement("span");
         probe.style.display = "block";
         probe.style.width = "var(--heading-anchor-gap)";
         anchor.append(probe);
         const gap = probe.getBoundingClientRect().width;
         probe.remove();
+        const headingBox = heading.getBoundingClientRect();
+        const grid = getComputedStyle(heading).display === "grid";
+        const padding = Number.parseFloat(getComputedStyle(post).paddingLeft);
         return {
           anchorLeft: anchorBox.left,
           iconLeft: iconBox.left,
@@ -44,15 +97,16 @@ for (const width of [280, 320, 375, 576, 768, 1280]) {
           postLeft: postBox.left,
           postRight: postBox.right,
           textLeft: textBox.left,
-          headingLeft: heading.getBoundingClientRect().left,
-          offset: heading.getBoundingClientRect().left - anchorBox.left,
-          padding: Number.parseFloat(getComputedStyle(post).paddingLeft),
+          headingLeft: headingBox.left,
+          textRight: textBounds.right,
+          expectedAnchorLeft: grid
+            ? headingBox.right - anchorBox.width
+            : headingBox.left - Math.min(anchorBox.width + gap, padding),
+          maximumTextRight: grid ? anchorBox.left - gap : headingBox.right,
           iconWidth: iconBox.width,
           iconHeight: iconBox.height,
           anchorWidth: anchorBox.width,
           anchorHeight: anchorBox.height,
-          gap,
-          inline: getComputedStyle(anchor).float === "none",
           hitLeftEdge:
             document
               .elementFromPoint(
@@ -69,24 +123,13 @@ for (const width of [280, 320, 375, 576, 768, 1280]) {
       expect(layout.iconRight).toBeLessThanOrEqual(layout.postRight);
       expect(layout.anchorLeft).toBeGreaterThanOrEqual(0);
       expect(layout.iconRight).toBeLessThanOrEqual(width);
-      if (layout.inline) {
-        expect(layout.anchorLeft).toBeCloseTo(layout.headingLeft, 1);
-        expect(layout.textLeft).toBeGreaterThanOrEqual(
-          layout.iconRight + layout.gap - 1,
-        );
-      } else {
-        expect(layout.textLeft).toBeCloseTo(layout.headingLeft, 1);
-      }
+      expect(layout.anchorLeft).toBeCloseTo(layout.expectedAnchorLeft, 1);
+      expect(layout.textRight).toBeLessThanOrEqual(layout.maximumTextRight + 1);
+      expect(layout.textLeft).toBeCloseTo(layout.headingLeft, 1);
       expect(layout.iconWidth).toBeGreaterThan(0);
       expect(layout.iconWidth).toBeCloseTo(layout.iconHeight, 1);
       expect(layout.iconWidth).toBeCloseTo(layout.anchorWidth, 1);
       expect(layout.iconHeight).toBeCloseTo(layout.anchorHeight, 1);
-      expect(layout.offset).toBeCloseTo(
-        layout.inline
-          ? 0
-          : Math.min(layout.iconWidth + layout.gap, layout.padding),
-        1,
-      );
       expect(layout.hitLeftEdge).toBe(true);
       expect(layout.overflow).toBe("hidden");
       expect(layout.pageWidth).toBeLessThanOrEqual(width);

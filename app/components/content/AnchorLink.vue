@@ -17,8 +17,6 @@ defineProps<{
 @use "~/assets/style/abstracts/breakpoints";
 
 .anchor-link {
-  --heading-anchor-size: var(--global-space-fixed-4);
-  --heading-anchor-gap: var(--global-space-fixed-2);
   --heading-anchor-offset: min(
     calc(var(--heading-anchor-size) + var(--heading-anchor-gap)),
     var(--card-space, var(--global-space-fluid-6))
@@ -39,9 +37,10 @@ defineProps<{
 
   @include breakpoints.respond-below(sm) {
     float: none;
-    display: inline-flex;
-    margin-inline-start: 0;
-    margin-inline-end: var(--heading-anchor-gap);
+    display: flex;
+    grid-column: 2;
+    grid-row: 1;
+    margin-inline: 0;
   }
 
   :slotted(svg) {

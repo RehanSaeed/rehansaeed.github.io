@@ -376,6 +376,7 @@ export function rehypeHeadingAnchors() {
       }
       const id = node.properties.id;
       node.tagName = `${keepTagPrefix}${node.tagName ?? ""}`;
+      node.properties["data-section-heading"] = "";
       node.children = [
         {
           type: "element",
@@ -383,7 +384,12 @@ export function rehypeHeadingAnchors() {
           properties: { href: `#${id}`, label: "Link to this section" },
           children: [structuredClone(anchorIcon)],
         },
-        ...(node.children ?? []),
+        {
+          type: "element",
+          tagName: "span",
+          properties: { className: ["heading__text"] },
+          children: node.children ?? [],
+        },
       ];
     });
   };
