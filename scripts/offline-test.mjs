@@ -475,6 +475,14 @@ try {
     const interrupted = command(page, "batch").catch(() => undefined);
     // Worker requests do not appear as page requests in Firefox; observe the server.
     await expect.poll(() => requests.get(slow) ?? 0).toBeGreaterThan(0);
+    const pausedBatch = await command(page, "pause");
+    assert.equal(pausedBatch.paused, true);
+    assert.equal(pausedBatch.busy, true);
+    assert.equal(
+      (await command(page, "start")).paused,
+      false,
+      "Resuming during a bounded batch must persist the user's intent",
+    );
     console.log(`${browserName}: closing browser during a bounded batch.`);
     await context.close();
     console.log(
@@ -555,6 +563,16 @@ try {
       requests.get("/_nuxt/offline-fixture-A.js"),
       chunkRequests,
       "Saved immutable modules must not wait for a failing network connection",
+    );
+    const navigationRequests = requests.get("/article-14/") ?? 0;
+    await page.goto(`${origin}/article-14/`);
+    await expect(
+      page.getByRole("heading", { name: "Generation A, article 14" }),
+    ).toBeVisible();
+    assert.equal(
+      requests.get("/article-14/") ?? 0,
+      navigationRequests,
+      "A complete current generation must serve navigation without networking",
     );
     const metadataRequests = requests.get("/_nuxt/builds/latest.json");
     await page.evaluate(() =>

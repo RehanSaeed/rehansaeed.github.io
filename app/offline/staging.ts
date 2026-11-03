@@ -72,6 +72,10 @@ export async function stageOffline(
   const token = crypto.randomUUID();
   const state = await changeOfflineState((state) => {
     if (state.lease && state.lease.until > Date.now()) {
+      if (command === "start" && state.pending?.generation === generation.id) {
+        state.pending.paused = false;
+        state.pending.error = "";
+      }
       return state;
     }
     state.lease = { token, until: Date.now() + 15_000 };

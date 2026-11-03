@@ -145,12 +145,17 @@ worker.addEventListener("message", (event: WorkerMessage) => {
 
 const requestKeys = new Map<string, Map<string, string>>();
 
-async function savedResponse(request: Request) {
+async function savedResponse(request: Request, currentOnly = false) {
   const { id } = await generationPromise;
   const coreName = `blog-offline-core-${id}`;
   const candidates = offlineCandidates(request.url);
   const state = await readOfflineState();
-  for (const savedId of [state.active, state.previous]) {
+  if (currentOnly && state.active !== id) {
+    return;
+  }
+  for (const savedId of currentOnly
+    ? [state.active]
+    : [state.active, state.previous]) {
     if (!savedId) {
       continue;
     }
@@ -175,6 +180,9 @@ async function savedResponse(request: Request) {
         return response;
       }
     }
+  }
+  if (currentOnly) {
+    return;
   }
   for (const entry of core) {
     if (candidates.includes(new URL(entry.url, location.origin).href)) {
@@ -210,13 +218,15 @@ worker.addEventListener("fetch", (event: WorkerFetch) => {
   }
   event.respondWith(
     (async () => {
-      // Nuxt fingerprints these assets; mutable build metadata must remain network-first.
-      if (
+      const metadata = url.pathname === "/_nuxt/builds/latest.json";
+      const immutable =
         url.pathname.startsWith("/_nuxt/") &&
-        !url.pathname.startsWith("/_nuxt/builds/")
-      ) {
+        !url.pathname.startsWith("/_nuxt/builds/");
+      // Serve a complete current generation atomically, but let a new worker
+      // obtain its matching HTML. Fingerprinted assets remain reusable.
+      if (!metadata) {
         try {
-          const saved = await savedResponse(request);
+          const saved = await savedResponse(request, !immutable);
           if (saved) {
             return saved;
           }
@@ -224,8 +234,23 @@ worker.addEventListener("fetch", (event: WorkerFetch) => {
           console.error("[offline] Could not read the saved asset.", error);
         }
       }
+      // Offline TCP failures can be delayed; reach saved navigation and metadata
+      // before the page's own deadlines without timing out unrelated downloads.
+      const controller = new AbortController();
+      const timeout =
+        request.mode === "navigate" || metadata
+          ? setTimeout(
+              () => {
+                controller.abort();
+              },
+              metadata ? 4_000 : 8_000,
+            )
+          : undefined;
       try {
-        return await fetch(request);
+        return await fetch(
+          request,
+          timeout === undefined ? undefined : { signal: controller.signal },
+        );
       } catch (error) {
         const saved = await savedResponse(request);
         if (saved) {
@@ -249,6 +274,8 @@ worker.addEventListener("fetch", (event: WorkerFetch) => {
           }
         }
         throw error;
+      } finally {
+        clearTimeout(timeout);
       }
     })(),
   );
