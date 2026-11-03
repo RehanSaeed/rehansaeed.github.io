@@ -23,12 +23,11 @@ defineProps<{
   );
 
   color: var(--global-link-color);
-  float: inline-start;
-  margin-inline-start: calc(-1 * var(--heading-anchor-offset));
+  position: absolute;
+  inset-inline-start: calc(-1 * var(--heading-anchor-offset));
+  inset-block-start: calc((1lh - var(--heading-anchor-size)) / 2);
+  display: inline-flex;
   opacity: 0;
-  margin-inline-end: calc(
-    var(--heading-anchor-offset) - var(--heading-anchor-size)
-  );
   inline-size: var(--heading-anchor-size);
   block-size: var(--heading-anchor-size);
   text-decoration: none;
@@ -36,17 +35,12 @@ defineProps<{
   vertical-align: middle;
 
   @include breakpoints.respond-below(sm) {
-    float: none;
-    display: flex;
-    grid-column: 2;
-    grid-row: 1;
-    align-self: end;
-    margin-inline: 0;
-    margin-block-end: calc((1lh - var(--heading-anchor-size)) / 2);
+    position: static;
+    margin-inline-start: var(--heading-anchor-gap);
   }
 
   :slotted(svg) {
-    display: inline;
+    display: block;
     inline-size: 100%;
     block-size: 100%;
   }

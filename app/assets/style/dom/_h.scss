@@ -42,16 +42,12 @@ h6 {
   --heading-anchor-size: var(--global-space-fixed-4);
   --heading-anchor-gap: var(--global-space-fixed-2);
 
-  @include breakpoints.respond-below(sm) {
-    display: grid;
-    grid-template-columns: minmax(0, max-content) var(--heading-anchor-size);
-    column-gap: var(--heading-anchor-gap);
-    align-items: start;
+  position: relative;
 
-    > .heading__text {
-      grid-column: 1;
-      grid-row: 1;
-      min-inline-size: 0;
+  @include breakpoints.respond-below(sm) {
+    > .heading__text::after {
+      // Join the final word to the icon without changing the heading's text.
+      content: "\2060";
     }
   }
 }
