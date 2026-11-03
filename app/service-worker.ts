@@ -209,6 +209,12 @@ worker.addEventListener("fetch", (event: WorkerFetch) => {
           return saved;
         }
         if (request.mode === "navigate") {
+          const home = await savedResponse(
+            new Request(new URL("/", location.origin)),
+          );
+          if (home) {
+            return home;
+          }
           const { id } = await generationPromise;
           const coreName = `blog-offline-core-${id}`;
           const entry = core.find((entry) => entry.url === "offline.html")!;

@@ -524,6 +524,10 @@ try {
     await expect(
       page.getByRole("heading", { name: "Generation A, article 14" }),
     ).toBeVisible();
+    await page.goto(`${origin}/?category=CSS`);
+    await expect(
+      page.getByRole("heading", { name: "Generation A, article 0" }),
+    ).toBeVisible();
     await startServer();
     await page.goto(origin);
     version = "B";
@@ -726,6 +730,13 @@ try {
     await page.getByRole("button", { name: "Open search" }).click();
     await page.getByRole("searchbox").fill("pull request");
     await expect(page.locator(".search-result__link").first()).toBeVisible();
+    await page.goto(`${origin}/?search=Schema.NET`);
+    await expect(page.getByRole("searchbox")).toBeFocused();
+    await expect(page.getByRole("searchbox")).toHaveValue("Schema.NET");
+    await expect(page.locator(".search-result__link").first()).toHaveAttribute(
+      "href",
+      "https://github.com/RehanSaeed/Schema.NET",
+    );
     const bytes = await Promise.all(
       full.map(async ({ url }) => {
         const path =
@@ -752,7 +763,7 @@ try {
         coldNavigationActivationMs: fullInstall,
         fullStagingMs,
         offlineProof:
-          "Server stopped; unvisited article, app hydration and search; no HTTP cache or Firefox offline emulation",
+          "Server stopped; unvisited article, app hydration, search and search deep link; no HTTP cache or Firefox offline emulation",
       }),
     );
   }
