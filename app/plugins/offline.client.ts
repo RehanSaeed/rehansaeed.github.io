@@ -91,6 +91,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     try {
       const response = await fetch(`${to.path}_payload.json`, {
         cache: "no-store",
+        headers: { "X-Blog-Cache-Probe": "1" },
       });
       if (!response.ok) {
         // Preserve normal online 404 handling.

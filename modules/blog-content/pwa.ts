@@ -62,6 +62,14 @@ const publicResponse: WorkboxPlugin = {
     ),
 };
 
+const dataCacheOptions: NonNullable<RuntimeCaching["options"]> = {
+  cacheName: "blog-data-v1",
+  fetchOptions: { cache: "no-store" },
+  matchOptions: { ignoreSearch: true },
+  plugins: [publicResponse, retainedPrecache],
+  expiration: { maxEntries: 150, maxAgeSeconds: 30 * 24 * 60 * 60 },
+};
+
 export const runtimeCaching: RuntimeCaching[] = [
   {
     urlPattern: ({ url, request, sameOrigin }) =>
@@ -82,6 +90,17 @@ export const runtimeCaching: RuntimeCaching[] = [
     },
   },
   {
+    // A cached guard probe must not wait for the same network failure twice.
+    urlPattern: ({ url, request, sameOrigin }) =>
+      sameOrigin &&
+      !request.headers.has("Authorization") &&
+      request.headers.get("X-Blog-Cache-Probe") === "1" &&
+      [...url.searchParams.keys()].every((key) => key === "_b") &&
+      url.pathname.endsWith("/_payload.json"),
+    handler: "CacheFirst",
+    options: dataCacheOptions,
+  },
+  {
     urlPattern: ({ url, request, sameOrigin }) =>
       sameOrigin &&
       !request.headers.has("Authorization") &&
@@ -92,12 +111,8 @@ export const runtimeCaching: RuntimeCaching[] = [
         /^\/__nuxt_content\/.*\.json$/.test(url.pathname)),
     handler: "NetworkFirst",
     options: {
-      cacheName: "blog-data-v1",
+      ...dataCacheOptions,
       networkTimeoutSeconds: 3,
-      fetchOptions: { cache: "no-store" },
-      matchOptions: { ignoreSearch: true },
-      plugins: [publicResponse, retainedPrecache],
-      expiration: { maxEntries: 150, maxAgeSeconds: 30 * 24 * 60 * 60 },
     },
   },
   {

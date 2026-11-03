@@ -110,6 +110,43 @@ test("Cold installation is small; visited direct and client navigation work with
   await expect(fresh.locator(".post-page__content")).toBeVisible();
 });
 
+test("Payload probes reuse saved data while normal requests refresh it", async ({
+  page,
+  site,
+}) => {
+  await page.goto(`${site.origin}/`);
+  await controlled(page);
+  expect(
+    await page.evaluate(async () =>
+      (await fetch("/probe/_payload.json")).text(),
+    ),
+  ).toBe('{"version":1}');
+  await expect
+    .poll(() =>
+      page.evaluate(async () =>
+        (
+          await caches.match(new URL("/probe/_payload.json", location.origin))
+        )?.text(),
+      ),
+    )
+    .toBe('{"version":1}');
+  site.updateProbe();
+  expect(
+    await page.evaluate(async () =>
+      (
+        await fetch("/probe/_payload.json", {
+          headers: { "X-Blog-Cache-Probe": "1" },
+        })
+      ).text(),
+    ),
+  ).toBe('{"version":1}');
+  expect(
+    await page.evaluate(async () =>
+      (await fetch("/probe/_payload.json")).text(),
+    ),
+  ).toBe('{"version":2}');
+});
+
 test("A missing client payload becomes an accessible document fallback", async ({
   page,
   site,

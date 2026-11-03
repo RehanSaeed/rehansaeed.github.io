@@ -23,6 +23,7 @@ export const test = base.extend<{
     origin: string;
     stop: () => Promise<void>;
     useLegacy: (source: string | undefined) => void;
+    updateProbe: () => void;
   };
 }>({
   serviceWorkers: "allow",
@@ -40,10 +41,19 @@ export const test = base.extend<{
   ],
   site: async ({}, use) => {
     let legacy: string | undefined;
+    let probeVersion = 1;
     const root = resolve("dist");
     const server = createServer((request, response) => {
       void (async () => {
         const url = new URL(request.url!, "http://localhost");
+        if (url.pathname === "/probe/_payload.json") {
+          response.writeHead(200, {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache, must-revalidate",
+          });
+          response.end(JSON.stringify({ version: probeVersion }));
+          return;
+        }
         let file = resolve(root, `.${decodeURIComponent(url.pathname)}`);
         if (relative(root, file).startsWith("..")) {
           response.writeHead(403).end();
@@ -114,6 +124,9 @@ export const test = base.extend<{
         stop,
         useLegacy: (source) => {
           legacy = source;
+        },
+        updateProbe: () => {
+          probeVersion++;
         },
       });
     } finally {
