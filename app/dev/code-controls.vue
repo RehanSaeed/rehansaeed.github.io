@@ -206,12 +206,15 @@ const { data: post, error } = await useAsyncData("code-control-sample", () =>
     .select("body")
     .first(),
 );
-if (error.value) throw error.value;
-if (!post.value)
+if (error.value) {
+  throw error.value;
+}
+if (!post.value) {
   throw createError({
     statusCode: 500,
     statusMessage: "Code comparison sample is missing.",
   });
+}
 
 type Element = [string, Record<string, unknown>, ...unknown[]];
 function isElement(node: unknown): node is Element {
@@ -227,20 +230,22 @@ const elements = nodes.filter(isElement);
 const sample = elements.find(
   (node) => node[0] === "pre" && node[1].filename === "Wrapped code",
 );
-if (!sample)
+if (!sample) {
   throw createError({
     statusCode: 500,
     statusMessage: "Highlighted code comparison sample is missing.",
   });
+}
 const styles = elements.filter((node) => node[0] === "style");
 const groupSample = elements.find(
   (node) => node[0] === "pre" && Array.isArray(node[1].alternatives),
 );
-if (!groupSample)
+if (!groupSample) {
   throw createError({
     statusCode: 500,
     statusMessage: "Highlighted tab comparison sample is missing.",
   });
+}
 const groupProps = groupSample[1];
 function tabExampleBody(tabStyle: CodeTabStyle) {
   return {

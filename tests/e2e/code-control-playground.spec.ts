@@ -1,5 +1,6 @@
 import { expect, test } from "./fixtures";
 
+// eslint-disable-next-line playwright/no-skipped-test -- This route exists only in development.
 test.skip(
   process.env.CODE_CONTROLS_PLAYGROUND !== "1",
   "The comparison route exists only in development. Set CODE_CONTROLS_PLAYGROUND=1 and BASE_URL to the dev server.",
@@ -9,8 +10,9 @@ test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     Object.defineProperty(navigator, "clipboard", {
       value: {
-        writeText: async (text: string) => {
+        writeText: (text: string) => {
           sessionStorage.setItem("comparison-copy", text);
+          return Promise.resolve();
         },
       },
     });
@@ -152,27 +154,27 @@ for (const style of [
       (await powershell.getAttribute("id"))!,
     );
     await expect(panel.locator("pre")).toHaveClass(/\bshiki\b/);
-    if (style === "editor" || style === "editor-wide") {
-      const widths = await card.getByRole("tablist").evaluate((element) => {
-        const tabs = [...element.querySelectorAll('[role="tab"]')];
-        const first = tabs[0]!.getBoundingClientRect();
-        const last = tabs[1]!.getBoundingClientRect();
-        return {
-          available: element.clientWidth,
-          filled: last.right - first.left,
-          first: first.width,
-          last: last.width,
-        };
-      });
-      if (style === "editor-wide") {
-        expect(Math.abs(widths.filled - widths.available)).toBeLessThanOrEqual(
-          1,
-        );
-        expect(Math.abs(widths.first - widths.last)).toBeLessThanOrEqual(1);
-      } else {
-        expect(widths.filled).toBeLessThan(widths.available - 1);
-      }
-    }
+    const widths = await card.getByRole("tablist").evaluate((element) => {
+      const tabs = [...element.querySelectorAll('[role="tab"]')];
+      const first = tabs[0]!.getBoundingClientRect();
+      const last = tabs[1]!.getBoundingClientRect();
+      return {
+        available: element.clientWidth,
+        filled: last.right - first.left,
+        first: first.width,
+        last: last.width,
+      };
+    });
+    expect(
+      style !== "editor-wide" ||
+        Math.abs(widths.filled - widths.available) <= 1,
+    ).toBe(true);
+    expect(
+      style !== "editor-wide" || Math.abs(widths.first - widths.last) <= 1,
+    ).toBe(true);
+    expect(style !== "editor" || widths.filled < widths.available - 1).toBe(
+      true,
+    );
     const corners = await panel.locator("pre").evaluate((element) => {
       const style = getComputedStyle(element);
       return {
@@ -182,12 +184,12 @@ for (const style of [
       };
     });
     expect(corners.topLeft).toBe("0px");
-    if (style === "attached") {
-      expect(parseFloat(corners.topRight)).toBeGreaterThan(0);
-      expect(corners.topRight).toBe(corners.bottomRight);
-    } else {
-      expect(corners.topRight).toBe("0px");
-    }
+    expect(corners.topRight).toBe(
+      style === "attached" ? corners.bottomRight : "0px",
+    );
+    expect(
+      style !== "attached" || Number.parseFloat(corners.topRight) > 0,
+    ).toBe(true);
     const command = panel.locator("code .line > span").first();
     await expect(command).toHaveCSS("color", "rgb(102, 217, 239)");
     await page

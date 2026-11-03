@@ -61,7 +61,7 @@
               v-slot="{ trigger }"
               :text="wrapped ? 'Unwrap lines' : 'Wrap lines'">
               <component
-                :is="controlButton"
+                :is="controls === 'current' ? 'button' : UButton"
                 v-bind="{ ...controlButtonProps, ...trigger }"
                 type="button"
                 aria-label="Wrap lines"
@@ -83,7 +83,7 @@
               v-slot="{ trigger }"
               :text="copied ? 'Copied!' : 'Copy code'">
               <component
-                :is="controlButton"
+                :is="controls === 'current' ? 'button' : UButton"
                 v-bind="{ ...controlButtonProps, ...trigger }"
                 type="button"
                 :aria-label="copied ? 'Copied!' : 'Copy code'"
@@ -114,7 +114,7 @@
 </template>
 
 <script setup lang="ts">
-import UButton from "../shared/button.vue";
+import { UButton } from "#components";
 import type {
   CodeBlock,
   CodeControlStyle,
@@ -125,19 +125,23 @@ defineOptions({ inheritAttrs: false });
 const props = withDefaults(
   defineProps<
     CodeBlock & {
+      /** Author-written alternatives displayed as code tabs. */
       alternatives?: CodeBlock[];
+      /** Visual treatment used for copy and wrap controls. */
       controls?: CodeControlStyle;
+      /** Visual treatment used for alternative tabs. */
       tabStyle?: CodeTabStyle;
     }
   >(),
-  { controls: "bordered", tabStyle: "editor-wide" },
-);
-const controlButton = computed(() =>
-  props.controls === "current" ? "button" : UButton,
+  { language: "text", html: "", controls: "bordered", tabStyle: "editor-wide" },
 );
 const controlButtonProps = computed(() => {
-  if (props.controls === "bordered") return { bordered: true };
-  if (props.controls === "soft") return { contrast: true };
+  if (props.controls === "bordered") {
+    return { bordered: true };
+  }
+  if (props.controls === "soft") {
+    return { contrast: true };
+  }
   return {};
 });
 const id = useId();
@@ -184,7 +188,9 @@ function onTabKey(event: KeyboardEvent, index: number) {
     Home: 0,
     End: last,
   }[event.key];
-  if (target === undefined) return;
+  if (target === undefined) {
+    return;
+  }
   event.preventDefault();
   select(target);
   document.getElementById(`${id}-tab-${target}`)?.focus();
@@ -200,10 +206,12 @@ async function copy() {
   message.value = "";
   copying.value = true;
   try {
+    // Clipboard is absent in insecure contexts despite its non-optional DOM type.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!navigator.clipboard?.writeText || !code) {
       throw new Error("Clipboard is unavailable.");
     }
-    await navigator.clipboard.writeText(code.textContent ?? "");
+    await navigator.clipboard.writeText(code.textContent);
     if (selected.value === index) {
       copied.value = true;
       message.value = "Code copied to clipboard.";

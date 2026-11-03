@@ -160,7 +160,8 @@ test("Single-line controls stay aligned with the code above a horizontal scrollb
         .querySelector(".code-block__toolbar")!
         .getBoundingClientRect();
       const border =
-        parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth);
+        Number.parseFloat(style.borderTopWidth) +
+        Number.parseFloat(style.borderBottomWidth);
       return {
         overflow: pre.scrollWidth - pre.clientWidth,
         scrollbar: pre.offsetHeight - pre.clientHeight - border,
@@ -168,15 +169,15 @@ test("Single-line controls stay aligned with the code above a horizontal scrollb
           toolbar.top +
           toolbar.height / 2 -
           (bounds.top +
-            parseFloat(style.borderTopWidth) +
-            parseFloat(style.paddingTop) +
-            parseFloat(style.lineHeight) / 2),
+            Number.parseFloat(style.borderTopWidth) +
+            Number.parseFloat(style.paddingTop) +
+            Number.parseFloat(style.lineHeight) / 2),
         bottom: bounds.top + pre.clientTop + pre.clientHeight - toolbar.bottom,
       };
     });
     expect(position.overflow).toBeGreaterThan(0);
-    if (browserName === "chromium")
-      expect(position.scrollbar).toBeGreaterThan(0);
+    expect(position.scrollbar).toBeGreaterThanOrEqual(0);
+    expect(browserName !== "chromium" || position.scrollbar > 0).toBe(true);
     expect(Math.abs(position.offset)).toBeLessThanOrEqual(1);
     expect(position.bottom).toBeGreaterThanOrEqual(0);
   }
@@ -196,8 +197,9 @@ test("Copy and wrap icons animate in both directions and respect reduced motion"
 
   for (const button of [wrap, wrap, copy]) {
     const sample = await button.evaluate(async (element) => {
-      if (!(element instanceof HTMLButtonElement))
+      if (!(element instanceof HTMLButtonElement)) {
         throw new Error("Expected a code control button.");
+      }
       element.click();
       await new Promise(requestAnimationFrame);
       await new Promise(requestAnimationFrame);
@@ -227,8 +229,9 @@ test("Copy and wrap icons animate in both directions and respect reduced motion"
       expect(opacity).toBeLessThan(1);
     }
     await button.evaluate((element) => {
-      for (const animation of element.getAnimations({ subtree: true }))
+      for (const animation of element.getAnimations({ subtree: true })) {
         animation.finish();
+      }
     });
     await expect(button.locator("svg:visible")).toHaveCount(1);
     await expect(button.locator(".code-block__icon--active")).toHaveCSS(
@@ -241,8 +244,9 @@ test("Copy and wrap icons animate in both directions and respect reduced motion"
   ).toBeVisible();
   await expect(copy).toHaveAttribute("aria-label", "Copy code");
   await expect(copy.locator("svg:visible")).toHaveCount(1);
-  for (const icon of icons)
+  for (const icon of icons) {
     expect(await icon.evaluate((element) => element.isConnected)).toBe(true);
+  }
 
   await page.emulateMedia({ reducedMotion: "reduce" });
   await wrap.click();
@@ -263,11 +267,13 @@ test("Copy and wrap icons animate in both directions and respect reduced motion"
 });
 
 test.describe("Touch controls", () => {
+  // eslint-disable-next-line playwright/no-skipped-test -- Firefox cannot emulate touch.
   test.skip(
     ({ browserName }) => browserName === "firefox",
     "Firefox does not support touch emulation.",
   );
   test.use({ hasTouch: true, viewport: { width: 390, height: 844 } });
+
   test("Controls remain discoverable without hover", async ({ page }) => {
     await page.goto(path, { waitUntil: "domcontentloaded" });
     const block = page.locator(".code-block").first();
@@ -288,8 +294,9 @@ test("Copies source exactly, announces success, resets and reports clipboard err
   await page.addInitScript(() => {
     Object.defineProperty(navigator, "clipboard", {
       value: {
-        writeText: async (text: string) => {
+        writeText: (text: string) => {
           sessionStorage.setItem("copied-code", text);
+          return Promise.resolve();
         },
       },
       configurable: true,
@@ -323,9 +330,8 @@ test("Copies source exactly, announces success, resets and reports clipboard err
       Object.defineProperty(navigator, "clipboard", {
         value: available
           ? {
-              writeText: async () => {
-                throw new DOMException("Denied", "NotAllowedError");
-              },
+              writeText: () =>
+                Promise.reject(new DOMException("Denied", "NotAllowedError")),
             }
           : undefined,
         configurable: true,
@@ -347,8 +353,9 @@ test("The cheat sheet documents accessible Bash/PowerShell tabs and copies only 
   await page.addInitScript(() => {
     Object.defineProperty(navigator, "clipboard", {
       value: {
-        writeText: async (text: string) => {
+        writeText: (text: string) => {
           sessionStorage.setItem("copied-code", text);
+          return Promise.resolve();
         },
       },
     });
@@ -356,8 +363,9 @@ test("The cheat sheet documents accessible Bash/PowerShell tabs and copies only 
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("console", (message) => {
-    if (/hydration|\[Vue warn\]/i.test(message.text()))
+    if (/hydration|\[Vue warn\]/i.test(message.text())) {
       errors.push(message.text());
+    }
   });
   const response = await page.goto(path, { waitUntil: "domcontentloaded" });
   expect(await response!.text()).toContain("shiki");
@@ -423,7 +431,7 @@ test("The cheat sheet documents accessible Bash/PowerShell tabs and copies only 
   const corner = await group
     .getByRole("tablist")
     .evaluate((element) =>
-      parseFloat(getComputedStyle(element).borderTopRightRadius),
+      Number.parseFloat(getComputedStyle(element).borderTopRightRadius),
     );
   expect(corner).toBeGreaterThan(0);
   await expect(group.getByRole("tabpanel")).toHaveCount(1);
@@ -502,7 +510,7 @@ for (const colorScheme of ["light", "dark"] as const) {
       await pre.evaluate((node) => node.scrollWidth - node.clientWidth),
     ).toBeGreaterThan(100);
     await wrap.click();
-    expect(await code.textContent()).toBe(source);
+    await expect(code).toHaveText(source);
     expect(await code.innerHTML()).toBe(markup);
     expect(await code.locator("span span").count()).toBeGreaterThan(0);
     expect(
@@ -531,6 +539,7 @@ for (const colorScheme of ["light", "dark"] as const) {
 
 test.describe("Without JavaScript", () => {
   test.use({ javaScriptEnabled: false });
+
   test("All code alternatives remain readable and controls are hidden", async ({
     page,
   }) => {
@@ -615,8 +624,8 @@ test("Invalid code groups fail explicitly", () => {
       { type: "code", lang: "bash", value: "echo ok" },
     ],
   ]) {
-    expect(() => remarkContainers()({ type: "root", children })).toThrow(
-      /code-group/,
-    );
+    expect(() => {
+      remarkContainers()({ type: "root", children });
+    }).toThrow(/code-group/);
   }
 });
