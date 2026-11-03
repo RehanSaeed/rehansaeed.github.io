@@ -67,6 +67,8 @@ const baseline = await getManifest({
   globDirectory: output,
   globPatterns: [
     "**/*.{js,json,css,html,svg,gif,woff2,avif}",
+    "**/*.wasm",
+    "__nuxt_content/**/sql_dump.txt",
     "_ipx/*f_avif*/**/*.{png,jpg,jpeg,webp}",
     "favicon.png",
     "images/icons/**/*.{png,jpg,jpeg,webp}",
@@ -120,7 +122,7 @@ for (const asset of baseline.manifestEntries) {
 assert.deepEqual(
   urls,
   expectedUrls,
-  "The complete original offline set is retained",
+  "The original offline set and Nuxt Content bootstrap assets are retained",
 );
 const directory = await mkdtemp(
   join(tmpdir(), "blog-offline-staging-3724788a-"),
@@ -226,6 +228,8 @@ const server = createServer(async (request, response) => {
       ".avif": "image/avif",
       ".png": "image/png",
       ".woff2": "font/woff2",
+      ".wasm": "application/wasm",
+      ".txt": "text/plain; charset=utf-8",
     };
     response
       .writeHead(200, {
@@ -728,8 +732,25 @@ try {
       page.getByRole("region", { name: "Read offline" }),
     ).toContainText("verified and ready offline");
     await stopServer();
+    await page.evaluate(() => {
+      for (const key of Object.keys(localStorage)) {
+        if (key.startsWith("content_")) {
+          localStorage.removeItem(key);
+        }
+      }
+    });
     await context.close();
     page = await launch("full-site");
+    const bootstrapResponses = [];
+    page.on("response", (response) => {
+      const path = new URL(response.url()).pathname;
+      if (path.endsWith(".wasm") || path.endsWith("/sql_dump.txt")) {
+        bootstrapResponses.push({
+          path,
+          fromWorker: response.fromServiceWorker(),
+        });
+      }
+    });
     await page.goto(`${origin}/on-the-etiquette-of-pull-request-comments/`);
     await expect(page.locator(".post__content")).toBeVisible();
     await expect
@@ -751,6 +772,19 @@ try {
     await expect(page.locator(".search-result__link").first()).toHaveAttribute(
       "href",
       "https://github.com/RehanSaeed/Schema.NET",
+    );
+    assert.ok(
+      bootstrapResponses.some(
+        ({ path, fromWorker }) => path.endsWith(".wasm") && fromWorker,
+      ),
+      "A cold offline start must load WebAssembly through the worker",
+    );
+    assert.ok(
+      bootstrapResponses.some(
+        ({ path, fromWorker }) =>
+          path === "/__nuxt_content/posts/sql_dump.txt" && fromWorker,
+      ),
+      "Offline search must rebuild its database without a warmed local cache",
     );
     const bytes = await Promise.all(
       full.map(async ({ url }) => {
@@ -778,7 +812,7 @@ try {
         coldNavigationActivationMs: fullInstall,
         fullStagingMs,
         offlineProof:
-          "Server stopped; unvisited article, app hydration, search and search deep link; no HTTP cache or Firefox offline emulation",
+          "Server stopped; unvisited article, cold WebAssembly/SQL startup, app hydration, search and search deep link; no HTTP/content database cache or Firefox offline emulation",
       }),
     );
   }

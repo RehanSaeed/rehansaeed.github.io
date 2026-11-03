@@ -31,6 +31,19 @@ void test("final offline manifest uses deployed bytes and preserves revisioned a
             "final metadata",
         );
         await writeFile(join(directory, "dist", "chunk.js"), "fingerprinted");
+        await mkdir(join(directory, "dist", "_nuxt"));
+        await writeFile(
+            join(directory, "dist", "_nuxt", "sqlite3.test.wasm"),
+            new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0]),
+        );
+        for (const collection of ["posts", "portfolio"]) {
+            const path = join(directory, "dist", "__nuxt_content", collection);
+            await mkdir(path, { recursive: true });
+            await writeFile(
+                join(path, "sql_dump.txt"),
+                `${collection} database`,
+            );
+        }
         await writeFile(
             join(directory, "dist", "service-worker.js"),
             `const assets = ${JSON.stringify(entries)};`,
@@ -55,14 +68,43 @@ void test("final offline manifest uses deployed bytes and preserves revisioned a
             .array(offlineEntrySchema)
             .parse(JSON.parse(worker.slice("const assets = ".length, -1)));
         assert.deepEqual(
-            updated.map(({ url }) => url),
+            updated.slice(0, 2).map(({ url }) => url),
             ["/", "chunk.js"],
+        );
+        assert.deepEqual(
+            new Set(updated.map(({ url }) => url)),
+            new Set([
+                "/",
+                "chunk.js",
+                "_nuxt/sqlite3.test.wasm",
+                "__nuxt_content/posts/sql_dump.txt",
+                "__nuxt_content/portfolio/sql_dump.txt",
+            ]),
         );
         assert.equal(
             updated[0]?.revision,
             createHash("md5").update("final metadata").digest("hex"),
         );
         assert.equal(updated[1]?.revision, null);
+        assert.equal(
+            updated.find(({ url }) => url.endsWith(".wasm"))?.revision,
+            null,
+        );
+        const posts = updated.find(
+            ({ url }) => url === "__nuxt_content/posts/sql_dump.txt",
+        );
+        assert.ok(posts);
+        assert.equal(
+            posts.revision,
+            createHash("md5").update("posts database").digest("hex"),
+        );
+        assert.equal(
+            await offlineIntegrity(
+                new Response("posts database"),
+                posts.integrity,
+            ),
+            true,
+        );
         assert.equal(
             await offlineIntegrity(
                 new Response("final metadata"),
