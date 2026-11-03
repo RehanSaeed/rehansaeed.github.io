@@ -113,26 +113,20 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import { decode } from "~/framework/obfuscate";
 
-export default defineComponent({
-  name: "u-social-links",
-  setup() {
-    return { metadata: useAppConfig().site };
-  },
-  methods: {
-    openEmail(event: MouseEvent) {
-      const body = encodeURIComponent(
-        "If you have an issue with one of my GitHub projects, please raise a GitHub issue. If you need help answering a coding problem, post your question on StackOverflow where you will get quicker and better answers. Otherwise, please do feel free to contact me!",
-      );
-      if (event.currentTarget instanceof HTMLAnchorElement) {
-        event.currentTarget.href = `mailto:${decode(this.metadata.author.email)}?body=${body}`;
-      }
-    },
-  },
-});
+defineOptions({ name: "u-social-links" });
+const metadata = useAppConfig().site;
+
+const openEmail = (event: MouseEvent) => {
+  const body = encodeURIComponent(
+    "If you have an issue with one of my GitHub projects, please raise a GitHub issue. If you need help answering a coding problem, post your question on StackOverflow where you will get quicker and better answers. Otherwise, please do feel free to contact me!",
+  );
+  if (event.currentTarget instanceof HTMLAnchorElement) {
+    event.currentTarget.href = `mailto:${decode(metadata.author.email)}?body=${body}`;
+  }
+};
 </script>
 
 <style lang="scss">

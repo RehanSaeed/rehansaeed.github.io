@@ -8,6 +8,8 @@ import {
   isVNode,
   normalizeClass,
   normalizeStyle,
+  onMounted,
+  ref,
 } from "vue";
 
 // Vue's stringifyStyle lives in @vue/shared, which the browser build of vue doesn't re-export.
@@ -89,11 +91,6 @@ const toHtml = (vnodes: readonly unknown[] | undefined): string =>
 
 export default defineComponent({
   name: "u-skeleton",
-  data() {
-    return {
-      isMounted: false,
-    };
-  },
   props: {
     /** Whether the skeleton represents content that is still loading. */ isBusy:
       {
@@ -105,23 +102,26 @@ export default defineComponent({
       type: String,
     },
   },
-  mounted() {
-    // Apply the mask only in the browser so the server and hydration renders match.
-    this.isMounted = true;
-  },
-  render() {
-    // Calling the slot here tracks its reactive dependencies, so the mask updates when they change.
-    const svg = toHtml(this.$slots.default?.());
-    let style: string | undefined;
-    if (this.isMounted) {
-      const maskImage = `url('data:image/svg+xml;base64,${btoa(svg)}')`;
-      style = `-webkit-mask-image: ${maskImage}; mask-image: ${maskImage}; -webkit-mask-repeat: ${this.maskRepeat}; mask-repeat: ${this.maskRepeat};`;
-    }
-    return h("div", {
-      class: "skeleton",
-      "aria-busy": this.isBusy,
-      style,
+  setup(props, { slots }) {
+    const isMounted = ref(false);
+    onMounted(() => {
+      // Apply the mask only in the browser so the server and hydration renders match.
+      isMounted.value = true;
     });
+    return () => {
+      // Calling the slot here tracks its reactive dependencies, so the mask updates when they change.
+      const svg = toHtml(slots.default?.());
+      let style: string | undefined;
+      if (isMounted.value) {
+        const maskImage = `url('data:image/svg+xml;base64,${btoa(svg)}')`;
+        style = `-webkit-mask-image: ${maskImage}; mask-image: ${maskImage}; -webkit-mask-repeat: ${props.maskRepeat}; mask-repeat: ${props.maskRepeat};`;
+      }
+      return h("div", {
+        class: "skeleton",
+        "aria-busy": props.isBusy,
+        style,
+      });
+    };
   },
 });
 </script>

@@ -32,34 +32,25 @@
   </u-card>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType } from "vue";
+<script setup lang="ts">
+import { computed, type PropType } from "vue";
 import type { PostsCollectionItem } from "@nuxt/content";
 import { getImageMetadata } from "~/framework/images";
 import { contentImageSizes } from "#shared/utils/images";
 
-export default defineComponent({
-  name: "u-post",
-  props: {
-    /** Post metadata used to render this component. */ post: {
-      type: Object as PropType<
-        Pick<
-          PostsCollectionItem,
-          "body" | "stem" | "extension" | "title" | "tags" | "heroImage"
-        >
-      >,
-      required: true,
-    },
-  },
-  computed: {
-    contentImageSizes() {
-      return contentImageSizes;
-    },
-    imageMeta() {
-      return getImageMetadata(this.post.heroImage);
-    },
+defineOptions({ name: "u-post" });
+const props = defineProps({
+  /** Post metadata used to render this component. */ post: {
+    type: Object as PropType<
+      Pick<
+        PostsCollectionItem,
+        "body" | "stem" | "extension" | "title" | "tags" | "heroImage"
+      >
+    >,
+    required: true,
   },
 });
+const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
 </script>
 
 <style lang="scss">

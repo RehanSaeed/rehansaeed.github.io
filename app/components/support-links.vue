@@ -42,14 +42,9 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-  name: "u-support-links",
-  setup() {
-    return { metadata: useAppConfig().site };
-  },
-});
+<script setup lang="ts">
+defineOptions({ name: "u-support-links" });
+const metadata = useAppConfig().site;
 </script>
 
 <style lang="scss">

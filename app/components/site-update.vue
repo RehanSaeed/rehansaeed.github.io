@@ -40,7 +40,7 @@ const { $pwa } = useNuxtApp();
 const updating = ref(false);
 const error = ref("");
 
-async function update() {
+const update = async () => {
   if (!$pwa || updating.value) {
     return;
   }
@@ -54,7 +54,7 @@ async function update() {
   } finally {
     updating.value = false;
   }
-}
+};
 </script>
 
 <style lang="scss">

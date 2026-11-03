@@ -14,25 +14,19 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-  name: "u-support-button",
-  data() {
-    return {
-      isDialogueOpen: false,
-    };
-  },
-  methods: {
-    open() {
-      this.isDialogueOpen = true;
-    },
-    close() {
-      this.isDialogueOpen = false;
-    },
-    onClick() {
-      this.open();
-    },
-  },
-});
+<script setup lang="ts">
+import { ref } from "vue";
+
+defineOptions({ name: "u-support-button" });
+const isDialogueOpen = ref(false);
+
+const open = () => {
+  isDialogueOpen.value = true;
+};
+const close = () => {
+  isDialogueOpen.value = false;
+};
+const onClick = () => {
+  open();
+};
 </script>

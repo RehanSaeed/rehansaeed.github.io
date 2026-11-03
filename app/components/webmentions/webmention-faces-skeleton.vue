@@ -11,75 +11,60 @@
   </u-skeleton>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import {
-  defineComponent,
-  markRaw,
+  computed,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  ref,
   useTemplateRef,
   type ComponentPublicInstance,
 } from "vue";
-export default defineComponent({
-  name: "u-webmention-faces-skeleton",
-  setup() {
-    return { skeleton: useTemplateRef<ComponentPublicInstance>("skeleton") };
+defineOptions({ name: "u-webmention-faces-skeleton" });
+const skeleton = useTemplateRef<ComponentPublicInstance>("skeleton");
+let resizeObserver: ResizeObserver | undefined;
+const width = ref(0);
+const props = defineProps({
+  /** Amount by which adjacent avatar placeholders overlap. */ overlap: {
+    default: 10,
+    type: Number,
   },
-  data() {
-    return {
-      resizeObserver: null as ResizeObserver | null,
-      width: 0,
-    };
+  /** Radius of each avatar placeholder. */ radius: {
+    default: 25,
+    type: Number,
   },
-  props: {
-    /** Amount by which adjacent avatar placeholders overlap. */ overlap: {
-      default: 10,
-      type: Number,
-    },
-    /** Radius of each avatar placeholder. */ radius: {
-      default: 25,
-      type: Number,
-    },
-  },
-  computed: {
-    count() {
-      if (this.width == 0) {
-        return 3;
-      }
-      return Math.floor(this.width / (this.diameter - this.overlap)) - 1;
-    },
-    diameter() {
-      return this.radius * 2;
-    },
-    viewBox() {
-      return `0 0 ${this.width} ${this.diameter}`;
-    },
-  },
-  methods: {
-    getXPosition(n: number) {
-      const x = n * (this.radius * 2) - this.radius;
-      const nOverlap = n * this.overlap;
-      const offset = this.overlap;
-      return x - nOverlap + offset;
-    },
-  },
-  mounted() {
-    this.resizeObserver = markRaw(
-      new ResizeObserver((entries) => {
-        const entry = entries[0];
-        if (entry) {
-          this.width = Math.floor(entry.contentRect.width);
-        }
-      }),
-    );
-    void this.$nextTick(() => {
-      const element: unknown = this.skeleton?.$el;
-      if (element instanceof Element) {
-        this.resizeObserver?.observe(element);
-      }
-    });
-  },
-  unmounted() {
-    this.resizeObserver?.disconnect();
-  },
+});
+const diameter = computed(() => props.radius * 2);
+const viewBox = computed(() => `0 0 ${width.value} ${diameter.value}`);
+const count = computed(() => {
+  if (width.value == 0) {
+    return 3;
+  }
+  return Math.floor(width.value / (diameter.value - props.overlap)) - 1;
+});
+const getXPosition = (n: number) => {
+  const x = n * (props.radius * 2) - props.radius;
+  const nOverlap = n * props.overlap;
+  const offset = props.overlap;
+  return x - nOverlap + offset;
+};
+onMounted(() => {
+  resizeObserver = new ResizeObserver((entries) => {
+    const entry = entries[0];
+    if (entry) {
+      width.value = Math.floor(entry.contentRect.width);
+    }
+  });
+  void nextTick(() => {
+    const element: unknown = skeleton.value?.$el;
+    if (element instanceof Element) {
+      resizeObserver?.observe(element);
+    }
+  });
+});
+onUnmounted(() => {
+  resizeObserver?.disconnect();
 });
 </script>
 

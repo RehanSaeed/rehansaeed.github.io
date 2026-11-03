@@ -23,62 +23,51 @@
   </u-tooltip>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType } from "vue";
+<script setup lang="ts">
+import { computed, ref, watch, type PropType } from "vue";
 import { NuxtLink } from "#components";
 import { getAvifSource } from "#shared/utils/images";
 
-export default defineComponent({
-  name: "u-avatar",
-  inheritAttrs: false,
-  data() {
-    return { imageFailed: false };
+defineOptions({ name: "u-avatar", inheritAttrs: false });
+const props = defineProps({
+  /** Accessible text describing the control or link. */ label: {
+    required: true,
+    type: String,
   },
-  props: {
-    /** Accessible text describing the control or link. */ label: {
-      required: true,
-      type: String,
-    },
-    /** Alternative text describing the image; empty for decorative images. */ alt: {
-      required: true,
-      type: String,
-    },
-    /** Source URL of the image. */ src: {
-      required: true,
-      type: String,
-    },
-    /** Image loading strategy. */ loading: {
-      required: false,
-      type: String as PropType<"eager" | "lazy">,
-    },
-    /** Internal route used for navigation. */ to: {
-      required: false,
-      type: String,
-    },
-    /** URL used for the link. */ href: {
-      required: false,
-      type: String,
-    },
+  /** Alternative text describing the image; empty for decorative images. */ alt: {
+    required: true,
+    type: String,
   },
-  watch: {
-    src() {
-      this.imageFailed = false;
-    },
+  /** Source URL of the image. */ src: {
+    required: true,
+    type: String,
   },
-  methods: {
-    onImageError() {
-      this.imageFailed = true;
-    },
+  /** Image loading strategy. */ loading: {
+    required: false,
+    type: String as PropType<"eager" | "lazy">,
   },
-  computed: {
-    avifSource() {
-      return getAvifSource(this.src);
-    },
-    tag() {
-      return this.to ? NuxtLink : "a";
-    },
+  /** Internal route used for navigation. */ to: {
+    required: false,
+    type: String,
+  },
+  /** URL used for the link. */ href: {
+    required: false,
+    type: String,
   },
 });
+const imageFailed = ref(false);
+const avifSource = computed(() => getAvifSource(props.src));
+const tag = computed(() => (props.to ? NuxtLink : "a"));
+
+watch(
+  () => props.src,
+  () => {
+    imageFailed.value = false;
+  },
+);
+const onImageError = () => {
+  imageFailed.value = true;
+};
 </script>
 
 <style lang="scss">

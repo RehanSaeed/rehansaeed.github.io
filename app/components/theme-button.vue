@@ -16,51 +16,30 @@
   </u-tooltip>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { appThemeChanged, appThemeLoaded } from "~/framework/analytics";
 
-export default defineComponent({
-  name: "u-theme-button",
-  inheritAttrs: false,
-  data() {
-    return {
-      darkTheme: false,
-      themeListener: null as (() => void) | null,
-    };
-  },
-  computed: {
-    theme() {
-      return this.darkTheme ? "dark" : "light";
-    },
-  },
-  methods: {
-    setTheme() {
-      this.darkTheme = window.__theme === "dark";
-    },
-    onToggleTheme() {
-      this.darkTheme = !this.darkTheme;
+defineOptions({ name: "u-theme-button", inheritAttrs: false });
+const darkTheme = ref(false);
+const theme = computed(() => (darkTheme.value ? "dark" : "light"));
 
-      // This is using a script that is added in index.html
-      window.__setPreferredTheme(this.theme);
+const setTheme = () => {
+  darkTheme.value = window.__theme === "dark";
+};
+const onToggleTheme = () => {
+  darkTheme.value = !darkTheme.value;
+  window.__setPreferredTheme(theme.value);
+  appThemeChanged(theme.value);
+};
 
-      appThemeChanged(this.theme);
-    },
-  },
-  mounted() {
-    this.setTheme();
-    this.themeListener = () => {
-      this.setTheme();
-    };
-    window.addEventListener("__themeChanged", this.themeListener);
-
-    appThemeLoaded(this.theme);
-  },
-  beforeUnmount() {
-    if (this.themeListener) {
-      window.removeEventListener("__themeChanged", this.themeListener);
-    }
-  },
+onMounted(() => {
+  setTheme();
+  window.addEventListener("__themeChanged", setTheme);
+  appThemeLoaded(theme.value);
+});
+onBeforeUnmount(() => {
+  window.removeEventListener("__themeChanged", setTheme);
 });
 </script>
 

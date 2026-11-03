@@ -25,31 +25,23 @@
   </article>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType } from "vue";
+<script setup lang="ts">
+import { computed, type PropType } from "vue";
 import { getAvifSource } from "#shared/utils/images";
 import type { SearchDocument } from "#shared/utils/search";
 
-export default defineComponent({
-  name: "u-search-result",
-  emits: ["selected"],
-  computed: {
-    avifSource() {
-      return getAvifSource(this.searchResult.heroImage);
-    },
-  },
-  props: {
-    /** Indexed content entry to display as a search result. */ searchResult: {
-      type: Object as PropType<SearchDocument>,
-      required: true,
-    },
-  },
-  methods: {
-    onSelected() {
-      this.$emit("selected");
-    },
+defineOptions({ name: "u-search-result" });
+const emit = defineEmits<{ selected: [] }>();
+const props = defineProps({
+  /** Indexed content entry to display as a search result. */ searchResult: {
+    type: Object as PropType<SearchDocument>,
+    required: true,
   },
 });
+const avifSource = computed(() => getAvifSource(props.searchResult.heroImage));
+const onSelected = () => {
+  emit("selected");
+};
 </script>
 
 <style lang="scss">

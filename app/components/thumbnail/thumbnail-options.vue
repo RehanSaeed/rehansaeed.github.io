@@ -54,22 +54,17 @@
   </aside>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-  emits: ["update:background"],
-  methods: {
-    onBackgroundInput(event: Event) {
-      if (event.target instanceof HTMLInputElement) {
-        this.$emit("update:background", event.target.value);
-      }
-    },
-  },
-  props: {
-    /** Selected thumbnail background image or colour. */ background: {
-      default: "",
-      type: String,
-    },
+<script setup lang="ts">
+const emit = defineEmits<{ "update:background": [background: string] }>();
+const onBackgroundInput = (event: Event) => {
+  if (event.target instanceof HTMLInputElement) {
+    emit("update:background", event.target.value);
+  }
+};
+defineProps({
+  /** Selected thumbnail background image or colour. */ background: {
+    default: "",
+    type: String,
   },
 });
 </script>

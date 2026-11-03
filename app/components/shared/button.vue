@@ -13,40 +13,28 @@
   </button>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType } from "vue";
+<script setup lang="ts">
+import { computed, onMounted, ref, type PropType } from "vue";
 
-export default defineComponent({
-  name: "u-button",
-  props: {
-    /** Whether the button is disabled. */ disabled: {
-      type: Boolean,
-    },
-    /** Visual variant of the button. */ variant: {
-      type: String as PropType<"plain" | "secondary" | "primary">,
-      default: "plain",
-      validator: (value: string) =>
-        ["plain", "secondary", "primary"].includes(value),
-    },
-    /** Whether the button submits its containing form. */ submit: {
-      type: Boolean,
-    },
+defineOptions({ name: "u-button" });
+const props = defineProps({
+  /** Whether the button is disabled. */ disabled: {
+    type: Boolean,
   },
-  data() {
-    return { hydrated: false };
+  /** Visual variant of the button. */ variant: {
+    type: String as PropType<"plain" | "secondary" | "primary">,
+    default: "plain",
+    validator: (value: string) =>
+      ["plain", "secondary", "primary"].includes(value),
   },
-  mounted() {
-    this.hydrated = true;
+  /** Whether the button submits its containing form. */ submit: {
+    type: Boolean,
   },
-  computed: {
-    type() {
-      if (this.submit) {
-        return "submit";
-      } else {
-        return "button";
-      }
-    },
-  },
+});
+const hydrated = ref(false);
+const type = computed(() => (props.submit ? "submit" : "button"));
+onMounted(() => {
+  hydrated.value = true;
 });
 </script>
 

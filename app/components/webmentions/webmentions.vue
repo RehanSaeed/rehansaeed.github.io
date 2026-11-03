@@ -76,8 +76,8 @@
   </u-intersect>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { computed, ref } from "vue";
 import { z } from "zod";
 import {
   webMentionSchema,
@@ -85,104 +85,78 @@ import {
   webMentionUrl,
   type WebMention,
 } from "#shared/utils/webmentions";
-export default defineComponent({
-  name: "u-webmentions",
-  data() {
-    return {
-      isLoading: true,
-      hasError: false,
-      likes: [] as WebMention[],
-      reposts: [] as WebMention[],
-      links: [] as WebMention[],
-      replies: [] as WebMention[],
-    };
-  },
-  props: {
-    /** Canonical URL associated with this component. */ url: {
-      required: true,
-      type: String,
-    },
-  },
-  computed: {
-    likesDescription() {
-      return `${this.likes.length} ${this.pluralise(
-        this.likes.length,
-        "Like",
-        "Likes",
-      )}`;
-    },
-    repostsDescription() {
-      return `${this.reposts.length} ${this.pluralise(
-        this.reposts.length,
-        "Repost",
-        "Reposts",
-      )}`;
-    },
-    linksDescription() {
-      return `${this.links.length} Linked`;
-    },
-    repliesDescription() {
-      return `${this.replies.length} ${this.pluralise(
-        this.replies.length,
-        "Reply",
-        "Replies",
-      )}`;
-    },
-  },
-  methods: {
-    pluralise(count: number, one: string, many: string) {
-      return count === 1 ? one : many;
-    },
-    async getMentions(page: number, perPage: number) {
-      const response = await fetch(
-        `https://webmention.io/api/mentions?page=${page}&per-page=${perPage}&target=${this.url}&sort-by=published&sort-dir=up`,
-      );
-      if (!response.ok) {
-        throw new Error(`Unable to load Web Mentions: HTTP ${response.status}`);
-      }
-      const responseBody: unknown = await response.json();
-      const list = z
-        .object({ links: z.array(webMentionSchema) })
-        .parse(responseBody);
-      for (const mention of list.links) {
-        if (
-          mention.activity.type === "link" ||
-          mention.activity.type === "reply"
-        ) {
-          webMentionUrl(mention);
-          webMentionTimestamp(mention);
-        }
-      }
-      return list.links;
-    },
-    async onLoadMentions() {
-      try {
-        this.isLoading = true;
-        this.hasError = false;
-        const mentions = await this.getMentions(0, 999);
-        this.likes = mentions.filter((x) => x.activity.type === "like");
-        this.reposts = mentions.filter((x) => x.activity.type === "repost");
-        this.links = mentions.filter(
-          (x) =>
-            x.activity.type === "link" &&
-            !(x.data.author && x.data.author.photo),
-        );
-        this.replies = mentions.filter(
-          (x) =>
-            x.activity.type === "reply" ||
-            (x.activity.type === "link" &&
-              x.data.author &&
-              x.data.author.photo),
-        );
-      } catch (error) {
-        this.hasError = true;
-        console.error("Unable to load Web Mentions", error);
-      } finally {
-        this.isLoading = false;
-      }
-    },
+defineOptions({ name: "u-webmentions" });
+const props = defineProps({
+  /** Canonical URL associated with this component. */ url: {
+    required: true,
+    type: String,
   },
 });
+const isLoading = ref(true);
+const hasError = ref(false);
+const likes = ref<WebMention[]>([]);
+const reposts = ref<WebMention[]>([]);
+const links = ref<WebMention[]>([]);
+const replies = ref<WebMention[]>([]);
+const likesDescription = computed(
+  () =>
+    `${likes.value.length} ${pluralise(likes.value.length, "Like", "Likes")}`,
+);
+const repostsDescription = computed(
+  () =>
+    `${reposts.value.length} ${pluralise(reposts.value.length, "Repost", "Reposts")}`,
+);
+const linksDescription = computed(() => `${links.value.length} Linked`);
+const repliesDescription = computed(
+  () =>
+    `${replies.value.length} ${pluralise(replies.value.length, "Reply", "Replies")}`,
+);
+
+const pluralise = (count: number, one: string, many: string) => {
+  return count === 1 ? one : many;
+};
+const getMentions = async (page: number, perPage: number) => {
+  const response = await fetch(
+    `https://webmention.io/api/mentions?page=${page}&per-page=${perPage}&target=${props.url}&sort-by=published&sort-dir=up`,
+  );
+  if (!response.ok) {
+    throw new Error(`Unable to load Web Mentions: HTTP ${response.status}`);
+  }
+  const responseBody: unknown = await response.json();
+  const list = z
+    .object({ links: z.array(webMentionSchema) })
+    .parse(responseBody);
+  for (const mention of list.links) {
+    if (mention.activity.type === "link" || mention.activity.type === "reply") {
+      webMentionUrl(mention);
+      webMentionTimestamp(mention);
+    }
+  }
+  return list.links;
+};
+const onLoadMentions = async () => {
+  try {
+    isLoading.value = true;
+    hasError.value = false;
+    const mentions = await getMentions(0, 999);
+    likes.value = mentions.filter((x) => x.activity.type === "like");
+    reposts.value = mentions.filter((x) => x.activity.type === "repost");
+    links.value = mentions.filter(
+      (x) =>
+        x.activity.type === "link" && !(x.data.author && x.data.author.photo),
+    );
+    replies.value = mentions.filter(
+      (x) =>
+        x.activity.type === "reply" ||
+        (x.activity.type === "link" && x.data.author && x.data.author.photo),
+    );
+  } catch (error) {
+    hasError.value = true;
+    console.error("Unable to load Web Mentions", error);
+  } finally {
+    isLoading.value = false;
+  }
+};
 </script>
 
 <style lang="scss">

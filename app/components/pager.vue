@@ -26,28 +26,23 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType } from "vue";
+<script setup lang="ts">
+import { computed, type PropType } from "vue";
 import type { PageInfo } from "~/framework/paging";
-import { previousUrl, nextUrl } from "~/framework/paging";
+import {
+  previousUrl as getPreviousUrl,
+  nextUrl as getNextUrl,
+} from "~/framework/paging";
 
-export default defineComponent({
-  name: "BlogPager",
-  props: {
-    /** Pagination metadata for the current page. */ pageInfo: {
-      required: true,
-      type: Object as PropType<PageInfo>,
-    },
-  },
-  computed: {
-    previousUrl() {
-      return previousUrl(this.pageInfo);
-    },
-    nextUrl() {
-      return nextUrl(this.pageInfo);
-    },
+defineOptions({ name: "BlogPager" });
+const props = defineProps({
+  /** Pagination metadata for the current page. */ pageInfo: {
+    required: true,
+    type: Object as PropType<PageInfo>,
   },
 });
+const previousUrl = computed(() => getPreviousUrl(props.pageInfo));
+const nextUrl = computed(() => getNextUrl(props.pageInfo));
 </script>
 
 <style lang="scss">

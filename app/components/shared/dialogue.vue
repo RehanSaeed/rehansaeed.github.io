@@ -33,56 +33,51 @@
   </Transition>
 </template>
 
-<script lang="ts">
-import { defineComponent, useId } from "vue";
+<script setup lang="ts">
+import { useId } from "vue";
 
-export default defineComponent({
-  name: "u-dialogue",
-  emits: ["close"],
-  setup() {
-    return { titleId: useId() };
+defineOptions({ name: "u-dialogue" });
+const emit = defineEmits<{ close: [] }>();
+const titleId = useId();
+const props = defineProps({
+  /** Whether the dialog fills the viewport. */ fullscreen: {
+    default: false,
+    type: Boolean,
   },
-  props: {
-    /** Whether the dialog fills the viewport. */ fullscreen: {
-      default: false,
-      type: Boolean,
-    },
-    /** Whether the search or dialog is open. */ isOpen: {
-      default: false,
-      type: Boolean,
-    },
-    /** Title displayed for this content. */ title: {
-      required: true,
-      type: String,
-    },
+  /** Whether the search or dialog is open. */ isOpen: {
+    default: false,
+    type: Boolean,
   },
-  methods: {
-    open(dialog: Element) {
-      if (dialog instanceof HTMLDialogElement) {
-        dialog.showModal();
-      }
-    },
-    hide(dialog: Element) {
-      if (dialog instanceof HTMLDialogElement) {
-        dialog.close();
-      }
-    },
-    onNativeClose(event: Event) {
-      // A queued close event can arrive after the dialog has reopened.
-      if (
-        event.currentTarget instanceof HTMLDialogElement &&
-        !event.currentTarget.open
-      ) {
-        this.close();
-      }
-    },
-    close() {
-      if (this.isOpen) {
-        this.$emit("close");
-      }
-    },
+  /** Title displayed for this content. */ title: {
+    required: true,
+    type: String,
   },
 });
+
+const open = (dialog: Element) => {
+  if (dialog instanceof HTMLDialogElement) {
+    dialog.showModal();
+  }
+};
+const hide = (dialog: Element) => {
+  if (dialog instanceof HTMLDialogElement) {
+    dialog.close();
+  }
+};
+const onNativeClose = (event: Event) => {
+  // A queued close event can arrive after the dialog has reopened.
+  if (
+    event.currentTarget instanceof HTMLDialogElement &&
+    !event.currentTarget.open
+  ) {
+    close();
+  }
+};
+const close = () => {
+  if (props.isOpen) {
+    emit("close");
+  }
+};
 </script>
 
 <style lang="scss">

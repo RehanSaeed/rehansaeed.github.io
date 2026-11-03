@@ -13,36 +13,24 @@
   </article>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType } from "vue";
+<script setup lang="ts">
+import { computed, type PropType } from "vue";
 import {
   webMentionTimestamp,
   webMentionUrl,
   type WebMention,
 } from "#shared/utils/webmentions";
-export default defineComponent({
-  name: "u-webmention-link",
-  props: {
-    /** Web mention linking to the current content. */ link: {
-      required: true,
-      type: Object as PropType<WebMention>,
-    },
-  },
-  computed: {
-    id() {
-      return `webmention-link-${this.link.id}`;
-    },
-    url() {
-      return webMentionUrl(this.link);
-    },
-    name() {
-      return new URL(this.url).hostname;
-    },
-    timestamp() {
-      return webMentionTimestamp(this.link);
-    },
+defineOptions({ name: "u-webmention-link" });
+const props = defineProps({
+  /** Web mention linking to the current content. */ link: {
+    required: true,
+    type: Object as PropType<WebMention>,
   },
 });
+const id = computed(() => `webmention-link-${props.link.id}`);
+const url = computed(() => webMentionUrl(props.link));
+const name = computed(() => new URL(url.value).hostname);
+const timestamp = computed(() => webMentionTimestamp(props.link));
 </script>
 
 <style lang="scss">

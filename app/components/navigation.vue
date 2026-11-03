@@ -36,30 +36,19 @@
   </nav>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-  name: "u-navigation",
-  computed: {
-    blogPage() {
-      return this.getIsCurrentPage("/");
-    },
-    portfolioPage() {
-      return this.getIsCurrentPage("/portfolio/");
-    },
-    aboutPage() {
-      return this.getIsCurrentPage("/about/");
-    },
-  },
-  setup() {
-    return { metadata: useAppConfig().site };
-  },
-  methods: {
-    getIsCurrentPage(path: string) {
-      return this.$route.path === path ? "page" : undefined;
-    },
-  },
-});
+<script setup lang="ts">
+import { computed } from "vue";
+
+defineOptions({ name: "u-navigation" });
+const metadata = useAppConfig().site;
+const route = useRoute();
+const blogPage = computed(() => getIsCurrentPage("/"));
+const portfolioPage = computed(() => getIsCurrentPage("/portfolio/"));
+const aboutPage = computed(() => getIsCurrentPage("/about/"));
+
+const getIsCurrentPage = (path: string) => {
+  return route.path === path ? "page" : undefined;
+};
 </script>
 
 <style lang="scss">
