@@ -82,16 +82,9 @@ async function verifyChronologicalNeighbours({
         expect(link.text()).toContain(neighbour.label);
         expect(link.text()).toContain(neighbour.post.title);
         expect(link.find("h2").text().trim()).toBe(neighbour.post.title);
-        expect(
-          link
-            .attr("aria-labelledby")!
-            .split(" ")
-            .map((id) => link.find(`#${id}`).text().trim()),
-        ).toEqual([
-          neighbour.label,
-          link.find("time").text().trim(),
-          neighbour.post.title,
-        ]);
+        expect(link.attr("aria-labelledby")).toBeUndefined();
+        expect(link.attr("aria-label")).toBeUndefined();
+        expect(link.text()).toContain(link.find("time").text().trim());
         expect(link.children("h2.post-navigation__title")).toHaveLength(1);
         const image = link.find("img");
         expect(image.attr("alt")).toBe("");
