@@ -5,6 +5,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { compileString } from "sass-embedded";
 import { compileScript, parse } from "vue/compiler-sfc";
 import ts from "typescript";
+import type { CounterGrowth } from "../../shared/utils/ticker";
 
 const now = Date.UTC(2026, 9, 27, 12);
 
@@ -15,9 +16,17 @@ async function mountTicker(
     rate?: number;
     locale?: string;
     offscreen?: boolean;
+    statistics?: {
+      downloads: number;
+      stars: number;
+      growth: {
+        downloads: CounterGrowth;
+        stars: CounterGrowth;
+      };
+    };
   } = {},
 ) {
-  const [component, utilities, vue, intersect] = await Promise.all([
+  const [component, utilities, vue, intersect, statistics] = await Promise.all([
     readFile(
       join(process.cwd(), "app", "components", "shared", "number-ticker.vue"),
       "utf8",
@@ -35,6 +44,10 @@ async function mountTicker(
     ),
     readFile(
       join(process.cwd(), "app", "components", "shared", "intersect.vue"),
+      "utf8",
+    ),
+    readFile(
+      join(process.cwd(), "app", "components", "portfolio-statistics.vue"),
       "utf8",
     ),
   ]);
@@ -57,6 +70,16 @@ async function mountTicker(
     'import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";\n' +
       compiled.content,
   );
+  const statisticsSource = transpile(
+    'import { ref, computed, onMounted } from "vue";\n' +
+      compileScript(parse(statistics).descriptor, {
+        id: "portfolio-statistics-test",
+        inlineTemplate: true,
+      }).content.replace(
+        'import statistics from "#blog-portfolio-statistics";',
+        `const statistics = ${JSON.stringify(options.statistics ?? null)};`,
+      ),
+  );
   await page.clock.install({ time: new Date(now - 10_000) });
   await page.clock.pauseAt(new Date(now));
   await page.setContent(
@@ -68,6 +91,7 @@ async function mountTicker(
       utilitiesSource,
       vue,
       intersectSource,
+      statisticsSource,
       options,
     }) => {
       const intervals = new Set<number>();
@@ -90,6 +114,7 @@ async function mountTicker(
       };
       const observers = new Set<IntersectionObserver>();
       const NativeIntersectionObserver = window.IntersectionObserver;
+      const observed = new Set<IntersectionObserver>();
       const ready = new Promise<void>((resolve) => {
         window.IntersectionObserver = class extends NativeIntersectionObserver {
           constructor(
@@ -99,7 +124,10 @@ async function mountTicker(
             super((entries, observer) => {
               callback(entries, observer);
               document.dispatchEvent(new Event("ticker-intersection"));
-              resolve();
+              observed.add(observer);
+              if (observed.size === (options.statistics ? 2 : 1)) {
+                resolve();
+              }
             }, options);
             observers.add(this);
           }
@@ -122,7 +150,7 @@ async function mountTicker(
             JSON.stringify(utilitiesUrl),
           ),
       );
-      const { createApp, h, ref } = (await import(
+      const { createApp, defineComponent, h, ref } = (await import(
         vueUrl
       )) as typeof import("vue");
       const { default: Ticker } = (await import(componentUrl)) as {
@@ -133,19 +161,50 @@ async function mountTicker(
           intersectSource.replace(/(["'])vue\1/g, JSON.stringify(vueUrl)),
         )
       )) as { default: import("vue").Component };
+      const { default: Statistics } = (await import(
+        moduleUrl(
+          statisticsSource
+            .replace(/(["'])vue\1/g, JSON.stringify(vueUrl))
+            .replace(
+              /(["'])#shared\/utils\/ticker\1/g,
+              JSON.stringify(utilitiesUrl),
+            ),
+        )
+      )) as { default: import("vue").Component };
       Math.random = () => 0.5;
       const number = ref(options.number ?? 1000);
       const rate = ref(options.rate ?? 2);
       const app = createApp({
         setup: () => () =>
-          h(Ticker, {
-            label: "Downloads",
-            number: number.value,
-            rate: rate.value,
-            locale: options.locale,
-          }),
+          options.statistics
+            ? h(Statistics)
+            : h(Ticker, {
+                label: "Downloads",
+                number: number.value,
+                rate: rate.value,
+                locale: options.locale,
+              }),
       });
       app.component("u-intersect", Intersect);
+      app.component("u-number-ticker", Ticker);
+      app.component("u-github-badges", { render: () => h("div") });
+      app.component(
+        "u-tooltip",
+        defineComponent({
+          setup(_props, { slots }) {
+            return () => slots.default?.({ trigger: {} });
+          },
+        }),
+      );
+      app.component(
+        "u-button",
+        defineComponent({
+          setup(_props, { slots }) {
+            return () => h("button", {}, slots.default?.());
+          },
+        }),
+      );
+      app.component("u-icon", { render: () => h("span") });
       document
         .querySelector("#ticker-test")!
         .classList.toggle("offscreen", options.offscreen ?? false);
@@ -161,7 +220,7 @@ async function mountTicker(
             model.value = Number(input.value);
           });
       }
-      document.querySelector("button")!.addEventListener("click", () => {
+      document.querySelector("body > button")!.addEventListener("click", () => {
         app.unmount();
       });
       return { ready, intervals, observers };
@@ -171,6 +230,7 @@ async function mountTicker(
       utilitiesSource: transpile(utilities),
       vue,
       intersectSource: transpile(intersectSource),
+      statisticsSource,
       options,
     },
   );
@@ -221,6 +281,57 @@ const changeReducedMotion = async (
   await change.evaluate(({ changed }) => changed);
   await change.dispose();
 };
+
+test("Portfolio projects valid snapshots with a visible fifteen-second star cadence", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await mountTicker(page, {
+    statistics: {
+      downloads: 1000,
+      stars: 100,
+      growth: {
+        downloads: { observedAt: now, perSecond: 2 },
+        stars: { observedAt: now, perSecond: 1 / 15 },
+      },
+    },
+  });
+  const digits = page.locator(".number-ticker__digits");
+  await page.clock.runFor(14_500);
+  await expect(digits.last()).toHaveText("100");
+  await page.clock.runFor(2000);
+  expect(
+    Number((await digits.first().textContent())!.replaceAll(",", "")),
+  ).toBeGreaterThan(1000);
+  await expect(digits.last()).toHaveText("101");
+  await page.clock.runFor(15_000);
+  await expect(digits.last()).toHaveText("102");
+  await expect(
+    page.locator(".portfolio-statistics").getByRole("button"),
+  ).toHaveCount(2);
+});
+
+test("Portfolio keeps unavailable source snapshots static", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  const fixture = await mountTicker(page, {
+    statistics: {
+      downloads: 1000,
+      stars: 100,
+      growth: {
+        downloads: { observedAt: null, perSecond: 2 },
+        stars: { observedAt: null, perSecond: 1 / 15 },
+      },
+    },
+  });
+  await page.clock.runFor(31_500);
+  await expect(page.locator(".number-ticker__digits")).toHaveText([
+    "1,000",
+    "100",
+  ]);
+  expect(await fixture.evaluate(({ intervals }) => intervals.size)).toBe(0);
+});
 
 test("Ticker styles, statistics and badges preserve dimensions and follow shared design tokens", async ({
   page,
