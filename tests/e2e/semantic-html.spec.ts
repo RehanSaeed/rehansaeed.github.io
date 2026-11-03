@@ -73,20 +73,23 @@ unitTest(
     expect(files.length).toBeGreaterThanOrEqual(408);
     for (const file of files) {
       const $ = load(readFileSync(join(root, file), "utf8"));
-      expect($("main").length, file).toBe(1);
+      expect($("main"), file).toHaveLength(1);
       $(
         "ul[role=list], ol[role=list], ul.list-unstyled, ol.list-unstyled",
       ).each((_, list) => {
         expect(
-          $(list).children(":not(li)").length,
+          $(list).children(":not(li)"),
           `${file}: list children`,
-        ).toBe(0);
+        ).toHaveLength(0);
       });
-      if (!$("main#main").length) continue;
+      // eslint-disable-next-line playwright/no-conditional-in-test -- Streaming pages have different landmarks from the standard app layout.
+      if (!$("main#main").length) {
+        continue;
+      }
       expect($(".navigation").is('nav[aria-label="Main"]'), file).toBe(true);
-      expect($("footer.footer").length, file).toBe(1);
-      expect($("footer h1").length, file).toBe(0);
-      expect($("footer h2#footer-author").length, file).toBe(1);
+      expect($("footer.footer"), file).toHaveLength(1);
+      expect($("footer h1"), file).toHaveLength(0);
+      expect($("footer h2#footer-author"), file).toHaveLength(1);
       expect($(".footer__text").is("p"), file).toBe(true);
       $(".not-found__content").each((_, card) => {
         expect($(card).is("div"), file).toBe(true);
@@ -95,11 +98,13 @@ unitTest(
         $(".newsletter").is('section[aria-labelledby="newsletter"]'),
         file,
       ).toBe(true);
-      expect($(".post__content h1").length, file).toBe(0);
-      expect($('a[aria-hidden="true"]').length, file).toBe(0);
+      expect($(".post__content h1"), file).toHaveLength(0);
+      expect($('a[aria-hidden="true"]'), file).toHaveLength(0);
       $(".pager").each((_, pager) => {
         expect($(pager).is('nav[aria-label="Pagination"]'), file).toBe(true);
-        expect($(pager).find("a:not([href]), a[href='']").length, file).toBe(0);
+        expect($(pager).find("a:not([href]), a[href='']"), file).toHaveLength(
+          0,
+        );
       });
       $(".posts__items, .portfolio__items, .tags").each((_, list) => {
         expect($(list).is('ul[role="list"]'), file).toBe(true);

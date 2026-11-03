@@ -1,4 +1,5 @@
 <template>
+  <!-- eslint-disable-next-line vuejs-accessibility/no-redundant-roles -- Preserve list semantics in Safari when list-style is none. -->
   <ul class="tags" aria-label="Tags" role="list">
     <li v-for="tag of tags" :key="tag">
       <u-link-button class="tags__link" bordered :to="tagPath(tag)">{{

@@ -379,7 +379,13 @@ export function rehypeHeadingAnchors() {
       const level = Number(node.tagName?.slice(1));
       const classes = node.properties.className;
       node.properties.className = [
-        ...(Array.isArray(classes) ? classes : classes ? [classes] : []),
+        ...(Array.isArray(classes)
+          ? classes.filter(
+              (value): value is string => typeof value === "string",
+            )
+          : typeof classes === "string"
+            ? [classes]
+            : []),
         `post-heading--${level}`,
       ];
       node.tagName = `${keepTagPrefix}h${Math.min(level + 1, 6)}`;

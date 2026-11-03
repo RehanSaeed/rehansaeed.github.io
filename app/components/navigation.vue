@@ -11,6 +11,7 @@
         sizes="50px"
         height="50" />
     </u-link-button>
+    <!-- eslint-disable-next-line vuejs-accessibility/no-redundant-roles -- Explicit role selects the shared unstyled UI-list reset. -->
     <ul class="navigation__items-left" role="list">
       <li>
         <u-link-button class="navigation__item" to="/" :aria-current="blogPage"

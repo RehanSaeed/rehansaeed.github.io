@@ -15,6 +15,7 @@
         type="search" />
       <!-- eslint-enable vuejs-accessibility/no-autofocus -->
     </form>
+    <!-- eslint-disable-next-line vuejs-accessibility/no-redundant-roles -- Preserve list semantics in Safari when list-style is none. -->
     <ul class="search__results" aria-label="Search results" role="list">
       <li v-for="searchResult of searchResults" :key="searchResult.id">
         <u-search-result :searchResult="searchResult" @selected="onSelected" />

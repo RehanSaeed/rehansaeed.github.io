@@ -19,6 +19,7 @@
       <u-heading id="portfolio-microsoft" level="2" center
         >Contributions at Microsoft</u-heading
       >
+      <!-- eslint-disable-next-line vuejs-accessibility/no-redundant-roles -- Preserve list semantics in Safari when list-style is none. -->
       <ul
         class="portfolio__items"
         aria-labelledby="portfolio-microsoft"
@@ -36,6 +37,7 @@
         >Open Source</u-heading
       >
       <u-portfolio-statistics />
+      <!-- eslint-disable-next-line vuejs-accessibility/no-redundant-roles -- Preserve list semantics in Safari when list-style is none. -->
       <ul
         class="portfolio__items"
         aria-labelledby="portfolio-open-source"

@@ -3,6 +3,7 @@
     <u-author />
     <u-arrows class="posts__arrows" />
 
+    <!-- eslint-disable-next-line vuejs-accessibility/no-redundant-roles -- Preserve list semantics in Safari when list-style is none. -->
     <ul class="posts__items" aria-label="Blog posts" role="list">
       <li v-for="(post, index) of posts" :key="post.id">
         <u-post-card :post="post" :priority="index === 0" />

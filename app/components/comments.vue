@@ -31,6 +31,7 @@
           </p>
         </div>
       </header>
+      <!-- eslint-disable-next-line vuejs-accessibility/no-redundant-roles -- Preserve list semantics in Safari when list-style is none. -->
       <ol
         v-if="current.comments.length"
         class="comments__list"

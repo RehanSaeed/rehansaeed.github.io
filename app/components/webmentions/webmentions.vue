@@ -54,6 +54,7 @@
           <h3 class="webmentions__count webmentions__link-count">
             {{ linksDescription }}
           </h3>
+          <!-- eslint-disable-next-line vuejs-accessibility/no-redundant-roles -- Preserve list semantics in Safari when list-style is none. -->
           <ul
             v-if="!isLoading"
             class="webmentions__links-container"
@@ -70,6 +71,7 @@
           <h3 class="webmentions__count webmentions__reply-count">
             {{ repliesDescription }}
           </h3>
+          <!-- eslint-disable-next-line vuejs-accessibility/no-redundant-roles -- Preserve list semantics in Safari when list-style is none. -->
           <ol
             v-if="!isLoading"
             class="webmentions__replies-container"
