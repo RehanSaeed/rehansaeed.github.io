@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { mkdirSync } from "node:fs";
-import { readFile } from "node:fs/promises";
-import { dirname, isAbsolute, resolve } from "node:path";
+import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { dirname, isAbsolute, relative, resolve, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { contentPublicDir } from "./modules/blog-content/paths";
 import site from "./site.json";
@@ -528,6 +528,26 @@ export default defineNuxtConfig({
     // these entries become "about/" and the module's transform skips them.
     "pwa:beforeBuildServiceWorker": async (options) => {
       const config = options.injectManifest;
+      const files = await readdir(config.globDirectory, {
+        recursive: true,
+        withFileTypes: true,
+      });
+      await mkdir(".data", { recursive: true });
+      await writeFile(
+        ".data/offline-source-files.json",
+        JSON.stringify(
+          files
+            .filter((file) => file.isFile())
+            .map((file) =>
+              relative(
+                config.globDirectory,
+                resolve(file.parentPath, file.name),
+              )
+                .split(sep)
+                .join("/"),
+            ),
+        ),
+      );
       config.additionalManifestEntries = await Promise.all(
         (config.additionalManifestEntries ?? []).map(async (entry) => {
           if (typeof entry === "string") {

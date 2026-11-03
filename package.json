@@ -85,7 +85,7 @@
     "help": "node scripts/commands.mts",
     "images:avif": "node scripts/avif-images.mts",
     "dev": "nuxt dev",
-    "build": "nuxt generate && node scripts/pages.mts artifact && node scripts/offline-manifest.mjs && npm run seo:verify",
+    "build": "nuxt generate && node scripts/offline-manifest.mjs && node scripts/pages.mts artifact && npm run seo:verify",
     "start": "node scripts/serve.mts",
     "analyze": "nuxt analyze",
     "typecheck": "nuxt typecheck && tsc --project tsconfig.scripts.json",

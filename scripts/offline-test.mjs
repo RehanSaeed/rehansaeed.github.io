@@ -35,37 +35,34 @@ const coreUrls = [
 ];
 const core = full.filter((entry) => coreUrls.includes(entry.url));
 assert.equal(core.length, 5);
-const postGenerationAssets = [];
-if (scope !== "fixtures") {
-  const latest = z
-    .object({
-      id: z.string(),
-      skewProtection: z.object({
-        versions: z.record(z.string(), z.object({ timestamp: z.string() })),
-      }),
-    })
-    .parse(
-      JSON.parse(
-        await readFile(join(output, "_nuxt/builds/latest.json"), "utf8"),
-      ),
-    );
-  const skew = z
-    .object({ deletedChunks: z.record(z.string(), z.array(z.string())) })
+const originalFiles = new Set(
+  z
+    .array(z.string())
     .parse(
       JSON.parse(
         await readFile(
-          join(output, `_nuxt/builds/skew/${latest.id}.json`),
+          resolve(output, "../.data/offline-source-files.json"),
           "utf8",
         ),
       ),
-    );
-  postGenerationAssets.push(...Object.values(skew.deletedChunks).flat());
-  for (const id of Object.keys(latest.skewProtection.versions)) {
-    if (id !== latest.id) {
-      postGenerationAssets.push(`_nuxt/builds/meta/${id}.json`);
-    }
-  }
-}
+    ),
+);
+const deployment = JSON.parse(
+  await readFile(join(output, "deployment.json"), "utf8"),
+);
+const workerMarker = z
+  .object({
+    files: z.array(
+      z.object({ path: z.string(), sha256: z.string().optional() }),
+    ),
+  })
+  .parse(deployment)
+  .files.find(({ path }) => path === "/service-worker.js");
+assert.equal(
+  workerMarker?.sha256,
+  createHash("sha256").update(source).digest("hex"),
+  "Deployment verification must describe the final worker bytes",
+);
 const baseline = await getManifest({
   globDirectory: output,
   globPatterns: [
@@ -89,16 +86,17 @@ const baseline = await getManifest({
     "offline.html",
     // Written by pages.mjs after PWA generation; not part of the existing offline set.
     "deployment.json",
-    // Nuxt skew protection also writes its release index after PWA generation.
-    "_nuxt/builds/skew/**",
-    // Previous-release chunks are restored only after PWA generation.
-    ...postGenerationAssets,
   ],
   maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
 });
 console.log(`${browserName}: generated-asset coverage checked.`);
 const urls = new Set(full.map(({ url }) => url));
+const expectedUrls = new Set(coreUrls);
 for (const asset of baseline.manifestEntries) {
+  // Skew protection restores historical JS and CSS after the original precache scan.
+  if (!originalFiles.has(decodeURIComponent(asset.url))) {
+    continue;
+  }
   const url = decodeURIComponent(asset.url);
   const required = url.startsWith("_ipx/")
     ? !/\.(png|jpe?g|webp|avif)$/i.test(url) ||
@@ -112,12 +110,18 @@ for (const asset of baseline.manifestEntries) {
       asset.url === "index.html"
         ? "/"
         : asset.url.replace(/\/index\.html$/, "/");
+    expectedUrls.add(normalised);
     assert.ok(
       urls.has(normalised),
       `Existing offline asset is missing: ${normalised}`,
     );
   }
 }
+assert.deepEqual(
+  urls,
+  expectedUrls,
+  "The complete original offline set is retained",
+);
 const directory = await mkdtemp(
   join(tmpdir(), "blog-offline-staging-3724788a-"),
 );

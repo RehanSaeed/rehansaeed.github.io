@@ -8,6 +8,7 @@ import {
   getAnalyticsEvents,
   test,
 } from "./fixtures";
+import { saveWholeBlogOffline } from "./offline";
 
 type ListingPost = {
   title: string;
@@ -269,7 +270,7 @@ test.describe("Service worker", () => {
     test.slow();
     await page.goto("/");
 
-    // ready only resolves once the precache install succeeds and the worker activates.
+    // Activation confirms the essential core, not full-content readiness.
     const scriptURL = await page.evaluate(
       async () => (await navigator.serviceWorker.ready).active?.scriptURL,
     );
@@ -296,6 +297,7 @@ test.describe("Service worker", () => {
         });
       }
     });
+    await saveWholeBlogOffline(page);
     await context.setOffline(true);
 
     await page.goto("/tag/c/");
