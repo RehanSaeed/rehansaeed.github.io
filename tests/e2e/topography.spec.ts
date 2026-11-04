@@ -1,5 +1,12 @@
 import sharp from "sharp";
+import type { Locator } from "@playwright/test";
 import { expect, test } from "./fixtures";
+
+// Compare the drawing independently; HTML overlay layout is checked separately.
+const captureDrawing = (drawing: Locator) =>
+  drawing.screenshot({
+    style: ".navigation, .topography__title { opacity: 0 !important; }",
+  });
 
 test.beforeEach(async ({ page }) => {
   await page.route("https://tiles.openfreemap.org/**", (route) =>
@@ -26,7 +33,7 @@ test("the live contour sculpture changes with chapters and the site theme", asyn
   await expect(scene).toContainText(
     "Abstract artwork, not geography or achievement data.",
   );
-  const overhead = await canvas.screenshot();
+  const overhead = await captureDrawing(canvas);
   const statistics = await sharp(overhead).stats();
   expect(
     Math.max(...statistics.channels.map((channel) => channel.stdev)),
@@ -40,12 +47,12 @@ test("the live contour sculpture changes with chapters and the site theme", asyn
   await page.locator("#github").scrollIntoViewIfNeeded();
   await expect(scene.locator(".topography__chapter")).toHaveText("GitHub");
   await expect
-    .poll(async () => (await canvas.screenshot()).equals(overhead))
+    .poll(async () => (await captureDrawing(canvas)).equals(overhead))
     .toBe(false);
-  const light = await canvas.screenshot();
+  const light = await captureDrawing(canvas);
   await page.getByRole("button", { name: "Toggle dark/light" }).click();
   await expect
-    .poll(async () => (await canvas.screenshot()).equals(light))
+    .poll(async () => (await captureDrawing(canvas)).equals(light))
     .toBe(false);
   await expect(page.locator(".location-map")).toHaveCount(1);
 });
@@ -56,21 +63,69 @@ test("reduced motion is static even when chapters change", async ({ page }) => {
   const scene = page.locator(".topography");
   await expect(scene).toHaveAttribute("data-scene", "ready");
   const canvas = scene.locator("canvas");
-  const first = await canvas.screenshot();
+  const first = await captureDrawing(canvas);
   await page.locator("#github").scrollIntoViewIfNeeded();
   await expect(scene.locator(".topography__chapter")).toHaveText("GitHub");
-  expect((await canvas.screenshot()).equals(first)).toBe(true);
+  expect((await captureDrawing(canvas)).equals(first)).toBe(true);
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await expect
-    .poll(async () => (await canvas.screenshot()).equals(first))
+    .poll(async () => (await captureDrawing(canvas)).equals(first))
     .toBe(false);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect
-    .poll(async () => (await canvas.screenshot()).equals(first))
+    .poll(async () => (await captureDrawing(canvas)).equals(first))
     .toBe(true);
 });
 
-test("forced colours keep the drawing and keyboard navigation without WebGL", async ({
+for (const viewport of [
+  { width: 1440, height: 1000 },
+  { width: 640, height: 450 },
+]) {
+  test(`navigation does not cover the artwork or heading at ${viewport.width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize(viewport);
+    await page.goto("/about/", { waitUntil: "domcontentloaded" });
+    await expect(page.locator(".topography")).toHaveAttribute(
+      "data-scene",
+      "ready",
+    );
+    const overlaps = () =>
+      page.evaluate(() => {
+        const artwork = document.querySelectorAll(
+          ".topography__canvas, .topography__title, .topography__eyebrow, .about h1",
+        );
+        const controls = document.querySelectorAll(
+          ".navigation a, .navigation button",
+        );
+        return Array.from(artwork).flatMap((element) => {
+          const bounds = element.getBoundingClientRect();
+          return Array.from(controls)
+            .filter((control) => {
+              const style = getComputedStyle(control);
+              const target = control.getBoundingClientRect();
+              return (
+                style.visibility === "visible" &&
+                target.width > 0 &&
+                target.height > 0 &&
+                target.bottom > 0 &&
+                target.top < window.innerHeight &&
+                bounds.left < target.right &&
+                bounds.right > target.left &&
+                bounds.top < target.bottom &&
+                bounds.bottom > target.top
+              );
+            })
+            .map((control) => `${element.className}: ${control.textContent}`);
+        });
+      });
+    expect(await overlaps()).toEqual([]);
+    await page.locator(".topography").scrollIntoViewIfNeeded();
+    expect(await overlaps()).toEqual([]);
+  });
+}
+
+test("forced colours keep keyboard navigation and restore the live artwork", async ({
   page,
 }) => {
   await page.emulateMedia({ forcedColors: "active" });
@@ -79,6 +134,13 @@ test("forced colours keep the drawing and keyboard navigation without WebGL", as
   await expect(scene).toHaveAttribute("data-scene", "static");
   await expect(scene.locator("canvas")).toBeHidden();
   await expect(scene.locator("svg")).toBeVisible();
+  const drawing = await scene.locator("svg").screenshot({
+    style: ".topography__title { opacity: 0 !important; }",
+  });
+  const statistics = await sharp(drawing).stats();
+  expect(
+    Math.max(...statistics.channels.map((channel) => channel.stdev)),
+  ).toBeGreaterThan(10);
   const link = page.getByRole("link", {
     name: "Explore the work",
     exact: true,
@@ -88,6 +150,14 @@ test("forced colours keep the drawing and keyboard navigation without WebGL", as
   await expect(
     page.getByRole("heading", { name: "YouTube", exact: true }),
   ).toBeInViewport();
+  await scene.scrollIntoViewIfNeeded();
+  await page.emulateMedia({ forcedColors: "none" });
+  await expect(scene).toHaveAttribute("data-scene", "ready");
+  await page.emulateMedia({ forcedColors: "active" });
+  await expect(scene).toHaveAttribute("data-scene", "static");
+  await expect(scene.locator("svg")).toBeVisible();
+  await page.emulateMedia({ forcedColors: "none" });
+  await expect(scene).toHaveAttribute("data-scene", "ready");
 });
 
 test("context loss explicitly falls back without hiding the profile", async ({

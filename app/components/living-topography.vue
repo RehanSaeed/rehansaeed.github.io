@@ -101,7 +101,18 @@ const failScene = (error: unknown) => {
 
 const draw = () => {
   frame = 0;
-  if (!sculpture || !visible || document.hidden || contrastQuery?.matches) {
+  const bounds = figure.value?.getBoundingClientRect();
+  if (
+    !sculpture ||
+    !visible ||
+    document.hidden ||
+    contrastQuery?.matches ||
+    !bounds ||
+    bounds.bottom <= 0 ||
+    bounds.top >= window.innerHeight ||
+    bounds.right <= 0 ||
+    bounds.left >= window.innerWidth
+  ) {
     return;
   }
   progress = reducedMotion.value ? 0.48 : progress + (target - progress) * 0.12;
@@ -172,7 +183,6 @@ const updatePreferences = () => {
   reducedMotion.value = motionQuery?.matches ?? true;
   stopFrame();
   if (contrastQuery?.matches) {
-    removeScene();
     state.value = "static";
   } else {
     void loadScene();
@@ -241,6 +251,8 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss">
+@use "~/assets/style/abstracts/breakpoints";
+
 .topography {
   position: relative;
   z-index: 3;
@@ -327,6 +339,20 @@ onBeforeUnmount(() => {
 .about .topography__caption {
   padding-block: 0.75rem;
   font-size: 0.65rem;
+}
+
+@include breakpoints.respond-above(xl) {
+  .topography__masthead {
+    padding-inline: 12rem 5rem;
+  }
+
+  .topography__stage {
+    margin-inline: 10rem 5rem;
+  }
+
+  .about .topography__title {
+    inset-inline-start: 2rem;
+  }
 }
 
 @media (width >= 1000px) and (height >= 800px) and (forced-colors: none) {
