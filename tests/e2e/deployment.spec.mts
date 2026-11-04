@@ -215,7 +215,13 @@ test("Browser suites run in parallel against one complete build without dropping
     });
     expect(build.steps).toContainEqual({
         name: "Package Browser Test Site",
-        run: "tar -cf playwright-site.tar dist .data/blog-image-metadata.json",
+        run: [
+            "tar -cf playwright-site.tar dist .data/blog-image-metadata.json .data/blog-portfolio.json .data/blog-nuget.json",
+            "if [ -f .data/blog-comments.json ]; then",
+            "  tar -rf playwright-site.tar .data/blog-comments.json",
+            "fi",
+            "",
+        ].join("\n"),
     });
     const upload = requireStep(build.steps, "Upload Browser Test Site");
     const download = requireStep(
@@ -230,15 +236,30 @@ test("Browser suites run in parallel against one complete build without dropping
     const extract = steps.findIndex(
         (step) => step.name === "Extract Browser Test Site",
     );
-    const run = steps.findIndex((step) => step.name === "Playwright Test");
-    expect(extract).toBeGreaterThan(
-        steps.findIndex((step) => step.name === "NPM Install"),
+    const downloadIndex = steps.findIndex(
+        (step) => step.name === "Download Browser Test Site",
     );
-    expect(extract).toBeLessThan(run);
+    const install = steps.findIndex((step) => step.name === "NPM Install");
+    const run = steps.findIndex((step) => step.name === "Playwright Test");
+    expect(downloadIndex).toBeGreaterThan(-1);
+    expect(extract).toBeGreaterThan(downloadIndex);
+    expect(install).toBeGreaterThan(extract);
+    expect(install).toBeLessThan(run);
+    expect(steps[install]?.run).toBe("npm ci");
     expect(steps[extract]?.run).toBe("tar -xf playwright-site.tar");
+    expect(steps[run]?.if).toBe("matrix.browser != 'firefox'");
     expect(steps[run]?.run).toBe(
         "npx playwright test --project=${{ matrix.browser }}",
     );
+    expect(requireStep(steps, "Playwright Firefox Test")).toEqual({
+        name: "Playwright Firefox Test",
+        if: "matrix.browser == 'firefox'",
+        run: "xvfb-run --auto-servernum npx playwright test --project=firefox --headed --workers=1",
+        env: {
+            TZ: "UTC",
+            LIBGL_ALWAYS_SOFTWARE: "1",
+        },
+    });
     expect(steps.some((step) => step.run === "npm run build")).toBe(false);
     for (const name of [
         "Cache Playwright Browsers",
@@ -252,6 +273,23 @@ test("Browser suites run in parallel against one complete build without dropping
     const report = requireStep(steps, "Upload Playwright Report");
     expect(report.if).toBe("failure()");
     expect(report.with?.name).toBe("playwright-report-${{ matrix.browser }}");
+});
+
+test("Failed dependency setup reports GitHub limits without bypassing install", () => {
+    const build = requireJob(readBuildWorkflow(), "build");
+    const dependencies = requireStep(build.steps, "NPM Install");
+    const diagnostic = requireStep(
+        build.steps,
+        "Inspect GitHub Metadata Failure",
+    );
+    expect(dependencies.id).toBe("dependencies");
+    expect(dependencies.run).toBe("npm ci");
+    expect(dependencies["continue-on-error"]).toBeUndefined();
+    expect(diagnostic.if).toBe(
+        "failure() && steps.dependencies.outcome == 'failure'",
+    );
+    expect(diagnostic.run).toContain("x-ratelimit-");
+    expect(diagnostic.run).toContain("retry-after:");
 });
 
 function publishedProbeResponse(
