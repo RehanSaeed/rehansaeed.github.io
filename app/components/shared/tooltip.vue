@@ -40,8 +40,10 @@ const props = withDefaults(
   defineProps<{
     /** Text displayed in the tooltip. */ text: string;
     /** Preferred side of the trigger on which to place the tooltip. */ placement?: Placement;
+    /** Allow dedicated info controls to open and close the tooltip on click or tap. */
+    toggleOnClick?: boolean;
   }>(),
-  { placement: "top" },
+  { placement: "top", toggleOnClick: false },
 );
 const id = useId();
 const bubble = useTemplateRef<HTMLDivElement>("bubble");
@@ -153,8 +155,20 @@ const onPointerLeave = () => {
 };
 
 const onPointerDown = () => {
+  if (props.toggleOnClick) {
+    return;
+  }
   focused = false;
   dismiss();
+};
+
+const onClick = (event: MouseEvent) => {
+  if (!props.toggleOnClick || open.value) {
+    dismiss();
+    return;
+  }
+  focused = true;
+  show(event);
 };
 
 const onFocus = (event: FocusEvent) => {
@@ -192,12 +206,13 @@ const onBubbleLeave = () => {
 
 const trigger = computed(() => ({
   "aria-describedby": open.value ? id : undefined,
+  "aria-expanded": props.toggleOnClick ? open.value : undefined,
   onPointerenter: onPointerEnter,
   onPointerleave: onPointerLeave,
   onPointerdown: onPointerDown,
   onFocus,
   onBlur,
-  onClick: dismiss,
+  onClick,
 }));
 
 const onEscape = (event: KeyboardEvent) => {

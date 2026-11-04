@@ -65,38 +65,7 @@
         <a :href="gitHubUrl">GitHub profile</a> and of course there are other
         commercial projects that I cannot disclose.
       </p>
-      <div class="about__github-images">
-        <u-tooltip v-slot="{ trigger }" text="View my GitHub profile">
-          <a v-bind="trigger" :href="gitHubUrl">
-            <img
-              class="about__github-image"
-              alt="GitHub stars"
-              height="30"
-              width="135"
-              :src="gitHubStarsImageUrl" />
-          </a>
-        </u-tooltip>
-        <u-tooltip v-slot="{ trigger }" text="View my GitHub followers">
-          <a v-bind="trigger" :href="gitHubFollowersUrl">
-            <img
-              class="about__github-image"
-              alt="GitHub follower count"
-              height="30"
-              width="168"
-              :src="gitHubFollowersImageUrl" />
-          </a>
-        </u-tooltip>
-        <u-tooltip v-slot="{ trigger }" text="Sponsor me on GitHub">
-          <a v-bind="trigger" :href="gitHubSponsorsUrl">
-            <img
-              class="about__github-image"
-              alt="GitHub sponsors"
-              height="30"
-              width="121"
-              :src="gitHubSponsorsImageUrl" />
-          </a>
-        </u-tooltip>
-      </div>
+      <u-portfolio-statistics class="about__statistics" borderless />
       <div class="about__github-statistics">
         <u-tooltip v-slot="{ trigger }" text="View my GitHub profile">
           <a v-bind="trigger" :href="gitHubUrl">
@@ -379,24 +348,6 @@ const stackOverflowProfileUrl = computed(
     `https://stackoverflow.com/users/flair/${metadata.author.stackOverflow.user}.png?theme=${oppositeTheme.value}`,
 );
 const gitHubUrl = computed(() => metadata.author.gitHub.url);
-const gitHubSponsorsUrl = computed(
-  () => `https://github.com/sponsors/${metadata.author.gitHub.user}`,
-);
-const gitHubSponsorsImageUrl = computed(
-  () =>
-    `https://img.shields.io/github/sponsors/${metadata.author.gitHub.user}?logo=github&style=social`,
-);
-const gitHubFollowersUrl = computed(
-  () => `https://github.com/${metadata.author.gitHub.user}?tab=followers`,
-);
-const gitHubFollowersImageUrl = computed(
-  () =>
-    `https://img.shields.io/github/followers/${metadata.author.gitHub.user}?style=social`,
-);
-const gitHubStarsImageUrl = computed(
-  () =>
-    `https://img.shields.io/github/stars/${metadata.author.gitHub.user}?style=social`,
-);
 const gitHubStatisticsImageUrl = computed(() => {
   const fileName =
     theme.value === "light"
@@ -446,6 +397,7 @@ onUnmounted(() => {
 <style lang="scss">
 .about {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--global-space-fluid-5);
   justify-items: center;
 }
@@ -461,6 +413,9 @@ onUnmounted(() => {
 
 .about__container {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-inline-size: 0;
+  max-inline-size: 100%;
   justify-items: center;
 
   &:last-child {
@@ -478,7 +433,10 @@ onUnmounted(() => {
   margin-block-end: var(--global-space-fluid-3);
 }
 
-.about__github-images,
+.about__statistics {
+  margin-block-end: var(--global-space-fixed-5);
+}
+
 .about__youtube-images {
   display: flex;
   flex-wrap: wrap;
@@ -487,11 +445,8 @@ onUnmounted(() => {
 
   margin-block-end: var(--global-space-fixed-5);
 }
-.about__github-image,
 .about__youtube-image {
   block-size: 30px;
-}
-.about__youtube-image {
   inline-size: auto;
 }
 .about__github-statistics {
