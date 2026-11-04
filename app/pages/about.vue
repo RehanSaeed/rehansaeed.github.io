@@ -4,10 +4,13 @@
     class="about"
     :class="{ 'about--motion': motionEnabled }"
     aria-labelledby="about">
+    <div class="about__wave-stage">
+      <u-about-waves />
+    </div>
     <header id="the-person" class="about__hero">
       <div class="about__intro">
         <div>
-          <p class="about__eyebrow">Muhammad Rehan Saeed</p>
+          <p class="about__eyebrow">Muhammad Rehan Saeed / About</p>
           <h1 id="about">Hello, I'm Rehan.</h1>
           <p class="about__standfirst">
             I'm a software developer at Microsoft. I contribute to open source
@@ -26,6 +29,7 @@
           <a class="about__text-link" href="#youtube">
             Explore the work <span aria-hidden="true">&darr;</span>
           </a>
+          <div id="about-art-controls"></div>
         </div>
         <figure class="about__portrait">
           <NuxtPicture
