@@ -33,6 +33,9 @@ authorise publishing the article or posting to social media.
 - Include relevant internal links to existing articles using their permalinks
   wherever possible. Use authoritative external links when there is no suitable
   internal article, especially for official documentation and supporting sources.
+- When mentioning a person, link their name to their blog. If they do not have a
+  blog, link to a verified social media profile instead. Verify that the
+  destination belongs to the person; do not guess URLs or handles.
 - Treat [content.config.ts](content.config.ts) as the source of truth for front
   matter. Create the post directory and Markdown file directly, using relevant
   published articles as examples. Check that the target does not already exist

@@ -22,7 +22,7 @@ Last week, while I was on holiday, I spent a few hours upgrading my blog from [G
 
 I'd [picked Gridsome back in 2020](/choosing-a-static-site-generator/). This time, moving on also gave me a chance to see how much of a framework migration I could hand over to agents. I was pretty hands-off, but I came away with some useful learnings.
 
-## 1. I'm Now the Bottleneck
+## I'm Now the Bottleneck
 
 I have too many ideas. The bottleneck is now me reviewing all the code that I tell agents to write.
 
@@ -32,7 +32,7 @@ There are already products doing this, including [GitHub Copilot code review](ht
 
 At what point do humans stop manually reviewing PRs? At what point does the machine get better at reviewing code than a human? I don't have an answer yet. Generating more code certainly hasn't made the need to check it disappear.
 
-## 2. Turn Up the Linting Dials First
+## Turn Up the Linting Dials First
 
 Turning up the dials on automated checks is really important. Enable [TypeScript's strict mode](https://www.typescriptlang.org/tsconfig/strict.html), use a modern target appropriate to your supported environments, and configure the relevant [ESLint](https://eslint.org/) plugins.
 
@@ -42,7 +42,7 @@ I wasted a bunch of time repeatedly telling agents to fix things that could have
 
 I've been banging this drum since [Stop the Brace Wars, Use StyleCop](/stop-brace-wars-use-stylecop/). It turns out the same argument applies when the person writing the code isn't a person.
 
-## 3. Put the Things You Can't Lint in AGENTS.md
+## Put the Things You Can't Lint in AGENTS.md
 
 For the things you can't lint, giving preferences in [AGENTS.md](https://agents.md/) is really important.
 
@@ -52,7 +52,7 @@ I already have opinions about [CSS conventions](/css-general-rules-of-thumb/) an
 
 The same applies to [how an agent communicates on my behalf](/ai-gone-rogue/). If a preference matters, don't leave the agent to guess it.
 
-## 4. Automate Dependency Updates, Not Just Version Bumps
+## Automate Dependency Updates, Not Just Version Bumps
 
 Having a scheduled task to update npm packages and GitHub Actions dependencies is awesome. It's the same appeal that led me to [automate .NET security updates](/automating-dotnet-security-updates/): less repetitive maintenance for me.
 
@@ -60,7 +60,7 @@ Don't forget to tell the agent to read the release notes and tell you about new 
 
 Breaking changes, tests and review still matter. The useful extra is having the agent explain what the update makes possible, rather than just changing a number.
 
-## 5. Ask the Agent to Read the Docs
+## Ask the Agent to Read the Docs
 
 Telling an agent to go and read a package's documentation is a cool way to squeeze more out of something you've already installed.
 
@@ -70,7 +70,7 @@ For example:
 
 It's easy to install a package, get the basic example working and never discover the rest of its features. An agent can help find those gaps. I'd ask for suggestions first, though, rather than blindly implementing every feature. Not every option belongs on my blog.
 
-## 6. Try Several Implementations and Pick the Best
+## Try Several Implementations and Pick the Best
 
 You can tell agents to implement something N different ways and then pick the best implementation. This ends up being a great way to ideate.
 
