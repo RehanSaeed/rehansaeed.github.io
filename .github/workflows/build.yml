@@ -78,7 +78,11 @@ jobs:
       - name: "Test Shared Utilities"
         run: npm run test:unit
       - name: "Package Browser Test Site"
-        run: tar -cf playwright-site.tar dist .data/blog-image-metadata.json
+        run: |
+          tar -cf playwright-site.tar dist .data/blog-image-metadata.json .data/blog-portfolio.json .data/blog-nuget.json
+          if [ -f .data/blog-comments.json ]; then
+            tar -rf playwright-site.tar .data/blog-comments.json
+          fi
       - name: "Upload Browser Test Site"
         uses: actions/upload-artifact@v7.0.2
         with:
@@ -127,17 +131,17 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-      - name: "NPM Install"
-        run: npm ci
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HUSKY: "0"
       - name: "Download Browser Test Site"
         uses: actions/download-artifact@v8.0.2
         with:
           name: playwright-site
       - name: "Extract Browser Test Site"
         run: tar -xf playwright-site.tar
+      - name: "NPM Install"
+        run: npm ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HUSKY: "0"
       - name: "Cache Playwright Browsers"
         if: matrix.browser == 'firefox'
         id: playwright-cache
