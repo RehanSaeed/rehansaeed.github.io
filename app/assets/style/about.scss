@@ -112,12 +112,83 @@
 
 .about__intro {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 1fr);
   align-items: start;
   gap: clamp(2rem, 5vw, 5rem);
   max-inline-size: 1440px;
   margin-inline: auto;
   padding-block: 4rem;
+}
+
+.about__portrait {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-block-size: 540px;
+  isolation: isolate;
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--cp-accent) 9%, transparent),
+    transparent 68%
+  );
+}
+
+.about__portrait picture {
+  inline-size: min(100%, 280px);
+}
+
+.about__portrait-orbit {
+  position: absolute;
+  inset: 8% 2%;
+  border: 1px solid color-mix(in srgb, var(--cp-accent) 30%, transparent);
+  border-radius: 50%;
+  transform: rotate(-24deg);
+  pointer-events: none;
+}
+
+.about--particles .about__portrait picture {
+  position: absolute;
+  z-index: 3;
+  inset-inline-end: 0;
+  inset-block-end: 0;
+  inline-size: 64px;
+  border: 2px solid var(--cp-bg);
+}
+
+.about__particle-window {
+  position: relative;
+  display: none;
+  grid-column: 1 / -1;
+  inline-size: 100%;
+  block-size: 280px;
+  margin-block-end: 3rem;
+  border-block: 1px solid var(--cp-border);
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--cp-accent) 7%, transparent),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.about--particles .about__particle-window {
+  display: block;
+}
+
+.about__particle-window span {
+  position: absolute;
+  inset-block-end: 1rem;
+  inset-inline-start: 0;
+  color: var(--cp-text-muted);
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+}
+
+.about__youtube > .about__particle-window,
+.about__answers > .about__particle-window {
+  grid-row: 2;
+  margin-block-end: 0;
 }
 
 .about__standfirst {
@@ -544,8 +615,29 @@
   }
 
   .about__portrait {
-    max-inline-size: 240px;
+    inline-size: 100%;
+    min-block-size: 440px;
     padding-block-start: 0;
-    justify-self: end;
+    justify-self: center;
+  }
+}
+
+@media (width < 900px) {
+  .about__youtube > .about__particle-window,
+  .about__answers > .about__particle-window {
+    grid-row: auto;
+  }
+}
+
+@media (forced-colors: active) {
+  .about .about__particle-window,
+  .about__portrait-orbit {
+    display: none;
+  }
+
+  .about--particles .about__portrait picture {
+    position: static;
+    inline-size: min(100%, 280px);
+    border: 0;
   }
 }
