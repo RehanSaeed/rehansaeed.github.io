@@ -100,6 +100,40 @@
   padding-block: 1.5rem 2rem;
 }
 
+.about__paper {
+  block-size: 32rem;
+  max-inline-size: 34rem;
+  margin-inline: auto;
+}
+
+@media (width >= 1200px) {
+  .about {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 27%);
+    align-items: start;
+  }
+
+  .about > .about__paper {
+    position: sticky;
+    inset-block-start: 6rem;
+    grid-column: 2;
+    grid-row: 1 / span 7;
+    inline-size: 100%;
+    block-size: min(78svh, 52rem);
+    border-inline-start: 1px solid var(--cp-border);
+  }
+
+  .about > header,
+  .about > section {
+    grid-column: 1;
+    padding-inline: max(14rem, var(--global-space-main)) clamp(2rem, 4vw, 4rem);
+  }
+
+  .about .about__intro {
+    grid-template-columns: minmax(0, 1fr) minmax(140px, 180px);
+  }
+}
+
 .about .about__eyebrow {
   color: var(--cp-accent);
   font-size: 0.75rem;
@@ -547,5 +581,11 @@
     max-inline-size: 240px;
     padding-block-start: 0;
     justify-self: end;
+  }
+}
+
+@media (forced-colors: active) {
+  .about {
+    display: block;
   }
 }

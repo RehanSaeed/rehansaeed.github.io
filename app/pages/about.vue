@@ -43,6 +43,8 @@
       </div>
     </header>
 
+    <u-folded-paper class="about__paper" />
+
     <section
       id="location"
       class="about__location about__section"
