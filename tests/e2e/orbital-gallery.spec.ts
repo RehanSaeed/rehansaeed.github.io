@@ -79,6 +79,39 @@ test("The decorative mobile renders, responds to preferences and survives contex
   ).toBeVisible();
 });
 
+test("Preferences recover when browser media change events are missed", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const matchMedia = window.matchMedia.bind(window);
+    window.matchMedia = (query) => {
+      const media = matchMedia(query);
+      if (
+        query === "(prefers-reduced-motion: reduce)" ||
+        query === "(forced-colors: active)"
+      ) {
+        media.addEventListener = () => {
+          // Reproduce CSS and matches updating without a delivered change event.
+        };
+      }
+      return media;
+    };
+  });
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/about/", { waitUntil: "domcontentloaded" });
+  const scene = page.locator(".orbital-gallery");
+  await expect(scene).toHaveAttribute("data-state", "animated");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(scene).toHaveAttribute("data-state", "static");
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(scene).toHaveAttribute("data-state", "animated");
+  await page.emulateMedia({ forcedColors: "active" });
+  await expect(scene).toHaveAttribute("data-state", "fallback");
+  await expect(scene).toBeHidden();
+  await page.emulateMedia({ forcedColors: "none" });
+  await expect(scene).toHaveAttribute("data-state", "animated");
+});
+
 test("Missing WebGL leaves the gallery artwork and real biography available", async ({
   page,
 }) => {

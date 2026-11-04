@@ -5,6 +5,7 @@
     :class="{ 'orbital-gallery--ready': ready }"
     :data-state="state"
     aria-hidden="true">
+    <span ref="preferences" class="orbital-gallery__preferences" />
     <div class="orbital-gallery__fallback">
       <span />
       <span />
@@ -19,6 +20,7 @@ import type { WebGLRenderer } from "three";
 
 const host = useTemplateRef<HTMLDivElement>("host");
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas");
+const preferences = useTemplateRef<HTMLSpanElement>("preferences");
 const ready = ref(false);
 const state = ref("loading");
 let disposeScene: (() => void) | undefined;
@@ -33,7 +35,8 @@ onMounted(async () => {
   }
   const element = host.value;
   const surface = canvas.value;
-  if (!element || !surface) {
+  const preferenceSurface = preferences.value;
+  if (!element || !surface || !preferenceSurface) {
     state.value = "fallback";
     console.warn("Orbital gallery elements unavailable; using static artwork.");
     return;
@@ -249,8 +252,13 @@ onMounted(async () => {
       }
     });
     observer.observe(element);
-    const resizeObserver = new ResizeObserver(resize);
+    const resizeObserver = new ResizeObserver(() => {
+      resize();
+      updatePreference();
+    });
     resizeObserver.observe(element);
+    // CSS changes still wake the scene if a browser misses a media event.
+    resizeObserver.observe(preferenceSurface);
     window.addEventListener("scroll", updateScroll, { passive: true });
     window.addEventListener("pointermove", updatePointer, { passive: true });
     window.addEventListener("__themeChanged", updateTheme);
@@ -323,6 +331,13 @@ onBeforeUnmount(() => {
   opacity: 0;
 }
 
+.orbital-gallery__preferences {
+  position: absolute;
+  block-size: 1px;
+  inline-size: 1px;
+  visibility: hidden;
+}
+
 .orbital-gallery--ready .orbital-gallery__canvas {
   opacity: 1;
 }
@@ -350,6 +365,12 @@ onBeforeUnmount(() => {
 
   span:nth-child(3) {
     transform: rotate(85deg) scaleY(0.75);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbital-gallery__preferences {
+    inline-size: 2px;
   }
 }
 
