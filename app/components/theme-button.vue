@@ -23,6 +23,7 @@ import { appThemeChanged, appThemeLoaded } from "~/framework/analytics";
 defineOptions({ name: "u-theme-button", inheritAttrs: false });
 const darkTheme = ref(false);
 const theme = computed(() => (darkTheme.value ? "dark" : "light"));
+const { play: playSoundEffect } = useSoundEffect();
 
 const setTheme = () => {
   darkTheme.value = window.__theme === "dark";
@@ -31,6 +32,7 @@ const onToggleTheme = () => {
   darkTheme.value = !darkTheme.value;
   window.__setPreferredTheme(theme.value);
   appThemeChanged(theme.value);
+  playSoundEffect(darkTheme.value ? "toggle-on" : "toggle-off");
 };
 
 onMounted(() => {

@@ -25,10 +25,7 @@
         @click="update">
         {{ updating ? "Updating..." : "Update now" }}
       </u-button>
-      <u-button
-        variant="secondary"
-        :disabled="updating"
-        @click="dismiss">
+      <u-button variant="secondary" :disabled="updating" @click="dismiss">
         Later
       </u-button>
     </div>
