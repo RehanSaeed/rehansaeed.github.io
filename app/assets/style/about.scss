@@ -97,6 +97,10 @@
 }
 
 .about__hero {
+  position: relative;
+  background: color-mix(in srgb, var(--cp-bg) 96%, transparent);
+  border-block-start: 1px solid var(--cp-accent);
+  margin-block-end: 32svh;
   padding-block: 1.5rem 2rem;
 }
 
@@ -265,7 +269,23 @@
 }
 
 .about__section {
+  position: relative;
+  background: color-mix(in srgb, var(--cp-bg) 96%, transparent);
+  border-inline-start: 1px solid var(--cp-accent);
+  margin-block-end: 32svh;
+  margin-inline: clamp(0.5rem, 2vw, 2rem);
   padding-block: clamp(3.5rem, 7vw, 7rem);
+}
+
+.about__section:last-child {
+  margin-block-end: 0;
+}
+
+@media (prefers-reduced-motion: reduce), (forced-colors: active) {
+  .about__hero,
+  .about__section {
+    margin-block-end: 0;
+  }
 }
 
 .about__prose {

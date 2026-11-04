@@ -4,6 +4,7 @@
     class="about"
     :class="{ 'about--motion': motionEnabled }"
     aria-labelledby="about">
+    <u-architectural-spaces />
     <header id="the-person" class="about__hero">
       <div class="about__intro">
         <div>
