@@ -33,6 +33,7 @@
       <u-heading id="portfolio-open-source" level="2" center
         >Open Source</u-heading
       >
+      <u-portfolio-statistics />
       <div class="portfolio__items">
         <u-portfolio-card
           v-for="item of openSourceProjects"
@@ -156,5 +157,13 @@ useSchemaOrg([
 
 .portfolio__section > h2 {
   margin-block: 0;
+}
+
+.portfolio__open-source {
+  padding-block-start: var(--global-space-fluid-5);
+
+  .portfolio-statistics {
+    margin-block-end: var(--global-space-fluid-6);
+  }
 }
 </style>

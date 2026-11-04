@@ -5,9 +5,13 @@ export function useBlogOgImage(
   heroImage = heroImagePath,
   author = useAppConfig().site.author.name,
 ) {
-  return defineOgImage(
-    "BlogTakumi",
-    { title, author, heroImage },
-    { alt: `${title} - ${author}` },
-  );
+  // Social cards are prerendered; client hydration must not regenerate them.
+  if (import.meta.server) {
+    return defineOgImage(
+      "BlogTakumi",
+      { title, author, heroImage },
+      { alt: `${title} - ${author}` },
+    );
+  }
+  return [];
 }

@@ -10,7 +10,7 @@ const popularitySchema = z.object({
   stars: z.number().int().nonnegative(),
   forks: z.number().int().nonnegative(),
 });
-const cacheSchema = z.object({
+export const cacheSchema = z.object({
   updated: z.number(),
   snapshots: z.record(z.string(), popularitySchema),
 });
@@ -103,7 +103,10 @@ export async function portfolioSnapshots(
   }
   await writeFile(
     path,
-    JSON.stringify({ updated: complete ? Date.now() : 0, snapshots }),
+    JSON.stringify({
+      updated: complete ? Date.now() : 0,
+      snapshots,
+    }),
   );
   return snapshots;
 }
