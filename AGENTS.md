@@ -333,8 +333,9 @@ into the composition; their arrangement can change with the pose and framing.
   grey ceramic or metal surfaces.
 - Include a cream-paper writing pad and a normal hand-sized fountain pen when
   writing accessories suit the scene. The pen has a transparent plastic
-  demonstrator barrel with visible shimmer ink; muted violet ink and a few
-  subtle gold flecks fit the palette. Keep its nib and separate clear cap
+  demonstrator barrel with visible shimmer ink. Choose a random ink colour for
+  each new illustration rather than using a fixed colour, and suggest shimmer
+  with only a few subtle flecks. Keep its nib and separate clear cap
   proportionate. It should be a small desk accessory, not span the whole pad.
 - Small stacks of simply bound books can support the scene. Avoid invented
   readable titles, decorative clutter or adding objects just to fill space.
