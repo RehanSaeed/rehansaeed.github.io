@@ -254,6 +254,14 @@ When explicitly asked to help draft an article, follow these guidelines:
 - Preserve the author's chosen concept when revising an image; change the visual
   treatment rather than inventing a different message. Show the result for
   review, and do not claim generated imagery is a real screenshot or photograph.
+- When illustrating the author, make the person recognisably resemble him rather
+  than using a generic character. Use
+  [the author's profile photo](public/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg)
+  or a newer user-supplied photo as a visual reference, preserving recognisable
+  facial features, hairstyle, facial hair and body proportions within the chosen
+  illustration style. Keep the head angle, gaze and anatomy consistent with the
+  intended pose. Do not invent a different appearance. Ask for a suitable
+  reference if the available photo is insufficient.
 
 ### Updating Published Posts
 
