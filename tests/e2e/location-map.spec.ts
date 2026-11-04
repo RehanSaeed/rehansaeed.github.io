@@ -6,6 +6,12 @@ import { expect, test } from "./fixtures";
 const photo = "/images/author/Muhammad-Rehan-Saeed/Logo-192x192.png";
 const geoUrl = "https://get.geojs.io/v1/ip/geo.json";
 
+test.beforeEach(async ({ page }) => {
+  await page.route(geoUrl, (route) =>
+    route.fulfill({ status: 503, body: "Location service unavailable" }),
+  );
+});
+
 unitTest(
   "Great-circle miles between London and New York are approximate",
   () => {
@@ -22,12 +28,6 @@ unitTest("Great-circle miles handle identical and antipodal points", () => {
   expect(distanceInMiles([180, 0], [0, 0])).toBeCloseTo(12436.82, 2);
 });
 
-test.beforeEach(async ({ page }) => {
-  await page.route(geoUrl, (route) =>
-    route.fulfill({ status: 503, body: "Location service unavailable" }),
-  );
-});
-
 async function expectPinInsideMap(page: Page, selector: string) {
   const figure = page.locator(".location-map");
   await expect
@@ -36,7 +36,9 @@ async function expectPinInsideMap(page: Page, selector: string) {
       const pin = await figure
         .locator(`.maplibregl-marker${selector}`)
         .boundingBox();
-      if (!canvas || !pin) return false;
+      if (!canvas || !pin) {
+        return false;
+      }
       return (
         pin.x >= canvas.x &&
         pin.x + pin.width <= canvas.x + canvas.width &&
@@ -66,7 +68,9 @@ async function expectLocationsFillView(page: Page, coincident: boolean) {
       const dy = Math.abs(
         author.y + author.height - visitor.y - visitor.height,
       );
-      if (coincident) return dx < 1 && dy < 1;
+      if (coincident) {
+        return dx < 1 && dy < 1;
+      }
       return (
         Math.max(dx / (canvas.width - 96), dy / (canvas.height - 128)) > 0.9
       );
@@ -93,6 +97,15 @@ async function expectDottedConnection(page: Page) {
   const canvas = figure.locator(".maplibregl-canvas");
   const author = figure.locator(".maplibregl-marker.location-map__marker");
   const visitor = figure.locator(".maplibregl-marker.location-map__visitor");
+  const radius = await figure.evaluate((element) =>
+    Math.ceil(
+      Number.parseFloat(
+        getComputedStyle(element).getPropertyValue(
+          "--location-map-connection-outline-width",
+        ),
+      ) / 2,
+    ),
+  );
   const luminance = (pixel: Uint8Array) =>
     [...pixel].reduce((sum, channel, index) => {
       const value = channel / 255;
@@ -142,23 +155,31 @@ async function expectDottedConnection(page: Page) {
             bounds.y) *
             (info.height / bounds.height),
         );
-        const background = pixelAt(x + normal[0]! * 12, y + normal[1]! * 12);
+        const background = pixelAt(
+          x + normal[0]! * (radius + 8),
+          y + normal[1]! * (radius + 8),
+        );
         const backgroundLuminance = luminance(background);
         const surface = [...background].every((channel) => channel > 250)
           ? samples.land
           : samples.water;
         let visible = false;
-        for (let across = -4; across <= 4; across++) {
+        for (let across = -radius; across <= radius; across++) {
           const foreground = luminance(
             pixelAt(x + normal[0]! * across, y + normal[1]! * across),
           );
           const contrast =
             (Math.max(foreground, backgroundLuminance) + 0.05) /
             (Math.min(foreground, backgroundLuminance) + 0.05);
-          if (contrast >= 3) visible = true;
+          if (contrast >= 3) {
+            visible = true;
+          }
         }
-        if (visible) surface.dots++;
-        else surface.gaps++;
+        if (visible) {
+          surface.dots++;
+        } else {
+          surface.gaps++;
+        }
       }
       return Object.values(samples).every(
         ({ dots, gaps }) => dots > 3 && gaps > 3,
@@ -239,6 +260,8 @@ async function requireWebGL(page: Page) {
     context?.getExtension("WEBGL_lose_context")?.loseContext();
     return context !== null;
   });
+  // Renderer cases require WebGL; the fallback has separate coverage.
+  // eslint-disable-next-line playwright/no-skipped-test
   test.skip(!hasWebGL, "This browser does not support WebGL 2.");
 }
 
@@ -408,6 +431,33 @@ test("The free map loads on approach, shows Europe and follows the purple theme"
   expect(mapboxRequests).toEqual([]);
 });
 
+test("Map credits collapse after five seconds and can be reopened", async ({
+  page,
+}) => {
+  await mockOpenFreeMap(page);
+  await page.goto("/about/", { waitUntil: "domcontentloaded" });
+  await requireWebGL(page);
+  const figure = page.locator(".location-map");
+  await figure.scrollIntoViewIfNeeded();
+  await expect(figure).toHaveClass(/location-map--interactive/);
+  const credits = figure.locator(".maplibregl-ctrl-attrib-inner");
+  const toggle = figure.locator(".maplibregl-ctrl-attrib-button");
+  await expect(credits).toBeVisible();
+  await expect(credits).toContainText("Mock map data");
+  await expect(credits.getByRole("link", { name: "GeoJS" })).toBeVisible();
+  await expect(credits).toBeHidden({ timeout: 7000 });
+  await expect(toggle).toBeVisible();
+  await toggle.click();
+  await expect(credits).toBeVisible();
+  await toggle.click();
+  await expect(credits).toBeHidden();
+  await page.getByRole("button", { name: "Toggle dark/light" }).click();
+  await expect(toggle).toBeVisible();
+  await toggle.click();
+  await expect(credits).toBeVisible();
+  await expect(credits).toContainText("Mock map data");
+});
+
 test("The animated fly-in ends at the regional view with London visible", async ({
   page,
 }) => {
@@ -488,6 +538,12 @@ for (const colorScheme of ["light", "dark"] as const) {
   });
 }
 
+const expectConnectionForPlace = async (page: Page, place: string) => {
+  if (place === "New York") {
+    await expectDottedConnection(page);
+  }
+};
+
 for (const [place, longitude, latitude] of [
   ["Central London", "-0.1278", "51.5074"],
   ["East London", "-0.005", "51.54"],
@@ -532,7 +588,7 @@ for (const [place, longitude, latitude] of [
     await expectPinInsideMap(page, ".location-map__marker");
     await expectPinInsideMap(page, ".location-map__visitor");
     await expectLocationsFillView(page, place === "East London");
-    if (place === "New York") await expectDottedConnection(page);
+    await expectConnectionForPlace(page, place);
     await expect(figure).toContainText("GeoJS");
     expect(lookups).toEqual([geoUrl]);
     await page.setViewportSize({ width: 375, height: 900 });
@@ -543,7 +599,7 @@ for (const [place, longitude, latitude] of [
     await expect(
       figure.locator(".maplibregl-marker.location-map__visitor"),
     ).toHaveCount(1);
-    if (place === "New York") await expectDottedConnection(page);
+    await expectConnectionForPlace(page, place);
   });
 }
 
@@ -595,11 +651,27 @@ test("A browser without WebGL keeps the self-hosted photo map", async ({
   page,
 }) => {
   await page.addInitScript(() => {
-    const getContext = HTMLCanvasElement.prototype.getContext;
+    const getContext = Object.getOwnPropertyDescriptor(
+      HTMLCanvasElement.prototype,
+      "getContext",
+    );
+    if (!getContext || typeof getContext.value !== "function") {
+      throw new Error("Canvas getContext is unavailable.");
+    }
     Object.defineProperty(HTMLCanvasElement.prototype, "getContext", {
-      value(this: HTMLCanvasElement, contextId: string, ...args: unknown[]) {
-        if (contextId === "webgl2" || contextId === "webgl") return null;
-        return Reflect.apply(getContext, this, [contextId, ...args]);
+      value(
+        this: HTMLCanvasElement,
+        contextId: string,
+        ...args: unknown[]
+      ): unknown {
+        if (contextId === "webgl2" || contextId === "webgl") {
+          return null;
+        }
+        return Reflect.apply(
+          getContext.value as (...args: unknown[]) => unknown,
+          this,
+          [contextId, ...args],
+        );
       },
     });
   });
