@@ -219,7 +219,12 @@ for (const width of [320, 375, 768, 1440]) {
       expect(mvpAfterBounds![mvpAxis]).toBeGreaterThanOrEqual(
         mvpBeforeBounds![mvpAxis] + mvpBeforeBounds![mvpExtent],
       );
-      expect(mvpMedia!.width).toBeLessThanOrEqual(360);
+      // Firefox protocol quads can quantise corners beyond the native CSS width.
+      expect(
+        await article
+          .locator(".about__mvp-media")
+          .evaluate((element) => element.getBoundingClientRect().width),
+      ).toBeLessThanOrEqual(360);
       const headings = await article
         .locator(":scope > section[id]")
         .evaluateAll((sections) =>
