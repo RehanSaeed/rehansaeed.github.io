@@ -101,6 +101,78 @@ unitTest(
   },
 );
 
+for (const width of [1200, 1440]) {
+  for (const colorScheme of ["light", "dark"] as const) {
+    test(`About hero clears navigation at ${width}px in ${colorScheme} mode`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.emulateMedia({ colorScheme });
+      await openAbout(page);
+      for (const scrollY of [0, 35, 180]) {
+        await page.evaluate((top) => {
+          window.scrollTo({ top, behavior: "instant" });
+        }, scrollY);
+        await expect
+          .poll(() => page.evaluate(() => window.scrollY))
+          .toBe(scrollY);
+        await expect
+          .poll(async () =>
+            page.evaluate(() => {
+              const controls = Array.from(
+                document.querySelectorAll(".navigation a, .navigation button"),
+              )
+                .filter(
+                  (element) =>
+                    element.checkVisibility() &&
+                    getComputedStyle(element).visibility === "visible",
+                )
+                .map((element) => element.getBoundingClientRect());
+              if (controls.length === 0) {
+                throw new Error("Expected visible site navigation controls.");
+              }
+              return Array.from(
+                document.querySelectorAll(".about__eyebrow, .about h1"),
+              ).flatMap((element) => {
+                const copy = element.getBoundingClientRect();
+                if (copy.width <= 0 || copy.height <= 0) {
+                  throw new Error("Expected readable About hero text.");
+                }
+                if (copy.bottom <= 0 || copy.top >= window.innerHeight) {
+                  return [];
+                }
+                return controls
+                  .filter(
+                    (control) =>
+                      copy.left < control.right &&
+                      copy.right > control.left &&
+                      copy.top < control.bottom &&
+                      copy.bottom > control.top,
+                  )
+                  .map((control) => ({
+                    text: element.textContent.trim(),
+                    copy: {
+                      left: copy.left,
+                      top: copy.top,
+                      width: copy.width,
+                      height: copy.height,
+                    },
+                    control: {
+                      left: control.left,
+                      top: control.top,
+                      width: control.width,
+                      height: control.height,
+                    },
+                  }));
+              });
+            }),
+          )
+          .toEqual([]);
+      }
+    });
+  }
+}
+
 for (const width of [320, 375, 768, 1440]) {
   const mvpAxis = width >= 900 ? "x" : "y";
   const mvpExtent = width >= 900 ? "width" : "height";

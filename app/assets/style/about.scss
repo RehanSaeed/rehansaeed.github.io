@@ -1,3 +1,5 @@
+@use "abstracts/breakpoints";
+
 .about {
   --cp-bg: var(--global-background-color);
   --cp-bg-elevated: var(--global-content-background-color);
@@ -86,14 +88,23 @@
 
 .about__hero,
 .about__section {
+  --about-inline-space: clamp(1.25rem, 6vw, 7rem);
+
   padding-inline-start: max(
-    clamp(1.25rem, 6vw, 7rem),
+    var(--about-inline-space),
     env(safe-area-inset-left)
   );
   padding-inline-end: max(
-    clamp(1.25rem, 6vw, 7rem),
+    var(--about-inline-space),
     env(safe-area-inset-right)
   );
+
+  @include breakpoints.respond-above(xl) {
+    --about-inline-space: max(
+      clamp(1.25rem, 6vw, 7rem),
+      var(--global-space-main)
+    );
+  }
 }
 
 .about__hero {
