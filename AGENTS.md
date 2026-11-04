@@ -298,10 +298,8 @@ character appears.
   outlines, restrained flat colour and light print texture. Ochre clothing and
   dark blue denim should remain consistent across illustrations.
 - Pale lavender (`#F0E9F9`) is a suitable background within the house palette.
-- Choose the activity, pose and props to serve each article rather than copying
-  this hero's scene. A magnifying glass can represent review, but is not a
-  permanent character accessory. Keep the head, gaze and hands directed
-  naturally towards the task.
+- Choose the activity, pose and props to serve each article. Keep the head,
+  gaze and hands directed naturally towards the task.
 - Inspect the face, neck, hands, clothing and seated anatomy at full resolution
   as well as thumbnail size. Correct malformed grips, disconnected joints or
   ambiguous garment silhouettes before presenting the final image. When showing
@@ -346,9 +344,6 @@ into the composition; their arrangement can change with the pose and framing.
   charcoal outlines, restrained flat colours and light texture as the rest of
   the illustration. Suggest transparent plastic and shimmer with a few marks,
   not glossy highlights or photorealistic objects pasted into an ink drawing.
-- A magnifying glass, mechanical drafting arms and floating browser layouts are
-  article-specific metaphors, not permanent fixtures of the author's workspace.
-  Use or omit them according to the subject rather than copying this hero.
 
 ### Updating Published Posts
 
