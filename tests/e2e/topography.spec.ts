@@ -122,12 +122,24 @@ test("a missing WebGL implementation keeps the static drawing", async ({
   page,
 }) => {
   await page.addInitScript(() => {
-    const original = HTMLCanvasElement.prototype.getContext;
+    const original: unknown = Object.getOwnPropertyDescriptor(
+      HTMLCanvasElement.prototype,
+      "getContext",
+    )?.value;
+    if (typeof original !== "function") {
+      throw new Error("Canvas getContext is unavailable.");
+    }
     Object.defineProperty(HTMLCanvasElement.prototype, "getContext", {
-      value(this: HTMLCanvasElement, type: string, ...args: unknown[]) {
-        return type.startsWith("webgl")
-          ? null
-          : Reflect.apply(original, this, [type, ...args]);
+      value(
+        this: HTMLCanvasElement,
+        type: string,
+        ...args: unknown[]
+      ): unknown {
+        if (type.startsWith("webgl")) {
+          return null;
+        }
+        const result: unknown = Reflect.apply(original, this, [type, ...args]);
+        return result;
       },
     });
   });
@@ -217,7 +229,13 @@ test("the renderer stops drawing when static or outside the viewport", async ({
   page,
 }) => {
   await page.addInitScript(() => {
-    const drawArrays = WebGL2RenderingContext.prototype.drawArrays;
+    const drawArrays: unknown = Object.getOwnPropertyDescriptor(
+      WebGL2RenderingContext.prototype,
+      "drawArrays",
+    )?.value;
+    if (typeof drawArrays !== "function") {
+      throw new Error("WebGL drawArrays is unavailable.");
+    }
     Reflect.set(window, "topographyDraws", 0);
     WebGL2RenderingContext.prototype.drawArrays = function (...args) {
       if (
@@ -246,7 +264,9 @@ test("the renderer stops drawing when static or outside the viewport", async ({
       const before = Number(Reflect.get(window, "topographyDraws"));
       for (let frame = 0; frame < 8; frame++) {
         await new Promise<void>((resolve) =>
-          requestAnimationFrame(() => resolve()),
+          requestAnimationFrame(() => {
+            resolve();
+          }),
         );
       }
       return [before, Number(Reflect.get(window, "topographyDraws"))];
