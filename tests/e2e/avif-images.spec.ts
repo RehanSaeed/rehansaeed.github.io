@@ -205,8 +205,28 @@ async function verifyAwardImageWidths({ page }: Pick<E2EFixtures, "page">) {
   const imageBounds = await honours.boundingBox();
   expect(frameBounds).not.toBeNull();
   expect(imageBounds).not.toBeNull();
-  expect(imageBounds!.width).toBeCloseTo(frameBounds!.width, 1);
-  expect(imageBounds!.height / imageBounds!.width).toBeCloseTo(396 / 1288, 3);
+  const dimensions = await honours.evaluate((image) => {
+    const frame = image.closest(".about__honour-media");
+    if (!frame) {
+      throw new Error("The honours image must have its gallery frame");
+    }
+    const frameStyle = getComputedStyle(frame);
+    const imageStyle = getComputedStyle(image);
+    return {
+      available:
+        frame.clientWidth -
+        Number.parseFloat(frameStyle.paddingInlineStart) -
+        Number.parseFloat(frameStyle.paddingInlineEnd),
+      width: Number.parseFloat(imageStyle.inlineSize),
+      height: Number.parseFloat(imageStyle.blockSize),
+    };
+  });
+  expect(dimensions.width).toBeCloseTo(dimensions.available, 1);
+  expect(dimensions.height / dimensions.width).toBeCloseTo(396 / 1288, 3);
+  expect(imageBounds!.x).toBeGreaterThanOrEqual(frameBounds!.x);
+  expect(imageBounds!.x + imageBounds!.width).toBeLessThanOrEqual(
+    frameBounds!.x + frameBounds!.width,
+  );
   await expect(honours).toHaveAttribute("sizes", /322px.*644px/);
   await expect(honours.locator("..").locator("source")).toHaveAttribute(
     "srcset",

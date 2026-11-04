@@ -4,7 +4,13 @@
     class="about"
     :class="{ 'about--motion': motionEnabled }"
     aria-labelledby="about">
+    <div class="about__orbital-backdrop" aria-hidden="true">
+      <u-orbital-gallery />
+    </div>
     <header id="the-person" class="about__hero">
+      <p class="about__gallery-label">
+        <span aria-hidden="true">01 / 07</span> A few things in my orbit
+      </p>
       <div class="about__intro">
         <div>
           <p class="about__eyebrow">Muhammad Rehan Saeed</p>
@@ -39,6 +45,7 @@
             loading="eager"
             fetchpriority="high"
             src="/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg" />
+          <figcaption>Developer. Maker. Open source contributor.</figcaption>
         </figure>
       </div>
     </header>
