@@ -9,9 +9,30 @@ test("Dimensional chapter typography assembles while semantic content stays auth
   const installation = page.locator(".letterpress");
   await expect(installation).toHaveClass(/letterpress--ready/);
   await expect(installation).toHaveAttribute("aria-hidden", "true");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    "Hello, I'm Rehan.",
+  await expect(
+    page.getByRole("article").getByRole("heading", { level: 1 }),
+  ).toHaveText("Hello, I'm Rehan.");
+  const navigation = await page
+    .getByRole("navigation")
+    .getByRole("link", { name: "Blog", exact: true })
+    .boundingBox();
+  const registration = await installation
+    .getByText("About / Muhammad Rehan Saeed", { exact: true })
+    .boundingBox();
+  expect(navigation).not.toBeNull();
+  expect(registration).not.toBeNull();
+  expect(registration!.x).toBeGreaterThanOrEqual(
+    navigation!.x + navigation!.width,
   );
+  const themeToggle = await page
+    .getByRole("button", { name: "Toggle dark/light" })
+    .boundingBox();
+  const typeLabel = await installation
+    .getByText("Type in motion", { exact: true })
+    .boundingBox();
+  expect(themeToggle).not.toBeNull();
+  expect(typeLabel).not.toBeNull();
+  expect(typeLabel!.x + typeLabel!.width).toBeLessThanOrEqual(themeToggle!.x);
   await page.locator("#github").scrollIntoViewIfNeeded();
   await expect(installation).toContainText("04 / Open source");
   await expect(
@@ -45,7 +66,9 @@ test("Reduced motion renders a static relief and theme changes redraw it", async
   await page.emulateMedia({ forcedColors: "active" });
   await expect(canvas).toBeHidden();
   await expect(installation.locator(".letterpress__fallback")).toBeVisible();
-  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(
+    page.getByRole("article").getByRole("heading", { level: 1 }),
+  ).toBeVisible();
   expect(colorWarnings).toEqual([]);
 });
 

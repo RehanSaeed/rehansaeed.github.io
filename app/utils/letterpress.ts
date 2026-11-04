@@ -207,7 +207,7 @@ export const mountLetterpress = (
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.position.z =
-      Math.max(7.5, 19 / camera.aspect / (2 * Math.tan((16 * Math.PI) / 180))) +
+      Math.max(10, 24 / camera.aspect / (2 * Math.tan((16 * Math.PI) / 180))) +
       1;
     camera.updateProjectionMatrix();
     requestRender();

@@ -53,6 +53,8 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss">
+@use "~/assets/style/abstracts/breakpoints";
+
 .letterpress {
   position: relative;
   z-index: 2;
@@ -111,6 +113,7 @@ onBeforeUnmount(() => {
   .letterpress {
     position: sticky;
     inset-block-start: 4rem;
+    padding-inline-end: var(--global-space-main);
   }
 
   .letterpress__stage {
@@ -120,6 +123,12 @@ onBeforeUnmount(() => {
   .about section[id],
   .about h1[id] {
     scroll-margin-block-start: calc(min(28vh, 23rem) + 10rem);
+  }
+}
+
+@include breakpoints.respond-above(xl) {
+  .letterpress {
+    padding-inline: var(--global-space-main);
   }
 }
 
