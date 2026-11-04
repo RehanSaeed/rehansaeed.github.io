@@ -84,9 +84,9 @@ test("Context loss shows the static ribbon without affecting the article", async
   });
   await expect(scene).toHaveAttribute("data-state", "unavailable");
   await expect(scene.locator("svg")).toBeVisible();
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    "Hello, I'm Rehan.",
-  );
+  await expect(
+    page.getByRole("article").getByRole("heading", { level: 1 }),
+  ).toHaveText("Hello, I'm Rehan.");
   await page
     .getByRole("link", { name: "Explore the work", exact: true })
     .focus();
