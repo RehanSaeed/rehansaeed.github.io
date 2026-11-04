@@ -348,24 +348,6 @@ const stackOverflowProfileUrl = computed(
     `https://stackoverflow.com/users/flair/${metadata.author.stackOverflow.user}.png?theme=${oppositeTheme.value}`,
 );
 const gitHubUrl = computed(() => metadata.author.gitHub.url);
-const gitHubSponsorsUrl = computed(
-  () => `https://github.com/sponsors/${metadata.author.gitHub.user}`,
-);
-const gitHubSponsorsImageUrl = computed(
-  () =>
-    `https://img.shields.io/github/sponsors/${metadata.author.gitHub.user}?logo=github&style=social`,
-);
-const gitHubFollowersUrl = computed(
-  () => `https://github.com/${metadata.author.gitHub.user}?tab=followers`,
-);
-const gitHubFollowersImageUrl = computed(
-  () =>
-    `https://img.shields.io/github/followers/${metadata.author.gitHub.user}?style=social`,
-);
-const gitHubStarsImageUrl = computed(
-  () =>
-    `https://img.shields.io/github/stars/${metadata.author.gitHub.user}?style=social`,
-);
 const gitHubStatisticsImageUrl = computed(() => {
   const fileName =
     theme.value === "light"
