@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
 
 test("The decorative mobile renders, responds to preferences and survives context loss", async ({
   page,
-}) => {
+}, testInfo) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/about/", { waitUntil: "domcontentloaded" });
   const scene = page.locator(".orbital-gallery");
@@ -27,16 +27,34 @@ test("The decorative mobile renders, responds to preferences and survives contex
   expect(dimensions.width / dimensions.cssWidth).toBeLessThanOrEqual(1.5);
   expect(dimensions.height / dimensions.cssHeight).toBeLessThanOrEqual(1.5);
   const before = await canvas.screenshot();
+  await testInfo.attach("animated-before", {
+    body: before,
+    contentType: "image/png",
+  });
   await page.locator("#youtube").scrollIntoViewIfNeeded();
   await expect(async () => {
-    expect(await canvas.screenshot()).not.toEqual(before);
+    const after = await canvas.screenshot();
+    await testInfo.attach("animated-after", {
+      body: after,
+      contentType: "image/png",
+    });
+    expect(after.equals(before)).toBe(false);
   }).toPass();
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(scene).toHaveAttribute("data-state", "static");
   await page.locator("#the-person").scrollIntoViewIfNeeded();
   const still = await canvas.screenshot();
+  await testInfo.attach("reduced-motion-before", {
+    body: still,
+    contentType: "image/png",
+  });
   await page.mouse.move(20, 20);
-  expect(await canvas.screenshot()).toEqual(still);
+  const afterPointer = await canvas.screenshot();
+  await testInfo.attach("reduced-motion-after", {
+    body: afterPointer,
+    contentType: "image/png",
+  });
+  expect(afterPointer.equals(still)).toBe(true);
   await page.emulateMedia({ forcedColors: "active" });
   await expect(scene).toHaveAttribute("data-state", "fallback");
   await expect(scene).toBeHidden();

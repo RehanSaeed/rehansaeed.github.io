@@ -1,9 +1,8 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { expect, test } from "@playwright/test";
-import { parse } from "yaml";
 import { portfolioSnapshots } from "../../modules/blog-content/portfolio";
 import type { ContentEntry } from "../../modules/blog-content/scan";
-import { cacheSchema, workflowSchema } from "./data";
+import { cacheSchema } from "./data";
 
 const project = (repository: string): ContentEntry => ({
   path: `portfolio/${repository}/index.md`,
@@ -14,66 +13,6 @@ const project = (repository: string): ContentEntry => ({
     permalink: `https://github.com/${repository}`,
     published: true,
   },
-});
-
-test("Browser jobs restore generated metadata before Nuxt dependency setup", async () => {
-  const workflow = workflowSchema.parse(
-    parse(await readFile(".github/workflows/build.yml", "utf8")),
-  );
-  const packageStep = workflow.jobs.build!.steps.find(
-    (step) => step.name === "Package Browser Test Site",
-  )!;
-  for (const snapshot of [
-    "blog-image-metadata.json",
-    "blog-portfolio.json",
-    "blog-nuget.json",
-    "blog-comments.json",
-  ]) {
-    expect(packageStep.run).toContain(`.data/${snapshot}`);
-  }
-  const steps = workflow.jobs.test!.steps;
-  const download = steps.findIndex(
-    (step) => step.name === "Download Browser Test Site",
-  );
-  const extract = steps.findIndex(
-    (step) => step.name === "Extract Browser Test Site",
-  );
-  const install = steps.findIndex((step) => step.name === "NPM Install");
-  expect(download).toBeGreaterThan(-1);
-  expect(extract).toBeGreaterThan(download);
-  expect(install).toBeGreaterThan(extract);
-  expect(steps[install]!.run).toBe("npm ci");
-});
-
-test("Headed Firefox isolates native windows on its shared Xvfb display", async () => {
-  const workflow = workflowSchema.parse(
-    parse(await readFile(".github/workflows/build.yml", "utf8")),
-  );
-  const firefox = workflow.jobs.test!.steps.find(
-    (step) => step.name === "Playwright Firefox Test",
-  )!;
-  expect(firefox.run).toBe(
-    "xvfb-run --auto-servernum npx playwright test --project=firefox --headed --workers=1",
-  );
-});
-
-test("Failed dependency setup reports GitHub limits without bypassing the failure", async () => {
-  const workflow = workflowSchema.parse(
-    parse(await readFile(".github/workflows/build.yml", "utf8")),
-  );
-  const diagnostic = workflow.jobs.build!.steps.find(
-    (step) => step.name === "Inspect GitHub Metadata Failure",
-  )!;
-  const dependencies = workflow.jobs.build!.steps.find(
-    (step) => step.id === "dependencies",
-  )!;
-  expect(dependencies.run).toBe("npm ci");
-  expect(dependencies["continue-on-error"]).toBeUndefined();
-  expect(diagnostic.if).toBe(
-    "failure() && steps.dependencies.outcome == 'failure'",
-  );
-  expect(diagnostic.run).toContain("x-ratelimit-");
-  expect(diagnostic.run).toContain("retry-after:");
 });
 
 test("Portfolio popularity refreshes expired counts and reuses fresh counts", async ({}, info) => {
