@@ -57,16 +57,42 @@ test("the live contour sculpture changes with chapters and the site theme", asyn
   await expect(page.locator(".location-map")).toHaveCount(1);
 });
 
-test("reduced motion is static even when chapters change", async ({ page }) => {
+test("reduced motion is static even when chapters change", async ({
+  page,
+}, testInfo) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/about/", { waitUntil: "domcontentloaded" });
   const scene = page.locator(".topography");
   await expect(scene).toHaveAttribute("data-scene", "ready");
   const canvas = scene.locator("canvas");
+  // Keep both captures at the same natural sticky position.
+  await page.locator("#youtube").scrollIntoViewIfNeeded();
+  await expect(scene.locator(".topography__chapter")).toHaveText("YouTube");
+  await expect(scene).toHaveCSS("position", "sticky");
+  await expect
+    .poll(() =>
+      scene.evaluate((element) => element.getBoundingClientRect().top),
+    )
+    .toBe(0);
+  const firstBounds = await canvas.boundingBox();
+  expect(firstBounds).not.toBeNull();
   const first = await captureDrawing(canvas);
   await page.locator("#github").scrollIntoViewIfNeeded();
   await expect(scene.locator(".topography__chapter")).toHaveText("GitHub");
-  expect((await captureDrawing(canvas)).equals(first)).toBe(true);
+  const scrolled = await captureDrawing(canvas);
+  await Promise.all(
+    [first, scrolled].map((body, index) =>
+      testInfo.attach(
+        index === 0 ? "reduced-motion-before" : "reduced-motion-scrolled",
+        {
+          body,
+          contentType: "image/png",
+        },
+      ),
+    ),
+  );
+  expect(await canvas.boundingBox()).toEqual(firstBounds);
+  expect(scrolled.equals(first)).toBe(true);
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await expect
     .poll(async () => (await captureDrawing(canvas)).equals(first))
