@@ -101,7 +101,15 @@ unitTest(
   },
 );
 
-for (const width of [320, 375, 768, 1440]) {
+for (const width of [320, 375, 768, 1024, 1440]) {
+  const sideBySide = width >= 900 && width < 1100;
+  const mvpAxis = sideBySide ? "x" : "y";
+  const mvpExtent = sideBySide ? "width" : "height";
+  const mvpBefore = sideBySide ? ".about__mvp-media" : ".about__mvp-copy";
+  const mvpAfter = sideBySide ? ".about__mvp-copy" : ".about__mvp-media";
+  const rightHeadingIds = sideBySide
+    ? ["youtube", "awards", "microsoft-mvp"]
+    : [];
   for (const colorScheme of ["light", "dark"] as const) {
     test(`Editorial About at ${width}px in ${colorScheme} mode`, async ({
       page,
@@ -204,49 +212,41 @@ for (const width of [320, 375, 768, 1440]) {
       await expect(article.locator(".about__honour-media picture")).toHaveCount(
         2,
       );
-      const mvpCopy = await article.locator(".about__mvp-copy").boundingBox();
+      const mvpBeforeBounds = await article.locator(mvpBefore).boundingBox();
+      const mvpAfterBounds = await article.locator(mvpAfter).boundingBox();
       const mvpMedia = await article.locator(".about__mvp-media").boundingBox();
-      if (!mvpCopy || !mvpMedia) {
-        throw new Error(
-          "The MVP copy and original artwork must both be laid out",
-        );
-      }
-      if (width >= 900) {
-        expect(mvpCopy.x).toBeGreaterThanOrEqual(mvpMedia.x + mvpMedia.width);
-        expect(Math.abs(mvpMedia.y - mvpCopy.y)).toBeLessThan(1);
-      } else {
-        expect(mvpMedia.y).toBeGreaterThanOrEqual(mvpCopy.y + mvpCopy.height);
-      }
-      expect(mvpMedia.width).toBeLessThanOrEqual(360);
+      expect(mvpBeforeBounds).not.toBeNull();
+      expect(mvpAfterBounds).not.toBeNull();
+      expect(mvpMedia).not.toBeNull();
+      expect(mvpAfterBounds![mvpAxis]).toBeGreaterThanOrEqual(
+        mvpBeforeBounds![mvpAxis] + mvpBeforeBounds![mvpExtent],
+      );
+      expect(mvpMedia!.width).toBeLessThanOrEqual(360);
       const headings = await article
         .locator(":scope > section[id]")
         .evaluateAll((sections) =>
           sections.map((section) => {
-            const heading = section.querySelector("h2");
-            if (!heading)
-              throw new Error("Every About section needs a heading");
+            const heading = section.querySelector("h2")!;
             const bounds = section.getBoundingClientRect();
             return {
               id: section.id,
               x: heading.getBoundingClientRect().x,
               start:
                 bounds.x +
-                parseFloat(getComputedStyle(section).paddingInlineStart),
+                Number.parseFloat(getComputedStyle(section).paddingInlineStart),
               width: bounds.width,
             };
           }),
         );
-      for (const heading of headings) {
-        if (
-          width >= 900 &&
-          ["youtube", "awards", "microsoft-mvp"].includes(heading.id)
-        ) {
-          expect(heading.x - heading.start).toBeGreaterThan(
-            heading.width * 0.2,
-          );
-        } else {
-          expect(Math.abs(heading.x - heading.start)).toBeLessThan(1);
-        }
+      for (const heading of headings.filter(({ id }) =>
+        rightHeadingIds.includes(id),
+      )) {
+        expect(heading.x - heading.start).toBeGreaterThan(heading.width * 0.2);
+      }
+      for (const heading of headings.filter(
+        ({ id }) => !rightHeadingIds.includes(id),
+      )) {
+        expect(Math.abs(heading.x - heading.start)).toBeLessThan(1);
       }
       const galleries = page.getByRole("list", {
         name: /^\d{4} credentials and participation$/,
@@ -262,22 +262,20 @@ for (const width of [320, 375, 768, 1440]) {
         "2021",
         "2020",
       ]);
-      for (const year of [
-        "2026",
-        "2025",
-        "2024",
-        "2023",
-        "2022",
-        "2021",
-        "2020",
-      ]) {
+      for (const [year, count] of [
+        ["2026", 2],
+        ["2025", 2],
+        ["2024", 1],
+        ["2023", 1],
+        ["2022", 1],
+        ["2021", 1],
+        ["2020", 1],
+      ] as const) {
         const group = article.getByRole("region", { name: year, exact: true });
         await expect(
           group.getByRole("heading", { name: year, exact: true }),
         ).toHaveCount(1);
-        await expect(group.getByRole("listitem")).toHaveCount(
-          ["2026", "2025"].includes(year) ? 2 : 1,
-        );
+        await expect(group.getByRole("listitem")).toHaveCount(count);
       }
       for (const text of await galleries
         .getByRole("listitem")
@@ -319,6 +317,16 @@ for (const width of [320, 375, 768, 1440]) {
     });
   }
 }
+
+test("Side-by-side MVP copy and artwork align at the top", async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 1000 });
+  await openAbout(page);
+  const copy = await page.locator(".about__mvp-copy").boundingBox();
+  const media = await page.locator(".about__mvp-media").boundingBox();
+  expect(copy).not.toBeNull();
+  expect(media).not.toBeNull();
+  expect(Math.abs(media!.y - copy!.y)).toBeLessThan(1);
+});
 
 test("Original channel badges and profile artwork remain in their sections", async ({
   page,
