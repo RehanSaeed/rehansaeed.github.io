@@ -291,7 +291,8 @@ for (const width of [320, 375, 768, 1440]) {
       expect(mvpAfterBounds![mvpAxis]).toBeGreaterThanOrEqual(
         mvpBeforeBounds![mvpAxis] + mvpBeforeBounds![mvpExtent],
       );
-      expect(mvpMedia!.width).toBeLessThanOrEqual(360);
+      // Firefox can add floating-point noise below its layout-unit precision.
+      expect(Number(mvpMedia!.width.toFixed(3))).toBeLessThanOrEqual(360);
       const headings = await article
         .locator(":scope > section[id]")
         .evaluateAll((sections) =>
