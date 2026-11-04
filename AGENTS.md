@@ -326,10 +326,11 @@ into the composition; their arrangement can change with the pose and framing.
   curved frame, understated armrests and a central five-spoke caster base.
   Preserve plausible posture, support and legroom rather than distorting the
   character to expose every chair detail.
-- On the desktop, use a small oak pencil holder with a few pencils and a
-  matching oak plant container holding a leafy green houseplant. Keep both
-  containers visibly wooden, with restrained oak grain rather than grey ceramic
-  or metal surfaces.
+- On the desktop, use a small oak pencil holder with a few Blackwing pencils,
+  each with its distinctive wide, flat rectangular rubber in a metal ferrule at
+  one end. Add a matching oak plant container holding a leafy green houseplant.
+  Keep both containers visibly wooden, with restrained oak grain rather than
+  grey ceramic or metal surfaces.
 - Include a cream-paper writing pad and a normal hand-sized fountain pen when
   writing accessories suit the scene. The pen has a transparent plastic
   demonstrator barrel with visible shimmer ink; muted violet ink and a few
