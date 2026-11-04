@@ -92,8 +92,7 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
       margin-inline-end: var(--global-space-fixed-3);
       margin-block-start: 0.65rem;
 
-      @supports (initial-letter: 2) or (-webkit-initial-letter: 2) {
-        -webkit-initial-letter: 2;
+      @supports (initial-letter: 2) {
         initial-letter: 2;
         float: none;
         font-size: inherit;
