@@ -42,19 +42,21 @@ I've been banging this drum since [Stop the Brace Wars, Use StyleCop](/stop-brac
 
 ## Use AGENTS.md
 
-For the things you can't lint, giving preferences in [AGENTS.md](https://agents.md/) is really important.
+For the things you can't lint, writing down your preferences in an [AGENTS.md](https://agents.md/) file is really important.
 
 For me, this meant telling agents to use the [Vue Composition API](https://vuejs.org/guide/extras/composition-api-faq.html) and [Block Element Modifier (BEM)](/css-general-rules-of-thumb/#block-element-modifier-bem) for CSS class names. Some of these preferences can be partially enforced by tooling, but the instructions still help explain the intended approach.
 
-I already have opinions about [CSS conventions](/css-general-rules-of-thumb/) and [how to group and sort CSS properties](/system-for-grouping-and-sorting-css-properties/). Writing those down once is much better than repeating them in every prompt.
+I have strong opinions about things like [CSS conventions](/css-general-rules-of-thumb/) and [how to group and sort CSS properties](/system-for-grouping-and-sorting-css-properties/). Writing those down once is much better than repeating them in every prompt.
 
 The same applies to [how an agent communicates on my behalf](/ai-gone-rogue/). If a preference matters, don't leave the agent to guess it.
 
+Reader beware, adding too much in AGENTS.md can bloat the context and produce worse results. You must strike a balance, be concise but not too prescriptive either.
+
 ## Automate Updates
 
-Having a scheduled task to update npm packages and GitHub Actions dependencies is awesome. It's the same appeal that led me to [automate .NET security updates](/automating-dotnet-security-updates/): less repetitive maintenance for me.
+Having a scheduled task to update npm packages and GitHub Actions dependencies is awesome. It's the same appeal that led me to [automate .NET security updates](/automating-dotnet-security-updates/) with Dependabot.
 
-Don't forget to tell the agent to read the release notes and tell you about new features in the updated packages that you should consider implementing. Otherwise, you can end up running the newest version while still using it as though it were several versions old.
+With AI agents though we can take it one step further, we can tell agents to read the release notes and tell you about new features in the updated packages that you should consider implementing.
 
 Breaking changes, tests and review still matter. The useful extra is having the agent explain what the update makes possible, rather than just changing a number.
 
