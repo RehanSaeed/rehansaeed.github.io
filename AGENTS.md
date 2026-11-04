@@ -320,7 +320,8 @@ into the composition; their arrangement can change with the pose and framing.
   natural oak top, four telescopic metal lifting columns and a restrained
   charcoal frame. Set its height to suit the character's seated or standing
   pose. Mount the height-control keypad at the **far-right end of the front
-  edge**, not near the centre.
+  edge**, not near the centre. Keep it beside the right-front desk leg, not
+  directly in front of or obscuring the leg.
 - The chair is a graphite Herman Miller Aeron: recognisable mesh back and seat,
   curved frame, understated armrests and a central five-spoke caster base.
   Preserve plausible posture, support and legroom rather than distorting the
