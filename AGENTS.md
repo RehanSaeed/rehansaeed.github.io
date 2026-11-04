@@ -30,6 +30,9 @@ authorise publishing the article or posting to social media.
 - Articles live in `content/posts/<year>/<kebab-case-slug>/index.md`.
   Read a few relevant published articles before drafting to match the author's
   voice and avoid duplicating existing coverage.
+- Include relevant internal links to existing articles using their permalinks
+  wherever possible. Use authoritative external links when there is no suitable
+  internal article, especially for official documentation and supporting sources.
 - Treat [content.config.ts](content.config.ts) as the source of truth for front
   matter. Create the post directory and Markdown file directly, using relevant
   published articles as examples. Check that the target does not already exist
