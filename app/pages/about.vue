@@ -231,7 +231,7 @@
               alt="Microsoft Global Hackathon 2020.png"
               height="300"
               width="350"
-              sizes="180px"
+              sizes="175px"
               densities="x1 x2"
               src="/images/about/Microsoft-Global-Hackathon-2020-350x300.png"
               quality="100" />

@@ -36,7 +36,9 @@ test.describe("All-pages audit regressions", () => {
         ],
       };
       rehypeHeadingAnchors()(tree);
-      const anchor = tree.children![0]!.children![0]!;
+      const anchor = tree.children![0]!.children!.find(
+        (node) => node.tagName === "anchor-link",
+      )!;
       expect(anchor.tagName).toBe("anchor-link");
       expect(anchor.properties).toEqual({
         href: "#being-short",
