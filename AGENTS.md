@@ -254,20 +254,24 @@ When explicitly asked to help draft an article, follow these guidelines:
 - Preserve the author's chosen concept when revising an image; change the visual
   treatment rather than inventing a different message. Show the result for
   review, and do not claim generated imagery is a real screenshot or photograph.
-- When illustrating the author, make the person recognisably resemble him rather
-  than using a generic character. Use
-  [the author's profile photo](public/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg)
-  or a newer user-supplied photo as a visual reference, preserving recognisable
-  facial features, hairstyle, facial hair and body proportions within the chosen
-  illustration style. Keep the head angle, gaze and anatomy consistent with the
-  intended pose. Do not invent a different appearance. Ask for a suitable
-  reference if the available photo is insufficient.
 
 #### Recurring Author Character
 
-- Use the profile photo above as the likeness reference, not a previous generated
-  image alone. Keep the short, straight dark hair, natural grey detail and beard
-  with moustache recognisable. Use a simple, lightly combed hairstyle with
+Prefer hero images featuring the recurring author character described below.
+This is the default, not a requirement: use a different visual concept when it
+better serves the article. The desk and workspace remain optional even when the
+character appears.
+
+- Make the character recognisably resemble the author rather than using a generic
+  person. Use
+  [the author's profile photo](public/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg)
+  or a newer user-supplied photo as the visual reference, not a previous generated
+  image alone. Preserve recognisable facial features, hairstyle, facial hair and
+  body proportions within the chosen illustration style. Keep the head angle,
+  gaze and anatomy consistent with the intended pose. Do not invent a different
+  appearance. Ask for a suitable reference if the available photo is insufficient.
+- Keep the short, straight dark hair, natural grey detail and beard with
+  moustache recognisable. Use a simple, lightly combed hairstyle with
   modest volume, not dense curls, ringlets, a hair bun or an invented hairstyle.
 - Keep natural masculine proportions and a relaxed, believable posture. Use a
   regular men's clothing silhouette with straight shoulders and torso rather
@@ -305,8 +309,8 @@ When explicitly asked to help draft an article, follow these guidelines:
 #### Optional Author Workspace
 
 The desk is a reusable visual reference, not a required hero-image setting.
-Future heroes do **not** have to feature the author's desk, workspace or even the
-author. Choose the scene that best communicates the article. When a desk scene
+Featuring the author character does **not** require featuring his desk or
+workspace. Choose the scene that best communicates the article. When a desk scene
 is useful, include only the relevant items below rather than forcing every prop
 into the composition; their arrangement can change with the pose and framing.
 
