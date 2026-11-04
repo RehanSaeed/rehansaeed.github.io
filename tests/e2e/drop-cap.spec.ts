@@ -28,7 +28,12 @@ for (const width of [375, 640, 1280]) {
         await page.evaluate(() => document.fonts.ready);
 
         const measure = () =>
-          paragraph.evaluate((element) => {
+          paragraph.evaluate(async (element) => {
+            await new Promise<void>((resolve) =>
+              requestAnimationFrame(() => {
+                resolve();
+              }),
+            );
             const dropCap = getComputedStyle(element, "::first-letter");
             const walker = document.createTreeWalker(
               element,
@@ -38,9 +43,13 @@ for (const width of [375, 640, 1280]) {
             if (!text || (text.textContent?.length ?? 0) < 2) {
               throw new Error("Expected an introduction starting with text");
             }
+            const nextLetter = text.textContent!.slice(1).search(/\S/) + 1;
+            if (nextLetter === 0) {
+              throw new Error("Expected text following the drop cap");
+            }
             const range = document.createRange();
-            range.setStart(text, 1);
-            range.setEnd(text, 2);
+            range.setStart(text, nextLetter);
+            range.setEnd(text, nextLetter + 1);
             return {
               margin: Number.parseFloat(dropCap.marginInlineEnd),
               rootFontSize: Number.parseFloat(
@@ -69,19 +78,25 @@ for (const width of [375, 640, 1280]) {
             margin-inline-end: 0 !important;
           }`,
         });
-        const withoutMargin = await measure();
+        // WebKit snaps initial-letter placement to whole CSS pixels.
+        const expectedOffsets = {
+          chromium: [spacing.margin],
+          firefox: [spacing.margin],
+          webkit: [Math.floor(spacing.margin), Math.ceil(spacing.margin)],
+        };
+        await expect
+          .poll(async () => {
+            const withoutMargin = await measure();
+            const offset = spacing.nextLetterX - withoutMargin.nextLetterX;
+            return Math.min(
+              ...expectedOffsets[browserName].map((expected) =>
+                Math.abs(offset - expected),
+              ),
+            );
+          })
+          .toBeLessThan(0.05);
         await unspaced.evaluate((element) =>
           element.parentNode?.removeChild(element),
-        );
-        // WebKit truncates native initial-letter margins to whole CSS pixels.
-        const expectedOffsets = {
-          chromium: spacing.margin,
-          firefox: spacing.margin,
-          webkit: Math.floor(spacing.margin),
-        };
-        expect(spacing.nextLetterX - withoutMargin.nextLetterX).toBeCloseTo(
-          expectedOffsets[browserName],
-          1,
         );
         expect(
           await page.evaluate(() => document.documentElement.scrollWidth),
