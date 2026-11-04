@@ -29,8 +29,14 @@ unitTest(
       expect(heading.properties).toEqual({
         id: `section-${level}`,
         className: ["existing", `post-heading--${level}`],
+        "data-section-heading": "",
       });
       expect(heading.children[0]).toMatchObject({
+        tagName: "span",
+        properties: { className: ["heading__text"] },
+        children: [{ type: "text", value: `Section ${level}` }],
+      });
+      expect(heading.children[1]).toMatchObject({
         tagName: "anchor-link",
         properties: {
           href: `#section-${level}`,
