@@ -407,7 +407,10 @@ for (const width of [375, 1280]) {
   }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/about/");
-    const portrait = page.locator(".about__image");
+    const portrait = page.getByRole("article").getByRole("img", {
+      name: "Muhammad Rehan Saeed",
+      exact: true,
+    });
     await expect(portrait).toBeVisible();
     await expect(portrait).toHaveAttribute("width", "320");
     await expect(portrait).toHaveAttribute("height", "480");
