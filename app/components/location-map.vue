@@ -8,7 +8,7 @@
           ref="mapContainer"
           class="location-map__canvas"
           role="region"
-          aria-label="Interactive map showing London and your approximate location when available"
+          aria-label="Interactive map showing East London and your approximate location when available"
           :aria-hidden="!mapReady"
           :inert="!mapReady" />
         <svg
@@ -16,7 +16,7 @@
           viewBox="0 0 640 400"
           role="img"
           :aria-hidden="mapReady"
-          aria-label="Map of the British Isles with my avatar marking London, United Kingdom">
+          aria-label="Map of the British Isles with my avatar marking East London, United Kingdom">
           <defs>
             <clipPath :id="avatarClipId">
               <circle cx="0" cy="-62" r="31" />
@@ -80,7 +80,7 @@
               width="62"
               height="62" />
           </g>
-          <text class="location-map__city" x="349" y="279">London</text>
+          <text class="location-map__city" x="349" y="279">East London</text>
         </svg>
       </div>
       <div class="location-map__marker-template" aria-hidden="true">
@@ -92,17 +92,17 @@
             <path
               d="M36 98C28 82 0 58 0 36a36 36 0 1 1 72 0C72 58 44 82 36 98Z" />
           </svg>
-          <picture class="location-map__portrait">
-            <source
-              type="image/avif"
-              srcset="/images/author/Muhammad-Rehan-Saeed/Logo-192x192.avif" />
-            <img
-              class="location-map__avatar"
-              src="/images/author/Muhammad-Rehan-Saeed/Logo-192x192.png"
-              alt=""
-              width="62"
-              height="62" />
-          </picture>
+          <NuxtPicture
+            class="location-map__portrait"
+            :img-attrs="{ class: 'location-map__avatar' }"
+            format="avif"
+            legacy-format="png"
+            src="/images/author/Muhammad-Rehan-Saeed/Logo-192x192.png"
+            alt=""
+            width="62"
+            height="62"
+            sizes="62px"
+            loading="eager" />
         </div>
         <div
           ref="visitorTemplate"
@@ -127,8 +127,11 @@
           <span class="location-map__visitor-label">You (approx.)</span>
         </div>
       </div>
-      <figcaption class="location-map__caption">
-        I'm from London<span v-if="distanceMiles !== undefined"
+      <figcaption
+        class="location-map__caption"
+        aria-live="polite"
+        aria-atomic="true">
+        I'm from East London<span v-if="distanceMiles !== undefined"
           >, roughly
           <em>{{ distanceMiles.toLocaleString("en-GB") }} miles</em> away from
           your current location, according to your IP address</span
@@ -149,11 +152,7 @@
 </template>
 
 <script setup lang="ts">
-import type {
-  ExpressionSpecification,
-  Map as MapLibreMap,
-  Marker as MapLibreMarker,
-} from "maplibre-gl";
+import type { Map as MapLibreMap, Marker as MapLibreMarker } from "maplibre-gl";
 import { z } from "zod";
 import { distanceInMiles } from "#shared/utils/location";
 
@@ -189,11 +188,11 @@ let userMovedMap = false;
 let disposed = false;
 const isDisposed = () => disposed;
 
-function mapStyle() {
+const mapStyle = () => {
   return document.documentElement.dataset.theme === "dark"
     ? "https://tiles.openfreemap.org/styles/dark"
     : "https://tiles.openfreemap.org/styles/positron";
-}
+};
 
 const createMarker = (
   maplibregl: typeof import("maplibre-gl"),
@@ -209,7 +208,7 @@ const createMarker = (
     .addTo(map);
 };
 
-function removeMap() {
+const removeMap = () => {
   clearTimeout(attributionTimeout);
   locationController?.abort();
   visitorMarker?.remove();
@@ -224,19 +223,19 @@ function removeMap() {
   locationStatus.value = "";
   distanceMiles.value = undefined;
   resizeObserver?.disconnect();
-}
+};
 
-function failMap(error: unknown) {
+const failMap = (error: unknown) => {
   console.error(
-    "[location-map] Could not load the interactive London map.",
+    "[location-map] Could not load the interactive East London map.",
     error,
   );
   mapStatus.value =
-    "The interactive map could not load. Showing a static map of London.";
+    "The interactive map could not load. Showing a static map of East London.";
   removeMap();
-}
+};
 
-function frameMap(animate: boolean) {
+const frameMap = (animate: boolean) => {
   if (!map || userMovedMap) {
     return;
   }
@@ -266,56 +265,59 @@ function frameMap(animate: boolean) {
       duration: animate && !reduceMotion ? 3000 : 0,
     },
   );
-}
+};
 
-function applyMapPalette() {
+const applyMapPalette = () => {
   if (!map || !mapContainer.value) {
     return;
   }
   try {
     const theme = getComputedStyle(mapContainer.value);
     const colour = (name: string) =>
-      theme.getPropertyValue(`--global-${name}-color`).trim();
+      theme.getPropertyValue(`--location-map-${name}-color`).trim();
     const land = theme.getPropertyValue("--location-map-land-color").trim();
     const landLabel = theme
       .getPropertyValue("--location-map-land-label-color")
       .trim();
-    const tint = (amount: number): ExpressionSpecification => [
-      "interpolate",
-      ["linear"],
-      amount,
-      0,
-      colour("background"),
-      1,
-      colour("accent"),
-    ];
     for (const layer of map.getStyle().layers) {
       if (layer.id.startsWith("visitor-connection")) {
         continue;
       }
       if (layer.type === "background") {
         map.setPaintProperty(layer.id, "background-color", land);
-      } else if (layer.type === "fill") {
-        map.setPaintProperty(
-          layer.id,
-          "fill-color",
-          layer["source-layer"] === "water" ? tint(0.35) : land,
-        );
-      } else if (layer.type === "line") {
-        map.setPaintProperty(layer.id, "line-color", tint(0.5));
+      } else if (
+        layer.type === "fill" &&
+        (layer["source-layer"] === "water" || layer.id === "water")
+      ) {
+        map.setPaintProperty(layer.id, "fill-color", colour("water"));
+      } else if (layer.type === "fill" && layer.id === "park") {
+        map.setPaintProperty(layer.id, "fill-color", colour("park"));
+      } else if (layer.type === "fill" && layer.id === "landcover_wood") {
+        map.setPaintProperty(layer.id, "fill-color", colour("wood"));
+      } else if (
+        layer.type === "fill" &&
+        layer["source-layer"] === "building"
+      ) {
+        map.setPaintProperty(layer.id, "fill-color", colour("building"));
+      } else if (
+        layer.type === "line" &&
+        layer["source-layer"] === "waterway"
+      ) {
+        map.setPaintProperty(layer.id, "line-color", colour("waterway"));
+      } else if (
+        layer.type === "line" &&
+        layer["source-layer"] === "boundary"
+      ) {
+        map.setPaintProperty(layer.id, "line-color", colour("boundary"));
       } else if (layer.type === "symbol" && layer.layout?.["text-field"]) {
         const water = ["water_name", "waterway"].includes(
           layer["source-layer"] ?? "",
         );
-        map.setPaintProperty(
-          layer.id,
-          "text-color",
-          water ? colour("body") : landLabel,
-        );
+        map.setPaintProperty(layer.id, "text-color", landLabel);
         map.setPaintProperty(
           layer.id,
           "text-halo-color",
-          water ? tint(0.35) : land,
+          water ? colour("water") : land,
         );
       }
     }
@@ -323,9 +325,9 @@ function applyMapPalette() {
   } catch (error) {
     failMap(error);
   }
-}
+};
 
-function updateConnection() {
+const updateConnection = () => {
   if (!map || !visitorLocation || !styleReady) {
     return;
   }
@@ -378,9 +380,11 @@ function updateConnection() {
       map.getStyle().layers.find((layer) => layer.type === "symbol")?.id,
     );
   }
-}
+};
 
-async function loadVisitorLocation(maplibregl: typeof import("maplibre-gl")) {
+const loadVisitorLocation = async (
+  maplibregl: typeof import("maplibre-gl"),
+) => {
   const controller = new AbortController();
   locationController = controller;
   const timeout = setTimeout(() => {
@@ -396,7 +400,8 @@ async function loadVisitorLocation(maplibregl: typeof import("maplibre-gl")) {
     if (!response.ok) {
       throw new Error(`Location service returned HTTP ${response.status}.`);
     }
-    const location = locationSchema.parse(await response.json());
+    const data: unknown = await response.json();
+    const location = locationSchema.parse(data);
     if (disposed || !map) {
       return;
     }
@@ -419,16 +424,16 @@ async function loadVisitorLocation(maplibregl: typeof import("maplibre-gl")) {
     distanceMiles.value = undefined;
     console.warn("[location-map] Could not find approximate location.", error);
     locationStatus.value =
-      "Your approximate location is unavailable. Showing London and Europe.";
+      "Your approximate location is unavailable. Showing East London and Europe.";
   } finally {
     clearTimeout(timeout);
     if (locationController === controller) {
       locationController = undefined;
     }
   }
-}
+};
 
-function updateTheme() {
+const updateTheme = () => {
   if (!map) {
     return;
   }
@@ -438,9 +443,9 @@ function updateTheme() {
   } catch (error) {
     failMap(error);
   }
-}
+};
 
-async function loadMap() {
+const loadMap = async () => {
   if (isDisposed()) {
     return;
   }
@@ -466,7 +471,6 @@ async function loadMap() {
       center: [-15, 54],
       zoom: 1.5,
       cooperativeGestures: true,
-      renderWorldCopies: false,
       attributionControl: {
         compact: true,
         customAttribution: '<a href="https://www.geojs.io/">GeoJS</a>',
@@ -483,7 +487,7 @@ async function loadMap() {
     marker = createMarker(maplibregl, markerTemplate.value, london);
     map
       .getCanvas()
-      .setAttribute("aria-label", "Map showing London, the UK and Europe");
+      .setAttribute("aria-label", "Map showing East London, the UK and Europe");
     map.on("movestart", (event) => {
       if (event.originalEvent) {
         userMovedMap = true;
@@ -527,7 +531,7 @@ async function loadMap() {
       failMap(error);
     }
   }
-}
+};
 
 onMounted(() => {
   window.addEventListener("__themeChanged", updateTheme);
@@ -544,6 +548,7 @@ onBeforeUnmount(() => {
 .location-map {
   --location-map-max-inline-size: 36rem;
   --location-map-aspect-ratio: 8 / 5;
+  --location-map-min-block-size: 20rem;
   --location-map-marker-inline-size: 72px;
   --location-map-marker-block-size: 98px;
   --location-map-avatar-size: 62px;
@@ -566,14 +571,15 @@ onBeforeUnmount(() => {
   --location-map-grid-dasharray: 3 8;
   --location-map-land-border-opacity: 0.3;
   --location-map-halo-opacity: 0.2;
-  --location-map-land-color: white;
+  --location-map-land-color: hsl(40 23% 97%);
+  --location-map-park-color: hsl(99 25% 87%);
+  --location-map-wood-color: hsl(96 24% 84%);
+  --location-map-building-color: hsl(280 9% 86%);
+  --location-map-water-color: hsl(268 40% 85%);
+  --location-map-waterway-color: hsl(267 36% 74%);
+  --location-map-boundary-color: hsl(268 27% 67%);
   --location-map-land-label-color: var(--global-body-color);
   --location-map-connection-outline-color: var(--location-map-land-color);
-  --location-map-water-color: color-mix(
-    in srgb,
-    var(--global-alternate-accent-color) 25%,
-    var(--global-background-color)
-  );
 
   display: grid;
   inline-size: 100%;
@@ -587,7 +593,13 @@ onBeforeUnmount(() => {
 }
 
 [data-theme="dark"] .location-map {
-  --location-map-land-label-color: var(--global-background-color);
+  --location-map-land-color: hsl(240 7% 14%);
+  --location-map-park-color: hsl(153 20% 19%);
+  --location-map-wood-color: hsl(153 23% 16%);
+  --location-map-building-color: hsl(251 10% 23%);
+  --location-map-water-color: hsl(260 26% 23%);
+  --location-map-waterway-color: hsl(267 24% 43%);
+  --location-map-boundary-color: hsl(268 25% 55%);
   --location-map-connection-outline-color: var(--global-background-color);
 }
 
@@ -595,6 +607,7 @@ onBeforeUnmount(() => {
   display: grid;
   position: relative;
   aspect-ratio: var(--location-map-aspect-ratio);
+  min-block-size: var(--location-map-min-block-size);
 }
 
 .location-map .location-map__canvas {
@@ -690,7 +703,7 @@ onBeforeUnmount(() => {
   display: block;
   grid-area: 1 / 1;
   inline-size: 100%;
-  block-size: auto;
+  block-size: 100%;
   background: var(--location-map-water-color);
 }
 
@@ -743,5 +756,59 @@ onBeforeUnmount(() => {
     var(--location-map-small-font-size),
     var(--global-font-size-0)
   );
+}
+
+@media (forced-colors: active) {
+  .location-map__illustration,
+  .location-map__land {
+    fill: Canvas;
+    background: Canvas;
+  }
+
+  .location-map__labels,
+  .location-map__city,
+  .location-map__sea-label {
+    fill: CanvasText;
+  }
+
+  .location-map__grid {
+    stroke: none;
+  }
+
+  .location-map__marker-shape,
+  .location-map__pin {
+    fill: CanvasText;
+  }
+
+  .location-map__visitor-face {
+    fill: Canvas;
+  }
+
+  .location-map__visitor-text {
+    fill: CanvasText;
+  }
+
+  .location-map__land {
+    stroke: CanvasText;
+    stroke-opacity: 1;
+  }
+
+  .location-map__visitor-label {
+    border-color: CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .location-map .maplibregl-ctrl-group,
+  .location-map .maplibregl-ctrl-attrib {
+    border: var(--global-border-width-1) solid ButtonText;
+    background: ButtonFace;
+    color: ButtonText;
+  }
+
+  .location-map :focus-visible {
+    outline: var(--global-border-width-2) solid Highlight;
+    outline-offset: var(--global-border-width-2);
+  }
 }
 </style>
