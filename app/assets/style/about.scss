@@ -9,6 +9,8 @@
   --cp-accent: var(--global-accent-color);
   --cp-accent-hover: var(--global-link-visited-color);
 
+  position: relative;
+  isolation: isolate;
   background: var(--cp-bg);
   color: var(--cp-text);
   font-family: var(--global-font-family-sans-serif);
@@ -97,7 +99,28 @@
 }
 
 .about__hero {
-  padding-block: 1.5rem 2rem;
+  min-block-size: min(850px, 95svh);
+  padding-block: 2rem 4rem;
+}
+
+.about__orbital-backdrop {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+}
+
+.about__gallery-label {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--cp-accent);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-block-end: 1px solid var(--cp-border);
+  padding-block-end: 1rem;
 }
 
 .about .about__eyebrow {
@@ -112,12 +135,38 @@
 
 .about__intro {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
-  align-items: start;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.85fr);
+  align-items: center;
   gap: clamp(2rem, 5vw, 5rem);
   max-inline-size: 1440px;
   margin-inline: auto;
-  padding-block: 4rem;
+  padding-block: 5rem;
+}
+
+.about__intro > :first-child {
+  position: relative;
+  z-index: 1;
+  padding: clamp(1rem, 3vw, 2rem);
+  background: color-mix(in srgb, var(--cp-bg) 94%, transparent);
+  border-inline-start: 1px solid var(--cp-accent);
+}
+
+.about__portrait {
+  position: relative;
+  justify-self: center;
+  inline-size: min(100%, 240px);
+  padding: 0.65rem;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  box-shadow: 1.5rem 1.5rem 0
+    color-mix(in srgb, var(--cp-accent) 15%, transparent);
+  transform: rotate(7deg);
+}
+
+.about__portrait figcaption {
+  color: var(--cp-text);
+  font-size: 0.7rem;
+  padding-block: 0.75rem 0.25rem;
 }
 
 .about__standfirst {
@@ -265,7 +314,69 @@
 }
 
 .about__section {
+  position: relative;
   padding-block: clamp(3.5rem, 7vw, 7rem);
+}
+
+.about__section::before {
+  display: block;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  margin-block-end: 2.5rem;
+  border: 1px solid var(--cp-accent);
+  border-radius: 50%;
+  color: var(--cp-accent);
+  font-family: var(--global-font-family-monospace);
+  font-size: 0.75rem;
+  line-height: 2.5rem;
+  text-align: center;
+}
+
+.about__location::before {
+  content: "02";
+  justify-self: start;
+}
+
+.about__youtube::before,
+.about__answers::before {
+  grid-column: 1 / -1;
+}
+
+.about__youtube::before {
+  content: "03";
+}
+
+.about__work::before {
+  content: "04";
+}
+
+.about__recognition::before {
+  content: "05";
+}
+
+.about__answers::before {
+  content: "06";
+}
+
+.about__mvp::before {
+  content: "07";
+}
+
+.about__location,
+.about__youtube,
+.about__answers {
+  background: color-mix(in srgb, var(--cp-bg) 93%, transparent);
+}
+
+.about__youtube-feature,
+.about__github-statistics,
+.about__honour-media,
+.about__mvp-media {
+  padding: clamp(0.75rem, 2vw, 1.5rem);
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  box-shadow: 0.75rem 0.75rem 0
+    color-mix(in srgb, var(--cp-accent) 10%, transparent);
 }
 
 .about__prose {
@@ -509,7 +620,23 @@
   .about__youtube-feature,
   .about__mvp-media {
     grid-column: 1;
+    grid-row: 2;
+  }
+
+  .about__youtube > .about__feature-copy {
+    grid-row: 2;
+  }
+
+  .about__mvp-media {
     grid-row: 1;
+  }
+
+  .about__youtube-feature {
+    transform: rotate(-3deg);
+  }
+
+  .about__honour-media {
+    transform: rotate(-4deg);
   }
 }
 
@@ -547,5 +674,28 @@
     max-inline-size: 240px;
     padding-block-start: 0;
     justify-self: end;
+    margin-inline-end: 1rem;
+    transform: rotate(4deg);
+  }
+
+  .about__hero {
+    min-block-size: 0;
+  }
+}
+
+@media (forced-colors: active) {
+  .about__orbital-backdrop {
+    display: none;
+  }
+
+  .about__intro > :first-child,
+  .about__section {
+    background: Canvas;
+  }
+
+  .about__portrait,
+  .about__youtube-feature,
+  .about__honour-media {
+    transform: none;
   }
 }
