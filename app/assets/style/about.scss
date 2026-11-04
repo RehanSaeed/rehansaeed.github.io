@@ -1,3 +1,5 @@
+@use "~/assets/style/abstracts/breakpoints";
+
 .about {
   --cp-bg: var(--global-background-color);
   --cp-bg-elevated: var(--global-content-background-color);
@@ -98,6 +100,20 @@
 
 .about__hero {
   padding-block: 1.5rem 2rem;
+}
+
+@include breakpoints.respond-above(xl) {
+  .about__hero,
+  .about__section {
+    padding-inline-start: max(
+      var(--global-space-main),
+      env(safe-area-inset-left)
+    );
+    padding-inline-end: max(
+      var(--global-space-main),
+      env(safe-area-inset-right)
+    );
+  }
 }
 
 .about .about__eyebrow {

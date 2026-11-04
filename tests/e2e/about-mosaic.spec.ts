@@ -1,17 +1,65 @@
-import type { Locator } from "@playwright/test";
+import type { Locator, Page } from "@playwright/test";
 import { expect, test } from "./fixtures";
 
 const settledScreenshot = async (canvas: Locator) => {
-  let previous: Buffer | undefined;
+  let previous = await canvas.screenshot();
   await expect
     .poll(async () => {
       const current = await canvas.screenshot();
-      const unchanged = previous?.equals(current) ?? false;
+      const unchanged = previous.equals(current);
       previous = current;
       return unchanged;
     })
     .toBe(true);
-  return canvas.screenshot();
+  return previous;
+};
+
+const expectClearNavigation = async (page: Page) => {
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const visibleBounds = (element: Element) => {
+          const bounds = element.getBoundingClientRect();
+          return bounds.width > 0 &&
+            bounds.height > 0 &&
+            bounds.bottom > 0 &&
+            bounds.top < innerHeight &&
+            getComputedStyle(element).visibility === "visible"
+            ? bounds
+            : null;
+        };
+        const controls = Array.from(
+          document.querySelectorAll(".navigation a, .navigation button"),
+          (element) => ({ element, bounds: visibleBounds(element) }),
+        );
+        return Array.from(
+          document.querySelectorAll(
+            ".about h1, .about h2, .about h3, .about__eyebrow, .about a, .about button",
+          ),
+        ).flatMap((element) => {
+          const bounds = visibleBounds(element);
+          return controls
+            .filter(
+              (control) =>
+                bounds !== null &&
+                control.bounds !== null &&
+                bounds.left < control.bounds.right &&
+                bounds.right > control.bounds.left &&
+                bounds.top < control.bounds.bottom &&
+                bounds.bottom > control.bounds.top,
+            )
+            .map((control) => ({
+              content:
+                element.getAttribute("aria-label") ??
+                element.textContent.trim(),
+              navigation:
+                control.element.getAttribute("aria-label") ??
+                control.element.textContent.trim(),
+            }));
+        });
+      }),
+    )
+    .toEqual([]);
 };
 
 test.beforeEach(async ({ page }) => {
@@ -57,6 +105,10 @@ test("Four ordered reliefs render existing artwork without intercepting input", 
   await expect(page).toHaveURL(/\/portfolio\/$/);
   await expect(page.locator(".dimensional-mosaic")).toHaveCount(0);
   await page.goBack();
+  await expect(page).toHaveURL(/\/about\/$/);
+  await expect(
+    page.getByRole("link", { name: "About", exact: true }),
+  ).toHaveAttribute("aria-current", "page");
   await page.locator(".dimensional-mosaic--portrait").scrollIntoViewIfNeeded();
   await expect(page.locator(".dimensional-mosaic--portrait")).toHaveAttribute(
     "data-scene-state",
@@ -64,6 +116,51 @@ test("Four ordered reliefs render existing artwork without intercepting input", 
   );
   expect(errors).toEqual([]);
 });
+
+for (const { width, zoom } of [
+  { width: 375, zoom: 1 },
+  { width: 1200, zoom: 1 },
+  { width: 1440, zoom: 1 },
+  { width: 1440, zoom: 2 },
+]) {
+  for (const colorScheme of ["light", "dark"] as const) {
+    test(`Navigation clears real content rectangles at ${width}px and ${zoom * 100}% CSS zoom in ${colorScheme}`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 1000 });
+      await page.emulateMedia({ colorScheme });
+      await page.goto("/about/");
+      await page.evaluate((value) => {
+        document.documentElement.style.setProperty("zoom", String(value));
+      }, zoom);
+      await expect(
+        page.getByRole("button", { name: "Toggle dark/light" }),
+      ).toBeEnabled();
+      await expect(
+        page.getByRole("heading", { name: "Hello, I'm Rehan.", exact: true }),
+      ).toBeInViewport();
+      for (const top of [0, 35, 180]) {
+        await page.evaluate((value) => {
+          window.scrollTo({ top: value, behavior: "instant" });
+        }, top);
+        await expect.poll(() => page.evaluate(() => scrollY)).toBe(top);
+        await expectClearNavigation(page);
+      }
+      for (const heading of await page.locator(".about h2, .about h3").all()) {
+        await heading.evaluate((element) => {
+          element.scrollIntoView({ block: "center", behavior: "instant" });
+        });
+        await expect(heading).toBeInViewport();
+        await expectClearNavigation(page);
+      }
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      ).toBe(true);
+    });
+  }
+}
 
 test("Pointer depth and native scrolling change the portrait relief", async ({
   page,

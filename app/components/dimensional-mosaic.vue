@@ -72,7 +72,9 @@ const fail = (message: string, error?: unknown) => {
 
 const loseContext = (event: Event) => {
   event.preventDefault();
-  fail("WebGL context lost; retaining the original artwork.");
+  if (!isUnavailable()) {
+    fail("WebGL context lost; retaining the original artwork.");
+  }
 };
 
 const start = async () => {
@@ -168,6 +170,7 @@ const start = async () => {
       material.dispose();
       tiles.dispose();
       renderer?.dispose();
+      renderer?.forceContextLoss();
       renderer = undefined;
       requestRender = undefined;
     };
@@ -187,7 +190,6 @@ const start = async () => {
     let targetY = 0;
     let progress = 0;
     let lastTime = 0;
-    let settled = 0;
     const portrait = props.composition === "portrait";
     const width = portrait ? 4.25 : 7.5;
     const height = portrait
@@ -215,12 +217,19 @@ const start = async () => {
         0,
         1,
       );
-      const delta = Math.min((time - lastTime) / 1000, 0.05);
+      const delta = Math.max((time - lastTime) / 1000, 0);
       lastTime = time;
       const ease = 1 - Math.exp(-delta * 7);
       progress += (target - progress) * ease;
       pointer.x += (targetX - pointer.x) * ease;
       pointer.y += (targetY - pointer.y) * ease;
+      const settled =
+        Math.abs(target - progress) < 0.001 &&
+        Math.abs(targetX - pointer.x) + Math.abs(targetY - pointer.y) < 0.001;
+      if (settled) {
+        progress = target;
+        pointer.set(targetX, targetY);
+      }
       const turn = Math.sin(progress * Math.PI);
       for (let i = 0; i < count; i++) {
         const col = i % columns;
@@ -269,18 +278,12 @@ const start = async () => {
       renderer.render(scene, camera);
       ready.value = true;
       state.value = "ready";
-      settled =
-        Math.abs(target - progress) < 0.001 &&
-        Math.abs(targetX - pointer.x) + Math.abs(targetY - pointer.y) < 0.001
-          ? settled + 1
-          : 0;
       // No perpetual animation: settle after input, then sleep until the next event.
-      if (settled < 4) {
+      if (!settled) {
         frame = requestAnimationFrame(render);
       }
     };
     requestRender = () => {
-      settled = 0;
       if (!frame) {
         lastTime = performance.now() - 16;
         frame = requestAnimationFrame(render);
