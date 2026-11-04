@@ -2,9 +2,12 @@
   <article
     ref="article"
     class="about"
-    :class="{ 'about--motion': motionEnabled }"
+    :class="{
+      'about--motion': motionEnabled,
+      'about--particles': particlesReady,
+    }"
     aria-labelledby="about">
-    <u-particle-portrait />
+    <u-particle-portrait @availability-change="particlesReady = $event" />
     <header id="the-person" class="about__hero">
       <div class="about__intro">
         <div>
@@ -544,6 +547,7 @@ useHead({
 });
 
 const article = useTemplateRef<HTMLElement>("article");
+const particlesReady = ref(false);
 const reducedMotion = ref(true);
 const motionEnabled = computed(() => !reducedMotion.value);
 const theme = ref<"light" | "dark">("light");

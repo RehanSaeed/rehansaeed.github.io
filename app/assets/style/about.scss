@@ -125,6 +125,7 @@
   display: grid;
   place-items: center;
   min-block-size: 540px;
+  overflow: clip;
   isolation: isolate;
   background: radial-gradient(
     ellipse at center,

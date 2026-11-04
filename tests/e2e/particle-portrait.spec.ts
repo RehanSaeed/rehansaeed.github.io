@@ -110,12 +110,14 @@ test("Reduced motion has no continuous rendering and survives preference changes
     })
     .toBe(true);
   await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(page.locator(".about")).toHaveClass(/about--particles/);
   await expect(page.locator(".particle-portrait")).toHaveAttribute(
     "data-state",
     "ready",
   );
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(page.locator(".about")).not.toHaveClass(/about--motion/);
+  await expect(page.locator(".about")).toHaveClass(/about--particles/);
 });
 
 test("Context loss restores the original portrait and all editorial content", async ({

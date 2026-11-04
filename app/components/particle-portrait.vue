@@ -9,6 +9,9 @@
 </template>
 
 <script setup lang="ts">
+const emit = defineEmits<{
+  "availability-change": [available: boolean];
+}>();
 const host = useTemplateRef<HTMLDivElement>("host");
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas");
 const state = ref("loading");
@@ -72,7 +75,7 @@ onMounted(async () => {
       stop();
       ready = false;
       state.value = "fallback";
-      article.classList.remove("about--particles");
+      emit("availability-change", false);
     };
     const contextLost = (event: Event) => {
       event.preventDefault();
@@ -180,11 +183,11 @@ onMounted(async () => {
       stop();
       if (forcedColors.matches) {
         state.value = "fallback";
-        article.classList.remove("about--particles");
+        emit("availability-change", false);
         renderer.clear();
       } else if (ready) {
         state.value = "ready";
-        article.classList.add("about--particles");
+        emit("availability-change", true);
         updatePalette();
       }
     };
@@ -251,7 +254,7 @@ onMounted(async () => {
       });
       renderer.dispose();
       renderer.forceContextLoss();
-      article.classList.remove("about--particles");
+      emit("availability-change", false);
     };
 
     const image = new Image();
@@ -407,7 +410,7 @@ onMounted(async () => {
       points.add(new THREE.Points(geometry, material));
     }
     ready = true;
-    article.classList.add("about--particles");
+    emit("availability-change", true);
     updatePalette();
   } catch (error) {
     dispose?.();
