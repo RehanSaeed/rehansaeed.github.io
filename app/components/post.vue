@@ -85,14 +85,21 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
       color: var(--global-accent-color);
       font-family: var(--global-font-family-serif);
 
-      // initial-letter: 2; // Only supported by Safari
-      // OR
-      float: left; // Remove when browser support is good enough.
+      float: left;
       float: inline-start;
       font-size: calc(var(--global-font-size-4) * 2.6);
       line-height: calc(var(--global-line-height-1) * 0.44);
-      padding-inline-end: var(--global-space-fixed-2);
+      margin-inline-end: var(--global-space-fixed-3);
       margin-block-start: 0.65rem;
+
+      @supports (initial-letter: 2) or (-webkit-initial-letter: 2) {
+        -webkit-initial-letter: 2;
+        initial-letter: 2;
+        float: none;
+        font-size: inherit;
+        line-height: normal;
+        margin-block-start: 0;
+      }
     }
   }
 
