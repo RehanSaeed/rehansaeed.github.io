@@ -64,7 +64,7 @@ onMounted(async () => {
   const contrast = window.matchMedia("(forced-colors: active)");
   let renderer: WebGLRenderer | undefined;
   let frame = 0;
-  let previousFrame = 0;
+  let nextFrame = 0;
   let visible = false;
   let observer: IntersectionObserver | undefined;
   let resizeObserver: ResizeObserver | undefined;
@@ -89,9 +89,13 @@ onMounted(async () => {
     if (!canRender()) {
       return;
     }
-    if (motion.matches || timestamp - previousFrame >= 1000 / 15) {
-      previousFrame = timestamp;
+    if (motion.matches || timestamp >= nextFrame) {
+      const started = performance.now();
       renderScene?.();
+      const finished = performance.now();
+      // Slow software frames must leave time for native controls between renders.
+      nextFrame =
+        finished + Math.min(Math.max(1000 / 15, finished - started), 1000);
     }
     if (!motion.matches) {
       frame = requestAnimationFrame(tick);
@@ -99,7 +103,7 @@ onMounted(async () => {
   };
   const resume = () => {
     stop();
-    previousFrame = 0;
+    nextFrame = 0;
     if (canRender()) {
       frame = requestAnimationFrame(tick);
     }
