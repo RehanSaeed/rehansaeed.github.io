@@ -28,7 +28,7 @@ unitTest("Great-circle miles handle identical and antipodal points", () => {
   expect(distanceInMiles([180, 0], [0, 0])).toBeCloseTo(12436.82, 2);
 });
 
-async function expectPinInsideMap(page: Page, selector: string) {
+const expectPinInsideMap = async (page: Page, selector: string) => {
   const figure = page.locator(".location-map");
   await expect
     .poll(async () => {
@@ -47,9 +47,9 @@ async function expectPinInsideMap(page: Page, selector: string) {
       );
     })
     .toBe(true);
-}
+};
 
-async function expectLocationsFillView(page: Page, coincident: boolean) {
+const expectLocationsFillView = async (page: Page, coincident: boolean) => {
   const figure = page.locator(".location-map");
   await expect
     .poll(async () => {
@@ -76,10 +76,15 @@ async function expectLocationsFillView(page: Page, coincident: boolean) {
       );
     })
     .toBe(true);
-}
+};
 
-async function expectWhiteLand(page: Page) {
+const expectLandPalette = async (page: Page) => {
   const canvas = page.locator(".location-map .maplibregl-canvas");
+  const expected = await page
+    .locator(".location-map__land")
+    .evaluate((element) =>
+      getComputedStyle(element).fill.match(/\d+/g)!.map(Number),
+    );
   await expect
     .poll(async () => {
       const pixel = await sharp(await canvas.screenshot())
@@ -87,16 +92,23 @@ async function expectWhiteLand(page: Page) {
         .removeAlpha()
         .raw()
         .toBuffer();
-      return Math.max(...pixel.map((value) => 255 - value));
+      return Math.max(
+        ...pixel.map((value, index) => Math.abs(expected[index]! - value)),
+      );
     })
     .toBeLessThan(3);
-}
+};
 
-async function expectDottedConnection(page: Page) {
+const expectDottedConnection = async (page: Page) => {
   const figure = page.locator(".location-map");
   const canvas = figure.locator(".maplibregl-canvas");
   const author = figure.locator(".maplibregl-marker.location-map__marker");
   const visitor = figure.locator(".maplibregl-marker.location-map__visitor");
+  const land = await figure
+    .locator(".location-map__land")
+    .evaluate((element) =>
+      getComputedStyle(element).fill.match(/\d+/g)!.map(Number),
+    );
   const radius = await figure.evaluate((element) =>
     Math.ceil(
       Number.parseFloat(
@@ -160,7 +172,9 @@ async function expectDottedConnection(page: Page) {
           y + normal[1]! * (radius + 8),
         );
         const backgroundLuminance = luminance(background);
-        const surface = [...background].every((channel) => channel > 250)
+        const surface = [...background].every(
+          (channel, index) => Math.abs(channel - land[index]!) < 3,
+        )
           ? samples.land
           : samples.water;
         let visible = false;
@@ -186,9 +200,9 @@ async function expectDottedConnection(page: Page) {
       );
     })
     .toBe(true);
-}
+};
 
-async function mockOpenFreeMap(page: Page, showWater = false) {
+const mockOpenFreeMap = async (page: Page, showWater = false) => {
   const styles: string[] = [];
   await page.route("https://tiles.openfreemap.org/styles/*", (route) => {
     const url = new URL(route.request().url());
@@ -202,26 +216,60 @@ async function mockOpenFreeMap(page: Page, showWater = false) {
             type: "geojson",
             data: {
               type: "FeatureCollection",
-              features: showWater
-                ? [
-                    {
-                      type: "Feature",
-                      properties: {},
-                      geometry: {
-                        type: "Polygon",
-                        coordinates: [
-                          [
-                            [-180, -85],
-                            [-40, -85],
-                            [-40, 85],
-                            [-180, 85],
-                            [-180, -85],
+              features: [
+                ...(
+                  [
+                    ["park", 5],
+                    ["wood", 20],
+                  ] as const
+                ).map(([surface, west]) => ({
+                  type: "Feature",
+                  properties: { surface },
+                  geometry: {
+                    type: "Polygon",
+                    coordinates: [
+                      [
+                        [west, 40],
+                        [west + 10, 40],
+                        [west + 10, 45],
+                        [west, 45],
+                        [west, 40],
+                      ],
+                    ],
+                  },
+                })),
+                {
+                  type: "Feature",
+                  properties: { surface: "road" },
+                  geometry: {
+                    type: "LineString",
+                    coordinates: [
+                      [5, 50],
+                      [30, 50],
+                    ],
+                  },
+                },
+                ...(showWater
+                  ? [
+                      {
+                        type: "Feature",
+                        properties: { surface: "water" },
+                        geometry: {
+                          type: "Polygon",
+                          coordinates: [
+                            [
+                              [-180, -85],
+                              [-40, -85],
+                              [-40, 85],
+                              [-180, 85],
+                              [-180, -85],
+                            ],
                           ],
-                        ],
+                        },
                       },
-                    },
-                  ]
-                : [],
+                    ]
+                  : []),
+              ],
             },
             attribution: "Mock map data",
           },
@@ -235,14 +283,41 @@ async function mockOpenFreeMap(page: Page, showWater = false) {
             },
           },
           {
-            // Keep this flat test surface independent of fill-layer recolouring.
             id: "water",
-            type: "fill-extrusion",
+            type: "fill",
             source: "mock-map-data",
+            filter: ["==", ["get", "surface"], "water"],
             paint: {
-              "fill-extrusion-color": style === "dark" ? "#4b416e" : "#c5a5ef",
-              "fill-extrusion-height": 0,
+              "fill-color": style === "dark" ? "#4b416e" : "#c5a5ef",
             },
+          },
+          {
+            id: "park",
+            type: "fill",
+            source: "mock-map-data",
+            filter: ["==", ["get", "surface"], "park"],
+            paint: { "fill-color": "#888888" },
+          },
+          {
+            id: "landcover_wood",
+            type: "fill",
+            source: "mock-map-data",
+            filter: ["==", ["get", "surface"], "wood"],
+            paint: { "fill-color": "#888888" },
+          },
+          {
+            id: "road-casing",
+            type: "line",
+            source: "mock-map-data",
+            filter: ["==", ["get", "surface"], "road"],
+            paint: { "line-color": "#e9c179", "line-width": 8 },
+          },
+          {
+            id: "road",
+            type: "line",
+            source: "mock-map-data",
+            filter: ["==", ["get", "surface"], "road"],
+            paint: { "line-color": "#ffffff", "line-width": 4 },
           },
           { id: "places", type: "circle", source: "mock-map-data" },
         ],
@@ -250,9 +325,9 @@ async function mockOpenFreeMap(page: Page, showWater = false) {
     });
   });
   return styles;
-}
+};
 
-async function requireWebGL(page: Page) {
+const requireWebGL = async (page: Page) => {
   await expect(page.getByRole("button", { name: "Open search" })).toBeEnabled();
   const hasWebGL = await page.evaluate(() => {
     const canvas = document.createElement("canvas");
@@ -263,7 +338,7 @@ async function requireWebGL(page: Page) {
   // Renderer cases require WebGL; the fallback has separate coverage.
   // eslint-disable-next-line playwright/no-skipped-test
   test.skip(!hasWebGL, "This browser does not support WebGL 2.");
-}
+};
 
 for (const width of [320, 375, 1280]) {
   for (const colorScheme of ["light", "dark"] as const) {
@@ -279,11 +354,11 @@ for (const width of [320, 375, 1280]) {
 
       const figure = page.locator(".location-map");
       const map = page.getByRole("img", {
-        name: "Map of the British Isles with my avatar marking London, United Kingdom",
+        name: "Map of the British Isles with my avatar marking East London, United Kingdom",
       });
       await expect(map).toBeVisible();
       await expect(figure.locator("figcaption")).toContainText(
-        "I'm from London.",
+        "I'm from East London.",
       );
       await expect(figure.locator("figcaption")).not.toContainText(
         "United Kingdom",
@@ -351,11 +426,11 @@ test.describe("Without JavaScript", () => {
   test("The London map and location are server-rendered", async ({ page }) => {
     await page.goto("/about/", { waitUntil: "domcontentloaded" });
     await expect(page.locator(".location-map")).toContainText(
-      "I'm from London.",
+      "I'm from East London.",
     );
     await expect(
       page.getByRole("img", {
-        name: "Map of the British Isles with my avatar marking London, United Kingdom",
+        name: "Map of the British Isles with my avatar marking East London, United Kingdom",
       }),
     ).toBeVisible();
     await expect(page.locator(".location-map__pin image")).toHaveAttribute(
@@ -388,17 +463,21 @@ test("The free map loads on approach, shows Europe and follows the purple theme"
   await expect(canvas).toBeVisible();
   await expect(canvas).toHaveAttribute(
     "aria-label",
-    "Map showing London, the UK and Europe",
+    "Map showing East London, the UK and Europe",
   );
   const pin = figure.locator(".maplibregl-marker.location-map__marker");
   await expect(pin).toHaveCount(1);
   await expect(pin).toHaveCSS("display", "grid");
   const avatar = pin.locator(".location-map__avatar");
-  await expect(avatar).toHaveAttribute("src", photo);
+  await expect(avatar).toHaveAttribute("src", /Logo-192x192\.png/);
+  await expect(pin.locator('source[type="image/avif"]')).toHaveAttribute(
+    "srcset",
+    /\/_ipx\/.*Logo-192x192\.png/,
+  );
   await avatar.evaluate((image: HTMLImageElement) => image.decode());
   expect(
     await avatar.evaluate((image: HTMLImageElement) => image.naturalWidth),
-  ).toBe(192);
+  ).toBeGreaterThanOrEqual(62);
   await expect(avatar).toHaveCSS("border-radius", "50%");
   await expect(avatar).toHaveCSS("width", "62px");
   await expect(avatar).toHaveCSS("height", "62px");
@@ -413,15 +492,15 @@ test("The free map loads on approach, shows Europe and follows the purple theme"
   expect(pinBounds!.x + pinBounds!.width / 2).toBeLessThan(
     canvasBounds!.x + canvasBounds!.width / 2 - 10,
   );
-  await expectWhiteLand(page);
+  await expectLandPalette(page);
   await expect(figure.getByRole("status")).toHaveText(
-    "Your approximate location is unavailable. Showing London and Europe.",
+    "Your approximate location is unavailable. Showing East London and Europe.",
   );
 
   await page.getByRole("button", { name: "Toggle dark/light" }).click();
   await expect.poll(() => styles).toEqual(["positron", "dark"]);
   await expect(pin).toBeVisible();
-  await expectWhiteLand(page);
+  await expectLandPalette(page);
   await page
     .locator("nav")
     .getByRole("link", { name: "Blog", exact: true })
@@ -458,6 +537,61 @@ test("Map credits collapse after five seconds and can be reopened", async ({
   await expect(credits).toContainText("Mock map data");
 });
 
+test("Natural parks and woodland retain differentiated road colours in both themes", async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: "light", reducedMotion: "reduce" });
+  const styles = await mockOpenFreeMap(page);
+  await page.goto("/about/", { waitUntil: "domcontentloaded" });
+  await requireWebGL(page);
+  const figure = page.locator(".location-map");
+  await figure.scrollIntoViewIfNeeded();
+  await expect(figure).toHaveClass(/location-map--interactive/);
+  for (const theme of ["positron", "dark"]) {
+    await expect.poll(() => styles.at(-1)).toBe(theme);
+    await expectLandPalette(page);
+    const colours = await figure.evaluate((element) => {
+      const context = document.createElement("canvas").getContext("2d")!;
+      const css = getComputedStyle(element);
+      return [
+        css.getPropertyValue("--location-map-park-color").trim(),
+        css.getPropertyValue("--location-map-wood-color").trim(),
+        "#e9c179",
+        "#ffffff",
+      ].map((colour) => {
+        context.fillStyle = colour;
+        context.fillRect(0, 0, 1, 1);
+        return [...context.getImageData(0, 0, 1, 1).data].slice(0, 3);
+      });
+    });
+    await expect
+      .poll(async () => {
+        const pixels = await sharp(
+          await figure.locator(".maplibregl-canvas").screenshot(),
+        )
+          .removeAlpha()
+          .raw()
+          .toBuffer();
+        return colours.every((colour) => {
+          let count = 0;
+          for (let offset = 0; offset < pixels.length; offset += 3) {
+            if (
+              colour.every(
+                (channel, index) =>
+                  Math.abs(pixels[offset + index]! - channel) < 3,
+              )
+            ) {
+              count++;
+            }
+          }
+          return count > 40;
+        });
+      })
+      .toBe(true);
+    await page.getByRole("button", { name: "Toggle dark/light" }).click();
+  }
+});
+
 test("The animated fly-in ends at the regional view with London visible", async ({
   page,
 }) => {
@@ -491,7 +625,7 @@ test("An OpenFreeMap failure keeps the photo fallback and announces the problem"
   const figure = page.locator(".location-map");
   await figure.scrollIntoViewIfNeeded();
   await expect(figure.getByRole("status")).toHaveText(
-    "The interactive map could not load. Showing a static map of London.",
+    "The interactive map could not load. Showing a static map of East London.",
   );
   await expect(figure).not.toHaveClass(/location-map--interactive/);
   await expect(figure.locator(".location-map__illustration")).toBeVisible();
@@ -530,7 +664,7 @@ for (const colorScheme of ["light", "dark"] as const) {
     expect(layout.scrollWidth).toBe(layout.clientWidth);
     await expect(figure.locator(".maplibregl-ctrl-attrib")).toBeVisible();
     await expectPinInsideMap(page, ".location-map__marker");
-    await expectWhiteLand(page);
+    await expectLandPalette(page);
     await testInfo.attach("Interactive London photo map", {
       body: await figure.screenshot(),
       contentType: "image/png",
@@ -580,9 +714,17 @@ for (const [place, longitude, latitude] of [
       distanceInMiles([-0.005, 51.54], [Number(longitude), Number(latitude)]),
     ).toLocaleString("en-GB");
     await expect(figure.locator("figcaption")).toHaveText(
-      `I'm from London, roughly ${miles} miles away from your current location, according to your IP address.`,
+      `I'm from East London, roughly ${miles} miles away from your current location, according to your IP address.`,
     );
     await expect(figure.locator("figcaption em")).toHaveText(`${miles} miles`);
+    await expect(figure.locator("figcaption")).toHaveAttribute(
+      "aria-live",
+      "polite",
+    );
+    await expect(figure.locator("figcaption")).toHaveAttribute(
+      "aria-atomic",
+      "true",
+    );
     await expect(figure.getByRole("status")).toHaveCount(0);
     await expect(figure).not.toContainText("Approximate location via");
     await expectPinInsideMap(page, ".location-map__marker");
@@ -603,6 +745,57 @@ for (const [place, longitude, latitude] of [
   });
 }
 
+test.describe("High contrast and scaled layouts", () => {
+  test.use({ deviceScaleFactor: 2 });
+
+  for (const colorScheme of ["light", "dark"] as const) {
+    test(`Map controls and both pins remain usable at 200% reflow in ${colorScheme} high contrast`, async ({
+      page,
+    }, testInfo) => {
+      // Half a 1280px desktop's CSS viewport, with twice the pixel density.
+      // This covers reflow and scaling, not native browser zoom or Narrator.
+      await page.setViewportSize({ width: 640, height: 450 });
+      await page.emulateMedia({
+        colorScheme,
+        forcedColors: "active",
+        reducedMotion: "reduce",
+      });
+      await page.route(geoUrl, (route) =>
+        route.fulfill({
+          json: { longitude: "178.4501", latitude: "-18.1416" },
+        }),
+      );
+      await mockOpenFreeMap(page);
+      await page.goto("/about/", { waitUntil: "domcontentloaded" });
+      await requireWebGL(page);
+      const figure = page.locator(".location-map");
+      await figure.scrollIntoViewIfNeeded();
+      await expect(figure).toHaveClass(/location-map--interactive/);
+      await expectPinInsideMap(page, ".location-map__marker");
+      await expectPinInsideMap(page, ".location-map__visitor");
+      await expect(figure.getByRole("status")).toHaveCount(0);
+      const zoom = figure.getByRole("button", { name: "Zoom in" });
+      await zoom.focus();
+      await expect(zoom).toBeFocused();
+      await expect(zoom).not.toHaveCSS("outline-style", "none");
+      const credits = figure.locator(".maplibregl-ctrl-attrib-inner");
+      await expect(credits).toBeHidden({ timeout: 7000 });
+      const toggle = figure.locator(".maplibregl-ctrl-attrib-button");
+      await toggle.focus();
+      await page.keyboard.press("Enter");
+      await expect(credits).toBeVisible();
+      await expect(credits.getByRole("link", { name: "GeoJS" })).toBeVisible();
+      const bounds = (await figure.boundingBox())!;
+      expect(bounds.x).toBeGreaterThanOrEqual(0);
+      expect(bounds.x + bounds.width).toBeLessThanOrEqual(640);
+      await testInfo.attach("High-contrast map at double pixel density", {
+        body: await figure.screenshot(),
+        contentType: "image/png",
+      });
+    });
+  }
+});
+
 for (const location of [
   { longitude: "", latitude: "" },
   { longitude: "not a number", latitude: "51" },
@@ -621,7 +814,7 @@ for (const location of [
     await figure.scrollIntoViewIfNeeded();
     await expect(figure).toHaveClass(/location-map--interactive/);
     await expect(figure.getByRole("status")).toHaveText(
-      "Your approximate location is unavailable. Showing London and Europe.",
+      "Your approximate location is unavailable. Showing East London and Europe.",
     );
     await expect(
       figure.locator(".maplibregl-marker.location-map__visitor"),
@@ -639,7 +832,7 @@ test("A timed-out IP lookup does not break the map", async ({ page }) => {
   await figure.scrollIntoViewIfNeeded();
   await expect(figure).toHaveClass(/location-map--interactive/);
   await expect(figure.getByRole("status")).toHaveText(
-    "Your approximate location is unavailable. Showing London and Europe.",
+    "Your approximate location is unavailable. Showing East London and Europe.",
     { timeout: 12_000 },
   );
   await expect(
@@ -680,7 +873,7 @@ test("A browser without WebGL keeps the self-hosted photo map", async ({
   const figure = page.locator(".location-map");
   await figure.scrollIntoViewIfNeeded();
   await expect(figure.getByRole("status")).toHaveText(
-    "The interactive map could not load. Showing a static map of London.",
+    "The interactive map could not load. Showing a static map of East London.",
   );
   await expect(figure).not.toHaveClass(/location-map--interactive/);
   await expect(figure.locator(".location-map__illustration")).toBeVisible();
