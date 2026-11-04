@@ -52,7 +52,7 @@
     "@iconify-json/feather": "1.2.1",
     "@iconify-json/lucide": "1.2.150",
     "@iconify-json/simple-icons": "1.2.101",
-    "@lhci/cli": "0.15.1",
+    "@lhci/cli": "0.16.0",
     "@nuxt/a11y": "1.0.0-alpha.1",
     "@nuxt/eslint": "1.17.0",
     "@nuxt/fonts": "1.2.0",
