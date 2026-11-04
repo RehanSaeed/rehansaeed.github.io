@@ -78,7 +78,7 @@ I've been trying this with an interactive [About page](/about/). Instead of tryi
 
 Sometimes, I'm not even sure what I want but want something to look at and try as a jumping off point. The implementations give me something concrete to react to. Picking one is still my job, but it's much easier to decide when I can compare actual alternatives rather than imagine them.
 
-## The Three.js Caveat
+## Agents Surpassing Me
 
 By the way, telling agents to use [Three.js](https://threejs.org/) to build amazing interactive 3D visuals for a page seems to be all the rage at the moment. The agents are very good at it, and I've been testing it out.
 
