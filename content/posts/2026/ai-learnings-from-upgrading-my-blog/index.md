@@ -62,13 +62,11 @@ Breaking changes, tests and review still matter. The useful extra is having the 
 
 ## Read the Docs
 
-Telling an agent to go and read a package's documentation is a cool way to squeeze more out of something you've already installed.
-
-For example:
+Telling an agent to go and read a package's documentation is a cool way to squeeze more out of something you've already installed. For example:
 
 > Read the [Nuxt PWA module documentation](https://vite-pwa-org.netlify.app/frameworks/nuxt), compare it with this blog's implementation, and suggest improvements.
 
-It's easy to install a package, get the basic example working and never discover the rest of its features. An agent can help find those gaps. I'd ask for suggestions first, though, rather than blindly implementing every feature. Not every option belongs on my blog.
+It's easy to install a package, get the basic example working and never discover the rest of its features. An agent can help find those gaps. Often they are performance or other improvements that require a few extra steps to setup but worth doing. I'd ask for suggestions first, though, rather than blindly implementing every feature. Not every option belongs on my blog.
 
 ## Compare Alternatives
 
