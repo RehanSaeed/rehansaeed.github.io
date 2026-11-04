@@ -4,6 +4,7 @@
     class="about"
     :class="{ 'about--motion': motionEnabled }"
     aria-labelledby="about">
+    <u-ribbon-journey />
     <header id="the-person" class="about__hero">
       <div class="about__intro">
         <div>
@@ -41,6 +42,11 @@
             src="/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg" />
         </figure>
       </div>
+      <ul class="about__journey-links" aria-label="Follow the thread">
+        <li><a href="#youtube">01 / Sharing knowledge</a></li>
+        <li><a href="#github">02 / Open source</a></li>
+        <li><a href="#awards">03 / Community</a></li>
+      </ul>
     </header>
 
     <section
