@@ -69,7 +69,6 @@ const winkGradientId = `${useId()}-wink-skin`;
 .author {
   display: grid;
   justify-items: center;
-  row-gap: var(--global-space-fixed-4);
   padding-inline: var(--global-space-fluid-3);
 }
 
@@ -79,6 +78,7 @@ const winkGradientId = `${useId()}-wink-skin`;
   border-radius: 100%;
   inline-size: 7rem;
   block-size: 7rem;
+  margin-block-end: var(--global-space-fluid-3);
   transition: border-color var(--global-duration-3) ease-out;
 }
 
@@ -122,12 +122,9 @@ const winkGradientId = `${useId()}-wink-skin`;
 
 .author__site-title {
   font-size: var(--global-font-size-8);
-  line-height: 1.2;
-  margin-block: 0;
 }
 
 .author__description {
-  margin-block: 0;
   opacity: 0.8;
   text-align: center;
 }
