@@ -276,10 +276,10 @@ character appears.
 - Keep natural masculine proportions and a relaxed, believable posture. Use a
   regular men's clothing silhouette with straight shoulders and torso rather
   than a fitted waist, exaggerated muscles or a caricature.
-- The default outfit is a plain ochre or mustard men's crew-neck jumper with a
-  regular fit, ribbed collar, cuffs and straight hem. Suggest fabric with subtle
-  texture and a few folds, not floral motifs, decorative swirls or busy knit
-  patterns.
+- The default outfit is a plain golden-ochre (`#D9A74A` base colour) men's
+  crew-neck jumper with a regular fit, ribbed collar, cuffs and straight hem.
+  Keep shading close to this base colour. Use subtle texture and a few folds,
+  not floral motifs, decorative swirls or busy knit patterns.
 - Keep the jumper's warm golden-ochre yellow as the character's signature
   colour. It should make him stand out against quieter backgrounds and
   supporting objects, rather than blending into the scene. Do not recolour
