@@ -32,7 +32,7 @@ There are already products doing this, including [GitHub Copilot code review](ht
 
 At what point do humans stop manually reviewing PRs? At what point does the machine get better at reviewing code than a human? I don't have an answer yet. It certainly hasn't happened yet but it feels close. Generating more code certainly hasn't made the need to check it disappear.
 
-## Lint First
+## Turn Linting to The Max
 
 Turning up the dials on automated checks is really important. Enable [TypeScript's strict mode](https://www.typescriptlang.org/tsconfig/strict.html), use a modern target appropriate to your supported environments, and configure the relevant [ESLint](https://eslint.org/) plugins.
 
