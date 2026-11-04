@@ -12,10 +12,12 @@ test("Dimensional chapter typography assembles while semantic content stays auth
   await expect(
     page.getByRole("article").getByRole("heading", { level: 1 }),
   ).toHaveText("Hello, I'm Rehan.");
-  const navigation = await page
-    .getByRole("navigation")
-    .getByRole("link", { name: "Blog", exact: true })
-    .boundingBox();
+  const navigationLink = page.getByRole("link", {
+    name: "Blog",
+    exact: true,
+  });
+  await expect(navigationLink).toBeVisible();
+  const navigation = await navigationLink.boundingBox();
   const registration = await installation
     .getByText("About / Muhammad Rehan Saeed", { exact: true })
     .boundingBox();
