@@ -126,7 +126,7 @@
   .about > header,
   .about > section {
     grid-column: 1;
-    padding-inline: clamp(2rem, 4vw, 4rem);
+    padding-inline: max(14rem, var(--global-space-main)) clamp(2rem, 4vw, 4rem);
   }
 
   .about .about__intro {
