@@ -290,7 +290,7 @@ test("About image links describe their destinations without changing their layou
       count: 1,
     },
     {
-      selector: ".about__github-statistics a",
+      selector: ".about__github-statistics .about__image-link",
       text: "View my GitHub profile",
       count: 1,
     },
