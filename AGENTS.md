@@ -316,8 +316,8 @@ workspace. Choose the scene that best communicates the article. When a desk scen
 is useful, include only the relevant items below rather than forcing every prop
 into the composition; their arrangement can change with the pose and framing.
 
-- Use a four-legged FlexiSpot electric standing desk with a natural oak top
-  **32 mm thick**, four telescopic metal lifting columns and a restrained
+- Use a four-legged FlexiSpot electric standing desk with an **extra thick**
+  natural oak top, four telescopic metal lifting columns and a restrained
   charcoal frame. Set its height to suit the character's seated or standing
   pose. Mount the height-control keypad at the **far-right end of the front
   edge**, not near the centre.
