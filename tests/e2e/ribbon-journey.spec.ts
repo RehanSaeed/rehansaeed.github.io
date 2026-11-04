@@ -77,7 +77,9 @@ test("Context loss shows the static ribbon without affecting the article", async
     const extension = element
       .getContext("webgl2")
       ?.getExtension("WEBGL_lose_context");
-    if (!extension) throw new Error("Context-loss extension is unavailable");
+    if (!extension) {
+      throw new Error("Context-loss extension is unavailable");
+    }
     extension.loseContext();
   });
   await expect(scene).toHaveAttribute("data-state", "unavailable");
@@ -119,7 +121,13 @@ test("Missing WebGL preserves the server-rendered ribbon and content", async ({
   page,
 }) => {
   await page.addInitScript(() => {
-    const original = HTMLCanvasElement.prototype.getContext;
+    const original = Object.getOwnPropertyDescriptor(
+      HTMLCanvasElement.prototype,
+      "getContext",
+    );
+    if (!original || typeof original.value !== "function") {
+      throw new Error("Canvas getContext is unavailable.");
+    }
     Object.defineProperty(HTMLCanvasElement.prototype, "getContext", {
       value(
         this: HTMLCanvasElement,
@@ -128,7 +136,11 @@ test("Missing WebGL preserves the server-rendered ribbon and content", async ({
       ): unknown {
         return type.startsWith("webgl")
           ? null
-          : Reflect.apply(original, this, [type, ...args]);
+          : Reflect.apply(
+              original.value as (...args: unknown[]) => unknown,
+              this,
+              [type, ...args],
+            );
       },
     });
   });

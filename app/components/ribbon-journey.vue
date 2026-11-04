@@ -30,12 +30,18 @@ let disposed = false;
 onMounted(async () => {
   const element = host.value;
   const surface = canvas.value;
-  if (!element || !surface) return;
+  if (!element || !surface) {
+    return;
+  }
   const forcedColors = window.matchMedia("(forced-colors: active)");
-  if (forcedColors.matches) return;
+  if (forcedColors.matches) {
+    return;
+  }
   try {
     const THREE = await import("three");
-    if (disposed) return;
+    if (disposed) {
+      return;
+    }
     const renderer = new THREE.WebGLRenderer({
       canvas: surface,
       alpha: true,
@@ -112,8 +118,9 @@ onMounted(async () => {
         !visible ||
         document.hidden ||
         forcedColors.matches
-      )
+      ) {
         return;
+      }
       current = reducedMotion.matches
         ? 0
         : current + (target - current) * 0.085;
@@ -154,7 +161,9 @@ onMounted(async () => {
       }
     };
     const requestDraw = () => {
-      if (!frame) frame = requestAnimationFrame(draw);
+      if (!frame) {
+        frame = requestAnimationFrame(draw);
+      }
     };
     const updateScroll = () => {
       const anchor = window.innerHeight * 0.55;
@@ -183,7 +192,9 @@ onMounted(async () => {
     });
     const updateTheme = () => {
       material.color.set(getComputedStyle(element).color);
-      edgeMaterial.color.copy(material.color).lerp(new THREE.Color("white"), 0.6);
+      edgeMaterial.color
+        .copy(material.color)
+        .lerp(new THREE.Color("white"), 0.6);
       requestDraw();
     };
     const contextLost = (event: Event) => {
@@ -211,7 +222,9 @@ onMounted(async () => {
       surface.removeEventListener("webglcontextrestored", contextRestored);
       geometry.dispose();
       material.dispose();
-      edges.forEach((edge) => edge.geometry.dispose());
+      edges.forEach((edge) => {
+        edge.geometry.dispose();
+      });
       edgeMaterial.dispose();
       renderer.dispose();
       renderer.forceContextLoss();
@@ -253,7 +266,8 @@ onBeforeUnmount(() => {
 .ribbon-journey__canvas,
 .ribbon-journey__fallback {
   position: absolute;
-  inset: 0;
+  inset-block: 0;
+  inset-inline: 0;
   inline-size: 100%;
   block-size: 100%;
 }
