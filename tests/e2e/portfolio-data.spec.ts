@@ -45,6 +45,37 @@ test("Browser jobs restore generated metadata before Nuxt dependency setup", asy
   expect(steps[install]!.run).toBe("npm ci");
 });
 
+test("Headed Firefox isolates native windows on its shared Xvfb display", async () => {
+  const workflow = workflowSchema.parse(
+    parse(await readFile(".github/workflows/build.yml", "utf8")),
+  );
+  const firefox = workflow.jobs.test!.steps.find(
+    (step) => step.name === "Playwright Firefox Test",
+  )!;
+  expect(firefox.run).toBe(
+    "xvfb-run --auto-servernum npx playwright test --project=firefox --headed --workers=1",
+  );
+});
+
+test("Failed dependency setup reports GitHub limits without bypassing the failure", async () => {
+  const workflow = workflowSchema.parse(
+    parse(await readFile(".github/workflows/build.yml", "utf8")),
+  );
+  const diagnostic = workflow.jobs.build!.steps.find(
+    (step) => step.name === "Inspect GitHub Metadata Failure",
+  )!;
+  const dependencies = workflow.jobs.build!.steps.find(
+    (step) => step.id === "dependencies",
+  )!;
+  expect(dependencies.run).toBe("npm ci");
+  expect(dependencies["continue-on-error"]).toBeUndefined();
+  expect(diagnostic.if).toBe(
+    "failure() && steps.dependencies.outcome == 'failure'",
+  );
+  expect(diagnostic.run).toContain("x-ratelimit-");
+  expect(diagnostic.run).toContain("retry-after:");
+});
+
 test("Portfolio popularity refreshes expired counts and reuses fresh counts", async ({}, info) => {
   const dir = info.outputPath("portfolio-cache");
   await mkdir(dir, { recursive: true });
