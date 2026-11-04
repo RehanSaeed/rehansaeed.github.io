@@ -91,7 +91,7 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
       float: inline-start;
       font-size: calc(var(--global-font-size-4) * 2.6);
       line-height: calc(var(--global-line-height-1) * 0.44);
-      padding-inline-end: var(--global-space-fixed-2);
+      padding-inline-end: var(--global-space-fixed-3);
       margin-block-start: 0.65rem;
     }
   }
