@@ -38,7 +38,14 @@ export default defineConfig({
     {
       name: "firefox",
       testIgnore: /visual\.spec\.ts/,
-      use: { ...devices["Desktop Firefox"] },
+      use: {
+        ...devices["Desktop Firefox"],
+        launchOptions: {
+          firefoxUserPrefs: {
+            "webgl.force-enabled": true,
+          },
+        },
+      },
     },
     {
       // Local only: `npm run test:visual`. Baselines are git-ignored.
