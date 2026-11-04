@@ -39,7 +39,7 @@
     </div>
 
     <u-heading
-      :id="headingId || metadata.name"
+      :id="props.headingId || metadata.name"
       class="author__site-title"
       link-class="u-url u-uid p-name"
       level="1"
@@ -54,22 +54,15 @@
   </section>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-  name: "u-author",
-  props: {
-    /** Fragment identifier for the author heading. */ headingId: {
-      type: String,
-    },
-  },
-  setup() {
-    return {
-      metadata: useAppConfig().site,
-      winkGradientId: `${useId()}-wink-skin`,
-    };
+<script setup lang="ts">
+defineOptions({ name: "u-author" });
+const props = defineProps({
+  /** Fragment identifier for the author heading. */ headingId: {
+    type: String,
   },
 });
+const metadata = useAppConfig().site;
+const winkGradientId = `${useId()}-wink-skin`;
 </script>
 
 <style lang="scss">

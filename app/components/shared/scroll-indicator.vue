@@ -2,11 +2,8 @@
   <div class="scroll-indicator" />
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-  name: "u-scroll-indicator",
-});
+<script setup lang="ts">
+defineOptions({ name: "u-scroll-indicator" });
 </script>
 
 <style lang="scss">

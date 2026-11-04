@@ -7,11 +7,8 @@
   </u-skeleton>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-  name: "u-webmention-links-skeleton",
-});
+<script setup lang="ts">
+defineOptions({ name: "u-webmention-links-skeleton" });
 </script>
 
 <style lang="scss">

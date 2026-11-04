@@ -15,41 +15,35 @@
   </Component>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
 import { NuxtLink } from "#components";
 
-export default defineComponent({
-  name: "u-link-button",
-  props: {
-    /** Whether the link button has a border. */ bordered: {
-      type: Boolean,
-    },
-    /** Whether the link button uses contrasting colours. */ contrast: {
-      type: Boolean,
-    },
-    /** Whether the link button uses the primary appearance. */ primary: {
-      type: Boolean,
-    },
-    /** Accessible text describing the control or link. */ label: {
-      type: String,
-    },
-    /** Internal route used for navigation. */ to: {
-      type: String,
-    },
-    /** URL used for the link. */ href: {
-      type: String,
-    },
-    /** Relationship attributes applied to the link. */ rel: {
-      type: String,
-    },
+defineOptions({ name: "u-link-button" });
+const props = defineProps({
+  /** Whether the link button has a border. */ bordered: {
+    type: Boolean,
   },
-  computed: {
-    tag() {
-      return this.to ? NuxtLink : "a";
-    },
+  /** Whether the link button uses contrasting colours. */ contrast: {
+    type: Boolean,
+  },
+  /** Whether the link button uses the primary appearance. */ primary: {
+    type: Boolean,
+  },
+  /** Accessible text describing the control or link. */ label: {
+    type: String,
+  },
+  /** Internal route used for navigation. */ to: {
+    type: String,
+  },
+  /** URL used for the link. */ href: {
+    type: String,
+  },
+  /** Relationship attributes applied to the link. */ rel: {
+    type: String,
   },
 });
+const tag = computed(() => (props.to ? NuxtLink : "a"));
 </script>
 
 <style lang="scss">

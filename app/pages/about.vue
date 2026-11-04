@@ -327,145 +327,119 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-  name: "u-about",
-  setup() {
-    const metadata = useAppConfig().site;
-    const title = "About";
-    const description = `About ${metadata.author.name}. ${metadata.description}.`;
-    const url = metadata.url + "/about/";
-    useBlogOgImage(title);
-    useSchemaOrg([
-      defineWebPage({
-        "@type": "ProfilePage",
-        mainEntity: { "@id": `${metadata.url}/#identity` },
-      }),
-      defineBreadcrumb({
-        itemListElement: [
-          { name: "Blog", item: metadata.url + "/" },
-          { name: title, item: url },
-        ],
-      }),
-    ]);
-    useHead({
-      title,
-      link: [{ rel: "canonical", href: url }],
-      meta: [
-        { name: "description", content: description },
-        { name: "author", content: metadata.author.name },
-        // Open Graph
-        { property: "og:title", content: title },
-        { property: "og:url", content: url },
-        { property: "og:description", content: description },
-        { property: "og:locale", content: metadata.language.replace("-", "_") },
-        { property: "og:site_name", content: metadata.name },
-        { property: "og:type", content: "profile" },
-        { property: "profile:first_name", content: metadata.author.firstName },
-        { property: "profile:last_name", content: metadata.author.lastName },
-        { property: "profile:username", content: metadata.author.name },
-        { property: "profile:gender", content: metadata.author.gender },
-        { property: "fb:app_id", content: metadata.facebookAppId },
-      ],
-    });
-    return { metadata };
-  },
-  data() {
-    return {
-      theme: "light",
-      themeListener: null as EventListener | null,
-    };
-  },
-  computed: {
-    relativeUrl() {
-      return "/about/";
-    },
-    stackOverflowUrl() {
-      return this.metadata.author.stackOverflow.url;
-    },
-    stackOverflowProfileUrl() {
-      return `https://stackoverflow.com/users/flair/${this.metadata.author.stackOverflow.user}.png?theme=${this.oppositeTheme}`;
-    },
-    gitHubUrl() {
-      return this.metadata.author.gitHub.url;
-    },
-    gitHubSponsorsUrl() {
-      return `https://github.com/sponsors/${this.metadata.author.gitHub.user}`;
-    },
-    gitHubSponsorsImageUrl() {
-      return `https://img.shields.io/github/sponsors/${this.metadata.author.gitHub.user}?logo=github&style=social`;
-    },
-    gitHubFollowersUrl() {
-      return `https://github.com/${this.metadata.author.gitHub.user}?tab=followers`;
-    },
-    gitHubFollowersImageUrl() {
-      return `https://img.shields.io/github/followers/${this.metadata.author.gitHub.user}?style=social`;
-    },
-    gitHubStarsImageUrl() {
-      return `https://img.shields.io/github/stars/${this.metadata.author.gitHub.user}?style=social`;
-    },
-    gitHubStatisticsImageUrl() {
-      const fileName =
-        this.theme === "light"
-          ? "profile-green-animate.svg"
-          : "profile-night-green.svg";
-      return `https://raw.githubusercontent.com/RehanSaeed/RehanSaeed/main/profile-3d-contrib/${fileName}`;
-    },
-    mvpUrl() {
-      return "https://mvp.microsoft.com/en-us/PublicProfile/5001654?fullName=Muhammad%20Rehan%20Saeed";
-    },
-    credlyUrl() {
-      return "https://www.credly.com/users/muhammad_rehan_saeed/badges";
-    },
-    twitchUrl() {
-      return this.metadata.author.twitch.url;
-    },
-    youtubeUrl() {
-      return this.metadata.author.youtube.url;
-    },
-    youtubeViewsImageUrl() {
-      return this.youtubeBadgeImageUrl("viewCount", "Views");
-    },
-    youtubeSubscribersImageUrl() {
-      return this.youtubeBadgeImageUrl("subscriberCount", "Subscribers");
-    },
-    oppositeTheme() {
-      return this.theme === "light" ? "dark" : "light";
-    },
-  },
-  methods: {
-    youtubeBadgeImageUrl(statistic: string, label: string) {
-      const query = new URLSearchParams({
-        url: `https://api.socialcounts.org/youtube-live-subscriber-count/${this.metadata.author.youtube.user}`,
-        query: `$.counters.api.${statistic}`,
-        label,
-        logo: "youtube",
-        style: "social",
-      });
-      return `https://img.shields.io/badge/dynamic/json?${query}`;
-    },
-    setTheme(event: Event) {
-      if (event instanceof CustomEvent) {
-        const theme: unknown = event.detail;
-        if (theme === "light" || theme === "dark") {
-          this.theme = theme;
-        }
-      }
-    },
-  },
-  mounted() {
-    this.theme = window.__theme;
-    this.themeListener = (event: Event) => {
-      this.setTheme(event);
-    };
-    window.addEventListener("__themeChanged", this.themeListener);
-  },
-  unmounted() {
-    if (this.themeListener) {
-      window.removeEventListener("__themeChanged", this.themeListener);
+<script setup lang="ts">
+import { computed, onMounted, onUnmounted, ref } from "vue";
+
+defineOptions({ name: "u-about" });
+const metadata = useAppConfig().site;
+const title = "About";
+const description = `About ${metadata.author.name}. ${metadata.description}.`;
+const url = metadata.url + "/about/";
+useBlogOgImage(title);
+useSchemaOrg([
+  defineWebPage({
+    "@type": "ProfilePage",
+    mainEntity: { "@id": `${metadata.url}/#identity` },
+  }),
+  defineBreadcrumb({
+    itemListElement: [
+      { name: "Blog", item: metadata.url + "/" },
+      { name: title, item: url },
+    ],
+  }),
+]);
+useHead({
+  title,
+  link: [{ rel: "canonical", href: url }],
+  meta: [
+    { name: "description", content: description },
+    { name: "author", content: metadata.author.name },
+    // Open Graph
+    { property: "og:title", content: title },
+    { property: "og:url", content: url },
+    { property: "og:description", content: description },
+    { property: "og:locale", content: metadata.language.replace("-", "_") },
+    { property: "og:site_name", content: metadata.name },
+    { property: "og:type", content: "profile" },
+    { property: "profile:first_name", content: metadata.author.firstName },
+    { property: "profile:last_name", content: metadata.author.lastName },
+    { property: "profile:username", content: metadata.author.name },
+    { property: "profile:gender", content: metadata.author.gender },
+    { property: "fb:app_id", content: metadata.facebookAppId },
+  ],
+});
+const theme = ref("light");
+const relativeUrl = "/about/";
+const stackOverflowUrl = computed(() => metadata.author.stackOverflow.url);
+const oppositeTheme = computed(() =>
+  theme.value === "light" ? "dark" : "light",
+);
+const stackOverflowProfileUrl = computed(
+  () =>
+    `https://stackoverflow.com/users/flair/${metadata.author.stackOverflow.user}.png?theme=${oppositeTheme.value}`,
+);
+const gitHubUrl = computed(() => metadata.author.gitHub.url);
+const gitHubSponsorsUrl = computed(
+  () => `https://github.com/sponsors/${metadata.author.gitHub.user}`,
+);
+const gitHubSponsorsImageUrl = computed(
+  () =>
+    `https://img.shields.io/github/sponsors/${metadata.author.gitHub.user}?logo=github&style=social`,
+);
+const gitHubFollowersUrl = computed(
+  () => `https://github.com/${metadata.author.gitHub.user}?tab=followers`,
+);
+const gitHubFollowersImageUrl = computed(
+  () =>
+    `https://img.shields.io/github/followers/${metadata.author.gitHub.user}?style=social`,
+);
+const gitHubStarsImageUrl = computed(
+  () =>
+    `https://img.shields.io/github/stars/${metadata.author.gitHub.user}?style=social`,
+);
+const gitHubStatisticsImageUrl = computed(() => {
+  const fileName =
+    theme.value === "light"
+      ? "profile-green-animate.svg"
+      : "profile-night-green.svg";
+  return `https://raw.githubusercontent.com/RehanSaeed/RehanSaeed/main/profile-3d-contrib/${fileName}`;
+});
+const mvpUrl =
+  "https://mvp.microsoft.com/en-us/PublicProfile/5001654?fullName=Muhammad%20Rehan%20Saeed";
+const credlyUrl = "https://www.credly.com/users/muhammad_rehan_saeed/badges";
+const twitchUrl = computed(() => metadata.author.twitch.url);
+const youtubeUrl = computed(() => metadata.author.youtube.url);
+const youtubeViewsImageUrl = computed(() =>
+  youtubeBadgeImageUrl("viewCount", "Views"),
+);
+const youtubeSubscribersImageUrl = computed(() =>
+  youtubeBadgeImageUrl("subscriberCount", "Subscribers"),
+);
+
+const youtubeBadgeImageUrl = (statistic: string, label: string) => {
+  const query = new URLSearchParams({
+    url: `https://api.socialcounts.org/youtube-live-subscriber-count/${metadata.author.youtube.user}`,
+    query: `$.counters.api.${statistic}`,
+    label,
+    logo: "youtube",
+    style: "social",
+  });
+  return `https://img.shields.io/badge/dynamic/json?${query}`;
+};
+const setTheme = (event: Event) => {
+  if (event instanceof CustomEvent) {
+    const value: unknown = event.detail;
+    if (value === "light" || value === "dark") {
+      theme.value = value;
     }
-  },
+  }
+};
+onMounted(() => {
+  theme.value = window.__theme;
+  window.addEventListener("__themeChanged", setTheme);
+});
+onUnmounted(() => {
+  window.removeEventListener("__themeChanged", setTheme);
 });
 </script>
 

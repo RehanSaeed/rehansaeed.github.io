@@ -4,11 +4,8 @@
   >
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-  name: "u-skip-link",
-});
+<script setup lang="ts">
+defineOptions({ name: "u-skip-link" });
 </script>
 
 <style lang="scss" scoped>

@@ -10,38 +10,28 @@
   </u-tooltip>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { computed, onMounted, ref } from "vue";
 import {
   getAbsoluteDisplayDateFromString,
   getDisplayDateFromString,
 } from "~/framework/date";
 
-export default defineComponent({
-  name: "u-time",
-  inheritAttrs: false,
-  props: {
-    /** ISO date or timestamp represented by the time element. */ datetime: {
-      type: String,
-      required: true,
-    },
+defineOptions({ name: "u-time", inheritAttrs: false });
+const props = defineProps({
+  /** ISO date or timestamp represented by the time element. */ datetime: {
+    type: String,
+    required: true,
   },
-  data() {
-    return {
-      isMounted: false,
-    };
-  },
-  computed: {
-    // Recent dates are shown relative to now (e.g. "3 days ago"), which is only known in the
-    // browser. The prerendered HTML has the absolute date, which hydration must match.
-    datetimeDisplay() {
-      return this.isMounted
-        ? getDisplayDateFromString(this.datetime)
-        : getAbsoluteDisplayDateFromString(this.datetime);
-    },
-  },
-  mounted() {
-    this.isMounted = true;
-  },
+});
+const isMounted = ref(false);
+// The prerendered absolute date must match hydration before showing relative dates.
+const datetimeDisplay = computed(() =>
+  isMounted.value
+    ? getDisplayDateFromString(props.datetime)
+    : getAbsoluteDisplayDateFromString(props.datetime),
+);
+onMounted(() => {
+  isMounted.value = true;
 });
 </script>

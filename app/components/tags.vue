@@ -11,20 +11,15 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType } from "vue";
+<script setup lang="ts">
+import type { PropType } from "vue";
 import { tagPath } from "#shared/utils/tag";
 
-export default defineComponent({
-  name: "u-tags",
-  setup() {
-    return { tagPath };
-  },
-  props: {
-    /** Tags associated with the content. */ tags: {
-      required: true,
-      type: Array as PropType<string[]>,
-    },
+defineOptions({ name: "u-tags" });
+defineProps({
+  /** Tags associated with the content. */ tags: {
+    required: true,
+    type: Array as PropType<string[]>,
   },
 });
 </script>

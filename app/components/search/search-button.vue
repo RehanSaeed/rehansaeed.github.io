@@ -24,46 +24,38 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { computed, onMounted, ref } from "vue";
 import {
   searchOpened,
   searchClosed,
   searchResultSelected,
 } from "~/framework/analytics";
 
-export default defineComponent({
-  name: "u-search-button",
-  data() {
-    return {
-      isOpen: false,
-    };
-  },
-  computed: {
-    initialSearch() {
-      const value = this.$route.query.search;
-      return (Array.isArray(value) ? value[0] : value) ?? undefined;
-    },
-  },
-  methods: {
-    onOpen() {
-      this.isOpen = true;
-      searchOpened();
-    },
-    onClose() {
-      this.isOpen = false;
-      searchClosed();
-    },
-    onSelected(searchTerm: string) {
-      this.isOpen = false;
-      searchResultSelected(searchTerm);
-    },
-  },
-  mounted() {
-    if (this.$route.query.search) {
-      this.onOpen();
-    }
-  },
+defineOptions({ name: "u-search-button" });
+const route = useRoute();
+const isOpen = ref(false);
+const initialSearch = computed(() => {
+  const value = route.query.search;
+  return (Array.isArray(value) ? value[0] : value) ?? undefined;
+});
+
+const onOpen = () => {
+  isOpen.value = true;
+  searchOpened();
+};
+const onClose = () => {
+  isOpen.value = false;
+  searchClosed();
+};
+const onSelected = (searchTerm: string) => {
+  isOpen.value = false;
+  searchResultSelected(searchTerm);
+};
+onMounted(() => {
+  if (route.query.search) {
+    onOpen();
+  }
 });
 </script>
 

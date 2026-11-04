@@ -22,58 +22,44 @@
   </article>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType } from "vue";
+<script setup lang="ts">
+import { computed, type ObjectDirective, type PropType } from "vue";
 import {
   webMentionTimestamp,
   webMentionUrl,
   type WebMention,
 } from "#shared/utils/webmentions";
-export default defineComponent({
-  name: "u-webmention-reply",
-  directives: {
-    ugcLinks(element: HTMLElement) {
-      for (const link of element.querySelectorAll<HTMLAnchorElement>(
-        "a[href]",
-      )) {
-        link.relList.add("ugc", "nofollow");
-      }
-    },
-  },
-  props: {
-    /** Web mention reply to display. */ reply: {
-      required: true,
-      type: Object as PropType<WebMention>,
-    },
-  },
-  computed: {
-    id() {
-      return `webmention-reply-${this.reply.id}`;
-    },
-    url() {
-      return webMentionUrl(this.reply);
-    },
-    content() {
-      if (
-        this.reply.activity.type === "link" &&
-        new URL(this.url).origin !== "https://twitter.com"
-      ) {
-        return this.reply.activity.sentence_html;
-      } else {
-        return this.reply.data.content;
-      }
-    },
-    name() {
-      return this.reply.data.author?.name || "Anonymous";
-    },
-    photo() {
-      return this.reply.data.author?.photo || "";
-    },
-    timestamp() {
-      return webMentionTimestamp(this.reply);
-    },
+defineOptions({ name: "u-webmention-reply" });
+const applyUgcLinks = (element: HTMLElement) => {
+  for (const link of element.querySelectorAll<HTMLAnchorElement>("a[href]")) {
+    link.relList.add("ugc", "nofollow");
+  }
+};
+const vUgcLinks: ObjectDirective<HTMLElement> = {
+  mounted: applyUgcLinks,
+  updated: applyUgcLinks,
+};
+const props = defineProps({
+  /** Web mention reply to display. */ reply: {
+    required: true,
+    type: Object as PropType<WebMention>,
   },
 });
+const id = computed(() => `webmention-reply-${props.reply.id}`);
+const url = computed(() => webMentionUrl(props.reply));
+const content = computed(() => {
+  if (
+    props.reply.activity.type === "link" &&
+    new URL(url.value).origin !== "https://twitter.com"
+  ) {
+    return props.reply.activity.sentence_html;
+  } else {
+    return props.reply.data.content;
+  }
+});
+const name = computed(() => props.reply.data.author?.name || "Anonymous");
+const photo = computed(() => props.reply.data.author?.photo || "");
+const timestamp = computed(() => webMentionTimestamp(props.reply));
 </script>
 
 <style lang="scss">

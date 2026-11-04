@@ -10,11 +10,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-  name: "u-arrows",
-});
+<script setup lang="ts">
+defineOptions({ name: "u-arrows" });
 </script>
 
 <style lang="scss">

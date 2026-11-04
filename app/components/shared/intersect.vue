@@ -1,14 +1,15 @@
 <script lang="ts">
-import { defineComponent, markRaw, type PropType } from "vue";
+import {
+  defineComponent,
+  getCurrentInstance,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  type PropType,
+} from "vue";
 export default defineComponent({
   name: "u-intersect",
   emits: ["change", "destroyed", "enter", "enterFirstTime", "leave"],
-  data() {
-    return {
-      hasIntersected: false,
-      observer: null as IntersectionObserver | null,
-    };
-  },
   props: {
     /** Visibility ratio at which intersection events fire. */ threshold: {
       type: Array as PropType<number[]>,
@@ -27,50 +28,54 @@ export default defineComponent({
         default: () => "0px 0px 0px 0px",
       },
   },
-  mounted() {
-    this.observer = markRaw(
-      new IntersectionObserver(
+  setup(props, { emit, slots }) {
+    const instance = getCurrentInstance();
+    let hasIntersected = false;
+    let observer: IntersectionObserver | undefined;
+    onMounted(() => {
+      observer = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {
             if (!entry.isIntersecting) {
-              this.$emit("leave", [entry]);
+              emit("leave", [entry]);
             } else {
-              this.$emit("enter", [entry]);
-              if (!this.hasIntersected) {
-                this.hasIntersected = true;
-                this.$emit("enterFirstTime", [entry]);
+              emit("enter", [entry]);
+              if (!hasIntersected) {
+                hasIntersected = true;
+                emit("enterFirstTime", [entry]);
               }
             }
 
-            this.$emit("change", [entry]);
+            emit("change", [entry]);
           }
         },
         {
-          threshold: this.threshold,
-          root: this.root,
-          rootMargin: this.rootMargin,
+          threshold: props.threshold,
+          root: props.root,
+          rootMargin: props.rootMargin,
         },
-      ),
-    );
+      );
 
-    void this.$nextTick(() => {
-      if (!(this.$el instanceof Element)) {
-        console.warn(
-          "You must have exactly one element inside a <u-intersect> component.",
-        );
-        return;
-      }
+      void nextTick(() => {
+        const element: unknown = instance?.proxy?.$el;
+        if (!(element instanceof Element)) {
+          console.warn(
+            "You must have exactly one element inside a <u-intersect> component.",
+          );
+          return;
+        }
 
-      this.observer?.observe(this.$el);
+        observer?.observe(element);
+      });
     });
-  },
-  unmounted() {
-    this.$emit("destroyed");
-    this.observer?.disconnect();
-  },
-  render() {
-    const nodes = this.$slots.default?.() ?? [];
-    return nodes[0] ?? null;
+    onUnmounted(() => {
+      emit("destroyed");
+      observer?.disconnect();
+    });
+    return () => {
+      const nodes = slots.default?.() ?? [];
+      return nodes[0] ?? null;
+    };
   },
 });
 </script>

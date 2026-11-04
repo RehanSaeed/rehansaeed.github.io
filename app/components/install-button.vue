@@ -31,7 +31,7 @@ watch(
   },
   { immediate: true },
 );
-async function install() {
+const install = async () => {
   try {
     const choice: unknown = await $pwa?.install();
     if (choice && typeof choice === "object" && "outcome" in choice) {
@@ -40,7 +40,7 @@ async function install() {
   } catch (error) {
     console.error("PWA installation failed:", error);
   }
-}
+};
 onMounted(() => {
   hydrated.value = true;
 });

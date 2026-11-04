@@ -13,41 +13,35 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType } from "vue";
+<script setup lang="ts">
+import { computed, type PropType } from "vue";
 import { getDisplayDateFromString } from "~/framework/date";
 import type { WebMention } from "#shared/utils/webmentions";
 
-export default defineComponent({
-  name: "u-webmention-faces",
-  props: {
-    /** Web mentions whose authors are displayed. */ mentions: {
-      required: true,
-      type: Array as PropType<WebMention[]>,
-    },
-  },
-  methods: {
-    getLabel(mention: WebMention, name: string): string {
-      if (mention.data.published) {
-        return `${name} - ${getDisplayDateFromString(mention.data.published) ?? ""}`;
-      }
-      return name;
-    },
-  },
-  computed: {
-    mentionsDisplay() {
-      return this.mentions.map((mention) => {
-        const name = mention.data.author?.name?.trim() || "Anonymous";
-        return {
-          mention,
-          name,
-          photo: mention.data.author?.photo?.trim() || "",
-          label: this.getLabel(mention, name),
-        };
-      });
-    },
+defineOptions({ name: "u-webmention-faces" });
+const props = defineProps({
+  /** Web mentions whose authors are displayed. */ mentions: {
+    required: true,
+    type: Array as PropType<WebMention[]>,
   },
 });
+const getLabel = (mention: WebMention, name: string): string => {
+  if (mention.data.published) {
+    return `${name} - ${getDisplayDateFromString(mention.data.published) ?? ""}`;
+  }
+  return name;
+};
+const mentionsDisplay = computed(() =>
+  props.mentions.map((mention) => {
+    const name = mention.data.author?.name?.trim() || "Anonymous";
+    return {
+      mention,
+      name,
+      photo: mention.data.author?.photo?.trim() || "",
+      label: getLabel(mention, name),
+    };
+  }),
+);
 </script>
 
 <style lang="scss">

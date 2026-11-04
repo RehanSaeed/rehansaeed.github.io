@@ -7,27 +7,18 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-  data() {
-    return {
-      noLogo: false,
-      logoJustify: "",
-      logoAlign: "",
-    };
-  },
-  mounted() {
-    const {
-      "no-logo": noLogo,
-      "logo-justify": logoJustify,
-      "logo-align": logoAlign,
-    } = this.$route.query;
+<script setup lang="ts">
+import { onMounted, ref } from "vue";
 
-    this.noLogo = Boolean(noLogo);
-    this.logoJustify = String(logoJustify || "end");
-    this.logoAlign = String(logoAlign || "start");
-  },
+const route = useRoute();
+const noLogo = ref(false);
+const logoJustify = ref("");
+const logoAlign = ref("");
+onMounted(() => {
+  const query = route.query;
+  noLogo.value = Boolean(query["no-logo"]);
+  logoJustify.value = String(query["logo-justify"] || "end");
+  logoAlign.value = String(query["logo-align"] || "start");
 });
 </script>
 

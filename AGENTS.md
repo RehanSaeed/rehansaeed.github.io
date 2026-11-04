@@ -59,6 +59,7 @@ authorise publishing the article or posting to social media.
 
 - Use TypeScript for application code.
 - Use modern functions and APIs supported by the project's target environments.
+- Prefer `const` arrow functions over function declarations.
 - Use JSDoc to document public-facing properties.
 - Use the existing [Zod](https://zod.dev/) dependency for runtime data validation.
   Validate external JSON as `unknown` and infer TypeScript types from schemas
@@ -129,6 +130,10 @@ authorise publishing the article or posting to social media.
 
 ## Nuxt Components
 
+- Use Composition API with `<script setup lang="ts">` by default.
+- Use `setup()` returning a render function when direct VNode rendering is
+  needed. Explain exceptions and preserve existing behaviour.
+- Keep shared state at module scope, not in per-instance `<script setup>` scope.
 - Use Nuxt's build-time component auto-imports for template usage instead of
   explicit imports and Options API `components` registrations. Auto-imports
   include only used components and add no runtime registration overhead compared

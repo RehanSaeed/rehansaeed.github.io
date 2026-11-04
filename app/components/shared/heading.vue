@@ -18,65 +18,49 @@
   </Component>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
 import { NuxtLink } from "#components";
 import { headingId } from "#shared/utils/headings";
 
-export default defineComponent({
-  name: "u-heading",
-  props: {
-    /** Identifier used for the heading and its fragment link. */ id: {
-      required: true,
-      type: String,
-    },
-    /** Semantic heading level. */ level: {
-      default: "1",
-      type: String,
-    },
-    /** Visual heading size, independent of its semantic level. */ size: {
-      default: null,
-      type: String,
-    },
-    /** URL used for the link. */ href: {
-      type: String,
-    },
-    /** Relationship attributes applied to the link. */ rel: {
-      type: String,
-    },
-    /** Internal route used for navigation. */ to: {
-      type: String,
-    },
-    /** Whether to centre the heading. */ center: {
-      default: false,
-      type: Boolean,
-    },
-    /** Additional CSS classes applied to the heading link. */ linkClass: {
-      type: String,
-    },
+defineOptions({ name: "u-heading" });
+const props = defineProps({
+  /** Identifier used for the heading and its fragment link. */ id: {
+    required: true,
+    type: String,
   },
-  computed: {
-    idInternal() {
-      return headingId(this.id);
-    },
-    hasLink() {
-      return this.to || this.href;
-    },
-    headingTag() {
-      return `h${this.level}`;
-    },
-    sizeClass() {
-      return `heading--${this.size || this.level}`;
-    },
-    linkTag() {
-      if (this.hasLink) {
-        return this.to ? NuxtLink : "a";
-      } else {
-        return "span";
-      }
-    },
+  /** Semantic heading level. */ level: {
+    default: "1",
+    type: String,
+  },
+  /** Visual heading size, independent of its semantic level. */ size: {
+    default: null,
+    type: String,
+  },
+  /** URL used for the link. */ href: {
+    type: String,
+  },
+  /** Relationship attributes applied to the link. */ rel: {
+    type: String,
+  },
+  /** Internal route used for navigation. */ to: {
+    type: String,
+  },
+  /** Whether to centre the heading. */ center: {
+    default: false,
+    type: Boolean,
+  },
+  /** Additional CSS classes applied to the heading link. */ linkClass: {
+    type: String,
   },
 });
+const idInternal = computed(() => headingId(props.id));
+const hasLink = computed(() => props.to || props.href);
+const headingTag = computed(() => `h${props.level}`);
+const sizeClass = computed(() => `heading--${props.size || props.level}`);
+const linkTag = computed(() =>
+  hasLink.value ? (props.to ? NuxtLink : "a") : "span",
+);
 </script>
 
 <style lang="scss">

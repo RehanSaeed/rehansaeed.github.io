@@ -5,25 +5,19 @@
   </u-link-button>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType } from "vue";
+<script setup lang="ts">
+import { computed, type PropType } from "vue";
 import type { PostsCollectionItem } from "@nuxt/content";
-export default defineComponent({
-  name: "u-edit-post-button",
-  props: {
-    /** Post metadata used to render this component. */ post: {
-      type: Object as PropType<Pick<PostsCollectionItem, "stem" | "extension">>,
-      required: true,
-    },
+defineOptions({ name: "u-edit-post-button" });
+const props = defineProps({
+  /** Post metadata used to render this component. */ post: {
+    type: Object as PropType<Pick<PostsCollectionItem, "stem" | "extension">>,
+    required: true,
   },
-  setup() {
-    return { metadata: useAppConfig().site };
-  },
-  computed: {
-    url() {
-      const { url, branch } = this.metadata.repository;
-      return `${url}/tree/${branch}/content/${this.post.stem}.${this.post.extension}`;
-    },
-  },
+});
+const metadata = useAppConfig().site;
+const url = computed(() => {
+  const { url, branch } = metadata.repository;
+  return `${url}/tree/${branch}/content/${props.post.stem}.${props.post.extension}`;
 });
 </script>

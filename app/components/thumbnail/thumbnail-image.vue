@@ -18,51 +18,39 @@
   </picture>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { computed, onMounted, ref } from "vue";
 import { getAvifSource } from "#shared/utils/images";
 
-export default defineComponent({
-  inheritAttrs: false,
-  data() {
-    return {
-      image: "",
-      imageRotate: "",
-      imageWidth: "0",
-      imageHeight: "0",
-      imageX: "0",
-      imageY: "0",
-    };
+defineOptions({ inheritAttrs: false });
+const props = defineProps({
+  /** Name identifying the icon or selected thumbnail image. */ name: {
+    required: true,
+    type: String,
   },
-  props: {
-    /** Name identifying the icon or selected thumbnail image. */ name: {
-      required: true,
-      type: String,
-    },
-  },
-  computed: {
-    avifSource() {
-      return getAvifSource(this.image);
-    },
-    imageRotateDegrees() {
-      return this.imageRotate ? `${this.imageRotate}deg` : undefined;
-    },
-  },
-  methods: {
-    toPx(value: string) {
-      return `${value}px`;
-    },
-  },
-  mounted() {
-    this.image = String(this.$route.query[this.name] ?? "");
-    this.imageRotate = String(this.$route.query[`${this.name}-rotate`] ?? "");
-    this.imageWidth = String(this.$route.query[`${this.name}-width`] || "1920");
-    this.imageHeight = String(
-      this.$route.query[`${this.name}-height`] || "1080",
-    );
-    this.imageX = String(this.$route.query[`${this.name}-x`] || "0");
-    this.imageY = String(this.$route.query[`${this.name}-y`] || "0");
-  },
+});
+const route = useRoute();
+const image = ref("");
+const imageRotate = ref("");
+const imageWidth = ref("0");
+const imageHeight = ref("0");
+const imageX = ref("0");
+const imageY = ref("0");
+const avifSource = computed(() => getAvifSource(image.value));
+const imageRotateDegrees = computed(() =>
+  imageRotate.value ? `${imageRotate.value}deg` : undefined,
+);
+
+const toPx = (value: string) => {
+  return `${value}px`;
+};
+onMounted(() => {
+  image.value = String(route.query[props.name] ?? "");
+  imageRotate.value = String(route.query[`${props.name}-rotate`] ?? "");
+  imageWidth.value = String(route.query[`${props.name}-width`] || "1920");
+  imageHeight.value = String(route.query[`${props.name}-height`] || "1080");
+  imageX.value = String(route.query[`${props.name}-x`] || "0");
+  imageY.value = String(route.query[`${props.name}-y`] || "0");
 });
 </script>
 

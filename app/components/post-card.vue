@@ -39,49 +39,41 @@
   </u-card>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType } from "vue";
+<script setup lang="ts">
+import { computed, type PropType } from "vue";
 import type { PostsCollectionItem } from "@nuxt/content";
 import { getImageMetadata } from "~/framework/images";
 import { contentImageSizes } from "#shared/utils/images";
 
-export default defineComponent({
-  name: "u-post-card",
-  props: {
-    /** Whether to load the post's hero image eagerly. */ priority: {
-      type: Boolean,
-      default: false,
-    },
-    /** Post metadata used to render this component. */ post: {
-      type: Object as PropType<
-        Pick<
-          PostsCollectionItem,
-          | "id"
-          | "title"
-          | "description"
-          | "date"
-          | "dateModified"
-          | "timeToRead"
-          | "permalink"
-        > &
-          Partial<Pick<PostsCollectionItem, "heroImage" | "tags">> & {
-            poster?: string;
-          }
-      >,
-      required: true,
-    },
+defineOptions({ name: "u-post-card" });
+const props = defineProps({
+  /** Whether to load the post's hero image eagerly. */ priority: {
+    type: Boolean,
+    default: false,
   },
-  computed: {
-    contentImageSizes() {
-      return contentImageSizes;
-    },
-    imageMeta() {
-      return this.post.heroImage
-        ? getImageMetadata(this.post.heroImage)
-        : undefined;
-    },
+  /** Post metadata used to render this component. */ post: {
+    type: Object as PropType<
+      Pick<
+        PostsCollectionItem,
+        | "id"
+        | "title"
+        | "description"
+        | "date"
+        | "dateModified"
+        | "timeToRead"
+        | "permalink"
+      > &
+        Partial<Pick<PostsCollectionItem, "heroImage" | "tags">> & {
+          /** Optional poster associated with the post. */
+          poster?: string;
+        }
+    >,
+    required: true,
   },
 });
+const imageMeta = computed(() =>
+  props.post.heroImage ? getImageMetadata(props.post.heroImage) : undefined,
+);
 </script>
 
 <style lang="scss">

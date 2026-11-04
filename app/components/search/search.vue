@@ -25,8 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useId } from "vue";
-import type { RouteLocationNormalized } from "vue-router";
+import { onMounted, ref, useId, watch } from "vue";
 import { Document } from "flexsearch";
 import { z } from "zod";
 import {
@@ -39,7 +38,7 @@ const resultLimit = 8;
 let indexPromise: Promise<Document<SearchDocument>> | undefined;
 
 // Downloads the prerendered /flexsearch.json once and builds the index in the browser.
-function loadIndex() {
+const loadIndex = () => {
   indexPromise ??= $fetch<unknown>("/flexsearch.json")
     .then((response) => {
       const documents = z.array(searchDocumentSchema).parse(response);
@@ -61,87 +60,83 @@ function loadIndex() {
       throw error;
     });
   return indexPromise;
-}
+};
+</script>
 
-export default defineComponent({
-  name: "u-search",
-  emits: ["selected"],
-  props: {
-    /** Whether the search or dialog is open. */ isOpen: {
-      type: Boolean,
-    },
-    /** Initial search term supplied when opening search. */ search: {
-      type: String,
-    },
+<script setup lang="ts">
+defineOptions({ name: "u-search" });
+const emit = defineEmits<{ selected: [searchTerm: string] }>();
+const props = defineProps({
+  /** Whether the search or dialog is open. */ isOpen: {
+    type: Boolean,
   },
-  setup() {
-    const { polite } = useAnnouncer();
-    return { inputId: `site-search-${useId()}`, announceResults: polite };
+  /** Initial search term supplied when opening search. */ search: {
+    type: String,
   },
-  data() {
-    return {
-      searchTerm: "",
-      searchResults: [] as SearchDocument[],
-    };
-  },
-  methods: {
-    onSelected() {
-      this.$emit("selected", this.searchTerm);
-    },
-    async updateSearchResults() {
-      const searchTerm = this.searchTerm;
-      if (searchTerm.length < minimumSearchTermLength) {
-        this.searchResults = [];
-        return;
-      }
+});
+const { polite: announceResults } = useAnnouncer();
+const inputId = `site-search-${useId()}`;
+const route = useRoute();
+const searchTerm = ref("");
+const searchResults = ref<SearchDocument[]>([]);
 
-      try {
-        const index = await loadIndex();
-        if (searchTerm !== this.searchTerm) {
-          return;
+const onSelected = () => {
+  emit("selected", searchTerm.value);
+};
+const updateSearchResults = async () => {
+  const term = searchTerm.value;
+  if (term.length < minimumSearchTermLength) {
+    searchResults.value = [];
+    return;
+  }
+
+  try {
+    const index = await loadIndex();
+    if (term !== searchTerm.value) {
+      return;
+    }
+
+    // The limit applies per field, so the merged results are limited again.
+    searchResults.value = index
+      .search(term, { limit: resultLimit, enrich: true, merge: true })
+      .slice(0, resultLimit)
+      .map((result) => {
+        if (!result.doc) {
+          throw new Error("The search index returned a missing document");
         }
-
-        // The limit applies per field, so the merged results are limited again.
-        this.searchResults = index
-          .search(searchTerm, { limit: resultLimit, enrich: true, merge: true })
-          .slice(0, resultLimit)
-          .map((result) => {
-            if (!result.doc) {
-              throw new Error("The search index returned a missing document");
-            }
-            return result.doc;
-          });
-        this.announceResults(
-          `${this.searchResults.length} search ${this.searchResults.length === 1 ? "result" : "results"}.`,
-        );
-      } catch (error) {
-        console.error(error);
-      }
-    },
+        return result.doc;
+      });
+    announceResults(
+      `${searchResults.value.length} search ${searchResults.value.length === 1 ? "result" : "results"}.`,
+    );
+  } catch (error) {
+    console.error(error);
+  }
+};
+// Query-only hydration updates must not clear a deep-linked search term.
+watch(
+  () => route.path,
+  () => {
+    searchTerm.value = "";
   },
-  watch: {
-    $route(to: RouteLocationNormalized, from: RouteLocationNormalized) {
-      // Nuxt can update the route object after hydration without navigating, e.g. on deep links with ?search=.
-      if (to.path !== from.path) {
-        this.searchTerm = "";
-      }
-    },
-    searchTerm() {
-      void this.updateSearchResults();
-    },
-    isOpen() {
-      if (this.isOpen) {
-        void loadIndex().catch((error: unknown) => {
-          console.error("Unable to load the search index", error);
-        });
-      }
-    },
-  },
-  mounted() {
-    if (this.search) {
-      this.searchTerm = this.search;
+);
+watch(searchTerm, () => {
+  void updateSearchResults();
+});
+watch(
+  () => props.isOpen,
+  (isOpen) => {
+    if (isOpen) {
+      void loadIndex().catch((error: unknown) => {
+        console.error("Unable to load the search index", error);
+      });
     }
   },
+);
+onMounted(() => {
+  if (props.search) {
+    searchTerm.value = props.search;
+  }
 });
 </script>
 

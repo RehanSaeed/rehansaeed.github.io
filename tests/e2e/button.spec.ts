@@ -17,7 +17,8 @@ const { descriptor } = parse(
   readFileSync("app/components/shared/button.vue", "utf8"),
 );
 const source = transpileModule(
-  compileScript(descriptor, { id: "button-test" }).content,
+  compileScript(descriptor, { id: "button-test", inlineTemplate: true })
+    .content,
   {
     compilerOptions: {
       module: ModuleKind.CommonJS,
@@ -33,10 +34,7 @@ runInNewContext(source, {
 if (!componentExports.default) {
   throw new Error("Missing button component");
 }
-const button = {
-  ...componentExports.default,
-  template: descriptor.template!.content,
-};
+const button = componentExports.default;
 const styles = compileString(descriptor.styles[0]!.content).css;
 const propertiesPath = join(process.cwd(), "app/assets/style/_properties.scss");
 const properties = compileString(readFileSync(propertiesPath, "utf8"), {
@@ -84,7 +82,6 @@ for (const theme of ["light", "dark"]) {
         const require = () => Vue;
         ${source}
         const Button = exports.default;
-        Button.template = ${JSON.stringify(descriptor.template!.content)};
         Vue.createApp({
           components: { UButton: Button },
           data: () => ({ disabled: false, clicks: 0, submits: 0, entered: false }),

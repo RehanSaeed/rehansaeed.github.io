@@ -10,51 +10,39 @@
   </u-skeleton>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import {
-  defineComponent,
-  markRaw,
+  computed,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  ref,
   useTemplateRef,
   type ComponentPublicInstance,
 } from "vue";
-export default defineComponent({
-  name: "u-webmention-replies-skeleton",
-  setup() {
-    return { skeleton: useTemplateRef<ComponentPublicInstance>("skeleton") };
-  },
-  data() {
-    return {
-      resizeObserver: null as ResizeObserver | null,
-      width: 0,
-    };
-  },
-  computed: {
-    commentWidth() {
-      return Math.max(0, this.width - 75);
-    },
-    viewBox() {
-      return `0 0 ${this.width} 92`;
-    },
-  },
-  mounted() {
-    this.resizeObserver = markRaw(
-      new ResizeObserver((entries) => {
-        const entry = entries[0];
-        if (entry) {
-          this.width = Math.floor(entry.contentRect.width);
-        }
-      }),
-    );
-    void this.$nextTick(() => {
-      const element: unknown = this.skeleton?.$el;
-      if (element instanceof Element) {
-        this.resizeObserver?.observe(element);
-      }
-    });
-  },
-  unmounted() {
-    this.resizeObserver?.disconnect();
-  },
+defineOptions({ name: "u-webmention-replies-skeleton" });
+const skeleton = useTemplateRef<ComponentPublicInstance>("skeleton");
+let resizeObserver: ResizeObserver | undefined;
+const width = ref(0);
+const commentWidth = computed(() => Math.max(0, width.value - 75));
+const viewBox = computed(() => `0 0 ${width.value} 92`);
+
+onMounted(() => {
+  resizeObserver = new ResizeObserver((entries) => {
+    const entry = entries[0];
+    if (entry) {
+      width.value = Math.floor(entry.contentRect.width);
+    }
+  });
+  void nextTick(() => {
+    const element: unknown = skeleton.value?.$el;
+    if (element instanceof Element) {
+      resizeObserver?.observe(element);
+    }
+  });
+});
+onUnmounted(() => {
+  resizeObserver?.disconnect();
 });
 </script>
 

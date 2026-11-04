@@ -85,9 +85,9 @@ const next = computed(() =>
   index.value >= 0 ? posts.value?.[index.value + 1] : undefined,
 );
 
-function getLegacyImageFormat(src: string): "png" | "jpg" {
+const getLegacyImageFormat = (src: string): "png" | "jpg" => {
   return src.endsWith(".png") ? "png" : "jpg";
-}
+};
 
 const neighbours = computed(() =>
   [

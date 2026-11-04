@@ -15,44 +15,31 @@
   </section>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-  data() {
-    return {
-      title: "",
-      subtitle: "",
-      titleFontSize: "3.5",
-      titleJustify: "",
-      titleAlign: "",
-      titleWidth: "",
-    };
-  },
-  methods: {
-    toEm(value: string) {
-      return `${value}em`;
-    },
-    toPx(value: string) {
-      return value ? `${value}px` : undefined;
-    },
-  },
-  mounted() {
-    const {
-      title,
-      subtitle,
-      "title-font-size": titleFontSize,
-      "title-justify": titleJustify,
-      "title-align": titleAlign,
-      "title-width": titleWidth,
-    } = this.$route.query;
+<script setup lang="ts">
+import { onMounted, ref } from "vue";
 
-    this.title = String(title ?? "");
-    this.subtitle = String(subtitle ?? "");
-    this.titleFontSize = String(titleFontSize || 3.5);
-    this.titleJustify = String(titleJustify || "start");
-    this.titleAlign = String(titleAlign || "end");
-    this.titleWidth = String(titleWidth ?? "");
-  },
+const route = useRoute();
+const title = ref("");
+const subtitle = ref("");
+const titleFontSize = ref("3.5");
+const titleJustify = ref("");
+const titleAlign = ref("");
+const titleWidth = ref("");
+
+const toEm = (value: string) => {
+  return `${value}em`;
+};
+const toPx = (value: string) => {
+  return value ? `${value}px` : undefined;
+};
+onMounted(() => {
+  const query = route.query;
+  title.value = String(query.title ?? "");
+  subtitle.value = String(query.subtitle ?? "");
+  titleFontSize.value = String(query["title-font-size"] || 3.5);
+  titleJustify.value = String(query["title-justify"] || "start");
+  titleAlign.value = String(query["title-align"] || "end");
+  titleWidth.value = String(query["title-width"] ?? "");
 });
 </script>
 

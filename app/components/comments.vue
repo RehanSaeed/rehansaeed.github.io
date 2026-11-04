@@ -65,7 +65,7 @@ const issueUrl = computed(() => {
     current.value.issue?.html_url ?? `${repository.url}/issues/new?${query}`
   );
 });
-async function refresh() {
+const refresh = async () => {
   try {
     const { refreshComments } = await import("~/utils/comments");
     current.value = await refreshComments(
@@ -84,7 +84,7 @@ async function refresh() {
     );
     unavailable.value = true;
   }
-}
+};
 </script>
 
 <style lang="scss">

@@ -14,15 +14,12 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-  name: "u-post-meta",
-  props: {
-    /** Metadata associated with the content. */ meta: {
-      type: Object,
-      required: true,
-    },
+<script setup lang="ts">
+defineOptions({ name: "u-post-meta" });
+defineProps({
+  /** Metadata associated with the content. */ meta: {
+    type: Object,
+    required: true,
   },
 });
 </script>

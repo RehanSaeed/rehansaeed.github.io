@@ -36,105 +36,88 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType } from "vue";
-export default defineComponent({
-  name: "u-share-button",
-  setup() {
-    return { metadata: useAppConfig().site };
+<script setup lang="ts">
+import { computed, onMounted, ref, type PropType } from "vue";
+
+defineOptions({ name: "u-share-button" });
+const metadata = useAppConfig().site;
+const route = useRoute();
+const isDialogueOpen = ref(false);
+const isSupported = ref(false);
+const props = defineProps({
+  /** Title displayed for this content. */ title: {
+    type: String,
   },
-  data() {
-    return {
-      isDialogueOpen: false,
-      isSupported: false,
-    };
+  /** Canonical URL associated with this component. */ url: {
+    type: String,
   },
-  props: {
-    /** Title displayed for this content. */ title: {
-      type: String,
-    },
-    /** Canonical URL associated with this component. */ url: {
-      type: String,
-    },
-    /** Tags associated with the content. */ tags: {
-      type: Array as PropType<string[]>,
-    },
-  },
-  computed: {
-    internalTitle() {
-      return this.title || (import.meta.client ? document.title : "");
-    },
-    internalUrl() {
-      // The canonical URL, which is what the page's link[rel=canonical] contains.
-      return this.url || `${this.metadata.url}${this.$route.path}`;
-    },
-    encodedTitle() {
-      return encodeURIComponent(this.internalTitle);
-    },
-    encodedUrl() {
-      return encodeURIComponent(this.internalUrl);
-    },
-    encodedTags() {
-      if (this.tags) {
-        return encodeURIComponent(
-          this.tags.map((x) => x.replace(/[\W_]+/g, "")).join(","),
-        );
-      }
-      return "";
-    },
-    facebookUrl() {
-      // https://developers.facebook.com/docs/sharing/reference/share-dialog
-      return `https://www.facebook.com/sharer/sharer.php?u=${this.encodedUrl}&quote=${this.encodedTitle}`;
-    },
-    twitterUrl() {
-      // https://developer.twitter.com/en/docs/twitter-for-websites/tweet-button/overview
-      return `https://twitter.com/intent/tweet?text=${this.encodedTitle}&url=${
-        this.encodedUrl
-      }&hashtags=${this.encodedTags}`;
-    },
-    redditUrl() {
-      return `http://www.reddit.com/submit?url=${this.encodedUrl}&title=${this.encodedTitle}`;
-    },
-    linkedinUrl() {
-      // https://docs.microsoft.com/en-us/linkedin/consumer/integrations/self-serve/share-on-linkedin
-      return `http://www.linkedin.com/shareArticle?mini=true&url=${this.encodedUrl}&title=${this.encodedTitle}`;
-    },
-    mailUrl() {
-      return `mailto:?subject=${this.encodedTitle}&body=${this.encodedUrl}`;
-    },
-  },
-  mounted() {
-    this.isSupported = !!navigator.share;
-  },
-  methods: {
-    open() {
-      this.isDialogueOpen = true;
-    },
-    async share() {
-      try {
-        await navigator.share({
-          title: this.internalTitle,
-          url: this.internalUrl,
-        });
-      } catch (error) {
-        if (!(error instanceof DOMException && error.name === "AbortError")) {
-          console.error("Unable to share the page", error);
-          this.open();
-        }
-      }
-    },
-    onClose() {
-      this.isDialogueOpen = false;
-    },
-    onClick() {
-      if (this.isSupported) {
-        void this.share();
-      } else {
-        this.open();
-      }
-    },
+  /** Tags associated with the content. */ tags: {
+    type: Array as PropType<string[]>,
   },
 });
+const internalTitle = computed(
+  () => props.title || (import.meta.client ? document.title : ""),
+);
+// Match the page's canonical URL rather than a URL containing query parameters.
+const internalUrl = computed(() => props.url || `${metadata.url}${route.path}`);
+const encodedTitle = computed(() => encodeURIComponent(internalTitle.value));
+const encodedUrl = computed(() => encodeURIComponent(internalUrl.value));
+const encodedTags = computed(() =>
+  props.tags
+    ? encodeURIComponent(
+        props.tags.map((x) => x.replace(/[\W_]+/g, "")).join(","),
+      )
+    : "",
+);
+const facebookUrl = computed(
+  () =>
+    `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl.value}&quote=${encodedTitle.value}`,
+);
+const twitterUrl = computed(
+  () =>
+    `https://twitter.com/intent/tweet?text=${encodedTitle.value}&url=${encodedUrl.value}&hashtags=${encodedTags.value}`,
+);
+const redditUrl = computed(
+  () =>
+    `http://www.reddit.com/submit?url=${encodedUrl.value}&title=${encodedTitle.value}`,
+);
+const linkedinUrl = computed(
+  () =>
+    `http://www.linkedin.com/shareArticle?mini=true&url=${encodedUrl.value}&title=${encodedTitle.value}`,
+);
+const mailUrl = computed(
+  () => `mailto:?subject=${encodedTitle.value}&body=${encodedUrl.value}`,
+);
+
+onMounted(() => {
+  isSupported.value = !!navigator.share;
+});
+const open = () => {
+  isDialogueOpen.value = true;
+};
+const share = async () => {
+  try {
+    await navigator.share({
+      title: internalTitle.value,
+      url: internalUrl.value,
+    });
+  } catch (error) {
+    if (!(error instanceof DOMException && error.name === "AbortError")) {
+      console.error("Unable to share the page", error);
+      open();
+    }
+  }
+};
+const onClose = () => {
+  isDialogueOpen.value = false;
+};
+const onClick = () => {
+  if (isSupported.value) {
+    void share();
+  } else {
+    open();
+  }
+};
 </script>
 
 <style lang="scss">

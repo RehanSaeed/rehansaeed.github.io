@@ -14,37 +14,26 @@
     @update:background="background = $event" />
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-  data() {
-    return {
-      background: "dark",
-    };
-  },
-  computed: {
-    backgroundClass() {
-      return this.background ? "thumbnail--background-" + this.background : "";
-    },
-    backgroundImage() {
-      return this.background.startsWith("/") ||
-        this.background.startsWith("http")
-        ? `url("${this.background}")`
-        : "";
-    },
-  },
-  mounted() {
-    document.body.style.backgroundColor = "transparent";
-    const { background } = this.$route.query;
-
-    this.background = String(background ?? "");
-  },
-});
-</script>
-
 <script setup lang="ts">
+import { computed, onMounted, ref } from "vue";
+
 definePageMeta({ layout: "empty" });
 useHead({ meta: [{ name: "robots", content: "noindex, follow" }] });
+
+const route = useRoute();
+const background = ref("dark");
+const backgroundClass = computed(() =>
+  background.value ? "thumbnail--background-" + background.value : "",
+);
+const backgroundImage = computed(() =>
+  background.value.startsWith("/") || background.value.startsWith("http")
+    ? `url("${background.value}")`
+    : "",
+);
+onMounted(() => {
+  document.body.style.backgroundColor = "transparent";
+  background.value = String(route.query.background ?? "");
+});
 </script>
 
 <style lang="scss">
