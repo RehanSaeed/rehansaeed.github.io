@@ -47,7 +47,7 @@ const watchersAlt = `GitHub watch subscriptions across my ${watchers.repositorie
 }
 
 .github-badges__item {
-  display: flex;
+  display: grid;
   margin: 0;
 }
 </style>

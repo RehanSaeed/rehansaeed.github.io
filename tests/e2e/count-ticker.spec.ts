@@ -426,8 +426,10 @@ test("Ticker styles, statistics and badges preserve dimensions and follow shared
   const badgeLink = page.getByRole("link", { name: "GitHub badge" });
   await expect(page.locator(".github-badges__item")).toHaveCSS(
     "display",
-    "flex",
+    "grid",
   );
+  await expect(page.locator(".github-badges")).toHaveCSS("display", "flex");
+  await expect(page.locator(".github-badges")).toHaveCSS("flex-wrap", "wrap");
   await expect(digits).toHaveCSS("display", "grid");
   await expect(digits).toHaveCSS("grid-auto-flow", "column");
   await expect(digits).toHaveCSS("grid-auto-columns", "max-content");
