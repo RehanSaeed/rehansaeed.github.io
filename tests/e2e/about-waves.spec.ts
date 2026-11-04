@@ -84,6 +84,43 @@ test("Reduced motion and forced colours retain a static, semantic About page", a
   ).toBeInViewport();
 });
 
+test("Preferences recover without native media change events", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const matchMedia = window.matchMedia.bind(window);
+    window.matchMedia = (query) => {
+      const media = matchMedia(query);
+      media.addEventListener = [
+        "(prefers-reduced-motion: reduce)",
+        "(forced-colors: active)",
+      ].includes(query)
+        ? () => {
+            // Reproduce updated CSS and matches without a native change event.
+          }
+        : media.addEventListener.bind(media);
+      return media;
+    };
+  });
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/about/");
+  const stage = page.locator(".wave-sculpture");
+  await expect(stage).toHaveAttribute("data-wave-state", "running");
+  await expect(stage).toHaveClass(/wave-sculpture--ready/);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(stage).toHaveAttribute("data-wave-state", "reduced-motion");
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(stage).toHaveAttribute("data-wave-state", "running");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(stage).toHaveAttribute("data-wave-state", "reduced-motion");
+  await page.emulateMedia({ forcedColors: "active" });
+  await expect(stage).toHaveAttribute("data-wave-state", "static");
+  await expect(stage).toBeHidden();
+  await page.emulateMedia({ forcedColors: "none" });
+  await expect(stage).toHaveAttribute("data-wave-state", "reduced-motion");
+  await expect(stage).toBeVisible();
+});
+
 test("WebGL failure preserves static artwork and the original profile", async ({
   page,
 }) => {

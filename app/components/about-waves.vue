@@ -7,6 +7,7 @@
       :data-wave-state="state"
       :data-wave-chapter="chapter"
       aria-hidden="true">
+      <span ref="preferences" class="wave-sculpture__preferences"></span>
       <div class="wave-sculpture__fallback"></div>
       <canvas ref="canvas" class="wave-sculpture__canvas"></canvas>
       <div ref="caption" class="wave-sculpture__caption">
@@ -33,6 +34,7 @@ import type { WebGLRenderer } from "three";
 const stage = useTemplateRef<HTMLElement>("stage");
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas");
 const caption = useTemplateRef<HTMLElement>("caption");
+const preferences = useTemplateRef<HTMLSpanElement>("preferences");
 const ready = ref(false);
 const state = ref("static");
 const chapter = ref(0);
@@ -54,7 +56,8 @@ onMounted(async () => {
   const host = stage.value;
   const surface = canvas.value;
   const label = caption.value;
-  if (!host || !surface || !label) {
+  const preferenceSurface = preferences.value;
+  if (!host || !surface || !label || !preferenceSurface) {
     return;
   }
   const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -328,8 +331,13 @@ onMounted(async () => {
       resume();
     });
     observer.observe(host);
-    resizeObserver = new ResizeObserver(() => resizeScene?.());
+    resizeObserver = new ResizeObserver(() => {
+      preferenceChanged();
+      resizeScene?.();
+    });
     resizeObserver.observe(host);
+    // CSS can still notify us when a browser misses a media-query change event.
+    resizeObserver.observe(preferenceSurface);
     motion.addEventListener("change", preferenceChanged);
     contrast.addEventListener("change", preferenceChanged);
     document.addEventListener("visibilitychange", resume);
@@ -390,6 +398,19 @@ onBeforeUnmount(() => {
 
 .wave-sculpture__canvas {
   opacity: 0;
+}
+
+.wave-sculpture__preferences {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wave-sculpture__preferences {
+    inline-size: 2px;
+  }
 }
 
 .wave-sculpture--ready .wave-sculpture__canvas {
