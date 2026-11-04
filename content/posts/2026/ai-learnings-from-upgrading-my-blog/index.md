@@ -30,7 +30,7 @@ Using AI agents to review pull requests seems like the obvious next step. I've d
 
 There are already products doing this, including [GitHub Copilot code review](https://docs.github.com/en/copilot/concepts/agent-capabilities/agent-powered-workflows-and-operations/code-review). I've [written before about the etiquette of pull request comments](/on-the-etiquette-of-pull-request-comments/); now I'm wondering how much of that conversation will be between machines.
 
-At what point do humans stop manually reviewing PRs? At what point does the machine get better at reviewing code than a human? I don't have an answer yet. Generating more code certainly hasn't made the need to check it disappear.
+At what point do humans stop manually reviewing PRs? At what point does the machine get better at reviewing code than a human? I don't have an answer yet. It certainly hasn't happened yet but it feels close. Generating more code certainly hasn't made the need to check it disappear.
 
 ## Lint First
 
