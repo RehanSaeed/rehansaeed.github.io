@@ -14,6 +14,7 @@ for (const width of [375, 640, 1280]) {
     for (const [letter, path] of examples) {
       test(`Post drop cap ${letter} has breathing room at ${width}px in ${appearance}`, async ({
         page,
+        browserName,
       }) => {
         await page.setViewportSize({ width, height: 900 });
         await page.emulateMedia({
@@ -72,8 +73,14 @@ for (const width of [375, 640, 1280]) {
         await unspaced.evaluate((element) =>
           element.parentNode?.removeChild(element),
         );
+        // WebKit truncates native initial-letter margins to whole CSS pixels.
+        const expectedOffsets = {
+          chromium: spacing.margin,
+          firefox: spacing.margin,
+          webkit: Math.floor(spacing.margin),
+        };
         expect(spacing.nextLetterX - withoutMargin.nextLetterX).toBeCloseTo(
-          spacing.margin,
+          expectedOffsets[browserName],
           1,
         );
         expect(
