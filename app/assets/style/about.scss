@@ -27,62 +27,6 @@
     margin: 0 0 1.5rem;
   }
 
-  @media (width >= 1100px) {
-    .about {
-      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-    }
-
-    .about > .about__hero,
-    .about > .about__section {
-      grid-column: 2;
-      min-inline-size: 0;
-      padding-inline: clamp(1.5rem, 3vw, 4rem);
-      border-inline-start: 0;
-    }
-
-    .about .about__intro,
-    .about .about__section-heading,
-    .about .about__youtube,
-    .about .about__honour,
-    .about .about__answers,
-    .about .about__alumni {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 2rem;
-    }
-
-    .about .about__intro > *,
-    .about .about__section-heading > *,
-    .about .about__youtube > *,
-    .about .about__alumni > * {
-      grid-column: auto;
-      grid-row: auto;
-    }
-
-    .about .about__portrait {
-      inline-size: min(100%, 200px);
-      justify-self: end;
-      padding-block-start: 0;
-      border-block-start: 3px solid var(--cp-accent);
-    }
-
-    .about .about__hero {
-      padding-block-start: 0;
-    }
-
-    .about .about__section {
-      border-block-start: 1px solid var(--cp-border);
-    }
-
-    .about .about__credential-group {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 0;
-    }
-
-    .about .about__credential-year {
-      position: static;
-    }
-  }
-
   h1 {
     font-size: clamp(2.25rem, 4vw, 4rem);
   }
@@ -139,6 +83,62 @@
   section[id],
   h1[id] {
     scroll-margin-block-start: 7rem;
+  }
+}
+
+@media (width >= 1100px) {
+  .about {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  }
+
+  .about > .about__hero,
+  .about > .about__section {
+    grid-column: 2;
+    min-inline-size: 0;
+    padding-inline: clamp(1.5rem, 3vw, 4rem);
+    border-inline-start: 0;
+  }
+
+  .about .about__intro,
+  .about .about__section-heading,
+  .about .about__youtube,
+  .about .about__honour,
+  .about .about__answers,
+  .about .about__alumni {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+  }
+
+  .about .about__intro > *,
+  .about .about__section-heading > *,
+  .about .about__youtube > *,
+  .about .about__alumni > * {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .about .about__portrait {
+    inline-size: min(100%, 200px);
+    justify-self: end;
+    padding-block-start: 0;
+    border-block-start: 3px solid var(--cp-accent);
+  }
+
+  .about .about__hero {
+    padding-block-start: 0;
+  }
+
+  .about .about__section {
+    border-block-start: 1px solid var(--cp-border);
+  }
+
+  .about .about__credential-group {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .about .about__credential-year {
+    position: static;
   }
 }
 

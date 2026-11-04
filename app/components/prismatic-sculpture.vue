@@ -113,7 +113,23 @@ onMounted(() => {
       if (unavailable()) {
         return;
       }
-      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("webgl2", {
+        alpha: true,
+        antialias: true,
+      });
+      if (!context) {
+        throw new Error(
+          "WebGL 2 is unavailable; showing the static sculpture.",
+        );
+      }
+      release = () => context.getExtension("WEBGL_lose_context")?.loseContext();
+      renderer = new THREE.WebGLRenderer({
+        canvas,
+        context,
+        alpha: true,
+        antialias: true,
+      });
       release = () => {
         renderer?.domElement.removeEventListener(
           "webglcontextlost",
@@ -429,6 +445,7 @@ onBeforeUnmount(() => dispose?.());
 .prism__legend {
   grid-template-columns: 1fr auto;
   color: var(--cp-accent);
+  padding-inline-start: 5rem;
 }
 
 .prism__chapter {
@@ -444,6 +461,7 @@ onBeforeUnmount(() => dispose?.());
 .prism__canvas,
 .prism__fallback {
   position: absolute;
+  display: block;
   inline-size: 100%;
   block-size: 100%;
 }
@@ -490,6 +508,10 @@ onBeforeUnmount(() => dispose?.());
     border-inline-end: 0;
     border-block-end: 1px solid var(--cp-border);
     padding-inline: 1.5rem;
+  }
+
+  .prism__legend {
+    padding-inline-start: 0;
   }
 }
 
