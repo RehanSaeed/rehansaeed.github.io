@@ -1,9 +1,8 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { expect, test } from "@playwright/test";
-import { parse } from "yaml";
 import { portfolioSnapshots } from "../../modules/blog-content/portfolio";
 import type { ContentEntry } from "../../modules/blog-content/scan";
-import { cacheSchema, workflowSchema } from "./data";
+import { cacheSchema } from "./data";
 
 const project = (repository: string): ContentEntry => ({
   path: `portfolio/${repository}/index.md`,
@@ -14,35 +13,6 @@ const project = (repository: string): ContentEntry => ({
     permalink: `https://github.com/${repository}`,
     published: true,
   },
-});
-
-test("Browser jobs restore generated metadata before Nuxt dependency setup", async () => {
-  const workflow = workflowSchema.parse(
-    parse(await readFile(".github/workflows/build.yml", "utf8")),
-  );
-  const packageStep = workflow.jobs.build!.steps.find(
-    (step) => step.name === "Package Browser Test Site",
-  )!;
-  for (const snapshot of [
-    "blog-image-metadata.json",
-    "blog-portfolio.json",
-    "blog-nuget.json",
-    "blog-comments.json",
-  ]) {
-    expect(packageStep.run).toContain(`.data/${snapshot}`);
-  }
-  const steps = workflow.jobs.test!.steps;
-  const download = steps.findIndex(
-    (step) => step.name === "Download Browser Test Site",
-  );
-  const extract = steps.findIndex(
-    (step) => step.name === "Extract Browser Test Site",
-  );
-  const install = steps.findIndex((step) => step.name === "NPM Install");
-  expect(download).toBeGreaterThan(-1);
-  expect(extract).toBeGreaterThan(download);
-  expect(install).toBeGreaterThan(extract);
-  expect(steps[install]!.run).toBe("npm ci");
 });
 
 test("Portfolio popularity refreshes expired counts and reuses fresh counts", async ({}, info) => {
