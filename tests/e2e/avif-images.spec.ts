@@ -352,8 +352,11 @@ unitTest(
         ).toBeEnabled();
         const images = page.locator("img[data-nuxt-pic]");
         expect(await images.count()).toBeGreaterThan(0);
-        for (const image of await images.all()) {
+        for (const image of await images.filter({ visible: true }).all()) {
           await image.scrollIntoViewIfNeeded();
+        }
+        // Include hidden marker templates in the offline-loading assertions.
+        for (const image of await images.all()) {
           await expect
             .poll(() =>
               image.evaluate(
