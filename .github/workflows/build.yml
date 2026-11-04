@@ -152,9 +152,16 @@ jobs:
         if: matrix.browser == 'firefox' && steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps firefox
       - name: "Playwright Test"
+        if: matrix.browser != 'firefox'
         run: npx playwright test --project=${{ matrix.browser }}
         env:
           TZ: UTC
+      - name: "Playwright Firefox Test"
+        if: matrix.browser == 'firefox'
+        run: xvfb-run --auto-servernum npx playwright test --project=firefox --headed
+        env:
+          TZ: UTC
+          LIBGL_ALWAYS_SOFTWARE: "1"
       - name: "Upload Playwright Report"
         uses: actions/upload-artifact@v7.0.2
         if: failure()
