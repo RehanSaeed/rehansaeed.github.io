@@ -438,7 +438,14 @@ for (const width of [375, 1280]) {
       .toBe(true);
     const bounds = await portrait.boundingBox();
     expect(bounds).not.toBeNull();
-    expect(bounds!.width / bounds!.height).toBeCloseTo(2 / 3, 3);
+    const dimensions = await portrait.evaluate((image) => {
+      const style = getComputedStyle(image);
+      return {
+        width: Number.parseFloat(style.inlineSize),
+        height: Number.parseFloat(style.blockSize),
+      };
+    });
+    expect(dimensions.width / dimensions.height).toBeCloseTo(2 / 3, 3);
     expect(bounds!.x).toBeGreaterThanOrEqual(0);
     expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
   });

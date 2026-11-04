@@ -23,17 +23,25 @@ const ready = ref(false);
 const state = ref("loading");
 let disposeScene: (() => void) | undefined;
 let disposed = false;
+const isDisposed = () => disposed;
 
 onMounted(async () => {
+  // Nuxt's client-only wrapper reveals its template on mount.
+  await nextTick();
+  if (isDisposed()) {
+    return;
+  }
   const element = host.value;
   const surface = canvas.value;
   if (!element || !surface) {
+    state.value = "fallback";
+    console.warn("Orbital gallery elements unavailable; using static artwork.");
     return;
   }
   let renderer: WebGLRenderer | undefined;
   try {
     const THREE = await import("three");
-    if (disposed) {
+    if (isDisposed()) {
       return;
     }
     const forcedColors = window.matchMedia("(forced-colors: active)");
