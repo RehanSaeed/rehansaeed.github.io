@@ -27,17 +27,22 @@
           </a>
         </div>
         <figure class="about__portrait">
-          <NuxtPicture
-            format="avif"
-            legacy-format="jpg"
-            :img-attrs="{ class: 'about__portrait-image' }"
-            alt="Muhammad Rehan Saeed"
-            height="480"
-            width="320"
-            sizes="320px"
-            loading="eager"
-            fetchpriority="high"
-            src="/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg" />
+          <u-dimensional-mosaic
+            image="/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg"
+            composition="portrait"
+            label="01 / The person · dimensional mosaic">
+            <NuxtPicture
+              format="avif"
+              legacy-format="jpg"
+              :img-attrs="{ class: 'about__portrait-image' }"
+              alt="Muhammad Rehan Saeed"
+              height="480"
+              width="320"
+              sizes="320px"
+              loading="eager"
+              fetchpriority="high"
+              src="/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg" />
+          </u-dimensional-mosaic>
         </figure>
       </div>
     </header>
@@ -108,16 +113,21 @@
       </div>
       <figure class="about__youtube-feature" data-reveal>
         <a class="about__image-link" :href="metadata.author.youtube.url">
-          <NuxtPicture
-            format="avif"
-            legacy-format="jpg"
-            :img-attrs="{ class: 'about__youtube-image' }"
-            alt="Muhammad Rehan Saeed pointing at the .NET logo on his YouTube channel artwork"
-            width="1920"
-            height="1080"
-            sizes="sm:640px md:960px lg:1280px"
-            loading="lazy"
-            src="/images/hero/My-YouTube-1920x1080.jpg" />
+          <u-dimensional-mosaic
+            image="/images/hero/My-YouTube-1920x1080.jpg"
+            composition="broadcast"
+            label="02 / Broadcast · folded signal">
+            <NuxtPicture
+              format="avif"
+              legacy-format="jpg"
+              :img-attrs="{ class: 'about__youtube-image' }"
+              alt="Muhammad Rehan Saeed pointing at the .NET logo on his YouTube channel artwork"
+              width="1920"
+              height="1080"
+              sizes="sm:640px md:960px lg:1280px"
+              loading="lazy"
+              src="/images/hero/My-YouTube-1920x1080.jpg" />
+          </u-dimensional-mosaic>
         </a>
         <figcaption>
           Software development on video. Explore the videos on my YouTube
@@ -236,16 +246,21 @@
             loading="lazy"
             src="/images/about/Open-UK-Honours-2022-1288x396.jpg" />
           <a class="about__image-link" href="/open-uk-honouree/">
-            <NuxtPicture
-              format="avif"
-              legacy-format="jpg"
-              :img-attrs="{ class: 'about__medal-image' }"
-              alt="My OpenUK 2022 honouree medal"
-              height="449"
-              width="800"
-              sizes="sm:320px md:400px"
-              loading="lazy"
-              src="/content-images/posts/2022/open-uk-honouree/images/Medal.jpg" />
+            <u-dimensional-mosaic
+              image="/content-images/posts/2022/open-uk-honouree/images/Medal.jpg"
+              composition="honour"
+              label="03 / OpenUK · concentric relief">
+              <NuxtPicture
+                format="avif"
+                legacy-format="jpg"
+                :img-attrs="{ class: 'about__medal-image' }"
+                alt="My OpenUK 2022 honouree medal"
+                height="449"
+                width="800"
+                sizes="sm:320px md:400px"
+                loading="lazy"
+                src="/content-images/posts/2022/open-uk-honouree/images/Medal.jpg" />
+            </u-dimensional-mosaic>
           </a>
         </div>
         <figcaption>
@@ -379,16 +394,21 @@
           <a
             class="about__mvp-artwork"
             href="https://mvp.microsoft.com/en-us/PublicProfile/5001654?fullName=Muhammad%20Rehan%20Saeed">
-            <NuxtPicture
-              format="avif"
-              legacy-format="png"
-              :img-attrs="{ class: 'about__mvp-image' }"
-              alt="Microsoft Most Valuable Professional (MVP)"
-              height="303"
-              width="750"
-              sizes="sm:280px md:360px"
-              loading="lazy"
-              src="/images/about/Microsoft-Most-Valuable-Professional-750x303.png" />
+            <u-dimensional-mosaic
+              image="/images/about/Microsoft-Most-Valuable-Professional-750x303.png"
+              composition="alumni"
+              label="04 / An earlier chapter · lenticular archive">
+              <NuxtPicture
+                format="avif"
+                legacy-format="png"
+                :img-attrs="{ class: 'about__mvp-image' }"
+                alt="Microsoft Most Valuable Professional (MVP)"
+                height="303"
+                width="750"
+                sizes="sm:280px md:360px"
+                loading="lazy"
+                src="/images/about/Microsoft-Most-Valuable-Professional-750x303.png" />
+            </u-dimensional-mosaic>
           </a>
           <figure class="about__alumni-badge">
             <a :href="credlyUrl">
@@ -468,7 +488,7 @@ useHead({
   ],
 });
 
-const article = useTemplateRef("article");
+const article = useTemplateRef<HTMLElement>("article");
 const reducedMotion = ref(true);
 const motionEnabled = computed(() => !reducedMotion.value);
 const theme = ref<"light" | "dark">("light");
@@ -525,7 +545,9 @@ onMounted(() => {
   motionPreference.addEventListener("change", updateMotionPreference);
 
   // Content stays visible if JavaScript or IntersectionObserver is unavailable.
-  if (!("IntersectionObserver" in window)) return;
+  if (!("IntersectionObserver" in window)) {
+    return;
+  }
   revealObserver = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
