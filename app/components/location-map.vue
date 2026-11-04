@@ -582,6 +582,7 @@ onBeforeUnmount(() => {
   --location-map-connection-outline-color: var(--location-map-land-color);
 
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   inline-size: 100%;
   max-inline-size: var(--location-map-max-inline-size);
   min-inline-size: 0;
@@ -605,8 +606,11 @@ onBeforeUnmount(() => {
 
 .location-map__viewport {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   position: relative;
+  inline-size: 100%;
   aspect-ratio: var(--location-map-aspect-ratio);
+  min-inline-size: 0;
   min-block-size: var(--location-map-min-block-size);
 }
 
@@ -704,6 +708,7 @@ onBeforeUnmount(() => {
   grid-area: 1 / 1;
   inline-size: 100%;
   block-size: 100%;
+  min-inline-size: 0;
   background: var(--location-map-water-color);
 }
 
