@@ -9,6 +9,7 @@
   --cp-accent: var(--global-accent-color);
   --cp-accent-hover: var(--global-link-visited-color);
 
+  position: relative;
   background: var(--cp-bg);
   color: var(--cp-text);
   font-family: var(--global-font-family-sans-serif);
@@ -98,6 +99,39 @@
 
 .about__hero {
   padding-block: 1.5rem 2rem;
+}
+
+.about__wave-stage {
+  position: sticky;
+  inset-block-start: 4.5rem;
+  z-index: 0;
+  margin-block-end: 0;
+}
+
+.about__hero,
+.about__section {
+  position: relative;
+  z-index: 1;
+  background: var(--cp-bg);
+}
+
+.about__hero {
+  border-block-start: 1px solid var(--cp-border);
+}
+
+.about__section {
+  margin-block-start: clamp(8rem, 30vw, 28rem);
+}
+
+@media (prefers-reduced-motion: reduce), (forced-colors: active) {
+  .about__wave-stage {
+    position: relative;
+    inset-block-start: auto;
+  }
+
+  .about__section {
+    margin-block-start: 0;
+  }
 }
 
 .about .about__eyebrow {
@@ -494,6 +528,35 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (width >= 1000px) and (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+  .about__hero {
+    min-block-size: clamp(22rem, 49vw, 48rem);
+    box-sizing: border-box;
+    margin-block-start: calc(-1 * clamp(22rem, 49vw, 48rem));
+    background: transparent;
+    pointer-events: none;
+  }
+
+  .about__intro {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+    align-items: end;
+  }
+
+  .about__intro > div {
+    padding: 1.5rem;
+    background: var(--cp-bg);
+    border-inline-start: 1px solid var(--cp-accent);
+    pointer-events: auto;
+  }
+
+  .about__portrait {
+    inline-size: 112px;
+    justify-self: end;
+    border: 4px solid var(--cp-bg);
+    pointer-events: auto;
   }
 }
 
