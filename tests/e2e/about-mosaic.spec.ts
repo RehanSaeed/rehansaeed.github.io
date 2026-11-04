@@ -88,7 +88,7 @@ test("Pointer depth and native scrolling change the portrait relief", async ({
     .toBe(false);
 });
 
-test("Reduced motion keeps original artwork and responds to preference changes", async ({
+test("Motion and forced-colour changes suspend and restart the relief", async ({
   page,
 }) => {
   await page.goto("/about/");
@@ -108,6 +108,13 @@ test("Reduced motion keeps original artwork and responds to preference changes",
     "1",
   );
   await expect(relief.locator("canvas")).toBeHidden();
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(relief).toHaveAttribute("data-scene-state", "ready");
+  await page.emulateMedia({ forcedColors: "active" });
+  await expect(relief).toHaveAttribute("data-scene-state", "static");
+  await expect(relief.locator("canvas")).toBeHidden();
+  await page.emulateMedia({ forcedColors: "none" });
+  await expect(relief).toHaveAttribute("data-scene-state", "ready");
 });
 
 test("Context loss exposes the original portrait without losing content", async ({

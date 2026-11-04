@@ -125,6 +125,11 @@
   max-inline-size: 43ch;
 }
 
+.about .about__social-links {
+  justify-content: start;
+  padding-block: 1.5rem;
+}
+
 .about__location {
   display: grid;
   justify-items: center;
@@ -310,6 +315,7 @@
 
 .about__honour-media {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.5rem;
   inline-size: 100%;
   max-inline-size: 400px;
@@ -402,6 +408,7 @@
 
 .about__mvp-media {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 2rem;
   inline-size: 100%;
   max-inline-size: 360px;
@@ -550,7 +557,7 @@
   .about__honour,
   .about__answers,
   .about__alumni {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 2rem;
   }
 

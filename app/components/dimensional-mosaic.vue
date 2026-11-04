@@ -26,6 +26,8 @@
 import type { WebGLRenderer } from "three";
 
 const props = defineProps<{
+  /** Whether the page's motion and forced-colour preferences allow a relief. */
+  enabled: boolean;
   /** Existing, same-origin artwork used for the decorative tile faces. */
   image: string;
   /** Ordered tile choreography associated with this chapter. */
@@ -43,8 +45,6 @@ let renderer: WebGLRenderer | undefined;
 let destroyScene: (() => void) | undefined;
 let observer: IntersectionObserver | undefined;
 let resizeObserver: ResizeObserver | undefined;
-let motion: MediaQueryList | undefined;
-let forcedColors: MediaQueryList | undefined;
 let visible = false;
 let disposed = false;
 let loading = false;
@@ -53,8 +53,7 @@ let frame = 0;
 let requestRender: (() => void) | undefined;
 
 const isUnavailable = () => disposed || failed;
-const canEnhance = () =>
-  !isUnavailable() && visible && !motion?.matches && !forcedColors?.matches;
+const canEnhance = () => !isUnavailable() && visible && props.enabled;
 
 const stopFrame = () => {
   cancelAnimationFrame(frame);
@@ -352,7 +351,7 @@ const start = async () => {
 };
 
 const updatePreference = () => {
-  if (motion?.matches || forcedColors?.matches) {
+  if (!props.enabled) {
     stopFrame();
     ready.value = false;
     state.value = "static";
@@ -363,6 +362,8 @@ const updatePreference = () => {
   }
 };
 
+watch(() => props.enabled, updatePreference);
+
 const refresh = () => {
   if (document.hidden) {
     stopFrame();
@@ -372,10 +373,6 @@ const refresh = () => {
 };
 
 onMounted(() => {
-  motion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  forcedColors = window.matchMedia("(forced-colors: active)");
-  motion.addEventListener("change", updatePreference);
-  forcedColors.addEventListener("change", updatePreference);
   window.addEventListener("scroll", refresh, { passive: true });
   document.addEventListener("visibilitychange", refresh);
   if (!("IntersectionObserver" in window)) {
@@ -403,8 +400,6 @@ onBeforeUnmount(() => {
   stopFrame();
   observer?.disconnect();
   destroyScene?.();
-  motion?.removeEventListener("change", updatePreference);
-  forcedColors?.removeEventListener("change", updatePreference);
   window.removeEventListener("scroll", refresh);
   document.removeEventListener("visibilitychange", refresh);
 });
@@ -417,6 +412,7 @@ onBeforeUnmount(() => {
   display: grid;
   align-items: center;
   min-inline-size: 0;
+  inline-size: 100%;
   min-block-size: 22rem;
   aspect-ratio: 16 / 11;
   border: 1px solid var(--global-border-color);
