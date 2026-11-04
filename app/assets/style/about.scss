@@ -112,8 +112,8 @@
 
 .about__intro {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
-  align-items: start;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: center;
   gap: clamp(2rem, 5vw, 5rem);
   max-inline-size: 1440px;
   margin-inline: auto;
@@ -429,6 +429,42 @@
   max-inline-size: 360px;
 }
 
+.about__portrait {
+  min-inline-size: 0;
+  inline-size: 100%;
+}
+
+.about__hero {
+  position: relative;
+  border-block-end: 1px solid var(--cp-border);
+  background:
+    radial-gradient(
+      ellipse at 85% 40%,
+      color-mix(in srgb, var(--cp-accent) 9%, transparent),
+      transparent 65%
+    ),
+    var(--cp-bg);
+}
+
+.about__intro > :first-child {
+  position: relative;
+  z-index: 1;
+}
+
+.about__mvp-artwork:has(.dimensional-mosaic) {
+  display: block;
+  padding: 0;
+  inline-size: 100%;
+}
+
+.about__mvp-artwork .dimensional-mosaic {
+  min-block-size: 17rem;
+}
+
+.about__honour-media .dimensional-mosaic {
+  min-block-size: 18rem;
+}
+
 .about__mvp-image {
   display: block;
   inline-size: 100%;
@@ -539,7 +575,7 @@
   }
 
   .about__portrait {
-    max-inline-size: 240px;
+    max-inline-size: 100%;
     padding-block-start: 0;
     justify-self: end;
   }
