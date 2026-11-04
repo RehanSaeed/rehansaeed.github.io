@@ -286,7 +286,7 @@ When explicitly asked to help draft an article, follow these guidelines:
 - Keep the overall treatment warm, understated and editorial: charcoal ink
   outlines, restrained flat colour and light print texture. Ochre clothing and
   dark blue denim should remain consistent across illustrations; pale lavender
-  (`#F2ECFA`) is a suitable background within the house palette.
+  (`#F0E9F9`) is a suitable background within the house palette.
 - Choose the activity, pose and props to serve each article rather than copying
   this hero's scene. A magnifying glass can represent review, but is not a
   permanent character accessory. Keep the head, gaze and hands directed
