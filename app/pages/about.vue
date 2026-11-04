@@ -4,6 +4,7 @@
     class="about"
     :class="{ 'about--motion': motionEnabled }"
     aria-labelledby="about">
+    <u-particle-portrait />
     <header id="the-person" class="about__hero">
       <div class="about__intro">
         <div>
@@ -26,7 +27,8 @@
             Explore the work <span aria-hidden="true">&darr;</span>
           </a>
         </div>
-        <figure class="about__portrait">
+        <figure class="about__portrait" data-particle-chapter="portrait">
+          <span class="about__portrait-orbit" aria-hidden="true"></span>
           <NuxtPicture
             format="avif"
             legacy-format="jpg"
@@ -61,6 +63,12 @@
           </p>
         </div>
       </header>
+      <div
+        class="about__particle-window"
+        data-particle-chapter="globe"
+        aria-hidden="true">
+        <span>01 / London · A point of connection</span>
+      </div>
       <div class="about__map-frame" data-reveal>
         <u-location-map />
       </div>
@@ -70,6 +78,12 @@
       id="youtube"
       class="about__youtube about__section"
       aria-labelledby="youtube-title">
+      <div
+        class="about__particle-window"
+        data-particle-chapter="broadcast"
+        aria-hidden="true">
+        <span>02 / YouTube · Ideas in motion</span>
+      </div>
       <div class="about__feature-copy" data-reveal>
         <p class="about__eyebrow">Watch &amp; learn</p>
         <h2 id="youtube-title">YouTube</h2>
@@ -182,6 +196,12 @@
         </div>
       </header>
 
+      <div
+        class="about__particle-window"
+        data-particle-chapter="source"
+        aria-hidden="true">
+        <span>03 / GitHub · Open connections</span>
+      </div>
       <figure class="about__github-statistics" data-reveal>
         <a class="about__image-link" :href="metadata.author.gitHub.url">
           <picture>
@@ -223,6 +243,12 @@
           Open source, hackathons and security communities.
         </p>
       </header>
+      <div
+        class="about__particle-window"
+        data-particle-chapter="recognition"
+        aria-hidden="true">
+        <span>04 / Awards · Community circles</span>
+      </div>
       <figure class="about__honour" data-reveal>
         <div class="about__honour-media">
           <NuxtPicture
@@ -320,6 +346,12 @@
       id="stackoverflow"
       class="about__answers about__section"
       aria-labelledby="answers-title">
+      <div
+        class="about__particle-window"
+        data-particle-chapter="answers"
+        aria-hidden="true">
+        <span>05 / Stack Overflow · Shared knowledge</span>
+      </div>
       <div class="about__answers-copy" data-reveal>
         <p class="about__eyebrow">Questions &amp; answers</p>
         <h2 id="answers-title">Stack Overflow</h2>
@@ -360,6 +392,12 @@
       id="microsoft-mvp"
       class="about__mvp about__section"
       aria-labelledby="alumni-title">
+      <div
+        class="about__particle-window"
+        data-particle-chapter="alumni"
+        aria-hidden="true">
+        <span>06 / Microsoft MVP · An earlier orbit</span>
+      </div>
       <div class="about__alumni">
         <div class="about__mvp-copy" data-reveal>
           <header>
