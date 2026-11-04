@@ -16,6 +16,21 @@ test("The decorative mobile renders, responds to preferences and survives contex
   await expect(scene).toHaveAttribute("data-state", "animated");
   const canvas = scene.locator("canvas");
   await expect(canvas).toHaveCSS("opacity", "1");
+  const stage = await scene.evaluate((element) => {
+    const bounds = element.getBoundingClientRect();
+    return {
+      top: bounds.top,
+      bottom: bounds.bottom,
+      viewportHeight: window.innerHeight,
+    };
+  });
+  expect(stage.top).toBeGreaterThanOrEqual(0);
+  expect(stage.bottom).toBeLessThanOrEqual(stage.viewportHeight);
+  const getCanvasPosition = () =>
+    canvas.evaluate((element) => {
+      const { x, y, width, height } = element.getBoundingClientRect();
+      return { x, y, width, height, scrollY: window.scrollY };
+    });
   const dimensions = await canvas.evaluate((element: HTMLCanvasElement) => ({
     width: element.width,
     height: element.height,
@@ -43,6 +58,7 @@ test("The decorative mobile renders, responds to preferences and survives contex
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(scene).toHaveAttribute("data-state", "static");
   await page.locator("#the-person").scrollIntoViewIfNeeded();
+  const position = await getCanvasPosition();
   const still = await canvas.screenshot();
   await testInfo.attach("reduced-motion-before", {
     body: still,
@@ -54,6 +70,7 @@ test("The decorative mobile renders, responds to preferences and survives contex
     body: afterPointer,
     contentType: "image/png",
   });
+  expect(await getCanvasPosition()).toEqual(position);
   expect(afterPointer.equals(still)).toBe(true);
   await page.emulateMedia({ forcedColors: "active" });
   await expect(scene).toHaveAttribute("data-state", "fallback");

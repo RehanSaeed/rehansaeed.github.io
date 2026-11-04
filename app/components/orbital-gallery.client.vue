@@ -309,9 +309,11 @@ onBeforeUnmount(() => {
 
 <style lang="scss">
 .orbital-gallery {
+  --orbital-gallery-offset: 4rem;
+
   position: sticky;
-  inset-block-start: 4rem;
-  block-size: min(94svh, 1100px);
+  inset-block-start: var(--orbital-gallery-offset);
+  block-size: min(94svh, calc(100svh - var(--orbital-gallery-offset)), 1100px);
   inline-size: 100%;
   color: var(--global-accent-color);
   border-block-start-color: var(--global-body-color);
