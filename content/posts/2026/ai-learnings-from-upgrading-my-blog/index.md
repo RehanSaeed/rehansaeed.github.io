@@ -34,9 +34,7 @@ At what point do humans stop manually reviewing PRs? At what point does the mach
 
 ## Turn Linting to The Max
 
-Turning up the dials on automated checks is really important. Enable [TypeScript's strict mode](https://www.typescriptlang.org/tsconfig/strict.html), use a modern target appropriate to your supported environments, and configure the relevant [ESLint](https://eslint.org/) plugins.
-
-Strict mode and `ESNext` do different jobs: strict mode tightens type checking, while `ESNext` follows the newest JavaScript target supported by the compiler. Picking `ESNext` doesn't make the type checker stricter or make new APIs work in older browsers.
+Turning up the dials on automated checks is really important. Enabling [TypeScript's strict mode](https://www.typescriptlang.org/tsconfig/strict.html), using [Prettier](https://prettier.io/) and throwing the kitchen sink worth of [ESLint](https://eslint.org/) plugins at the project.
 
 I wasted a bunch of time repeatedly telling agents to fix things that could have been caught automatically. Get lint-free early in the development lifecycle, before an agent has produced a mountain of code in a style you don't want.
 
