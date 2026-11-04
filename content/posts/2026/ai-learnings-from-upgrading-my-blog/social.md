@@ -50,7 +50,7 @@ Neither is an approved destination. Community-specific drafts are blocked pendin
 
 Use the custom AI-generated hero, `/images/hero/AI-Agents-Upgrading-a-Blog-With-Human-Code-Review-1600x900.png`.
 
-Suggested alt text: AI assistants rebuild an old blog into several modern layouts while a human reviews their work beside the finished website.
+Suggested alt text: An ink-style illustration of mechanical arms rebuilding an old blog into several modern layouts while a human reviews their work beside the finished website.
 
 Alternatively, use the supplied screenshot, `images/about-page-experiments-311x388.png`.
 

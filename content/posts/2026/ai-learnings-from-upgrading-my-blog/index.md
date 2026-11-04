@@ -18,7 +18,7 @@ tags:
   - "Static Site Generator"
 ---
 
-Last week, while I was on holiday, I spent a few hours upgrading my blog from [Gridsome](https://gridsome.org/) to [Nuxt](https://nuxt.com/) using [GitHub Copilot](https://github.com/features/copilot). Nuxt is the Vue equivalent of Next.js, and I'm a Vue/Evan You fanboy, so the choice wasn't particularly difficult.
+Last week, while I was on holiday, I spent a few hours upgrading my blog from [Gridsome](https://gridsome.org/) to [Nuxt](https://nuxt.com/) using [GitHub Copilot](https://github.com/features/copilot). Nuxt is the [Vue](https://vuejs.org/) equivalent of Next.js, and I'm a Vue/[Evan You](https://evanyou.me/) fanboy, so the choice wasn't particularly difficult.
 
 I'd [picked Gridsome back in 2020](/choosing-a-static-site-generator/). This time, moving on also gave me a chance to see how much of a framework migration I could hand over to agents. I was pretty hands-off, but I came away with some useful learnings.
 

@@ -223,6 +223,38 @@ When explicitly asked to help draft an article, follow these guidelines:
 - Do not manually populate generated fields such as `rawbody`, `headings` or
   `timeToRead`.
 
+### Hero Image House Style
+
+- Aim for a personal software engineering publication: technically literate,
+  approachable and occasionally witty, not a generic AI product landing page.
+  Illustrate the article's central idea rather than assembling unrelated
+  technology symbols.
+- Use [the theme tokens](app/assets/style/_properties.scss) as the visual
+  reference: neutral light or charcoal surfaces, strong contrast and restrained
+  purple accents. Topic-specific colours, such as Vue green, are welcome when
+  meaningful; do not recolour official logos to force them into the palette.
+- Prefer clear flat graphics, diagrams or restrained ink-style editorial
+  illustrations. Use simple shapes, deliberate linework and a small palette.
+  Subtle texture can add character, but avoid making every article look like an
+  aged-paper poster or a glossy stock render.
+- Avoid generic AI imagery: shiny robot mascots, glowing brains, neon circuitry,
+  holographic dashboards and excessive cinematic lighting. Show concrete tools
+  and workflows when relevant. An article about agents does not automatically
+  need a robot.
+- Keep one clear visual story, generous negative space and a readable silhouette
+  at card-thumbnail and mobile sizes. Avoid clutter, ornamental UI panels and
+  tiny details that only work at full resolution.
+- Do not bake the article title, fake code or generated lettering into the image.
+  Let the site render its own headings. If a graphic genuinely needs labels,
+  typeset them separately using the existing Audiowide heading or Cascadia Code
+  code typography as appropriate; verify every label.
+- Follow the existing 1600x900 sizing and image-optimisation requirements. Keep
+  important content clear of crop edges, and check the hero in both light and
+  dark themes, on the article and in a small card preview.
+- Preserve the author's chosen concept when revising an image; change the visual
+  treatment rather than inventing a different message. Show the result for
+  review, and do not claim generated imagery is a real screenshot or photograph.
+
 ### Updating Published Posts
 
 - Retain the original `date` and `permalink`. For substantive changes to a
