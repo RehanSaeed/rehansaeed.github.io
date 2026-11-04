@@ -55,6 +55,20 @@ test("Reduced motion and forced colours retain a static, semantic About page", a
   await stage.scrollIntoViewIfNeeded();
   await expect(stage).toHaveAttribute("data-wave-state", "reduced-motion");
   await expect(stage).toHaveClass(/wave-sculpture--ready/);
+  const layout = () =>
+    page.locator(".about__hero, .about__section").evaluateAll((elements) =>
+      elements.map((element) => {
+        const bounds = element.getBoundingClientRect();
+        return { top: bounds.top + window.scrollY, height: bounds.height };
+      }),
+    );
+  const originalLayout = await layout();
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(stage).toHaveAttribute("data-wave-state", "running");
+  expect(await layout()).toEqual(originalLayout);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(stage).toHaveAttribute("data-wave-state", "reduced-motion");
+  expect(await layout()).toEqual(originalLayout);
   await page.emulateMedia({ forcedColors: "active" });
   await expect(stage).toBeHidden();
   await expect(
@@ -80,9 +94,9 @@ test("WebGL failure preserves static artwork and the original profile", async ({
   const stage = page.locator(".wave-sculpture");
   await expect(stage).toHaveAttribute("data-wave-state", "unavailable");
   await expect(stage.locator(".wave-sculpture__fallback")).toBeVisible();
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    "Hello, I'm Rehan.",
-  );
+  await expect(
+    page.locator(".about").getByRole("heading", { level: 1 }),
+  ).toHaveText("Hello, I'm Rehan.");
   await expect(page.locator(".location-map")).toHaveCount(1);
   await expect(page.locator(".about__credential-year")).toHaveCount(7);
 });
@@ -109,5 +123,7 @@ test("Context loss returns to static artwork without hiding content", async ({
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await expect(stage).toHaveAttribute("data-wave-state", "unavailable");
   await expect(stage.locator(".wave-sculpture__fallback")).toBeVisible();
-  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(
+    page.locator(".about").getByRole("heading", { level: 1 }),
+  ).toBeVisible();
 });

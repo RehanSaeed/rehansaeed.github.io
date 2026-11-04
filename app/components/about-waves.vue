@@ -86,7 +86,7 @@ onMounted(async () => {
     if (!canRender()) {
       return;
     }
-    if (motion.matches || timestamp - previousFrame >= 1000 / 30) {
+    if (motion.matches || timestamp - previousFrame >= 1000 / 15) {
       previousFrame = timestamp;
       renderScene?.();
     }
@@ -180,7 +180,7 @@ onMounted(async () => {
 
     // Thin solid ribbons, rather than a wireframe grid, reveal the folded surface.
     const ribbons = 100;
-    const segments = 120;
+    const segments = 80;
     const positions = new Float32Array(ribbons * (segments + 1) * 2 * 3);
     const indices: number[] = [];
     for (let ribbon = 0; ribbon < ribbons; ribbon++) {
@@ -238,7 +238,7 @@ onMounted(async () => {
     const phases = [0, 0.7, 1.55, 2.4, 3.2, 4.1, 4.9];
     renderScene = () => {
       const currentTime = performance.now();
-      const delta = Math.min((currentTime - previousTime) / 1000, 0.05);
+      const delta = Math.min((currentTime - previousTime) / 1000, 0.1);
       previousTime = currentTime;
       if (!motion.matches && !paused.value) {
         elapsed += delta;
@@ -294,8 +294,7 @@ onMounted(async () => {
         -0.3 + phase * 0.06,
         -0.33,
       );
-      const targetX =
-        host.clientWidth >= 1000 && active === 0 && !motion.matches ? 2.8 : 0;
+      const targetX = host.clientWidth >= 1000 && active === 0 ? 2.8 : 0;
       horizontal =
         ready.value && !paused.value && !motion.matches
           ? horizontal + (targetX - horizontal) * Math.min(delta * 2, 1)

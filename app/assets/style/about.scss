@@ -123,7 +123,7 @@
   margin-block-start: clamp(8rem, 30vw, 28rem);
 }
 
-@media (prefers-reduced-motion: reduce), (forced-colors: active) {
+@media (forced-colors: active) {
   .about__wave-stage {
     position: relative;
     inset-block-start: auto;
@@ -162,6 +162,10 @@
 .about .about__social-links {
   justify-content: start;
   padding-block: 1.5rem;
+}
+
+.about__art-controls {
+  min-block-size: 4rem;
 }
 
 .about__location {
@@ -531,7 +535,7 @@
   }
 }
 
-@media (width >= 1000px) and (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+@media (width >= 1000px) and (forced-colors: none) {
   .about__hero {
     min-block-size: clamp(22rem, 49vw, 48rem);
     box-sizing: border-box;

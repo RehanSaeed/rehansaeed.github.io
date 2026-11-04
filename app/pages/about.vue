@@ -29,7 +29,7 @@
           <a class="about__text-link" href="#youtube">
             Explore the work <span aria-hidden="true">&darr;</span>
           </a>
-          <div id="about-art-controls"></div>
+          <div id="about-art-controls" class="about__art-controls"></div>
         </div>
         <figure class="about__portrait">
           <NuxtPicture
