@@ -42,6 +42,8 @@
       </div>
     </header>
 
+    <u-folded-paper class="about__paper" />
+
     <section
       id="location"
       class="about__location about__section"
@@ -468,7 +470,7 @@ useHead({
   ],
 });
 
-const article = useTemplateRef("article");
+const article = useTemplateRef<HTMLElement>("article");
 const reducedMotion = ref(true);
 const motionEnabled = computed(() => !reducedMotion.value);
 const theme = ref<"light" | "dark">("light");
@@ -525,7 +527,9 @@ onMounted(() => {
   motionPreference.addEventListener("change", updateMotionPreference);
 
   // Content stays visible if JavaScript or IntersectionObserver is unavailable.
-  if (!("IntersectionObserver" in window)) return;
+  if (!("IntersectionObserver" in window)) {
+    return;
+  }
   revealObserver = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
