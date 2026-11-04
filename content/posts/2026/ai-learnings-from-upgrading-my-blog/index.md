@@ -72,11 +72,11 @@ It's easy to install a package, get the basic example working and never discover
 
 You can tell agents to implement something N different ways and then pick the best implementation. This ends up being a great way to ideate.
 
-I've been trying this with an interactive [About page](/about/). Instead of trying to describe the perfect design up front, I can explore ideas like a dimensional mosaic, wave interference or kinetic letterpress side by side.
+I've been trying this with an interactive [About page](/about/). Instead of trying to describe the perfect design up front, I can explore ideas and even give the agent some leeway to go and figure things out on its own.
 
 ![A GitHub Copilot session list showing ten About page experiments, including dimensional mosaic, wave interference, kinetic letterpress, ribbon journey and orbital gallery.](./images/about-page-experiments-311x388.png)
 
-The implementations give me something concrete to react to. Picking one is still my job, but it's much easier to decide when I can compare actual alternatives rather than imagine them.
+Sometimes, I'm not even sure what I want but want something to look at and try as a jumping off point. The implementations give me something concrete to react to. Picking one is still my job, but it's much easier to decide when I can compare actual alternatives rather than imagine them.
 
 ## The Three.js Caveat
 
