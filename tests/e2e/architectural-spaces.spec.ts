@@ -44,9 +44,9 @@ test("High contrast keeps a static gallery and semantic biography", async ({
     "static",
   );
   await expect(page.locator(".architecture canvas")).toBeHidden();
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    "Hello, I'm Rehan.",
-  );
+  await expect(
+    page.getByRole("article").getByRole("heading", { level: 1 }),
+  ).toHaveText("Hello, I'm Rehan.");
   await expect(page.locator(".location-map")).toHaveCount(1);
 });
 
@@ -56,6 +56,7 @@ test("The gallery and biography stay within the viewport at 200% scaling", async
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/about/");
   await page.addStyleTag({ content: "html { zoom: 2; }" });
+  await expect(page.locator("html")).toHaveCSS("zoom", "2");
   for (const selector of [
     ".architecture__label",
     ".about__intro",
@@ -71,7 +72,9 @@ test("The gallery and biography stay within the viewport at 200% scaling", async
   }
   expect(
     await page.evaluate(() => document.documentElement.scrollWidth),
-  ).toBeLessThanOrEqual(640);
+  ).toBeLessThanOrEqual(
+    await page.evaluate(() => document.documentElement.clientWidth),
+  );
 });
 
 test("WebGL failure preserves content and reports the static fallback", async ({
