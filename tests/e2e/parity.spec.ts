@@ -188,7 +188,10 @@ test.describe("Parity", () => {
     await page.emulateMedia({ colorScheme: "light" });
     await page.goto("/about/");
     const stackOverflow = page.locator(".about__stack-overflow-image");
-    const gitHub = page.locator("img.about__github-statistics");
+    const gitHub = page.getByRole("img", {
+      name: "GitHub contribution graphic; open my profile for the contribution calendar and current details",
+      exact: true,
+    });
     await expect(stackOverflow).toHaveAttribute("src", /[?&]theme=dark$/);
     await expect(gitHub).toHaveAttribute("src", /profile-green-animate\.svg$/);
 

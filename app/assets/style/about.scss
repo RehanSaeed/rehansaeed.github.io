@@ -125,6 +125,11 @@
   max-inline-size: 43ch;
 }
 
+.about .about__social-links {
+  justify-content: start;
+  padding-block: 1.5rem;
+}
+
 .about__location {
   display: grid;
   justify-items: center;

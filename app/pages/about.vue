@@ -22,6 +22,7 @@
               </p>
             </blockquote>
           </div>
+          <u-social-links class="about__social-links" />
           <a class="about__text-link" href="#youtube">
             Explore the work <span aria-hidden="true">&darr;</span>
           </a>
@@ -86,24 +87,28 @@
           >
         </div>
         <div class="about__youtube-images">
-          <a :href="metadata.author.youtube.url">
-            <img
-              class="about__youtube-badge"
-              alt="Youtube views"
-              width="104"
-              height="20"
-              loading="lazy"
-              :src="youtubeBadgeImageUrl('viewCount', 'Views')" />
-          </a>
-          <a :href="metadata.author.youtube.url">
-            <img
-              class="about__youtube-badge"
-              alt="Youtube subscribers"
-              width="124"
-              height="20"
-              loading="lazy"
-              :src="youtubeBadgeImageUrl('subscriberCount', 'Subscribers')" />
-          </a>
+          <u-tooltip v-slot="{ trigger }" text="View my YouTube channel">
+            <a v-bind="trigger" :href="metadata.author.youtube.url">
+              <img
+                class="about__youtube-badge"
+                alt="Youtube views"
+                width="104"
+                height="20"
+                loading="lazy"
+                :src="youtubeBadgeImageUrl('viewCount', 'Views')" />
+            </a>
+          </u-tooltip>
+          <u-tooltip v-slot="{ trigger }" text="View my YouTube channel">
+            <a v-bind="trigger" :href="metadata.author.youtube.url">
+              <img
+                class="about__youtube-badge"
+                alt="Youtube subscribers"
+                width="124"
+                height="20"
+                loading="lazy"
+                :src="youtubeBadgeImageUrl('subscriberCount', 'Subscribers')" />
+            </a>
+          </u-tooltip>
         </div>
       </div>
       <figure class="about__youtube-feature" data-reveal>
@@ -151,54 +156,67 @@
             Support my open source work &rarr;
           </a>
           <div class="about__github-images">
-            <a :href="metadata.author.gitHub.url">
-              <img
-                class="about__github-image"
-                alt="GitHub stars"
-                width="135"
-                height="30"
-                loading="lazy"
-                :src="`https://img.shields.io/github/stars/${metadata.author.gitHub.user}?style=social`" />
-            </a>
-            <a :href="`${metadata.author.gitHub.url}?tab=followers`">
-              <img
-                class="about__github-image"
-                alt="GitHub follower count"
-                width="168"
-                height="30"
-                loading="lazy"
-                :src="`https://img.shields.io/github/followers/${metadata.author.gitHub.user}?style=social`" />
-            </a>
-            <a :href="metadata.author.gitHub.sponsorsUrl">
-              <img
-                class="about__github-image"
-                alt="GitHub sponsors"
-                width="121"
-                height="30"
-                loading="lazy"
-                :src="`https://img.shields.io/github/sponsors/${metadata.author.gitHub.user}?logo=github&style=social`" />
-            </a>
+            <u-tooltip v-slot="{ trigger }" text="View my GitHub profile">
+              <a v-bind="trigger" :href="metadata.author.gitHub.url">
+                <img
+                  class="about__github-image"
+                  alt="GitHub stars"
+                  width="135"
+                  height="30"
+                  loading="lazy"
+                  :src="`https://img.shields.io/github/stars/${metadata.author.gitHub.user}?style=social`" />
+              </a>
+            </u-tooltip>
+            <u-tooltip v-slot="{ trigger }" text="View my GitHub followers">
+              <a
+                v-bind="trigger"
+                :href="`${metadata.author.gitHub.url}?tab=followers`">
+                <img
+                  class="about__github-image"
+                  alt="GitHub follower count"
+                  width="168"
+                  height="30"
+                  loading="lazy"
+                  :src="`https://img.shields.io/github/followers/${metadata.author.gitHub.user}?style=social`" />
+              </a>
+            </u-tooltip>
+            <u-tooltip v-slot="{ trigger }" text="Sponsor me on GitHub">
+              <a v-bind="trigger" :href="metadata.author.gitHub.sponsorsUrl">
+                <img
+                  class="about__github-image"
+                  alt="GitHub sponsors"
+                  width="121"
+                  height="30"
+                  loading="lazy"
+                  :src="`https://img.shields.io/github/sponsors/${metadata.author.gitHub.user}?logo=github&style=social`" />
+              </a>
+            </u-tooltip>
           </div>
         </div>
       </header>
 
       <figure class="about__github-statistics" data-reveal>
-        <a class="about__image-link" :href="metadata.author.gitHub.url">
-          <picture>
-            <source
-              media="(prefers-reduced-motion: reduce)"
-              srcset="
-                https://raw.githubusercontent.com/RehanSaeed/RehanSaeed/main/profile-3d-contrib/profile-green.svg
-              " />
-            <img
-              class="about__github-statistics-image"
-              alt="GitHub contribution graphic; open my profile for the contribution calendar and current details"
-              width="1280"
-              height="850"
-              loading="lazy"
-              :src="gitHubStatisticsImageUrl" />
-          </picture>
-        </a>
+        <u-tooltip v-slot="{ trigger }" text="View my GitHub profile">
+          <a
+            v-bind="trigger"
+            class="about__image-link"
+            :href="metadata.author.gitHub.url">
+            <picture>
+              <source
+                media="(prefers-reduced-motion: reduce)"
+                srcset="
+                  https://raw.githubusercontent.com/RehanSaeed/RehanSaeed/main/profile-3d-contrib/profile-green.svg
+                " />
+              <img
+                class="about__github-statistics-image"
+                alt="GitHub contribution graphic; open my profile for the contribution calendar and current details"
+                width="1280"
+                height="850"
+                loading="lazy"
+                :src="gitHubStatisticsImageUrl" />
+            </picture>
+          </a>
+        </u-tooltip>
         <figcaption>
           A generated snapshot of my GitHub contribution activity.
           <a :href="metadata.author.gitHub.url"
@@ -235,18 +253,23 @@
             sizes="sm:322px md:644px"
             loading="lazy"
             src="/images/about/Open-UK-Honours-2022-1288x396.jpg" />
-          <a class="about__image-link" href="/open-uk-honouree/">
-            <NuxtPicture
-              format="avif"
-              legacy-format="jpg"
-              :img-attrs="{ class: 'about__medal-image' }"
-              alt="My OpenUK 2022 honouree medal"
-              height="449"
-              width="800"
-              sizes="sm:320px md:400px"
-              loading="lazy"
-              src="/content-images/posts/2022/open-uk-honouree/images/Medal.jpg" />
-          </a>
+          <u-tooltip v-slot="{ trigger }" text="Read about my Open UK honour">
+            <a
+              v-bind="trigger"
+              class="about__image-link"
+              href="/open-uk-honouree/">
+              <NuxtPicture
+                format="avif"
+                legacy-format="jpg"
+                :img-attrs="{ class: 'about__medal-image' }"
+                alt="My OpenUK 2022 honouree medal"
+                height="449"
+                width="800"
+                sizes="sm:320px md:400px"
+                loading="lazy"
+                src="/content-images/posts/2022/open-uk-honouree/images/Medal.jpg" />
+            </a>
+          </u-tooltip>
         </div>
         <figcaption>
           <span class="about__eyebrow">2022 / OpenUK</span>
@@ -291,23 +314,27 @@
             v-for="credential in group.credentials"
             :key="credential.filename"
             data-reveal>
-            <a :href="credlyUrl">
-              <NuxtPicture
-                format="avif"
-                legacy-format="png"
-                :img-attrs="{ class: 'about__badge-image' }"
-                :alt="credential.label"
-                height="300"
-                :width="credential.width"
-                sizes="150px"
-                densities="x1 x2"
-                loading="lazy"
-                :src="`/images/about/${credential.filename}`" />
-              <span>{{ credential.title }}</span>
-              <span class="about__source-note"
-                >{{ credential.kind }} · Credly &rarr;</span
-              >
-            </a>
+            <u-tooltip
+              v-slot="{ trigger }"
+              text="View my credentials on Credly">
+              <a v-bind="trigger" :href="credlyUrl">
+                <NuxtPicture
+                  format="avif"
+                  legacy-format="png"
+                  :img-attrs="{ class: 'about__badge-image' }"
+                  :alt="credential.label"
+                  height="300"
+                  :width="credential.width"
+                  sizes="150px"
+                  densities="x1 x2"
+                  loading="lazy"
+                  :src="`/images/about/${credential.filename}`" />
+                <span>{{ credential.title }}</span>
+                <span class="about__source-note"
+                  >{{ credential.kind }} · Credly &rarr;</span
+                >
+              </a>
+            </u-tooltip>
           </li>
         </ul>
       </section>
@@ -338,17 +365,20 @@
       </div>
       <figure class="about__stack-overflow" data-reveal>
         <p class="about__eyebrow">My community profile</p>
-        <a
-          class="about__profile-link"
-          :href="metadata.author.stackOverflow.url">
-          <img
-            class="about__stack-overflow-image"
-            alt="Stack Overflow profile statistics"
-            width="208"
-            height="58"
-            loading="lazy"
-            :src="stackOverflowProfileUrl" />
-        </a>
+        <u-tooltip v-slot="{ trigger }" text="View my Stack Overflow profile">
+          <a
+            v-bind="trigger"
+            class="about__profile-link"
+            :href="metadata.author.stackOverflow.url">
+            <img
+              class="about__stack-overflow-image"
+              alt="Stack Overflow profile statistics"
+              width="208"
+              height="58"
+              loading="lazy"
+              :src="stackOverflowProfileUrl" />
+          </a>
+        </u-tooltip>
         <figcaption>
           Reputation and badges from Stack Overflow. Open the profile for my
           questions, answers and current statistics.
@@ -376,34 +406,41 @@
           </p>
         </div>
         <div class="about__mvp-media" data-reveal>
-          <a
-            class="about__mvp-artwork"
-            href="https://mvp.microsoft.com/en-us/PublicProfile/5001654?fullName=Muhammad%20Rehan%20Saeed">
-            <NuxtPicture
-              format="avif"
-              legacy-format="png"
-              :img-attrs="{ class: 'about__mvp-image' }"
-              alt="Microsoft Most Valuable Professional (MVP)"
-              height="303"
-              width="750"
-              sizes="sm:280px md:360px"
-              loading="lazy"
-              src="/images/about/Microsoft-Most-Valuable-Professional-750x303.png" />
-          </a>
-          <figure class="about__alumni-badge">
-            <a :href="credlyUrl">
+          <u-tooltip v-slot="{ trigger }" text="View my Microsoft MVP profile">
+            <a
+              v-bind="trigger"
+              class="about__mvp-artwork"
+              href="https://mvp.microsoft.com/en-us/PublicProfile/5001654?fullName=Muhammad%20Rehan%20Saeed">
               <NuxtPicture
                 format="avif"
                 legacy-format="png"
-                :img-attrs="{ class: 'about__badge-image' }"
-                alt="Microsoft Most Valuable Professional (MVP) Alumni"
-                width="300"
-                height="300"
-                sizes="150px"
-                densities="x1 x2"
+                :img-attrs="{ class: 'about__mvp-image' }"
+                alt="Microsoft Most Valuable Professional (MVP)"
+                height="303"
+                width="750"
+                sizes="sm:280px md:360px"
                 loading="lazy"
-                src="/images/about/Microsoft-Most-Valuable-Professional-Alumni-2023-300x300.png" />
+                src="/images/about/Microsoft-Most-Valuable-Professional-750x303.png" />
             </a>
+          </u-tooltip>
+          <figure class="about__alumni-badge">
+            <u-tooltip
+              v-slot="{ trigger }"
+              text="View my credentials on Credly">
+              <a v-bind="trigger" :href="credlyUrl">
+                <NuxtPicture
+                  format="avif"
+                  legacy-format="png"
+                  :img-attrs="{ class: 'about__badge-image' }"
+                  alt="Microsoft Most Valuable Professional (MVP) Alumni"
+                  width="300"
+                  height="300"
+                  sizes="150px"
+                  densities="x1 x2"
+                  loading="lazy"
+                  src="/images/about/Microsoft-Most-Valuable-Professional-Alumni-2023-300x300.png" />
+              </a>
+            </u-tooltip>
             <figcaption>
               The alumni badge marks that earlier recognition, rather than a
               current MVP award.
