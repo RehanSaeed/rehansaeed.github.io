@@ -263,6 +263,38 @@ When explicitly asked to help draft an article, follow these guidelines:
   intended pose. Do not invent a different appearance. Ask for a suitable
   reference if the available photo is insufficient.
 
+#### Recurring Author Character
+
+- Use the profile photo above as the likeness reference, not a previous generated
+  image alone. Keep the short dark hair, natural grey detail and beard with
+  moustache recognisable. No hair bun or invented hairstyle.
+- Keep natural masculine proportions and a relaxed, believable posture. Use a
+  regular men's clothing silhouette with straight shoulders and torso rather
+  than a fitted waist, exaggerated muscles or a caricature.
+- The default outfit is a plain ochre or mustard men's crew-neck jumper with a
+  regular fit, ribbed collar, cuffs and straight hem. Suggest fabric with subtle
+  texture and a few folds, not floral motifs, decorative swirls or busy knit
+  patterns.
+- Keep the jumper's warm golden-ochre yellow as the character's signature
+  colour. It should make him stand out against quieter backgrounds and
+  supporting objects, rather than blending into the scene. Do not recolour
+  the jumper purple merely to match the site accent.
+- Pair it with dark indigo, straight-cut denim jeans, approximately `#243B5A`.
+  Make the trouser construction legible: distinct legs, natural knee bends,
+  seams and restrained folds. In seated poses, show credible thigh and calf
+  volumes with clear separation or overlap, not one flared, skirt-like shape.
+- Keep the overall treatment warm, understated and editorial: charcoal ink
+  outlines, restrained flat colour and light print texture. Ochre clothing and
+  dark blue denim should remain consistent across illustrations; pale lavender
+  (`#F2ECFA`) is a suitable background within the house palette.
+- Choose the activity, pose and props to serve each article rather than copying
+  this hero's scene. A magnifying glass can represent review, but is not a
+  permanent character accessory. Keep the head, gaze and hands directed
+  naturally towards the task.
+- Inspect the face, neck, hands, clothing and seated anatomy at full resolution
+  as well as thumbnail size. Correct malformed grips, disconnected joints or
+  ambiguous garment silhouettes before presenting the final image.
+
 ### Updating Published Posts
 
 - Retain the original `date` and `permalink`. For substantive changes to a
