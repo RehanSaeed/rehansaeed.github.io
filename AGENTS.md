@@ -266,8 +266,9 @@ When explicitly asked to help draft an article, follow these guidelines:
 #### Recurring Author Character
 
 - Use the profile photo above as the likeness reference, not a previous generated
-  image alone. Keep the short dark hair, natural grey detail and beard with
-  moustache recognisable. No hair bun or invented hairstyle.
+  image alone. Keep the short, straight dark hair, natural grey detail and beard
+  with moustache recognisable. Use a simple, lightly combed hairstyle with
+  modest volume, not dense curls, ringlets, a hair bun or an invented hairstyle.
 - Keep natural masculine proportions and a relaxed, believable posture. Use a
   regular men's clothing silhouette with straight shoulders and torso rather
   than a fitted waist, exaggerated muscles or a caricature.
@@ -283,6 +284,10 @@ When explicitly asked to help draft an article, follow these guidelines:
   Make the trouser construction legible: distinct legs, natural knee bends,
   seams and restrained folds. In seated poses, show credible thigh and calf
   volumes with clear separation or overlap, not one flared, skirt-like shape.
+- When footwear is visible, use sage-green Vivobarefoot knit trainers with cream
+  laces and thin, flat cream soles. Keep the wide anatomical toe box, low profile,
+  darker green heel detail and small pull loops. Suggest the knit and subtle
+  geometric side motif with simple ink marks, not photographic product detail.
 - Keep the overall treatment warm, understated and editorial: charcoal ink
   outlines, restrained flat colour and light print texture. Ochre clothing and
   dark blue denim should remain consistent across illustrations; pale lavender
@@ -293,7 +298,48 @@ When explicitly asked to help draft an article, follow these guidelines:
   naturally towards the task.
 - Inspect the face, neck, hands, clothing and seated anatomy at full resolution
   as well as thumbnail size. Correct malformed grips, disconnected joints or
-  ambiguous garment silhouettes before presenting the final image.
+  ambiguous garment silhouettes before presenting the final image. When showing
+  the full seated figure, include both lower legs and naturally grounded feet;
+  do not leave missing legs or knee-length stumps to fit the furniture.
+
+#### Optional Author Workspace
+
+The desk is a reusable visual reference, not a required hero-image setting.
+Future heroes do **not** have to feature the author's desk, workspace or even the
+author. Choose the scene that best communicates the article. When a desk scene
+is useful, include only the relevant items below rather than forcing every prop
+into the composition; their arrangement can change with the pose and framing.
+
+- Use a four-legged FlexiSpot electric standing desk with a natural oak top
+  **32 mm thick**, four telescopic metal lifting columns and a restrained
+  charcoal frame. Set its height to suit the character's seated or standing
+  pose. Mount the height-control keypad at the **far-right end of the front
+  edge**, not near the centre.
+- The chair is a graphite Herman Miller Aeron: recognisable mesh back and seat,
+  curved frame, understated armrests and a central five-spoke caster base.
+  Preserve plausible posture, support and legroom rather than distorting the
+  character to expose every chair detail.
+- On the desktop, use a small oak pencil holder with a few pencils and a
+  matching oak plant container holding a leafy green houseplant. Keep both
+  containers visibly wooden, with restrained oak grain rather than grey ceramic
+  or metal surfaces.
+- Include a cream-paper writing pad and a normal hand-sized fountain pen when
+  writing accessories suit the scene. The pen has a transparent plastic
+  demonstrator barrel with visible shimmer ink; muted violet ink and a few
+  subtle gold flecks fit the palette. Keep its nib and separate clear cap
+  proportionate. It should be a small desk accessory, not span the whole pad.
+- Small stacks of simply bound books can support the scene. Avoid invented
+  readable titles, decorative clutter or adding objects just to fill space.
+- A modest, open-topped wicker wastepaper basket sits on the floor under the
+  left side of the desk. Use natural tan wicker, a gently tapered shape and
+  simple woven hatching; keep the desk legs visible and the basket grounded.
+- Render the shoes, pen, furniture and accessories with the same simplified
+  charcoal outlines, restrained flat colours and light texture as the rest of
+  the illustration. Suggest transparent plastic and shimmer with a few marks,
+  not glossy highlights or photorealistic objects pasted into an ink drawing.
+- A magnifying glass, mechanical drafting arms and floating browser layouts are
+  article-specific metaphors, not permanent fixtures of the author's workspace.
+  Use or omit them according to the subject rather than copying this hero.
 
 ### Updating Published Posts
 
