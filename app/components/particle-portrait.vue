@@ -9,15 +9,17 @@
 </template>
 
 <script setup lang="ts">
-const host = useTemplateRef("host");
-const canvas = useTemplateRef("canvas");
+const host = useTemplateRef<HTMLDivElement>("host");
+const canvas = useTemplateRef<HTMLCanvasElement>("canvas");
 const state = ref("loading");
 let dispose: (() => void) | undefined;
 let disposed = false;
+const isDisposed = () => disposed;
 
 onMounted(async () => {
   const article = host.value?.closest("article");
-  if (!article || !canvas.value) {
+  const surface = canvas.value;
+  if (!article || !surface) {
     return;
   }
   const forcedColors = window.matchMedia("(forced-colors: active)");
@@ -27,16 +29,19 @@ onMounted(async () => {
   }
   try {
     const THREE = await import("three");
-    if (disposed || !canvas.value) {
+    if (isDisposed()) {
       return;
     }
-    const surface = canvas.value;
     const renderer = new THREE.WebGLRenderer({
       canvas: surface,
       alpha: true,
       antialias: false,
       powerPreference: "low-power",
     });
+    dispose = () => {
+      renderer.dispose();
+      renderer.forceContextLoss();
+    };
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const windows = [
       ...article.querySelectorAll<HTMLElement>("[data-particle-chapter]"),
@@ -49,6 +54,7 @@ onMounted(async () => {
     let frame = 0;
     let visible = true;
     let ready = false;
+    const isReady = () => ready;
     let pointerX = 0;
     let pointerY = 0;
     let width = 0;
@@ -83,9 +89,8 @@ onMounted(async () => {
     scene.add(points);
     const palette = new THREE.Color();
     const updatePalette = () => {
-      palette.set(
-        getComputedStyle(article).getPropertyValue("--cp-accent").trim(),
-      );
+      // Three.js expects legacy RGB/HSL syntax, not the site's space-separated HSL.
+      palette.set(getComputedStyle(surface).color);
       for (const material of materials) {
         material.uniforms.accent!.value = palette;
         material.uniforms.dark!.value =
@@ -97,7 +102,7 @@ onMounted(async () => {
       frame = 0;
       if (
         !ready ||
-        disposed ||
+        isDisposed() ||
         document.hidden ||
         !visible ||
         forcedColors.matches
@@ -159,15 +164,15 @@ onMounted(async () => {
         );
         renderer.render(scene, camera);
       }
-      if (ready && drewWindow) {
+      if (isReady() && drewWindow) {
         state.value = "ready";
       }
-      if (ready && !reducedMotion.matches && drewWindow) {
+      if (isReady() && !reducedMotion.matches && drewWindow) {
         frame = requestAnimationFrame(render);
       }
     };
     const requestRender = () => {
-      if (!frame && ready && !disposed) {
+      if (!frame && ready && !isDisposed()) {
         frame = requestAnimationFrame(render);
       }
     };
@@ -180,7 +185,7 @@ onMounted(async () => {
       } else if (ready) {
         state.value = "ready";
         article.classList.add("about--particles");
-        requestRender();
+        updatePalette();
       }
     };
     const pointerMove = (event: PointerEvent) => {
@@ -199,6 +204,8 @@ onMounted(async () => {
       }
       if (!visible) {
         stop();
+        renderer.setScissorTest(false);
+        renderer.clear();
       } else {
         requestRender();
       }
@@ -206,7 +213,9 @@ onMounted(async () => {
     observer.observe(article);
     const resizeObserver = new ResizeObserver(requestRender);
     resizeObserver.observe(article);
-    windows.forEach((element) => resizeObserver.observe(element));
+    windows.forEach((element) => {
+      resizeObserver.observe(element);
+    });
     const visibilityChanged = () => {
       if (document.hidden) {
         stop();
@@ -234,8 +243,12 @@ onMounted(async () => {
       document.removeEventListener("visibilitychange", visibilityChanged);
       reducedMotion.removeEventListener("change", preferenceChanged);
       forcedColors.removeEventListener("change", preferenceChanged);
-      geometries.forEach((geometry) => geometry.dispose());
-      materials.forEach((material) => material.dispose());
+      geometries.forEach((geometry) => {
+        geometry.dispose();
+      });
+      materials.forEach((material) => {
+        material.dispose();
+      });
       renderer.dispose();
       renderer.forceContextLoss();
       article.classList.remove("about--particles");
@@ -244,7 +257,7 @@ onMounted(async () => {
     const image = new Image();
     image.src = "/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg";
     await image.decode();
-    if (disposed) {
+    if (isDisposed()) {
       return;
     }
     const sampler = document.createElement("canvas");
@@ -417,6 +430,7 @@ onBeforeUnmount(() => {
   position: fixed;
   z-index: 2;
   inset: 0;
+  color: var(--cp-accent);
   pointer-events: none;
 }
 

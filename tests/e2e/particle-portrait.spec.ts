@@ -42,7 +42,25 @@ test("Portrait pixels render and become chapter compositions without interceptin
   await expect(
     page.locator('[data-particle-chapter="broadcast"]'),
   ).toBeVisible();
+  const accent = await page
+    .locator(".particle-portrait canvas")
+    .evaluate((canvas) => getComputedStyle(canvas).color);
   await page.getByRole("button", { name: "Toggle dark/light" }).click();
+  await expect(page.locator(".particle-portrait canvas")).not.toHaveCSS(
+    "color",
+    accent,
+  );
+  await expect(page.locator(".particle-portrait")).toHaveAttribute(
+    "data-state",
+    "ready",
+  );
+  await page.emulateMedia({ forcedColors: "active" });
+  await expect(page.locator(".particle-portrait")).toHaveAttribute(
+    "data-state",
+    "fallback",
+  );
+  await expect(page.locator(".about")).not.toHaveClass(/about--particles/);
+  await page.emulateMedia({ forcedColors: "none" });
   await expect(page.locator(".particle-portrait")).toHaveAttribute(
     "data-state",
     "ready",
@@ -88,7 +106,7 @@ test("Reduced motion has no continuous rendering and survives preference changes
           () => new Promise((resolve) => setTimeout(resolve, 120)),
         );
       }
-      return counts[0] === counts[1] && counts[1] === counts[2];
+      return counts.every((count) => count >= 0 && count === counts[0]);
     })
     .toBe(true);
   await page.emulateMedia({ reducedMotion: "no-preference" });
@@ -129,6 +147,24 @@ test("Context loss restores the original portrait and all editorial content", as
   await expect(
     page.getByRole("heading", { name: "London", exact: true }),
   ).toBeVisible();
+});
+
+test("Unavailable WebGL leaves the original portrait and native chapter content", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    HTMLCanvasElement.prototype.getContext = () => null;
+  });
+  await page.goto("/about/");
+  await expect(page.locator(".particle-portrait")).toHaveAttribute(
+    "data-state",
+    "fallback",
+  );
+  await expect(page.locator(".about")).not.toHaveClass(/about--particles/);
+  await expect(page.locator(".about__portrait img")).toBeVisible();
+  await expect(page.locator(".about__particle-window").first()).toBeHidden();
+  await expect(page.locator(".about > section[id]")).toHaveCount(6);
+  await expect(page.locator(".location-map")).toBeVisible();
 });
 
 test("Forced colors and 200 percent equivalent viewport retain readable native content", async ({
