@@ -226,7 +226,7 @@ When explicitly asked to help draft an article, follow these guidelines:
 ### Hero Image House Style
 
 - Aim for a personal software engineering publication: technically literate,
-  approachable and occasionally witty, not a generic AI product landing page.
+  approachable and witty, not a generic AI product landing page.
   Illustrate the article's central idea rather than assembling unrelated
   technology symbols.
 - Use [the theme tokens](app/assets/style/_properties.scss) as the visual
