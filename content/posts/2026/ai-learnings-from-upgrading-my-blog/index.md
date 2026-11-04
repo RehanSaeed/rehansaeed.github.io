@@ -74,14 +74,20 @@ You can tell agents to implement something N different ways and then pick the be
 
 I've been trying this with an interactive [About page](/about/). Instead of trying to describe the perfect design up front, I can explore ideas and even give the agent some leeway to go and figure things out on its own.
 
+<div class="post__image-inset">
+
 ![A GitHub Copilot session list showing ten About page experiments, including dimensional mosaic, wave interference, kinetic letterpress, ribbon journey and orbital gallery.](./images/about-page-experiments-311x388.png)
+
+</div>
 
 Sometimes, I'm not even sure what I want but want something to look at and try as a jumping off point. The implementations give me something concrete to react to. Picking one is still my job, but it's much easier to decide when I can compare actual alternatives rather than imagine them.
 
 ## Agents Surpassing Me
 
-By the way, telling agents to use [Three.js](https://threejs.org/) to build amazing interactive 3D visuals for a page seems to be all the rage at the moment. The agents are very good at it, and I've been testing it out.
+Telling agents to use [Three.js](https://threejs.org/) to build amazing interactive 3D visuals for a page seems to be all the rage at the moment. The agents are very good at it, and I've been testing it out.
 
-The problem is that I'm not Three.js-proficient, so this is effectively AI-only software for me. I can judge whether I like the result, but I'm less equipped to judge the implementation or maintain it without help.
+[Watch the ThreeUI demonstration on X.](https://x.com/MengTo/status/2090817187900780961/video/1)
+
+The problem is that while I've used game engines before, I'm not Three.js-proficient, so this is effectively AI-only software for me. I can judge whether I like the result, but I'm less equipped to judge the implementation or maintain it without help.
 
 That brings me back to the first learning: producing code is getting easier much faster than reviewing it. The upgrade was fun, but figuring out how to keep up with what I've asked the agents to build might be the more interesting problem.

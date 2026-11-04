@@ -103,6 +103,12 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
     max-inline-size: none;
   }
 
+  .post__image-inset img {
+    inline-size: 311px;
+    margin-inline: auto;
+    max-inline-size: 100%;
+  }
+
   .mermaid {
     svg {
       margin-inline: auto;
