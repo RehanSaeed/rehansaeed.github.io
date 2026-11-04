@@ -342,7 +342,7 @@ into the composition; their arrangement can change with the pose and framing.
 - A modest, open-topped wicker wastepaper basket sits on the floor under the
   left side of the desk. Use natural tan wicker, a gently tapered shape and
   simple woven hatching; keep the desk legs visible and the basket grounded.
-- Render the shoes, pen, furniture and accessories with the same simplified
+- Render the pen, furniture and accessories with the same simplified
   charcoal outlines, restrained flat colours and light texture as the rest of
   the illustration. Suggest transparent plastic and shimmer with a few marks,
   not glossy highlights or photorealistic objects pasted into an ink drawing.
