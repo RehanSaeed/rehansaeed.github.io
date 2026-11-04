@@ -48,6 +48,10 @@ Neither is an approved destination. Community-specific drafts are blocked pendin
 
 ## 🖼️ Image suggestion
 
-Use the supplied screenshot, `images/about-page-experiments-311x388.png`.
+Use the custom AI-generated hero, `/images/hero/AI-Agents-Upgrading-a-Blog-With-Human-Code-Review-1600x900.png`.
+
+Suggested alt text: AI assistants rebuild an old blog into several modern layouts while a human reviews their work beside the finished website.
+
+Alternatively, use the supplied screenshot, `images/about-page-experiments-311x388.png`.
 
 Suggested alt text: A GitHub Copilot session list showing ten About page experiments, including dimensional mosaic, wave interference, kinetic letterpress, ribbon journey and orbital gallery.

@@ -3,7 +3,7 @@ title: "AI Learnings from Upgrading My Blog"
 description: "Six lessons from migrating my blog from Gridsome to Nuxt with GitHub Copilot, from strict linting and agent instructions to parallel experiments."
 author: "Muhammad Rehan Saeed"
 permalink: "/ai-learnings-from-upgrading-my-blog/"
-heroImage: "/images/hero/Static-Site-Generators-1600x900.png"
+heroImage: "/images/hero/AI-Agents-Upgrading-a-Blog-With-Human-Code-Review-1600x900.png"
 date: "2026-11-04"
 dateModified: null
 published: false
