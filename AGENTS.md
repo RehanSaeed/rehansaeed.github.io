@@ -288,10 +288,12 @@ character appears.
   Make the trouser construction legible: distinct legs, natural knee bends,
   seams and restrained folds. In seated poses, show credible thigh and calf
   volumes with clear separation or overlap, not one flared, skirt-like shape.
-- When footwear is visible, use sage-green Vivobarefoot knit trainers with cream
-  laces and thin, flat cream soles. Keep the wide anatomical toe box, low profile,
-  darker green heel detail and small pull loops. Suggest the knit and subtle
-  geometric side motif with simple ink marks, not photographic product detail.
+- When footwear is visible, use Vivobarefoot knit trainers with sage-green
+  (`#949F8D`) uppers, cream (`#E5E0C8`) laces and thin, flat soles, and darker green
+  (`#51574A`) heel detail. Use these as base colours with restrained shading.
+  Keep the wide anatomical toe box, low profile and small pull loops. Suggest
+  the knit and subtle geometric side motif with simple ink marks, not
+  photographic product detail.
 - Keep the overall treatment warm, understated and editorial: charcoal ink
   outlines, restrained flat colour and light print texture. Ochre clothing and
   dark blue denim should remain consistent across illustrations; pale lavender
