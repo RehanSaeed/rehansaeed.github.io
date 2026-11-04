@@ -120,8 +120,8 @@ onBeforeUnmount(() => {
     block-size: min(28vh, 23rem);
   }
 
-  .about section[id],
-  .about h1[id] {
+  article.about section[id],
+  article.about h1[id] {
     scroll-margin-block-start: calc(min(28vh, 23rem) + 10rem);
   }
 }

@@ -43,6 +43,30 @@ test("Dimensional chapter typography assembles while semantic content stays auth
   await expect(installation).toContainText("05 / Community");
 });
 
+test("Native chapter links keep headings clear of the sticky relief", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/about/");
+  const installation = page.locator(".letterpress");
+  await expect(installation).toHaveClass(/letterpress--ready/);
+  await page
+    .getByRole("link", { name: "Explore the work", exact: true })
+    .focus();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/#youtube$/);
+  const heading = page.getByRole("heading", { name: "YouTube", level: 2 });
+  await expect(heading).toBeInViewport();
+  const headingBounds = await heading.boundingBox();
+  const reliefBounds = await installation.boundingBox();
+  expect(headingBounds).not.toBeNull();
+  expect(reliefBounds).not.toBeNull();
+  expect(headingBounds!.y).toBeGreaterThanOrEqual(
+    reliefBounds!.y + reliefBounds!.height,
+  );
+});
+
 test("Reduced motion renders a static relief and theme changes redraw it", async ({
   page,
 }) => {
