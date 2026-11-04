@@ -16,6 +16,10 @@ async function openAbout(page: Page) {
     const root = document.querySelector("#__nuxt");
     return root && Boolean(Reflect.get(root, "__vue_app__"));
   });
+  await expect(page.locator(".particle-portrait")).toHaveAttribute(
+    "data-state",
+    /^(ready|fallback)$/,
+  );
 }
 
 unitTest(

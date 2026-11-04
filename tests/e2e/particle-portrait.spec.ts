@@ -68,6 +68,48 @@ test("Portrait pixels render and become chapter compositions without interceptin
   expect(errors).toEqual([]);
 });
 
+test("Forced-colour changes recover even when media change events are missed", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const matchMedia = window.matchMedia.bind(window);
+    window.matchMedia = (query) => {
+      const media = matchMedia(query);
+      if (query === "(forced-colors: active)") {
+        media.addEventListener = () => {
+          // Reproduce browsers updating CSS and matches without delivering change.
+        };
+      }
+      return media;
+    };
+  });
+  await page.goto("/about/");
+  await expect(page.locator(".particle-portrait")).toHaveAttribute(
+    "data-state",
+    "ready",
+  );
+  await page
+    .getByRole("link", { name: "Explore the work", exact: true })
+    .click();
+  await page.emulateMedia({ forcedColors: "active" });
+  await expect(page.locator(".particle-portrait")).toHaveAttribute(
+    "data-state",
+    "fallback",
+  );
+  await expect(page.locator(".about")).not.toHaveClass(/about--particles/);
+  await expect(page.locator(".about__portrait img")).toHaveCSS(
+    "width",
+    "280px",
+  );
+  await page.emulateMedia({ forcedColors: "none" });
+  await expect(page.locator(".particle-portrait")).toHaveAttribute(
+    "data-state",
+    "ready",
+  );
+  await expect(page.locator(".about")).toHaveClass(/about--particles/);
+  await expect(page.locator(".about__particle-window").first()).toBeVisible();
+});
+
 test("Reduced motion has no continuous rendering and survives preference changes", async ({
   page,
 }) => {

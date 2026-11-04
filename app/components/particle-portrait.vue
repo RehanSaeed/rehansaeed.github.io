@@ -103,13 +103,11 @@ onMounted(async () => {
     };
     const render = (time = 0) => {
       frame = 0;
-      if (
-        !ready ||
-        isDisposed() ||
-        document.hidden ||
-        !visible ||
-        forcedColors.matches
-      ) {
+      if (!ready || isDisposed() || document.hidden || !visible) {
+        return;
+      }
+      if (forcedColors.matches || state.value === "fallback") {
+        preferenceChanged();
         return;
       }
       const currentWidth = window.innerWidth;
@@ -184,6 +182,7 @@ onMounted(async () => {
       if (forcedColors.matches) {
         state.value = "fallback";
         emit("availability-change", false);
+        renderer.setScissorTest(false);
         renderer.clear();
       } else if (ready) {
         state.value = "ready";
@@ -215,6 +214,8 @@ onMounted(async () => {
     });
     observer.observe(article);
     const resizeObserver = new ResizeObserver(requestRender);
+    // CSS box changes still wake rendering when a media change event is missed.
+    resizeObserver.observe(surface);
     resizeObserver.observe(article);
     windows.forEach((element) => {
       resizeObserver.observe(element);
