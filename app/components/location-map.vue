@@ -182,10 +182,12 @@ let visitorMarker: MapLibreMarker | undefined;
 let visitorLocation: [number, number] | undefined;
 let locationController: AbortController | undefined;
 let resizeObserver: ResizeObserver | undefined;
+let attributionTimeout: ReturnType<typeof setTimeout> | undefined;
 let reduceMotion = false;
 let styleReady = false;
 let userMovedMap = false;
 let disposed = false;
+const isDisposed = () => disposed;
 
 function mapStyle() {
   return document.documentElement.dataset.theme === "dark"
@@ -208,6 +210,7 @@ const createMarker = (
 };
 
 function removeMap() {
+  clearTimeout(attributionTimeout);
   locationController?.abort();
   visitorMarker?.remove();
   visitorMarker = undefined;
@@ -234,7 +237,9 @@ function failMap(error: unknown) {
 }
 
 function frameMap(animate: boolean) {
-  if (!map || userMovedMap) return;
+  if (!map || userMovedMap) {
+    return;
+  }
   map.fitBounds(
     visitorLocation
       ? [
@@ -264,7 +269,9 @@ function frameMap(animate: boolean) {
 }
 
 function applyMapPalette() {
-  if (!map || !mapContainer.value) return;
+  if (!map || !mapContainer.value) {
+    return;
+  }
   try {
     const theme = getComputedStyle(mapContainer.value);
     const colour = (name: string) =>
@@ -283,7 +290,9 @@ function applyMapPalette() {
       colour("accent"),
     ];
     for (const layer of map.getStyle().layers) {
-      if (layer.id.startsWith("visitor-connection")) continue;
+      if (layer.id.startsWith("visitor-connection")) {
+        continue;
+      }
       if (layer.type === "background") {
         map.setPaintProperty(layer.id, "background-color", land);
       } else if (layer.type === "fill") {
@@ -317,9 +326,13 @@ function applyMapPalette() {
 }
 
 function updateConnection() {
-  if (!map || !visitorLocation || !styleReady) return;
+  if (!map || !visitorLocation || !styleReady) {
+    return;
+  }
   const id = "visitor-connection";
-  if (map.getSource(id)) return;
+  if (map.getSource(id)) {
+    return;
+  }
   map.addSource(id, {
     type: "geojson",
     data: {
@@ -370,7 +383,9 @@ function updateConnection() {
 async function loadVisitorLocation(maplibregl: typeof import("maplibre-gl")) {
   const controller = new AbortController();
   locationController = controller;
-  const timeout = setTimeout(() => controller.abort(), 8000);
+  const timeout = setTimeout(() => {
+    controller.abort();
+  }, 8000);
   try {
     const response = await fetch("https://get.geojs.io/v1/ip/geo.json", {
       signal: controller.signal,
@@ -382,7 +397,9 @@ async function loadVisitorLocation(maplibregl: typeof import("maplibre-gl")) {
       throw new Error(`Location service returned HTTP ${response.status}.`);
     }
     const location = locationSchema.parse(await response.json());
-    if (disposed || !map) return;
+    if (disposed || !map) {
+      return;
+    }
     visitorLocation = [location.longitude, location.latitude];
     distanceMiles.value = Math.round(distanceInMiles(london, visitorLocation));
     visitorMarker = createMarker(
@@ -393,7 +410,9 @@ async function loadVisitorLocation(maplibregl: typeof import("maplibre-gl")) {
     updateConnection();
     frameMap(true);
   } catch (error) {
-    if (disposed || !map) return;
+    if (disposed || !map) {
+      return;
+    }
     visitorMarker?.remove();
     visitorMarker = undefined;
     visitorLocation = undefined;
@@ -403,12 +422,16 @@ async function loadVisitorLocation(maplibregl: typeof import("maplibre-gl")) {
       "Your approximate location is unavailable. Showing London and Europe.";
   } finally {
     clearTimeout(timeout);
-    if (locationController === controller) locationController = undefined;
+    if (locationController === controller) {
+      locationController = undefined;
+    }
   }
 }
 
 function updateTheme() {
-  if (!map) return;
+  if (!map) {
+    return;
+  }
   try {
     styleReady = false;
     map.setStyle(mapStyle(), { diff: false });
@@ -418,14 +441,18 @@ function updateTheme() {
 }
 
 async function loadMap() {
-  if (disposed) return;
+  if (isDisposed()) {
+    return;
+  }
   try {
     const [maplibregl, , { default: workerUrl }] = await Promise.all([
       import("maplibre-gl"),
       import("maplibre-gl/dist/maplibre-gl.css"),
       import("maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url"),
     ]);
-    if (disposed) return;
+    if (disposed) {
+      return;
+    }
     if (!mapContainer.value) {
       throw new Error("The map container is missing.");
     }
@@ -441,10 +468,13 @@ async function loadMap() {
       cooperativeGestures: true,
       renderWorldCopies: false,
       attributionControl: {
+        compact: true,
         customAttribution: '<a href="https://www.geojs.io/">GeoJS</a>',
       },
     });
-    if (reduceMotion) frameMap(false);
+    if (reduceMotion) {
+      frameMap(false);
+    }
     map.scrollZoom.disable();
     map.addControl(
       new maplibregl.NavigationControl({ showCompass: false }),
@@ -455,27 +485,47 @@ async function loadMap() {
       .getCanvas()
       .setAttribute("aria-label", "Map showing London, the UK and Europe");
     map.on("movestart", (event) => {
-      if (event.originalEvent) userMovedMap = true;
+      if (event.originalEvent) {
+        userMovedMap = true;
+      }
     });
     map.on("style.load", () => {
       styleReady = true;
       applyMapPalette();
     });
-    map.once("error", ({ error }) => failMap(error));
+    map.once("error", ({ error }) => {
+      failMap(error);
+    });
     map.once("load", () => {
-      if (disposed || !map) return;
+      if (disposed || !map) {
+        return;
+      }
       mapReady.value = true;
       mapStatus.value = "";
+      attributionTimeout = setTimeout(() => {
+        const attribution = map
+          ?.getContainer()
+          .querySelector(".maplibregl-ctrl-attrib");
+        if (attribution?.classList.contains("maplibregl-compact-show")) {
+          attribution
+            .querySelector<HTMLElement>(".maplibregl-ctrl-attrib-button")
+            ?.click();
+        }
+      }, 5000);
       frameMap(true);
       void loadVisitorLocation(maplibregl);
     });
     resizeObserver = new ResizeObserver(() => {
       map?.resize();
-      if (mapReady.value) frameMap(false);
+      if (mapReady.value) {
+        frameMap(false);
+      }
     });
     resizeObserver.observe(mapContainer.value);
   } catch (error) {
-    if (!disposed) failMap(error);
+    if (!isDisposed()) {
+      failMap(error);
+    }
   }
 }
 
@@ -508,10 +558,10 @@ onBeforeUnmount(() => {
   --location-map-label-font-size: 17px;
   --location-map-city-font-size: 24px;
   --location-map-avatar-border-radius: 50%;
-  --location-map-connection-width: 5px;
-  --location-map-connection-outline-width: 8px;
+  --location-map-connection-width: 8px;
+  --location-map-connection-outline-width: 11px;
   --location-map-connection-dot-length: 0.3px;
-  --location-map-connection-gap: 12px;
+  --location-map-connection-gap: 16px;
   --location-map-grid-opacity: 0.1;
   --location-map-grid-dasharray: 3 8;
   --location-map-land-border-opacity: 0.3;
