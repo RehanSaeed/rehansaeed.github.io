@@ -196,9 +196,18 @@ async function verifyAwardImageWidths({ page }: Pick<E2EFixtures, "page">) {
       new RegExp(`s_${width * 2}x\\d+.* ${width * 2}w`),
     );
   }
-  const honours = page.locator(".about__open-uk-honours-image");
-  await expect(honours).toHaveCSS("width", "322px");
-  await expect(honours).toHaveAttribute("sizes", "322px");
+  const honours = page.getByRole("img", {
+    name: "Open UK Honours 2022",
+    exact: true,
+  });
+  const frame = page.locator(".about__honour-media");
+  const frameBounds = await frame.boundingBox();
+  const imageBounds = await honours.boundingBox();
+  expect(frameBounds).not.toBeNull();
+  expect(imageBounds).not.toBeNull();
+  expect(imageBounds!.width).toBeCloseTo(frameBounds!.width, 1);
+  expect(imageBounds!.height / imageBounds!.width).toBeCloseTo(396 / 1288, 3);
+  await expect(honours).toHaveAttribute("sizes", /322px.*644px/);
   await expect(honours.locator("..").locator("source")).toHaveAttribute(
     "srcset",
     /s_322x99.* 322w.*s_644x198.* 644w/,

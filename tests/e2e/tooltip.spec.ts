@@ -295,12 +295,12 @@ test("About image links describe their destinations without changing their layou
       count: 1,
     },
     {
-      selector: ".about_awards-images a[href*='credly']",
+      selector: ".about__credentials a[href*='credly'], .about__alumni-badge a",
       text: "View my credentials on Credly",
       count: 10,
     },
     {
-      selector: ".about_awards-images a[href='/open-uk-honouree/']",
+      selector: ".about__honour-media a[href='/open-uk-honouree/']",
       text: "Read about my Open UK honour",
       count: 1,
     },
@@ -310,8 +310,8 @@ test("About image links describe their destinations without changing their layou
       count: 1,
     },
     {
-      selector: ".about__mvp-images a",
-      text: "View the Microsoft MVP programme",
+      selector: ".about__mvp-artwork",
+      text: "View my Microsoft MVP profile",
       count: 1,
     },
   ];
