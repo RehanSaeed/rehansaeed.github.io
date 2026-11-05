@@ -27,7 +27,11 @@ test("The article plays a self-hosted video without loading X's widget", async (
   await expect(video).toHaveAttribute("controls", "");
   await expect(video).toHaveAttribute("playsinline", "");
   await expect(video).not.toHaveAttribute("autoplay");
-  await expect(page.locator(".post__content iframe")).toHaveCount(0);
+  await expect(page.locator(".post__content iframe")).toHaveCount(1);
+  await expect(page.locator(".post__content iframe")).toHaveAttribute(
+    "src",
+    "https://www.youtube-nocookie.com/embed/PLMOVlZC4eU",
+  );
   const response = await request.get(
     "/videos/threeui-demonstration-960x720.mp4",
   );

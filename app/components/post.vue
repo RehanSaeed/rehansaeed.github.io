@@ -109,6 +109,10 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
     max-inline-size: 100%;
   }
 
+  figure > p:has(+ figcaption) {
+    margin-block-end: var(--global-space-fixed-2);
+  }
+
   figcaption {
     font-style: italic;
     margin-block-end: var(--global-space-fixed-5);

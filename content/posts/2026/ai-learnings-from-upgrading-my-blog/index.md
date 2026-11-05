@@ -6,7 +6,7 @@ permalink: "/ai-learnings-from-upgrading-my-blog/"
 heroImage: "/images/hero/AI-Agents-Upgrading-a-Blog-With-Human-Code-Review-1600x900.png"
 date: "2026-11-04"
 dateModified: null
-published: false
+published: true
 categories:
   - "Thoughts"
   - "Web"
@@ -98,3 +98,19 @@ Telling agents to use [Three.js](https://threejs.org/) to build amazing interact
 The problem is that while I've used game engines before, I'm not Three.js-proficient, so this is effectively AI-only software for me. I can judge whether I like the result, but I'm less equipped to judge the implementation or maintain it without help.
 
 That brings me back to the first learning: producing code is getting easier much faster than reviewing it. The upgrade was fun, but figuring out how to keep up with what I've asked the agents to build might be the more interesting problem.
+
+## Currency Converter Pro
+
+I've also been porting my old currency converter UWP (Windows 8.1) app to [WinAppSDK (Windows 11)](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/). I love the artwork of the different bank notes of the world, so that is front and centre in the app.
+
+![Currency Converter Pro showing US dollar and British pound conversion cards beside a large British twenty-pound banknote.](./images/currency-converter-pro-conversion-1999x1124.png)
+
+![Currency Converter Pro's currency picker showing a grid of banknote artwork, flags, currency names and codes from around the world.](./images/currency-converter-pro-currencies-1999x1124.png)
+
+I would not have been able to do any of this without AI! I have kids and a life and have not had the time to do all this until now.
+
+## I'm Not The Only One!
+
+I'm not the only one porting huge amounts of code in GitHub Copilot, the amazing [Stephen Toub](https://devblogs.microsoft.com/dotnet/author/toub/) has been doing the same but using Rust. He talks at length about his experience in the video below that I highly recommend watching:
+
+https://www.youtube.com/watch?v=PLMOVlZC4eU

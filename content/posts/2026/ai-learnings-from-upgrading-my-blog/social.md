@@ -22,7 +22,7 @@ https://rehansaeed.com/ai-learnings-from-upgrading-my-blog/
 
 Just blogged "AI Learnings from Upgrading My Blog"
 
-I spent a few hours on holiday moving my blog from Gridsome to Nuxt with GitHub Copilot. Six things stood out: review is now my bottleneck, strict checks need to come first, and written preferences save a lot of repeated prompts. I also tried parallel design experiments and found a limit to my confidence when agents wrote Three.js code I wasn't proficient in.
+I spent a few hours on holiday moving my blog from Gridsome to Nuxt with GitHub Copilot. Six things stood out: review is now my bottleneck, strict checks need to come first, and written preferences save a lot of repeated prompts. I also tried parallel design experiments, found a limit to my confidence with AI-generated Three.js, and have been porting Currency Converter Pro to WinAppSDK. AI has made time for projects I couldn't otherwise fit around kids and life.
 
 https://rehansaeed.com/ai-learnings-from-upgrading-my-blog/
 
@@ -36,7 +36,7 @@ Just blogged "AI Learnings from Upgrading My Blog"
 
 ### Body
 
-I migrated my blog from Gridsome to Nuxt using GitHub Copilot while on holiday. This post covers six things I learnt: becoming the code-review bottleneck, putting strict checks and AGENTS.md guidance in place early, making dependency updates more useful, exploring package documentation and comparing parallel implementations. I also discuss the awkward bit of generating Three.js code that I can appreciate visually but am less equipped to review or maintain.
+I migrated my blog from Gridsome to Nuxt using GitHub Copilot while on holiday. This post covers six things I learnt: becoming the code-review bottleneck, putting strict checks and AGENTS.md guidance in place early, making dependency updates more useful, exploring package documentation and comparing parallel implementations. I also discuss the limits of reviewing AI-generated Three.js, share screenshots of my Currency Converter Pro port to WinAppSDK, and link Stephen Toub's interview about porting code to Rust.
 
 https://rehansaeed.com/ai-learnings-from-upgrading-my-blog/
 
