@@ -416,7 +416,7 @@ export default defineNuxtConfig({
         },
         {
           rel: "alternate",
-          type: "application/json",
+          type: "application/feed+json",
           href: `${site.url}/feed.json`,
           title: site.name,
         },
