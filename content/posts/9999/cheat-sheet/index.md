@@ -284,8 +284,6 @@ To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>`
 <a href="https://x.com/MengTo/status/2090817187900780961/video/1">Watch the video demonstration.</a>
 </video>
 
-Video by [Meng To](https://mengto.com/). [Original source on X](https://x.com/MengTo/status/2090817187900780961/video/1).
-
 Wrap the player in `<figure>` and add `<figcaption>` after it for visible context, creator credit and the original source:
 
 ```html
