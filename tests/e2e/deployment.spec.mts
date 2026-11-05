@@ -21,6 +21,8 @@ const deploymentStepSchema =
 const deploymentJobSchema = workflowSchema.shape.jobs.valueType.extend({
     name: z.string().optional(),
     needs: z.union([z.string(), z.array(z.string())]).optional(),
+    container: z.object({ image: z.string(), options: z.string() }).optional(),
+    outputs: z.record(z.string(), z.string()).optional(),
     environment: z.looseObject({ name: z.string() }).optional(),
     concurrency: z
         .looseObject({ "cancel-in-progress": z.boolean().optional() })
@@ -240,18 +242,37 @@ test("Browser suites run in parallel against one complete build without dropping
         "npx playwright test --project=${{ matrix.browser }}",
     );
     expect(steps.some((step) => step.run === "npm run build")).toBe(false);
-    for (const name of [
-        "Cache Playwright Browsers",
-        "Install Playwright Browsers",
-        "Install Playwright Dependencies",
-    ]) {
-        expect(requireStep(steps, name).if).toContain(
-            "matrix.browser == 'firefox'",
-        );
-    }
     const report = requireStep(steps, "Upload Playwright Report");
     expect(report.if).toBe("failure()");
     expect(report.with?.name).toBe("playwright-report-${{ matrix.browser }}");
+});
+
+test("Firefox uses a version-matched Playwright image without runtime dependency installation", () => {
+    const workflow = readBuildWorkflow();
+    const build = requireJob(workflow, "build");
+    const browserTests = requireJob(workflow, "test");
+    const image = requireStep(build.steps, "Resolve Playwright Image");
+    expect(image.id).toBe("playwright-image");
+    expect(image.run).toBe(
+        `node -p "'image=mcr.microsoft.com/playwright:v' + require('playwright/package.json').version + '-noble'" >> "$GITHUB_OUTPUT"`,
+    );
+    expect(build.steps.indexOf(image)).toBeGreaterThan(
+        build.steps.indexOf(requireStep(build.steps, "NPM Install")),
+    );
+    expect(build.outputs?.["playwright-image"]).toBe(
+        "${{ steps.playwright-image.outputs.image }}",
+    );
+    expect(browserTests.container).toEqual({
+        image: "${{ matrix.browser == 'firefox' && needs.build.outputs.playwright-image || '' }}",
+        options: "--user 1001",
+    });
+    expect(
+        browserTests.steps.filter(
+            (step) =>
+                step.run?.includes("playwright install") ||
+                step.name === "Cache Playwright Browsers",
+        ),
+    ).toEqual([]);
 });
 
 function publishedProbeResponse(
