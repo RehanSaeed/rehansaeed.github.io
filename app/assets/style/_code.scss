@@ -298,6 +298,7 @@ pre[class*="language-"] {
 
 .code-block--controls-soft .code-block__toolbar .button {
   border-radius: var(--global-border-radius);
+  background-color: var(--global-content-background-color);
 }
 
 .code-block--controls-grouped .code-block__toolbar {

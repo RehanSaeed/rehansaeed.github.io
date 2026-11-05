@@ -45,11 +45,8 @@ for (const style of ["current", "plain", "bordered", "soft", "grouped"]) {
       style === "current" ? 0 : 2,
     );
     await expect(
-      card.locator(".code-block__toolbar .button--bordered"),
+      card.locator(".code-block__toolbar .button--secondary"),
     ).toHaveCount(style === "bordered" ? 2 : 0);
-    await expect(
-      card.locator(".code-block__toolbar .button--contrast"),
-    ).toHaveCount(style === "soft" ? 2 : 0);
     const code = card.locator("code");
     const source = await code.textContent();
     const tokens = await code.innerHTML();

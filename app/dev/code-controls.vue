@@ -186,7 +186,7 @@ const options = [
     letter: "D",
     title: "Soft UButton",
     description:
-      "The shared contrast button on a rounded surface, without a border or shadow.",
+      "The shared plain button on a contrasting rounded surface, without a border or shadow.",
   },
   {
     id: "grouped",

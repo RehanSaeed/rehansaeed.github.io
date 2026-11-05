@@ -137,10 +137,7 @@ const props = withDefaults(
 );
 const controlButtonProps = computed(() => {
   if (props.controls === "bordered") {
-    return { bordered: true };
-  }
-  if (props.controls === "soft") {
-    return { contrast: true };
+    return { variant: "secondary" };
   }
   return {};
 });

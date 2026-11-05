@@ -35,7 +35,7 @@ test("Icon controls overlay the top right, reveal on hover/focus and have dismis
   const copy = block.getByRole("button", { name: "Copy code", exact: true });
   const wrap = block.getByRole("button", { name: "Wrap lines", exact: true });
   await expect(copy).toBeAttached();
-  await expect(toolbar.locator(".button--bordered")).toHaveCount(2);
+  await expect(toolbar.locator(".button--secondary")).toHaveCount(2);
   await block.scrollIntoViewIfNeeded();
   await page.mouse.move(0, 0);
   await expect(toolbar).toHaveCSS("opacity", "0");
@@ -380,7 +380,7 @@ test("The cheat sheet documents accessible Bash/PowerShell tabs and copies only 
   await expect(group.getByRole("tab")).toHaveCount(2);
   await expect(group).toHaveClass(/\bcode-block--tabs-editor-wide\b/);
   await expect(
-    page.getByRole("heading", { name: "Alternative Code Tabs", exact: true }),
+    page.getByRole("heading", { level: 2, name: "Alternative Code Tabs" }),
   ).toBeVisible();
   await expect(
     page.getByRole("tablist", { name: "Code alternatives" }),
@@ -513,9 +513,14 @@ for (const colorScheme of ["light", "dark"] as const) {
     await expect(code).toHaveText(source);
     expect(await code.innerHTML()).toBe(markup);
     expect(await code.locator("span span").count()).toBeGreaterThan(0);
+    // Native scrollbars are enabled for this file, so compare against the client width.
     expect(
-      await page.evaluate(() => document.documentElement.scrollWidth),
-    ).toBe(375);
+      await page.evaluate(
+        () =>
+          document.documentElement.scrollWidth -
+          document.documentElement.clientWidth,
+      ),
+    ).toBeLessThanOrEqual(0);
 
     const numbered = page
       .locator(".code-block")
