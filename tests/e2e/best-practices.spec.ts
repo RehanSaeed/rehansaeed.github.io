@@ -281,7 +281,7 @@ test.describe("Nuxt best practices", () => {
         ),
       ),
     );
-    expect(workflow.jobs.build!.steps).toContainEqual({
+    expect(workflow.jobs.quality!.steps).toContainEqual({
       name: "Lint",
       run: "npm run lint",
     });
