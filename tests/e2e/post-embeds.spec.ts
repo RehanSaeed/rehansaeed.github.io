@@ -10,7 +10,10 @@ test("The article plays a self-hosted video without loading X's widget", async (
     (url) => url.origin !== new URL(baseURL!).origin,
     (route) => {
       externalRequests.push(route.request().url());
-      return route.fulfill({ status: 204 });
+      return route.fulfill({
+        status: route.request().isNavigationRequest() ? 200 : 204,
+        contentType: "text/html",
+      });
     },
   );
   await page.goto("/ai-learnings-from-upgrading-my-blog/", {
@@ -45,7 +48,7 @@ test("The article plays a self-hosted video without loading X's widget", async (
         element instanceof HTMLVideoElement ? element.readyState : 0,
       ),
     )
-    .toBeGreaterThanOrEqual(2);
+    .toBeGreaterThanOrEqual(1);
   const media = await video.evaluate(async (element) => {
     if (!(element instanceof HTMLVideoElement)) {
       throw new TypeError("Expected a native video player.");
@@ -65,6 +68,13 @@ test("The article plays a self-hosted video without loading X's widget", async (
   expect(media.height).toBe(720);
   expect(media.duration).toBeGreaterThan(49);
   expect(media.duration).toBeLessThan(51);
+  await expect
+    .poll(() =>
+      video.evaluate((element) =>
+        element instanceof HTMLVideoElement ? element.readyState : 0,
+      ),
+    )
+    .toBeGreaterThanOrEqual(2);
   await expect
     .poll(() =>
       video.evaluate((element) =>

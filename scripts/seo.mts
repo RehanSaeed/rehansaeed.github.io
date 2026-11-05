@@ -213,7 +213,10 @@ const referenceRoutes = (await readFile("tests/parity/urls.txt", "utf8"))
 const additionalPublicRoutes = [
     "/tag/ai/",
     "/tag/artificial-intelligence-ai/",
+    "/tag/git-hub-copilot/",
+    "/tag/vue-js/",
     "/ai-gone-rogue/",
+    "/ai-learnings-from-upgrading-my-blog/",
 ];
 for (const path of [
     ...referenceRoutes,
@@ -267,7 +270,7 @@ assert.equal(
     referenceRoutes.length - 5 + additionalPublicRoutes.length,
     "All and only public reference pages and approved additions indexed",
 );
-assert.equal(articles, 103, "Every published article has a schema graph");
+assert.equal(articles, 104, "Every published article has a schema graph");
 assert.equal(
     images.size,
     urls.length,

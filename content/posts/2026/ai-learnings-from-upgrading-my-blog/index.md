@@ -24,6 +24,8 @@ I'd [picked Gridsome back in 2020](/choosing-a-static-site-generator/) but unfor
 
 This time, moving on also gave me a chance to see how much of a framework migration I could hand over to agents. I was pretty hands-off, but I came away with some useful learnings.
 
+![GitHub Copilot showing the blog upgrade conversation and review tasks beside a live preview of this article.](./images/github-copilot-blog-upgrade-1920x1152.png)
+
 ## I'm the Bottleneck
 
 I have too many ideas. The bottleneck is now me reviewing all the code that I tell agents to write.

@@ -7,7 +7,11 @@ for (const width of [1280, 375, 320]) {
   }) => {
     await page.route(
       (url) => url.origin !== new URL(baseURL!).origin,
-      (route) => route.fulfill({ status: 204 }),
+      (route) =>
+        route.fulfill({
+          status: route.request().isNavigationRequest() ? 200 : 204,
+          contentType: "text/html",
+        }),
     );
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/ai-learnings-from-upgrading-my-blog/", {
@@ -20,62 +24,6 @@ for (const width of [1280, 375, 320]) {
       if (element instanceof HTMLImageElement) {
         await element.decode();
       }
-
-      test("Image captions stay close to the image with space after the caption", async ({
-        page,
-        baseURL,
-      }) => {
-        await page.route(
-          (url) => url.origin !== new URL(baseURL!).origin,
-          (route) => route.fulfill({ status: 204 }),
-        );
-        await page.goto("/cheat-sheet/", {
-          waitUntil: "domcontentloaded",
-        });
-        const figure = page.locator(".post__content figure").filter({
-          hasText: "A code-themed illustration.",
-        });
-        const image = figure.locator("img");
-        await image.scrollIntoViewIfNeeded();
-        await image.evaluate(async (element) => {
-          if (element instanceof HTMLImageElement) {
-            await element.decode();
-          }
-        });
-
-        for (const width of [1280, 640, 375]) {
-          await page.setViewportSize({ width, height: 900 });
-          for (const theme of ["light", "dark"]) {
-            await page.evaluate((value) => {
-              document.documentElement.dataset.theme = value;
-            }, theme);
-            for (const forcedColors of ["none", "active"] as const) {
-              await page.emulateMedia({ forcedColors });
-              const caption = figure.locator("figcaption");
-              await expect(caption).toBeVisible();
-              await expect(caption).toHaveCSS("font-style", "italic");
-              const spacing = await figure.evaluate((element) => {
-                const image = element.querySelector("img")!;
-                const caption = element.querySelector("figcaption")!;
-                const paragraph = image.closest("p")!;
-                const style = getComputedStyle(paragraph);
-                return {
-                  gap:
-                    caption.getBoundingClientRect().top -
-                    image.getBoundingClientRect().bottom,
-                  paragraphMargin: Number.parseFloat(style.marginBlockEnd),
-                  captionMargin: Number.parseFloat(
-                    getComputedStyle(caption).marginBlockEnd,
-                  ),
-                };
-              });
-              expect(spacing.gap).toBeGreaterThan(0);
-              expect(spacing.gap).toBeCloseTo(spacing.paragraphMargin, 0);
-              expect(spacing.gap).toBeCloseTo(spacing.captionMargin / 4, 0);
-            }
-          }
-        }
-      });
     });
 
     for (const theme of ["light", "dark"]) {
@@ -114,7 +62,11 @@ for (const width of [1280, 375, 320]) {
   }) => {
     await page.route(
       (url) => url.origin !== new URL(baseURL!).origin,
-      (route) => route.fulfill({ status: 204 }),
+      (route) =>
+        route.fulfill({
+          status: route.request().isNavigationRequest() ? 200 : 204,
+          contentType: "text/html",
+        }),
     );
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/ai-learnings-from-upgrading-my-blog/", {
@@ -150,3 +102,63 @@ for (const width of [1280, 375, 320]) {
     }
   });
 }
+
+test("Image captions stay close to the image with space after the caption", async ({
+  page,
+  baseURL,
+}) => {
+  await page.route(
+    (url) => url.origin !== new URL(baseURL!).origin,
+    (route) =>
+      route.fulfill({
+        status: route.request().isNavigationRequest() ? 200 : 204,
+        contentType: "text/html",
+      }),
+  );
+  await page.goto("/cheat-sheet/", {
+    waitUntil: "domcontentloaded",
+  });
+  const figure = page.locator(".post__content figure").filter({
+    hasText: "A code-themed illustration.",
+  });
+  const image = figure.locator("img");
+  await image.scrollIntoViewIfNeeded();
+  await image.evaluate(async (element) => {
+    if (element instanceof HTMLImageElement) {
+      await element.decode();
+    }
+  });
+
+  for (const width of [1280, 640, 375]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const theme of ["light", "dark"]) {
+      await page.evaluate((value) => {
+        document.documentElement.dataset.theme = value;
+      }, theme);
+      for (const forcedColors of ["none", "active"] as const) {
+        await page.emulateMedia({ forcedColors });
+        const caption = figure.locator("figcaption");
+        await expect(caption).toBeVisible();
+        await expect(caption).toHaveCSS("font-style", "italic");
+        const spacing = await figure.evaluate((element) => {
+          const image = element.querySelector("img")!;
+          const caption = element.querySelector("figcaption")!;
+          const paragraph = image.closest("p")!;
+          const style = getComputedStyle(paragraph);
+          return {
+            gap:
+              caption.getBoundingClientRect().top -
+              image.getBoundingClientRect().bottom,
+            paragraphMargin: Number.parseFloat(style.marginBlockEnd),
+            captionMargin: Number.parseFloat(
+              getComputedStyle(caption).marginBlockEnd,
+            ),
+          };
+        });
+        expect(spacing.gap).toBeGreaterThan(0);
+        expect(spacing.gap).toBeCloseTo(spacing.paragraphMargin, 0);
+        expect(spacing.gap).toBeCloseTo(spacing.captionMargin / 4, 0);
+      }
+    }
+  }
+});
