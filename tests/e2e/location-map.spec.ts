@@ -378,6 +378,11 @@ for (const width of [320, 375, 1280]) {
       await expect(figure.locator("figcaption")).not.toContainText(
         "United Kingdom",
       );
+      const caption = figure.locator("figcaption");
+      await expect(caption).toHaveCSS("font-style", "italic");
+      await expect(caption).toHaveCSS("text-align", "start");
+      await expect(caption).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+      await expect(caption.locator("small")).toHaveCSS("font-style", "normal");
       await expect(
         figure.getByRole("link", { name: "Natural Earth" }),
       ).toHaveAttribute("href", "https://www.naturalearthdata.com/");
@@ -427,6 +432,16 @@ for (const width of [320, 375, 1280]) {
         .boundingBox())!;
       expect(bounds!.x).toBeCloseTo(cardBounds.x, 0);
       expect(bounds!.width).toBeCloseTo(cardBounds.width, 0);
+      const captionBounds = (await caption.boundingBox())!;
+      const cardPadding = await page
+        .locator(".about__container")
+        .evaluate((element) =>
+          Number.parseFloat(getComputedStyle(element).paddingInlineStart),
+        );
+      expect(captionBounds.x).toBeCloseTo(cardBounds.x + cardPadding, 0);
+      expect(captionBounds.x + captionBounds.width).toBeLessThanOrEqual(
+        cardBounds.x + cardBounds.width - cardPadding + 1,
+      );
       const layout = await figure.evaluate((element) => ({
         clientWidth: element.clientWidth,
         scrollWidth: element.scrollWidth,
@@ -685,7 +700,7 @@ test("The interactive map and distance load with the required hosting CSP origin
       headers: {
         ...response.headers(),
         "content-security-policy":
-          "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://tiles.openfreemap.org https://get.geojs.io; img-src 'self' data: https:; font-src 'self' data:; worker-src 'self'",
+          "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.google-analytics.com/analytics.js https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.github.com https://webmention.io https://www.google-analytics.com https://www.googletagmanager.com https://*.google-analytics.com https://*.google.com https://tiles.openfreemap.org https://get.geojs.io; img-src 'self' data: https:; font-src 'self' data:; worker-src 'self'",
       },
     });
   });

@@ -102,7 +102,8 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
     }
   }
 
-  img {
+  img,
+  video {
     display: block;
     inline-size: calc(100% + (2 * var(--global-space-fluid-6)));
     margin-inline: var(--global-space-fluid--6);
@@ -115,13 +116,19 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
     max-inline-size: 100%;
   }
 
-  figure > p:has(+ figcaption) {
-    margin-block-end: var(--global-space-fixed-2);
-  }
+  figure {
+    margin-block: var(--global-space-fixed-5);
+    margin-inline: 0;
 
-  figcaption {
-    font-style: italic;
-    margin-block-end: var(--global-space-fixed-5);
+    > p:has(img) {
+      max-inline-size: none;
+      min-inline-size: 0;
+      margin-block-end: 0;
+    }
+
+    .youtube-embed {
+      margin-block: 0;
+    }
   }
 
   .mermaid {

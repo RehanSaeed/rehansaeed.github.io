@@ -223,6 +223,32 @@ When explicitly asked to help draft an article, follow these guidelines:
 - Do not manually populate generated fields such as `rawbody`, `headings` or
   `timeToRead`.
 
+### Media Captions
+
+- Use native `<figure>` and `<figcaption>` markup for explicitly authored image
+  and video captions. Keep blank lines around Markdown inside an HTML figure so
+  it is parsed normally; MDC component syntax is disabled.
+
+  ```markdown
+  <figure>
+
+  ![Alternative text describing the image](./images/example.png)
+
+  <figcaption>
+    A visible caption explaining why the image matters.
+    <small>Credit: <a href="https://example.com/">Source</a></small>
+  </figcaption>
+  </figure>
+  ```
+
+- For video, replace the image with a native `<video controls>` element (with
+  appropriate accessible alternatives), or an existing supported standalone
+  YouTube URL surrounded by blank lines.
+- Write captions separately from alt text; do not generate captions from it.
+  Omit the `<small>` credit line when it is not needed. Shared caption typography
+  belongs in `app/assets/style/dom/_figcaption.scss`; media width and alignment
+  belong in the containing component.
+
 ### Hero Image House Style
 
 - Aim for a personal software engineering publication: technically literate,

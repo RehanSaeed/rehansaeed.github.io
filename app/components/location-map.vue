@@ -136,7 +136,7 @@
           <em>{{ distanceMiles.toLocaleString("en-GB") }} miles</em> away from
           your current location, according to your IP address</span
         >.
-        <small v-if="!mapReady" class="location-map__attribution">
+        <small v-if="!mapReady">
           Map data:
           <a href="https://www.naturalearthdata.com/">Natural Earth</a>
         </small>
@@ -590,7 +590,6 @@ onBeforeUnmount(() => {
   margin: 0 0 var(--global-space-fixed-5);
   margin-inline: calc(var(--card-space, 0px) * -1);
   overflow: hidden;
-  background: var(--global-background-color);
 }
 
 [data-theme="dark"] .location-map {
@@ -748,17 +747,7 @@ onBeforeUnmount(() => {
 }
 
 .location-map__caption {
-  display: block;
-  padding: var(--global-space-fixed-4);
-  padding-inline: var(--card-space, var(--global-space-fixed-4));
-}
-
-.location-map__attribution {
-  display: block;
-  font-size: max(
-    var(--location-map-small-font-size),
-    var(--global-font-size-0)
-  );
+  margin-inline: var(--card-space, var(--global-space-fixed-4));
 }
 
 @media (forced-colors: active) {
