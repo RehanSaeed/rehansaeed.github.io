@@ -159,14 +159,17 @@ const wrapped = computed(
 );
 
 function preClass(block: CodeBlock) {
-  // Shiki separates source lines with newlines and never emits them inside tags.
-  const html = (block.html ?? "").replace(/\r?\n$/, "");
+  // Only counts source lines; the extracted text is never rendered.
+  const text = (block.html ?? "")
+    .split(/<[^>]*>/)
+    .join("")
+    .replace(/\r?\n$/, "");
   return [
     `language-${block.language || "text"}`,
     block.class,
     {
       "line-numbers": hasMeta(block, "line-numbers"),
-      "code-block__pre--single-line": !html.includes("\n"),
+      "code-block__pre--single-line": !text.includes("\n"),
     },
   ];
 }
