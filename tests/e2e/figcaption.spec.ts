@@ -167,13 +167,24 @@ for (const width of [320, 1280]) {
             content: bounds(content),
             card: bounds(card),
             fontSize: Number.parseFloat(getComputedStyle(caption).fontSize),
+            parentFontSize: Number.parseFloat(
+              getComputedStyle(element).fontSize,
+            ),
+            fontScale: Number.parseFloat(
+              getComputedStyle(caption).getPropertyValue(
+                "--global-font-size-1",
+              ),
+            ),
             color: getComputedStyle(caption).color,
             bodyColor: getComputedStyle(document.body).color,
             scrollWidth: caption.scrollWidth,
             clientWidth: caption.clientWidth,
           };
         });
-        expect(layout.fontSize).toBeGreaterThanOrEqual(16);
+        expect(layout.fontSize).toBeCloseTo(
+          layout.parentFontSize * layout.fontScale,
+          2,
+        );
         expect(layout.color).toBe(layout.bodyColor);
         expect(layout.caption.x).toBeCloseTo(layout.content.x, 0);
         expect(layout.caption.right).toBeLessThanOrEqual(
@@ -200,10 +211,19 @@ for (const width of [320, 1280]) {
       for (const figcaption of await figures.locator("figcaption").all()) {
         const enlarged = await figcaption.evaluate((element) => ({
           fontSize: Number.parseFloat(getComputedStyle(element).fontSize),
+          bodyFontSize: Number.parseFloat(
+            getComputedStyle(document.body).fontSize,
+          ),
+          fontScale: Number.parseFloat(
+            getComputedStyle(element).getPropertyValue("--global-font-size-1"),
+          ),
           clientWidth: element.clientWidth,
           scrollWidth: element.scrollWidth,
         }));
-        expect(enlarged.fontSize).toBeGreaterThanOrEqual(27);
+        expect(enlarged.fontSize).toBeCloseTo(
+          enlarged.bodyFontSize * 2 * enlarged.fontScale,
+          2,
+        );
         expect(enlarged.scrollWidth).toBeLessThanOrEqual(enlarged.clientWidth);
       }
       expect(
