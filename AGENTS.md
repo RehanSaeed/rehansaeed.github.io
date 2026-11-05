@@ -13,6 +13,8 @@
   Keep temporary investigation notes in session storage outside the repository.
 - Keep durable agent-specific guidance in AGENTS.md, not human documentation.
   Do not use AGENTS.md as a task log either.
+- Start every Copilot chat or session name with an emoji, including renames
+  and agent-generated titles, for example `😀 Emoji chat names rule`.
 
 ## Blog and Social Media Authoring
 
