@@ -21,8 +21,8 @@ test("The cheat sheet renders its local video example as a native player", async
     "src",
     "/videos/threeui-demonstration-960x720.mp4",
   );
-  await expect(video).toHaveAttribute("controls", "");
-  await expect(video).toHaveAttribute("playsinline", "");
+  await expect(video).toHaveJSProperty("controls", true);
+  await expect(video).toHaveJSProperty("playsInline", true);
   await expect(video).toHaveAttribute("preload", "metadata");
   await expect(video).not.toHaveAttribute("autoplay");
   await expect(
