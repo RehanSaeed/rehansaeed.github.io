@@ -3,7 +3,7 @@ import { z } from "zod";
 const timestampSchema = z
   .string()
   .refine((value) => value === "" || Number.isFinite(Date.parse(value)), {
-    message: "Invalid Web Mention timestamp",
+    message: "Web Mention has an invalid timestamp",
   });
 
 export const webMentionSchema = z.object({
