@@ -88,11 +88,12 @@ Sometimes, I'm not even sure what I want but want something to look at and try a
 
 Telling agents to use [Three.js](https://threejs.org/) to build amazing interactive 3D visuals for a page seems to be all the rage at the moment. The agents are very good at it, and I've been testing it out.
 
-<video src="/videos/threeui-demonstration-960x720.mp4" controls playsinline preload="metadata" width="960" height="720" aria-label="ThreeUI demonstration of interactive Three.js components and landing pages">
-  <a href="https://x.com/MengTo/status/2090817187900780961/video/1">Watch the ThreeUI demonstration on X.</a>
-</video>
-
-[Watch the ThreeUI demonstration on X.](https://x.com/MengTo/status/2090817187900780961/video/1)
+<figure>
+  <video src="/videos/threeui-demonstration-960x720.mp4" controls playsinline preload="metadata" width="960" height="720" aria-label="ThreeUI demonstration of interactive Three.js components and landing pages">
+    <a href="https://x.com/MengTo/status/2090817187900780961/video/1">Watch the ThreeUI demonstration on X.</a>
+  </video>
+  <figcaption>ThreeUI demonstration by <a href="https://mengto.com/">Meng To</a>. <a href="https://x.com/MengTo/status/2090817187900780961/video/1">Source on X</a>.</figcaption>
+</figure>
 
 The problem is that while I've used game engines before, I'm not Three.js-proficient, so this is effectively AI-only software for me. I can judge whether I like the result, but I'm less equipped to judge the implementation or maintain it without help.
 

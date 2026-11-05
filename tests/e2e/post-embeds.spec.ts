@@ -82,12 +82,26 @@ test("The article plays a self-hosted video without loading X's widget", async (
     expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
     expect(bounds!.width / bounds!.height).toBeCloseTo(4 / 3, 2);
   }
+  await expect(video.locator("a")).toHaveAttribute(
+    "href",
+    "https://x.com/MengTo/status/2090817187900780961/video/1",
+  );
+  const caption = page.locator(".post__content figure figcaption");
+  await expect(caption.getByRole("link", { name: "Meng To" })).toHaveAttribute(
+    "href",
+    "https://mengto.com/",
+  );
   await expect(
-    page.getByRole("link", { name: "Watch the ThreeUI demonstration on X." }),
+    caption.getByRole("link", { name: "Source on X" }),
   ).toHaveAttribute(
     "href",
     "https://x.com/MengTo/status/2090817187900780961/video/1",
   );
+  await expect(
+    page.locator(
+      '.post__content > p a[href="https://x.com/MengTo/status/2090817187900780961/video/1"]',
+    ),
+  ).toHaveCount(0);
   expect(
     externalRequests.filter((url) =>
       /(?:platform\.twitter\.com|video\.twimg\.com)/.test(url),
