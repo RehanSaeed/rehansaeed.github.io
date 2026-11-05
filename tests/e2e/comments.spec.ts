@@ -120,7 +120,7 @@ test.describe("GitHub comments", () => {
       const response = await page.goto(`${postPath}#comments`);
       const saved = load(await response!.text());
       expect(saved(".comment__association").first().text()).toBe("Owner");
-      expect(saved(".comments__list > article.comment")).toHaveLength(
+      expect(saved(".comments__list > li > article.comment")).toHaveLength(
         saved(".comment").length,
       );
       await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
@@ -135,7 +135,7 @@ test.describe("GitHub comments", () => {
       const comment = page.locator(".comment");
       await expect(comment).toHaveCount(1);
       await expect(
-        page.locator(".comments__list > article.comment"),
+        page.locator(".comments__list > li > article.comment"),
       ).toHaveCount(1);
       await expect(page.locator(".comments__summary")).toHaveCSS(
         "border-block-end-style",
