@@ -107,6 +107,109 @@ void test("malformed response fields are rejected", () => {
     );
 });
 
+void test("non-empty invalid timestamps are rejected for every activity", () => {
+    for (const type of ["like", "repost", "link", "reply"]) {
+        for (const value of ["not-a-date", " "]) {
+            for (const field of ["published", "verified_date"]) {
+                const result = webMentionSchema.safeParse({
+                    id: 8,
+                    activity: { type },
+                    ...(field === "verified_date"
+                        ? { verified_date: value }
+                        : {}),
+                    data: field === "published" ? { published: value } : {},
+                });
+                assert.equal(
+                    result.success,
+                    false,
+                    `${type}: ${field}=${JSON.stringify(value)}`,
+                );
+            }
+        }
+    }
+});
+
+void test("Z, numeric-offset ISO and date-only timestamps remain accepted", () => {
+    for (const type of ["like", "repost", "link", "reply"]) {
+        for (const value of [
+            "2026-01-02T12:00:00Z",
+            "2026-01-02T13:00:00+01:00",
+            "2026-01-02",
+        ]) {
+            for (const field of ["published", "verified_date"]) {
+                const mention = webMentionSchema.parse({
+                    id: 9,
+                    activity: { type },
+                    ...(field === "verified_date"
+                        ? { verified_date: value }
+                        : {}),
+                    data: field === "published" ? { published: value } : {},
+                });
+                assert.equal(
+                    webMentionTimestamp(mention),
+                    value,
+                    `${type}: ${field}`,
+                );
+            }
+        }
+    }
+});
+
+void test("missing and null published timestamps fall back to verified", () => {
+    const verified = "2026-01-03T12:00:00Z";
+    for (const type of ["like", "repost", "link", "reply"]) {
+        for (const data of [{}, { published: null }]) {
+            const mention = webMentionSchema.parse({
+                id: 10,
+                activity: { type },
+                verified_date: verified,
+                data,
+            });
+            assert.equal(webMentionTimestamp(mention), verified);
+        }
+    }
+});
+
+void test("empty published timestamps remain missing even with a verified timestamp", () => {
+    for (const type of ["like", "repost", "link", "reply"]) {
+        const mention = webMentionSchema.parse({
+            id: 11,
+            activity: { type },
+            verified_date: "2026-01-03T12:00:00Z",
+            data: { published: "" },
+        });
+        assert.throws(
+            () => webMentionTimestamp(mention),
+            /has no published or verified timestamp/,
+        );
+    }
+});
+
+void test("direct timestamp calls reject invalid data before rendering", () => {
+    for (const type of ["like", "repost", "link", "reply"]) {
+        for (const value of ["not-a-date", " "]) {
+            for (const field of ["published", "verified_date"]) {
+                assert.throws(
+                    () =>
+                        webMentionTimestamp({
+                            id: 12,
+                            activity: { type },
+                            ...(field === "verified_date"
+                                ? { verified_date: value }
+                                : {}),
+                            data:
+                                field === "published"
+                                    ? { published: value }
+                                    : {},
+                        }),
+                    /Web Mention .*invalid.*timestamp/i,
+                    `${type}: ${field}=${JSON.stringify(value)}`,
+                );
+            }
+        }
+    }
+});
+
 void test("malformed URLs fail for plain links, photo links and replies", () => {
     for (const activity of [
         { type: "link", author: undefined },

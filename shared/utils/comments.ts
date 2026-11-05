@@ -1,16 +1,13 @@
 import { z } from "zod";
 import sanitizeHtml from "sanitize-html";
 
-const githubUrl = z.url().refine((value) => {
-  const url = new URL(value);
-  return url.protocol === "https:" && url.hostname === "github.com";
+const githubUrl = z.url({
+  protocol: /^https$/,
+  hostname: /^github\.com$/,
 });
-const avatarUrl = z.url().refine((value) => {
-  const url = new URL(value);
-  return (
-    url.protocol === "https:" &&
-    url.hostname === "avatars.githubusercontent.com"
-  );
+const avatarUrl = z.url({
+  protocol: /^https$/,
+  hostname: /^avatars\.githubusercontent\.com$/,
 });
 
 export const issueSchema = z.object({
