@@ -494,7 +494,11 @@ test("The map stays below the initial viewport without loading MapLibre", async 
     expect(offset).toBeGreaterThan(200);
     await page.evaluate(
       () =>
-        new Promise((resolve) => requestAnimationFrame(() => resolve(null))),
+        new Promise((resolve) => {
+          requestAnimationFrame(() => {
+            resolve(null);
+          });
+        }),
     );
     expect(styles).toEqual([]);
     await expect(figure).not.toHaveClass(/location-map--interactive/);
