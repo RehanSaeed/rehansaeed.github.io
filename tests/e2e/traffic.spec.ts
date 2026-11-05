@@ -257,7 +257,7 @@ for (const width of [375, 1280]) {
     await infoButton.hover();
     await expect(source).toBeVisible();
     await expect(source).toHaveAttribute("role", "tooltip");
-    expect(await infoButton.getAttribute("aria-expanded")).toBeNull();
+    await expect(infoButton).toHaveAttribute("aria-expanded", "true");
     await expect(source).toHaveText(
       "Page views include repeats. Engagement is the average time this article was active in the foreground per view. Source: Google Analytics. Updated 25 Oct 2026 (Europe/London). Recent figures are provisional.",
     );

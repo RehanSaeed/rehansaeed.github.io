@@ -418,7 +418,7 @@ test.describe("Nuxt best practices", () => {
       ]);
       expect(workflow.jobs[job]!.if).toBe(
         file === "build.yml"
-          ? "(github.event_name != 'pull_request' || !github.event.pull_request.draft) && (github.event_name != 'schedule' || vars.GA4_PROPERTY_ID != '')"
+          ? "(github.event_name != 'pull_request' || !github.event.pull_request.draft) && (github.event_name != 'schedule' || github.event.schedule == '17 5 * * 1' || vars.GA4_PROPERTY_ID != '')"
           : "github.event_name != 'pull_request' || !github.event.pull_request.draft",
       );
     }
