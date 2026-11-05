@@ -17,10 +17,7 @@ test("The cheat sheet renders both local video examples as native players", asyn
   await expect(videos).toHaveCount(2);
   await expect(
     page.getByRole("link", { name: "Original source on X", exact: true }),
-  ).toHaveAttribute(
-    "href",
-    "https://x.com/MengTo/status/2090817187900780961/video/1",
-  );
+  ).toHaveCount(0);
 
   for (const video of await videos.all()) {
     await expect(video).toHaveAttribute(
