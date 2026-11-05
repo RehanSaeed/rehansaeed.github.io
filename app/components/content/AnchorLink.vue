@@ -20,7 +20,7 @@ defineProps<{
   position: relative;
 }
 
-@include breakpoints.respond-below(sm) {
+@include breakpoints.container-below(site, sm) {
   :global([data-section-heading] > .heading__text::after) {
     // Join the final word to the icon without changing the heading's text.
     content: "\2060";
@@ -47,7 +47,7 @@ defineProps<{
   transition: opacity var(--global-duration-2) ease-out 100ms;
   vertical-align: middle;
 
-  @include breakpoints.respond-below(sm) {
+  @include breakpoints.container-below(site, sm) {
     position: static;
     margin-inline-start: var(--heading-anchor-gap);
   }
