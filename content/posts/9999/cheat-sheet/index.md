@@ -326,8 +326,6 @@ Wrap the player in `<figure>` and add `<figcaption>` after it for visible contex
   </figcaption>
 </figure>
 
-The caption credits the creator and links to the source; it is italicised and has spacing below it.
-
 # Embed Youtube Video
 
 https://www.youtube.com/watch?v=PGM_uBy99GA
