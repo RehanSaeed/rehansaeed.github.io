@@ -141,7 +141,13 @@ test("A failed later page keeps the complete saved watcher total and retries nex
     watchers: 50,
     repositories: 3,
   });
+  expect(calls).toBe(2);
   expect(JSON.parse(await readFile(file, "utf8"))).toEqual(saved);
+  expect(await accountWatchers(dir, "example")).toEqual({
+    watchers: 50,
+    repositories: 3,
+  });
+  expect(calls).toBe(3);
 });
 
 test("Invalid and partial watcher responses never fabricate zero or partial totals", async ({}, info) => {
@@ -159,10 +165,16 @@ test("Invalid and partial watcher responses never fabricate zero or partial tota
       "GitHub watchers unavailable for example.",
     );
   }
+  let calls = 0;
+  globalThis.fetch = () => {
+    calls++;
+    return Promise.resolve(Response.json(page([1])));
+  };
   delete process.env.GITHUB_TOKEN;
   await expect(accountWatchers(dir, "example")).rejects.toThrow(
     "GitHub watchers unavailable for example.",
   );
+  expect(calls).toBe(0);
 });
 
 test("A different account's cached watcher total is never reused", async ({}, info) => {
@@ -195,9 +207,13 @@ test("Invalid watcher caches are reported and repeated pagination cursors fail",
       repositories: 1,
     }),
   );
-  globalThis.fetch = () =>
-    Promise.resolve(Response.json(page([10], true, "same")));
+  let calls = 0;
+  globalThis.fetch = () => {
+    calls++;
+    return Promise.resolve(Response.json(page([10], true, "same")));
+  };
   await expect(accountWatchers(dir, "example")).rejects.toThrow(
     "GitHub watchers unavailable for example.",
   );
+  expect(calls).toBe(2);
 });

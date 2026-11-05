@@ -164,7 +164,7 @@ test("Deployment is main-only, gated by successful build/tests/preflight and pre
     const condition =
         "github.event_name != 'pull_request' && github.ref == 'refs/heads/main'";
     expect(deploy.if).toBe(condition);
-    expect(deploy.needs).toEqual(["build", "test"]);
+    expect(deploy.needs).toEqual(["build", "quality", "test"]);
     expect(deploy.permissions).toEqual({
         contents: "read",
         pages: "write",
@@ -203,14 +203,15 @@ test("Browser suites run in parallel against one complete build without dropping
     expect(workflow.jobs.checks).toEqual({
         name: "Build",
         if: "always() && (github.event_name != 'pull_request' || !github.event.pull_request.draft)",
-        needs: ["build", "test"],
+        needs: ["build", "quality", "test"],
         "runs-on": "ubuntu-latest",
         steps: [
             {
-                name: "Require Generation and All Browsers",
-                run: 'test "$BUILD_RESULT" = success && test "$TEST_RESULT" = success',
+                name: "Require Generation, Quality and All Browsers",
+                run: 'test "$BUILD_RESULT" = success && test "$QUALITY_RESULT" = success && test "$TEST_RESULT" = success',
                 env: {
                     BUILD_RESULT: "${{ needs.build.result }}",
+                    QUALITY_RESULT: "${{ needs.quality.result }}",
                     TEST_RESULT: "${{ needs.test.result }}",
                 },
             },
@@ -251,6 +252,110 @@ test("Browser suites run in parallel against one complete build without dropping
     const report = requireStep(steps, "Upload Playwright Report");
     expect(report.if).toBe("failure()");
     expect(report.with?.name).toBe("playwright-report-${{ matrix.browser }}");
+});
+
+test("Quality checks run independently without racing generation in the same checkout", () => {
+    const workflow = readBuildWorkflow();
+    const quality = requireJob(workflow, "quality");
+    const build = requireJob(workflow, "build");
+    expect(quality.needs).toBeUndefined();
+    expect(build.needs).toBeUndefined();
+    expect(quality.if).toBe(build.if);
+    expect(requireStep(quality.steps, "Checkout").with?.lfs).toBe(true);
+    const commands = [
+        "npm run test:lint",
+        "npm run test:unit",
+        "npm run typecheck",
+        "npm run lint",
+    ];
+    expect(
+        quality.steps.flatMap((step) =>
+            step.run && commands.includes(step.run) ? [step.run] : [],
+        ),
+    ).toEqual(commands);
+    expect(build.steps.some((step) => commands.includes(step.run ?? ""))).toBe(
+        false,
+    );
+    expect(requireStep(quality.steps, "Verify Workflow Dependencies").run).toBe(
+        "gh extension install github/gh-actions-lock --pin v0.4.1\ngh actions-lock --verify\n",
+    );
+});
+
+test("CodeQL scans both historical JS/TS categories without a redundant build", () => {
+    const workflow = workflowSchema.parse(
+        parse(readFileSync(".github/workflows/codeql-analysis.yml", "utf8")),
+    );
+    const analyze = workflow.jobs.analyze;
+    expect(analyze?.strategy).toEqual({
+        "fail-fast": false,
+        matrix: { language: ["javascript", "javascript-typescript"] },
+    });
+    const steps = analyze?.steps ?? [];
+    expect(requireStep(steps, "Initialize CodeQL")).toMatchObject({
+        uses: "github/codeql-action/init@v4.39.3",
+        with: {
+            languages: "${{ matrix.language }}",
+            "build-mode": "none",
+        },
+    });
+    expect(requireStep(steps, "Perform CodeQL Analysis")).toMatchObject({
+        uses: "github/codeql-action/analyze@v4.39.3",
+        with: {
+            category:
+                ".github/workflows/codeql-analysis.yml:analyze/language:${{ matrix.language }}",
+        },
+    });
+    expect(steps.some((step) => step.name === "Autobuild")).toBe(false);
+});
+
+test("Social image cache invalidates external renderer inputs without a stale fallback", () => {
+    const build = requireJob(readBuildWorkflow(), "build");
+    const cache = requireStep(build.steps, "Cache Social Images");
+    expect(cache.with?.path).toBe("node_modules/.cache/nuxt-seo/og-image");
+    const prefix =
+        "og-v2-${{ runner.os }}-${{ runner.arch }}-${{ steps.node.outputs.node-version }}-${{ hashFiles('package-lock.json', 'nuxt.config.ts', 'server/plugins/og-title-lines.ts', 'server/utils/og-title-lines.ts', 'public/images/hero/**', 'public/images/author/**', 'node_modules/@fontsource/audiowide/files/**') }}-";
+    expect(cache.with?.key).toBe(`${prefix}\${{ github.sha }}`);
+    expect(cache.with?.["restore-keys"]).toBe(`${prefix}\n`);
+    expect(build.steps.indexOf(cache)).toBeGreaterThan(
+        build.steps.indexOf(requireStep(build.steps, "NPM Install")),
+    );
+    expect(build.steps.indexOf(cache)).toBeLessThan(
+        build.steps.indexOf(requireStep(build.steps, "NPM Build")),
+    );
+});
+
+test("Only validated public snapshots are cached before every Nuxt prepare", () => {
+    const workflow = readBuildWorkflow();
+    const caches = ["build", "quality", "test"].map((name) => {
+        const job = requireJob(workflow, name);
+        const cache = requireStep(job.steps, "Cache Public API Snapshots");
+        expect(job.steps.indexOf(cache)).toBeLessThan(
+            job.steps.indexOf(requireStep(job.steps, "NPM Install")),
+        );
+        expect(cache.uses).toBe("actions/cache@v6.1.0");
+        expect(cache.with?.path?.split("\n").filter(Boolean)).toEqual([
+            ".data/blog-comments.json",
+            ".data/blog-portfolio.json",
+            ".data/blog-nuget.json",
+            ".data/blog-github-watchers.json",
+        ]);
+        expect(cache.with?.key).toContain("'modules/blog-content/**'");
+        expect(cache.with?.key).toContain("'site.json'");
+        expect(cache.with?.key).toContain("'content/portfolio/**'");
+        expect(cache.with?.key).toContain(
+            "${{ github.run_id }}-${{ github.run_attempt }}",
+        );
+        expect(cache.with?.["restore-keys"]).toBe(
+            `${cache.with?.key?.replace(
+                "${{ github.run_id }}-${{ github.run_attempt }}",
+                "",
+            )}\n`,
+        );
+        expect(requireStep(job.steps, "NPM Install").run).toBe("npm ci");
+        return cache;
+    });
+    expect(caches[1]).toEqual(caches[0]);
+    expect(caches[2]).toEqual(caches[0]);
 });
 
 test("Firefox uses a version-matched Playwright image without runtime dependency installation", () => {

@@ -1,5 +1,5 @@
 import type { E2EFixtures } from "./fixtures";
-import { expect, test } from "./fixtures";
+import { expect, test as base } from "./fixtures";
 import { load } from "cheerio";
 import { commentSchema, type GitHubComment } from "../../shared/utils/comments";
 import {
@@ -11,6 +11,14 @@ const postPath =
   "/optimally-configuring-open-telemetry-tracing-for-asp-net-core/";
 const commentsPath =
   "**/api.github.com/repos/RehanSaeed/rehansaeed.github.io/issues/607/comments*";
+const test = base.extend({
+  page: async ({ page }, use) => {
+    await page.route(/^https:\/\/webmention\.io\/api\/mentions\?/, (route) =>
+      route.fulfill({ json: { links: [] } }),
+    );
+    await use(page);
+  },
+});
 const owner: GitHubComment = {
   id: 987654321,
   html_url:

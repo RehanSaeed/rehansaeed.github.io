@@ -329,7 +329,7 @@ test.describe("Icon areas", () => {
     mobile: { width: 375, height: 800 },
   })) {
     for (const colorScheme of ["light", "dark"] as const) {
-      test(`${device} ${colorScheme}`, async ({ page }) => {
+      test(`${device} ${colorScheme}`, async ({ page }, testInfo) => {
         test.setTimeout(90_000);
         await page.setViewportSize(viewport);
         await page.emulateMedia({ colorScheme });
@@ -342,7 +342,11 @@ test.describe("Icon areas", () => {
             "data-theme",
             colorScheme,
           );
-          await capture(page, `${name}-${device}-${colorScheme}`, target);
+          await capture(
+            page,
+            `${name}-${device}-${colorScheme}-${testInfo.project.name}-${testInfo.repeatEachIndex}`,
+            target,
+          );
         };
 
         await page.goto("/");

@@ -114,34 +114,35 @@ export const getAnalyticsEvents = (page: Page): Promise<AnalyticsEvent[]> =>
     );
   });
 
-export const test = base.extend<{ analytics: void }>({
-  analytics: [
-    async ({ page }, use) => {
-      await page.route(
-        (url) => url.protocol === "https:" && url.hostname !== "rehansaeed.com",
-        (route) =>
-          route.request().resourceType() === "image" ||
-          route.request().resourceType() === "document"
-            ? route.fulfill({ contentType: "text/plain", body: "" })
-            : route.continue(),
-      );
-      await page.route("**/www.google-analytics.com/analytics.js", (route) =>
-        route.fulfill({
-          contentType: "text/javascript",
-          body: universalAnalyticsStub,
-        }),
-      );
-      await page.route("**/www.googletagmanager.com/**", (route) =>
-        route.fulfill({ contentType: "text/javascript", body: "" }),
-      );
-      await page.route(
-        /(google-analytics\.com|analytics\.google\.com)\/(g\/)?collect/,
-        (route) => route.fulfill({ status: 204 }),
-      );
-      await use();
-    },
-    { auto: true },
-  ],
+export const test = base.extend({
+  page: async ({ page, baseURL }, use) => {
+    const origin = baseURL ? new URL(baseURL).origin : undefined;
+    await page.route(
+      (url) =>
+        url.protocol === "https:" &&
+        url.origin !== origin &&
+        url.hostname !== "rehansaeed.com",
+      (route) =>
+        route.request().resourceType() === "image" ||
+        route.request().resourceType() === "document"
+          ? route.fulfill({ contentType: "text/plain", body: "" })
+          : route.continue(),
+    );
+    await page.route("**/www.google-analytics.com/analytics.js", (route) =>
+      route.fulfill({
+        contentType: "text/javascript",
+        body: universalAnalyticsStub,
+      }),
+    );
+    await page.route("**/www.googletagmanager.com/**", (route) =>
+      route.fulfill({ contentType: "text/javascript", body: "" }),
+    );
+    await page.route(
+      /(google-analytics\.com|analytics\.google\.com)\/(g\/)?collect/,
+      (route) => route.fulfill({ status: 204 }),
+    );
+    await use(page);
+  },
 });
 
 export { expect };
