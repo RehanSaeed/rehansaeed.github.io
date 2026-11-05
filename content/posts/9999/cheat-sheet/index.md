@@ -262,8 +262,6 @@ To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>`
 
 ## Embed Videos
 
-Use `<video>` on its own when a visible caption is not needed. Keep any required creator credit and source elsewhere in the article; the fallback link is not visible in browsers that support video.
-
 ```html
 <video
   src="/videos/threeui-demonstration-960x720.mp4"
