@@ -266,7 +266,7 @@ Put the video in `public/videos/` and reference it as `/videos/...`. MP4 files a
 
 `controls` provides native playback controls, `playsinline` requests inline playback on mobile, and `preload="metadata"` requests metadata without eagerly downloading the whole video. The accessible name describes the video, and the inner link is a fallback for browsers without video support.
 
-## Video without a Caption
+## Embed Videos
 
 Use `<video>` on its own when a visible caption is not needed. Keep any required creator credit and source elsewhere in the article; the fallback link is not visible in browsers that support video.
 
