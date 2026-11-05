@@ -1,8 +1,4 @@
 img {
   display: block;
   block-size: auto;
-
-  &:not(.prose-image__image) {
-    inline-size: 100%;
-  }
 }
