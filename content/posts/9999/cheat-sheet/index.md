@@ -240,9 +240,7 @@ flowchart TD
 
 ![Code](./images/Code-1600x900.jpg)
 
-## Images with Captions
-
-Wrap the Markdown image in `<figure>` and put a `<figcaption>` after it. Keep the blank lines around the Markdown image so it is parsed as Markdown rather than HTML:
+To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>` after it. Keep the blank lines around the Markdown image so it is parsed as Markdown rather than HTML:
 
 ```markdown
 <figure>
