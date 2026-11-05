@@ -88,7 +88,9 @@ Sometimes, I'm not even sure what I want but want something to look at and try a
 
 Telling agents to use [Three.js](https://threejs.org/) to build amazing interactive 3D visuals for a page seems to be all the rage at the moment. The agents are very good at it, and I've been testing it out.
 
-<x-post post-id="2090817187900780961"></x-post>
+<video src="/videos/threeui-demonstration-960x720.mp4" controls playsinline preload="metadata" width="960" height="720" aria-label="ThreeUI demonstration of interactive Three.js components and landing pages">
+  <a href="https://x.com/MengTo/status/2090817187900780961/video/1">Watch the ThreeUI demonstration on X.</a>
+</video>
 
 [Watch the ThreeUI demonstration on X.](https://x.com/MengTo/status/2090817187900780961/video/1)
 
