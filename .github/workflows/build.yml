@@ -64,9 +64,9 @@ jobs:
         uses: actions/cache@v6.1.0
         with:
           path: node_modules/.cache/nuxt-seo/og-image
-          key: og-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
+          key: og-v2-${{ runner.os }}-${{ runner.arch }}-${{ steps.node.outputs.node-version }}-${{ hashFiles('package-lock.json', 'nuxt.config.ts', 'server/plugins/og-title-lines.ts', 'server/utils/og-title-lines.ts', 'public/images/hero/**', 'public/images/author/**', 'node_modules/@fontsource/audiowide/files/**') }}-${{ github.sha }}
           restore-keys: |
-            og-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
+            og-v2-${{ runner.os }}-${{ runner.arch }}-${{ steps.node.outputs.node-version }}-${{ hashFiles('package-lock.json', 'nuxt.config.ts', 'server/plugins/og-title-lines.ts', 'server/utils/og-title-lines.ts', 'public/images/hero/**', 'public/images/author/**', 'node_modules/@fontsource/audiowide/files/**') }}-
       - name: "Restore Previous Deployment Assets"
         uses: actions/cache/restore@v6.1.0
         with:

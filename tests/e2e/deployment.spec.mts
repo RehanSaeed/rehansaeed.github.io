@@ -308,6 +308,22 @@ test("CodeQL scans both historical JS/TS categories without a redundant build", 
     expect(steps.some((step) => step.name === "Autobuild")).toBe(false);
 });
 
+test("Social image cache invalidates external renderer inputs without a stale fallback", () => {
+    const build = requireJob(readBuildWorkflow(), "build");
+    const cache = requireStep(build.steps, "Cache Social Images");
+    expect(cache.with?.path).toBe("node_modules/.cache/nuxt-seo/og-image");
+    const prefix =
+        "og-v2-${{ runner.os }}-${{ runner.arch }}-${{ steps.node.outputs.node-version }}-${{ hashFiles('package-lock.json', 'nuxt.config.ts', 'server/plugins/og-title-lines.ts', 'server/utils/og-title-lines.ts', 'public/images/hero/**', 'public/images/author/**', 'node_modules/@fontsource/audiowide/files/**') }}-";
+    expect(cache.with?.key).toBe(`${prefix}\${{ github.sha }}`);
+    expect(cache.with?.["restore-keys"]).toBe(`${prefix}\n`);
+    expect(build.steps.indexOf(cache)).toBeGreaterThan(
+        build.steps.indexOf(requireStep(build.steps, "NPM Install")),
+    );
+    expect(build.steps.indexOf(cache)).toBeLessThan(
+        build.steps.indexOf(requireStep(build.steps, "NPM Build")),
+    );
+});
+
 test("Only validated public snapshots are cached before every Nuxt prepare", () => {
     const workflow = readBuildWorkflow();
     const caches = ["build", "quality", "test"].map((name) => {
