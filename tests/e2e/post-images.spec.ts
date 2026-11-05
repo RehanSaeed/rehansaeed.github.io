@@ -20,11 +20,16 @@ for (const width of [1280, 375, 320]) {
     const image = page.locator(".post__image-inset img");
     await expect(image).toBeVisible();
     await image.scrollIntoViewIfNeeded();
-    await image.evaluate(async (element) => {
-      if (element instanceof HTMLImageElement) {
-        await element.decode();
-      }
-    });
+    await expect
+      .poll(() =>
+        image.evaluate(
+          (element) =>
+            element instanceof HTMLImageElement &&
+            element.complete &&
+            element.naturalWidth > 0,
+        ),
+      )
+      .toBe(true);
 
     for (const theme of ["light", "dark"]) {
       await page.evaluate((value) => {
@@ -79,11 +84,16 @@ for (const width of [1280, 375, 320]) {
 
     for (const image of await images.all()) {
       await image.scrollIntoViewIfNeeded();
-      await image.evaluate(async (element) => {
-        if (element instanceof HTMLImageElement) {
-          await element.decode();
-        }
-      });
+      await expect
+        .poll(() =>
+          image.evaluate(
+            (element) =>
+              element instanceof HTMLImageElement &&
+              element.complete &&
+              element.naturalWidth > 0,
+          ),
+        )
+        .toBe(true);
       await expect(image).toHaveAttribute("alt", /Currency Converter Pro/);
       for (const theme of ["light", "dark"]) {
         await page.evaluate((value) => {
@@ -123,11 +133,16 @@ test("Image captions stay close to the image with space after the caption", asyn
   });
   const image = figure.locator("img");
   await image.scrollIntoViewIfNeeded();
-  await image.evaluate(async (element) => {
-    if (element instanceof HTMLImageElement) {
-      await element.decode();
-    }
-  });
+  await expect
+    .poll(() =>
+      image.evaluate(
+        (element) =>
+          element instanceof HTMLImageElement &&
+          element.complete &&
+          element.naturalWidth > 0,
+      ),
+    )
+    .toBe(true);
 
   for (const width of [1280, 640, 375]) {
     await page.setViewportSize({ width, height: 900 });
