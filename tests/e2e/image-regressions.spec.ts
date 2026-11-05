@@ -78,12 +78,15 @@ test.describe("All-pages audit regressions", () => {
           ),
         ),
       );
-    const urls = readFileSync(
-      join(process.cwd(), "tests", "parity", "urls.txt"),
-      "utf8",
-    )
-      .trim()
-      .split(/\r?\n/);
+    const urls = [
+      ...readFileSync(
+        join(process.cwd(), "tests", "parity", "urls.txt"),
+        "utf8",
+      )
+        .trim()
+        .split(/\r?\n/),
+      "/ai-learnings-from-upgrading-my-blog/",
+    ];
     let images = 0;
     let posts = 0;
     for (const path of urls) {
@@ -113,8 +116,8 @@ test.describe("All-pages audit regressions", () => {
         images++;
       }
     }
-    expect(images).toBe(178);
-    expect(posts).toBe(42);
+    expect(images).toBe(183);
+    expect(posts).toBe(43);
     return true;
   }
 

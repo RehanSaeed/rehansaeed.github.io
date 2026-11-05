@@ -240,6 +240,72 @@ flowchart TD
 
 ![Code](./images/Code-1600x900.jpg)
 
+To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>` after it. Keep the blank lines around the Markdown image so it is parsed as Markdown rather than HTML:
+
+```markdown
+<figure>
+
+![Code](./images/Code-1600x900.jpg)
+
+<figcaption>A code-themed illustration.</figcaption>
+</figure>
+```
+
+<figure>
+
+![Code](./images/Code-1600x900.jpg)
+
+<figcaption>A code-themed illustration.</figcaption>
+</figure>
+
+# Embed Local Video
+
+Standard Markdown does not have video-player syntax. Use HTML to embed a local MP4.
+
+Put the video in `public/videos/` and reference it as `/videos/...`. MP4 files are tracked with Git LFS. Set the width and height to the video's actual dimensions; the player shrinks to fit smaller screens.
+
+`controls` provides native playback controls, `playsinline` requests inline playback on mobile, and `preload="metadata"` requests metadata without eagerly downloading the whole video. The accessible name describes the video, and the inner link is a fallback for browsers without video support.
+
+## Embed Videos
+
+Use `<video>` on its own when a visible caption is not needed. Keep any required creator credit and source elsewhere in the article; the fallback link is not visible in browsers that support video.
+
+```html
+<video
+  src="/videos/threeui-demonstration-960x720.mp4"
+  controls
+  playsinline
+  preload="metadata"
+  width="960"
+  height="720"
+  aria-label="ThreeUI demonstration of interactive Three.js components and landing pages">
+  <a href="https://example.com/">Watch the video demonstration.</a>
+</video>
+```
+
+Wrap the player in `<figure>` and add `<figcaption>` after it for visible context, creator credit and the original source:
+
+```html
+<figure>
+  <video
+    src="/videos/threeui-demonstration-960x720.mp4"
+    controls
+    playsinline
+    preload="metadata"
+    width="960"
+    height="720"
+    aria-label="ThreeUI demonstration of interactive Three.js components and landing pages">
+    <a href="https://example.com/">Watch the video demonstration.</a>
+  </video>
+  <figcaption>
+    Video demonstration by <a href="https://example.com/">Example Author</a>.
+    <a href="https://example.com/">Source</a>.
+  </figcaption>
+</figure>
+```
+
+The caption credits the creator and links to the source; it is italicised and has spacing below it.
+
 # Embed Youtube Video
 
 https://www.youtube.com/watch?v=PGM_uBy99GA

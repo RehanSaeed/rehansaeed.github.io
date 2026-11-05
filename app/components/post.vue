@@ -109,6 +109,21 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
     max-inline-size: none;
   }
 
+  .post__image-inset img {
+    inline-size: 311px;
+    margin-inline: auto;
+    max-inline-size: 100%;
+  }
+
+  figure > p:has(+ figcaption) {
+    margin-block-end: var(--global-space-fixed-2);
+  }
+
+  figcaption {
+    font-style: italic;
+    margin-block-end: var(--global-space-fixed-5);
+  }
+
   .mermaid {
     svg {
       margin-inline: auto;
