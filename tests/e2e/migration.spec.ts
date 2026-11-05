@@ -289,9 +289,14 @@ test.describe("Migration completion", () => {
     await expect(images).toHaveCount(10);
     await expect(images.first()).toHaveAttribute("loading", "eager");
     await expect(images.first()).toHaveAttribute("fetchpriority", "high");
-    await expect(images.nth(1)).toHaveAttribute("loading", "lazy");
-    for (const image of await images.all()) {
+    const cards = await images.all();
+    for (const image of cards) {
+      await expect(image).toHaveAttribute("width", /^[1-9]\d*$/);
       await expect(image).toHaveAttribute("height", /^[1-9]\d*$/);
+    }
+    for (const image of cards.slice(1)) {
+      await expect(image).toHaveAttribute("loading", "lazy");
+      await expect(image).not.toHaveAttribute("fetchpriority", "high");
     }
   });
 

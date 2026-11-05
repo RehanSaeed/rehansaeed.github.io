@@ -370,6 +370,11 @@ for (const width of [375, 1280]) {
       expect(heroBox!.width / heroBox!.height).toBeCloseTo(1600 / 900, 2);
       for (const card of await cards.all()) {
         await card.scrollIntoViewIfNeeded();
+        for (const badge of await card
+          .locator(".portfolio-card__badge")
+          .all()) {
+          await expect(badge).toHaveJSProperty("naturalHeight", 20);
+        }
         const titleLink = card.locator(".portfolio-card__title a");
         await expect(titleLink).toHaveAttribute("href", /.+/);
         const permalink = (await titleLink.getAttribute("href"))!;

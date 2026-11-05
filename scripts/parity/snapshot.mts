@@ -4,6 +4,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { parseArgs } from "node:util";
 import * as cheerio from "cheerio";
+import { z } from "zod";
 
 const { values: args } = parseArgs({
     options: {
@@ -13,6 +14,7 @@ const { values: args } = parseArgs({
         concurrency: { type: "string", default: "8" },
     },
 });
+const concurrency = z.coerce.number().int().positive().parse(args.concurrency);
 
 const base = args.base.replace(/\/$/, "");
 const origin = new URL(base).origin;
@@ -174,26 +176,31 @@ const summariseAtom = (xml: string) => {
 };
 
 const summariseJsonFeed = (body: string) => {
-    const feed = JSON.parse(body) as {
-        version: string;
-        title: string;
-        home_page_url: string;
-        feed_url: string;
-        items?: {
-            id: string;
-            url: string;
-            title: string;
-            date_published: string;
-            date_modified?: string;
-            tags?: string[];
-        }[];
-    };
+    const parsed: unknown = JSON.parse(body);
+    const feed = z
+        .object({
+            version: z.string(),
+            title: z.string(),
+            home_page_url: z.string(),
+            feed_url: z.string(),
+            items: z.array(
+                z.object({
+                    id: z.string(),
+                    url: z.string(),
+                    title: z.string(),
+                    date_published: z.string(),
+                    date_modified: z.string().optional(),
+                    tags: z.array(z.string()).optional(),
+                }),
+            ),
+        })
+        .parse(parsed);
     return {
         version: feed.version,
         title: feed.title,
         home_page_url: norm(feed.home_page_url),
         feed_url: norm(feed.feed_url),
-        items: (feed.items ?? []).map((item) => ({
+        items: feed.items.map((item) => ({
             id: norm(item.id),
             url: norm(item.url),
             title: item.title,
@@ -251,7 +258,7 @@ const main = async () => {
         )
     > = {};
     let done = 0;
-    await pool(urls, Number(args.concurrency), async (path) => {
+    await pool(urls, concurrency, async (path) => {
         const response = await get(path);
         pages[path] =
             response.status === 200

@@ -1,25 +1,92 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { lstat, readFile, readdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import type { load as loadHtml } from "cheerio";
-import type siteConfiguration from "../site.json";
 
-interface Deployment {
+type Deployment = {
     revision: string;
-    files: {
+    files: ({
         path: string;
         status: number;
-        contains?: string[];
-        sha256?: string;
-    }[];
-}
-
-const site = JSON.parse(
-    await readFile(new URL("../site.json", import.meta.url), "utf8"),
-) as typeof siteConfiguration;
+    } & ({ contains: string[] } | { sha256: string }))[];
+};
+// Deploy verifies downloaded artifacts without installing npm dependencies.
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+    value !== null && typeof value === "object" && !Array.isArray(value);
+const record = (value: unknown): Record<string, unknown> => {
+    assert(isRecord(value), "Expected a JSON object.");
+    return value;
+};
+const deploymentRevision = (value: unknown) => {
+    const { revision } = record(value);
+    assert(
+        typeof revision === "string" && /^[a-f0-9]{40}$/.test(revision),
+        "Invalid deployment revision.",
+    );
+    return revision;
+};
+const parseDeployment = (value: unknown): Deployment => {
+    const { files } = record(value);
+    assert(
+        Array.isArray(files) && files.length > 0,
+        "Deployment must verify at least one resource.",
+    );
+    return {
+        revision: deploymentRevision(value),
+        files: files.map((item: unknown) => {
+            const { path, status, contains, sha256 } = record(item);
+            assert(
+                typeof path === "string" && path.startsWith("/"),
+                "Invalid deployment resource path.",
+            );
+            assert(
+                typeof status === "number" &&
+                    Number.isInteger(status) &&
+                    status >= 100 &&
+                    status <= 599,
+                "Invalid deployment resource status.",
+            );
+            if (contains !== undefined) {
+                assert(
+                    Array.isArray(contains) && contains.length > 0,
+                    "Deployment HTML must have nonempty verification signals.",
+                );
+                return {
+                    path,
+                    status,
+                    contains: contains.map((signal: unknown) => {
+                        assert(typeof signal === "string" && signal.length > 0);
+                        return signal;
+                    }),
+                };
+            }
+            assert(
+                typeof sha256 === "string" && /^[a-f0-9]{64}$/.test(sha256),
+                "Invalid deployment resource digest.",
+            );
+            return { path, status, sha256 };
+        }),
+    };
+};
+// Native JSON imports create filename-less CJS cache entries in Node 24, breaking Playwright collection.
+const site = (() => {
+    const body: unknown = JSON.parse(
+        readFileSync(new URL("../site.json", import.meta.url), "utf8"),
+    );
+    const { url, repository } = record(body);
+    const { owner, name } = record(repository);
+    assert(
+        typeof url === "string" &&
+            typeof owner === "string" &&
+            typeof name === "string",
+        "Invalid site URL or repository settings.",
+    );
+    return { url, repository: `${owner}/${name}` };
+})();
 const origin = new URL(site.url).origin;
 const domain = new URL(origin).hostname;
 const digest = (body: string | Buffer) =>
@@ -269,12 +336,13 @@ export function checkCsp(policies: string[], analyticsId?: string) {
 
 async function preflight() {
     const { load } = await import("cheerio");
+    const { z } = await import("zod");
     assert(
         process.env.GITHUB_TOKEN,
         "GITHUB_TOKEN is required for the read-only Pages settings check.",
     );
     const response = await fetch(
-        `https://api.github.com/repos/${site.repository.owner}/${site.repository.name}/pages`,
+        `https://api.github.com/repos/${site.repository}/pages`,
         {
             headers: {
                 Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
@@ -288,8 +356,14 @@ async function preflight() {
         response.ok,
         `Cannot inspect Pages settings: HTTP ${response.status}`,
     );
+    const settings: unknown = await response.json();
     checkPagesSettings(
-        (await response.json()) as Parameters<typeof checkPagesSettings>[0],
+        z
+            .object({
+                build_type: z.string(),
+                cname: z.string().nullable(),
+            })
+            .parse(settings),
     );
     const live = await fetch(origin, {
         redirect: "manual",
@@ -398,12 +472,22 @@ function htmlSignals(body: string, load: typeof loadHtml) {
     ];
 }
 
+// Allow ten minutes for Pages/CDN propagation, still checking canonical URLs.
 export async function verifyPublished(
     base: string,
     deployment: Deployment,
-    attempts = 12,
+    attempts = 66,
     delay = 10_000,
 ) {
+    assert(
+        Number.isSafeInteger(attempts) && attempts > 0,
+        "Published-site verification requires a positive integer attempt count.",
+    );
+    assert(
+        Number.isFinite(delay) && delay >= 0,
+        "Published-site verification delay must be finite and nonnegative.",
+    );
+    deployment = parseDeployment(deployment);
     const deadline = Date.now() + Math.max(30_000, attempts * delay);
     const signal = () => {
         const remaining = deadline - Date.now();
@@ -421,8 +505,9 @@ export async function verifyPublished(
                 200,
                 "Deployment marker is unavailable",
             );
+            const markerBody: unknown = await marker.json();
             assert.equal(
-                ((await marker.json()) as Deployment).revision,
+                deploymentRevision(markerBody),
                 deployment.revision,
                 "The custom domain is still serving another deployment",
             );
@@ -438,7 +523,7 @@ export async function verifyPublished(
                     `Unexpected HTTP status: ${file.path}`,
                 );
                 const body = Buffer.from(await response.arrayBuffer());
-                if (file.contains) {
+                if ("contains" in file) {
                     for (const signal of file.contains) {
                         assert(
                             body.toString().includes(signal),
@@ -449,7 +534,18 @@ export async function verifyPublished(
                     assert.equal(
                         digest(body),
                         file.sha256,
-                        `Stale or modified deployed resource: ${file.path}`,
+                        `Stale or modified deployed resource: ${file.path} (${[
+                            "cache-control",
+                            "age",
+                            "etag",
+                            "cf-cache-status",
+                            "x-cache",
+                        ]
+                            .map(
+                                (name) =>
+                                    `${name}=${response.headers.get(name) ?? "unavailable"}`,
+                            )
+                            .join(", ")})`,
                     );
                 }
             }
@@ -483,9 +579,10 @@ async function main() {
     } else if (mode === "preflight") {
         await preflight();
     } else if (mode === "verify") {
-        const deployment = JSON.parse(
+        const deploymentBody: unknown = JSON.parse(
             await readFile(join(directory, "deployment.json"), "utf8"),
-        ) as Deployment;
+        );
+        const deployment = parseDeployment(deploymentBody);
         assert.equal(
             deployment.revision,
             process.env.GITHUB_SHA ?? deployment.revision,

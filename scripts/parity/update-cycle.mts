@@ -1,10 +1,9 @@
 import assert from "node:assert/strict";
-import { spawn, type ChildProcessByStdio } from "node:child_process";
-import type { Readable } from "node:stream";
-import { once } from "node:events";
 import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { chromium, expect, type Page } from "@playwright/test";
+import { startPreviewServer } from "../preview-server.mts";
+import { assertNoPageErrors } from "./browser-checks.mts";
 
 interface NuxtRoot extends Element {
     __vue_app__?: {
@@ -23,28 +22,10 @@ const previous = process.argv[2];
 assert(previous, "Usage: npm run parity:update-cycle -- <previous-Nuxt-dist>");
 const port = process.env.PORT ?? "8093";
 const origin = `http://localhost:${port}`;
-let server: ChildProcessByStdio<null, Readable, null> | undefined;
-async function start(root: string) {
-    server = spawn(process.execPath, ["scripts/serve.mts", root], {
-        env: { ...process.env, PORT: port },
-        stdio: ["ignore", "pipe", "inherit"],
-    });
-    await Promise.race([
-        once(server.stdout, "data"),
-        once(server, "exit").then(([code]) => {
-            throw new Error(`Update-test static server exited: ${code}`);
-        }),
-    ]);
-    assert.equal((await fetch(origin)).status, 200);
-}
-async function stop() {
-    if (!server || server.exitCode !== null) {
-        return;
-    }
-    const stopped = once(server, "exit");
-    server.kill();
-    await stopped;
-}
+let stop: (() => Promise<void>) | undefined;
+const start = async (root: string) => {
+    stop = await startPreviewServer(root, port);
+};
 const oldManifest = JSON.parse(
     await readFile(join(previous, "_nuxt/builds/latest.json"), "utf8"),
 ) as { id: string };
@@ -80,14 +61,16 @@ const browser = await chromium.launch({
 try {
     const context = await browser.newContext({ serviceWorkers: "allow" });
     context.setDefaultTimeout(180_000);
+    context.setDefaultNavigationTimeout(180_000);
+    const errors: Error[] = [];
+    context.on("page", (target) => {
+        target.on("pageerror", (error) => errors.push(error));
+    });
     await context.route(
         (url) => url.origin !== origin,
         (route) => route.fulfill({ contentType: "text/plain", body: "" }),
     );
     const page = await context.newPage();
-    page.on("pageerror", (cause) => {
-        console.error("Update-test error:", cause);
-    });
     await start(previous);
     console.log("Installing the previous build's real service worker.");
     await page.goto(origin, { waitUntil: "domcontentloaded" });
@@ -107,7 +90,7 @@ try {
                     .globalProperties.$nuxt.$config.app.buildId,
         );
     assert.equal(await buildId(page), oldManifest.id);
-    await stop();
+    await stop?.();
     await start("dist");
     console.log("Checking for the next build's worker.");
     await page.evaluate(async () => {
@@ -190,10 +173,14 @@ try {
     );
     await accepted.locator(".post__content").waitFor();
     await context.close();
+    assertNoPageErrors(errors);
     console.log(
         `Verified package-owned registration, waiting update, Later, activation, reload, offline navigation and ${retained} retained assets.`,
     );
 } finally {
-    await browser.close();
-    await stop();
+    try {
+        await browser.close();
+    } finally {
+        await stop?.();
+    }
 }

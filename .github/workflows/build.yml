@@ -41,6 +41,17 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+      - name: "Cache Public API Snapshots"
+        uses: actions/cache@v6.1.0
+        with:
+          path: |
+            .data/blog-comments.json
+            .data/blog-portfolio.json
+            .data/blog-nuget.json
+            .data/blog-github-watchers.json
+          key: blog-data-${{ runner.os }}-${{ hashFiles('.nvmrc', 'package-lock.json', 'site.json', 'content.config.ts', 'modules/blog-content/**', 'shared/utils/**', 'content/portfolio/**') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            blog-data-${{ runner.os }}-${{ hashFiles('.nvmrc', 'package-lock.json', 'site.json', 'content.config.ts', 'modules/blog-content/**', 'shared/utils/**', 'content/portfolio/**') }}-
       - name: "NPM Install"
         run: npm ci
         env:
@@ -53,9 +64,9 @@ jobs:
         uses: actions/cache@v6.1.0
         with:
           path: node_modules/.cache/nuxt-seo/og-image
-          key: og-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
+          key: og-v2-${{ runner.os }}-${{ runner.arch }}-${{ steps.node.outputs.node-version }}-${{ hashFiles('package-lock.json', 'nuxt.config.ts', 'server/plugins/og-title-lines.ts', 'server/utils/og-title-lines.ts', 'public/images/hero/**', 'public/images/author/**', 'node_modules/@fontsource/audiowide/files/**') }}-${{ github.sha }}
           restore-keys: |
-            og-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
+            og-v2-${{ runner.os }}-${{ runner.arch }}-${{ steps.node.outputs.node-version }}-${{ hashFiles('package-lock.json', 'nuxt.config.ts', 'server/plugins/og-title-lines.ts', 'server/utils/og-title-lines.ts', 'public/images/hero/**', 'public/images/author/**', 'node_modules/@fontsource/audiowide/files/**') }}-
       - name: "Restore Previous Deployment Assets"
         uses: actions/cache/restore@v6.1.0
         with:
@@ -76,14 +87,6 @@ jobs:
           TZ: UTC
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NUXT_PUBLIC_GOOGLE_ANALYTICS_ID: ${{ vars.GA4_MEASUREMENT_ID }}
-      - name: "Type Check"
-        run: npm run typecheck
-      - name: "Lint"
-        run: npm run lint
-      - name: "Test Lint Configuration"
-        run: npm run test:lint
-      - name: "Test Shared Utilities"
-        run: npm run test:unit
       - name: "Package Browser Test Site"
         run: tar -cf playwright-site.tar dist .data/blog-image-metadata.json
       - name: "Upload Browser Test Site"
@@ -116,6 +119,51 @@ jobs:
           path: dist
           include-hidden-files: true
 
+  quality:
+    name: Quality
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          lfs: true
+      - name: "Verify Workflow Dependencies"
+        run: |
+          gh extension install github/gh-actions-lock --pin v0.4.1
+          gh actions-lock --verify
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: "Setup Node"
+        uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: "Cache Public API Snapshots"
+        uses: actions/cache@v6.1.0
+        with:
+          path: |
+            .data/blog-comments.json
+            .data/blog-portfolio.json
+            .data/blog-nuget.json
+            .data/blog-github-watchers.json
+          key: blog-data-${{ runner.os }}-${{ hashFiles('.nvmrc', 'package-lock.json', 'site.json', 'content.config.ts', 'modules/blog-content/**', 'shared/utils/**', 'content/portfolio/**') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            blog-data-${{ runner.os }}-${{ hashFiles('.nvmrc', 'package-lock.json', 'site.json', 'content.config.ts', 'modules/blog-content/**', 'shared/utils/**', 'content/portfolio/**') }}-
+      - name: "NPM Install"
+        run: npm ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HUSKY: "0"
+      - name: "Test Lint Configuration"
+        run: npm run test:lint
+      - name: "Test Shared Utilities"
+        run: npm run test:unit
+      - name: "Type Check"
+        run: npm run typecheck
+      - name: "Lint"
+        run: npm run lint
+
   test:
     name: Playwright (${{ matrix.browser }})
     needs: build
@@ -141,6 +189,17 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+      - name: "Cache Public API Snapshots"
+        uses: actions/cache@v6.1.0
+        with:
+          path: |
+            .data/blog-comments.json
+            .data/blog-portfolio.json
+            .data/blog-nuget.json
+            .data/blog-github-watchers.json
+          key: blog-data-${{ runner.os }}-${{ hashFiles('.nvmrc', 'package-lock.json', 'site.json', 'content.config.ts', 'modules/blog-content/**', 'shared/utils/**', 'content/portfolio/**') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            blog-data-${{ runner.os }}-${{ hashFiles('.nvmrc', 'package-lock.json', 'site.json', 'content.config.ts', 'modules/blog-content/**', 'shared/utils/**', 'content/portfolio/**') }}-
       - name: "NPM Install"
         run: npm ci
         env:
@@ -169,19 +228,20 @@ jobs:
   checks:
     name: Build
     if: always() && (github.event_name != 'pull_request' || !github.event.pull_request.draft)
-    needs: [build, test]
+    needs: [build, quality, test]
     runs-on: ubuntu-latest
     steps:
-      - name: "Require Generation and All Browsers"
-        run: test "$BUILD_RESULT" = success && test "$TEST_RESULT" = success
+      - name: "Require Generation, Quality and All Browsers"
+        run: test "$BUILD_RESULT" = success && test "$QUALITY_RESULT" = success && test "$TEST_RESULT" = success
         env:
           BUILD_RESULT: ${{ needs.build.result }}
+          QUALITY_RESULT: ${{ needs.quality.result }}
           TEST_RESULT: ${{ needs.test.result }}
 
   deploy:
     name: Deploy
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    needs: [build, test]
+    needs: [build, quality, test]
     runs-on: ubuntu-latest
     concurrency:
       group: pages

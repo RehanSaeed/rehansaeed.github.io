@@ -1,19 +1,37 @@
 import { readdir, readFile } from "node:fs/promises";
 import { join, relative, sep } from "node:path";
 import { parse as parseYaml } from "yaml";
+import { z } from "zod";
 
-export interface FrontMatter {
-  /** Title displayed for this content. */ title: string;
-  /** Path to the content's hero image. */ heroImage: string;
-  /** Stable public URL of the content. */ permalink: string;
-  /** Whether the content is approved for publication. */ published: boolean;
-  /** Tags associated with the content. */ tags?: string[];
-  /** Portfolio category identifying open-source or Microsoft work. */ kind?:
-    "open-source" | "microsoft";
-  /** NuGet packages whose download counts contribute to this entry. */ nugetPackages?: {
-    /** NuGet package identifier. */ id: string;
-  }[];
-}
+const frontMatterSchema = z.looseObject({
+  /** Title displayed for this content. */
+  title: z.string(),
+  /** Path to the content's hero image. */
+  heroImage: z.string(),
+  /** Stable public URL of the content. */
+  permalink: z.string(),
+  /** Whether the content is approved for publication. */
+  published: z.boolean(),
+  /** Tags associated with the content, including empty YAML lists. */
+  tags: z
+    .array(z.string())
+    .nullish()
+    .transform((tags) => tags ?? []),
+  /** Portfolio category identifying open-source or Microsoft work. */
+  kind: z.enum(["open-source", "microsoft"]).optional(),
+  /** NuGet packages whose download counts contribute to this entry. */
+  nugetPackages: z
+    .array(
+      z.looseObject({
+        /** NuGet package identifier. */
+        id: z.string(),
+      }),
+    )
+    .nullish()
+    .transform((packages) => packages ?? []),
+});
+
+export type FrontMatter = z.infer<typeof frontMatterSchema>;
 
 export interface ContentEntry {
   /** Path relative to the content directory, using forward slashes. */
@@ -24,6 +42,25 @@ export interface ContentEntry {
 }
 
 const frontMatterPattern = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/;
+
+const parseFrontMatter = (source: string, path: string): FrontMatter => {
+  let parsed: unknown;
+  try {
+    parsed = parseYaml(source);
+  } catch (error) {
+    throw new Error(`Invalid YAML front matter in content/${path}`, {
+      cause: error,
+    });
+  }
+  const result = frontMatterSchema.safeParse(parsed);
+  if (!result.success) {
+    throw new Error(
+      `Invalid front matter in content/${path}: ${result.error.message}`,
+      { cause: result.error },
+    );
+  }
+  return result.data;
+};
 
 export const stripFrontMatter = (source: string): string =>
   source.replace(frontMatterPattern, "");
@@ -61,7 +98,7 @@ export async function scanContent(contentDir: string): Promise<ContentEntry[]> {
       return {
         path,
         collection: path.startsWith("posts/") ? "posts" : "portfolio",
-        data: parseYaml(match[1]!) as FrontMatter,
+        data: parseFrontMatter(match[1]!, path),
       };
     }),
   );

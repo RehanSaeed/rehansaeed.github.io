@@ -1,18 +1,20 @@
 import { expect, test } from "@playwright/test";
 
+test.beforeEach(async ({ page, baseURL }) => {
+  await page.route(
+    (url) => url.origin !== new URL(baseURL!).origin,
+    (route) =>
+      route.fulfill({
+        status: route.request().isNavigationRequest() ? 200 : 204,
+        contentType: "text/html",
+      }),
+  );
+});
+
 for (const width of [1280, 375, 320]) {
   test(`Small Markdown images stay centred without upscaling at ${width}px`, async ({
     page,
-    baseURL,
   }) => {
-    await page.route(
-      (url) => url.origin !== new URL(baseURL!).origin,
-      (route) =>
-        route.fulfill({
-          status: route.request().isNavigationRequest() ? 200 : 204,
-          contentType: "text/html",
-        }),
-    );
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/ai-learnings-from-upgrading-my-blog/", {
       waitUntil: "domcontentloaded",
@@ -72,16 +74,7 @@ for (const width of [1280, 375, 320]) {
 
   test(`Currency Converter Pro screenshots fit at ${width}px`, async ({
     page,
-    baseURL,
   }) => {
-    await page.route(
-      (url) => url.origin !== new URL(baseURL!).origin,
-      (route) =>
-        route.fulfill({
-          status: route.request().isNavigationRequest() ? 200 : 204,
-          contentType: "text/html",
-        }),
-    );
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/ai-learnings-from-upgrading-my-blog/", {
       waitUntil: "domcontentloaded",
@@ -129,16 +122,7 @@ for (const width of [1280, 375, 320]) {
 
 test("Image captions stay close to the image with space after the caption", async ({
   page,
-  baseURL,
 }) => {
-  await page.route(
-    (url) => url.origin !== new URL(baseURL!).origin,
-    (route) =>
-      route.fulfill({
-        status: route.request().isNavigationRequest() ? 200 : 204,
-        contentType: "text/html",
-      }),
-  );
   await page.goto("/cheat-sheet/", {
     waitUntil: "domcontentloaded",
   });

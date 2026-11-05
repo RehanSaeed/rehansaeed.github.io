@@ -19,29 +19,40 @@ void test("likes and reposts do not require link, reply or timestamp fields", ()
     }
 });
 
-void test("links use their source and verified timestamp without a data URL", () => {
-    const mention = webMentionSchema.parse({
-        id: 2,
-        source: "https://example.com/link",
-        verified_date: "2026-01-01T12:00:00Z",
-        activity: { type: "link" },
-        data: {},
-    });
-    assert.equal(webMentionUrl(mention), "https://example.com/link");
-    assert.equal(webMentionTimestamp(mention), "2026-01-01T12:00:00Z");
+void test("links use their source and verified timestamp with or without a competing data URL", () => {
+    for (const url of [undefined, "https://example.com/not-the-source"]) {
+        const mention = webMentionSchema.parse({
+            id: 2,
+            source: "https://example.com/link",
+            verified_date: "2026-01-01T12:00:00Z",
+            activity: { type: "link" },
+            data: { url },
+        });
+        assert.equal(webMentionUrl(mention), "https://example.com/link");
+        assert.equal(webMentionTimestamp(mention), "2026-01-01T12:00:00Z");
+    }
 });
 
-void test("replies use their data URL and published date without source or verified date", () => {
-    const mention = webMentionSchema.parse({
-        id: 3,
-        activity: { type: "reply" },
-        data: {
-            url: "https://example.com/reply",
-            published: "2026-01-02T12:00:00Z",
+void test("replies prefer their data URL and published date with or without fallback fields", () => {
+    for (const fallback of [
+        {},
+        {
+            source: "https://example.com/not-the-reply",
+            verified_date: "2025-12-01T12:00:00Z",
         },
-    });
-    assert.equal(webMentionUrl(mention), "https://example.com/reply");
-    assert.equal(webMentionTimestamp(mention), "2026-01-02T12:00:00Z");
+    ]) {
+        const mention = webMentionSchema.parse({
+            id: 3,
+            ...fallback,
+            activity: { type: "reply" },
+            data: {
+                url: "https://example.com/reply",
+                published: "2026-01-02T12:00:00Z",
+            },
+        });
+        assert.equal(webMentionUrl(mention), "https://example.com/reply");
+        assert.equal(webMentionTimestamp(mention), "2026-01-02T12:00:00Z");
+    }
 });
 
 void test("a null published date falls back to the verified timestamp", () => {
@@ -54,9 +65,11 @@ void test("a null published date falls back to the verified timestamp", () => {
     assert.equal(webMentionTimestamp(mention), "2026-01-03T12:00:00Z");
 });
 
-void test("links with author photos render as replies and use the data URL", () => {
+void test("links with author photos use the data URL and published timestamp", () => {
     const mention = webMentionSchema.parse({
         id: 7,
+        source: "https://example.com/not-the-photo-link",
+        verified_date: "2025-12-01T12:00:00Z",
         activity: { type: "link" },
         data: {
             url: "https://twitter.com/example/status/123",
@@ -92,4 +105,123 @@ void test("malformed response fields are rejected", () => {
             data: { author: { photo: 42 } },
         }),
     );
+});
+
+void test("non-empty invalid timestamps are rejected for every activity", () => {
+    for (const type of ["like", "repost", "link", "reply"]) {
+        for (const value of ["not-a-date", " "]) {
+            for (const field of ["published", "verified_date"]) {
+                const result = webMentionSchema.safeParse({
+                    id: 8,
+                    activity: { type },
+                    ...(field === "verified_date"
+                        ? { verified_date: value }
+                        : {}),
+                    data: field === "published" ? { published: value } : {},
+                });
+                assert.equal(
+                    result.success,
+                    false,
+                    `${type}: ${field}=${JSON.stringify(value)}`,
+                );
+            }
+        }
+    }
+});
+
+void test("Z, numeric-offset ISO and date-only timestamps remain accepted", () => {
+    for (const type of ["like", "repost", "link", "reply"]) {
+        for (const value of [
+            "2026-01-02T12:00:00Z",
+            "2026-01-02T13:00:00+01:00",
+            "2026-01-02",
+        ]) {
+            for (const field of ["published", "verified_date"]) {
+                const mention = webMentionSchema.parse({
+                    id: 9,
+                    activity: { type },
+                    ...(field === "verified_date"
+                        ? { verified_date: value }
+                        : {}),
+                    data: field === "published" ? { published: value } : {},
+                });
+                assert.equal(
+                    webMentionTimestamp(mention),
+                    value,
+                    `${type}: ${field}`,
+                );
+            }
+        }
+    }
+});
+
+void test("missing and null published timestamps fall back to verified", () => {
+    const verified = "2026-01-03T12:00:00Z";
+    for (const type of ["like", "repost", "link", "reply"]) {
+        for (const data of [{}, { published: null }]) {
+            const mention = webMentionSchema.parse({
+                id: 10,
+                activity: { type },
+                verified_date: verified,
+                data,
+            });
+            assert.equal(webMentionTimestamp(mention), verified);
+        }
+    }
+});
+
+void test("empty published timestamps remain missing even with a verified timestamp", () => {
+    for (const type of ["like", "repost", "link", "reply"]) {
+        const mention = webMentionSchema.parse({
+            id: 11,
+            activity: { type },
+            verified_date: "2026-01-03T12:00:00Z",
+            data: { published: "" },
+        });
+        assert.throws(
+            () => webMentionTimestamp(mention),
+            /has no published or verified timestamp/,
+        );
+    }
+});
+
+void test("direct timestamp calls reject invalid data before rendering", () => {
+    for (const type of ["like", "repost", "link", "reply"]) {
+        for (const value of ["not-a-date", " "]) {
+            for (const field of ["published", "verified_date"]) {
+                assert.throws(
+                    () =>
+                        webMentionTimestamp({
+                            id: 12,
+                            activity: { type },
+                            ...(field === "verified_date"
+                                ? { verified_date: value }
+                                : {}),
+                            data:
+                                field === "published"
+                                    ? { published: value }
+                                    : {},
+                        }),
+                    /Web Mention .*invalid.*timestamp/i,
+                    `${type}: ${field}=${JSON.stringify(value)}`,
+                );
+            }
+        }
+    }
+});
+
+void test("malformed URLs fail for plain links, photo links and replies", () => {
+    for (const activity of [
+        { type: "link", author: undefined },
+        { type: "link", author: { photo: "https://example.com/avatar.png" } },
+        { type: "reply", author: undefined },
+    ]) {
+        const mention = webMentionSchema.parse({
+            id: "invalid-url",
+            source: "not an absolute URL",
+            activity: { type: activity.type },
+            data: { url: "not an absolute URL", author: activity.author },
+        });
+        assert.throws(() => webMentionUrl(mention), /has an invalid URL/);
+    }
 });

@@ -13,6 +13,8 @@
   Keep temporary investigation notes in session storage outside the repository.
 - Keep durable agent-specific guidance in AGENTS.md, not human documentation.
   Do not use AGENTS.md as a task log either.
+- Start every Copilot chat or session name with an emoji, including renames
+  and agent-generated titles, for example `😀 Emoji chat names rule`.
 
 ## Blog and Social Media Authoring
 
@@ -226,6 +228,30 @@ When explicitly asked to help draft an article, follow these guidelines:
   Keep captions, alt text and attribution accurate; do not fabricate screenshots.
 - Do not manually populate generated fields such as `rawbody`, `headings` or
   `timeToRead`.
+
+### Media Captions
+
+- Use native `<figure>` and `<figcaption>` markup to associate media with an
+  explicitly authored visible caption. Put one `<figcaption>` first or last
+  inside its `<figure>`.
+- Write caption text separately from image alternative text. A caption explains
+  the media's context or significance for all readers; alt text provides an
+  accessible alternative to the image. Do not generate captions from alt text
+  or use a caption as a reason to omit an appropriate image alternative.
+- Put optional supplementary credits inside the caption using `<small>` and a
+  source link; omit them when unnecessary. Use `<cite>` only for a creative
+  work's title, not a generic source label or creator attribution.
+- Keep blank lines around Markdown inside an HTML figure so it is parsed
+  normally. Use native HTML rather than MDC component syntax, which is disabled.
+
+```markdown
+<figure>
+
+![Alternative text describing the image](./images/example.png)
+
+<figcaption>A visible caption explaining why the image matters. <small>Credit: <a href="https://example.com/">Source</a></small></figcaption>
+</figure>
+```
 
 ### Hero Image House Style
 
