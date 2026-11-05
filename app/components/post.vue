@@ -109,6 +109,11 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
     max-inline-size: 100%;
   }
 
+  figcaption {
+    font-style: italic;
+    margin-block-end: var(--global-space-fixed-5);
+  }
+
   .mermaid {
     svg {
       margin-inline: auto;

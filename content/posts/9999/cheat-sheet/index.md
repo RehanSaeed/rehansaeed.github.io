@@ -240,6 +240,37 @@ flowchart TD
 
 ![Code](./images/Code-1600x900.jpg)
 
+# Embed Local Video
+
+Standard Markdown does not have video-player syntax. Use HTML to embed a local MP4, with a figure caption for the creator credit and original source:
+
+```html
+<figure>
+  <video
+    src="/videos/threeui-demonstration-960x720.mp4"
+    controls
+    playsinline
+    preload="metadata"
+    width="960"
+    height="720"
+    aria-label="ThreeUI demonstration of interactive Three.js components and landing pages">
+    <a href="https://x.com/MengTo/status/2090817187900780961/video/1"
+      >Watch the ThreeUI demonstration on X.</a
+    >
+  </video>
+  <figcaption>
+    ThreeUI demonstration by <a href="https://mengto.com/">Meng To</a>.
+    <a href="https://x.com/MengTo/status/2090817187900780961/video/1"
+      >Source on X</a
+    >.
+  </figcaption>
+</figure>
+```
+
+Put the video in `public/videos/` and reference it as `/videos/...`. MP4 files are tracked with Git LFS. Set the width and height to the video's actual dimensions; the player shrinks to fit smaller screens.
+
+`controls` provides native playback controls, `playsinline` requests inline playback on mobile, and `preload="metadata"` requests metadata without eagerly downloading the whole video. The accessible name describes the video, and the inner link is a fallback for browsers without video support. The caption credits the creator and links to the source; it is italicised and has spacing below it.
+
 # Embed Youtube Video
 
 https://www.youtube.com/watch?v=PGM_uBy99GA

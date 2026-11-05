@@ -87,6 +87,18 @@ test("The article plays a self-hosted video without loading X's widget", async (
     "https://x.com/MengTo/status/2090817187900780961/video/1",
   );
   const caption = page.locator(".post__content figure figcaption");
+  await expect(caption).toHaveCSS("font-style", "italic");
+  const captionSpacing = await caption.evaluate((element) => {
+    const following = element.closest("figure")!.nextElementSibling!;
+    return {
+      actual:
+        following.getBoundingClientRect().top -
+        element.getBoundingClientRect().bottom,
+      expected: Number.parseFloat(getComputedStyle(following).marginBlockEnd),
+    };
+  });
+  expect(captionSpacing.expected).toBeGreaterThan(0);
+  expect(captionSpacing.actual).toBeCloseTo(captionSpacing.expected, 0);
   await expect(caption.getByRole("link", { name: "Meng To" })).toHaveAttribute(
     "href",
     "https://mengto.com/",
