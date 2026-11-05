@@ -253,7 +253,7 @@ test("Browser suites run in parallel against one complete build without dropping
     );
     expect(offline).toBeGreaterThan(run);
     expect(steps[offline]?.run).toBe(
-        "node scripts/offline-test.mjs ${{ matrix.browser }}",
+        "node scripts/offline-test.mts ${{ matrix.browser }}",
     );
     expect(steps[offline]?.if).toBeUndefined();
     expect(steps.some((step) => step.run === "npm run build")).toBe(false);

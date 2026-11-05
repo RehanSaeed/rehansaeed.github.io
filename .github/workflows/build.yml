@@ -216,7 +216,7 @@ jobs:
         env:
           TZ: UTC
       - name: "Offline Installation and Staging"
-        run: node scripts/offline-test.mjs ${{ matrix.browser }}
+        run: node scripts/offline-test.mts ${{ matrix.browser }}
         env:
           TZ: UTC
       - name: "Upload Playwright Report"

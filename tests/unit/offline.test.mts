@@ -53,7 +53,7 @@ void test("final offline manifest uses deployed bytes and preserves revisioned a
             [
                 fileURLToPath(
                     new URL(
-                        "../../scripts/offline-manifest.mjs",
+                        "../../scripts/offline-manifest.mts",
                         import.meta.url,
                     ),
                 ),
