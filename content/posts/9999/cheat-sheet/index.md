@@ -240,9 +240,58 @@ flowchart TD
 
 ![Code](./images/Code-1600x900.jpg)
 
+## Images with Captions
+
+Wrap the Markdown image in `<figure>` and put a `<figcaption>` after it. Keep the blank lines around the Markdown image so it is parsed as Markdown rather than HTML:
+
+```markdown
+<figure>
+
+![Code](./images/Code-1600x900.jpg)
+
+<figcaption>A code-themed illustration.</figcaption>
+</figure>
+```
+
+<figure>
+
+![Code](./images/Code-1600x900.jpg)
+
+<figcaption>A code-themed illustration.</figcaption>
+</figure>
+
+The image path is relative to the article. Keep meaningful alt text in `![...]` to describe the image; the visible caption adds context or attribution rather than replacing alt text. Use HTML links inside `<figcaption>` for creator credits and sources, for example `<a href="https://example.com/">Source</a>`. Captions are italicised and have spacing below them.
+
 # Embed Local Video
 
-Standard Markdown does not have video-player syntax. Use HTML to embed a local MP4, with a figure caption for the creator credit and original source:
+Standard Markdown does not have video-player syntax. Use HTML to embed a local MP4.
+
+Put the video in `public/videos/` and reference it as `/videos/...`. MP4 files are tracked with Git LFS. Set the width and height to the video's actual dimensions; the player shrinks to fit smaller screens.
+
+`controls` provides native playback controls, `playsinline` requests inline playback on mobile, and `preload="metadata"` requests metadata without eagerly downloading the whole video. The accessible name describes the video, and the inner link is a fallback for browsers without video support.
+
+## Video without a Caption
+
+Use `<video>` on its own when a visible caption is not needed. Keep any required creator credit and source elsewhere in the article; the fallback link is not visible in browsers that support video.
+
+```html
+<video
+  src="/videos/threeui-demonstration-960x720.mp4"
+  controls
+  playsinline
+  preload="metadata"
+  width="960"
+  height="720"
+  aria-label="ThreeUI demonstration of interactive Three.js components and landing pages">
+  <a href="https://x.com/MengTo/status/2090817187900780961/video/1"
+    >Watch the ThreeUI demonstration on X.</a
+  >
+</video>
+```
+
+## Video with a Caption
+
+Wrap the player in `<figure>` and add `<figcaption>` after it for visible context, creator credit and the original source:
 
 ```html
 <figure>
@@ -267,9 +316,7 @@ Standard Markdown does not have video-player syntax. Use HTML to embed a local M
 </figure>
 ```
 
-Put the video in `public/videos/` and reference it as `/videos/...`. MP4 files are tracked with Git LFS. Set the width and height to the video's actual dimensions; the player shrinks to fit smaller screens.
-
-`controls` provides native playback controls, `playsinline` requests inline playback on mobile, and `preload="metadata"` requests metadata without eagerly downloading the whole video. The accessible name describes the video, and the inner link is a fallback for browsers without video support. The caption credits the creator and links to the source; it is italicised and has spacing below it.
+The caption credits the creator and links to the source; it is italicised and has spacing below it.
 
 # Embed Youtube Video
 
