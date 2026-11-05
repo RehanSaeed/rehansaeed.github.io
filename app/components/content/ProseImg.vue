@@ -8,13 +8,11 @@
       :alt="alt"
       :width="width"
       :height="height"
-      :img-attrs="{ class: 'prose-image__image' }"
       :sizes="sizes"
       densities="x1 x2"
       loading="lazy" />
     <NuxtImg
       v-else
-      class="prose-image__image"
       :src="src"
       :alt="alt"
       :width="width"
@@ -41,3 +39,10 @@ const sizes = computed(() => {
   return width > 0 && width < 1280 ? `${width}px` : contentImageSizes;
 });
 </script>
+
+<style lang="scss" scoped>
+.prose-image :deep(img) {
+  // Keep HTML dimensions instead of the global full-width default.
+  inline-size: revert-layer;
+}
+</style>

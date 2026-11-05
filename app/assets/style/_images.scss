@@ -1,4 +1,3 @@
-// :where() keeps element specificity so component classes can still size images.
-img:where(:not(.prose-image__image)) {
+img {
   inline-size: 100%;
 }
