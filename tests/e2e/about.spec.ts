@@ -174,6 +174,20 @@ for (const width of [375, 1280]) {
       ]);
       expect(
         await page
+          .locator(".github-badges img")
+          .evaluateAll((images) =>
+            images.map((image) => [
+              image.getAttribute("width"),
+              image.getAttribute("height"),
+            ]),
+          ),
+      ).toEqual([
+        ["168", "30"],
+        ["165", "30"],
+        ["147", "30"],
+      ]);
+      expect(
+        await page
           .locator(
             ".about__statistics > .github-badges, .about__container > .about__youtube-images, .about__container > .about_awards-images, .about__container > .about__mvp-images",
           )

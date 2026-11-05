@@ -30,7 +30,6 @@
         Microsoft, my opinions are my own. If it’s written in HTML/CSS/JS, C# or
         .NET, I have probably written something using it in anger!
       </p>
-      <u-location-map />
       <p class="about__description">
         I occasionally appear on
         <a :href="youtubeUrl">Youtube</a> and
@@ -290,6 +289,8 @@
           </a>
         </u-tooltip>
       </div>
+      <!-- Keep the map below the initial viewport so its dynamic MapLibre import is deferred until visitors approach it. -->
+      <u-location-map />
       <p class="about__description">
         Do you have questions or comments about my work? Please feel free to
         contact me using any of the links above.
