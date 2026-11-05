@@ -7,6 +7,14 @@ const postPath =
 const api = /^https:\/\/webmention\.io\/api\/mentions\?/;
 const published = "2026-01-02T00:00:00Z";
 
+test.beforeEach(async ({ page }) => {
+  await page.route(
+    "**/api.github.com/repos/RehanSaeed/rehansaeed.github.io/issues/607/comments*",
+    (route) =>
+      route.fulfill({ status: 403, json: { message: "Use saved comments" } }),
+  );
+});
+
 async function verifyAnonymousWebmentions({ page }: Pick<E2EFixtures, "page">) {
   const photo = "https://avatars.githubusercontent.com/webmention-valid.png";
   const broken = "https://avatars.githubusercontent.com/webmention-broken.png";

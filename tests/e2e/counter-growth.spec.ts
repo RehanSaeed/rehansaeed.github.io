@@ -130,10 +130,19 @@ const saveObservations = async (
 test("Portfolio lifetime rates work on the first observation and deduplicate published scope", async ({}, info) => {
   const dir = info.outputPath("growth");
   await saveObservations(dir);
-  const ignored = [false, true].map((published) => ({
+  const ignored: ContentEntry[] = [false, true].map((published) => ({
     ...project,
     data: { ...project.data, published, kind: "microsoft" as const },
   }));
+  ignored.push({
+    ...project,
+    data: {
+      ...project.data,
+      published: false,
+      kind: "open-source",
+      nugetPackages: [{ id: "Unpublished.Package" }],
+    },
+  });
   const result = await portfolioGrowth(dir, [project, project, ...ignored]);
   expect(result.downloads.perSecond).toBe(1);
   expect(result.stars).toEqual({ observedAt: now, perSecond: 1 / 15 });

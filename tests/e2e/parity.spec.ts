@@ -2,7 +2,12 @@ import { globSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parse } from "yaml";
 import { tagPath } from "../../shared/utils/tag";
-import { expect, getAnalyticsEvents, test } from "./fixtures";
+import {
+  delayClientScripts,
+  expect,
+  getAnalyticsEvents,
+  test,
+} from "./fixtures";
 
 type ListingPost = {
   title: string;
@@ -90,6 +95,9 @@ test.describe("Parity", () => {
 
       await page.goto(path);
       await page.waitForLoadState("load");
+      await expect(
+        page.getByRole("button", { name: "Open search", exact: true }),
+      ).toBeEnabled();
 
       expect(errors).toEqual([]);
     });
@@ -175,13 +183,13 @@ test.describe("Parity", () => {
     await page.addInitScript(() => {
       localStorage.setItem("theme", "dark");
     });
-    await page.goto("/", { waitUntil: "domcontentloaded" });
-
-    expect(
-      await page.evaluate(() =>
-        document.documentElement.getAttribute("data-theme"),
-      ),
-    ).toBe("dark");
+    const scripts = await delayClientScripts(page);
+    try {
+      await page.goto("/", { waitUntil: "commit" });
+      await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    } finally {
+      await scripts.dispose();
+    }
   });
 
   test("Theme toggle swaps About page images", async ({ page }) => {

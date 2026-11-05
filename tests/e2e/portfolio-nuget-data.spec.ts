@@ -112,8 +112,13 @@ test("NuGet failures preserve validated saved counts and schedule another refres
   const file = info.outputPath("cache", "blog-nuget.json");
   const saved = cacheSchema.parse(JSON.parse(await readFile(file, "utf8")));
   await writeFile(file, JSON.stringify({ ...saved, updated: 0 }));
-  globalThis.fetch = () => Promise.resolve(new Response(null, { status: 503 }));
+  let calls = 0;
+  globalThis.fetch = () => {
+    calls++;
+    return Promise.resolve(new Response(null, { status: 503 }));
+  };
   expect(await portfolioDownloads(dir, [entry])).toEqual(snapshots);
+  expect(calls).toBe(1);
   expect(
     cacheSchema.parse(JSON.parse(await readFile(file, "utf8"))).updated,
   ).toBe(0);
@@ -140,10 +145,13 @@ test("Missing, malformed and mismatched NuGet counts fail instead of inventing p
 });
 
 test("Repeated case-insensitive package IDs cannot double-count downloads", async ({}, info) => {
-  globalThis.fetch = () =>
-    Promise.reject(
+  let calls = 0;
+  globalThis.fetch = () => {
+    calls++;
+    return Promise.reject(
       new Error("No request should be made for invalid package lists."),
     );
+  };
   await expect(
     portfolioDownloads(info.outputPath("unused"), [
       project("Example.Package", "example.package"),
@@ -152,6 +160,7 @@ test("Repeated case-insensitive package IDs cannot double-count downloads", asyn
   await expect(
     portfolioDownloads(info.outputPath("unused"), [project("../invalid")]),
   ).rejects.toThrow();
+  expect(calls).toBe(0);
 });
 
 test("Projects without packages have a known zero and Microsoft work makes no NuGet requests", async ({}, info) => {
@@ -161,9 +170,15 @@ test("Projects without packages have a known zero and Microsoft work makes no Nu
   const microsoft = project("Do.Not.Fetch");
   microsoft.data.kind = "microsoft";
   microsoft.data.permalink = "https://blogs.windows.com/example/";
-  globalThis.fetch = () =>
-    Promise.reject(new Error("Neither project should make a NuGet request."));
+  let calls = 0;
+  globalThis.fetch = () => {
+    calls++;
+    return Promise.reject(
+      new Error("Neither project should make a NuGet request."),
+    );
+  };
   expect(await portfolioDownloads(dir, [openSource, microsoft])).toEqual({
     [openSource.data.permalink]: { nugetDownloads: 0, nugetPackages: [] },
   });
+  expect(calls).toBe(0);
 });

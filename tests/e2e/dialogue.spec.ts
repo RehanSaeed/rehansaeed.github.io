@@ -15,6 +15,7 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
       async function verifyDialogFocusRestoration({
         page,
       }: Pick<E2EFixtures, "page">) {
+        await page.clock.install();
         // Exercise the share dialog rather than the platform's native share UI.
         await page.addInitScript(() => {
           Object.defineProperty(navigator, "share", { value: undefined });
@@ -44,8 +45,7 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
         await opener.click();
         await expect(dialog).toBeVisible();
         // Check absence after the tooltip's opening delay, not just immediately.
-        // eslint-disable-next-line playwright/no-wait-for-timeout
-        await page.waitForTimeout(350);
+        await page.clock.fastForward(1000);
         await expect(page.getByRole("tooltip")).toHaveCount(0);
         await page.keyboard.press("Escape");
         await expect(closedDialog).toBeHidden();
@@ -54,8 +54,7 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
         await opener.press("Enter");
         await expect(dialog).toBeVisible();
         // Keyboard reopening must not schedule a delayed tooltip either.
-        // eslint-disable-next-line playwright/no-wait-for-timeout
-        await page.waitForTimeout(350);
+        await page.clock.fastForward(1000);
         await expect(page.getByRole("tooltip")).toHaveCount(0);
         const close = dialog.getByRole("button", {
           name: `Close ${title}`,

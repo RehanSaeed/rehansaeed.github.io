@@ -142,8 +142,11 @@ test("Install button waits for browser eligibility and consumes each prompt once
   await button.click();
   await expect(button).toBeHidden();
   await expect(page.locator("html")).toHaveAttribute("data-prompt-calls", "2");
+  expect(await announcePrompt(page)).toBe(true);
+  await expect(button).toBeVisible();
   await page.evaluate(() => window.dispatchEvent(new Event("appinstalled")));
   await expect(button).toBeHidden();
+  await expect(page.locator("html")).toHaveAttribute("data-prompt-calls", "2");
 });
 
 test("Update dismiss control describes its action and removes its tooltip", async ({
@@ -213,8 +216,15 @@ test("Install prompt captured before component mount survives client navigation"
   );
   const button = page.getByRole("button", { name: "Install the app" });
   await expect(button).toBeVisible();
+  await page.evaluate(() => {
+    document.documentElement.dataset.clientNavigation = "original";
+  });
   await page.getByRole("link", { name: "About", exact: true }).first().click();
   await expect(page).toHaveURL(/\/about\/$/);
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-client-navigation",
+    "original",
+  );
   await expect(button).toBeVisible();
   await button.click();
   await expect(page.locator("html")).toHaveAttribute("data-prompt-calls", "1");
@@ -242,6 +252,9 @@ test("Prompt failures are reported and a fresh eligibility event can recover", a
     .toBe(true);
   await announcePrompt(page);
   await expect(button).toBeVisible();
+  await button.click();
+  await expect(button).toBeHidden();
+  await expect(page.locator("html")).toHaveAttribute("data-prompt-calls", "2");
 });
 
 test("Installed display modes do not offer another installation", async ({
