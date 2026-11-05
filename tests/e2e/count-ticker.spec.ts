@@ -366,6 +366,7 @@ test("Ticker styles, statistics and badges preserve dimensions and follow shared
         "utf8",
       ),
     ]);
+
   const styles =
     await test.step("Compile standalone component styles", async () => {
       const compiler = await initAsyncCompiler();
@@ -399,6 +400,7 @@ test("Ticker styles, statistics and badges preserve dimensions and follow shared
         await compiler.dispose();
       }
     });
+
   const badgeSource = `data:image/svg+xml,${encodeURIComponent(
     '<svg xmlns="http://www.w3.org/2000/svg" width="90" height="20"></svg>',
   )}`;
