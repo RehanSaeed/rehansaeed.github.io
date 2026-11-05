@@ -238,6 +238,8 @@ flowchart TD
 
 # Embed Images
 
+Use ordinary Markdown for images. Small images are centred without being enlarged beyond their original dimensions. Large images can fill the wider image area, and all images shrink to fit narrow screens. No HTML wrapper or sizing class is needed.
+
 ![Code](./images/Code-1600x900.jpg)
 
 To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>` after it. Keep the blank lines around the Markdown image so it is parsed as Markdown rather than HTML:
@@ -257,14 +259,6 @@ To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>`
 
 <figcaption>A code-themed illustration.</figcaption>
 </figure>
-
-# Embed Local Video
-
-Standard Markdown does not have video-player syntax. Use HTML to embed a local MP4.
-
-Put the video in `public/videos/` and reference it as `/videos/...`. MP4 files are tracked with Git LFS. Set the width and height to the video's actual dimensions; the player shrinks to fit smaller screens.
-
-`controls` provides native playback controls, `playsinline` requests inline playback on mobile, and `preload="metadata"` requests metadata without eagerly downloading the whole video. The accessible name describes the video, and the inner link is a fallback for browsers without video support.
 
 ## Embed Videos
 
