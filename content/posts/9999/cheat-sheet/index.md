@@ -309,6 +309,23 @@ Wrap the player in `<figure>` and add `<figcaption>` after it for visible contex
 </figure>
 ```
 
+<figure>
+  <video
+    src="/videos/threeui-demonstration-960x720.mp4"
+    controls
+    playsinline
+    preload="metadata"
+    width="960"
+    height="720"
+    aria-label="Captioned ThreeUI demonstration of interactive Three.js components and landing pages">
+    <a href="https://x.com/MengTo/status/2090817187900780961/video/1">Watch the video demonstration.</a>
+  </video>
+  <figcaption>
+    ThreeUI demonstration by <a href="https://mengto.com/">Meng To</a>.
+    <a href="https://x.com/MengTo/status/2090817187900780961/video/1">Source on X</a>.
+  </figcaption>
+</figure>
+
 The caption credits the creator and links to the source; it is italicised and has spacing below it.
 
 # Embed Youtube Video
