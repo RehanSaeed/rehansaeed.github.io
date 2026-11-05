@@ -1,13 +1,10 @@
 import assert from "node:assert/strict";
-import { spawn, type ChildProcess } from "node:child_process";
 import { chromium, expect } from "@playwright/test";
-import { once } from "node:events";
-
-declare global {
-    interface Window {
-        __activationComplete: Promise<boolean>;
-    }
-}
+import { startPreviewServer } from "../preview-server.mts";
+import {
+    assertNoPageErrors,
+    waitForWorkerActivation,
+} from "./browser-checks.mts";
 
 const legacy = process.argv[2];
 if (!legacy) {
@@ -17,32 +14,19 @@ if (!legacy) {
 }
 const port = "8092";
 const origin = `http://localhost:${port}`;
-let server: ChildProcess | undefined;
+let stop: (() => Promise<void>) | undefined;
 const start = async (root: string) => {
-    server = spawn(process.execPath, ["scripts/serve.mts", root], {
-        env: { ...process.env, PORT: port },
-        stdio: ["ignore", "pipe", "inherit"],
-    });
-    assert(server.stdout, "Static server stdout is unavailable.");
-    await Promise.race([
-        once(server.stdout, "data"),
-        once(server, "exit").then(([code]) => {
-            throw new Error(`Static server exited: ${code}`);
-        }),
-    ]);
-    assert.equal((await fetch(origin)).status, 200);
-};
-const stop = async () => {
-    if (!server || server.exitCode !== null) {
-        return;
-    }
-    const stopped = once(server, "exit");
-    server.kill();
-    await stopped;
+    stop = await startPreviewServer(root, port);
 };
 const browser = await chromium.launch({ channel: "chrome" });
 try {
     const context = await browser.newContext({ serviceWorkers: "allow" });
+    context.setDefaultTimeout(180_000);
+    context.setDefaultNavigationTimeout(180_000);
+    const errors: Error[] = [];
+    context.on("page", (target) => {
+        target.on("pageerror", (error) => errors.push(error));
+    });
     await context.route(
         (url) => url.origin !== origin,
         (route) => route.fulfill({ contentType: "text/plain", body: "" }),
@@ -50,15 +34,15 @@ try {
     let page = await context.newPage();
     await start(legacy);
     await page.goto(origin);
-    await page.evaluate(async () => {
-        await navigator.serviceWorker.ready;
-        await navigator.serviceWorker.ready.then((registration) => {
-            if (registration.active) {
-                registration.active.postMessage({ type: "SKIP_WAITING" });
-            }
-        });
-    });
+    await page.waitForFunction(
+        async () =>
+            (await navigator.serviceWorker.getRegistration())?.active?.state ===
+            "activated",
+    );
     await page.reload();
+    await page.waitForFunction(() =>
+        Boolean(navigator.serviceWorker.controller),
+    );
     const old = await page.evaluate(async () => ({
         script: navigator.serviceWorker.controller?.scriptURL,
         keys: await Promise.all(
@@ -76,7 +60,7 @@ try {
             cache.urls.some((url) => url.includes("/assets/data/")),
         ),
     );
-    await stop();
+    await stop?.();
     await start("dist");
     const installing = context.waitForEvent("serviceworker", {
         timeout: 180_000,
@@ -89,19 +73,6 @@ try {
         await registration.update();
     });
     const worker = await installing;
-    await worker.evaluate(() => {
-        self.__activationComplete = new Promise((resolve) => {
-            self.addEventListener(
-                "activate",
-                () => {
-                    resolve(true);
-                },
-                {
-                    once: true,
-                },
-            );
-        });
-    });
     await expect
         .poll(
             () =>
@@ -115,8 +86,10 @@ try {
         )
         .toBe(true);
     // The legacy UI cannot show the new prompt. Its last tab must close naturally.
-    await page.close();
-    await worker.evaluate(() => self.__activationComplete);
+    await Promise.all([
+        worker.evaluate(waitForWorkerActivation, 180_000),
+        page.close(),
+    ]);
     page = await context.newPage();
     await page.goto(origin);
     await page.waitForFunction(() =>
@@ -141,10 +114,14 @@ try {
     await context.setOffline(true);
     await page.goto(`${origin}/on-the-etiquette-of-pull-request-comments/`);
     await page.waitForSelector(".post__content");
+    assertNoPageErrors(errors);
     console.log(
         "Verified non-interrupting Gridsome worker migration after closing the last legacy tab, old-cache cleanup and unvisited-post offline navigation.",
     );
 } finally {
-    await browser.close();
-    await stop();
+    try {
+        await browser.close();
+    } finally {
+        await stop?.();
+    }
 }
