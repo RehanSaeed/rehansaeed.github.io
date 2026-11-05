@@ -285,8 +285,6 @@ Use `<video>` on its own when a visible caption is not needed. Keep any required
 </video>
 ```
 
-## Video with a Caption
-
 Wrap the player in `<figure>` and add `<figcaption>` after it for visible context, creator credit and the original source:
 
 ```html
