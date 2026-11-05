@@ -44,11 +44,21 @@ export async function createFeed(event: H3Event): Promise<Feed> {
       "permalink",
       "heroImage",
       "date",
+      "dateModified",
       "tags",
       "rawbody",
     )
     .all();
 
+  const updated = posts.length
+    ? new Date(
+        Math.max(
+          ...posts.map((post) =>
+            new Date(post.dateModified ?? post.date).getTime(),
+          ),
+        ),
+      )
+    : undefined;
   const feed = new Feed({
     title: site.name,
     description: site.description,
@@ -59,6 +69,7 @@ export async function createFeed(event: H3Event): Promise<Feed> {
     favicon: `${site.url}/favicon.ico`,
     copyright: `Copyright © ${new Date().getFullYear()} ${site.author.name}`,
     generator: "Nuxt",
+    updated,
     feedLinks: {
       atom: `${site.url}/atom.xml`,
       json: `${site.url}/feed.json`,
@@ -78,7 +89,8 @@ export async function createFeed(event: H3Event): Promise<Feed> {
       description: absoluteUrls(post.description, contentDir),
       content: absoluteUrls(await marked(markdown), contentDir),
       author: [{ name: post.author, link: site.url }],
-      date: new Date(post.date),
+      date: new Date(post.dateModified ?? post.date),
+      published: new Date(post.date),
       category: post.tags.map((name) => ({ name })),
       image: site.url + post.heroImage,
     });
