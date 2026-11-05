@@ -82,7 +82,6 @@ jobs:
           restore-keys: |
             ipx-${{ runner.os }}-${{ runner.arch }}-${{ steps.node.outputs.node-version }}-${{ hashFiles('package-lock.json', 'nuxt.config.ts', 'modules/image-cache/**', 'modules/blog-content/paths.ts', 'public/**', 'content/**/*.png', 'content/**/*.jpg', 'content/**/*.jpeg', 'content/**/*.gif', 'content/**/*.svg', 'content/**/*.webp', 'content/**/*.avif') }}-
       - name: "NPM Build"
-        id: build
         run: npm run build
         env:
           TZ: UTC
@@ -98,35 +97,6 @@ jobs:
           compression-level: 1
           retention-days: 1
           if-no-files-found: error
-      - name: "Cache Lighthouse Browser"
-        id: playwright-cache
-        uses: actions/cache@v6.1.0
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-chromium-${{ hashFiles('package-lock.json') }}
-      - name: "Install Playwright Browsers"
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium
-      - name: "Install Playwright Dependencies"
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium
-      - name: "Lighthouse"
-        id: lighthouse
-        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
-        run: npm run lighthouse
-        timeout-minutes: 20
-        env:
-          TZ: UTC
-      - name: "Upload Lighthouse Reports"
-        uses: actions/upload-artifact@v7.0.2
-        if: ${{ !cancelled() && steps.lighthouse.outcome != 'skipped' }}
-        with:
-          name: lighthouse-report
-          path: |
-            .lighthouseci/reports
-            .lighthouseci/assertion-results.json
-          include-hidden-files: true
-          retention-days: 7
       - name: "Save Deployment Assets"
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         uses: actions/cache/save@v6.1.0
@@ -194,6 +164,58 @@ jobs:
       - name: "Lint"
         run: npm run lint
 
+  lighthouse:
+    name: Lighthouse
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+      - name: "Setup Node"
+        uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: "NPM Install"
+        run: npm ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HUSKY: "0"
+      - name: "Cache Lighthouse Browser"
+        id: playwright-cache
+        uses: actions/cache@v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-chromium-${{ hashFiles('package-lock.json') }}
+      - name: "Install Playwright Browsers"
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+      - name: "Install Playwright Dependencies"
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+      - name: "Download Browser Test Site"
+        uses: actions/download-artifact@v8.0.2
+        with:
+          name: playwright-site
+      - name: "Extract Browser Test Site"
+        run: tar -xf playwright-site.tar
+      - name: "Lighthouse"
+        id: lighthouse
+        run: npm run lighthouse
+        timeout-minutes: 20
+        env:
+          TZ: UTC
+      - name: "Upload Lighthouse Reports"
+        uses: actions/upload-artifact@v7.0.2
+        if: ${{ !cancelled() && steps.lighthouse.outcome != 'skipped' }}
+        with:
+          name: lighthouse-report
+          path: |
+            .lighthouseci/reports
+            .lighthouseci/assertion-results.json
+          include-hidden-files: true
+          retention-days: 7
+
   test:
     name: Playwright (${{ matrix.browser }}, ${{ matrix.shard }}/2)
     needs: build
@@ -259,20 +281,21 @@ jobs:
   checks:
     name: Build
     if: always() && (github.event_name != 'pull_request' || !github.event.pull_request.draft)
-    needs: [build, quality, test]
+    needs: [build, quality, lighthouse, test]
     runs-on: ubuntu-latest
     steps:
-      - name: "Require Generation, Quality and All Browsers"
-        run: test "$BUILD_RESULT" = success && test "$QUALITY_RESULT" = success && test "$TEST_RESULT" = success
+      - name: "Require Generation, Quality, Lighthouse and All Browsers"
+        run: test "$BUILD_RESULT" = success && test "$QUALITY_RESULT" = success && test "$LIGHTHOUSE_RESULT" = success && test "$TEST_RESULT" = success
         env:
           BUILD_RESULT: ${{ needs.build.result }}
           QUALITY_RESULT: ${{ needs.quality.result }}
+          LIGHTHOUSE_RESULT: ${{ needs.lighthouse.result }}
           TEST_RESULT: ${{ needs.test.result }}
 
   deploy:
     name: Deploy
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    needs: [build, quality, test]
+    needs: [build, quality, lighthouse, test]
     runs-on: ubuntu-latest
     concurrency:
       group: pages

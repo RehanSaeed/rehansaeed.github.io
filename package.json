@@ -133,7 +133,7 @@
     "test:edge": "Run the Playwright Edge project.",
     "test:firefox": "Run the Playwright Firefox project.",
     "test:visual": "Run the local visual-regression project with git-ignored baselines.",
-    "lighthouse": "Audit dist with Lighthouse CI and upload reports to temporary public storage.",
+    "lighthouse": "Audit dist with Lighthouse CI and save reports to .lighthouseci/reports.",
     "pwa:screenshots": "Capture wide and narrow PWA installation screenshots from BASE_URL or localhost:8080.",
     "parity:snapshot": "Capture page and artifact snapshots from a running site; accepts --base, --out and --urls.",
     "parity:diff": "Compare the historical baseline with .parity/local and fail on unignored differences.",
