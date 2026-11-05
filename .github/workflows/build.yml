@@ -124,6 +124,9 @@ jobs:
     container:
       image: ${{ matrix.browser == 'firefox' && needs.build.outputs.playwright-image || '' }}
       options: --user 1001
+      # The image has Git, but checkout also needs the runner's Git LFS binary.
+      volumes:
+        - /usr/bin/git-lfs:/usr/bin/git-lfs:ro
     strategy:
       fail-fast: false
       matrix:

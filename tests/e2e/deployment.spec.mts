@@ -21,7 +21,13 @@ const deploymentStepSchema =
 const deploymentJobSchema = workflowSchema.shape.jobs.valueType.extend({
     name: z.string().optional(),
     needs: z.union([z.string(), z.array(z.string())]).optional(),
-    container: z.object({ image: z.string(), options: z.string() }).optional(),
+    container: z
+        .object({
+            image: z.string(),
+            options: z.string(),
+            volumes: z.array(z.string()),
+        })
+        .optional(),
     outputs: z.record(z.string(), z.string()).optional(),
     environment: z.looseObject({ name: z.string() }).optional(),
     concurrency: z
@@ -265,7 +271,9 @@ test("Firefox uses a version-matched Playwright image without runtime dependency
     expect(browserTests.container).toEqual({
         image: "${{ matrix.browser == 'firefox' && needs.build.outputs.playwright-image || '' }}",
         options: "--user 1001",
+        volumes: ["/usr/bin/git-lfs:/usr/bin/git-lfs:ro"],
     });
+    expect(requireStep(browserTests.steps, "Checkout").with?.lfs).toBe(true);
     expect(
         browserTests.steps.filter(
             (step) =>
