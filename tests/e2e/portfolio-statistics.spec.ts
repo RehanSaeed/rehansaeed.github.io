@@ -565,6 +565,9 @@ for (const path of ["/about/", "/portfolio/"]) {
     page,
   }) => {
     await page.setViewportSize({ width: 375, height: 900 });
+    await page.route("https://tiles.openfreemap.org/**", (route) =>
+      route.fulfill({ status: 503, body: "Map service unavailable" }),
+    );
     await page.goto(path, { waitUntil: "domcontentloaded" });
     const downloads = page.getByRole("button", {
       name: "Package Downloads",
@@ -575,6 +578,13 @@ for (const path of ["/about/", "/portfolio/"]) {
       exact: true,
     });
     await expect(downloads).toBeEnabled();
+    // A late map failure moves the trigger out from under a stationary pointer.
+    for (const map of await page.locator(".location-map").all()) {
+      await map.scrollIntoViewIfNeeded();
+      await expect(map.getByRole("status")).toHaveText(
+        "The interactive map could not load. Showing a static map of East London.",
+      );
+    }
     await expect(downloads).toHaveAttribute("aria-expanded", "false");
     await expect(downloads.locator("svg path")).toHaveCount(1);
     await expect(stars.locator("svg path")).toHaveCount(1);
