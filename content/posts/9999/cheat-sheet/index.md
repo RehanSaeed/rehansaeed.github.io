@@ -279,9 +279,7 @@ Use `<video>` on its own when a visible caption is not needed. Keep any required
   width="960"
   height="720"
   aria-label="ThreeUI demonstration of interactive Three.js components and landing pages">
-  <a href="https://x.com/MengTo/status/2090817187900780961/video/1"
-    >Watch the ThreeUI demonstration on X.</a
-  >
+  <a href="https://example.com/">Watch the video demonstration.</a>
 </video>
 ```
 
@@ -297,15 +295,11 @@ Wrap the player in `<figure>` and add `<figcaption>` after it for visible contex
     width="960"
     height="720"
     aria-label="ThreeUI demonstration of interactive Three.js components and landing pages">
-    <a href="https://x.com/MengTo/status/2090817187900780961/video/1"
-      >Watch the ThreeUI demonstration on X.</a
-    >
+    <a href="https://example.com/">Watch the video demonstration.</a>
   </video>
   <figcaption>
-    ThreeUI demonstration by <a href="https://mengto.com/">Meng To</a>.
-    <a href="https://x.com/MengTo/status/2090817187900780961/video/1"
-      >Source on X</a
-    >.
+    Video demonstration by <a href="https://example.com/">Example Author</a>.
+    <a href="https://example.com/">Source</a>.
   </figcaption>
 </figure>
 ```
