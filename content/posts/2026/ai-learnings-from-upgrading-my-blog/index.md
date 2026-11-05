@@ -88,6 +88,8 @@ Sometimes, I'm not even sure what I want but want something to look at and try a
 
 Telling agents to use [Three.js](https://threejs.org/) to build amazing interactive 3D visuals for a page seems to be all the rage at the moment. The agents are very good at it, and I've been testing it out.
 
+<x-post post-id="2090817187900780961"></x-post>
+
 [Watch the ThreeUI demonstration on X.](https://x.com/MengTo/status/2090817187900780961/video/1)
 
 The problem is that while I've used game engines before, I'm not Three.js-proficient, so this is effectively AI-only software for me. I can judge whether I like the result, but I'm less equipped to judge the implementation or maintain it without help.
