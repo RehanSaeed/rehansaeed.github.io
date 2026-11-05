@@ -102,15 +102,20 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
     }
   }
 
-  img {
-    display: block;
+  .prose-image {
+    display: grid;
+    justify-items: center;
     inline-size: calc(100% + (2 * var(--global-space-fluid-6)));
     margin-inline: var(--global-space-fluid--6);
-    max-inline-size: none;
+
+    picture {
+      display: contents;
+    }
   }
 
-  .post__image-inset img {
-    inline-size: 311px;
+  img {
+    display: block;
+    inline-size: auto;
     margin-inline: auto;
     max-inline-size: 100%;
   }
