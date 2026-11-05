@@ -23,7 +23,7 @@ export const portfolioGrowth = async (
   ]);
   const packages = new Map<string, { count: number; createdAt?: string }>();
   for (const { data } of projects) {
-    for (const { id } of data.nugetPackages ?? []) {
+    for (const { id } of data.nugetPackages) {
       const key = id.toLowerCase();
       const pkg = downloads.snapshots[key];
       if (!pkg || pkg.id.toLowerCase() !== key) {

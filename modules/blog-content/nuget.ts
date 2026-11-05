@@ -33,7 +33,7 @@ export async function portfolioDownloads(
     .map(({ data }) => {
       const packages = z
         .array(packageSchema.pick({ id: true }))
-        .parse(data.nugetPackages ?? []);
+        .parse(data.nugetPackages);
       const ids = packages.map(({ id }) => id.toLowerCase());
       if (new Set(ids).size !== ids.length) {
         throw new Error(`Duplicate NuGet packages for ${data.permalink}.`);

@@ -127,6 +127,8 @@ test("Portfolio totals match the listed projects and About shares the star total
         );
       });
   });
+  expect(repositories.size).toBeGreaterThan(0);
+  expect(packages.size).toBeGreaterThan(0);
   const downloads = [...packages.values()].reduce(
     (sum, count) => sum + count,
     0,
@@ -407,8 +409,18 @@ for (const width of [320, 375, 1280]) {
           .evaluate((value) =>
             Number.parseFloat(getComputedStyle(value).fontSize),
           );
-        expect(labelSize).toBeGreaterThanOrEqual(width === 1280 ? 20 : 0);
-        expect(valueSize).toBeGreaterThanOrEqual(width === 1280 ? 40 : 0);
+        const minimumSize = await ticker.evaluate(
+          () =>
+            Number.parseFloat(
+              getComputedStyle(document.documentElement).fontSize,
+            ) * 0.75,
+        );
+        expect(labelSize).toBeGreaterThanOrEqual(
+          width === 1280 ? 20 : minimumSize,
+        );
+        expect(valueSize).toBeGreaterThanOrEqual(
+          width === 1280 ? 40 : minimumSize,
+        );
         const cardBounds = (await ticker.boundingBox())!;
         const cardCentre = cardBounds.x + cardBounds.width / 2;
         for (const selector of [
@@ -505,6 +517,10 @@ for (const width of [320, 375, 1280]) {
       "grid",
     );
     await page.evaluate(() => document.fonts.ready);
+    const expectedSeparators = (
+      await page.locator(".number-ticker__accessible").allTextContents()
+    ).reduce((count, value) => count + (value.match(/,/g)?.length ?? 0), 0);
+    expect(expectedSeparators).toBeGreaterThan(0);
     for (const colorScheme of ["light", "dark"] as const) {
       await page.emulateMedia({ colorScheme });
       const separators = await page
@@ -537,7 +553,7 @@ for (const width of [320, 375, 1280]) {
             };
           }),
         );
-      expect(separators).toHaveLength(3);
+      expect(separators).toHaveLength(expectedSeparators);
       for (const separator of separators) {
         expect(separator.character).toBe(",");
         expect(separator.left).toBeGreaterThanOrEqual(-0.5);

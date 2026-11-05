@@ -277,7 +277,7 @@ export default defineNuxtModule({
     const pageCount = Math.ceil(publishedPosts.length / postsPerPage);
     const routes = new Set<string>([
       ...posts.map((entry) => entry.data.permalink),
-      ...entries.flatMap((entry) => (entry.data.tags ?? []).map(tagPath)),
+      ...entries.flatMap((entry) => entry.data.tags.map(tagPath)),
       ...Array.from({ length: pageCount - 1 }, (_, i) => `/${i + 2}/`),
     ]);
     nuxt.hook("nitro:config", (nitroConfig) => {

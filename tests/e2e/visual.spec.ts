@@ -47,27 +47,12 @@ async function readyForScreenshot(page: Page) {
   });
   await page.evaluate(async () => {
     await Promise.all(
-      Array.from(document.images, (image) => {
-        image.loading = "eager";
-        return image.complete
-          ? Promise.resolve()
-          : new Promise<void>((resolve) => {
-              image.addEventListener(
-                "load",
-                () => {
-                  resolve();
-                },
-                { once: true },
-              );
-              image.addEventListener(
-                "error",
-                () => {
-                  resolve();
-                },
-                { once: true },
-              );
-            });
-      }),
+      Array.from(document.images)
+        .filter((image) => new URL(image.src).origin === location.origin)
+        .map(async (image) => {
+          image.loading = "eager";
+          await image.decode();
+        }),
     );
   });
 }
@@ -78,6 +63,7 @@ async function checkGeometry(page: Page, info: TestInfo, name: string) {
     width: document.documentElement.scrollWidth,
     height: document.documentElement.scrollHeight,
   }));
+  let referenceHeight = geometry.height;
   if (info.config.updateSnapshots === "all") {
     await mkdir(dirname(file), { recursive: true });
     await writeFile(file, JSON.stringify(geometry));
@@ -88,11 +74,12 @@ async function checkGeometry(page: Page, info: TestInfo, name: string) {
     );
     expect(geometry.width).toBe(reference.width);
     expect(Math.abs(geometry.height - reference.height)).toBeLessThanOrEqual(2);
+    referenceHeight = reference.height;
   }
   // PNG comparison requires identical dimensions; separately enforce a <=2px layout difference.
   await page.evaluate((height) => {
     document.body.style.minHeight = `${Math.ceil(height / 100) * 100}px`;
-  }, geometry.height);
+  }, referenceHeight);
 }
 
 test.describe("Visual @visual", () => {

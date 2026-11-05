@@ -4,6 +4,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { isDeepStrictEqual, parseArgs } from "node:util";
+import { z } from "zod";
 
 const { values: args, positionals } = parseArgs({
     allowPositionals: true,
@@ -37,11 +38,12 @@ const ignored = (path: string) => ignores.some((regex) => regex.test(path));
 const load = async (
     dir: string,
     file: string,
-): Promise<Record<string, unknown>> =>
-    JSON.parse(await readFile(join(dir, file), "utf8")) as Record<
-        string,
-        unknown
-    >;
+): Promise<Record<string, unknown>> => {
+    const snapshot: unknown = JSON.parse(
+        await readFile(join(dir, file), "utf8"),
+    );
+    return z.record(z.string(), z.unknown()).parse(snapshot);
+};
 
 const differences: { path: string; expected: unknown; actual: unknown }[] = [];
 const compare = (path: string, expected: unknown, actual: unknown) => {

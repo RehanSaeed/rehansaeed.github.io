@@ -7,7 +7,7 @@ try {
     for (const [formFactor, viewport] of [
         ["wide", { width: 1440, height: 900 }],
         ["narrow", { width: 390, height: 844 }],
-    ]) {
+    ] as const) {
         const context = await browser.newContext({
             viewport,
             deviceScaleFactor: 1,
@@ -24,7 +24,7 @@ try {
             ["blog", "/"],
             ["portfolio", "/portfolio/"],
             ["about", "/about/"],
-        ]) {
+        ] as const) {
             console.info(`Capturing ${name} (${formFactor})`);
             const response = await page.goto(new URL(path, baseURL).href, {
                 waitUntil: "domcontentloaded",
