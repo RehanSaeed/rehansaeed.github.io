@@ -207,6 +207,8 @@ export function checkCsp(policies: string[], analyticsId?: string) {
             ["child-src", "script-src", "default-src"],
             `${origin}/service-worker.js`,
         ],
+        ["connect-src", ["default-src"], "https://tiles.openfreemap.org/"],
+        ["connect-src", ["default-src"], "https://get.geojs.io/v1/ip/geo.json"],
     ];
     if (analyticsId) {
         checks.push(

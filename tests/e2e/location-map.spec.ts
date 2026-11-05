@@ -49,7 +49,19 @@ const expectPinInsideMap = async (page: Page, selector: string) => {
     .toBe(true);
 };
 
-const expectLocationsFillView = async (page: Page, coincident: boolean) => {
+const expectLocationsFillView = async (
+  page: Page,
+  visitor: [number, number],
+) => {
+  const london: [number, number] = [-0.005, 51.54];
+  const worldSizeAtMaxZoom = 512 * 2 ** 12;
+  const mercatorY = (latitude: number) =>
+    Math.log(Math.tan(Math.PI / 4 + (latitude * Math.PI) / 360)) /
+    (2 * Math.PI);
+  const cappedDx =
+    (Math.abs(visitor[0] - london[0]) / 360) * worldSizeAtMaxZoom;
+  const cappedDy =
+    Math.abs(mercatorY(visitor[1]) - mercatorY(london[1])) * worldSizeAtMaxZoom;
   const figure = page.locator(".location-map");
   await expect
     .poll(async () => {
@@ -68,11 +80,13 @@ const expectLocationsFillView = async (page: Page, coincident: boolean) => {
       const dy = Math.abs(
         author.y + author.height - visitor.y - visitor.height,
       );
-      if (coincident) {
+      if (cappedDx === 0 && cappedDy === 0) {
         return dx < 1 && dy < 1;
       }
       return (
-        Math.max(dx / (canvas.width - 96), dy / (canvas.height - 128)) > 0.9
+        Math.max(dx / (canvas.width - 96), dy / (canvas.height - 128)) > 0.9 ||
+        // Nearby locations can reach the zoom cap before filling a wide map.
+        (Math.abs(dx - cappedDx) < 1 && Math.abs(dy - cappedDy) < 1)
       );
     })
     .toBe(true);
@@ -205,6 +219,7 @@ const expectDottedConnection = async (page: Page) => {
 const mockOpenFreeMap = async (page: Page, showWater = false) => {
   const styles: string[] = [];
   await page.route("https://tiles.openfreemap.org/styles/*", (route) => {
+    expect(route.request().headers()["referer"]).toBeUndefined();
     const url = new URL(route.request().url());
     const style = url.pathname.split("/").at(-1)!;
     styles.push(style);
@@ -407,6 +422,11 @@ for (const width of [320, 375, 1280]) {
       expect(bounds).not.toBeNull();
       expect(bounds!.x).toBeGreaterThanOrEqual(0);
       expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
+      const cardBounds = (await page
+        .locator(".about__container")
+        .boundingBox())!;
+      expect(bounds!.x).toBeCloseTo(cardBounds.x, 0);
+      expect(bounds!.width).toBeCloseTo(cardBounds.width, 0);
       const layout = await figure.evaluate((element) => ({
         clientWidth: element.clientWidth,
         scrollWidth: element.scrollWidth,
@@ -627,6 +647,14 @@ test("An OpenFreeMap failure keeps the photo fallback and announces the problem"
   await expect(figure.getByRole("status")).toHaveText(
     "The interactive map could not load. Showing a static map of East London.",
   );
+  await expect(figure.getByRole("status")).toHaveCSS("position", "absolute");
+  await expect(figure.getByRole("status")).toHaveCSS(
+    "clip",
+    "rect(0px, 0px, 0px, 0px)",
+  );
+  await expect(figure.locator("figcaption")).not.toContainText(
+    "could not load",
+  );
   await expect(figure).not.toHaveClass(/location-map--interactive/);
   await expect(figure.locator(".location-map__illustration")).toBeVisible();
   await expect(figure.locator(".maplibregl-canvas")).toHaveCount(0);
@@ -634,6 +662,46 @@ test("An OpenFreeMap failure keeps the photo fallback and announces the problem"
     "href",
     photo,
   );
+});
+
+test("The interactive map and distance load with the required hosting CSP origins", async ({
+  page,
+}) => {
+  const violations: string[] = [];
+  await page.addInitScript(() => {
+    document.addEventListener("securitypolicyviolation", (event) => {
+      console.error(`Map CSP violation: ${event.blockedURI}`);
+    });
+  });
+  page.on("console", (message) => {
+    if (message.text().startsWith("Map CSP violation:")) {
+      violations.push(message.text());
+    }
+  });
+  await page.route("**/about/", async (route) => {
+    const response = await route.fetch();
+    await route.fulfill({
+      response,
+      headers: {
+        ...response.headers(),
+        "content-security-policy":
+          "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://tiles.openfreemap.org https://get.geojs.io; img-src 'self' data: https:; font-src 'self' data:; worker-src 'self'",
+      },
+    });
+  });
+  await page.route(geoUrl, (route) =>
+    route.fulfill({ json: { longitude: "2.3522", latitude: "48.8566" } }),
+  );
+  await mockOpenFreeMap(page);
+  await page.goto("/about/", { waitUntil: "domcontentloaded" });
+  await requireWebGL(page);
+  const figure = page.locator(".location-map");
+  await figure.scrollIntoViewIfNeeded();
+  await expect(figure).toHaveClass(/location-map--interactive/);
+  await expect(figure.locator("figcaption")).toContainText(
+    "according to your IP address",
+  );
+  expect(violations).toEqual([]);
 });
 
 for (const colorScheme of ["light", "dark"] as const) {
@@ -729,14 +797,14 @@ for (const [place, longitude, latitude] of [
     await expect(figure).not.toContainText("Approximate location via");
     await expectPinInsideMap(page, ".location-map__marker");
     await expectPinInsideMap(page, ".location-map__visitor");
-    await expectLocationsFillView(page, place === "East London");
+    await expectLocationsFillView(page, [Number(longitude), Number(latitude)]);
     await expectConnectionForPlace(page, place);
     await expect(figure).toContainText("GeoJS");
     expect(lookups).toEqual([geoUrl]);
     await page.setViewportSize({ width: 375, height: 900 });
     await expectPinInsideMap(page, ".location-map__marker");
     await expectPinInsideMap(page, ".location-map__visitor");
-    await expectLocationsFillView(page, place === "East London");
+    await expectLocationsFillView(page, [Number(longitude), Number(latitude)]);
     await page.getByRole("button", { name: "Toggle dark/light" }).click();
     await expect(
       figure.locator(".maplibregl-marker.location-map__visitor"),

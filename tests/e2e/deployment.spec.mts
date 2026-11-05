@@ -70,7 +70,11 @@ function requireStep(
 
 const oldPolicy =
     "default-src 'self'; script-src 'self' https://www.google-analytics.com/analytics.js 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.github.com https://webmention.io https://www.google-analytics.com; font-src 'self' data:; frame-src 'self' https://www.youtube-nocookie.com; img-src 'self' data: https:; worker-src 'self'";
-const policy = oldPolicy
+const mapPolicy = oldPolicy.replace(
+    "connect-src 'self'",
+    "connect-src 'self' https://tiles.openfreemap.org https://get.geojs.io",
+);
+const policy = mapPolicy
     .replace(
         "script-src 'self'",
         "script-src 'self' https://www.googletagmanager.com",
@@ -94,12 +98,12 @@ test("Pages settings reject an unprepared source or lost custom domain", () => {
 
 test("GA4 requires both vendor scripts and regional collection origins in every enforced policy", () => {
     expect(() => {
-        checkCsp([oldPolicy], "");
+        checkCsp([mapPolicy], "");
     }).not.toThrow();
     expect(() => {
-        checkCsp([oldPolicy], "G-LOCALTEST");
+        checkCsp([mapPolicy], "G-LOCALTEST");
     }).toThrow("googletagmanager");
-    const scriptsOnly = oldPolicy.replace(
+    const scriptsOnly = mapPolicy.replace(
         "script-src 'self'",
         "script-src 'self' https://www.googletagmanager.com",
     );
@@ -118,6 +122,35 @@ test("GA4 requires both vendor scripts and regional collection origins in every 
     expect(() => {
         checkCsp(["default-src 'self'"], "G-LOCALTEST");
     }).toThrow();
+});
+
+test("The hosting CSP must allow the map and IP location services in every enforced policy", () => {
+    expect(() => {
+        checkCsp([oldPolicy], "");
+    }).toThrow("https://tiles.openfreemap.org");
+    expect(() => {
+        checkCsp([mapPolicy], "");
+    }).not.toThrow();
+    expect(() => {
+        checkCsp([mapPolicy.replace(" https://get.geojs.io", "")], "");
+    }).toThrow("https://get.geojs.io");
+    expect(() => {
+        checkCsp(
+            [
+                mapPolicy.replace(
+                    "https://tiles.openfreemap.org",
+                    "https://tiles.openfreemap.org/styles/",
+                ),
+            ],
+            "",
+        );
+    }).toThrow("https://tiles.openfreemap.org/");
+    expect(() => {
+        checkCsp([mapPolicy, oldPolicy], "");
+    }).toThrow("https://tiles.openfreemap.org");
+    expect(() => {
+        checkCsp(["default-src 'self'"], "");
+    }).toThrow("Hosting CSP default-src blocks https://tiles.openfreemap.org/");
 });
 
 test("Published artifact respects Pages limits and resolves all routes and local resources case-sensitively", async () => {
