@@ -258,8 +258,6 @@ To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>`
 <figcaption>A code-themed illustration.</figcaption>
 </figure>
 
-The image path is relative to the article. Keep meaningful alt text in `![...]` to describe the image; the visible caption adds context or attribution rather than replacing alt text. Use HTML links inside `<figcaption>` for creator credits and sources, for example `<a href="https://example.com/">Source</a>`. Captions are italicised and have spacing below them.
-
 # Embed Local Video
 
 Standard Markdown does not have video-player syntax. Use HTML to embed a local MP4.
