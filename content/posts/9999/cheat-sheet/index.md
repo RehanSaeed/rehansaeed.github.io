@@ -238,8 +238,6 @@ flowchart TD
 
 # Embed Images
 
-Use ordinary Markdown for images. Small images are centred without being enlarged beyond their original dimensions. Large images can fill the wider image area, and all images shrink to fit narrow screens. No HTML wrapper or sizing class is needed.
-
 ![Code](./images/Code-1600x900.jpg)
 
 To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>` after it. Keep the blank lines around the Markdown image so it is parsed as Markdown rather than HTML:
