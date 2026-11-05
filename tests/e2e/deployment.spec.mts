@@ -197,7 +197,7 @@ test("Deployment is main-only, gated by successful build/tests/preflight and pre
     const condition =
         "github.event_name != 'pull_request' && github.ref == 'refs/heads/main'";
     expect(deploy.if).toBe(condition);
-    expect(deploy.needs).toEqual(["build", "quality", "test"]);
+    expect(deploy.needs).toEqual(["build", "quality", "lighthouse", "test"]);
     expect(deploy.permissions).toEqual({
         contents: "read",
         pages: "write",
@@ -239,15 +239,16 @@ test("Browser suites run in parallel against one complete build without dropping
     expect(workflow.jobs.checks).toEqual({
         name: "Build",
         if: "always() && (github.event_name != 'pull_request' || !github.event.pull_request.draft)",
-        needs: ["build", "quality", "test"],
+        needs: ["build", "quality", "lighthouse", "test"],
         "runs-on": "ubuntu-latest",
         steps: [
             {
-                name: "Require Generation, Quality and All Browsers",
-                run: 'test "$BUILD_RESULT" = success && test "$QUALITY_RESULT" = success && test "$TEST_RESULT" = success',
+                name: "Require Generation, Quality, Lighthouse and All Browsers",
+                run: 'test "$BUILD_RESULT" = success && test "$QUALITY_RESULT" = success && test "$LIGHTHOUSE_RESULT" = success && test "$TEST_RESULT" = success',
                 env: {
                     BUILD_RESULT: "${{ needs.build.result }}",
                     QUALITY_RESULT: "${{ needs.quality.result }}",
+                    LIGHTHOUSE_RESULT: "${{ needs.lighthouse.result }}",
                     TEST_RESULT: "${{ needs.test.result }}",
                 },
             },
@@ -364,7 +365,7 @@ test("Social image cache invalidates external renderer inputs without a stale fa
 
 test("Generate alone saves validated public snapshots; every Nuxt prepare restores them first", () => {
     const workflow = readBuildWorkflow();
-    const caches = ["build", "quality", "test"].map((name) => {
+    const caches = ["build", "quality", "lighthouse", "test"].map((name) => {
         const job = requireJob(workflow, name);
         const cache = requireStep(job.steps, "Cache Public API Snapshots");
         expect(job.steps.indexOf(cache)).toBeLessThan(
@@ -396,8 +397,38 @@ test("Generate alone saves validated public snapshots; every Nuxt prepare restor
         expect(requireStep(job.steps, "NPM Install").run).toBe("npm ci");
         return cache;
     });
-    expect(caches[1]?.with).toEqual(caches[0]?.with);
-    expect(caches[2]?.with).toEqual(caches[0]?.with);
+    for (const cache of caches.slice(1)) {
+        expect(cache?.with).toEqual(caches[0]?.with);
+    }
+});
+
+test("Lighthouse audits the generated site in parallel and keeps its reports", () => {
+    const workflow = readBuildWorkflow();
+    const build = requireJob(workflow, "build");
+    const lighthouse = requireJob(workflow, "lighthouse");
+    expect(lighthouse.needs).toBe("build");
+    expect(requireStep(lighthouse.steps, "Checkout").with?.lfs).toBe(true);
+    const steps = lighthouse.steps;
+    const download = requireStep(steps, "Download Browser Test Site");
+    expect(download.with?.name).toBe(
+        requireStep(build.steps, "Upload Browser Test Site").with?.name,
+    );
+    const extract = steps.findIndex(
+        (step) => step.name === "Extract Browser Test Site",
+    );
+    const run = steps.findIndex((step) => step.name === "Lighthouse");
+    expect(extract).toBeGreaterThan(steps.indexOf(download));
+    expect(extract).toBeLessThan(run);
+    expect(steps[run]?.run).toBe("npm run lighthouse");
+    expect(steps.some((step) => step.run === "npm run build")).toBe(false);
+    expect(build.steps.some((step) => step.run === "npm run lighthouse")).toBe(
+        false,
+    );
+    const reports = requireStep(steps, "Upload Lighthouse Reports");
+    expect(reports.if).toBe(
+        "${{ !cancelled() && steps.lighthouse.outcome != 'skipped' }}",
+    );
+    expect(reports.with?.name).toBe("lighthouse-report");
 });
 
 test("Firefox uses a version-matched Playwright image without runtime dependency installation", () => {
