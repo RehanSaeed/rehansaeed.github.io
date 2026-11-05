@@ -281,14 +281,64 @@ test("Quality checks run independently without racing generation in the same che
     );
 });
 
-test("CodeQL scans both historical JS/TS categories without a redundant build", () => {
+test("Dependency review gates PR changes across all scopes without a licence policy", () => {
+    const workflow = readBuildWorkflow();
+    const quality = requireJob(workflow, "quality");
+    const review = requireStep(quality.steps, "Review Dependency Changes");
+    expect(review).toEqual({
+        name: "Review Dependency Changes",
+        if: "github.event_name == 'pull_request'",
+        uses: "actions/dependency-review-action@v5.0.0",
+        with: {
+            "fail-on-severity": "moderate",
+            "fail-on-scopes": "runtime, development, unknown",
+            "license-check": false,
+        },
+    });
+    expect(quality.steps.indexOf(review)).toBeLessThan(
+        quality.steps.indexOf(requireStep(quality.steps, "NPM Install")),
+    );
+    expect(workflow.permissions).toEqual({
+        contents: "read",
+        issues: "read",
+        pages: "read",
+    });
+});
+
+test("Workflow checkouts do not persist credentials for subsequent steps", () => {
+    const workflows = [
+        readBuildWorkflow(),
+        workflowSchema.parse(
+            parse(
+                readFileSync(".github/workflows/codeql-analysis.yml", "utf8"),
+            ),
+        ),
+    ];
+    const checkouts = workflows.flatMap((workflow) =>
+        Object.values(workflow.jobs).flatMap((job) =>
+            job.steps.filter(
+                (step) =>
+                    typeof step.uses === "string" &&
+                    step.uses.startsWith("actions/checkout@"),
+            ),
+        ),
+    );
+    expect(checkouts).toHaveLength(5);
+    for (const checkout of checkouts) {
+        expect(checkout.with?.["persist-credentials"]).toBe(false);
+    }
+});
+
+test("CodeQL scans Actions and both historical JS/TS categories without a redundant build", () => {
     const workflow = workflowSchema.parse(
         parse(readFileSync(".github/workflows/codeql-analysis.yml", "utf8")),
     );
     const analyze = workflow.jobs.analyze;
     expect(analyze?.strategy).toEqual({
         "fail-fast": false,
-        matrix: { language: ["javascript", "javascript-typescript"] },
+        matrix: {
+            language: ["javascript", "javascript-typescript", "actions"],
+        },
     });
     const steps = analyze?.steps ?? [];
     expect(requireStep(steps, "Initialize CodeQL")).toMatchObject({
