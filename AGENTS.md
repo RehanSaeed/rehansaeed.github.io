@@ -30,6 +30,12 @@ authorise publishing the article or posting to social media.
 - Articles live in `content/posts/<year>/<kebab-case-slug>/index.md`.
   Read a few relevant published articles before drafting to match the author's
   voice and avoid duplicating existing coverage.
+- Include relevant internal links to existing articles using their permalinks
+  wherever possible. Use authoritative external links when there is no suitable
+  internal article, especially for official documentation and supporting sources.
+- When mentioning a person, link their name to their blog. If they do not have a
+  blog, link to a verified social media profile instead. Verify that the
+  destination belongs to the person; do not guess URLs or handles.
 - Treat [content.config.ts](content.config.ts) as the source of truth for front
   matter. Create the post directory and Markdown file directly, using relevant
   published articles as examples. Check that the target does not already exist
@@ -216,6 +222,128 @@ When explicitly asked to help draft an article, follow these guidelines:
   Keep captions, alt text and attribution accurate; do not fabricate screenshots.
 - Do not manually populate generated fields such as `rawbody`, `headings` or
   `timeToRead`.
+
+### Hero Image House Style
+
+- Aim for a personal software engineering publication: technically literate,
+  approachable and witty, not a generic AI product landing page.
+  Illustrate the article's central idea rather than assembling unrelated
+  technology symbols.
+- Use [the theme tokens](app/assets/style/_properties.scss) as the visual
+  reference: neutral light or charcoal surfaces, strong contrast and restrained
+  purple accents. Topic-specific colours, such as Vue green, are welcome when
+  meaningful; do not recolour official logos to force them into the palette.
+- Prefer clear flat graphics, diagrams or restrained ink-style editorial
+  illustrations. Use simple shapes, deliberate linework and a small palette.
+  Subtle texture can add character, but avoid making every article look like an
+  aged-paper poster or a glossy stock render.
+- Avoid generic AI imagery: shiny robot mascots, glowing brains, neon circuitry,
+  holographic dashboards and excessive cinematic lighting. Show concrete tools
+  and workflows when relevant. An article about agents does not automatically
+  need a robot.
+- Keep one clear visual story, generous negative space and a readable silhouette
+  at card-thumbnail and mobile sizes. Avoid clutter, ornamental UI panels and
+  tiny details that only work at full resolution.
+- Do not bake the article title, fake code or generated lettering into the image.
+  Let the site render its own headings. If a graphic genuinely needs labels,
+  typeset them separately using the existing Audiowide heading or Cascadia Code
+  code typography as appropriate; verify every label.
+- Follow the existing 1600x900 sizing and image-optimisation requirements. Keep
+  important content clear of crop edges, and check the hero in both light and
+  dark themes, on the article and in a small card preview.
+- Preserve the author's chosen concept when revising an image; change the visual
+  treatment rather than inventing a different message. Show the result for
+  review, and do not claim generated imagery is a real screenshot or photograph.
+
+#### Recurring Author Character
+
+Prefer hero images featuring the recurring author character described below.
+This is the default, not a requirement: use a different visual concept when it
+better serves the article. The desk and workspace remain optional even when the
+character appears.
+
+- Make the character recognisably resemble the author rather than using a generic
+  person. Use
+  [the author's profile photo](public/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg)
+  or a newer user-supplied photo as the visual reference, not a previous generated
+  image alone. Preserve recognisable facial features, hairstyle, facial hair and
+  body proportions within the chosen illustration style. Keep the head angle,
+  gaze and anatomy consistent with the intended pose. Do not invent a different
+  appearance. Ask for a suitable reference if the available photo is insufficient.
+- Keep the short, straight dark hair, natural grey detail and beard with
+  moustache recognisable. Use a simple, lightly combed hairstyle with
+  modest volume, not dense curls, ringlets, a hair bun or an invented hairstyle.
+- Keep natural masculine proportions and a relaxed, believable posture. Use a
+  regular men's clothing silhouette with straight shoulders and torso rather
+  than a fitted waist, exaggerated muscles or a caricature.
+- The default outfit is a plain golden-ochre (`#D9A74A` base colour) men's
+  crew-neck jumper with a regular fit, ribbed collar, cuffs and straight hem.
+  Keep shading close to this base colour. Use subtle texture and a few folds,
+  not floral motifs, decorative swirls or busy knit patterns.
+- Keep the jumper's warm golden-ochre yellow as the character's signature
+  colour. It should make him stand out against quieter backgrounds and
+  supporting objects, rather than blending into the scene. Do not recolour
+  the jumper purple merely to match the site accent.
+- Pair it with dark indigo, straight-cut denim jeans, approximately `#243B5A`.
+  Make the trouser construction legible: distinct legs, natural knee bends,
+  seams and restrained folds. In seated poses, show credible thigh and calf
+  volumes with clear separation or overlap, not one flared, skirt-like shape.
+- When footwear is visible, use Vivobarefoot knit trainers with sage-green
+  (`#949F8D`) uppers, cream (`#E5E0C8`) laces and thin, flat soles, and darker green
+  (`#51574A`) heel detail. Use these as base colours with restrained shading.
+  Keep the wide anatomical toe box, low profile and small pull loops. Suggest
+  the knit and subtle geometric side motif with simple ink marks, not
+  photographic product detail.
+- Keep the overall treatment warm, understated and editorial: charcoal ink
+  outlines, restrained flat colour and light print texture. Ochre clothing and
+  dark blue denim should remain consistent across illustrations.
+- Pale lavender (`#F0E9F9`) is a suitable background within the house palette.
+- Choose the activity, pose and props to serve each article. Keep the head,
+  gaze and hands directed naturally towards the task.
+- Inspect the face, neck, hands, clothing and seated anatomy at full resolution
+  as well as thumbnail size. Correct malformed grips, disconnected joints or
+  ambiguous garment silhouettes before presenting the final image. When showing
+  the full seated figure, include both lower legs and naturally grounded feet;
+  do not leave missing legs or knee-length stumps to fit the furniture.
+
+#### Optional Author Workspace
+
+The desk is a reusable visual reference, not a required hero-image setting.
+Featuring the author character does **not** require featuring his desk or
+workspace. Choose the scene that best communicates the article. When a desk scene
+is useful, include only the relevant items below rather than forcing every prop
+into the composition; their arrangement can change with the pose and framing.
+
+- Use a four-legged FlexiSpot electric standing desk with an **extra thick**
+  natural oak top, four telescopic metal lifting columns and a restrained
+  charcoal frame. Set its height to suit the character's seated or standing
+  pose. Mount the height-control keypad at the **far-right end of the front
+  edge**, not near the centre. Keep it beside the right-front desk leg, not
+  directly in front of or obscuring the leg.
+- The chair is a graphite Herman Miller Aeron: recognisable mesh back and seat,
+  curved frame, understated armrests and a central five-spoke caster base.
+  Preserve plausible posture, support and legroom rather than distorting the
+  character to expose every chair detail.
+- On the desktop, use a small oak pencil holder with a few Blackwing pencils,
+  each with its distinctive wide, flat rectangular rubber in a metal ferrule at
+  one end. Add a matching oak plant container holding a leafy green houseplant.
+  Keep both containers visibly wooden, with restrained oak grain rather than
+  grey ceramic or metal surfaces.
+- Include a cream-paper writing pad and a normal hand-sized fountain pen when
+  writing accessories suit the scene. The pen has a transparent plastic
+  demonstrator barrel with visible shimmer ink. Choose a random ink colour for
+  each new illustration rather than using a fixed colour, and suggest shimmer
+  with only a few subtle flecks. Keep its nib and separate clear cap
+  proportionate. It should be a small desk accessory, not span the whole pad.
+- Small stacks of simply bound books can support the scene. Avoid invented
+  readable titles, decorative clutter or adding objects just to fill space.
+- A modest, open-topped wicker wastepaper basket sits on the floor under the
+  left side of the desk. Use natural tan wicker, a gently tapered shape and
+  simple woven hatching; keep the desk legs visible and the basket grounded.
+- Render the pen, furniture and accessories with the same simplified
+  charcoal outlines, restrained flat colours and light texture as the rest of
+  the illustration. Suggest transparent plastic and shimmer with a few marks,
+  not glossy highlights or photorealistic objects pasted into an ink drawing.
 
 ### Updating Published Posts
 
