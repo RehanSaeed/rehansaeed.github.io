@@ -275,6 +275,19 @@ To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>`
 </video>
 ```
 
+<video
+  src="/videos/threeui-demonstration-960x720.mp4"
+  controls
+  playsinline
+  preload="metadata"
+  width="960"
+  height="720"
+  aria-label="ThreeUI demonstration of interactive Three.js components and landing pages">
+<a href="https://x.com/MengTo/status/2090817187900780961/video/1">Watch the video demonstration.</a>
+</video>
+
+Video by [Meng To](https://mengto.com/). [Original source on X](https://x.com/MengTo/status/2090817187900780961/video/1).
+
 Wrap the player in `<figure>` and add `<figcaption>` after it for visible context, creator credit and the original source:
 
 ```html

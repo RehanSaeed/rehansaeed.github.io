@@ -107,15 +107,10 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
     justify-items: center;
     inline-size: calc(100% + (2 * var(--global-space-fluid-6)));
     margin-inline: var(--global-space-fluid--6);
-
-    picture {
-      display: contents;
-    }
   }
 
   img {
     display: block;
-    inline-size: auto;
     margin-inline: auto;
     max-inline-size: 100%;
   }

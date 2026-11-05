@@ -1,5 +1,50 @@
 import { expect, test } from "@playwright/test";
 
+test("The cheat sheet renders its local video example as a native player", async ({
+  page,
+  baseURL,
+}) => {
+  await page.route(
+    (url) => url.origin !== new URL(baseURL!).origin,
+    (route) =>
+      route.fulfill({
+        status: route.request().isNavigationRequest() ? 200 : 204,
+        contentType: "text/html",
+      }),
+  );
+  await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
+  const video = page.getByLabel(
+    "ThreeUI demonstration of interactive Three.js components and landing pages",
+  );
+  await expect(page.locator(".post__content video")).toHaveCount(1);
+  await expect(video).toHaveAttribute(
+    "src",
+    "/videos/threeui-demonstration-960x720.mp4",
+  );
+  await expect(video).toHaveAttribute("controls", "");
+  await expect(video).toHaveAttribute("playsinline", "");
+  await expect(video).toHaveAttribute("preload", "metadata");
+  await expect(video).not.toHaveAttribute("autoplay");
+  await expect(
+    page.getByRole("link", { name: "Original source on X", exact: true }),
+  ).toHaveAttribute(
+    "href",
+    "https://x.com/MengTo/status/2090817187900780961/video/1",
+  );
+
+  for (const width of [1280, 375, 320]) {
+    await page.setViewportSize({ width, height: 900 });
+    await video.scrollIntoViewIfNeeded();
+    await expect(video).toBeVisible();
+    const bounds = await video.boundingBox();
+    expect(bounds).not.toBeNull();
+    expect(bounds!.width).toBeGreaterThan(0);
+    expect(bounds!.x).toBeGreaterThanOrEqual(0);
+    expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
+    expect(bounds!.width / bounds!.height).toBeCloseTo(4 / 3, 2);
+  }
+});
+
 test("The article plays a self-hosted video without loading X's widget", async ({
   page,
   baseURL,

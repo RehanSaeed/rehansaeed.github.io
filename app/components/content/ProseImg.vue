@@ -8,11 +8,13 @@
       :alt="alt"
       :width="width"
       :height="height"
+      :img-attrs="{ class: 'prose-image__image' }"
       :sizes="sizes"
       densities="x1 x2"
       loading="lazy" />
     <NuxtImg
       v-else
+      class="prose-image__image"
       :src="src"
       :alt="alt"
       :width="width"

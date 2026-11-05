@@ -1,5 +1,8 @@
 img {
   display: block;
-  inline-size: 100%;
   block-size: auto;
+
+  &:not(.prose-image__image) {
+    inline-size: 100%;
+  }
 }
