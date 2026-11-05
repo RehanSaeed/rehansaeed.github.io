@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { lstat, readFile, readdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import type { load as loadHtml } from "cheerio";
-import site from "../site.json" with { type: "json" };
 
 type Deployment = {
     revision: string;
@@ -18,7 +18,7 @@ type Deployment = {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
     value !== null && typeof value === "object" && !Array.isArray(value);
 const record = (value: unknown): Record<string, unknown> => {
-    assert(isRecord(value), "Expected a deployment object.");
+    assert(isRecord(value), "Expected a JSON object.");
     return value;
 };
 const deploymentRevision = (value: unknown) => {
@@ -72,6 +72,21 @@ const parseDeployment = (value: unknown): Deployment => {
         }),
     };
 };
+// Native JSON imports create filename-less CJS cache entries in Node 24, breaking Playwright collection.
+const site = (() => {
+    const body: unknown = JSON.parse(
+        readFileSync(new URL("../site.json", import.meta.url), "utf8"),
+    );
+    const { url, repository } = record(body);
+    const { owner, name } = record(repository);
+    assert(
+        typeof url === "string" &&
+            typeof owner === "string" &&
+            typeof name === "string",
+        "Invalid site URL or repository settings.",
+    );
+    return { url, repository: `${owner}/${name}` };
+})();
 const origin = new URL(site.url).origin;
 const domain = new URL(origin).hostname;
 const digest = (body: string | Buffer) =>
@@ -327,7 +342,7 @@ async function preflight() {
         "GITHUB_TOKEN is required for the read-only Pages settings check.",
     );
     const response = await fetch(
-        `https://api.github.com/repos/${site.repository.owner}/${site.repository.name}/pages`,
+        `https://api.github.com/repos/${site.repository}/pages`,
         {
             headers: {
                 Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,

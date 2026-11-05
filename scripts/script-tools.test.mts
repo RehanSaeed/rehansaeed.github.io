@@ -387,6 +387,44 @@ await test("Pages verification CLI works without installed dependencies", async 
     assert.match(result.stdout, /Verified deployment a{40}.*1 resources/);
 });
 
+await test("Pages verifier supports Playwright's CommonJS dependency collection", async (context) => {
+    const directory = await temporaryDirectory(context);
+    const configuration = join(directory, "playwright.config.cjs");
+    await Promise.all([
+        writeFile(
+            configuration,
+            'module.exports = { testDir: __dirname, testMatch: "*.spec.*", reporter: "line" };',
+        ),
+        writeFile(
+            join(directory, "a-pages.spec.mts"),
+            `import { test } from ${JSON.stringify(new URL("../node_modules/@playwright/test/index.mjs", import.meta.url).href)};
+import { verifyPublished } from ${JSON.stringify(new URL("./pages.mts", import.meta.url).href)};
+test("Pages verifier loads", () => {
+    if (typeof verifyPublished !== "function") throw new Error("Missing verifier");
+});`,
+        ),
+        writeFile(
+            join(directory, "b-json.spec.cjs"),
+            `const { test } = require(${JSON.stringify(script("../node_modules/@playwright/test/index.js"))});
+const site = require(${JSON.stringify(script("../site.json"))});
+test("CommonJS site settings load", () => {
+    if (typeof site.url !== "string") throw new Error("Missing site URL");
+});`,
+        ),
+    ]);
+    const result = await execute(
+        process.execPath,
+        [
+            script("../node_modules/@playwright/test/cli.js"),
+            "test",
+            "--list",
+            `--config=${configuration}`,
+        ],
+        { cwd: directory },
+    );
+    assert.match(result.stdout, /Total: 2 tests in 2 files/);
+});
+
 await test("Pages propagation can outlast two minutes but still requires exact canonical resource bytes", async (context) => {
     const started = Date.now();
     let elapsed = 0;
