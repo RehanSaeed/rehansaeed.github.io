@@ -39,7 +39,6 @@ import site from "../../site.json";
 import { readImageDimensions } from "./images";
 import { filterMarkdownSitemap } from "./seo";
 import { postTrafficSnapshot } from "./traffic";
-import site from "../../site.json";
 
 const postsPerPage = 10;
 
