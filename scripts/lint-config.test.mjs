@@ -7,7 +7,11 @@ const eslint = new ESLint();
 async function ruleIds(source, filePath) {
   const [result] = await eslint.lintText(source, { filePath });
   assert.ok(result, "ESLint must return a result for the fixture");
-  assert.equal(result.fatalErrorCount, 0, "Fixtures must parse successfully");
+  assert.equal(
+    result.fatalErrorCount,
+    0,
+    `Fixtures must parse successfully: ${JSON.stringify(result.messages)}`,
+  );
   return result.messages.map((message) => message.ruleId);
 }
 
@@ -21,16 +25,30 @@ test("strict typed rules catch unsafe access and unhandled promises", async () =
 });
 
 test("JSDoc is required for public properties, not local or private properties", async () => {
-  const rules = await ruleIds(
-    `export interface PublicOptions { label: string; }
-     export class PublicClass { visible = ""; private hidden = ""; protected inherited = ""; }
-     function local() { const options: { value: string } = { value: "" }; return options; }`,
-    "shared/utils/images.ts",
-  );
-  assert.equal(
-    rules.filter((rule) => rule === "jsdoc/require-jsdoc").length,
-    2,
-  );
+  for (const [source, expected] of [
+    ["export interface PublicOptions { label: string; }", 1],
+    ['export class PublicClass { visible = ""; }', 1],
+    [
+      'export class PublicClass { private hidden = ""; protected inherited = ""; }',
+      0,
+    ],
+    [
+      'function local() { const options: { value: string } = { value: "" }; return options; }',
+      0,
+    ],
+    [
+      "export interface PublicOptions { /** Display label. */ label: string; }",
+      0,
+    ],
+    ['export class PublicClass { /** Display label. */ visible = ""; }', 0],
+  ]) {
+    const rules = await ruleIds(source, "shared/utils/images.ts");
+    assert.equal(
+      rules.filter((rule) => rule === "jsdoc/require-jsdoc").length,
+      expected,
+      source,
+    );
+  }
 });
 
 test("JSDoc covers Options API and script setup component props", async () => {
@@ -92,11 +110,27 @@ test("Vue accessibility checks Nuxt image components inside links", async () => 
 });
 
 test("Playwright checks unawaited assertions in test files", async () => {
+  for (const module of ["@playwright/test", "./fixtures"]) {
+    const source = `import { test, expect } from "${module}"; test("navigation", async ({ page }) => { await page.goto("/"); expect(page).toHaveTitle("Home"); });`;
+    const rules = await ruleIds(source, "tests/e2e/about.spec.ts");
+    assert.ok(
+      rules.includes("playwright/missing-playwright-await"),
+      `Unawaited assertions from ${module} must be rejected`,
+    );
+    const awaited = await ruleIds(
+      source.replace("expect(page)", "await expect(page)"),
+      "tests/e2e/about.spec.ts",
+    );
+    assert.ok(!awaited.includes("playwright/missing-playwright-await"));
+  }
+});
+
+test("Playwright rejects fixed sleeps instead of condition-based waits", async () => {
   const rules = await ruleIds(
-    'import { test, expect } from "@playwright/test"; test("navigation", async ({ page }) => { await page.goto("/"); expect(page).toHaveTitle("Home"); });',
+    'import { test, expect } from "./fixtures"; test("navigation", async ({ page }) => { await page.goto("/"); await page.waitForTimeout(1000); await expect(page).toHaveTitle("Home"); });',
     "tests/e2e/about.spec.ts",
   );
-  assert.ok(rules.includes("playwright/missing-playwright-await"));
+  assert.ok(rules.includes("playwright/no-wait-for-timeout"));
 });
 
 test("selected Unicorn rules prefer explicit array construction", async () => {

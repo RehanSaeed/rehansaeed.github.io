@@ -312,6 +312,15 @@ for (const width of [1280, 768, 375, 320]) {
         expect(cards[0]!.captionHeight).toBeCloseTo(cards[1]!.captionHeight, 1);
       }
     }
+    let documentNavigations = 0;
+    page.on("request", (request) => {
+      if (
+        request.isNavigationRequest() &&
+        request.frame() === page.mainFrame()
+      ) {
+        documentNavigations++;
+      }
+    });
     await previous.focus();
     await page.keyboard.press("Tab");
     await expect(next).toBeFocused();
@@ -330,6 +339,7 @@ for (const width of [1280, 768, 375, 320]) {
     await expect(page.locator(".post-page__title-container h1")).toHaveText(
       older.title,
     );
+    expect(documentNavigations).toBe(0);
     expect(iconRequests).toEqual([]);
   }
 

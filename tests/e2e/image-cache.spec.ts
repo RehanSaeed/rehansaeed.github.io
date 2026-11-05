@@ -1,12 +1,4 @@
-import {
-  mkdtemp,
-  mkdir,
-  readFile,
-  rename,
-  rm,
-  writeFile,
-} from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { expect, test } from "@playwright/test";
 import { parse } from "yaml";
@@ -16,8 +8,7 @@ const image = "public/images/photo.png";
 const variant = "_ipx/f_avif&s_20x10/images/photo.png";
 const bytes = Buffer.from([0, 255, 128, 32, 10, 13]);
 
-async function fixture() {
-  const root = await mkdtemp(join(tmpdir(), "blog-image-cache-"));
+async function fixture(root: string) {
   for (const file of [
     "package-lock.json",
     "nuxt.config.ts",
@@ -34,8 +25,8 @@ async function fixture() {
   return root;
 }
 
-test("A warm image cache preserves binary output and can accumulate new sizes", async () => {
-  const root = await fixture();
+test("A warm image cache preserves binary output and can accumulate new sizes", async ({}, info) => {
+  const root = await fixture(info.outputPath("image-cache"));
   try {
     const cold = await prepareImageCache(root);
     expect(cold.hit).toBe(false);
@@ -67,8 +58,8 @@ for (const file of [
   "modules/image-cache/cache.ts",
   "modules/blog-content/paths.ts",
 ]) {
-  test(`Changing ${file} invalidates and removes stale image output`, async () => {
-    const root = await fixture();
+  test(`Changing ${file} invalidates and removes stale image output`, async ({}, info) => {
+    const root = await fixture(info.outputPath("image-cache"));
     try {
       const cold = await prepareImageCache(root);
       await cold.save(join(root, "dist"));
@@ -77,31 +68,38 @@ for (const file of [
       expect(changed.hit).toBe(false);
       await expect(
         readFile(join(changed.publicDir, variant)),
-      ).rejects.toThrow();
+      ).rejects.toMatchObject({ code: "ENOENT" });
     } finally {
       await rm(root, { recursive: true, force: true });
     }
   });
 }
 
-test("Renaming or removing an image invalidates cached URLs", async () => {
-  const root = await fixture();
+test("Renaming or removing an image invalidates cached URLs", async ({}, info) => {
+  const root = await fixture(info.outputPath("image-cache"));
   try {
     const cold = await prepareImageCache(root);
     await cold.save(join(root, "dist"));
     await rename(join(root, image), join(root, "public/images/renamed.png"));
     const renamed = await prepareImageCache(root);
     expect(renamed.hit).toBe(false);
+    await expect(
+      readFile(join(renamed.publicDir, variant)),
+    ).rejects.toMatchObject({ code: "ENOENT" });
     await renamed.save(join(root, "dist"));
     await rm(join(root, "public/images/renamed.png"));
-    expect((await prepareImageCache(root)).hit).toBe(false);
+    const removed = await prepareImageCache(root);
+    expect(removed.hit).toBe(false);
+    await expect(
+      readFile(join(removed.publicDir, variant)),
+    ).rejects.toMatchObject({ code: "ENOENT" });
   } finally {
     await rm(root, { recursive: true, force: true });
   }
 });
 
-test("Missing fingerprint inputs fail rather than reusing unverified output", async () => {
-  const root = await fixture();
+test("Missing fingerprint inputs fail rather than reusing unverified output", async ({}, info) => {
+  const root = await fixture(info.outputPath("image-cache"));
   try {
     await rm(join(root, "package-lock.json"));
     await expect(prepareImageCache(root)).rejects.toThrow("ENOENT");
@@ -110,8 +108,8 @@ test("Missing fingerprint inputs fail rather than reusing unverified output", as
   }
 });
 
-test("A failed image-output save cannot mark a cold cache as complete", async () => {
-  const root = await fixture();
+test("A failed image-output save cannot mark a cold cache as complete", async ({}, info) => {
+  const root = await fixture(info.outputPath("image-cache"));
   try {
     const cold = await prepareImageCache(root);
     await rm(join(root, "dist", "_ipx"), { recursive: true });

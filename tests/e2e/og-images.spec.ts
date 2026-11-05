@@ -1,7 +1,6 @@
 import { execFile } from "node:child_process";
-import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
-import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { runInNewContext } from "node:vm";
 import { promisify } from "node:util";
@@ -56,7 +55,7 @@ async function verifySocialCardProps() {
     ["About", defaultHero],
     ["Blog - Page 2", defaultHero],
     ["# CSS", defaultHero],
-  ]) {
+  ] as const) {
     expect(exports.useBlogOgImage(title, hero)).toEqual([
       "BlogTakumi",
       { title, author, heroImage: hero },
@@ -304,7 +303,7 @@ test("The CSS article and other page types advertise distinct static social card
     ["/portfolio/", "Portfolio"],
     ["/2/", "Blog - Page 2"],
     ["/tag/css/", "# CSS"],
-  ]) {
+  ] as const) {
     const response = await request.get(path);
     expect(response.ok(), path).toBe(true);
     const $ = load(await response.text());
@@ -339,8 +338,8 @@ test("The CSS article and other page types advertise distinct static social card
 
 test("The gallery embeds cards, includes unlisted pages and filters by title or URL", async ({
   page,
-}) => {
-  const directory = await mkdtemp(join(tmpdir(), "og-images-"));
+}, testInfo) => {
+  const directory = testInfo.outputPath("og-images");
   try {
     await mkdir(join(directory, "_og", "s"), { recursive: true });
     const png = await sharp({

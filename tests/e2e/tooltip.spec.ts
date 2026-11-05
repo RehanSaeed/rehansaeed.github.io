@@ -4,6 +4,7 @@ for (const colorScheme of ["light", "dark"] as const) {
   test(`Tooltips use the page background and accent border in ${colorScheme}`, async ({
     page,
   }) => {
+    await page.clock.install();
     await page.emulateMedia({ colorScheme });
     await page.goto("/");
     const search = page.getByRole("button", {
@@ -44,8 +45,7 @@ for (const colorScheme of ["light", "dark"] as const) {
     await tooltip.hover();
     await expect(tooltip).toBeVisible();
     // Hovering the tooltip must keep it open beyond the delayed close deadline.
-    // eslint-disable-next-line playwright/no-wait-for-timeout
-    await page.waitForTimeout(200);
+    await page.clock.fastForward(1000);
     await expect(tooltip).toBeVisible();
     await page.keyboard.press("Escape");
     await expect(tooltip).toBeHidden();
@@ -173,6 +173,7 @@ test("Pointer focus does not pin hover tooltips, while keyboard focus does", asy
 test("Tooltip triggers retain native layout and touch activation", async ({
   page,
 }) => {
+  await page.clock.install();
   await page.goto("/portfolio/");
   await expect(
     page.getByRole("button", { name: "Open search", exact: true }),
@@ -213,8 +214,7 @@ test("Tooltip triggers retain native layout and touch activation", async ({
   await expect(search).toBeEnabled();
   await search.dispatchEvent("pointerenter", { pointerType: "touch" });
   // A touch pointer must not open a tooltip after the hover delay has elapsed.
-  // eslint-disable-next-line playwright/no-wait-for-timeout
-  await page.waitForTimeout(400);
+  await page.clock.fastForward(1000);
   await expect(page.getByRole("tooltip")).toHaveCount(0);
   await search.click();
   await expect(

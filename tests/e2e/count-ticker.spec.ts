@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { expect, test, type Page } from "@playwright/test";
-import { compileString } from "sass-embedded";
+import { initAsyncCompiler } from "sass-embedded";
 import { compileScript, parse } from "vue/compiler-sfc";
 import ts from "typescript";
 import type { CounterGrowth } from "../../shared/utils/ticker";
@@ -97,17 +97,20 @@ const mountTicker = async (
       const intervals = new Set<number>();
       const setInterval = window.setInterval.bind(window);
       const clearInterval = window.clearInterval.bind(window);
-      window.setInterval = (
-        handler: TimerHandler,
-        timeout?: number,
-        ...args: unknown[]
-      ) => {
-        const timer = setInterval(handler, timeout, ...args);
-        intervals.add(timer);
-        return timer;
-      };
+      Object.defineProperty(window, "setInterval", {
+        configurable: true,
+        value: (
+          handler: TimerHandler,
+          timeout?: number,
+          ...args: unknown[]
+        ) => {
+          const timer = setInterval(handler, timeout, ...args);
+          intervals.add(timer);
+          return timer;
+        },
+      });
       window.clearInterval = (timer) => {
-        if (timer !== undefined) {
+        if (typeof timer === "number") {
           intervals.delete(timer);
         }
         clearInterval(timer);
@@ -119,7 +122,7 @@ const mountTicker = async (
         window.IntersectionObserver = class extends NativeIntersectionObserver {
           constructor(
             callback: IntersectionObserverCallback,
-            options?: IntersectionObserverInit,
+            observerOptions?: IntersectionObserverInit,
           ) {
             super((entries, observer) => {
               callback(entries, observer);
@@ -128,11 +131,11 @@ const mountTicker = async (
               if (observed.size === (options.statistics ? 2 : 1)) {
                 resolve();
               }
-            }, options);
+            }, observerOptions);
             observers.add(this);
           }
 
-          disconnect() {
+          override disconnect() {
             observers.delete(this);
             super.disconnect();
           }
@@ -363,23 +366,41 @@ test("Ticker styles, statistics and badges preserve dimensions and follow shared
         "utf8",
       ),
     ]);
-  const styles = [component, statistics, badges, badgeComponent]
-    .map((source) => {
-      const { descriptor } = parse(source);
-      return compileString(descriptor.styles[0]!.content, {
-        importers: [
-          {
-            findFileUrl: (url) =>
-              url.startsWith("~/")
-                ? pathToFileURL(
-                    join(process.cwd(), "app", ...url.slice(2).split("/")),
-                  )
-                : null,
-          },
-        ],
-      }).css;
-    })
-    .join("\n");
+
+  const styles =
+    await test.step("Compile standalone component styles", async () => {
+      const compiler = await initAsyncCompiler();
+      try {
+        const results = await Promise.all([
+          compiler.compileStringAsync(properties, {
+            url: pathToFileURL(propertiesPath),
+          }),
+          ...[component, statistics, badges, badgeComponent].map((source) => {
+            const { descriptor } = parse(source);
+            return compiler.compileStringAsync(descriptor.styles[0]!.content, {
+              importers: [
+                {
+                  findFileUrl: (url) =>
+                    url.startsWith("~/")
+                      ? pathToFileURL(
+                          join(
+                            process.cwd(),
+                            "app",
+                            ...url.slice(2).split("/"),
+                          ),
+                        )
+                      : null,
+                },
+              ],
+            });
+          }),
+        ]);
+        return results.map(({ css }) => css).join("\n");
+      } finally {
+        await compiler.dispose();
+      }
+    });
+
   const badgeSource = `data:image/svg+xml,${encodeURIComponent(
     '<svg xmlns="http://www.w3.org/2000/svg" width="90" height="20"></svg>',
   )}`;
@@ -415,7 +436,7 @@ test("Ticker styles, statistics and badges preserve dimensions and follow shared
     </body></html>
   `);
   await page.addStyleTag({
-    content: `${compileString(properties, { url: pathToFileURL(propertiesPath) }).css}\n${styles}`,
+    content: styles,
   });
   const ticker = page.locator(".number-ticker");
   const info = ticker.getByRole("button", { name: "Downloads" });

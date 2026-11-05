@@ -121,9 +121,14 @@ test("Unavailable GitHub preserves saved popularity and schedules another refres
   const file = info.outputPath("portfolio-cache", "blog-portfolio.json");
   await writeFile(file, JSON.stringify({ updated: 0, snapshots }));
   const originalFetch = globalThis.fetch;
-  globalThis.fetch = () => Promise.resolve(new Response(null, { status: 503 }));
+  let calls = 0;
+  globalThis.fetch = () => {
+    calls++;
+    return Promise.resolve(new Response(null, { status: 503 }));
+  };
   try {
     expect(await portfolioSnapshots(dir, [entry])).toEqual(snapshots);
+    expect(calls).toBe(1);
     expect(
       cacheSchema.parse(JSON.parse(await readFile(file, "utf8"))).updated,
     ).toBe(0);
@@ -175,12 +180,16 @@ test("Microsoft work does not request or fabricate GitHub statistics", async ({}
   entry.data.kind = "microsoft";
   entry.data.permalink = "https://blogs.windows.com/example/";
   const originalFetch = globalThis.fetch;
-  globalThis.fetch = () =>
-    Promise.reject(
+  let calls = 0;
+  globalThis.fetch = () => {
+    calls++;
+    return Promise.reject(
       new Error("Microsoft product links must not reach the GitHub API."),
     );
+  };
   try {
     expect(await portfolioSnapshots(dir, [entry])).toEqual({});
+    expect(calls).toBe(0);
   } finally {
     globalThis.fetch = originalFetch;
   }
