@@ -28,7 +28,15 @@ test("The cheat sheet renders both local video examples as native players", asyn
       "/videos/threeui-demonstration-960x720.mp4",
     );
     await expect(video).toHaveJSProperty("controls", true);
-    await expect(video).toHaveJSProperty("playsInline", true);
+    await expect(video).toHaveAttribute("playsinline", "");
+    // Firefox honours the attribute but does not expose the IDL property.
+    expect(
+      await video.evaluate(
+        (element) =>
+          !("playsInline" in element) ||
+          (element as HTMLVideoElement & { playsInline: boolean }).playsInline,
+      ),
+    ).toBe(true);
     await expect(video).toHaveAttribute("preload", "metadata");
     await expect(video).not.toHaveAttribute("autoplay");
     for (const width of [1280, 375, 320]) {
