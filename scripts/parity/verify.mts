@@ -28,6 +28,7 @@ const localArtifacts = await load<ArtifactSnapshots<SchemaGraph>>(
 );
 const excluded = new Set(["/streaming/border/", "/streaming/thumbnail/"]);
 const postDates = new Map<string, string>();
+const feedDates = new Map<string, { published: string; modified: string }>();
 const postTags = new Map<string, string[]>();
 const correctedImageDimensions: Record<
     string,
@@ -149,6 +150,10 @@ for (const file of await readdir("content/posts", { recursive: true })) {
         );
     }
     postTags.set(`{origin}${data.permalink}`, data.tags ?? []);
+    feedDates.set(`{origin}${data.permalink}`, {
+        published: new Date(data.date).toISOString(),
+        modified: new Date(data.dateModified ?? data.date).toISOString(),
+    });
 }
 
 // Only the explicitly approved migration/SEO changes are applied to the reference.
@@ -173,6 +178,22 @@ function approvedPage(
     }
     if (path === "/" || /^\/\d+\/$/.test(path)) {
         page.meta["og:url"] = `{origin}${path}`;
+        page.meta["og:type"] = "website";
+        for (const key of Object.keys(page.meta)) {
+            if (key.startsWith("profile:")) {
+                delete page.meta[key];
+            }
+        }
+        if (path !== "/") {
+            const number = path.split("/")[1];
+            page.title = `Blog - Page ${number} - ${site.name}`;
+            page.meta["og:title"] = `Blog - Page ${number}`;
+            page.meta.description = `Page ${number} of blog posts authored by ${site.author.name}.`;
+            page.meta["og:description"] = page.meta.description;
+        }
+    }
+    if (path === "/404") {
+        page.meta.robots = "noindex, follow";
     }
     if (excluded.has(path)) {
         page.meta.robots = "noindex, follow";
@@ -192,6 +213,7 @@ function approvedPage(
             delete schema.author.logo;
         }
         if (schema["@type"] === "Article") {
+            page.meta["article:author"] = "{origin}/about/";
             schema.mainEntityOfPage["@id"] = schema.url;
             schema.dateModified ??= schema.datePublished;
             page.meta["article:modified_time"] = schema.dateModified;
@@ -278,22 +300,22 @@ for (const path of ["/rss.xml", "/feed/index.xml"] as const) {
 const json = structuredClone(liveArtifacts["/feed.json"]);
 for (const item of json.items) {
     item.tags = postTags.get(item.url);
+    item.date_modified = feedDates.get(item.url)?.modified;
 }
 assert.deepEqual(
     localArtifacts["/feed.json"],
     json,
     "JSON feed identities, order, dates and tags",
 );
-assert.deepEqual(
-    localArtifacts["/atom.xml"],
-    liveArtifacts["/atom.xml.atom"],
-    "Repaired Atom endpoint",
-);
-assert.deepEqual(
-    localArtifacts["/atom.xml.atom"],
-    liveArtifacts["/atom.xml.atom"],
-    "Legacy Atom alias",
-);
+const atom = structuredClone(liveArtifacts["/atom.xml.atom"]);
+for (const entry of atom.entries) {
+    const dates = feedDates.get(entry.id);
+    assert(dates, `${entry.id}: missing feed dates`);
+    entry.published = dates.published;
+    entry.updated = dates.modified;
+}
+assert.deepEqual(localArtifacts["/atom.xml"], atom, "Repaired Atom endpoint");
+assert.deepEqual(localArtifacts["/atom.xml.atom"], atom, "Legacy Atom alias");
 
 const sitemap = liveArtifacts["/sitemap.xml"].urls
     .filter((entry) => !excluded.has(entry.loc.replace("{origin}", "")))

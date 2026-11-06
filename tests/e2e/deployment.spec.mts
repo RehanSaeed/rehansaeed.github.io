@@ -70,7 +70,11 @@ function requireStep(
 
 const oldPolicy =
     "default-src 'self'; script-src 'self' https://www.google-analytics.com/analytics.js 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.github.com https://webmention.io https://www.google-analytics.com; font-src 'self' data:; frame-src 'self' https://www.youtube-nocookie.com; img-src 'self' data: https:; worker-src 'self'";
-const policy = oldPolicy
+const mapPolicy = oldPolicy.replace(
+    "connect-src 'self'",
+    "connect-src 'self' https://tiles.openfreemap.org https://get.geojs.io",
+);
+const policy = mapPolicy
     .replace(
         "script-src 'self'",
         "script-src 'self' https://www.googletagmanager.com",
@@ -94,12 +98,12 @@ test("Pages settings reject an unprepared source or lost custom domain", () => {
 
 test("GA4 requires both vendor scripts and regional collection origins in every enforced policy", () => {
     expect(() => {
-        checkCsp([oldPolicy], "");
+        checkCsp([mapPolicy], "");
     }).not.toThrow();
     expect(() => {
-        checkCsp([oldPolicy], "G-LOCALTEST");
+        checkCsp([mapPolicy], "G-LOCALTEST");
     }).toThrow("googletagmanager");
-    const scriptsOnly = oldPolicy.replace(
+    const scriptsOnly = mapPolicy.replace(
         "script-src 'self'",
         "script-src 'self' https://www.googletagmanager.com",
     );
@@ -118,6 +122,35 @@ test("GA4 requires both vendor scripts and regional collection origins in every 
     expect(() => {
         checkCsp(["default-src 'self'"], "G-LOCALTEST");
     }).toThrow();
+});
+
+test("The hosting CSP must allow the map and IP location services in every enforced policy", () => {
+    expect(() => {
+        checkCsp([oldPolicy], "");
+    }).toThrow("https://tiles.openfreemap.org");
+    expect(() => {
+        checkCsp([mapPolicy], "");
+    }).not.toThrow();
+    expect(() => {
+        checkCsp([mapPolicy.replace(" https://get.geojs.io", "")], "");
+    }).toThrow("https://get.geojs.io");
+    expect(() => {
+        checkCsp(
+            [
+                mapPolicy.replace(
+                    "https://tiles.openfreemap.org",
+                    "https://tiles.openfreemap.org/styles/",
+                ),
+            ],
+            "",
+        );
+    }).toThrow("https://tiles.openfreemap.org/");
+    expect(() => {
+        checkCsp([mapPolicy, oldPolicy], "");
+    }).toThrow("https://tiles.openfreemap.org");
+    expect(() => {
+        checkCsp(["default-src 'self'"], "");
+    }).toThrow("Hosting CSP default-src blocks https://tiles.openfreemap.org/");
 });
 
 test("Published artifact respects Pages limits and resolves all routes and local resources case-sensitively", async () => {
@@ -200,6 +233,9 @@ test("Browser suites run in parallel against one complete build without dropping
     const build = requireJob(workflow, "build");
     const browserTests = requireJob(workflow, "test");
     expect(build.name).toBe("Generate");
+    expect(browserTests.name).toBe(
+        "Playwright (${{ matrix.browser }}, ${{ matrix.shard }}/2)",
+    );
     expect(workflow.jobs.checks).toEqual({
         name: "Build",
         if: "always() && (github.event_name != 'pull_request' || !github.event.pull_request.draft)",
@@ -220,7 +256,7 @@ test("Browser suites run in parallel against one complete build without dropping
     expect(browserTests.needs).toBe("build");
     expect(browserTests.strategy).toEqual({
         "fail-fast": false,
-        matrix: { browser: ["chrome", "edge", "firefox"] },
+        matrix: { browser: ["chrome", "edge", "firefox"], shard: [1, 2] },
     });
     expect(build.steps).toContainEqual({
         name: "Package Browser Test Site",
@@ -246,12 +282,14 @@ test("Browser suites run in parallel against one complete build without dropping
     expect(extract).toBeLessThan(run);
     expect(steps[extract]?.run).toBe("tar -xf playwright-site.tar");
     expect(steps[run]?.run).toBe(
-        "npx playwright test --project=${{ matrix.browser }}",
+        "npx playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}/2",
     );
     expect(steps.some((step) => step.run === "npm run build")).toBe(false);
     const report = requireStep(steps, "Upload Playwright Report");
     expect(report.if).toBe("failure()");
-    expect(report.with?.name).toBe("playwright-report-${{ matrix.browser }}");
+    expect(report.with?.name).toBe(
+        "playwright-report-${{ matrix.browser }}-${{ matrix.shard }}",
+    );
 });
 
 test("Quality checks run independently without racing generation in the same checkout", () => {
@@ -324,7 +362,7 @@ test("Social image cache invalidates external renderer inputs without a stale fa
     );
 });
 
-test("Only validated public snapshots are cached before every Nuxt prepare", () => {
+test("Generate alone saves validated public snapshots; every Nuxt prepare restores them first", () => {
     const workflow = readBuildWorkflow();
     const caches = ["build", "quality", "test"].map((name) => {
         const job = requireJob(workflow, name);
@@ -332,7 +370,11 @@ test("Only validated public snapshots are cached before every Nuxt prepare", () 
         expect(job.steps.indexOf(cache)).toBeLessThan(
             job.steps.indexOf(requireStep(job.steps, "NPM Install")),
         );
-        expect(cache.uses).toBe("actions/cache@v6.1.0");
+        expect(cache.uses).toBe(
+            name === "build"
+                ? "actions/cache@v6.1.0"
+                : "actions/cache/restore@v6.1.0",
+        );
         expect(cache.with?.path?.split("\n").filter(Boolean)).toEqual([
             ".data/blog-comments.json",
             ".data/blog-portfolio.json",
@@ -354,8 +396,8 @@ test("Only validated public snapshots are cached before every Nuxt prepare", () 
         expect(requireStep(job.steps, "NPM Install").run).toBe("npm ci");
         return cache;
     });
-    expect(caches[1]).toEqual(caches[0]);
-    expect(caches[2]).toEqual(caches[0]);
+    expect(caches[1]?.with).toEqual(caches[0]?.with);
+    expect(caches[2]?.with).toEqual(caches[0]?.with);
 });
 
 test("Firefox uses a version-matched Playwright image without runtime dependency installation", () => {

@@ -418,6 +418,8 @@ onUnmounted(() => {
   min-inline-size: 0;
   max-inline-size: 100%;
   justify-items: center;
+  // Avoid a speculative transform layer around the WebGL map.
+  will-change: auto;
 
   &:last-child {
     margin-block-end: 0;

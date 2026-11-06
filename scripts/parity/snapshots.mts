@@ -22,6 +22,18 @@ export interface PageSnapshot<Schema> {
     cards: string[];
 }
 
+interface AtomSnapshot {
+    /** Feed entries in publication order. */
+    entries: {
+        /** Canonical article identifier. */
+        id: string;
+        /** Original publication instant. */
+        published: string;
+        /** Last substantive modification instant. */
+        updated: string;
+    }[];
+}
+
 export interface ArtifactSnapshots<Schema> {
     /** Captured response for /404. */
     "/404": PageSnapshot<Schema>;
@@ -40,11 +52,21 @@ export interface ArtifactSnapshots<Schema> {
         items: { link: string; categories?: string[] }[];
     };
     /** Captured response for /feed.json. */
-    "/feed.json": { items: { url: string; tags?: string[] }[] };
+    "/feed.json": {
+        /** Feed items in publication order. */
+        items: {
+            /** Canonical article URL. */
+            url: string;
+            /** Article categories. */
+            tags?: string[];
+            /** Last substantive modification instant. */
+            date_modified?: string;
+        }[];
+    };
     /** Captured response for /atom.xml. */
-    "/atom.xml": unknown;
+    "/atom.xml": AtomSnapshot;
     /** Captured response for /atom.xml.atom. */
-    "/atom.xml.atom": unknown;
+    "/atom.xml.atom": AtomSnapshot;
     /** Captured response for /sitemap.xml. */
     "/sitemap.xml": {
         /** Snapshot urls value. */

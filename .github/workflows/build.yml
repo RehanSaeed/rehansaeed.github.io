@@ -140,7 +140,7 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - name: "Cache Public API Snapshots"
-        uses: actions/cache@v6.1.0
+        uses: actions/cache/restore@v6.1.0
         with:
           path: |
             .data/blog-comments.json
@@ -165,7 +165,7 @@ jobs:
         run: npm run lint
 
   test:
-    name: Playwright (${{ matrix.browser }})
+    name: Playwright (${{ matrix.browser }}, ${{ matrix.shard }}/2)
     needs: build
     runs-on: ubuntu-latest
     # Only Firefox needs a downloaded browser and additional Linux libraries.
@@ -179,6 +179,7 @@ jobs:
       fail-fast: false
       matrix:
         browser: [chrome, edge, firefox]
+        shard: [1, 2]
     steps:
       - name: Checkout
         uses: actions/checkout@v7.0.1
@@ -190,7 +191,7 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - name: "Cache Public API Snapshots"
-        uses: actions/cache@v6.1.0
+        uses: actions/cache/restore@v6.1.0
         with:
           path: |
             .data/blog-comments.json
@@ -212,14 +213,14 @@ jobs:
       - name: "Extract Browser Test Site"
         run: tar -xf playwright-site.tar
       - name: "Playwright Test"
-        run: npx playwright test --project=${{ matrix.browser }}
+        run: npx playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}/2
         env:
           TZ: UTC
       - name: "Upload Playwright Report"
         uses: actions/upload-artifact@v7.0.2
         if: failure()
         with:
-          name: playwright-report-${{ matrix.browser }}
+          name: playwright-report-${{ matrix.browser }}-${{ matrix.shard }}
           path: |
             playwright-report
             test-results

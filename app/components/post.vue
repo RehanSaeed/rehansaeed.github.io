@@ -102,13 +102,26 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
     }
   }
 
-  figure > p:has(+ figcaption) {
-    margin-block-end: var(--global-space-fixed-2);
+  video {
+    display: block;
+    inline-size: calc(100% + (2 * var(--global-space-fluid-6)));
+    margin-inline: var(--global-space-fluid--6);
+    max-inline-size: none;
   }
 
-  figcaption {
-    font-style: italic;
-    margin-block-end: var(--global-space-fixed-5);
+  figure {
+    margin-block: var(--global-space-fixed-5);
+    margin-inline: 0;
+
+    > p:has(.prose-image) {
+      max-inline-size: none;
+      min-inline-size: 0;
+      margin-block-end: 0;
+    }
+
+    .youtube-embed {
+      margin-block: 0;
+    }
   }
 
   .mermaid {

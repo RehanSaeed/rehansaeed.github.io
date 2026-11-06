@@ -1,0 +1,24 @@
+figcaption {
+  color: var(--global-body-color);
+  font-size: var(--global-font-size-1);
+  font-style: italic;
+  font-weight: var(--global-font-weight-normal);
+  line-height: var(--global-line-height-1);
+  text-align: start;
+  overflow-wrap: anywhere;
+
+  max-inline-size: var(--global-line-length-max);
+  min-inline-size: 0;
+  margin-block-start: var(--global-space-fixed-2);
+
+  > p {
+    margin-block-end: 0;
+  }
+
+  small {
+    display: block;
+    font-size: inherit;
+    font-style: normal;
+    margin-block-start: var(--global-space-fixed-2);
+  }
+}
