@@ -10,11 +10,13 @@ const jsonFeedSchema = z.object({
     z.object({
       id: z.string(),
       tags: z.array(z.string()).optional(),
+      date_published: z.iso.datetime(),
+      date_modified: z.iso.datetime(),
     }),
   ),
 });
 
-test("Feeds preserve article tags as Atom terms, RSS categories and JSON tags", async ({
+test("Feeds preserve article tags and distinguish publication from modification dates", async ({
   request,
 }) => {
   const posts = (await scanContent(join(process.cwd(), "content")))
@@ -22,6 +24,8 @@ test("Feeds preserve article tags as Atom terms, RSS categories and JSON tags", 
     .map((entry) => entry.data);
   expect(posts.length).toBeGreaterThan(0);
   expect(posts.some((post) => post.tags.length > 0)).toBe(true);
+  expect(posts.some((post) => post.dateModified)).toBe(true);
+  expect(posts.some((post) => !post.dateModified)).toBe(true);
 
   const [atomResponse, rssResponse, jsonResponse] = await Promise.all([
     request.get("/atom.xml"),
@@ -54,6 +58,28 @@ test("Feeds preserve article tags as Atom terms, RSS categories and JSON tags", 
 
   for (const post of posts) {
     const url = `${origin}${post.permalink}`;
+    const published = new Date(post.date);
+    const modified = new Date(post.dateModified ?? post.date);
+    expect(
+      atomEntries.get(url)?.children("published").text(),
+      `${post.permalink}: Atom published`,
+    ).toBe(published.toISOString());
+    expect(
+      atomEntries.get(url)?.children("updated").text(),
+      `${post.permalink}: Atom updated`,
+    ).toBe(modified.toISOString());
+    expect(
+      rssItems.get(url)?.children("pubDate").text(),
+      `${post.permalink}: RSS publication date`,
+    ).toBe(published.toUTCString());
+    expect(
+      jsonItems.get(url)?.date_published,
+      `${post.permalink}: JSON published`,
+    ).toBe(published.toISOString());
+    expect(
+      jsonItems.get(url)?.date_modified,
+      `${post.permalink}: JSON modified`,
+    ).toBe(modified.toISOString());
     const categories = atomEntries.get(url)?.children("category").toArray();
     expect(jsonItems.has(url), `${post.permalink}: JSON item`).toBe(true);
     expect(

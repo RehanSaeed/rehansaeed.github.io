@@ -44,6 +44,7 @@ export async function createFeed(event: H3Event): Promise<Feed> {
       "permalink",
       "heroImage",
       "date",
+      "dateModified",
       "tags",
       "rawbody",
     )
@@ -78,7 +79,8 @@ export async function createFeed(event: H3Event): Promise<Feed> {
       description: absoluteUrls(post.description, contentDir),
       content: absoluteUrls(await marked(markdown), contentDir),
       author: [{ name: post.author, link: site.url }],
-      date: new Date(post.date),
+      date: new Date(post.dateModified ?? post.date),
+      published: new Date(post.date),
       category: post.tags.map((name) => ({ name, term: name })),
       image: site.url + post.heroImage,
     });

@@ -24,6 +24,7 @@ defineProps({
 useHead({
   title: "Not Found",
 });
+useRobotsRule("noindex, follow");
 </script>
 
 <style lang="scss">
