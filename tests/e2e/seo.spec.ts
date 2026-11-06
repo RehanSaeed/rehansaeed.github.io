@@ -44,6 +44,7 @@ test("Error documents stay noindex when served directly or at an unknown URL", a
 }) => {
   for (const [path, status] of [
     ["/404.html", 200],
+    ["/200.html", 404],
     ["/not-an-existing-seo-test-page/", 404],
   ] as const) {
     const response = await request.get(path);

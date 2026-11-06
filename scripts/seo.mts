@@ -230,6 +230,7 @@ for (const url of urls) {
 const referenceRoutes = (await readFile("tests/parity/urls.txt", "utf8"))
     .trim()
     .split(/\r?\n/);
+await assert.rejects(access(join(directory, "200.html")), { code: "ENOENT" });
 const additionalPublicRoutes = [
     "/tag/ai/",
     "/tag/artificial-intelligence-ai/",
