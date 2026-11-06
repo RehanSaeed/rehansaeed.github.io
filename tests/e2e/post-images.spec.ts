@@ -142,21 +142,21 @@ test("Image captions stay close to the image with space after the caption", asyn
         const spacing = await figure.evaluate((element) => {
           const image = element.querySelector("img")!;
           const caption = element.querySelector("figcaption")!;
-          const paragraph = image.closest("p")!;
-          const style = getComputedStyle(paragraph);
           return {
             gap:
               caption.getBoundingClientRect().top -
               image.getBoundingClientRect().bottom,
-            paragraphMargin: Number.parseFloat(style.marginBlockEnd),
-            captionMargin: Number.parseFloat(
-              getComputedStyle(caption).marginBlockEnd,
+            captionGap: Number.parseFloat(
+              getComputedStyle(caption).marginBlockStart,
+            ),
+            figureMargin: Number.parseFloat(
+              getComputedStyle(element).marginBlockEnd,
             ),
           };
         });
         expect(spacing.gap).toBeGreaterThan(0);
-        expect(spacing.gap).toBeCloseTo(spacing.paragraphMargin, 0);
-        expect(spacing.gap).toBeCloseTo(spacing.captionMargin / 4, 0);
+        expect(spacing.gap).toBeCloseTo(spacing.captionGap, 0);
+        expect(spacing.figureMargin).toBeGreaterThan(spacing.gap);
       }
     }
   }

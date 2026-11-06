@@ -136,7 +136,7 @@
           <em>{{ distanceMiles.toLocaleString("en-GB") }} miles</em> away from
           your current location, according to your IP address</span
         >.
-        <small v-if="!mapReady" class="location-map__attribution">
+        <small v-if="!mapReady">
           Map data:
           <a href="https://www.naturalearthdata.com/">Natural Earth</a>
         </small>
@@ -468,6 +468,7 @@ const loadMap = async () => {
     map = new maplibregl.Map({
       container: mapContainer.value,
       style: mapStyle(),
+      transformRequest: (url) => ({ url, referrerPolicy: "no-referrer" }),
       center: [-15, 54],
       zoom: 1.5,
       cooperativeGestures: true,
@@ -545,8 +546,9 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss">
+@use "~/assets/style/abstracts/visually-hidden";
+
 .location-map {
-  --location-map-max-inline-size: 36rem;
   --location-map-aspect-ratio: 8 / 5;
   --location-map-min-block-size: 20rem;
   --location-map-marker-inline-size: 72px;
@@ -583,14 +585,11 @@ onBeforeUnmount(() => {
 
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  inline-size: 100%;
-  max-inline-size: var(--location-map-max-inline-size);
+  inline-size: calc(100% + (2 * var(--card-space, 0px)));
   min-inline-size: 0;
   margin: 0 0 var(--global-space-fixed-5);
+  margin-inline: calc(var(--card-space, 0px) * -1);
   overflow: hidden;
-  border: var(--global-border-width-1) solid var(--global-border-color);
-  border-radius: var(--global-border-radius);
-  background: var(--global-background-color);
 }
 
 [data-theme="dark"] .location-map {
@@ -666,10 +665,7 @@ onBeforeUnmount(() => {
 }
 
 .location-map__notice {
-  min-inline-size: 0;
-  margin: 0;
-  padding: 0 var(--global-space-fixed-4) var(--global-space-fixed-4);
-  font-size: var(--global-font-size-1);
+  @include visually-hidden.visually-hidden();
 }
 
 .location-map__visitor {
@@ -751,16 +747,7 @@ onBeforeUnmount(() => {
 }
 
 .location-map__caption {
-  display: block;
-  padding: var(--global-space-fixed-4);
-}
-
-.location-map__attribution {
-  display: block;
-  font-size: max(
-    var(--location-map-small-font-size),
-    var(--global-font-size-0)
-  );
+  margin-inline: var(--card-space, var(--global-space-fixed-4));
 }
 
 @media (forced-colors: active) {
