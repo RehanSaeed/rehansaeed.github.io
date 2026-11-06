@@ -1,19 +1,8 @@
-import type { Page } from "@playwright/test";
 import { expect, test } from "./fixtures";
 import { prerenderCodeBlocks } from "../../modules/blog-content/fields";
 import { remarkContainers } from "../../modules/blog-content/markdown";
 
 const path = "/cheat-sheet/";
-
-test.use({ launchOptions: { ignoreDefaultArgs: ["--hide-scrollbars"] } });
-
-async function stubClipboard(page: Page) {
-  await page.addInitScript(() => {
-    Object.defineProperty(navigator, "clipboard", {
-      value: { writeText: async () => {} },
-    });
-  });
-}
 
 test.beforeEach(async ({ page }) => {
   await page.route(
@@ -26,340 +15,9 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
-test("Icon controls overlay the top right, reveal on hover/focus and have dismissible tooltips", async ({
+test("The cheat sheet documents accessible Bash/PowerShell tabs", async ({
   page,
 }) => {
-  await page.goto(path, { waitUntil: "domcontentloaded" });
-  const block = page.locator(".code-block").first();
-  const toolbar = block.locator(".code-block__toolbar");
-  const copy = block.getByRole("button", { name: "Copy code", exact: true });
-  const wrap = block.getByRole("button", { name: "Wrap lines", exact: true });
-  await expect(copy).toBeAttached();
-  await expect(toolbar.locator(".button--secondary")).toHaveCount(2);
-  await block.scrollIntoViewIfNeeded();
-  await page.mouse.move(0, 0);
-  await expect(toolbar).toHaveCSS("opacity", "0");
-  const before = await block.boundingBox();
-  await block.hover();
-  await expect(toolbar).toHaveCSS("opacity", "1");
-  const after = await block.boundingBox();
-  expect(after!.width).toBe(before!.width);
-  expect(after!.height).toBe(before!.height);
-  await page.mouse.move(0, 0);
-  await expect(toolbar).toHaveCSS("opacity", "0");
-  await block.hover();
-  const positions = await toolbar.evaluate((element) => {
-    const code = element.parentElement!.getBoundingClientRect();
-    const toolbar = element.getBoundingClientRect();
-    return { top: toolbar.top - code.top, right: code.right - toolbar.right };
-  });
-  expect(positions.top).toBeGreaterThanOrEqual(0);
-  expect(positions.top).toBeLessThan(16);
-  expect(positions.right).toBeGreaterThanOrEqual(0);
-  expect(positions.right).toBeLessThan(16);
-  await expect(copy).toHaveText("");
-  await expect(wrap).toHaveText("");
-  await expect(copy.locator("svg")).toHaveCount(2);
-  await expect(wrap.locator("svg")).toHaveCount(2);
-  await copy.hover();
-  const tip = page.getByRole("tooltip", { name: "Copy code", exact: true });
-  await expect(tip).toBeVisible();
-  await expect(tip).toHaveClass("tooltip");
-  await expect(tip.locator(".tooltip__arrow")).toBeVisible();
-  expect(
-    await tip.evaluate((element) => element.matches(":popover-open")),
-  ).toBe(true);
-  await expect(copy).toHaveAttribute(
-    "aria-describedby",
-    (await tip.getAttribute("id"))!,
-  );
-  await copy.focus();
-  await page.keyboard.press("Escape");
-  await expect(tip).toBeHidden();
-  await expect(copy).not.toHaveAttribute("aria-describedby");
-  await wrap.focus();
-  await page.mouse.move(0, 0);
-  await expect(toolbar).toHaveCSS("opacity", "1");
-  await expect(
-    page.getByRole("tooltip", { name: "Wrap lines", exact: true }),
-  ).toBeVisible();
-  await page.keyboard.press("Enter");
-  await expect(wrap).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByRole("tooltip")).toHaveCount(0);
-  await wrap.hover();
-  await expect(
-    page.getByRole("tooltip", { name: "Unwrap lines", exact: true }),
-  ).toBeVisible();
-});
-
-test("Single-line controls are vertically centred without moving multi-line controls", async ({
-  page,
-}) => {
-  await page.goto(path, { waitUntil: "domcontentloaded" });
-  const single = page
-    .locator(".code-block")
-    .filter({ hasText: "// No Language" });
-  const multi = page.locator(".code-block").filter({ hasText: "Wrapped code" });
-  for (const width of [1000, 375]) {
-    await page.setViewportSize({ width, height: 900 });
-    await single.hover();
-    await expect(
-      single.getByRole("button", { name: "Copy code", exact: true }),
-    ).toBeVisible();
-    const position = await single.evaluate((element) => {
-      const pre = element.querySelector("pre")!.getBoundingClientRect();
-      const toolbar = element
-        .querySelector(".code-block__toolbar")!
-        .getBoundingClientRect();
-      return {
-        offset: toolbar.top + toolbar.height / 2 - pre.top - pre.height / 2,
-        right: pre.right - toolbar.right,
-      };
-    });
-    expect(Math.abs(position.offset)).toBeLessThanOrEqual(1);
-    expect(position.right).toBeGreaterThanOrEqual(0);
-    expect(position.right).toBeLessThan(8);
-    await multi.hover();
-    const top = await multi.evaluate((element) => {
-      const pre = element.querySelector("pre")!.getBoundingClientRect();
-      return (
-        element.querySelector(".code-block__toolbar")!.getBoundingClientRect()
-          .top - pre.top
-      );
-    });
-    expect(top).toBeGreaterThanOrEqual(0);
-    expect(top).toBeLessThan(16);
-  }
-});
-
-test("Single-line controls stay aligned with the code above a horizontal scrollbar", async ({
-  page,
-  browserName,
-}) => {
-  await page.goto(path, { waitUntil: "domcontentloaded" });
-  await page.addStyleTag({
-    content: `
-      pre::-webkit-scrollbar { height: 24px; }
-      pre::-webkit-scrollbar-thumb { background: grey; }
-    `,
-  });
-  const block = page.locator(".code-block").filter({
-    hasText: "docker image build --tag foo:1.0.0",
-  });
-  for (const width of [1000, 375]) {
-    await page.setViewportSize({ width, height: 900 });
-    await block.hover();
-    await expect(
-      block.getByRole("button", { name: "Copy code", exact: true }),
-    ).toBeVisible();
-    const position = await block.evaluate((element) => {
-      const pre = element.querySelector("pre")!;
-      const bounds = pre.getBoundingClientRect();
-      const style = getComputedStyle(pre);
-      const toolbar = element
-        .querySelector(".code-block__toolbar")!
-        .getBoundingClientRect();
-      const border =
-        Number.parseFloat(style.borderTopWidth) +
-        Number.parseFloat(style.borderBottomWidth);
-      return {
-        overflow: pre.scrollWidth - pre.clientWidth,
-        scrollbar: pre.offsetHeight - pre.clientHeight - border,
-        offset:
-          toolbar.top +
-          toolbar.height / 2 -
-          (bounds.top +
-            Number.parseFloat(style.borderTopWidth) +
-            Number.parseFloat(style.paddingTop) +
-            Number.parseFloat(style.lineHeight) / 2),
-        bottom: bounds.top + pre.clientTop + pre.clientHeight - toolbar.bottom,
-      };
-    });
-    expect(position.overflow).toBeGreaterThan(0);
-    expect(position.scrollbar).toBeGreaterThanOrEqual(0);
-    expect(browserName !== "chromium" || position.scrollbar > 0).toBe(true);
-    expect(Math.abs(position.offset)).toBeLessThanOrEqual(1);
-    expect(position.bottom).toBeGreaterThanOrEqual(0);
-  }
-});
-
-test("Copy and wrap icons animate in both directions and respect reduced motion", async ({
-  page,
-}) => {
-  await stubClipboard(page);
-  await page.emulateMedia({ reducedMotion: "no-preference" });
-  await page.goto(path, { waitUntil: "domcontentloaded" });
-  const block = page.locator(".code-block").first();
-  await block.hover();
-  const wrap = block.getByRole("button", { name: "Wrap lines", exact: true });
-  const copy = block.locator(".code-block__toolbar button").last();
-  const icons = await block.locator(".code-block__icon").elementHandles();
-
-  for (const button of [wrap, wrap, copy]) {
-    const sample = await button.evaluate(async (element) => {
-      if (!(element instanceof HTMLButtonElement)) {
-        throw new Error("Expected a code control button.");
-      }
-      element.click();
-      await new Promise(requestAnimationFrame);
-      await new Promise(requestAnimationFrame);
-      const animations = element.getAnimations({ subtree: true });
-      for (const animation of animations) {
-        animation.pause();
-        animation.currentTime =
-          Number(animation.effect!.getTiming().duration) / 2;
-      }
-      return {
-        properties: animations
-          .filter(
-            (animation): animation is CSSTransition =>
-              animation instanceof CSSTransition,
-          )
-          .map((animation) => animation.transitionProperty),
-        opacities: [...element.querySelectorAll("svg")].map((icon) =>
-          Number(getComputedStyle(icon).opacity),
-        ),
-      };
-    });
-    expect(sample.properties).toEqual(
-      expect.arrayContaining(["opacity", "transform"]),
-    );
-    for (const opacity of sample.opacities) {
-      expect(opacity).toBeGreaterThan(0);
-      expect(opacity).toBeLessThan(1);
-    }
-    await button.evaluate((element) => {
-      for (const animation of element.getAnimations({ subtree: true })) {
-        animation.finish();
-      }
-    });
-    await expect(button.locator("svg:visible")).toHaveCount(1);
-    await expect(button.locator(".code-block__icon--active")).toHaveCSS(
-      "opacity",
-      "1",
-    );
-  }
-  await expect(
-    block.getByRole("button", { name: "Copied!", exact: true }),
-  ).toBeVisible();
-  await expect(copy).toHaveAttribute("aria-label", "Copy code");
-  await expect(copy.locator("svg:visible")).toHaveCount(1);
-  for (const icon of icons) {
-    expect(await icon.evaluate((element) => element.isConnected)).toBe(true);
-  }
-
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await wrap.click();
-  expect(
-    await wrap.evaluate(
-      (element) => element.getAnimations({ subtree: true }).length,
-    ),
-  ).toBe(0);
-  await copy.click();
-  await expect(
-    block.getByRole("button", { name: "Copied!", exact: true }),
-  ).toBeVisible();
-  expect(
-    await block
-      .getByRole("button", { name: "Copied!", exact: true })
-      .evaluate((element) => element.getAnimations({ subtree: true }).length),
-  ).toBe(0);
-});
-
-test.describe("Touch controls", () => {
-  // eslint-disable-next-line playwright/no-skipped-test -- Firefox cannot emulate touch.
-  test.skip(
-    ({ browserName }) => browserName === "firefox",
-    "Firefox does not support touch emulation.",
-  );
-  test.use({ hasTouch: true, viewport: { width: 390, height: 844 } });
-
-  test("Controls remain discoverable without hover", async ({ page }) => {
-    await page.goto(path, { waitUntil: "domcontentloaded" });
-    const block = page.locator(".code-block").first();
-    await expect(block.locator(".code-block__toolbar")).toHaveCSS(
-      "opacity",
-      "1",
-    );
-    const wrap = block.getByRole("button", { name: "Wrap lines", exact: true });
-    expect((await wrap.boundingBox())!.height).toBeGreaterThanOrEqual(44);
-    await wrap.tap();
-    await expect(wrap).toHaveAttribute("aria-pressed", "true");
-  });
-});
-
-test("Copies source exactly, announces success, resets and reports clipboard errors", async ({
-  page,
-}) => {
-  await page.addInitScript(() => {
-    Object.defineProperty(navigator, "clipboard", {
-      value: {
-        writeText: (text: string) => {
-          sessionStorage.setItem("copied-code", text);
-          return Promise.resolve();
-        },
-      },
-      configurable: true,
-    });
-  });
-  await page.goto(path, { waitUntil: "domcontentloaded" });
-  const block = page
-    .locator(".code-block")
-    .filter({ has: page.locator("pre.line-numbers") })
-    .first();
-  await block.hover();
-  const source = await block.locator("code").textContent();
-  expect(source).toContain("\n");
-  await block.getByRole("button", { name: "Copy code", exact: true }).click();
-  await expect(
-    block.getByRole("button", { name: "Copied!", exact: true }),
-  ).toBeVisible();
-  await expect(block.getByRole("status")).toHaveText(
-    "Code copied to clipboard.",
-  );
-  expect(await page.evaluate(() => sessionStorage.getItem("copied-code"))).toBe(
-    source,
-  );
-  await expect(
-    block.getByRole("button", { name: "Copy code", exact: true }),
-  ).toBeVisible();
-  await expect(block.getByRole("status")).toBeEmpty();
-
-  for (const available of [true, false]) {
-    await page.evaluate((available) => {
-      Object.defineProperty(navigator, "clipboard", {
-        value: available
-          ? {
-              writeText: () =>
-                Promise.reject(new DOMException("Denied", "NotAllowedError")),
-            }
-          : undefined,
-        configurable: true,
-      });
-    }, available);
-    await block.getByRole("button", { name: "Copy code", exact: true }).click();
-    await expect(block.getByRole("status")).toHaveText(
-      "Could not copy code. Select the code and copy it manually.",
-    );
-    await expect(
-      block.getByRole("button", { name: "Copied!", exact: true }),
-    ).toHaveCount(0);
-  }
-});
-
-test("The cheat sheet documents accessible Bash/PowerShell tabs and copies only the selected code", async ({
-  page,
-}) => {
-  await page.addInitScript(() => {
-    Object.defineProperty(navigator, "clipboard", {
-      value: {
-        writeText: (text: string) => {
-          sessionStorage.setItem("copied-code", text);
-          return Promise.resolve();
-        },
-      },
-    });
-  });
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("console", (message) => {
@@ -460,13 +118,8 @@ test("The cheat sheet documents accessible Bash/PowerShell tabs and copies only 
     "background-color",
     "rgb(1, 36, 86)",
   );
-  await group.getByRole("button", { name: "Copy code", exact: true }).click();
-  expect(await page.evaluate(() => sessionStorage.getItem("copied-code"))).toBe(
-    await panel.locator("code").textContent(),
-  );
-  await expect(group.getByRole("button", { name: "Copied!" })).toBeVisible();
   await bash.click();
-  await expect(group.getByRole("status")).toBeEmpty();
+  await expect(bash).toHaveAttribute("aria-selected", "true");
   await bash.focus();
   await page.keyboard.press("End");
   await expect(powershell).toBeFocused();
@@ -486,14 +139,11 @@ test("The cheat sheet documents accessible Bash/PowerShell tabs and copies only 
 test.describe("Without JavaScript", () => {
   test.use({ javaScriptEnabled: false });
 
-  test("All code alternatives remain readable and controls are hidden", async ({
+  test("All code alternatives remain readable and tabs are hidden", async ({
     page,
   }) => {
     await page.goto(path, { waitUntil: "domcontentloaded" });
     await expect(page.getByRole("tab")).toHaveCount(0);
-    await expect(
-      page.getByRole("button", { name: "Copy code", exact: true }),
-    ).toHaveCount(0);
     for (const text of ["printf", 'Write-Output "Hello']) {
       await expect(
         page.locator("pre").filter({ hasText: text }).last(),
