@@ -44,6 +44,18 @@ downloaded during offline installation. PNG app icons and installation screensho
 are retained for compatibility. Browsers without AVIF support cannot display
 uncached content images offline.
 
+## CI performance
+
+Measure workflow wall time and individual job/step timings separately. Compare
+warm-cache runs with warm-cache runs: responsive-image generation can add several
+minutes on a legitimate cache miss, while GitHub Pages can spend minutes syncing
+files after all validation has passed.
+
+Keep all browser projects, offline tests and the required Build gate. Browser
+suites consume the same generated site artifact; deployment must use that run's
+validated Pages artifact. Do not cache generated Nuxt state, the content database
+or the complete site across runs, or loosen image-cache input fingerprints.
+
 ## Dependency updates
 
 Commit `package.json` and its regenerated `package-lock.json` together. Run
