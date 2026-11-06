@@ -122,7 +122,7 @@ useHead({
     ...[dateModified]
       .filter((x) => x)
       .map((x) => ({ property: "article:modified_time", content: x })),
-    { property: "article:author", content: author },
+    { property: "article:author", content: `${site.url}/about/` },
     // One tag per heading, split apart by plugins/article-sections.ts.
     ...[headings.map((x) => x.value).join("\n")]
       .filter((x) => x)

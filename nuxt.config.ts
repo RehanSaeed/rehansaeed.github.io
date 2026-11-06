@@ -321,7 +321,7 @@ export default defineNuxtConfig({
         // Social cards are not needed to read the complete blog offline.
         "_og/**/*",
         "_og-static-fonts/**/*",
-        // Precached as /404 and /200, which respond 404 and would fail the whole install.
+        // Error documents and unused SPA shells are not offline navigation targets.
         "404.html",
         "200.html",
       ],
@@ -568,11 +568,10 @@ export default defineNuxtConfig({
         cache.driver = pathToFileURL(cache.driver).href;
       }
     },
-    // GitHub Pages serves 404.html for unknown URLs. Nuxt prerenders it as an empty SPA shell,
-    // so write the server-rendered error page there instead.
+    // Pages uses the rendered 404, not Nuxt's empty 200/404 SPA shells.
     "nitro:init": (nitro) => {
       nitro.hooks.hook("prerender:generate", (route) => {
-        if (route.route === "/404.html") {
+        if (route.route === "/404.html" || route.route === "/200.html") {
           route.skip = true;
         } else if (route.route === notFoundRoute) {
           if (route.error?.statusCode === 404) {

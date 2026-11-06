@@ -71,10 +71,13 @@ const pageInfo = {
   hasNextPage: props.page < totalPages,
 };
 
-const title = "Blog";
-const description = `Blog posts and more authored by ${site.author.name}.`;
+const title = props.page === 1 ? "Blog" : `Blog - Page ${props.page}`;
+const description =
+  props.page === 1
+    ? `Blog posts and more authored by ${site.author.name}.`
+    : `Page ${props.page} of blog posts authored by ${site.author.name}.`;
 const url = `${site.url}${props.page === 1 ? "/" : `/${props.page}/`}`;
-useBlogOgImage(props.page === 1 ? title : `${title} - Page ${props.page}`);
+useBlogOgImage(title);
 useSchemaOrg([
   defineWebPage({ "@type": "CollectionPage", name: title }),
   defineItemList({
@@ -115,11 +118,7 @@ useHead({
     { property: "og:description", content: description },
     { property: "og:locale", content: site.language.replace("-", "_") },
     { property: "og:site_name", content: site.name },
-    { property: "og:type", content: "profile" },
-    { property: "profile:first_name", content: site.author.firstName },
-    { property: "profile:last_name", content: site.author.lastName },
-    { property: "profile:username", content: site.author.name },
-    { property: "profile:gender", content: site.author.gender },
+    { property: "og:type", content: "website" },
     { property: "fb:app_id", content: site.facebookAppId },
   ],
 });

@@ -39,6 +39,50 @@ test("Markdown discovery removes unlisted entries and empty groups, not similarl
   expect(filtered).not.toContain("## streaming");
 });
 
+test("Error documents stay noindex when served directly or at an unknown URL", async ({
+  request,
+}) => {
+  for (const [path, status] of [
+    ["/404.html", 200],
+    ["/200.html", 404],
+    ["/not-an-existing-seo-test-page/", 404],
+  ] as const) {
+    const response = await request.get(path);
+    expect(response.status()).toBe(status);
+    const html = load(await response.text());
+    expect(html('meta[name="robots"]').attr("content")).toContain("noindex");
+    expect(html("link[rel=canonical]")).toHaveLength(0);
+  }
+});
+
+test("Blog listings distinguish page metadata without changing their canonical URLs", async ({
+  request,
+}) => {
+  for (const [path, title, description] of [
+    ["/", "Blog", "Blog posts and more authored by Muhammad Rehan Saeed."],
+    [
+      "/2/",
+      "Blog - Page 2",
+      "Page 2 of blog posts authored by Muhammad Rehan Saeed.",
+    ],
+  ] as const) {
+    const response = await request.get(path);
+    expect(response.ok()).toBe(true);
+    const html = load(await response.text());
+    expect(html("title").text()).toBe(`${title} - Muhammad Rehan Saeed`);
+    expect(html('meta[property="og:title"]').attr("content")).toBe(title);
+    expect(html('meta[name="description"]').attr("content")).toBe(description);
+    expect(html('meta[property="og:description"]').attr("content")).toBe(
+      description,
+    );
+    expect(html('meta[property="og:type"]').attr("content")).toBe("website");
+    expect(html('meta[property^="profile:"]')).toHaveLength(0);
+    expect(html("link[rel=canonical]").attr("href")).toBe(
+      `https://rehansaeed.com${path}`,
+    );
+  }
+});
+
 test("Static discovery serves real Markdown and the explicit AI training policy", async ({
   request,
 }) => {
@@ -89,6 +133,9 @@ test("Social crawlers receive a real branded PNG instead of a runtime renderer",
     "/on-the-etiquette-of-pull-request-comments/",
   );
   const $ = load(await response.text());
+  expect($('meta[property="article:author"]').attr("content")).toBe(
+    "https://rehansaeed.com/about/",
+  );
   const og = new URL($('meta[property="og:image"]').attr("content")!);
   expect(og.pathname).toMatch(/^\/_og\/s\/o_[a-f0-9]+\.png$/);
   expect($('meta[name="twitter:image"]').attr("content")).toBe(og.href);

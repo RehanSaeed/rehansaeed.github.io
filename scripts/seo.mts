@@ -65,6 +65,25 @@ for (const url of urls) {
         !meta("robots")?.includes("noindex"),
         `${path}: indexed noindex page`,
     );
+    assert.equal($("html").attr("lang"), site.language, `${path}: language`);
+    assert($("title").text().trim(), `${path}: missing title`);
+    assert(meta("description")?.trim(), `${path}: missing description`);
+    assert.equal(meta("og:url"), url, `${path}: social canonical`);
+    assert.equal(meta("og:description"), meta("description"));
+    if (path === "/" || /^\/\d+\/$/.test(path)) {
+        const page = path === "/" ? 1 : Number(path.split("/")[1]);
+        const title = page === 1 ? "Blog" : `Blog - Page ${page}`;
+        assert.equal($("title").text(), `${title} - ${site.name}`);
+        assert.equal(meta("og:title"), title);
+        assert.equal(meta("og:type"), "website");
+        assert.equal(
+            meta("description"),
+            page === 1
+                ? `Blog posts and more authored by ${site.author.name}.`
+                : `Page ${page} of blog posts authored by ${site.author.name}.`,
+        );
+        assert.equal($('meta[property^="profile:"]').length, 0);
+    }
     const image = meta("og:image");
     assert(image, `${path}: missing social image`);
     assert.match(
@@ -127,6 +146,7 @@ for (const url of urls) {
     const article = nodes.find((node) => node["@type"] === "Article");
     if (article) {
         articles++;
+        assert.equal(meta("article:author"), `${site.url}/about/`);
         assert.equal(article.url, url);
         assert.equal(article.mainEntityOfPage["@id"], webpage["@id"]);
         assert.equal(article.author["@id"], `${site.url}/#identity`);
@@ -210,6 +230,7 @@ for (const url of urls) {
 const referenceRoutes = (await readFile("tests/parity/urls.txt", "utf8"))
     .trim()
     .split(/\r?\n/);
+await assert.rejects(access(join(directory, "200.html")), { code: "ENOENT" });
 const additionalPublicRoutes = [
     "/tag/ai/",
     "/tag/artificial-intelligence-ai/",
@@ -228,6 +249,12 @@ for (const path of [
             ? "404.html"
             : join(path.slice(1), "index.html");
     const $ = load(await read(htmlPath));
+    if (path === "/404-not-found/") {
+        assert(
+            $("meta[name=robots]").attr("content")?.includes("noindex"),
+            "404.html: error document must not be indexed even when served directly",
+        );
+    }
     if (!$("meta[name=robots]").attr("content")?.includes("noindex")) {
         continue;
     }
