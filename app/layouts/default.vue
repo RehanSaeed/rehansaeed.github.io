@@ -1,9 +1,9 @@
 <template>
   <u-scroll-custom-property>
-    <div>
+    <div id="app">
       <u-scroll-indicator />
       <div class="site-shell">
-        <div id="app">
+        <div class="site-shell__content">
           <u-skip-link />
 
           <u-navigation class="navigation" />
@@ -30,12 +30,12 @@
   font-size: initial;
 }
 
-#app {
+.site-shell__content {
   font-size: 1rem;
 }
 
 @include breakpoints.container-below(site, sm) {
-  #app {
+  .site-shell__content {
     --global-line-length-min: 0;
     --global-space-main: 0;
     --global-space-content-min-width: calc(var(--global-space-fluid-6) * 2);

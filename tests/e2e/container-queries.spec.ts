@@ -11,10 +11,10 @@ for (const testCase of [575, 576, 577, 1199, 1200, 1201, 1920].map((width) =>
     await page.setViewportSize({ width: 1920, height: 1080 });
     await page.goto("/");
     await resizeSite(page, testCase.width);
-    const app = page.locator("#app");
+    const content = page.locator(".site-shell__content");
 
     await expectSiteLayout(page, testCase);
-    await expect(app).toHaveCSS(
+    await expect(content).toHaveCSS(
       "--global-line-length-min",
       testCase.compact ? "0" : "45ch",
     );
@@ -32,7 +32,7 @@ for (const testCase of [575, 576, 577, 1199, 1200, 1201, 1920].map((width) =>
           getComputedStyle(element).gridTemplateColumns.split(" ").length,
       );
     expect(columns).toBe(testCase.sticky ? 1 : 3);
-    await expect(app).toHaveCSS(
+    await expect(content).toHaveCSS(
       "font-size",
       await page
         .locator("html")
