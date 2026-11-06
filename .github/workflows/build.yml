@@ -165,47 +165,33 @@ jobs:
         run: npm run lint
 
   lighthouse:
-    name: Lighthouse
+    name: Lighthouse (${{ matrix.page }})
     needs: build
     runs-on: ubuntu-latest
+    # Audit each page in parallel so Lighthouse finishes within the sharded browser suites.
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - page: home
+            path: /
+          - page: about
+            path: /about/
+          - page: portfolio
+            path: /portfolio/
+          - page: article
+            path: /on-the-etiquette-of-pull-request-comments/
     steps:
       - name: Checkout
         uses: actions/checkout@v7.0.1
-        with:
-          lfs: true
       - name: "Setup Node"
         uses: actions/setup-node@v7.1.0
         with:
           node-version-file: .nvmrc
           cache: npm
-      - name: "Cache Public API Snapshots"
-        uses: actions/cache@v6.1.0
-        with:
-          path: |
-            .data/blog-comments.json
-            .data/blog-portfolio.json
-            .data/blog-nuget.json
-            .data/blog-github-watchers.json
-          key: blog-data-${{ runner.os }}-${{ hashFiles('.nvmrc', 'package-lock.json', 'site.json', 'content.config.ts', 'modules/blog-content/**', 'shared/utils/**', 'content/portfolio/**') }}-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: |
-            blog-data-${{ runner.os }}-${{ hashFiles('.nvmrc', 'package-lock.json', 'site.json', 'content.config.ts', 'modules/blog-content/**', 'shared/utils/**', 'content/portfolio/**') }}-
+      # Lighthouse audits the generated artifact, so it needs no Nuxt prepare, LFS images or API snapshots.
       - name: "NPM Install"
-        run: npm ci
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HUSKY: "0"
-      - name: "Cache Lighthouse Browser"
-        id: playwright-cache
-        uses: actions/cache@v6.1.0
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-chromium-${{ hashFiles('package-lock.json') }}
-      - name: "Install Playwright Browsers"
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium
-      - name: "Install Playwright Dependencies"
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium
+        run: npm ci --ignore-scripts
       - name: "Download Browser Test Site"
         uses: actions/download-artifact@v8.0.2
         with:
@@ -215,14 +201,17 @@ jobs:
       - name: "Lighthouse"
         id: lighthouse
         run: npm run lighthouse
-        timeout-minutes: 20
+        timeout-minutes: 10
         env:
+          # Use the runner's preinstalled Google Chrome, as the Chrome browser suite does, instead of downloading Chromium.
+          CHROME_PATH: /usr/bin/google-chrome
+          LIGHTHOUSE_PATHS: ${{ matrix.path }}
           TZ: UTC
       - name: "Upload Lighthouse Reports"
         uses: actions/upload-artifact@v7.0.2
         if: ${{ !cancelled() && steps.lighthouse.outcome != 'skipped' }}
         with:
-          name: lighthouse-report
+          name: lighthouse-report-${{ matrix.page }}
           path: |
             .lighthouseci/reports
             .lighthouseci/assertion-results.json

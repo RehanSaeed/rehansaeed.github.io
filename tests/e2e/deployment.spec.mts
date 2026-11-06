@@ -365,7 +365,7 @@ test("Social image cache invalidates external renderer inputs without a stale fa
 
 test("Generate alone saves validated public snapshots; every Nuxt prepare restores them first", () => {
     const workflow = readBuildWorkflow();
-    const caches = ["build", "quality", "lighthouse", "test"].map((name) => {
+    const caches = ["build", "quality", "test"].map((name) => {
         const job = requireJob(workflow, name);
         const cache = requireStep(job.steps, "Cache Public API Snapshots");
         expect(job.steps.indexOf(cache)).toBeLessThan(
@@ -402,13 +402,37 @@ test("Generate alone saves validated public snapshots; every Nuxt prepare restor
     }
 });
 
-test("Lighthouse audits the generated site in parallel and keeps its reports", () => {
+test("Lighthouse audits each generated page in parallel and keeps its reports", () => {
     const workflow = readBuildWorkflow();
     const build = requireJob(workflow, "build");
     const lighthouse = requireJob(workflow, "lighthouse");
     expect(lighthouse.needs).toBe("build");
-    expect(requireStep(lighthouse.steps, "Checkout").with?.lfs).toBe(true);
+    expect(lighthouse.strategy).toEqual({
+        "fail-fast": false,
+        matrix: {
+            include: [
+                { page: "home", path: "/" },
+                { page: "about", path: "/about/" },
+                { page: "portfolio", path: "/portfolio/" },
+                {
+                    page: "article",
+                    path: "/on-the-etiquette-of-pull-request-comments/",
+                },
+            ],
+        },
+    });
     const steps = lighthouse.steps;
+    // The generated artifact needs no Nuxt prepare, LFS images, API snapshots or downloaded Chromium.
+    expect(requireStep(steps, "Checkout").with?.lfs).toBeUndefined();
+    expect(requireStep(steps, "NPM Install").run).toBe(
+        "npm ci --ignore-scripts",
+    );
+    expect(
+        steps.some((step) => step.name === "Cache Public API Snapshots"),
+    ).toBe(false);
+    expect(
+        steps.some((step) => (step.run ?? "").includes("playwright install")),
+    ).toBe(false);
     const download = requireStep(steps, "Download Browser Test Site");
     expect(download.with?.name).toBe(
         requireStep(build.steps, "Upload Browser Test Site").with?.name,
@@ -420,6 +444,10 @@ test("Lighthouse audits the generated site in parallel and keeps its reports", (
     expect(extract).toBeGreaterThan(steps.indexOf(download));
     expect(extract).toBeLessThan(run);
     expect(steps[run]?.run).toBe("npm run lighthouse");
+    expect(steps[run]?.env).toMatchObject({
+        CHROME_PATH: "/usr/bin/google-chrome",
+        LIGHTHOUSE_PATHS: "${{ matrix.path }}",
+    });
     expect(steps.some((step) => step.run === "npm run build")).toBe(false);
     expect(build.steps.some((step) => step.run === "npm run lighthouse")).toBe(
         false,
@@ -428,7 +456,7 @@ test("Lighthouse audits the generated site in parallel and keeps its reports", (
     expect(reports.if).toBe(
         "${{ !cancelled() && steps.lighthouse.outcome != 'skipped' }}",
     );
-    expect(reports.with?.name).toBe("lighthouse-report");
+    expect(reports.with?.name).toBe("lighthouse-report-${{ matrix.page }}");
 });
 
 test("Firefox uses a version-matched Playwright image without runtime dependency installation", () => {

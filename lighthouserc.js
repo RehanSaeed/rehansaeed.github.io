@@ -1,5 +1,20 @@
 const { chromium } = require("@playwright/test");
 
+const paths = [
+  "/",
+  "/about/",
+  "/portfolio/",
+  "/on-the-etiquette-of-pull-request-comments/",
+];
+// CI audits each page in a parallel job; locally every page is audited.
+const selectedPaths = process.env.LIGHTHOUSE_PATHS
+  ? process.env.LIGHTHOUSE_PATHS.split(",")
+  : paths;
+const unknownPaths = selectedPaths.filter((path) => !paths.includes(path));
+if (unknownPaths.length > 0) {
+  throw new Error(`Unknown Lighthouse paths: ${unknownPaths.join(", ")}`);
+}
+
 module.exports = {
   ci: {
     assert: {
@@ -33,12 +48,7 @@ module.exports = {
         chromeFlags:
           process.env.GITHUB_ACTIONS === "true" ? "--no-sandbox" : "",
       },
-      url: [
-        "http://localhost/",
-        "http://localhost/about/",
-        "http://localhost/portfolio/",
-        "http://localhost/on-the-etiquette-of-pull-request-comments/",
-      ],
+      url: selectedPaths.map((path) => `http://localhost${path}`),
     },
     upload: {
       target: "filesystem",
