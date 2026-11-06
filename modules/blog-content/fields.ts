@@ -186,7 +186,7 @@ function toHtml(nodes: MinimarkNode[]): string {
  * v-html. Vue does not hydrate v-html, so Cloudflare's email obfuscation rewriting addresses
  * inside code cannot cause hydration mismatches. It also keeps thousands of token spans out of
  * the virtual DOM. Code groups reuse the same build-time output for each alternative.
- * The raw `code` prop is dropped, as nothing uses it.
+ * The raw `code` prop is dropped; copying uses the rendered code's textContent.
  */
 export function prerenderCodeBlocks(nodes: MinimarkNode[] | undefined): void {
   for (const node of nodes ?? []) {
