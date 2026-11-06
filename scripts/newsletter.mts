@@ -147,13 +147,7 @@ const escapeHtml = (value: string) =>
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#39;");
 
-const stripTags = (value: string): string => {
-    const stripped = value.replaceAll(/<[^>]*>/g, "");
-    return stripped === value ? value : stripTags(stripped);
-};
-
-const plainText = (value: string) =>
-    stripTags(value).replaceAll(/\s+/g, " ").trim();
+const plainText = (value: string) => value.replaceAll(/\s+/g, " ").trim();
 
 const decodeEntities = (value: string) =>
     value

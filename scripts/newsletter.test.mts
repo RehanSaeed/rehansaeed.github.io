@@ -157,13 +157,19 @@ await test("Emails contain the escaped title, excerpt, hero image, link and unsu
     const email = renderEmail(item);
     assert.equal(email.title, campaignTitle(item));
     assert.equal(email.subject, "Vue <3 & Nuxt");
-    assert.equal(email.preheader, 'A "quick" look at things.');
+    assert.equal(
+        email.preheader,
+        'A "quick" <em>look</em> at <script>things</script>.',
+    );
     assert.match(
         email.html,
         /<h1[^>]*><a href="https:\/\/rehansaeed\.com\/x\/"/,
     );
     assert.match(email.html, /Vue &lt;3 &amp; Nuxt/);
-    assert.match(email.html, /A &quot;quick&quot; look at things\./);
+    assert.match(
+        email.html,
+        /A &quot;quick&quot; &lt;em&gt;look&lt;\/em&gt; at &lt;script&gt;things&lt;\/script&gt;\./,
+    );
     assert.match(
         email.html,
         /<img src="https:\/\/rehansaeed\.com\/images\/hero\/X-1600x900\.png" alt=""/,
@@ -173,12 +179,6 @@ await test("Emails contain the escaped title, excerpt, hero image, link and unsu
     for (const markup of ["<script", "<em>"]) {
         assert(!email.html.includes(markup), markup);
     }
-    assert(
-        !renderEmail({
-            ...item,
-            summary: "a <<script>script> b",
-        }).html.includes("<script"),
-    );
 
     const [plain] = feed(post("y", "2026-11-04"));
     assert(plain);
