@@ -8,6 +8,8 @@ const image = "/images/author/Muhammad-Rehan-Saeed/Logo-192x192.png";
 type NuxtRoot = HTMLElement & {
   __vue_app__?: { config: { globalProperties: { $nuxt: NuxtApp } } };
 };
+// Firefox stores computed font sizes on a 1/64px grid (16px * 0.85 reports 13.5938px).
+const fontSizeTolerance = 1 / 64;
 const caption =
   "An explicitly authored caption explains the media without repeating its alternative text.";
 const credit =
@@ -181,10 +183,9 @@ for (const width of [320, 1280]) {
             clientWidth: caption.clientWidth,
           };
         });
-        expect(layout.fontSize).toBeCloseTo(
-          layout.parentFontSize * layout.fontScale,
-          2,
-        );
+        expect(
+          Math.abs(layout.fontSize - layout.parentFontSize * layout.fontScale),
+        ).toBeLessThanOrEqual(fontSizeTolerance);
         expect(layout.color).toBe(layout.bodyColor);
         expect(layout.caption.x).toBeCloseTo(layout.content.x, 0);
         expect(layout.caption.right).toBeLessThanOrEqual(
@@ -220,10 +221,11 @@ for (const width of [320, 1280]) {
           clientWidth: element.clientWidth,
           scrollWidth: element.scrollWidth,
         }));
-        expect(enlarged.fontSize).toBeCloseTo(
-          enlarged.bodyFontSize * 2 * enlarged.fontScale,
-          2,
-        );
+        expect(
+          Math.abs(
+            enlarged.fontSize - enlarged.bodyFontSize * 2 * enlarged.fontScale,
+          ),
+        ).toBeLessThanOrEqual(fontSizeTolerance);
         expect(enlarged.scrollWidth).toBeLessThanOrEqual(enlarged.clientWidth);
       }
       expect(
