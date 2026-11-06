@@ -263,16 +263,15 @@ test("Real callers retain plain icons, secondary actions and pre-hydration submi
       waitUntil: "commit",
     });
     const search = page.getByRole("button", { name: "Open search" });
-    const subscribe = page.getByRole("button", { name: "Subscribe" });
+    const subscribe = page.getByRole("link", { name: "Subscribe by email" });
     const share = page.getByRole("button", { name: "Share", exact: true });
     await expect(search).toBeDisabled();
     await expect(search).toHaveClass(/button--hydrating/);
     await expect(search).toHaveClass(/button--plain/);
     await expect(share).toBeDisabled();
     await expect(share).toHaveClass(/button--secondary/);
-    await expect(subscribe).toBeEnabled();
-    await expect(subscribe).toHaveAttribute("type", "submit");
-    await expect(subscribe).toHaveClass(/button--secondary/);
+    await expect(subscribe).toHaveAttribute("href", /^https:\/\//);
+    await expect(subscribe).toHaveClass(/link-button--bordered/);
     scripts.resume();
     await expect(search).toBeEnabled();
     await expect(share).toBeEnabled();
