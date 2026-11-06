@@ -2,6 +2,7 @@
   <div
     class="code-block"
     :class="[
+      `code-block--controls-${controls}`,
       `code-block--tabs-${tabStyle}`,
       { 'code-block--group': alternatives?.length && hydrated },
     ]">
@@ -43,7 +44,10 @@
       </div>
       <div
         class="line-highlight"
-        :class="{ 'has-highlighted-lines': block.highlights?.length }"
+        :class="{
+          'has-highlighted-lines': block.highlights?.length,
+          'code-block--wrapped': hydrated ? wrapped : hasMeta(block, 'wrap'),
+        }"
         :data-language="block.language || 'text'">
         <!-- eslint-disable vue/no-v-html -- Shiki generates this highlighted code HTML at build time. -->
         <pre
@@ -51,14 +55,69 @@
             preClass(block)
           "><code :class="`language-${block.language || 'text'}`" v-html="block.html || ''" /></pre>
         <!-- eslint-enable vue/no-v-html -->
+        <div v-show="hydrated" class="code-block__toolbar">
+          <div class="code-block__action">
+            <u-tooltip
+              v-slot="{ trigger }"
+              :text="wrapped ? 'Unwrap lines' : 'Wrap lines'">
+              <component
+                :is="controls === 'current' ? 'button' : UButton"
+                v-bind="{ ...controlButtonProps, ...trigger }"
+                type="button"
+                aria-label="Wrap lines"
+                :aria-pressed="wrapped"
+                @click="wrap = !wrapped">
+                <u-icon
+                  name="lucide:wrap-text"
+                  class="code-block__icon"
+                  :class="{ 'code-block__icon--active': !wrapped }" />
+                <u-icon
+                  name="lucide:move-right"
+                  class="code-block__icon"
+                  :class="{ 'code-block__icon--active': wrapped }" />
+              </component>
+            </u-tooltip>
+          </div>
+          <div class="code-block__action">
+            <u-tooltip
+              v-slot="{ trigger }"
+              :text="copied ? 'Copied!' : 'Copy code'">
+              <component
+                :is="controls === 'current' ? 'button' : UButton"
+                v-bind="{ ...controlButtonProps, ...trigger }"
+                type="button"
+                :aria-label="copied ? 'Copied!' : 'Copy code'"
+                :disabled="copying"
+                @click="copy">
+                <u-icon
+                  name="lucide:copy"
+                  class="code-block__icon"
+                  :class="{ 'code-block__icon--active': !copied }" />
+                <u-icon
+                  name="lucide:check"
+                  class="code-block__icon"
+                  :class="{ 'code-block__icon--active': copied }" />
+              </component>
+            </u-tooltip>
+          </div>
+        </div>
       </div>
     </div>
+    <span
+      class="code-block__status"
+      :class="{ 'code-block__status--hidden': copied || !message }"
+      role="status"
+      aria-live="polite"
+      >{{ message }}</span
+    >
   </div>
 </template>
 
 <script setup lang="ts">
+import { UButton } from "#components";
 import type {
   CodeBlock,
+  CodeControlStyle,
   CodeTabStyle,
 } from "../../../shared/utils/code-blocks";
 
@@ -68,31 +127,58 @@ const props = withDefaults(
     CodeBlock & {
       /** Author-written alternatives displayed as code tabs. */
       alternatives?: CodeBlock[];
+      /** Visual treatment used for copy and wrap controls. */
+      controls?: CodeControlStyle;
       /** Visual treatment used for alternative tabs. */
       tabStyle?: CodeTabStyle;
     }
   >(),
-  { language: "text", html: "", tabStyle: "editor-wide" },
+  { language: "text", html: "", controls: "bordered", tabStyle: "editor-wide" },
 );
+const controlButtonProps = computed(() => {
+  if (props.controls === "bordered") {
+    return { variant: "secondary" };
+  }
+  return {};
+});
 const id = useId();
 const hydrated = ref(false);
 const selected = ref(0);
+const wrap = ref<boolean>();
+const copied = ref(false);
+const copying = ref(false);
+const message = ref("");
+let reset: ReturnType<typeof setTimeout> | undefined;
 const blocks = computed(() =>
   props.alternatives?.length ? props.alternatives : [props],
 );
 const hasMeta = (block: CodeBlock, token: string) =>
   block.meta?.split(/\s+/).includes(token) ?? false;
+const wrapped = computed(
+  () => wrap.value ?? hasMeta(blocks.value[selected.value]!, "wrap"),
+);
 
 function preClass(block: CodeBlock) {
+  // Only counts source lines; the extracted text is never rendered.
+  const text = (block.html ?? "")
+    .split(/<[^>]*>/)
+    .join("")
+    .replace(/\r?\n$/, "");
   return [
     `language-${block.language || "text"}`,
     block.class,
-    { "line-numbers": hasMeta(block, "line-numbers") },
+    {
+      "line-numbers": hasMeta(block, "line-numbers"),
+      "code-block__pre--single-line": !text.includes("\n"),
+    },
   ];
 }
 
 function select(index: number) {
   selected.value = index;
+  clearTimeout(reset);
+  copied.value = false;
+  message.value = "";
 }
 
 function onTabKey(event: KeyboardEvent, index: number) {
@@ -111,7 +197,44 @@ function onTabKey(event: KeyboardEvent, index: number) {
   document.getElementById(`${id}-tab-${target}`)?.focus();
 }
 
+async function copy() {
+  const index = selected.value;
+  const code = document
+    .getElementById(`${id}-panel-${index}`)
+    ?.querySelector("code");
+  clearTimeout(reset);
+  copied.value = false;
+  message.value = "";
+  copying.value = true;
+  try {
+    // Clipboard is absent in insecure contexts despite its non-optional DOM type.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!navigator.clipboard?.writeText || !code) {
+      throw new Error("Clipboard is unavailable.");
+    }
+    await navigator.clipboard.writeText(code.textContent);
+    if (selected.value === index) {
+      copied.value = true;
+      message.value = "Code copied to clipboard.";
+      reset = setTimeout(() => {
+        copied.value = false;
+        message.value = "";
+      }, 2500);
+    }
+  } catch {
+    if (selected.value === index) {
+      message.value =
+        "Could not copy code. Select the code and copy it manually.";
+    }
+  } finally {
+    copying.value = false;
+  }
+}
+
 onMounted(() => {
   hydrated.value = true;
+});
+onBeforeUnmount(() => {
+  clearTimeout(reset);
 });
 </script>
