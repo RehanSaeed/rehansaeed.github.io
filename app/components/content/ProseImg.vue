@@ -43,8 +43,18 @@ const sizes = computed(() => {
 </script>
 
 <style lang="scss" scoped>
+// Bleed into the article's padding to match the expanded hero image area.
+.prose-image {
+  display: grid;
+  justify-items: center;
+  inline-size: calc(100% + (2 * var(--global-space-fluid-6)));
+  margin-inline: var(--global-space-fluid--6);
+}
+
 .prose-image :deep(.prose-image__image) {
   // Keep HTML dimensions instead of the global full-width default.
   inline-size: revert-layer;
+  margin-inline: auto;
+  max-inline-size: 100%;
 }
 </style>

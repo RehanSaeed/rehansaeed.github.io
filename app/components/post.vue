@@ -102,19 +102,6 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
     }
   }
 
-  .prose-image {
-    display: grid;
-    justify-items: center;
-    inline-size: calc(100% + (2 * var(--global-space-fluid-6)));
-    margin-inline: var(--global-space-fluid--6);
-  }
-
-  img {
-    display: block;
-    margin-inline: auto;
-    max-inline-size: 100%;
-  }
-
   figure > p:has(+ figcaption) {
     margin-block-end: var(--global-space-fixed-2);
   }
