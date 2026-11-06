@@ -152,7 +152,10 @@ test("Blocked session storage logs the limitation without breaking the toggle", 
   page,
 }) => {
   await page.addInitScript(() => {
+    // Wrap the prototype methods and call them with each storage instance.
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     const get = Storage.prototype.getItem;
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     const set = Storage.prototype.setItem;
     Storage.prototype.getItem = function (this: Storage, key: string) {
       if (key === "article-traffic-visible") {
@@ -168,7 +171,7 @@ test("Blocked session storage logs the limitation without breaking the toggle", 
       if (key === "article-traffic-visible") {
         throw new DOMException("Storage blocked", "SecurityError");
       }
-      return set.call(this, key, value);
+      set.call(this, key, value);
     };
   });
   const warnings: string[] = [];
@@ -210,6 +213,7 @@ test("The metadata gesture is limited to article headers and works across the wh
 
 test.describe("Touch article-metadata gesture", () => {
   test.use({ hasTouch: true, viewport: { width: 375, height: 900 } });
+
   test("Five taps on metadata reveal traffic without changing the date layout", async ({
     page,
   }) => {
@@ -218,7 +222,7 @@ test.describe("Touch article-metadata gesture", () => {
     const gesture = page.locator(gestureSelector);
     await expect(gesture).toBeAttached();
     await expect(date).toHaveText(
-      getDisplayDateFromString((await date.getAttribute("datetime"))!),
+      getDisplayDateFromString(await date.getAttribute("datetime")),
     );
     await page.evaluate(() => document.fonts.ready.then(() => undefined));
     const before = await date.boundingBox();

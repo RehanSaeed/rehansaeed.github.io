@@ -1,6 +1,7 @@
 import { generateKeyPairSync, verify } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { expect, test } from "@playwright/test";
+import { z } from "zod";
 import { postTrafficSnapshot } from "../../modules/blog-content/traffic";
 import type { ContentEntry } from "../../modules/blog-content/scan";
 import {
@@ -9,6 +10,7 @@ import {
   selectTrafficRange,
   trafficDays,
   trafficDailyStart,
+  trafficSnapshotSchema,
   formatTrafficDuration,
 } from "../../shared/utils/traffic";
 
@@ -48,8 +50,98 @@ const report = (rows = [row("/example/", "20240115", "12")]) => ({
   rowCount: rows.length,
   metadata: { timeZone: "Europe/London" },
 });
+const reportRequestSchema = z.object({
+  dateRanges: z
+    .array(z.object({ startDate: z.string(), endDate: z.string() }))
+    .length(1),
+  metrics: z.array(z.object({ name: z.string() })),
+  dimensionFilter: z.object({ filter: z.record(z.string(), z.unknown()) }),
+  offset: z.number().int().nonnegative(),
+});
+type ReportRequest = z.infer<typeof reportRequestSchema>;
+const cacheFileSchema = z.object({
+  source: z.unknown(),
+  snapshot: trafficSnapshotSchema,
+});
+const readCache = async (file: string) =>
+  cacheFileSchema.parse(JSON.parse(await readFile(file, "utf8")));
+const requestBody = (init?: RequestInit) => {
+  const body = init?.body;
+  if (typeof body === "string" || body instanceof URLSearchParams) {
+    return body.toString();
+  }
+  throw new Error("Expected a text request body.");
+};
+/**
+ * Replaces fetch, routing OAuth token requests and GA4 report requests to
+ * separate handlers, and counts every request.
+ */
+const mockGa4 = ({
+  token = () => Response.json({ access_token: "test" }),
+  report,
+}: {
+  token?: (body: string) => Response;
+  report: (request: ReportRequest, url: string) => Response;
+}) => {
+  const requests = { count: 0 };
+  globalThis.fetch = (input, init) =>
+    Promise.resolve().then(() => {
+      requests.count++;
+      const url = input instanceof Request ? input.url : input.toString();
+      const body = requestBody(init);
+      return url.includes("oauth2")
+        ? token(body)
+        : report(reportRequestSchema.parse(JSON.parse(body)), url);
+    });
+  return requests;
+};
+const failureResponse = (failure: string) => {
+  if (failure === "http") {
+    return new Response(null, { status: 503 });
+  }
+  const response = report(
+    failure === "incomplete-pagination"
+      ? []
+      : [
+          row(
+            "/example/",
+            "20240115",
+            failure === "invalid-count" ? "-1" : "12",
+            failure === "invalid-engagement"
+              ? "NaN"
+              : failure === "overflow"
+                ? "1e30"
+                : "60",
+          ),
+        ],
+  );
+  return Response.json({
+    ...response,
+    ...(failure === "missing-engagement"
+      ? {
+          rows: response.rows.map((item) => ({
+            ...item,
+            metricValues: item.metricValues.slice(0, 1),
+          })),
+        }
+      : {}),
+    ...(failure === "wrong-metric"
+      ? {
+          metricHeaders: [{ name: "screenPageViews" }, { name: "activeUsers" }],
+        }
+      : {}),
+    ...(failure === "incomplete-pagination" ? { rowCount: 1 } : {}),
+    metadata: {
+      ...response.metadata,
+      ...(failure === "sampled" ? { samplingMetadatas: [{}] } : {}),
+      ...(failure === "thresholded" ? { subjectToThresholding: true } : {}),
+      ...(failure === "other-row" ? { dataLossFromOtherRow: true } : {}),
+    },
+  });
+};
 let originalFetch: typeof fetch;
 let originalEnv: NodeJS.ProcessEnv;
+
 test.beforeEach(() => {
   originalFetch = globalThis.fetch;
   originalEnv = { ...process.env };
@@ -57,6 +149,7 @@ test.beforeEach(() => {
   process.env.GA4_START_DATE = "2024-01-15";
   process.env.GA4_SERVICE_ACCOUNT_JSON = credentials;
 });
+
 test.afterEach(() => {
   globalThis.fetch = originalFetch;
   Date.now = originalNow;
@@ -76,13 +169,9 @@ test.afterEach(() => {
 test("Exports complete monthly history and signs a read-only OAuth assertion", async ({}, info) => {
   const dir = info.outputPath("cache");
   await mkdir(dir, { recursive: true });
-  let requests = 0;
-  globalThis.fetch = async (input, init) => {
-    requests++;
-    if (String(input).includes("oauth2")) {
-      const assertion = new URLSearchParams(String(init?.body)).get(
-        "assertion",
-      )!;
+  const requests = mockGa4({
+    token: (body) => {
+      const assertion = new URLSearchParams(body).get("assertion")!;
       const [header, payload, signature] = assertion.split(".");
       expect(
         verify(
@@ -100,31 +189,32 @@ test("Exports complete monthly history and signs a read-only OAuth assertion", a
         aud: "https://oauth2.googleapis.com/token",
       });
       return Response.json({ access_token: "test-only-token" });
-    }
-    expect(String(input)).toContain("/properties/123456:runReport");
-    const body = JSON.parse(String(init?.body));
-    expect(body.metrics).toEqual([
-      { name: "screenPageViews" },
-      { name: "userEngagementDuration" },
-    ]);
-    expect(body.dateRanges[0]).toEqual({
-      startDate: "2024-01-15",
-      endDate: "today",
-    });
-    expect(body.dimensionFilter.filter).toMatchObject({
-      fieldName: "hostName",
-      stringFilter: { matchType: "EXACT", value: "rehansaeed.com" },
-    });
-    return Response.json(
-      report([
-        row("/example/", "20240115", "12", "120.5"),
-        row("/example", "20240115", "3", "30.25"),
-        row("/example/", "20240301", "5", "2e2"),
-        row("/draft/", "20240115", "999"),
-        row("/about/", "20240115", "999"),
-      ]),
-    );
-  };
+    },
+    report: (body, url) => {
+      expect(url).toContain("/properties/123456:runReport");
+      expect(body.metrics).toEqual([
+        { name: "screenPageViews" },
+        { name: "userEngagementDuration" },
+      ]);
+      expect(body.dateRanges[0]).toEqual({
+        startDate: "2024-01-15",
+        endDate: "today",
+      });
+      expect(body.dimensionFilter.filter).toMatchObject({
+        fieldName: "hostName",
+        stringFilter: { matchType: "EXACT", value: "rehansaeed.com" },
+      });
+      return Response.json(
+        report([
+          row("/example/", "20240115", "12", "120.5"),
+          row("/example", "20240115", "3", "30.25"),
+          row("/example/", "20240301", "5", "2e2"),
+          row("/draft/", "20240115", "999"),
+          row("/about/", "20240115", "999"),
+        ]),
+      );
+    },
+  });
   const draft = entry("/draft/");
   draft.data.published = false;
   const snapshot = await postTrafficSnapshot(
@@ -149,32 +239,32 @@ test("Exports complete monthly history and signs a read-only OAuth assertion", a
   expect(
     await postTrafficSnapshot(dir, [entry()], "https://rehansaeed.com"),
   ).toEqual(snapshot);
-  expect(requests).toBe(2);
+  expect(requests.count).toBe(2);
 });
 
 test("Retrieves all report pages instead of truncating history", async ({}, info) => {
   Date.now = () => Date.parse("2026-10-30T00:30:00Z");
   const dir = info.outputPath("cache");
   await mkdir(dir, { recursive: true });
-  const offsets: number[] = [];
-  globalThis.fetch = async (input, init) => {
-    if (String(input).includes("oauth2")) {
-      return Response.json({ access_token: "test" });
-    }
-    const { offset, dateRanges } = JSON.parse(String(init?.body));
-    expect(dateRanges[0].endDate).toBe(offset ? "2026-10-30" : "today");
-    offsets.push(offset);
-    return Response.json({
-      ...report([row("/example/", offset ? "20240201" : "20240115", "2")]),
-      rowCount: 2,
-    });
-  };
+  const pages: [number, string][] = [];
+  mockGa4({
+    report: ({ offset, dateRanges }) => {
+      pages.push([offset, dateRanges[0]!.endDate]);
+      return Response.json({
+        ...report([row("/example/", offset ? "20240201" : "20240115", "2")]),
+        rowCount: 2,
+      });
+    },
+  });
   const snapshot = await postTrafficSnapshot(
     dir,
     [entry()],
     "https://rehansaeed.com",
   );
-  expect(offsets).toEqual([0, 1]);
+  expect(pages).toEqual([
+    [0, "today"],
+    [1, "2026-10-30"],
+  ]);
   expect(
     snapshot!.posts["/example/"]!.months.slice(0, 2).map(({ views }) => views),
   ).toEqual([2, 2]);
@@ -183,15 +273,15 @@ test("Retrieves all report pages instead of truncating history", async ({}, info
 test("Starts at publication for newer posts and omits future posts", async ({}, info) => {
   const dir = info.outputPath("cache");
   await mkdir(dir, { recursive: true });
-  globalThis.fetch = async (input) =>
-    Response.json(
-      String(input).includes("oauth2")
-        ? { access_token: "test" }
-        : report([
-            row("/newer/", "20240219", "100"),
-            row("/newer/", "20240220", "5"),
-          ]),
-    );
+  mockGa4({
+    report: () =>
+      Response.json(
+        report([
+          row("/newer/", "20240219", "100"),
+          row("/newer/", "20240220", "5"),
+        ]),
+      ),
+  });
   const snapshot = await postTrafficSnapshot(
     dir,
     [entry("/newer/", "2024-02-20"), entry("/future/", "9999-01-01")],
@@ -210,9 +300,7 @@ test("Disabled reporting makes no API requests even with an old cache", async ({
   delete process.env.GA4_PROPERTY_ID;
   delete process.env.GA4_START_DATE;
   delete process.env.GA4_SERVICE_ACCOUNT_JSON;
-  globalThis.fetch = async () => {
-    throw new Error("Unexpected API request");
-  };
+  globalThis.fetch = () => Promise.reject(new Error("Unexpected API request"));
   expect(
     await postTrafficSnapshot(
       info.outputPath("unused"),
@@ -241,10 +329,7 @@ test("Invalid configuration is explicit and does not expose the service-account 
     ),
   ).rejects.toThrow("Invalid GA4 reporting configuration.");
   process.env.GA4_START_DATE = "9999-01-01";
-  globalThis.fetch = async (input) =>
-    Response.json(
-      String(input).includes("oauth2") ? { access_token: "test" } : report([]),
-    );
+  mockGa4({ report: () => Response.json(report([])) });
   await expect(
     postTrafficSnapshot(
       info.outputPath("unused"),
@@ -274,56 +359,7 @@ for (const failure of [
   test(`Rejects ${failure} reports rather than inventing zero traffic`, async ({}, info) => {
     const dir = info.outputPath("cache");
     await mkdir(dir, { recursive: true });
-    globalThis.fetch = async (input) => {
-      if (String(input).includes("oauth2")) {
-        return Response.json({ access_token: "test" });
-      }
-      if (failure === "http") {
-        return new Response(null, { status: 503 });
-      }
-      const response = report(
-        failure === "incomplete-pagination"
-          ? []
-          : [
-              row(
-                "/example/",
-                "20240115",
-                failure === "invalid-count" ? "-1" : "12",
-                failure === "invalid-engagement"
-                  ? "NaN"
-                  : failure === "overflow"
-                    ? "1e30"
-                    : "60",
-              ),
-            ],
-      );
-      return Response.json({
-        ...response,
-        ...(failure === "missing-engagement"
-          ? {
-              rows: response.rows.map((item) => ({
-                ...item,
-                metricValues: item.metricValues.slice(0, 1),
-              })),
-            }
-          : {}),
-        ...(failure === "wrong-metric"
-          ? {
-              metricHeaders: [
-                { name: "screenPageViews" },
-                { name: "activeUsers" },
-              ],
-            }
-          : {}),
-        ...(failure === "incomplete-pagination" ? { rowCount: 1 } : {}),
-        metadata: {
-          ...response.metadata,
-          ...(failure === "sampled" ? { samplingMetadatas: [{}] } : {}),
-          ...(failure === "thresholded" ? { subjectToThresholding: true } : {}),
-          ...(failure === "other-row" ? { dataLossFromOtherRow: true } : {}),
-        },
-      });
-    };
+    mockGa4({ report: () => failureResponse(failure) });
     await expect(
       postTrafficSnapshot(dir, [entry()], "https://rehansaeed.com"),
     ).rejects.toThrow("GA4 traffic unavailable and no saved snapshot exists.");
@@ -353,9 +389,9 @@ test("Failed refresh keeps the original timestamp, removes drafts and retries ne
   };
   await writeFile(file, JSON.stringify(saved));
   let calls = 0;
-  globalThis.fetch = async () => {
+  globalThis.fetch = () => {
     calls++;
-    return new Response(null, { status: 503 });
+    return Promise.resolve(new Response(null, { status: 503 }));
   };
   const snapshot = await postTrafficSnapshot(
     dir,
@@ -411,31 +447,25 @@ test("History validation rejects missing months, negative values and invalid dat
 test("Fresh caches refresh when reporting coverage or the published article set changes", async ({}, info) => {
   const dir = info.outputPath("cache");
   await mkdir(dir, { recursive: true });
-  let calls = 0;
-  globalThis.fetch = async (input) => {
-    calls++;
-    return Response.json(
-      String(input).includes("oauth2") ? { access_token: "test" } : report([]),
-    );
-  };
+  const requests = mockGa4({ report: () => Response.json(report([])) });
   await postTrafficSnapshot(dir, [entry()], "https://rehansaeed.com");
   await postTrafficSnapshot(
     dir,
     [entry(), entry("/new/")],
     "https://rehansaeed.com",
   );
-  expect(calls).toBe(4);
+  expect(requests.count).toBe(4);
   const file = info.outputPath("cache", "blog-traffic.json");
-  const cached = JSON.parse(await readFile(file, "utf8"));
-  cached.snapshot.posts["/new/"].endDate = "2024-01-31";
-  cached.snapshot.posts["/new/"].months = [{ month: "2024-01", views: 0 }];
+  const cached = await readCache(file);
+  cached.snapshot.posts["/new/"]!.endDate = "2024-01-31";
+  cached.snapshot.posts["/new/"]!.months = [{ month: "2024-01", views: 0 }];
   await writeFile(file, JSON.stringify(cached));
   await postTrafficSnapshot(
     dir,
     [entry(), entry("/new/")],
     "https://rehansaeed.com",
   );
-  expect(calls).toBe(6);
+  expect(requests.count).toBe(6);
 });
 
 for (const [timeZone, instant, endDate] of [
@@ -449,17 +479,15 @@ for (const [timeZone, instant, endDate] of [
     Date.now = () => Date.parse(instant);
     process.env.GA4_START_DATE = endDate;
     const requestedEnds: string[] = [];
-    globalThis.fetch = async (input, init) => {
-      if (String(input).includes("oauth2")) {
-        return Response.json({ access_token: "test" });
-      }
-      const body = JSON.parse(String(init?.body));
-      requestedEnds.push(body.dateRanges[0].endDate);
-      return Response.json({
-        ...report([row("/today/", endDate.replaceAll("-", ""), "2", "6")]),
-        metadata: { timeZone },
-      });
-    };
+    mockGa4({
+      report: ({ dateRanges }) => {
+        requestedEnds.push(dateRanges[0]!.endDate);
+        return Response.json({
+          ...report([row("/today/", endDate.replaceAll("-", ""), "2", "6")]),
+          metadata: { timeZone },
+        });
+      },
+    });
     const snapshot = await postTrafficSnapshot(
       dir,
       [entry("/today/", endDate), entry("/future/", "9999-01-01")],
@@ -481,19 +509,17 @@ test("Fresh delayed snapshots refresh, reuse today's data and roll over at prope
   const dir = info.outputPath("cache");
   await mkdir(dir, { recursive: true });
   Date.now = () => Date.parse("2026-10-30T00:30:00Z");
-  let calls = 0;
-  globalThis.fetch = async (input) => {
-    calls++;
-    return Response.json(
-      String(input).includes("oauth2")
-        ? { access_token: "test" }
-        : { ...report([]), metadata: { timeZone: "America/Los_Angeles" } },
-    );
-  };
+  const requests = mockGa4({
+    report: () =>
+      Response.json({
+        ...report([]),
+        metadata: { timeZone: "America/Los_Angeles" },
+      }),
+  });
   await postTrafficSnapshot(dir, [entry()], "https://rehansaeed.com");
   const file = info.outputPath("cache", "blog-traffic.json");
-  const cached = JSON.parse(await readFile(file, "utf8"));
-  const history = cached.snapshot.posts["/example/"];
+  const cached = await readCache(file);
+  const history = cached.snapshot.posts["/example/"]!;
   history.endDate = "2026-10-25";
   history.days = trafficDays("2026-09-26", history.endDate).map((date) => ({
     date,
@@ -506,7 +532,7 @@ test("Fresh delayed snapshots refresh, reuse today's data and roll over at prope
     [entry(), entry("/today/", "2026-10-29")],
     "https://rehansaeed.com",
   );
-  expect(calls).toBe(4);
+  expect(requests.count).toBe(4);
   expect(refreshed!.posts["/today/"]!.endDate).toBe("2026-10-29");
   expect(
     await postTrafficSnapshot(
@@ -515,14 +541,14 @@ test("Fresh delayed snapshots refresh, reuse today's data and roll over at prope
       "https://rehansaeed.com",
     ),
   ).toEqual(refreshed);
-  expect(calls).toBe(4);
+  expect(requests.count).toBe(4);
   Date.now = () => Date.parse("2026-10-30T07:01:00Z");
   const nextDay = await postTrafficSnapshot(
     dir,
     [entry(), entry("/today/", "2026-10-29")],
     "https://rehansaeed.com",
   );
-  expect(calls).toBe(6);
+  expect(requests.count).toBe(6);
   expect(nextDay!.posts["/today/"]!.endDate).toBe("2026-10-30");
 });
 
@@ -564,27 +590,22 @@ test("Engagement requires complete finite nonnegative totals but accepts old vie
 test("A fresh view-only cache is upgraded instead of hiding engagement for a day", async ({}, info) => {
   const dir = info.outputPath("cache");
   await mkdir(dir, { recursive: true });
-  let calls = 0;
-  globalThis.fetch = async (input) => {
-    calls++;
-    return Response.json(
-      String(input).includes("oauth2") ? { access_token: "test" } : report(),
-    );
-  };
+  const requests = mockGa4({ report: () => Response.json(report()) });
   await postTrafficSnapshot(dir, [entry()], "https://rehansaeed.com");
   const file = info.outputPath("cache", "blog-traffic.json");
-  const saved = JSON.parse(await readFile(file, "utf8"));
-  for (const month of saved.snapshot.posts["/example/"].months) {
+  const saved = await readCache(file);
+  const history = saved.snapshot.posts["/example/"]!;
+  for (const month of history.months) {
     delete month.engagementSeconds;
   }
-  delete saved.snapshot.posts["/example/"].days;
+  delete history.days;
   await writeFile(file, JSON.stringify(saved));
   const updated = await postTrafficSnapshot(
     dir,
     [entry()],
     "https://rehansaeed.com",
   );
-  expect(calls).toBe(4);
+  expect(requests.count).toBe(4);
   expect(updated!.posts["/example/"]!.months[0]!.engagementSeconds).toBe(60);
 });
 
@@ -637,18 +658,18 @@ test("Exports exactly the last 30 calendar days through today without another GA
   Date.now = () => Date.parse("2024-02-29T12:00:00Z");
   const dir = info.outputPath("cache");
   await mkdir(dir, { recursive: true });
-  globalThis.fetch = async (input) =>
-    Response.json(
-      String(input).includes("oauth2")
-        ? { access_token: "test" }
-        : report([
-            row("/example/", "20240130", "100", "1000"),
-            row("/example/", "20240131", "3", "30"),
-            row("/example", "20240131", "2", "20"),
-            row("/example/", "20240201", "5", "50"),
-            row("/example/", "20240229", "7", "70"),
-          ]),
-    );
+  mockGa4({
+    report: () =>
+      Response.json(
+        report([
+          row("/example/", "20240130", "100", "1000"),
+          row("/example/", "20240131", "3", "30"),
+          row("/example", "20240131", "2", "20"),
+          row("/example/", "20240201", "5", "50"),
+          row("/example/", "20240229", "7", "70"),
+        ]),
+      ),
+  });
   const snapshot = await postTrafficSnapshot(
     dir,
     [entry()],

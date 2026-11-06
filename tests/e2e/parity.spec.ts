@@ -141,7 +141,7 @@ test.describe("Parity", () => {
         const time = document.querySelector("time.dt-published");
         return {
           datetime: time?.getAttribute("datetime"),
-          text: time?.textContent?.trim(),
+          text: time?.textContent.trim(),
         };
       },
       await response!.text(),

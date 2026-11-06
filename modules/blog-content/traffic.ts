@@ -58,7 +58,7 @@ const reportSchema = z.object({
               .string()
               .regex(/^\d+$/)
               .transform(Number)
-              .pipe(z.number().int().nonnegative().safe()),
+              .pipe(z.number().int().nonnegative()),
           }),
           z.object({
             value: z
@@ -79,7 +79,7 @@ const reportSchema = z.object({
   }),
 });
 
-async function googleRequest(url: string, init: RequestInit) {
+async function googleRequest(url: string, init: RequestInit): Promise<unknown> {
   const response = await fetch(url, {
     ...init,
     signal: AbortSignal.timeout(30_000),
@@ -139,10 +139,11 @@ export async function postTrafficSnapshot(
   }
   let settings: z.infer<typeof settingsSchema>;
   try {
+    const credentials: unknown = JSON.parse(values[2] ?? "null");
     settings = settingsSchema.parse({
       propertyId: values[0],
       startDate: values[1],
-      credentials: JSON.parse(values[2] ?? "null"),
+      credentials,
     });
     createPrivateKey(settings.credentials.private_key);
   } catch {

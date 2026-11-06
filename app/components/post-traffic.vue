@@ -109,8 +109,11 @@ import {
 } from "#shared/utils/traffic";
 
 const props = defineProps<{
+  /** Article permalink used to look up its traffic history. */
   permalink: string;
+  /** Article publication date. */
   published: string;
+  /** Date the article was last substantively updated. */
   modified?: string | null;
 }>();
 const { data, error } = await useFetch("/post-traffic.json", {

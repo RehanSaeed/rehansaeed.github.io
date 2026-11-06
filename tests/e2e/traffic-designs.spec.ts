@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 const url = process.env.TRAFFIC_DESIGNS_URL;
+// eslint-disable-next-line playwright/no-skipped-test -- The design gallery is a local review tool, not part of the site build.
 test.skip(
   !url,
   "Start scripts/traffic-designs.mjs and set TRAFFIC_DESIGNS_URL.",

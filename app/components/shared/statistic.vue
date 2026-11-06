@@ -7,7 +7,9 @@
 
 <script setup lang="ts">
 defineProps<{
+  /** Prominent statistic value. */
   value: string | number;
+  /** Description of the statistic. */
   label: string;
 }>();
 </script>

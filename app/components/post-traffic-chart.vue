@@ -28,8 +28,7 @@
           :aria-label="`${series.interval === 'day' ? 'Daily' : 'Monthly'} ${metric === 'views' ? 'page views' : 'average engagement per view'}. Use arrow keys to inspect ${series.interval === 'day' ? 'days' : 'months'}.`"
           @pointermove="inspect"
           @pointerenter="trigger.onPointerenter"
-          @pointerleave="trigger.onPointerleave"
-          @keydown="navigate">
+          @pointerleave="trigger.onPointerleave">
           <svg
             viewBox="0 0 600 200"
             preserveAspectRatio="none"
@@ -75,6 +74,7 @@
               trigger.onFocus($event);
             "
             @blur="trigger.onBlur"
+            @keydown="navigate"
             @click="selectPoint($event, index)" />
         </div>
         <div class="post-traffic__dates" aria-hidden="true">
@@ -126,9 +126,17 @@ import {
 } from "#shared/utils/traffic";
 
 const props = defineProps<{
+  /** Traffic points to plot for the selected range. */
   series: TrafficSeries;
+  /** Metric shown on the vertical axis. */
   metric: "views" | "engagement";
-  annotations: { date: string; label: string }[];
+  /** Dated article events marked on the chart. */
+  annotations: {
+    /** ISO date of the event. */
+    date: string;
+    /** Visible event label, such as Published or Updated. */
+    label: string;
+  }[];
 }>();
 const selectedIndex = ref<number | null>(null);
 const plot = useTemplateRef<HTMLElement>("plot");

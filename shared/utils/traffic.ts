@@ -3,7 +3,7 @@ import { z } from "zod";
 export const trafficDateSchema = z.iso.date();
 const monthSchema = z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/);
 const totalsSchema = z.object({
-  views: z.number().int().nonnegative().safe(),
+  views: z.number().int().nonnegative(),
   engagementSeconds: z
     .number()
     .nonnegative()
@@ -122,9 +122,13 @@ export const trafficSnapshotSchema = z.object({
 export type TrafficHistory = z.infer<typeof trafficHistorySchema>;
 export type TrafficSnapshot = z.infer<typeof trafficSnapshotSchema>;
 export type TrafficSeries = {
+  /** First date included in the series. */
   startDate: string;
+  /** Last date included in the series. */
   endDate: string;
+  /** Size of each reporting bucket. */
   interval: "day" | "month";
+  /** Traffic totals for each bucket, in date order. */
   points: z.infer<typeof daySchema>[];
 };
 

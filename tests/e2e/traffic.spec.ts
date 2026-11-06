@@ -81,7 +81,24 @@ async function expectPointTooltip(
   expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(viewportWidth + 1);
 }
 
-for (const width of [375, 1280]) {
+/** Checks the latest point's keyboard tooltip when an expectation is given. */
+const expectLatestPointTooltip = async (
+  chart: Locator,
+  expected?: readonly [date: string, views: number, engagement: string],
+) => {
+  if (!expected) {
+    return;
+  }
+  const point = chart.locator(".post-traffic__point").last();
+  await point.focus();
+  await expectPointTooltip(chart, ...expected);
+  await point.press("Escape");
+};
+
+for (const { width, axis, size, gap } of [
+  { width: 375, axis: "y", size: "height", gap: "rowGap" },
+  { width: 1280, axis: "x", size: "width", gap: "columnGap" },
+] as const) {
   test(`Traffic history is labelled, accessible and usable at ${width}px`, async ({
     page,
   }, info) => {
@@ -121,11 +138,11 @@ for (const width of [375, 1280]) {
       .evaluate((element) => {
         const style = getComputedStyle(element);
         return (
-          parseFloat(style.fontSize) *
-          parseFloat(style.getPropertyValue("--global-font-size-8"))
+          Number.parseFloat(style.fontSize) *
+          Number.parseFloat(style.getPropertyValue("--global-font-size-8"))
         );
       });
-    expect(parseFloat(totalFontSize)).toBeCloseTo(expectedFontSize, 2);
+    expect(Number.parseFloat(totalFontSize)).toBeCloseTo(expectedFontSize, 2);
     await expect(chart.locator(".post-traffic__engagement dd")).toHaveCSS(
       "font-family",
       /Audiowide/,
@@ -159,9 +176,9 @@ for (const width of [375, 1280]) {
     const spacing = await metrics.evaluate((element) => {
       const style = getComputedStyle(element);
       return {
-        columnGap: parseFloat(style.columnGap),
-        rowGap: parseFloat(style.rowGap),
-        fontSize: parseFloat(
+        columnGap: Number.parseFloat(style.columnGap),
+        rowGap: Number.parseFloat(style.rowGap),
+        fontSize: Number.parseFloat(
           getComputedStyle(document.documentElement).fontSize,
         ),
       };
@@ -171,17 +188,11 @@ for (const width of [375, 1280]) {
     const engagementBounds = await chart
       .locator(".post-traffic__engagement")
       .boundingBox();
-    if (width === 375) {
-      expect(engagementBounds!.y - total!.y - total!.height).toBeCloseTo(
-        spacing.rowGap,
-        2,
-      );
-    } else {
-      expect(engagementBounds!.x - total!.x - total!.width).toBeCloseTo(
-        spacing.columnGap,
-        2,
-      );
-    }
+    // Statistics stack on narrow screens and sit side by side on wider screens.
+    expect(engagementBounds![axis] - total![axis] - total![size]).toBeCloseTo(
+      spacing[gap],
+      2,
+    );
     await expect(chart.locator(".post-traffic__range")).toHaveCount(0);
     const summary = await metrics.boundingBox();
     const controls = await chart
@@ -357,11 +368,43 @@ for (const width of [375, 1280]) {
   });
 }
 
+const rangeLabels = {
+  "Last month": ["Last month"],
+  "Last year": ["Last year", "Last month"],
+  "All time": ["All time", "Last year", "Last month"],
+};
+const expectLastMonthControl = async (
+  card: Locator,
+  selected: keyof typeof rangeLabels,
+  daily: boolean,
+) => {
+  const ranges = card.getByRole("group", { name: "Traffic date range" });
+  const month = ranges.getByRole("button", {
+    name: "Last month",
+    exact: true,
+  });
+  if (!daily) {
+    await expect(month).toBeDisabled();
+    await expect(card).toContainText(
+      "Daily history is unavailable in this saved snapshot.",
+    );
+    return;
+  }
+  await expect(month).toBeEnabled();
+  await card.getByRole("button", { name: "Engagement", exact: true }).click();
+  await expect(ranges.locator('[aria-pressed="true"]')).toHaveText(selected);
+  await month.click();
+  await expect(ranges.getByRole("button")).toHaveText(rangeLabels[selected]);
+  await expect(month).toHaveAttribute("aria-pressed", "true");
+  await expect(
+    card.getByRole("button", { name: "Engagement", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+};
 const rangeCases: {
   name: string;
   startDate: string;
   endDate: string;
-  selected: "All time" | "Last year" | "Last month";
+  selected: keyof typeof rangeLabels;
   daily?: boolean;
   zero?: boolean;
 }[] = [
@@ -456,13 +499,7 @@ for (const {
     await page.goto(path, { waitUntil: "domcontentloaded" });
     const card = page.locator(".post-traffic");
     const ranges = card.getByRole("group", { name: "Traffic date range" });
-    const labels =
-      selected === "Last month"
-        ? ["Last month"]
-        : selected === "Last year"
-          ? ["Last year", "Last month"]
-          : ["All time", "Last year", "Last month"];
-    await expect(ranges.getByRole("button")).toHaveText(labels);
+    await expect(ranges.getByRole("button")).toHaveText(rangeLabels[selected]);
     await expect(ranges.locator('[aria-pressed="true"]')).toHaveText(selected);
     await expect(card.locator(".post-traffic__point")).toHaveCount(
       selected === "Last month" ? days.length : months.length,
@@ -477,30 +514,7 @@ for (const {
     await expect(card.locator(".post-traffic__engagement dd")).toHaveText(
       zero ? "Unavailable" : "10s",
     );
-    const month = ranges.getByRole("button", {
-      name: "Last month",
-      exact: true,
-    });
-    if (!daily) {
-      await expect(month).toBeDisabled();
-      await expect(card).toContainText(
-        "Daily history is unavailable in this saved snapshot.",
-      );
-    } else {
-      await expect(month).toBeEnabled();
-      await card
-        .getByRole("button", { name: "Engagement", exact: true })
-        .click();
-      await expect(ranges.locator('[aria-pressed="true"]')).toHaveText(
-        selected,
-      );
-      await month.click();
-      await expect(ranges.getByRole("button")).toHaveText(labels);
-      await expect(month).toHaveAttribute("aria-pressed", "true");
-      await expect(
-        card.getByRole("button", { name: "Engagement", exact: true }),
-      ).toHaveAttribute("aria-pressed", "true");
-    }
+    await expectLastMonthControl(card, selected, daily);
   });
 }
 
@@ -668,10 +682,10 @@ test.describe("Touch traffic inspection", () => {
     await expect(chart.locator(".post-traffic__point")).toHaveCount(57);
     await expect(chart.locator(".post-traffic__annotation")).toHaveCount(0);
     await expect(chart.locator(".post-traffic__events")).toHaveCount(0);
-    for (const [name, size, firstDate, lastDate] of [
-      ["Last year", 12, "Nov 2025", "Oct 2026"],
-      ["Last month", 30, "23 Sept", "22 Oct"],
-      ["All time", 57, "Feb 2022", "Oct 2026"],
+    for (const [name, size, firstDate, lastDate, selected, tooltip] of [
+      ["Last year", 12, "Nov 2025", "Oct 2026", months.slice(-12), undefined],
+      ["Last month", 30, "23 Sept", "22 Oct", days, ["22 Oct 2026", 30, "39s"]],
+      ["All time", 57, "Feb 2022", "Oct 2026", months, undefined],
     ] as const) {
       const button = chart.getByRole("button", { name, exact: true });
       await button.click();
@@ -689,7 +703,6 @@ test.describe("Touch traffic inspection", () => {
       await expect(
         chart.locator(".post-traffic__dates span").last(),
       ).toHaveText(lastDate);
-      const selected = name === "Last month" ? days : months.slice(-size);
       const total = selected.reduce((sum, item) => sum + item.views, 0);
       await expect(chart.locator(".post-traffic__total dd")).toHaveText(
         new Intl.NumberFormat("en-GB").format(total),
@@ -706,11 +719,7 @@ test.describe("Touch traffic inspection", () => {
         new RegExp(name === "Last month" ? "^Daily" : "^Monthly"),
       );
       await expect(page.getByRole("tooltip")).toHaveCount(0);
-      if (name === "Last month") {
-        await chart.locator(".post-traffic__point").last().focus();
-        await expectPointTooltip(chart, "22 Oct 2026", 30, "39s");
-        await chart.locator(".post-traffic__point").last().press("Escape");
-      }
+      await expectLatestPointTooltip(chart, tooltip);
       await chart
         .getByRole("button", { name: "Engagement", exact: true })
         .click();
