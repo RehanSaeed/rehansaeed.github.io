@@ -44,24 +44,6 @@ downloaded during offline installation. PNG app icons and installation screensho
 are retained for compatibility. Browsers without AVIF support cannot display
 uncached content images offline.
 
-## CI performance
-
-Measure workflow wall time and individual job/step timings separately. Compare
-warm-cache runs with warm-cache runs: responsive-image generation can add several
-minutes on a legitimate cache miss, while GitHub Pages can spend minutes syncing
-files after all validation has passed.
-
-Keep all browser projects, offline tests and the required Build gate. Browser
-suites consume the same generated site artifact; deployment must use that run's
-validated Pages artifact. Do not cache generated Nuxt state, the content database
-or the complete site across runs, or loosen image-cache input fingerprints.
-
-CI runs two Playwright shards per browser. Reproduce one partition with
-`npx playwright test --project=edge --shard=1/2` (replace the browser and shard as
-needed); omit `--shard` to run the full project. Failed reports are named by
-browser and shard. Generate is the sole writer of the public API snapshot cache;
-Quality and browser jobs restore the same snapshots without racing to save them.
-
 ## Dependency updates
 
 Commit `package.json` and its regenerated `package-lock.json` together. Run
