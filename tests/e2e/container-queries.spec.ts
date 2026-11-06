@@ -1,45 +1,6 @@
 import type { Locator, Page } from "@playwright/test";
 import { expect, test } from "./fixtures";
-
-const largeDefaultFontSize = 32;
-
-type SiteCase = {
-  /** Inline size applied to the site container, in CSS pixels. */
-  width: number;
-  /** Whether the navigation should stick to the top of the viewport. */
-  sticky: boolean;
-  /** Whether the compact layout without main padding should apply. */
-  compact: boolean;
-};
-
-const siteCase = (width: number, emSize: number): SiteCase => ({
-  width,
-  sticky: width >= 75 * emSize,
-  compact: width <= 36 * emSize,
-});
-
-const resizeSite = async (page: Page, width: number) => {
-  await page.locator(".site-shell").evaluate((element, width) => {
-    element.style.inlineSize = `${width}px`;
-  }, width);
-};
-
-const pixels = (locator: Locator, property: "paddingInlineStart") =>
-  locator.evaluate(
-    (element, property) =>
-      Number.parseFloat(getComputedStyle(element)[property]),
-    property,
-  );
-
-const expectSiteLayout = async (page: Page, { sticky, compact }: SiteCase) => {
-  await expect(page.locator(".navigation")).toHaveCSS(
-    "position",
-    sticky ? "sticky" : "static",
-  );
-  expect((await pixels(page.locator("#main"), "paddingInlineStart")) > 0).toBe(
-    !compact,
-  );
-};
+import { expectSiteLayout, resizeSite, siteCase } from "./site-container";
 
 for (const testCase of [575, 576, 577, 1199, 1200, 1201, 1920].map((width) =>
   siteCase(width, 16),
@@ -100,43 +61,6 @@ test("Scroll indicator and sticky navigation stay fixed to the viewport", async 
   expect(
     await navigation.evaluate((element) => element.getBoundingClientRect().top),
   ).toBe(0);
-});
-
-test.describe("Larger browser default font size", () => {
-  test.use({
-    launchOptions: {
-      firefoxUserPrefs: {
-        "font.size.variable.x-western": largeDefaultFontSize,
-      },
-    },
-  });
-
-  test.beforeEach(async ({ page, browserName }) => {
-    // Firefox receives the default font size through launch preferences.
-    if (browserName === "chromium") {
-      const session = await page.context().newCDPSession(page);
-      await session.send("Page.setFontSizes", {
-        fontSizes: { standard: largeDefaultFontSize },
-      });
-    }
-  });
-
-  for (const testCase of [1152, 1153, 2399, 2400].map((width) =>
-    siteCase(width, largeDefaultFontSize),
-  )) {
-    test(`Site breakpoints scale for a ${String(testCase.width)}px container`, async ({
-      page,
-    }) => {
-      await page.setViewportSize({ width: 2600, height: 1080 });
-      await page.goto("/");
-      await expect(page.locator(".site-shell")).toHaveCSS(
-        "font-size",
-        `${String(largeDefaultFontSize)}px`,
-      );
-      await resizeSite(page, testCase.width);
-      await expectSiteLayout(page, testCase);
-    });
-  }
 });
 
 const openArticleWithMentions = async (page: Page) => {
