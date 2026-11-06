@@ -1,15 +1,10 @@
-import { globSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { expect, test } from "@playwright/test";
 import { load } from "cheerio";
-import { parse } from "yaml";
 import { z } from "zod";
+import { scanContent } from "../../modules/blog-content/scan";
 
 const origin = "https://rehansaeed.com";
-const postSchema = z.object({
-  permalink: z.string(),
-  published: z.boolean(),
-  tags: z.array(z.string()),
-});
 const jsonFeedSchema = z.object({
   items: z.array(
     z.object({
@@ -22,16 +17,9 @@ const jsonFeedSchema = z.object({
 test("Feeds preserve article tags as Atom terms, RSS categories and JSON tags", async ({
   request,
 }) => {
-  const posts = globSync("content/posts/**/index.md")
-    .map((file) => {
-      const source = readFileSync(file, "utf8");
-      const frontMatter = /^---\r?\n([\s\S]*?)\r?\n---/.exec(source)?.[1];
-      if (!frontMatter) {
-        throw new Error(`Missing front matter: ${file}`);
-      }
-      return postSchema.parse(parse(frontMatter));
-    })
-    .filter((post) => post.published);
+  const posts = (await scanContent(join(process.cwd(), "content")))
+    .filter((entry) => entry.collection === "posts" && entry.data.published)
+    .map((entry) => entry.data);
   expect(posts.length).toBeGreaterThan(0);
   expect(posts.some((post) => post.tags.length > 0)).toBe(true);
 
