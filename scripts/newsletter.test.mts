@@ -170,7 +170,15 @@ await test("Emails contain the escaped title, excerpt, hero image, link and unsu
     );
     assert.match(email.html, />Read the post<\/a>/);
     assert.match(email.html, /href="\{\$unsubscribe_link\}"/);
-    assert.doesNotMatch(email.html, /<script|<em>/);
+    for (const markup of ["<script", "<em>"]) {
+        assert(!email.html.includes(markup), markup);
+    }
+    assert(
+        !renderEmail({
+            ...item,
+            summary: "a <<script>script> b",
+        }).html.includes("<script"),
+    );
 
     const [plain] = feed(post("y", "2026-11-04"));
     assert(plain);
