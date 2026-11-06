@@ -285,6 +285,33 @@ When explicitly asked to help draft an article, follow these guidelines:
   treatment rather than inventing a different message. Show the result for
   review, and do not claim generated imagery is a real screenshot or photograph.
 
+#### Reference Art Style
+
+Use
+[the AI learnings hero](public/images/hero/AI-Agents-Upgrading-a-Blog-With-Human-Code-Review-1600x900.png)
+as the art-style reference for new AI-generated hero images, and pass it to the
+image tool as a style reference where supported. Copy its treatment, not its
+subject: each image must still illustrate its own article.
+
+- **Medium:** hand-drawn editorial ink illustration with charcoal outlines,
+  light cross-hatching and flat, slightly mottled watercolour or gouache fills.
+  Add a faint paper grain across the whole canvas, without aged or stained
+  paper effects.
+- **Palette:** mostly charcoal and cool greys on a flat pale-lavender
+  (`#F0E9F9`) background, with a few muted accents: the character's
+  golden-ochre jumper, indigo denim, sage green and natural oak or wicker.
+  Keep colour sparing so the main subject stands out.
+- **Composition:** wide 16:9 scene with one clear story read left to right,
+  generous empty background and no frame or vignette. Keep the main subject
+  away from the outer edges so card crops still work. Simple wireframe-style
+  browser windows, documents or tools can represent software concepts.
+- **Lighting and depth:** even, soft and flat. Use no dramatic shadows, glow,
+  lens effects or photorealistic rendering; only a light ground shadow.
+- **Detail:** moderate. Objects should be recognisable at thumbnail size, with
+  simplified ink detail rather than intricate textures.
+- **Text and marks:** no legible text, numbers, code, logos or trademarks.
+  Suggest text with grey lines and icons with simple generic shapes.
+
 #### Recurring Author Character
 
 Prefer hero images featuring the recurring author character described below.
