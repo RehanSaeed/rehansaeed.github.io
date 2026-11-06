@@ -296,3 +296,41 @@ for (const width of [375, 1280]) {
     });
   }
 }
+
+test("GitHub badge placeholder widths do not constrain loaded badges", async ({
+  page,
+}) => {
+  const badgeWidths = [180, 60, 140];
+  let request = 0;
+  await page.route("https://img.shields.io/**", (route) => {
+    const badgeWidth = badgeWidths[request++ % badgeWidths.length]!;
+    return route.fulfill({
+      contentType: "image/svg+xml",
+      body: `<svg xmlns="http://www.w3.org/2000/svg" width="${badgeWidth}" height="20"><rect width="100%" height="100%" fill="#ddd"/></svg>`,
+    });
+  });
+  await page.goto("/about/", { waitUntil: "domcontentloaded" });
+  const images = page.locator(".github-badges img");
+  await expect(images).toHaveCount(3);
+  await expect
+    .poll(() =>
+      images.evaluateAll((elements) =>
+        (elements as HTMLImageElement[]).map((image) => image.complete),
+      ),
+    )
+    .toEqual([true, true, true]);
+  const sizes = await images.evaluateAll((elements) =>
+    (elements as HTMLImageElement[]).map((image) => ({
+      natural: image.naturalWidth / image.naturalHeight,
+      rendered: image.getBoundingClientRect().width,
+      height: image.getBoundingClientRect().height,
+    })),
+  );
+  for (const size of sizes) {
+    expect(size.height).toBeCloseTo(30, 0);
+    expect(size.rendered).toBeCloseTo(size.natural * 30, 0);
+  }
+  const naturalWidths = sizes.map((size) => Math.round(size.natural * 20));
+  expect(naturalWidths).toHaveLength(badgeWidths.length);
+  expect(naturalWidths).toEqual(expect.arrayContaining(badgeWidths));
+});

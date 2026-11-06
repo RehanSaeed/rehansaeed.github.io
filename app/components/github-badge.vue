@@ -5,7 +5,7 @@
         class="github-badge__image"
         :alt="alt"
         height="30"
-        :width="width"
+        :width="placeholderWidth"
         :src="src" />
     </a>
   </u-tooltip>
@@ -19,8 +19,11 @@ defineProps<{
   src: string;
   /** Accessible description of the badge and its current count. */
   alt: string;
-  /** Approximate rendered width at 30px high, reserving space before the image loads. */
-  width: number;
+  /**
+   * Estimated width at 30px high, used only to reserve space before the badge loads.
+   * The loaded badge keeps its natural width, which changes with its live count.
+   */
+  placeholderWidth: number;
   /** Explanation shown on hover or keyboard focus. */
   tooltip: string;
 }>();
