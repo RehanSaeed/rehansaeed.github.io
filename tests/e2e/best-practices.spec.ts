@@ -7,6 +7,10 @@ import { workflowSchema } from "./data";
 import { z } from "zod";
 
 const postPath = "/on-the-etiquette-of-pull-request-comments/";
+const newsletterFormUrl = z
+  .object({ newsletter: z.object({ formUrl: z.url({ protocol: /^https$/ }) }) })
+  .parse(JSON.parse(readFileSync(join(process.cwd(), "site.json"), "utf8")))
+  .newsletter.formUrl;
 
 test.describe("Nuxt best practices", () => {
   for (const width of [375, 1280]) {
@@ -22,12 +26,7 @@ test.describe("Nuxt best practices", () => {
           .toBe(width);
         const newsletter = page.locator(".newsletter");
         await newsletter.scrollIntoViewIfNeeded();
-        await newsletter
-          .getByLabel(/Stay up to date/)
-          .fill("reader@example.com");
-        for (const control of await newsletter
-          .locator('input[type="email"], button[type="submit"]')
-          .all()) {
+        for (const control of await newsletter.getByRole("link").all()) {
           const bounds = await control.boundingBox();
           expect(bounds).not.toBeNull();
           expect(bounds!.x).toBeGreaterThanOrEqual(0);
@@ -49,8 +48,10 @@ test.describe("Nuxt best practices", () => {
       const open = page.getByRole("button", { name: "Open search" });
       await expect(open).toBeDisabled();
       await expect(
-        page.locator('.newsletter button[type="submit"]'),
-      ).toBeEnabled();
+        page
+          .locator(".newsletter")
+          .getByRole("link", { name: "Subscribe by email" }),
+      ).toHaveAttribute("href", newsletterFormUrl);
       scripts.resume();
       await expect(open).toBeEnabled();
       await open.click();
@@ -60,6 +61,25 @@ test.describe("Nuxt best practices", () => {
     } finally {
       await scripts.dispose();
     }
+  });
+
+  test("Newsletter signs up through the hosted Sender form without third-party scripts", async ({
+    page,
+  }) => {
+    const requests: string[] = [];
+    page.on("request", (request) => requests.push(request.url()));
+    await page.goto("/");
+    const newsletter = page.getByRole("region", { name: "Newsletter" });
+    await newsletter.scrollIntoViewIfNeeded();
+    await expect(
+      newsletter.getByRole("link", { name: "Subscribe by email" }),
+    ).toHaveAttribute("href", newsletterFormUrl);
+    await expect(newsletter).toContainText("Sender sign-up form");
+    await expect(newsletter.locator("form, input")).toHaveCount(0);
+    expect(await page.content()).not.toMatch(/mailchimp|list-manage/i);
+    expect(
+      requests.filter((url) => /sender\.net|mailchimp/i.test(url)),
+    ).toEqual([]);
   });
 
   test("Announces client-side route changes", async ({ page }) => {

@@ -111,7 +111,8 @@
     "seo:verify": "node scripts/seo.mts",
     "og:gallery": "node scripts/og-images.mts",
     "pages:preflight": "node scripts/pages.mts preflight",
-    "pages:verify": "node scripts/pages.mts verify"
+    "pages:verify": "node scripts/pages.mts verify",
+    "newsletter": "node scripts/newsletter.mts"
   },
   "scriptDescriptions": {
     "help": "List every npm script and its purpose.",
@@ -143,7 +144,8 @@
     "seo:verify": "Verify generated SEO metadata, social cards, sitemap, Markdown exports and AI policy.",
     "og:gallery": "Generate a local HTML gallery of the built social cards for manual review.",
     "pages:preflight": "Read Pages settings and the live domain/CSP; requires GITHUB_TOKEN and changes no hosting settings.",
-    "pages:verify": "Verify the published domain matches dist/deployment.json; accepts BASE_URL."
+    "pages:verify": "Verify the published domain matches dist/deployment.json; accepts BASE_URL.",
+    "newsletter": "Email new posts from the deployed feed through Sender; needs GITHUB_TOKEN and Sender settings, supports dry runs."
   },
   "browserslist": [
     "defaults"
