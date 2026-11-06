@@ -101,6 +101,19 @@ const openArticleWithMentions = async (page: Page) => {
   await expect(page.locator(".webmention-link")).toHaveCount(1);
 };
 
+/** Waits for the next rendering update, after content-visibility relevance changes. */
+const afterRendering = (card: Locator) =>
+  card.evaluate(
+    () =>
+      new Promise<void>((resolve) => {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            resolve();
+          });
+        });
+      }),
+  );
+
 /** Sets the card's content box to 30em plus an offset and returns its width. */
 const setContentWidth = async (card: Locator, offset: number) => {
   await card.scrollIntoViewIfNeeded();
@@ -201,6 +214,7 @@ test("Newsletter and webmentions fit common viewport widths", async ({
     for (const selector of [".newsletter", ".webmentions"]) {
       const card = page.locator(selector);
       await card.scrollIntoViewIfNeeded();
+      await afterRendering(card);
       const size = await card.evaluate((element) => ({
         client: element.clientWidth,
         scroll: element.scrollWidth,
@@ -210,6 +224,31 @@ test("Newsletter and webmentions fit common viewport widths", async ({
       expect(size.width).toBeLessThanOrEqual(width);
       expect(size.scroll).toBeLessThanOrEqual(size.client + 1);
     }
+  }
+});
+
+test("Newsletter and webmentions keep their height when scrolled offscreen", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await openArticleWithMentions(page);
+
+  for (const selector of [".newsletter", ".webmentions"]) {
+    const card = page.locator(selector);
+    await card.scrollIntoViewIfNeeded();
+    await afterRendering(card);
+    const height = await card.evaluate(
+      (element) => element.getBoundingClientRect().height,
+    );
+    await page.evaluate(() => {
+      window.scrollTo(0, 0);
+    });
+    await expect(card).not.toBeInViewport();
+    await afterRendering(card);
+    const offscreenHeight = await card.evaluate(
+      (element) => element.getBoundingClientRect().height,
+    );
+    expect(offscreenHeight).toBeCloseTo(height, 0);
   }
 });
 

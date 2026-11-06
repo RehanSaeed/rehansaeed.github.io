@@ -1,75 +1,77 @@
 <template>
   <u-intersect @enterFirstTime="onLoadMentions">
     <u-card class="webmentions" :aria-busy="isLoading">
-      <u-heading
-        id="webmentions"
-        class="webmentions__title"
-        center
-        level="2"
-        href="#webmentions"
-        >Web Mentions</u-heading
-      >
-      <a
-        class="webmentions__help"
-        href="https://en.wikipedia.org/wiki/Webmention">
-        <u-icon name="fa-regular:question-circle" inline />
-        What's this?
-      </a>
-      <div v-if="hasError" class="webmentions__error">
-        <p role="alert">Unable to load Web Mentions. Please try again.</p>
-        <u-button
-          class="webmentions__retry"
-          variant="secondary"
-          @click="onLoadMentions">
-          <u-icon name="feather:rotate-cw" />
-          Retry
-        </u-button>
-      </div>
-      <div v-else class="webmentions__container">
-        <u-webmention-faces
-          v-if="!isLoading"
-          class="webmentions__like-faces"
-          :mentions="likes">
-          <h3 class="webmentions__count webmentions__like-count">
-            {{ likesDescription }}
-          </h3>
-        </u-webmention-faces>
-        <u-webmention-faces-skeleton v-else />
-
-        <u-webmention-faces
-          v-if="!isLoading"
-          class="webmentions__repost-faces"
-          :mentions="reposts">
-          <h3 class="webmentions__count webmentions__repost-count">
-            {{ repostsDescription }}
-          </h3>
-        </u-webmention-faces>
-        <u-webmention-faces-skeleton v-else />
-
-        <div class="webmentions__links">
-          <h3 class="webmentions__count webmentions__link-count">
-            {{ linksDescription }}
-          </h3>
-          <div v-if="!isLoading" class="webmentions__links-container">
-            <u-webmention-link
-              v-for="link of links"
-              :key="link.id"
-              :link="link" />
-          </div>
-          <u-webmention-links-skeleton v-else />
+      <div class="webmentions__content">
+        <u-heading
+          id="webmentions"
+          class="webmentions__title"
+          center
+          level="2"
+          href="#webmentions"
+          >Web Mentions</u-heading
+        >
+        <a
+          class="webmentions__help"
+          href="https://en.wikipedia.org/wiki/Webmention">
+          <u-icon name="fa-regular:question-circle" inline />
+          What's this?
+        </a>
+        <div v-if="hasError" class="webmentions__error">
+          <p role="alert">Unable to load Web Mentions. Please try again.</p>
+          <u-button
+            class="webmentions__retry"
+            variant="secondary"
+            @click="onLoadMentions">
+            <u-icon name="feather:rotate-cw" />
+            Retry
+          </u-button>
         </div>
+        <div v-else class="webmentions__container">
+          <u-webmention-faces
+            v-if="!isLoading"
+            class="webmentions__like-faces"
+            :mentions="likes">
+            <h3 class="webmentions__count webmentions__like-count">
+              {{ likesDescription }}
+            </h3>
+          </u-webmention-faces>
+          <u-webmention-faces-skeleton v-else />
 
-        <div class="webmentions__replies">
-          <h3 class="webmentions__count webmentions__reply-count">
-            {{ repliesDescription }}
-          </h3>
-          <div v-if="!isLoading" class="webmentions__replies-container">
-            <u-webmention-reply
-              v-for="reply of replies"
-              :key="reply.id"
-              :reply="reply" />
+          <u-webmention-faces
+            v-if="!isLoading"
+            class="webmentions__repost-faces"
+            :mentions="reposts">
+            <h3 class="webmentions__count webmentions__repost-count">
+              {{ repostsDescription }}
+            </h3>
+          </u-webmention-faces>
+          <u-webmention-faces-skeleton v-else />
+
+          <div class="webmentions__links">
+            <h3 class="webmentions__count webmentions__link-count">
+              {{ linksDescription }}
+            </h3>
+            <div v-if="!isLoading" class="webmentions__links-container">
+              <u-webmention-link
+                v-for="link of links"
+                :key="link.id"
+                :link="link" />
+            </div>
+            <u-webmention-links-skeleton v-else />
           </div>
-          <u-webmention-replies-skeleton v-else />
+
+          <div class="webmentions__replies">
+            <h3 class="webmentions__count webmentions__reply-count">
+              {{ repliesDescription }}
+            </h3>
+            <div v-if="!isLoading" class="webmentions__replies-container">
+              <u-webmention-reply
+                v-for="reply of replies"
+                :key="reply.id"
+                :reply="reply" />
+            </div>
+            <u-webmention-replies-skeleton v-else />
+          </div>
         </div>
       </div>
     </u-card>
@@ -163,12 +165,16 @@ const onLoadMentions = async () => {
 .webmentions {
   --global-line-length-min: 0;
 
+  content-visibility: auto;
+  contain-intrinsic-size: 704px;
+}
+
+// Keep the container off the content-visibility element: Firefox otherwise
+// discards its remembered size when skipped, shifting content below it.
+.webmentions__content {
   container: webmentions / inline-size;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-
-  content-visibility: auto;
-  contain-intrinsic-size: 704px;
 }
 
 .webmentions__title {
