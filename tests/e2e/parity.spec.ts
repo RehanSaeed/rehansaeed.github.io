@@ -296,6 +296,22 @@ test.describe("Service worker", () => {
         });
       }
     });
+    // This contract covers pages visited while controlled, not the entire blog.
+    await page.goto("/tag/c/");
+    await page.goto("/about/");
+    await expect
+      .poll(() =>
+        page.evaluate(async () =>
+          Boolean(
+            await (
+              await caches.open("blog-data-v1")
+            ).match(new URL("/about/_payload.json", location.origin), {
+              ignoreSearch: true,
+            }),
+          ),
+        ),
+      )
+      .toBe(true);
     await context.setOffline(true);
 
     await page.goto("/tag/c/");

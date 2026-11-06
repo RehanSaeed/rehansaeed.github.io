@@ -5,6 +5,7 @@ import type { Locator, Page } from "@playwright/test";
 import type { NuxtApp } from "nuxt/app";
 import { load } from "cheerio";
 import { expect, test } from "./fixtures";
+import { controlled, saved, test as offlineTest } from "./offline-fixtures";
 
 const post = "/on-the-etiquette-of-pull-request-comments/";
 const screenshotDirectory = process.env.ICON_SCREENSHOTS_DIR;
@@ -180,112 +181,94 @@ test("Coffee icons inherit their button text colour in both themes", async ({
   ).resolves.toBeUndefined();
 });
 
-test.describe("Offline icons", () => {
-  test.use({ serviceWorkers: "allow" });
-
-  test("Unvisited pages, theme changes and dialogs need no icon API", async ({
-    page,
-    context,
-    baseURL,
-    browserName,
-  }) => {
-    // Playwright's Firefox offline emulation bypasses the worker being tested.
-    // eslint-disable-next-line playwright/no-skipped-test
-    test.skip(
-      browserName === "firefox",
-      "Playwright's Firefox offline mode bypasses service workers.",
-    );
-    test.slow();
-    const iconRequests: string[] = [];
-    await page.addInitScript(() => {
-      Object.defineProperty(navigator, "share", { value: undefined });
-    });
-    page.on("request", (request) => {
-      const url = new URL(request.url());
-      if (/iconify|_nuxt_icon/.test(url.href)) {
-        iconRequests.push(url.href);
+offlineTest.describe("Offline icons", () => {
+  offlineTest(
+    "Visited pages, theme changes and dialogs need no icon API",
+    async ({ page, site }) => {
+      offlineTest.slow();
+      const iconRequests: string[] = [];
+      await page.addInitScript(() => {
+        Object.defineProperty(navigator, "share", { value: undefined });
+      });
+      page.on("request", (request) => {
+        const url = new URL(request.url());
+        if (/iconify|_nuxt_icon/.test(url.href)) {
+          iconRequests.push(url.href);
+        }
+      });
+      await page.goto(`${site.origin}/`);
+      await ready(page);
+      await controlled(page);
+      for (const path of [post, "/about/", "/streaming/thumbnail/"]) {
+        await page.goto(`${site.origin}${path}`);
+        await ready(page);
+        await saved(page, path);
       }
-    });
-    await page.route(
-      (url) => url.origin !== new URL(baseURL!).origin,
-      (route) => route.fulfill({ contentType: "application/json", body: "[]" }),
-    );
-    const cdp = await context.newCDPSession(page);
-    await cdp.send("Network.setCacheDisabled", { cacheDisabled: true });
-    await page.goto("/");
-    await ready(page);
-    await page.evaluate(async () => {
-      await navigator.serviceWorker.ready;
-      if (!navigator.serviceWorker.controller) {
-        await new Promise((resolve) => {
-          navigator.serviceWorker.addEventListener(
-            "controllerchange",
-            resolve,
-            {
-              once: true,
-            },
-          );
-        });
+      await site.stop();
+      await page.goto(`${site.origin}${post}`);
+      await ready(page);
+      for (const name of ["Mastodon", "Bluesky"]) {
+        const socialLink = page
+          .locator("footer .social")
+          .getByRole("link", { name, exact: true });
+        await expect(socialLink).toHaveAttribute("rel", "me");
+        await expect(socialLink.locator("svg.icon path")).not.toHaveCount(0);
       }
-    });
-    await context.setOffline(true);
-    await page.goto(post);
-    await ready(page);
-    for (const name of ["Mastodon", "Bluesky"]) {
-      const socialLink = page
-        .locator("footer .social")
-        .getByRole("link", { name, exact: true });
-      await expect(socialLink).toHaveAttribute("rel", "me");
-      await expect(socialLink.locator("svg.icon path")).not.toHaveCount(0);
-    }
-    await expect(page.locator(".post__footer svg.icon:visible")).toHaveCount(3);
-    const theme = page.locator("html");
-    const previousTheme = await theme.getAttribute("data-theme");
-    await page.getByRole("button", { name: "Toggle dark/light" }).click();
-    await expect(theme).not.toHaveAttribute("data-theme", previousTheme!);
-    await expect(
-      page.locator(".theme-button svg.icon").locator("path, circle, line"),
-    ).not.toHaveCount(0);
-    await page.getByRole("button", { name: "Toggle dark/light" }).click();
-    await expect(theme).toHaveAttribute("data-theme", previousTheme!);
-    await expect(
-      page.locator(".theme-button svg.icon").locator("path, circle, line"),
-    ).not.toHaveCount(0);
-    await page.getByRole("button", { name: "Share", exact: true }).click();
-    const share = page.getByRole("dialog", { name: "Share", exact: true });
-    await expect(share.locator("svg.icon")).toHaveCount(6);
-    await expect(share.locator("svg.icon path")).not.toHaveCount(0);
-    await share.getByRole("button", { name: "Close Share" }).click();
-    await page
-      .getByRole("button", { name: "Buy me a Coffee", exact: true })
-      .click();
-    const support = page.getByRole("dialog", {
-      name: "Buy me a Coffee",
-      exact: true,
-    });
-    await expect(support.locator("svg.icon")).toHaveCount(5);
-    await expect(support.locator("svg.icon path")).not.toHaveCount(0);
-    await support
-      .getByRole("button", { name: "Close Buy me a Coffee" })
-      .click();
-    await page.getByRole("button", { name: "Open search" }).click();
-    await expect(
-      page
-        .getByRole("button", { name: "Close Search" })
-        .locator("svg.icon path"),
-    ).not.toHaveCount(0);
-    await page.getByRole("button", { name: "Close Search" }).click();
-    await page
-      .locator("nav")
-      .getByRole("link", { name: "About", exact: true })
-      .click();
-    await expect(page).toHaveURL(/\/about\/$/);
-    await expect(page.locator(".about__social-links svg.icon")).toHaveCount(9);
-    await page.goto("/streaming/thumbnail/");
-    await ready(page);
-    await expect(page.locator(".thumbnail-logo svg.icon path")).toHaveCount(2);
-    expect(iconRequests).toEqual([]);
-  });
+      await expect(page.locator(".post__footer svg.icon:visible")).toHaveCount(
+        3,
+      );
+      const theme = page.locator("html");
+      const previousTheme = await theme.getAttribute("data-theme");
+      await page.getByRole("button", { name: "Toggle dark/light" }).click();
+      await expect(theme).not.toHaveAttribute("data-theme", previousTheme!);
+      await expect(
+        page.locator(".theme-button svg.icon").locator("path, circle, line"),
+      ).not.toHaveCount(0);
+      await page.getByRole("button", { name: "Toggle dark/light" }).click();
+      await expect(theme).toHaveAttribute("data-theme", previousTheme!);
+      await expect(
+        page.locator(".theme-button svg.icon").locator("path, circle, line"),
+      ).not.toHaveCount(0);
+      await page.getByRole("button", { name: "Share", exact: true }).click();
+      const share = page.getByRole("dialog", { name: "Share", exact: true });
+      await expect(share.locator("svg.icon")).toHaveCount(6);
+      await expect(share.locator("svg.icon path")).not.toHaveCount(0);
+      await share.getByRole("button", { name: "Close Share" }).click();
+      await page
+        .getByRole("button", { name: "Buy me a Coffee", exact: true })
+        .click();
+      const support = page.getByRole("dialog", {
+        name: "Buy me a Coffee",
+        exact: true,
+      });
+      await expect(support.locator("svg.icon")).toHaveCount(5);
+      await expect(support.locator("svg.icon path")).not.toHaveCount(0);
+      await support
+        .getByRole("button", { name: "Close Buy me a Coffee" })
+        .click();
+      await page.getByRole("button", { name: "Open search" }).click();
+      await expect(
+        page
+          .getByRole("button", { name: "Close Search" })
+          .locator("svg.icon path"),
+      ).not.toHaveCount(0);
+      await page.getByRole("button", { name: "Close Search" }).click();
+      await page
+        .locator("nav")
+        .getByRole("link", { name: "About", exact: true })
+        .click();
+      await expect(page).toHaveURL(/\/about\/$/);
+      await expect(page.locator(".about__social-links svg.icon")).toHaveCount(
+        9,
+      );
+      await page.goto(`${site.origin}/streaming/thumbnail/`);
+      await ready(page);
+      await expect(page.locator(".thumbnail-logo svg.icon path")).toHaveCount(
+        2,
+      );
+      expect(iconRequests).toEqual([]);
+    },
+  );
 });
 
 test.describe("Icon areas", () => {

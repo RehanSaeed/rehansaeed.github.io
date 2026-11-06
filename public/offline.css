@@ -1,0 +1,31 @@
+:root {
+  color-scheme: light dark;
+  font-family: system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+body {
+  margin: 0;
+}
+
+.offline {
+  margin-inline: auto;
+  padding: 2rem;
+  max-inline-size: 40rem;
+  overflow-wrap: anywhere;
+}
+
+a {
+  color: LinkText;
+}
+
+a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+@media (forced-colors: active) {
+  a:focus-visible {
+    outline-color: Highlight;
+  }
+}
