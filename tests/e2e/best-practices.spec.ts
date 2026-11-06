@@ -217,7 +217,7 @@ test.describe("Nuxt best practices", () => {
     await expect(code).toBeVisible();
     expect(
       await code.evaluate((element) => getComputedStyle(element).fontFamily),
-    ).toMatch(/^"Cascadia Code Variable"/);
+    ).toMatch(/^"?Cascadia Code Variable"?,/);
     const faces = await page.evaluate(async () => {
       for (const style of ["normal 400", "normal 700", "italic 400"]) {
         const loaded = await document.fonts.load(
