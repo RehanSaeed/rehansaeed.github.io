@@ -60,7 +60,7 @@ test.describe("All-pages audit regressions", () => {
       expect(about(".about__image").attr("loading")).toBe("eager");
       expect(about(".about__image").attr("fetchpriority")).toBe("high");
       expect(about(".about__stack-overflow-image").attr("src")).toBe(
-        "https://img.shields.io/stackexchange/stackoverflow/r/1212017?style=social&logo=stackoverflow",
+        "https://stackoverflow.com/users/flair/1212017.png?theme=dark",
       );
       const portfolio = load(
         readFileSync(
