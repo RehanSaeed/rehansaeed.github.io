@@ -62,7 +62,7 @@
     "@types/sanitize-html": "2.16.2",
     "cheerio": "^1.2.0",
     "eslint": "10.14.0",
-    "eslint-plugin-jsdoc": "65.4.4",
+    "eslint-plugin-jsdoc": "65.4.5",
     "eslint-plugin-playwright": "2.12.2",
     "eslint-plugin-unicorn": "79.0.0",
     "eslint-plugin-vuejs-accessibility": "2.6.3",
