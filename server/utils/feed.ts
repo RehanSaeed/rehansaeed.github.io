@@ -79,7 +79,7 @@ export async function createFeed(event: H3Event): Promise<Feed> {
       content: absoluteUrls(await marked(markdown), contentDir),
       author: [{ name: post.author, link: site.url }],
       date: new Date(post.date),
-      category: post.tags.map((name) => ({ name })),
+      category: post.tags.map((name) => ({ name, term: name })),
       image: site.url + post.heroImage,
     });
   }
