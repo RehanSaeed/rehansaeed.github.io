@@ -1,5 +1,6 @@
 <template>
   <Component
+    v-bind="soundTrigger"
     :is="tag"
     class="link-button"
     :class="{
@@ -16,11 +17,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, type PropType } from "vue";
 import { NuxtLink } from "#components";
+import type { HoverSoundEffect } from "#shared/utils/sounds";
 
 defineOptions({ name: "u-link-button" });
 const props = defineProps({
+  /** Optional sound preview for deliberate mouse hover. */ sound: {
+    type: String as PropType<HoverSoundEffect>,
+  },
   /** Whether the link button has a border. */ bordered: {
     type: Boolean,
   },
@@ -43,6 +48,7 @@ const props = defineProps({
     type: String,
   },
 });
+const soundTrigger = useHoverSound(() => props.sound);
 const tag = computed(() => (props.to ? NuxtLink : "a"));
 </script>
 

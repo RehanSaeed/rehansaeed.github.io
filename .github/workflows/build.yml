@@ -175,6 +175,15 @@ jobs:
       # The image has Git, but checkout also needs the runner's Git LFS binary.
       volumes:
         - /usr/bin/git-lfs:/usr/bin/git-lfs:ro
+      env:
+        PULSE_SERVER: tcp:pulseaudio:4713
+    # Linux Firefox only runs Web Audio with a PulseAudio output, which the
+    # non-root browser container cannot install, so a sidecar provides a null sink.
+    services:
+      pulseaudio:
+        image: ${{ matrix.browser == 'firefox' && needs.build.outputs.playwright-image || '' }}
+        entrypoint: sh
+        command: -c "apt-get update -qq && apt-get install --yes --no-install-recommends pulseaudio && exec pulseaudio --system --disallow-exit --exit-idle-time=-1 --log-target=stderr -n --load='module-null-sink sink_name=playwright' --load='module-native-protocol-tcp auth-anonymous=1'"
     strategy:
       fail-fast: false
       matrix:
@@ -212,6 +221,18 @@ jobs:
           name: playwright-site
       - name: "Extract Browser Test Site"
         run: tar -xf playwright-site.tar
+      - name: "Wait for Virtual Audio Output"
+        if: matrix.browser == 'firefox'
+        shell: bash
+        run: |
+          for attempt in $(seq 1 60); do
+            if (exec 3<>/dev/tcp/pulseaudio/4713) 2>/dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "PulseAudio did not accept connections." >&2
+          exit 1
       - name: "Playwright Test"
         run: npx playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}/2
         env:
