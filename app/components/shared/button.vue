@@ -79,7 +79,10 @@ onMounted(() => {
   border-radius: var(--global-border-radius);
   box-shadow: var(--global-shadow-1);
   font-size: var(--global-font-size-1);
-  padding: var(--global-space-fixed-2) var(--global-space-fixed-4);
+  padding-block: calc(
+    var(--global-space-fixed-2) + var(--global-text-box-trim-space-half)
+  );
+  padding-inline: var(--global-space-fixed-4);
 
   &:hover,
   &:focus {

@@ -166,6 +166,10 @@ const imageMeta = computed(() => getImageMetadata(props.portfolio.heroImage));
   margin-block: 0;
 }
 
+.portfolio-card__description {
+  margin-block-start: var(--global-text-box-trim-space);
+}
+
 .portfolio-card__title a::after {
   content: "";
 

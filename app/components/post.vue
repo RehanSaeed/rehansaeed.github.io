@@ -159,4 +159,10 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
   flex-wrap: wrap;
   gap: var(--global-space-fixed-3);
 }
+
+// Blockify the buttons so text-box trimming doesn't trim the wrapper's line box around them.
+.post__share,
+.post__support {
+  display: grid;
+}
 </style>

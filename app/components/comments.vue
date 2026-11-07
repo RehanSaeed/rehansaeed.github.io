@@ -108,7 +108,7 @@ const refresh = async () => {
 
 .comments__header {
   display: grid;
-  gap: var(--global-space-fixed-4);
+  gap: calc(var(--global-space-fixed-4) + var(--global-text-box-trim-space));
 }
 
 .comments__summary {

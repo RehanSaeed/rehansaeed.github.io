@@ -1,13 +1,17 @@
 ul {
   list-style-type: disc;
   margin-inline-start: var(--global-space-fixed-5);
-  margin-block-end: var(--global-space-fixed-5);
+  margin-block-end: calc(
+    var(--global-space-fixed-5) + var(--global-text-box-trim-space)
+  );
 
   li,
   p,
   ul,
   ol {
-    margin-block: var(--global-space-fixed-3);
+    margin-block: calc(
+      var(--global-space-fixed-3) + var(--global-text-box-trim-space)
+    );
   }
 
   li:first-child {
@@ -16,5 +20,7 @@ ul {
 
   li::marker {
     color: var(--global-accent-color);
+    // The untrimmed marker line box would push trimmed block content down.
+    line-height: 0;
   }
 }

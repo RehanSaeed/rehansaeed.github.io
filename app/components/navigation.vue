@@ -106,6 +106,7 @@ const getIsCurrentPage = (path: string) => {
 }
 
 .navigation__item {
+  padding-block: var(--global-text-box-trim-space-half);
   visibility: visible;
 }
 

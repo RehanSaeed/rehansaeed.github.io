@@ -115,12 +115,13 @@ const edited = computed(() =>
 .comment__body {
   grid-area: body;
   display: grid;
-  gap: var(--global-space-fixed-3);
+  gap: calc(var(--global-space-fixed-3) + var(--global-text-box-trim-space));
   min-inline-size: 0;
 }
 
 .comment__header {
   display: grid;
+  row-gap: var(--global-text-box-trim-space);
 }
 
 .comment__identity {
@@ -146,7 +147,7 @@ const edited = computed(() =>
 
 .comment__content {
   display: grid;
-  gap: var(--global-space-fixed-5);
+  gap: calc(var(--global-space-fixed-5) + var(--global-text-box-trim-space));
   min-inline-size: 0;
 
   > * {
@@ -164,7 +165,12 @@ const edited = computed(() =>
     inline-size: revert-layer;
   }
 
-  > :is(ul, ol) > li:first-child > :first-child {
+  // Trimming to the text's cap edge would let taller inline images overhang the line.
+  :has(> img, > a > img) {
+    text-box-trim: none;
+  }
+
+  > :is(ul, ol) > li:first-child > :first-child:not(ul, ol) {
     margin-block-start: 0;
   }
 
