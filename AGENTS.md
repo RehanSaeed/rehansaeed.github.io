@@ -116,10 +116,12 @@ authorise publishing the article or posting to social media.
   Test observable behaviour, not implementation details.
 - Run `npm run test:lint` for lint-configuration changes and `npm run test:unit`
   for changes to the tested shared utilities.
-- Run the smallest relevant checks while developing. Before handing off
-  application or dependency changes, run `npm run build`, `npm run typecheck`,
-  `npm run lint`, and relevant Playwright tests. Instruction-only changes need
-  a focused Prettier check.
+- Batch related edits and run the smallest relevant local checks while
+  developing. Reserve pushes and full CI runs for review-ready milestones or
+  validation that genuinely requires CI, not every intermediate edit.
+  Before handing off application or dependency changes, run `npm run build`,
+  `npm run typecheck`, `npm run lint`, and relevant Playwright tests.
+  Instruction-only changes need a focused Prettier check.
 - Treat a build as successful only when the command exits successfully,
   including SEO verification. A successful build does not prove accessibility,
   browser behaviour or article code samples are correct.
@@ -129,11 +131,15 @@ authorise publishing the article or posting to social media.
   `npx playwright test <test-file> --repeat-each=10 --retries=0`.
 - After pushing, inspect GitHub Actions for the latest commit. Report pending,
   failed, cancelled or skipped checks accurately; do not describe them as passed.
+  Let automatic CI run without duplicate manual dispatches. Do not rebase merely
+  to refresh checks unless required to resolve conflicts or satisfy merge rules.
+  Continue independent work and respond to questions while CI runs; do not block
+  a useful handoff solely on pending CI.
 - Investigate failed jobs using their logs and artifacts. Fix failures caused by
   the changes; report unrelated failures explicitly.
 - Require successful generation, type checking, linting, Chrome/Edge/Firefox
-  tests and CodeQL before declaring the PR ready to merge. Never bypass required
-  checks or merge without explicit approval.
+  tests and CodeQL on the final PR head before declaring the PR ready to merge.
+  Never bypass required checks or merge without explicit approval.
 - The Build and CodeQL workflows skip draft PRs. Skipped draft checks are not
   validation evidence.
 - Record exact validation commands and outcomes in the PR description, including
