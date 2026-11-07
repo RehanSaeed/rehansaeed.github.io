@@ -249,7 +249,27 @@ test.describe("All-pages audit regressions", () => {
       const image = page.locator(".post__content img").first();
       await image.scrollIntoViewIfNeeded();
       const before = await image.boundingBox();
-      expect(before!.height).toBeGreaterThan(200);
+      const source = await readImageDimensions(
+        join(
+          process.cwd(),
+          "content",
+          "posts",
+          "2014",
+          "asp-net-mvc-boilerplate",
+          "images",
+          "New-Project.png",
+        ),
+      );
+      const availableWidth = await image.evaluate(
+        (element) =>
+          element.closest(".prose-image")!.getBoundingClientRect().width,
+      );
+      const expectedWidth = Math.min(source.width, availableWidth);
+      expect(before!.width).toBeCloseTo(expectedWidth, 1);
+      expect(before!.height).toBeCloseTo(
+        (expectedWidth * source.height) / source.width,
+        1,
+      );
       expect(
         await image.evaluate((image: HTMLImageElement) => image.naturalWidth),
       ).toBe(0);

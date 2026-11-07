@@ -102,7 +102,6 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
     }
   }
 
-  img,
   video {
     display: block;
     inline-size: calc(100% + (2 * var(--global-space-fluid-6)));
@@ -110,17 +109,11 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
     max-inline-size: none;
   }
 
-  .post__image-inset img {
-    inline-size: 311px;
-    margin-inline: auto;
-    max-inline-size: 100%;
-  }
-
   figure {
     margin-block: var(--global-space-fixed-5);
     margin-inline: 0;
 
-    > p:has(img) {
+    > p:has(.prose-image) {
       max-inline-size: none;
       min-inline-size: 0;
       margin-block-end: 0;

@@ -127,20 +127,25 @@ for (const width of [320, 1280]) {
       await expect(
         page.locator(".post__content figure figcaption").first(),
       ).toHaveCSS("font-style", "italic");
+      // Reuse ProseImg's rendered markup so the injected figure keeps its scoped styles.
+      const proseImage = await page
+        .locator(".post__content figure .prose-image")
+        .first()
+        .evaluate((element) => element.outerHTML);
       await page.locator(".post__content").evaluate(
-        (element, { image, caption, credit, video }) => {
+        (element, { proseImage, caption, credit, video }) => {
           element.innerHTML = `<p>Article text remains aligned with its captions.</p>
-            <figure><p><img src="${image}" alt="Alternative text for the image" width="192" height="192"></p>
+            <figure><p>${proseImage}</p>
               <figcaption>${caption}${credit}</figcaption></figure>
             <figure><video controls aria-label="Example video" width="1600" height="900"></video>
               <figcaption>${caption}</figcaption></figure>
             <figure>${video}<figcaption>${caption} ${"LongCaption".repeat(20)}</figcaption></figure>
             <p>Text following the figures.</p>`;
         },
-        { image, caption, credit, video: videoEmbed.value },
+        { proseImage, caption, credit, video: videoEmbed.value },
       );
       await expect(
-        page.getByRole("img", { name: "Alternative text for the image" }),
+        page.getByRole("img", { name: "Code", exact: true }),
       ).toBeVisible();
       const figures = page.locator(".post__content figure");
       await expect(figures).toHaveCount(3);

@@ -12,14 +12,16 @@ test.beforeEach(async ({ page, baseURL }) => {
 });
 
 for (const width of [1280, 375, 320]) {
-  test(`Inset post images stay centred without upscaling at ${width}px`, async ({
+  test(`Small Markdown images stay centred without upscaling at ${width}px`, async ({
     page,
   }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/ai-learnings-from-upgrading-my-blog/", {
       waitUntil: "domcontentloaded",
     });
-    const image = page.locator(".post__image-inset img");
+    const image = page.locator(
+      '.post__content img[src*="about-page-experiments"]',
+    );
     await expect(image).toBeVisible();
     await image.scrollIntoViewIfNeeded();
     await expect
@@ -39,7 +41,7 @@ for (const width of [1280, 375, 320]) {
       }, theme);
       const dimensions = await image.evaluate((element) => {
         const bounds = element.getBoundingClientRect();
-        const container = element.closest(".post__image-inset")!;
+        const container = element.closest(".post__content")!;
         const containerBounds = container.getBoundingClientRect();
         return {
           width: bounds.width,
@@ -48,11 +50,18 @@ for (const width of [1280, 375, 320]) {
           right: bounds.right,
           centre: bounds.left + bounds.width / 2,
           containerCentre: containerBounds.left + containerBounds.width / 2,
+          availableWidth: element
+            .closest(".prose-image")!
+            .getBoundingClientRect().width,
         };
       });
 
       expect(dimensions.width).toBeGreaterThan(0);
       expect(dimensions.width).toBeLessThanOrEqual(311);
+      expect(dimensions.width).toBeCloseTo(
+        Math.min(311, dimensions.availableWidth),
+        0,
+      );
       expect(dimensions.left).toBeGreaterThanOrEqual(0);
       expect(dimensions.right).toBeLessThanOrEqual(width);
       expect(dimensions.centre).toBeCloseTo(dimensions.containerCentre, 0);
@@ -95,6 +104,11 @@ for (const width of [1280, 375, 320]) {
         const bounds = await image.boundingBox();
         expect(bounds).not.toBeNull();
         expect(bounds!.width).toBeGreaterThan(0);
+        expect(bounds!.width).toBeLessThanOrEqual(1999);
+        const textWidth = await page
+          .locator(".post__content")
+          .evaluate((element) => element.getBoundingClientRect().width);
+        expect(bounds!.width).toBeGreaterThan(textWidth);
         expect(bounds!.x).toBeGreaterThanOrEqual(0);
         expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
         expect(bounds!.width / bounds!.height).toBeCloseTo(1999 / 1124, 2);
