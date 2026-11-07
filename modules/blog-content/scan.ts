@@ -12,6 +12,8 @@ const frontMatterSchema = z.looseObject({
   permalink: z.string(),
   /** Whether the content is approved for publication. */
   published: z.boolean(),
+  /** Original publication date used to bound traffic reporting. */
+  date: z.string().optional(),
   /** Tags associated with the content, including empty YAML lists. */
   tags: z
     .array(z.string())

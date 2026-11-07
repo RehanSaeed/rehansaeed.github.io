@@ -12,7 +12,7 @@
       :data-positioned="isPositioned"
       @pointerenter="onBubbleEnter"
       @pointerleave="onBubbleLeave">
-      {{ text }}
+      <slot name="content">{{ text }}</slot>
       <span ref="arrowElement" class="tooltip__arrow" aria-hidden="true" />
     </div>
   </Teleport>
@@ -38,19 +38,31 @@ const closeDelayMs = 120;
 
 const props = withDefaults(
   defineProps<{
-    /** Text displayed in the tooltip. */ text: string;
+    /** Text displayed when no content slot is provided. */ text?: string;
     /** Preferred side of the trigger on which to place the tooltip. */ placement?: Placement;
+    /** Optional externally controlled visibility. */ open?: boolean;
+    /** External element used to position the tooltip. */ reference?: HTMLElement | null;
     /** Allow dedicated info controls to open and close the tooltip on click or tap. */
     toggleOnClick?: boolean;
   }>(),
-  { placement: "top", toggleOnClick: false },
+  { placement: "top", open: undefined, toggleOnClick: false },
 );
+const emit = defineEmits<{ "update:open": [value: boolean] }>();
+const slots = useSlots();
 const id = useId();
 const bubble = useTemplateRef<HTMLDivElement>("bubble");
 const arrowElement = useTemplateRef<HTMLSpanElement>("arrowElement");
-const open = ref(false);
+const internalOpen = ref(false);
+const open = computed({
+  get: () => props.open ?? internalOpen.value,
+  set: (value: boolean) => {
+    internalOpen.value = value;
+    emit("update:open", value);
+  },
+});
 const teleportTarget = shallowRef<HTMLElement | string>("body");
-const anchor = shallowRef<HTMLElement | null>(null);
+const internalAnchor = shallowRef<HTMLElement | null>(null);
+const anchor = computed(() => props.reference ?? internalAnchor.value);
 const {
   floatingStyles,
   placement: side,
@@ -119,11 +131,11 @@ const show = (event: Event, delay = 0) => {
   if (!(event.currentTarget instanceof HTMLElement)) {
     return;
   }
-  anchor.value = event.currentTarget;
-  teleportTarget.value = anchor.value.closest("dialog") ?? "body";
+  internalAnchor.value = event.currentTarget;
+  teleportTarget.value = internalAnchor.value.closest("dialog") ?? "body";
   clearTimer();
   timer = setTimeout(() => {
-    if (props.text) {
+    if (props.text || slots.content) {
       open.value = true;
     }
   }, delay);
@@ -173,7 +185,11 @@ const onClick = (event: MouseEvent) => {
 
 const onFocus = (event: FocusEvent) => {
   const target = event.currentTarget;
-  if (!(target instanceof HTMLElement) || !target.matches(":focus-visible")) {
+  // Controlled inspection stays open for any focused point, not just keyboard focus.
+  if (
+    !(target instanceof HTMLElement) ||
+    (props.open === undefined && !target.matches(":focus-visible"))
+  ) {
     return;
   }
   const dialog = target.closest("dialog:modal");
@@ -215,6 +231,17 @@ const trigger = computed(() => ({
   onClick,
 }));
 
+const onOutsidePointerDown = (event: PointerEvent) => {
+  if (
+    props.toggleOnClick &&
+    event.target instanceof Node &&
+    !anchor.value?.contains(event.target) &&
+    !bubble.value?.contains(event.target)
+  ) {
+    dismiss();
+  }
+};
+
 const onEscape = (event: KeyboardEvent) => {
   if (event.key !== "Escape") {
     return;
@@ -230,9 +257,11 @@ watch(open, (visible, _, onCleanup) => {
   }
   onCleanup(() => {
     document.removeEventListener("keydown", onEscape, true);
+    document.removeEventListener("pointerdown", onOutsidePointerDown);
     bubbleHovered = false;
   });
   document.addEventListener("keydown", onEscape, true);
+  document.addEventListener("pointerdown", onOutsidePointerDown);
 });
 
 watch(
