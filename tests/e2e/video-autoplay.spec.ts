@@ -94,7 +94,13 @@ test("The article video autoplays muted only while fully in view", async ({
     element.scrollIntoView({ block: "center", behavior: "instant" });
   });
   await expect.poll(() => isPlaying(video)).toBe(true);
-  await expect(video).toHaveJSProperty("muted", true);
+  await expect
+    .poll(() =>
+      video.evaluate(
+        (element) => element instanceof HTMLVideoElement && element.muted,
+      ),
+    )
+    .toBe(true);
   await expect(video).toHaveAttribute("controls", "");
   await expect
     .poll(() =>
