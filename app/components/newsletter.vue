@@ -1,9 +1,6 @@
 <template>
   <u-card class="newsletter">
-    <form
-      class="newsletter__form"
-      method="post"
-      :action="metadata.mailchimpUrl">
+    <section class="newsletter__content" aria-labelledby="newsletter">
       <u-heading
         id="newsletter"
         class="newsletter__title"
@@ -12,31 +9,21 @@
         href="#newsletter"
         >Newsletter</u-heading
       >
-      <label class="newsletter__label" for="email"
-        >Stay up to date! Get all the latest &amp; greatest posts delivered
-        straight to your inbox!</label
+      <p class="newsletter__description">
+        Stay up to date! Get all the latest &amp; greatest posts delivered
+        straight to your inbox!
+      </p>
+      <u-link-button
+        class="newsletter__button"
+        bordered
+        :href="metadata.newsletter.formUrl"
+        >Subscribe by email</u-link-button
       >
-      <input
-        id="email"
-        class="newsletter__input"
-        name="EMAIL"
-        placeholder="youremail@example.com"
-        required
-        type="email"
-        autocapitalize="off"
-        autocorrect="off" />
-      <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-      <input
-        aria-hidden="true"
-        type="text"
-        name="b_0d1d7c30db26dd0a4aa1b5b40_07ce865066"
-        style="position: absolute; inset-inline-start: -5000px"
-        tabindex="-1"
-        value />
-      <u-button variant="secondary" submit class="newsletter__button"
-        >Subscribe</u-button
-      >
-    </form>
+      <p class="newsletter__note">
+        Opens the {{ metadata.newsletter.provider }} sign-up form. Unsubscribe
+        at any time.
+      </p>
+    </section>
   </u-card>
 </template>
 
@@ -46,51 +33,29 @@ const metadata = useAppConfig().site;
 </script>
 
 <style lang="scss">
-@use "~/assets/style/abstracts/breakpoints";
-
 .newsletter {
   content-visibility: auto;
   contain-intrinsic-size: 354px;
 }
 
-.newsletter__form {
+.newsletter__content {
   display: grid;
   gap: var(--global-space-fluid-3);
-  grid-template-areas:
-    "title title title title"
-    "label label label label"
-    ". input button .";
-  grid-template-columns: 1fr auto auto 1fr;
-
-  @include breakpoints.respond-below(md) {
-    grid-template-areas:
-      "title title title"
-      "label label label"
-      ". input ."
-      ". button .";
-    grid-template-columns: 1fr auto 1fr;
-  }
+  justify-items: center;
+  text-align: center;
 }
 
 .newsletter__title {
-  grid-area: title;
   margin-block-start: 0;
-  text-align: center;
 }
 
-.newsletter__label {
-  grid-area: label;
-  justify-self: center;
-  margin-block-end: var(--global-space-fixed-4);
-  text-align: center;
+.newsletter__description,
+.newsletter__note {
+  margin-block: 0;
 }
 
-.newsletter__input {
-  grid-area: input;
-}
-
-.newsletter__button {
-  grid-area: button;
+.newsletter__note {
+  font-size: var(--global-font-size-1);
 }
 
 @media print {

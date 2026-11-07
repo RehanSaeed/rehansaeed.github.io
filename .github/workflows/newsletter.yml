@@ -1,0 +1,64 @@
+name: Newsletter
+
+# Emails each new blog post to Sender subscribers after a successful deployment.
+# State lives on the newsletter-state branch; see scripts/newsletter.mts.
+concurrency:
+  group: newsletter
+  cancel-in-progress: false
+
+on:
+  workflow_run:
+    workflows: [Build]
+    types: [completed]
+    branches: [main]
+  schedule:
+    - cron: "41 6 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Print the planned emails without sending or recording anything"
+        type: boolean
+        default: true
+      rebaseline:
+        description: "Record every current post as already sent without emailing"
+        type: boolean
+        default: false
+
+permissions: {}
+
+jobs:
+  newsletter:
+    name: Send New Posts
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event != 'pull_request' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.head_repository.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - name: "Setup Node"
+        uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: "Install Dependencies"
+        run: npm ci --ignore-scripts
+      - name: "Send Newsletter"
+        run: npm run newsletter
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          FEED_REVISION: ${{ github.event.workflow_run.head_sha || github.sha }}
+          NEWSLETTER_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+          NEWSLETTER_REBASELINE: ${{ github.event_name == 'workflow_dispatch' && inputs.rebaseline }}
+          SENDER_API_TOKEN: ${{ secrets.SENDER_API_TOKEN }}
+          SENDER_GROUP_ID: ${{ vars.SENDER_GROUP_ID }}
+          SENDER_REPLY_TO: ${{ vars.SENDER_REPLY_TO }}
+          SENDER_FROM_NAME: ${{ vars.SENDER_FROM_NAME }}
