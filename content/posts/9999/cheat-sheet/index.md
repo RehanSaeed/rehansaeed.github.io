@@ -258,7 +258,7 @@ To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>`
 <figcaption>A code-themed illustration.</figcaption>
 </figure>
 
-## Embed Videos
+# Embed Videos
 
 ```html
 <video
@@ -283,8 +283,6 @@ To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>`
   aria-label="ThreeUI demonstration of interactive Three.js components and landing pages">
 <a href="https://x.com/MengTo/status/2090817187900780961/video/1">Watch the video demonstration.</a>
 </video>
-
-Wrap the player in `<figure>` and add `<figcaption>` after it for visible context, creator credit and the original source:
 
 ```html
 <figure>

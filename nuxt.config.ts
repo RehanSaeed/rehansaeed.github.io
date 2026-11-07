@@ -473,6 +473,13 @@ export default defineNuxtConfig({
     },
   },
 
+  mdc: {
+    components: {
+      // Render Markdown <video> elements with ProseVideo to autoplay in view.
+      map: { video: "ProseVideo" },
+    },
+  },
+
   content: {
     build: {
       markdown: {

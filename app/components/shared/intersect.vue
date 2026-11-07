@@ -1,5 +1,6 @@
 <script lang="ts">
 import {
+  Comment,
   defineComponent,
   getCurrentInstance,
   nextTick,
@@ -74,7 +75,7 @@ export default defineComponent({
     });
     return () => {
       const nodes = slots.default?.() ?? [];
-      return nodes[0] ?? null;
+      return nodes.find((node) => node.type !== Comment) ?? null;
     };
   },
 });
