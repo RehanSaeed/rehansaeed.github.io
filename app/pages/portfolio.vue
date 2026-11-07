@@ -21,9 +21,10 @@
       >
       <div class="portfolio__items">
         <u-portfolio-card
-          v-for="item of microsoftProjects"
+          v-for="(item, index) of microsoftProjects"
           :key="item.id"
-          :portfolio="item" />
+          :portfolio="item"
+          :priority="index < 2" />
       </div>
     </section>
 

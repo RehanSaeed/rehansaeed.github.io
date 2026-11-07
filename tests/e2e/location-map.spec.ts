@@ -475,6 +475,37 @@ test.describe("Without JavaScript", () => {
   });
 });
 
+test("The map stays below the initial viewport without loading MapLibre", async ({
+  page,
+}) => {
+  for (const viewport of [
+    { width: 412, height: 823 },
+    { width: 1350, height: 940 },
+  ]) {
+    await page.setViewportSize(viewport);
+    const styles = await mockOpenFreeMap(page);
+    await page.goto("/about/", { waitUntil: "load" });
+    const figure = page.locator(".location-map");
+    await expect(figure).not.toBeInViewport();
+    const offset = await figure.evaluate(
+      (element) => element.getBoundingClientRect().top - window.innerHeight,
+    );
+    // u-intersect starts loading 200px before the map reaches the viewport.
+    expect(offset).toBeGreaterThan(200);
+    await page.evaluate(
+      () =>
+        new Promise((resolve) => {
+          requestAnimationFrame(() => {
+            resolve(null);
+          });
+        }),
+    );
+    expect(styles).toEqual([]);
+    await expect(figure).not.toHaveClass(/location-map--interactive/);
+    await page.unrouteAll();
+  }
+});
+
 test("The free map loads on approach, shows Europe and follows the purple theme", async ({
   page,
 }) => {

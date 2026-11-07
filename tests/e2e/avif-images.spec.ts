@@ -181,7 +181,7 @@ async function verifyAwardImageWidths({ page }: Pick<E2EFixtures, "page">) {
     const wide = (await badge.getAttribute("class"))?.includes(
       "about__badge-image--wide",
     );
-    const width = wide ? 180 : 150;
+    const width = wide ? 175 : 150;
     await expect(badge).toHaveCSS("width", `${width}px`);
     await expect(badge).toHaveCSS("height", "150px");
     await expect(badge).toHaveAttribute("sizes", `${width}px`);

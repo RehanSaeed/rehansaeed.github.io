@@ -12,13 +12,14 @@
     <u-card class="about__container" tag="article">
       <NuxtPicture
         format="avif"
-        :img-attrs="{ class: 'about__image' }"
+        :img-attrs="{ class: 'about__image', fetchpriority: 'high' }"
         legacy-format="jpg"
         alt="Muhammad Rehan Saeed"
         height="480"
         width="320"
         sizes="320px"
         src="/images/author/Muhammad-Rehan-Saeed/Profile-320x480.jpg"
+        loading="eager"
         quality="100" />
       <u-heading :id="metadata.author.name" level="2" class="about__title">{{
         metadata.author.name
@@ -29,7 +30,6 @@
         Microsoft, my opinions are my own. If it’s written in HTML/CSS/JS, C# or
         .NET, I have probably written something using it in anger!
       </p>
-      <u-location-map />
       <p class="about__description">
         I occasionally appear on
         <a :href="youtubeUrl">Youtube</a> and
@@ -230,7 +230,7 @@
               alt="Microsoft Global Hackathon 2020.png"
               height="300"
               width="350"
-              sizes="180px"
+              sizes="175px"
               densities="x1 x2"
               src="/images/about/Microsoft-Global-Hackathon-2020-350x300.png"
               quality="100" />
@@ -289,6 +289,8 @@
           </a>
         </u-tooltip>
       </div>
+      <!-- Keep the map below the initial viewport so its dynamic MapLibre import is deferred until visitors approach it. -->
+      <u-location-map />
       <p class="about__description">
         Do you have questions or comments about my work? Please feel free to
         contact me using any of the links above.
@@ -485,7 +487,7 @@ onUnmounted(() => {
   block-size: 150px;
 }
 .about__badge-image--wide {
-  inline-size: 180px;
+  inline-size: 175px;
 }
 
 .about_awards-images {

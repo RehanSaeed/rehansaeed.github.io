@@ -205,12 +205,14 @@ test("Portfolio totals match the listed projects and About shares the star total
     expect(html(".github-badges > li.github-badges__item")).toHaveLength(3);
     expect(html(".github-badges__item > a.github-badge")).toHaveLength(3);
     expect(html(".github-badge > img.github-badge__image")).toHaveLength(3);
-    expect(html(".github-badge__image[width]")).toHaveLength(0);
     expect(
       html(".github-badge__image")
-        .map((_, image) => html(image).attr("height"))
+        .map(
+          (_, image) =>
+            `${html(image).attr("width")}x${html(image).attr("height")}`,
+        )
         .get(),
-    ).toEqual(["30", "30", "30"]);
+    ).toEqual(["168x30", "165x30", "147x30"]);
     expect(
       html(".github-badges img")
         .map((_, img) => html(img).attr("src"))

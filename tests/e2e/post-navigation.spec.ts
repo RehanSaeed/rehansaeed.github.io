@@ -82,12 +82,9 @@ async function verifyChronologicalNeighbours({
         expect(link.text()).toContain(neighbour.label);
         expect(link.text()).toContain(neighbour.post.title);
         expect(link.find("h2").text().trim()).toBe(neighbour.post.title);
-        expect(
-          link
-            .attr("aria-labelledby")!
-            .split(" ")
-            .map((id) => link.find(`#${id}`).text().trim()),
-        ).toEqual([neighbour.label, neighbour.post.title]);
+        expect(link.attr("aria-labelledby")).toBeUndefined();
+        expect(link.attr("aria-label")).toBeUndefined();
+        expect(link.text()).toContain(link.find("time").text().trim());
         expect(link.children("h2.post-navigation__title")).toHaveLength(1);
         const image = link.find("img");
         expect(image.attr("alt")).toBe("");
@@ -114,10 +111,7 @@ async function verifyChronologicalNeighbours({
         expect(link.find("> p.post-navigation__meta > time")).toHaveLength(1);
         neighbourTimes.push({
           permalink: neighbour.post.permalink,
-          text: link
-            .find(`#${link.attr("aria-describedby")}`)
-            .text()
-            .trim(),
+          text: link.find("time").text().trim(),
         });
       }
     }
@@ -192,16 +186,16 @@ for (const width of [1280, 768, 375, 320]) {
         )?.__vue_app__,
     );
     const nav = page.getByRole("navigation", { name: "Post navigation" });
-    const previous = nav.getByRole("link", {
-      name: `Previous post ${older.title}`,
-      exact: true,
-    });
-    const next = nav.getByRole("link", {
-      name: `Next post ${newer.title}`,
-      exact: true,
-    });
+    const previous = nav.locator('a[rel="prev"]');
+    const next = nav.locator('a[rel="next"]');
     await expect(previous).toBeVisible();
     await expect(next).toBeVisible();
+    await expect(previous).toHaveAccessibleName(
+      `Previous post ${(await previous.locator("time").innerText()).trim()} ${older.title}`,
+    );
+    await expect(next).toHaveAccessibleName(
+      `Next post ${(await next.locator("time").innerText()).trim()} ${newer.title}`,
+    );
     await expect(nav.getByRole("list")).toBeVisible();
     await expect(nav.getByRole("listitem")).toHaveCount(2);
     await expect(nav.getByRole("heading", { level: 2 })).toHaveCount(2);
@@ -329,9 +323,10 @@ for (const width of [1280, 768, 375, 320]) {
     await expect(page.locator(".post-page__title-container h1")).toHaveText(
       newer.title,
     );
-    await nav
-      .getByRole("link", { name: `Previous post ${post.title}` })
-      .click();
+    await expect(previous).toHaveAccessibleName(
+      `Previous post ${(await previous.locator("time").innerText()).trim()} ${post.title}`,
+    );
+    await previous.click();
     await expect(page).toHaveURL(post.permalink);
     await expect(previous).toHaveAttribute("href", older.permalink);
     await previous.click();

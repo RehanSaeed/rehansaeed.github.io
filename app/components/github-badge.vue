@@ -1,7 +1,12 @@
 <template>
   <u-tooltip v-slot="{ trigger }" :text="tooltip">
     <a v-bind="trigger" class="github-badge" :href="href">
-      <img class="github-badge__image" :alt="alt" height="30" :src="src" />
+      <img
+        class="github-badge__image"
+        :alt="alt"
+        height="30"
+        :width="placeholderWidth"
+        :src="src" />
     </a>
   </u-tooltip>
 </template>
@@ -14,6 +19,11 @@ defineProps<{
   src: string;
   /** Accessible description of the badge and its current count. */
   alt: string;
+  /**
+   * Estimated width at 30px high, used only to reserve space before the badge loads.
+   * The loaded badge keeps its natural width, which changes with its live count.
+   */
+  placeholderWidth: number;
   /** Explanation shown on hover or keyboard focus. */
   tooltip: string;
 }>();

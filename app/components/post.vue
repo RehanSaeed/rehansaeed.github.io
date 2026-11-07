@@ -35,6 +35,7 @@
 <script setup lang="ts">
 import { computed, type PropType } from "vue";
 import type { PostsCollectionItem } from "@nuxt/content";
+import "katex/dist/katex.min.css";
 import { getImageMetadata } from "~/framework/images";
 import { contentImageSizes } from "#shared/utils/images";
 
