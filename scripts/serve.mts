@@ -30,11 +30,20 @@ const types: Record<string, string> = {
 };
 await stat(join(root, "404.html"));
 
-createServer((request, response) => {
+const server = createServer((request, response) => {
     void serve(request, response);
-}).listen(port, "127.0.0.1", () => {
-    console.log(`Static preview: http://localhost:${port}`);
 });
+if (process.send) {
+    process.once("disconnect", () => {
+        server.close();
+        server.closeAllConnections();
+    });
+}
+if (!process.send || process.connected) {
+    server.listen(port, "127.0.0.1", () => {
+        console.log(`Static preview: http://localhost:${port}`);
+    });
+}
 
 async function serve(request: IncomingMessage, response: ServerResponse) {
     try {

@@ -1,10 +1,11 @@
 import assert from "node:assert/strict";
-import { execFile } from "node:child_process";
+import { execFile, fork } from "node:child_process";
 import { createHash } from "node:crypto";
 import { createServer } from "node:http";
 import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { connect } from "node:net";
 import { once } from "node:events";
 import { test, type TestContext } from "node:test";
 import { fileURLToPath } from "node:url";
@@ -267,6 +268,66 @@ await test("shared preview lifecycle rejects a server that exits before readines
         /exited before readiness/,
     );
 });
+
+for (const disconnectBeforeReadiness of [false, true]) {
+    await test(`owned preview exits when its parent's IPC connection closes ${disconnectBeforeReadiness ? "before readiness" : "with open HTTP connections"}`, async (context) => {
+        const directory = await temporaryDirectory(context);
+        await Promise.all([
+            writeFile(join(directory, "index.html"), "Preview"),
+            writeFile(join(directory, "404.html"), "Not found"),
+        ]);
+        const reservation = createServer();
+        reservation.listen(0, "127.0.0.1");
+        await once(reservation, "listening");
+        const address = reservation.address();
+        assert(address && typeof address !== "string");
+        await new Promise<void>((resolve, reject) =>
+            reservation.close((error) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve();
+                }
+            }),
+        );
+        const server = fork(script("./serve.mts"), [directory], {
+            env: { ...process.env, PORT: String(address.port) },
+            silent: true,
+        });
+        context.after(async () => {
+            if (server.exitCode === null && server.signalCode === null) {
+                const exited = once(server, "exit");
+                assert(
+                    server.kill(),
+                    "Could not stop the owned preview process.",
+                );
+                await exited;
+            }
+        });
+        let errors = "";
+        server.stderr!.on("data", (chunk: Buffer) => {
+            errors += chunk.toString();
+        });
+        const url = `http://127.0.0.1:${address.port}`;
+        if (!disconnectBeforeReadiness) {
+            await once(server.stdout!, "data", {
+                signal: AbortSignal.timeout(5000),
+            });
+            assert.equal(await (await fetch(url)).text(), "Preview");
+            const connection = connect(address.port, "127.0.0.1");
+            context.after(() => connection.destroy());
+            await once(connection, "connect");
+            connection.write("GET / HTTP/1.1\r\nHost: localhost\r\n");
+        }
+        const exited = once(server, "exit", {
+            signal: AbortSignal.timeout(5000),
+        });
+        server.disconnect();
+        assert.deepEqual(await exited, [0, null]);
+        assert.equal(errors, "");
+        await assert.rejects(fetch(url));
+    });
+}
 
 await test("Pages verification rejects malformed local markers and invalid attempt counts", async (context) => {
     const directory = await temporaryDirectory(context);
