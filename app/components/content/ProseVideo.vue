@@ -1,6 +1,6 @@
 <template>
   <u-intersect :threshold="threshold" @change="onIntersectionChange">
-    <!-- eslint-disable-next-line vuejs-accessibility/media-has-caption -- Markdown supplies any <track> captions through the slot. -->
+    <!-- eslint-disable-next-line vuejs-accessibility/media-has-caption -- Captions are authored per video in Markdown with <track>, passed through the slot. -->
     <video ref="video" v-bind="$attrs" @play="onPlay" @pause="onPause">
       <slot />
     </video>

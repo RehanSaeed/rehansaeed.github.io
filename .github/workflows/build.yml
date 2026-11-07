@@ -225,7 +225,8 @@ jobs:
     # Only Firefox needs a downloaded browser and additional Linux libraries.
     container:
       image: ${{ matrix.browser == 'firefox' && needs.build.outputs.playwright-image || '' }}
-      options: --user 1001
+      # Docker's 64 MB /dev/shm crashes Firefox during video playback.
+      options: --user 1001 --ipc=host
       # The image has Git, but checkout also needs the runner's Git LFS binary.
       volumes:
         - /usr/bin/git-lfs:/usr/bin/git-lfs:ro
