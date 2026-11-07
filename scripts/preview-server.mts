@@ -9,7 +9,7 @@ export const startPreviewServer = async (root: string, port: string) => {
         [fileURLToPath(new URL("./serve.mts", import.meta.url)), root],
         {
             env: { ...process.env, PORT: port },
-            stdio: ["ignore", "pipe", "inherit"],
+            stdio: ["ignore", "pipe", "inherit", "ipc"],
         },
     );
     const stop = async () => {
@@ -30,6 +30,7 @@ export const startPreviewServer = async (root: string, port: string) => {
         AbortSignal.timeout(15_000),
     ]);
     try {
+        assert(server.stdout, "Static preview stdout pipe is unavailable.");
         await Promise.race([
             once(server.stdout, "data", { signal }),
             once(server, "exit", { signal }).then(([code]) => {
