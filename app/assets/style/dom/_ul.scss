@@ -1,4 +1,4 @@
-ul {
+ul:where(:not([role="list"], .list-unstyled)) {
   list-style-type: disc;
   margin-inline-start: var(--global-space-fixed-5);
   margin-block-end: var(--global-space-fixed-5);
@@ -17,4 +17,11 @@ ul {
   li::marker {
     color: var(--global-accent-color);
   }
+}
+
+// Explicit list roles preserve unstyled UI lists in Safari's accessibility tree.
+:where(ul[role="list"], ol[role="list"], .list-unstyled) {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }

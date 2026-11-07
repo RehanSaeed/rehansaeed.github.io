@@ -29,8 +29,12 @@ test("Trailing section links preserve inline text markup and fragment IDs", () =
   };
   rehypeHeadingAnchors()(tree);
   expect(tree.children[0]).toMatchObject({
-    tagName: "keep-h2",
-    properties: { id: "example", "data-section-heading": "" },
+    tagName: "keep-h3",
+    properties: {
+      id: "example",
+      className: ["post-heading--2"],
+      "data-section-heading": "",
+    },
     children: [
       {
         tagName: "span",

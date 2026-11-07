@@ -3,13 +3,12 @@
     <u-author />
     <u-arrows class="posts__arrows" />
 
-    <div class="posts__items">
-      <u-post-card
-        v-for="(post, index) of posts"
-        :key="post.id"
-        :post="post"
-        :priority="index === 0" />
-    </div>
+    <!-- eslint-disable-next-line vuejs-accessibility/no-redundant-roles -- Preserve list semantics in Safari when list-style is none. -->
+    <ul class="posts__items" aria-label="Blog posts" role="list">
+      <li v-for="(post, index) of posts" :key="post.id">
+        <u-post-card :post="post" :priority="index === 0" />
+      </li>
+    </ul>
 
     <u-pager class="posts__pager" :page-info="pageInfo" />
   </div>
@@ -150,5 +149,9 @@ useHead({
 
 .posts__pager {
   justify-self: center;
+}
+
+.posts__items > li {
+  display: grid;
 }
 </style>
