@@ -1,42 +1,44 @@
 <template>
   <u-card class="newsletter">
-    <form
-      class="newsletter__form"
-      method="post"
-      :action="metadata.mailchimpUrl">
-      <u-heading
-        id="newsletter"
-        class="newsletter__title"
-        level="2"
-        center
-        href="#newsletter"
-        >Newsletter</u-heading
-      >
-      <label class="newsletter__label" for="email"
-        >Stay up to date! Get all the latest &amp; greatest posts delivered
-        straight to your inbox!</label
-      >
-      <input
-        id="email"
-        class="newsletter__input"
-        name="EMAIL"
-        placeholder="youremail@example.com"
-        required
-        type="email"
-        autocapitalize="off"
-        autocorrect="off" />
-      <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-      <input
-        aria-hidden="true"
-        type="text"
-        name="b_0d1d7c30db26dd0a4aa1b5b40_07ce865066"
-        style="position: absolute; inset-inline-start: -5000px"
-        tabindex="-1"
-        value />
-      <u-button variant="secondary" submit class="newsletter__button"
-        >Subscribe</u-button
-      >
-    </form>
+    <div class="newsletter__content">
+      <form
+        class="newsletter__form"
+        method="post"
+        :action="metadata.mailchimpUrl">
+        <u-heading
+          id="newsletter"
+          class="newsletter__title"
+          level="2"
+          center
+          href="#newsletter"
+          >Newsletter</u-heading
+        >
+        <label class="newsletter__label" for="email"
+          >Stay up to date! Get all the latest &amp; greatest posts delivered
+          straight to your inbox!</label
+        >
+        <input
+          id="email"
+          class="newsletter__input"
+          name="EMAIL"
+          placeholder="youremail@example.com"
+          required
+          type="email"
+          autocapitalize="off"
+          autocorrect="off" />
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <input
+          aria-hidden="true"
+          type="text"
+          name="b_0d1d7c30db26dd0a4aa1b5b40_07ce865066"
+          style="position: absolute; inset-inline-start: -5000px"
+          tabindex="-1"
+          value />
+        <u-button variant="secondary" submit class="newsletter__button"
+          >Subscribe</u-button
+        >
+      </form>
+    </div>
   </u-card>
 </template>
 
@@ -46,29 +48,36 @@ const metadata = useAppConfig().site;
 </script>
 
 <style lang="scss">
-@use "~/assets/style/abstracts/breakpoints";
-
 .newsletter {
+  inline-size: min(100%, var(--global-space-content-max-width));
   content-visibility: auto;
   contain-intrinsic-size: 354px;
+}
+
+// Keep the container off the content-visibility element: Firefox otherwise
+// discards its remembered size when skipped, shifting content below it.
+.newsletter__content {
+  container: newsletter / inline-size;
 }
 
 .newsletter__form {
   display: grid;
   gap: var(--global-space-fluid-3);
   grid-template-areas:
-    "title title title title"
-    "label label label label"
-    ". input button .";
-  grid-template-columns: 1fr auto auto 1fr;
+    "title title title"
+    "label label label"
+    ". input ."
+    ". button .";
+  grid-template-columns: 1fr minmax(0, auto) 1fr;
+}
 
-  @include breakpoints.respond-below(md) {
+@container newsletter (width > 30em) {
+  .newsletter__form {
     grid-template-areas:
-      "title title title"
-      "label label label"
-      ". input ."
-      ". button .";
-    grid-template-columns: 1fr auto 1fr;
+      "title title title title"
+      "label label label label"
+      ". input button .";
+    grid-template-columns: 1fr auto auto 1fr;
   }
 }
 
@@ -87,6 +96,8 @@ const metadata = useAppConfig().site;
 
 .newsletter__input {
   grid-area: input;
+  min-inline-size: 0;
+  max-inline-size: 100%;
 }
 
 .newsletter__button {

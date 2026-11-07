@@ -224,7 +224,7 @@ const neighbours = computed(() =>
   min-inline-size: 0;
   padding-inline: var(--global-space-fixed-5);
 
-  @include breakpoints.respond-below(sm) {
+  @include breakpoints.container-below(site, sm) {
     padding-inline: var(--global-space-fixed-4);
   }
 }
