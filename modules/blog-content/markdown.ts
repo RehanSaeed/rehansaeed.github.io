@@ -65,7 +65,7 @@ const containerTypes: Record<
   danger: { tagName: "div", titleTagName: "p", title: "Warning" },
   details: { tagName: "details", titleTagName: "summary", title: "Details" },
 };
-const containerOpen = /^:::[ \t]*(\w+)[ \t]*([^\n]*?)[ \t]*(?:\n|$)/;
+const containerOpen = /^:::[ \t]*([\w-]+)[ \t]*([^\n]*?)[ \t]*(?:\n|$)/;
 const containerClose = /(?:^|\n)[ \t]*:::[ \t]*$/;
 
 function firstText(node: Node): Node | undefined {
@@ -95,7 +95,12 @@ export function remarkContainers() {
         const open = firstText(children[start]!);
         const match = open?.value?.match(containerOpen);
         const type = match?.[1];
-        if (!open || !match || !type || !containerTypes[type]) {
+        if (
+          !open ||
+          !match ||
+          !type ||
+          (!containerTypes[type] && type !== "code-group")
+        ) {
           transform(children[start]!);
           continue;
         }
@@ -116,13 +121,34 @@ export function remarkContainers() {
           end++;
         }
         if (end === children.length) {
+          if (type === "code-group") {
+            throw new Error("A code-group must end with a closing ::: marker.");
+          }
           end = children.length - 1;
         }
-        const config = containerTypes[type];
         const content = children
           .slice(start, end + 1)
           .filter((node) => !isEmptyParagraph(node));
         content.forEach(transform);
+        if (type === "code-group") {
+          if (
+            content.length < 2 ||
+            content.some(
+              (node) => node.type !== "code" || node.lang === "mermaid",
+            )
+          ) {
+            throw new Error(
+              "A code-group must contain at least two fenced code blocks and no other content.",
+            );
+          }
+          children.splice(start, end - start + 1, {
+            type: "container",
+            data: { hName: "code-group" },
+            children: content,
+          });
+          continue;
+        }
+        const config = containerTypes[type]!;
         children.splice(start, end - start + 1, {
           type: "container",
           data: {

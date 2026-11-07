@@ -38,7 +38,7 @@ Duis aliquet ex eu scelerisque ultricies. Nam ac sagittis ligula. Vestibulum vel
 # Links
 
 [Link](https://example.com)
-[Empty Link]()
+[Empty Link](<>)
 
 # Horizontal Rule
 
@@ -182,13 +182,29 @@ docker image build --tag foo:1.0.0 --label "build"="123" --label "changeset"="0d
 // Code Title, Line Numbers, Line Highlight
 // Code Title, Line Numbers, Line Highlight
 export default {
-  data () {
+  data() {
     return {
-      msg: 'All'
-    }
-  }
-}
+      msg: "All",
+    };
+  },
+};
 ```
+
+## Alternative Code Tabs
+
+Wrap two or more fenced code blocks in `::: code-group`. The language controls syntax highlighting, and the title in square brackets becomes the tab label. For example, use `bash [Bash]` and `powershell [PowerShell]` to create these two tabs:
+
+::: code-group
+
+```bash [Bash]
+printf '%s\n' "Hello <world> & friends"
+```
+
+```powershell [PowerShell]
+Write-Output "Hello <world> & friends"
+```
+
+:::
 
 # Math
 
