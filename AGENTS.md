@@ -259,6 +259,25 @@ When explicitly asked to help draft an article, follow these guidelines:
 </figure>
 ```
 
+### Video Captions
+
+- Markdown `<video>` elements render through `ProseVideo`, which cannot add
+  captions itself. Its `media-has-caption` lint suppression moves that
+  responsibility to each post; it does not satisfy it.
+- Before embedding a video, check whether its audio contains speech or
+  meaningful sound, for example with
+  `ffmpeg -i video.mp4 -vn -af volumedetect -f null -`. An audio track can
+  still be silent.
+- For speech or meaningful sound, add a WebVTT file beside the video in
+  `public/videos/` and reference it with
+  `<track kind="captions" src="/videos/example.vtt" srclang="en" label="English">`
+  inside the `<video>`. Transcribe it from the actual audio, including speaker
+  changes and relevant sounds, and review its text and timings against
+  playback. Never invent dialogue or publish unreviewed machine transcripts.
+- Silent or video-only clips need no captions track; do not add an empty one
+  just to satisfy the linter. Describe the clip with the video's accessible name
+  and visible figure caption instead.
+
 ### Hero Image House Style
 
 - Aim for a personal software engineering publication: technically literate,
