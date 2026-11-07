@@ -398,7 +398,7 @@ test("Generate alone saves validated public snapshots; every Nuxt prepare restor
         return cache;
     });
     for (const cache of caches.slice(1)) {
-        expect(cache?.with).toEqual(caches[0]?.with);
+        expect(cache.with).toEqual(caches[0]?.with);
     }
 });
 
