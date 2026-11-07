@@ -107,11 +107,18 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
     }
   }
 
-  video {
+  video,
+  .prose-video {
     display: block;
     inline-size: calc(100% + (2 * var(--global-space-fluid-6)));
     margin-inline: var(--global-space-fluid--6);
     max-inline-size: none;
+  }
+
+  .prose-video video {
+    inline-size: 100%;
+    max-inline-size: 100%;
+    margin-inline: 0;
   }
 
   figure {

@@ -338,6 +338,16 @@ When explicitly asked to help draft an article, follow these guidelines:
 
 ### Video Captions
 
+- `ProseVideo` progressively enhances authored native controls with the blog's
+  bottom-overlay player; keep server-rendered controls until it mounts and retain
+  the Settings escape to browser controls. Do not customise third-party iframes.
+- Keep controls reachable through keyboard focus and visible on touch, while
+  paused, or while Settings is open. Only hide them during pointer-idle playback.
+  Preserve the viewport autoplay/manual-pause/reduced-motion contract when
+  changing controls. Add browser regressions in `video-controls.spec.ts` and
+  retain `video-autoplay.spec.ts`.
+- Use capability checks for fullscreen and picture-in-picture. iOS uses system
+  volume; native fullscreen/PiP controls may replace the page overlay.
 - Markdown `<video>` elements render through `ProseVideo`, which cannot add
   captions itself. Its `media-has-caption` lint suppression moves that
   responsibility to each post; it does not satisfy it.

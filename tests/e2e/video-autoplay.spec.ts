@@ -19,7 +19,7 @@ const openArticle = async (page: Page, baseURL: string | undefined) => {
   await page.goto("/ai-learnings-from-upgrading-my-blog/", {
     waitUntil: "load",
   });
-  return page.getByLabel(videoLabel);
+  return page.getByLabel(videoLabel, { exact: true });
 };
 
 const isPlaying = (video: Locator) =>
@@ -101,7 +101,10 @@ test("The article video autoplays muted only while fully in view", async ({
       ),
     )
     .toBe(true);
-  await expect(video).toHaveAttribute("controls", "");
+  await expect(video).not.toHaveAttribute("controls");
+  await expect(
+    page.getByRole("button", { name: "Pause video", exact: true }),
+  ).toBeAttached();
   await expect
     .poll(() =>
       video.evaluate((element) =>
