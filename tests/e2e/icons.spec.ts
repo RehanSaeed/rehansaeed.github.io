@@ -5,6 +5,7 @@ import type { Locator, Page } from "@playwright/test";
 import type { NuxtApp } from "nuxt/app";
 import { load } from "cheerio";
 import { expect, test } from "./fixtures";
+import { saveWholeBlogOffline } from "./offline";
 
 const post = "/on-the-etiquette-of-pull-request-comments/";
 const screenshotDirectory = process.env.ICON_SCREENSHOTS_DIR;
@@ -228,6 +229,7 @@ test.describe("Offline icons", () => {
         });
       }
     });
+    await saveWholeBlogOffline(page);
     await context.setOffline(true);
     await page.goto(post);
     await ready(page);
