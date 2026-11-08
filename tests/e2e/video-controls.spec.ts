@@ -81,7 +81,10 @@ test("Custom controls play, pause, seek, mute and change speed with native fallb
       ),
     )
     .toBe(true);
-  await player.getByLabel("Video settings", { exact: true }).click();
+  await expect(
+    player.getByLabel("Video settings", { exact: true }),
+  ).toHaveCount(0);
+  await expect(player.getByLabel("Playback speed")).toBeVisible();
   await player.getByLabel("Playback speed").selectOption("1.5");
   await expect
     .poll(() =>
@@ -90,12 +93,6 @@ test("Custom controls play, pause, seek, mute and change speed with native fallb
       ),
     )
     .toBe(1.5);
-  await page.keyboard.press("Escape");
-  await expect(
-    player.getByLabel("Video settings", { exact: true }),
-  ).toBeFocused();
-  await expect(player.getByLabel("Playback speed")).toBeHidden();
-  await player.getByLabel("Video settings", { exact: true }).click();
   await player.getByRole("button", { name: "Use browser controls" }).click();
   await expect(video).toHaveAttribute("controls", "");
   await expect(player).toHaveCount(0);
@@ -137,7 +134,7 @@ test("Caption controls appear only for real text tracks and toggle their showing
       ),
     )
     .toBe("showing");
-  await player.getByLabel("Video settings", { exact: true }).click();
+  await expect(player.getByLabel("Caption language")).toBeVisible();
   await expect(player.getByLabel("Caption language")).toHaveValue("0");
   await player.getByLabel("Caption language").selectOption("-1");
   await expect(captions).toHaveAttribute("aria-pressed", "false");
@@ -205,6 +202,17 @@ test("Full-width controls remain contained with large touch targets in both them
   baseURL,
 }) => {
   const { video, player } = await openVideo(page, baseURL);
+  await video.evaluate((element) => {
+    if (!(element instanceof HTMLVideoElement)) {
+      throw new TypeError("Expected video.");
+    }
+    element.addTextTrack(
+      "captions",
+      "English captions with a long language label",
+      "en",
+    ).mode = "disabled";
+  });
+  await expect(player.getByLabel("Caption language")).toBeVisible();
   for (const theme of ["light", "dark"]) {
     await page.evaluate((theme) => {
       document.documentElement.dataset.theme = theme;
@@ -215,7 +223,7 @@ test("Full-width controls remain contained with large touch targets in both them
       const layout = await player.evaluate((element) => {
         const bounds = element.getBoundingClientRect();
         const buttons = Array.from(
-          element.querySelectorAll("button, summary"),
+          element.querySelectorAll("button, select"),
         ).filter((button) => button.getBoundingClientRect().height > 0);
         return {
           left: bounds.left,
@@ -337,7 +345,7 @@ test("Denied PiP requests expose feedback rather than fake success", async ({
 test.describe("Playing control visibility", () => {
   test.use({ reducedMotion: "no-preference" });
 
-  test("Keyboard focus and open settings pin idle controls", async ({
+  test("Keyboard focus on direct toolbar options pins idle controls", async ({
     page,
     baseURL,
   }) => {
@@ -351,7 +359,7 @@ test.describe("Playing control visibility", () => {
     await expect(player).toHaveCSS("opacity", "0");
     await pause.focus();
     await expect(player).toHaveCSS("opacity", "1");
-    await player.getByLabel("Video settings", { exact: true }).click();
+    await player.getByLabel("Playback speed").focus();
     await player.getByLabel("Playback speed").selectOption("1.25");
     await page.mouse.move(0, 0);
     await expect(player.getByLabel("Playback speed")).toBeVisible();

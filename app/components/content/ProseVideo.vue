@@ -1,5 +1,5 @@
 <template>
-  <div
+  <span
     ref="player"
     class="prose-video"
     :class="{ 'prose-video--idle': controlsHidden }"
@@ -30,7 +30,7 @@
         <slot />
       </video>
     </u-intersect>
-    <div
+    <span
       v-if="enhanced"
       class="prose-video__controls"
       role="group"
@@ -47,7 +47,7 @@
           :aria-valuetext="`${formatTime(currentTime)} of ${formatTime(duration)}`"
           @input="onSeek" />
       </label>
-      <div class="prose-video__row">
+      <span class="prose-video__row">
         <button
           type="button"
           class="prose-video__button"
@@ -104,39 +104,6 @@
           @click="toggleCaptions">
           <u-icon name="fa-solid:closed-captioning" />
         </button>
-        <details class="prose-video__settings" @toggle="onSettingsToggle">
-          <summary
-            class="prose-video__button"
-            aria-label="Video settings"
-            title="Settings">
-            <u-icon name="fa-solid:cog" />
-          </summary>
-          <div class="prose-video__menu">
-            <label
-              >Playback speed
-              <select :value="playbackRate" @change="onSpeed">
-                <option v-for="speed in speeds" :key="speed" :value="speed">
-                  {{ speed === 1 ? "Normal" : `${speed}×` }}
-                </option>
-              </select>
-            </label>
-            <label v-if="captionTracks.length"
-              >Caption language
-              <select :value="selectedCaption" @change="onCaptionSelection">
-                <option :value="-1">Off</option>
-                <option
-                  v-for="(track, index) in captionTracks"
-                  :key="index"
-                  :value="index">
-                  {{ track.label || track.language || `Track ${index + 1}` }}
-                </option>
-              </select>
-            </label>
-            <button type="button" @click="useNativeControls">
-              Use browser controls
-            </button>
-          </div>
-        </details>
         <button
           v-if="pipSupported"
           type="button"
@@ -160,16 +127,51 @@
           <u-icon
             :name="fullscreen ? 'fa-solid:compress' : 'fa-solid:expand'" />
         </button>
-      </div>
-    </div>
-    <p
+      </span>
+      <span class="prose-video__options">
+        <label
+          >Speed
+          <select
+            aria-label="Playback speed"
+            :value="playbackRate"
+            @change="onSpeed">
+            <option v-for="speed in speeds" :key="speed" :value="speed">
+              {{ speed === 1 ? "Normal" : `${speed}×` }}
+            </option>
+          </select>
+        </label>
+        <label v-if="captionTracks.length"
+          >Captions
+          <select
+            aria-label="Caption language"
+            :value="selectedCaption"
+            @change="onCaptionSelection">
+            <option :value="-1">Off</option>
+            <option
+              v-for="(track, index) in captionTracks"
+              :key="index"
+              :value="index">
+              {{ track.label || track.language || `Track ${index + 1}` }}
+            </option>
+          </select>
+        </label>
+        <button
+          type="button"
+          aria-label="Use browser controls"
+          title="Use browser controls"
+          @click="useNativeControls">
+          Browser controls
+        </button>
+      </span>
+    </span>
+    <span
       v-if="enhanced && (message || buffering)"
       class="prose-video__status"
       role="status">
       {{ message || "Loading video…" }}
       <a v-if="message && sourceUrl" :href="sourceUrl">Open video file</a>
-    </p>
-  </div>
+    </span>
+  </span>
 </template>
 
 <script setup lang="ts">
@@ -189,7 +191,7 @@ const fullyVisibleRatio = 0.99;
 const threshold = [0, fullyVisibleRatio, 1];
 const video = useTemplateRef<HTMLVideoElement>("video");
 const motion = usePreferredReducedMotion();
-const player = useTemplateRef<HTMLDivElement>("player");
+const player = useTemplateRef<HTMLSpanElement>("player");
 const attrs = useAttrs();
 const nativeControls = computed(
   () => attrs.controls !== undefined && attrs.controls !== false,
@@ -220,7 +222,6 @@ const fullscreen = ref(false);
 const pipSupported = ref(false);
 const inPictureInPicture = ref(false);
 const idle = ref(false);
-const settingsOpen = ref(false);
 const touch = ref(false);
 const controlsHidden = computed(
   () =>
@@ -228,7 +229,6 @@ const controlsHidden = computed(
     playing.value &&
     !buffering.value &&
     !message.value &&
-    !settingsOpen.value &&
     !touch.value,
 );
 let hideTimer: ReturnType<typeof setTimeout> | undefined;
@@ -356,7 +356,7 @@ const positionCaptions = (): void => {
         (cue.line === "auto" || repositionedCues.has(cue))
       ) {
         repositionedCues.add(cue);
-        cue.line = (player.value?.clientWidth ?? 0) <= 600 ? -7 : -5;
+        cue.line = (player.value?.clientWidth ?? 0) <= 600 ? -10 : -8;
       }
     }
   }
@@ -396,10 +396,7 @@ const scheduleHide = (): void => {
     return;
   }
   hideTimer = setTimeout(() => {
-    if (
-      !player.value?.contains(document.activeElement) &&
-      !settingsOpen.value
-    ) {
+    if (!player.value?.contains(document.activeElement)) {
       idle.value = true;
     }
   }, 2500);
@@ -515,27 +512,6 @@ const onCaptionSelection = (event: Event): void => {
   }
 };
 
-const onSettingsToggle = (event: Event): void => {
-  if (event.target instanceof HTMLDetailsElement) {
-    settingsOpen.value = event.target.open;
-    scheduleHide();
-  }
-};
-
-const closeSettings = (event: KeyboardEvent): void => {
-  if (event.key !== "Escape" || !(event.target instanceof Element)) {
-    return;
-  }
-  const settings = event.target.closest("details");
-  if (
-    settings instanceof HTMLDetailsElement &&
-    player.value?.contains(settings)
-  ) {
-    settings.open = false;
-    settings.querySelector("summary")?.focus();
-  }
-};
-
 const useNativeControls = (): void => {
   enhanced.value = false;
   positionCaptions();
@@ -601,7 +577,6 @@ onMounted(() => {
     typeof element.requestPictureInPicture === "function" &&
     !element.disablePictureInPicture;
   document.addEventListener("fullscreenchange", syncFullscreen);
-  document.addEventListener("keydown", closeSettings);
   element.addEventListener("enterpictureinpicture", syncPictureInPicture);
   element.addEventListener("leavepictureinpicture", syncPictureInPicture);
   element.textTracks.addEventListener("addtrack", syncCaptions);
@@ -615,7 +590,6 @@ onUnmounted(() => {
   positionCaptions();
   clearTimeout(hideTimer);
   document.removeEventListener("fullscreenchange", syncFullscreen);
-  document.removeEventListener("keydown", closeSettings);
   const element = video.value;
   element?.removeEventListener("enterpictureinpicture", syncPictureInPicture);
   element?.removeEventListener("leavepictureinpicture", syncPictureInPicture);
@@ -711,7 +685,7 @@ watch(controlsHidden, positionCaptions);
 
 .prose-video__row {
   display: grid;
-  grid-template-columns: auto auto auto auto 1fr repeat(4, auto);
+  grid-template-columns: auto auto auto auto 1fr repeat(3, auto);
   align-items: center;
   gap: 4px;
 
@@ -762,36 +736,22 @@ watch(controlsHidden, positionCaptions);
   min-inline-size: 0;
 }
 
-.prose-video__settings {
-  position: relative;
-
-  summary {
-    list-style: none;
-    &::-webkit-details-marker {
-      display: none;
-    }
-  }
-}
-
-.prose-video__menu {
+.prose-video__options {
   display: grid;
-  gap: 12px;
-
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 80px), 1fr));
+  align-items: end;
+  gap: 8px;
   background: var(--video-panel);
-  border: 1px solid var(--video-border);
   border-radius: var(--global-border-radius);
-  padding: 16px;
-  inline-size: min(16rem, 75cqi);
-
-  position: absolute;
-  inset-inline-end: 0;
-  inset-block-end: calc(100% + 8px);
+  padding: 4px 8px 8px;
 
   label {
     display: grid;
     gap: 4px;
     color: var(--video-foreground);
-    font-size: 0.875rem;
+    font-size: 0.75rem;
+    min-inline-size: 0;
+    margin: 0;
   }
 
   button,
@@ -804,6 +764,8 @@ watch(controlsHidden, positionCaptions);
     padding: 8px;
     min-inline-size: 0;
     min-block-size: 44px;
+    inline-size: 100%;
+    font-size: 0.75rem;
   }
 }
 
@@ -838,8 +800,7 @@ watch(controlsHidden, positionCaptions);
   pointer-events: none;
 }
 
-.prose-video--idle:focus-within .prose-video__controls,
-.prose-video--idle:has(details[open]) .prose-video__controls {
+.prose-video--idle:focus-within .prose-video__controls {
   opacity: 1;
   pointer-events: auto;
 }
@@ -850,7 +811,7 @@ watch(controlsHidden, positionCaptions);
   }
 
   .prose-video__row {
-    grid-template-columns: auto auto 1fr repeat(4, auto);
+    grid-template-columns: auto auto 1fr repeat(3, auto);
   }
 
   .prose-video__time {
@@ -863,7 +824,7 @@ watch(controlsHidden, positionCaptions);
 
 @media (forced-colors: active) {
   .prose-video__controls,
-  .prose-video__menu,
+  .prose-video__options,
   .prose-video__status {
     color: CanvasText;
     background: Canvas;

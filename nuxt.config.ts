@@ -70,7 +70,6 @@ export default defineNuxtConfig({
         "fa-solid:volume-up",
         "fa-solid:volume-mute",
         "fa-solid:closed-captioning",
-        "fa-solid:cog",
         "fa-solid:clone",
         "fa-solid:expand",
         "fa-solid:compress",
