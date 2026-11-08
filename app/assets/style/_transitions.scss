@@ -1,4 +1,27 @@
 @media (prefers-reduced-motion: no-preference) {
+  :root.post-view-transition {
+    view-transition-name: none;
+  }
+
+  .post-card__image--view-transition,
+  .post-view-transition .post-page .post__photo {
+    view-transition-name: post-hero;
+  }
+
+  :root.post-view-transition::view-transition {
+    pointer-events: none;
+  }
+
+  :root.post-view-transition::view-transition-group(post-hero) {
+    animation-duration: var(--global-duration-1);
+    animation-timing-function: var(--ease-out-quad);
+  }
+
+  :root.post-view-transition::view-transition-old(post-hero),
+  :root.post-view-transition::view-transition-new(post-hero) {
+    animation-duration: var(--global-duration-1);
+  }
+
   .fade-enter-active,
   .fade-leave-active {
     transition: opacity var(--global-duration-1) ease-in;

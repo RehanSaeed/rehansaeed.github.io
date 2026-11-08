@@ -1,6 +1,8 @@
 <template>
   <u-card
     class="post-card"
+    :data-post-permalink="post.permalink"
+    :data-post-hero="post.heroImage"
     tag="article"
     compact
     hoverable

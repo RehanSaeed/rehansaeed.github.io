@@ -1,21 +1,70 @@
-# View-transition trial: lifecycle gate rejected
+# Bounded card-to-article view transitions
 
 Assessed **2026-11-07**, against baseline commit
 `a0aaf76403e35ed0741591d7a36705e651451e13`, Nuxt **4.6.4**, Vue **3.5.45**
 and Nuxt Content **3.16.2**.
 
-**Recommendation: retain the existing navigation.** The approved card-to-article
-trial fails its lifecycle gate before shared-hero styling: Nuxt captures the
+The initial native-integration trial failed its lifecycle gate: Nuxt captures the
 destination while it is still at the listing's deep scroll position. Scrolling
 then occurs during and after the transition. This was reproduced with production
 client bundles in Chrome, Edge and Firefox, including warmed navigation and a
 controlled delayed Content response. A loaded image does not solve the problem.
 
-No view-transition configuration, shared image names, additional route/image
-waiting, router overrides or dependencies remain in the application. This report
-preserves the rejected experiment for review; it does not enable animations.
+The author subsequently approved **"Implement the custom bounded card-to-article
+approach"**. The implementation below replaces the failed native lifecycle rather
+than enabling Nuxt's experimental global integration. The original findings are
+preserved separately as evidence for that decision.
 
-## Experiment and reproduction
+## Custom lifecycle and scope
+
+`app/plugins/post-view-transition.client.ts` intercepts only ordinary primary-button
+or keyboard activation of a main-listing card's title link. It leaves NuxtLink's
+normal handling untouched when the API is unavailable, motion is reduced, forced
+colours are active, a dialog is open, the source hero is unloaded/broken/clipped,
+or the link is modified, external, a download, a new tab or contains a query/hash.
+Tag listings without heroes and article neighbours do not opt in.
+
+Only the selected source image and the corresponding destination hero share the
+`post-hero` name. Card/article metadata verifies the permalink and underlying hero
+identity. The root snapshot is disabled during the effect, so the persistent
+header, article text and other layout content do not crossfade. The effect uses
+the existing 200 ms duration and easing tokens, with pointer events passed through
+to the live page.
+
+The native update callback performs the normal public `router.push`. A public
+`page:loading:end` listener verifies the rendered destination, scrolls instantly
+to the normal article top and focuses its heading with `preventScroll` before
+resolving capture. Nuxt's subsequent deferred top scroll has nowhere further to
+move. This intentionally coordinates scroll for the eligible custom navigation;
+it does not override the router's global scroll behaviour or access private Nuxt
+state. API-absent and reduced-motion navigation retains its original path.
+
+There is no image-decoding or network wait added to navigation. If the destination
+hero is not ready or fully visible after Vue's pending DOM updates, the animation is
+skipped without waiting for image loading or decoding. A 600 ms deadline
+from the native update callback also skips capture while asynchronous Content is
+still pending, allowing normal loading to be shown instead of keeping the old
+render visually frozen. This is a scheduling deadline, not a guarantee against a
+blocked main thread or suspended browser. Navigation still completes normally.
+The initial 200 ms preparation budget was too short even for warmed client
+Content/rendering in the local measurements; 600 ms is the explicit maximum
+preparation budget, separate from the 200 ms visual animation. Slow requests are
+still skipped rather than being awaited for the sake of an effect.
+
+Another route, history traversal, visibility loss or an application/router error
+cancels the pending effect. Interaction and changes to motion/forced-colour
+preferences skip its animation. Per-navigation listeners and names are removed on
+completion. Native capture errors are logged; navigation exceptions use Nuxt's
+error page rather than becoming an unreported success.
+Cancellation releases the native update independently of a still-pending router
+data request. It does not abort shared Content downloads or let a canceled
+transition scroll or focus a newer destination.
+
+Theme changes, filtering, pagination changes themselves, article-to-article
+navigation, anchors and cross-document transitions remain unanimated. This is not
+approval for a wider rollout.
+
+## Original native experiment and reproduction
 
 The reversible local diagnostic enabled Nuxt's experimental plugin, kept its
 global default off, and enabled destination metadata on the article page:
@@ -59,7 +108,7 @@ route wait workaround or application image-decoding wait was used. The source
 card image was explicitly decoded in the test before activation to remove that
 variable; the destination image was observed, not awaited by the app.
 
-## Observed geometry and controls
+## Original native geometry and controls
 
 Representative native measurements from one run per browser:
 
@@ -92,7 +141,7 @@ The probe made a conditional attempt to check an article section anchor. It did
 not persist evidence that the selector matched, so anchor exclusion is **not
 claimed as verified**.
 
-## Why styling cannot fix this gate
+## Why the native lifecycle was replaced
 
 Nuxt's installed plugin releases the router in the native update callback and
 resolves that callback on `page:finish`. The page suspense sequence emits
@@ -107,13 +156,12 @@ holding navigation for images or rewriting the router exceeds the approved trial
 Restricting the feature to a convenient first card would hide the deep-scroll
 failure rather than satisfy the requirement.
 
-Reconsider only after a supported Nuxt integration coordinates destination scroll
-with capture, or after separate approval for a custom lifecycle approach. Before
+The author chose the separately approved custom lifecycle approach. Before
 styling, require visible, correctly positioned destination capture across cold,
 warm and delayed routes without new route/image waits. Keep article-to-article,
 pagination/filter, theme and cross-document transitions out of this decision.
 
-## Validation limits and preserved evidence
+## Original native-trial validation limits and preserved evidence
 
 The production diagnostic was **not a successful deployment build**.
 `npm run build` exited 1 after an OG-image HTTP 408 render timeout at
@@ -139,20 +187,55 @@ The session's `files` directory preserves:
 - `trial-baseline-listing.png`, `trial-baseline-article.png`,
   `static-trial-article.png` and `view-transitions-static-trial.webm`: actual
   diagnostic captures. The final screenshot is not evidence of a successful
-  shared-hero animation; no such animation was implemented.
+  shared-hero animation; none was implemented in that initial diagnostic.
 
 The browser script exited 0 for its navigation, bypass, history, request-delay and
-uncaught-error assertions. **The feature acceptance gate failed**; script success
+uncaught-error assertions. **The original native acceptance gate failed**; script success
 must not be reported as approval to ship.
 
-Full application type checking, linting and existing Playwright regression suites
-were not rerun after rejecting the experiment: the final repository change is
-this report only. Rapid superseding navigation, route errors, broken/delayed
-destination images, modified clicks, forward restoration, Safari, dark-mode
-motion, Windows Narrator, forced colours, 200% zoom/display scaling and low-power
-performance remain unverified. Those acceptance checks were not pursued after the
-earlier lifecycle gate failed. No accessibility support or merge readiness is
-claimed.
+These original results do not validate the new custom implementation.
+`tests/e2e/post-view-transition.spec.ts` now exercises actual named native capture,
+top-scroll geometry, focus, history, mobile/light/dark operation, cold Content,
+unavailable media, cancellation, errors and fallback eligibility. Its outcomes
+and the application checks are recorded in the PR description. Real Windows
+Narrator, real browser zoom/display scaling, low-power performance and Safari
+require separate manual checks; automated DOM assertions must not be described as
+those checks or as merge readiness.
+
+## Implementation validation
+
+The initial custom production build passed, including Pages artifact and SEO
+verification, and `npm run typecheck` passed. Actual native captures in Chrome
+and Edge demonstrated a loaded hero at scroll Y 0, top approximately 407/bottom
+897 CSS pixels, exactly one shared name, no root snapshot and focus on the
+article title. These are individual diagnostic results, not a claim that the
+complete regression suite passed.
+
+On 2026-11-08, the final cancellation build again passed Pages artifact and SEO
+verification, and the final application typecheck passed. Edge cases passed for
+mouse/keyboard capture, mobile light/dark rendering, cold-data skip, unavailable
+destination media, superseding navigation, route errors, reduced motion, forced
+colours and unsupported-API fallback. These passed cases were spread across
+bounded diagnostic runs; the full acceptance command did not complete cleanly.
+
+Local Chrome/Edge/Firefox runs also encountered navigation, hydration and browser
+setup/teardown timeouts. A ten-repeat, no-retry history investigation passed three
+repetitions before stalling and being stopped. This is **not** a ten-repeat pass.
+The host's concurrent browser audit and video-controls work reported similar
+stalls, but did not establish a root cause or prove these failures unrelated.
+No retry increase, relaxed capture assertion, browser exclusion or disabled test
+was used to turn those runs into success. Remaining acceptance is explicitly
+pending on the final-head CI results, not inferred from the build.
+
+The final review milestone uses the completed static artifact on an isolated
+port. Exact final build, typecheck, lint and browser command outcomes belong in
+the PR description, including any failing or interrupted runs. The browser spec
+preserves capture JSON and before/after screenshots as test attachments.
+Session files `custom-hero-capture.json`, `custom-hero-listing.png` and
+`custom-hero-article.png` preserve an actual successful custom capture. Partial
+runner logs are saved as `custom-hero-*-results.log` and
+`custom-hero-history-repeat.log`. Still-image endpoints do not substitute for
+reviewing intermediate animation frames or Windows Narrator behaviour.
 
 ## Primary sources
 
