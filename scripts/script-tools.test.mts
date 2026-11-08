@@ -5,7 +5,7 @@ import { createServer } from "node:http";
 import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { connect } from "node:net";
+import { Socket } from "node:net";
 import { once } from "node:events";
 import { test, type TestContext } from "node:test";
 import { fileURLToPath } from "node:url";
@@ -22,6 +22,75 @@ const temporaryDirectory = async (context: TestContext) => {
     context.after(() => rm(directory, { recursive: true, force: true }));
     return directory;
 };
+
+const observeConnectionClosure = (
+    connection: Socket,
+    isDisconnecting: () => boolean,
+) =>
+    new Promise<Error[]>((resolve) => {
+        const unexpectedErrors: Error[] = [];
+        connection.on("error", (error: Error) => {
+            // Closing an owned server can reset its incomplete HTTP requests.
+            if (
+                !isDisconnecting() ||
+                !("code" in error) ||
+                error.code !== "ECONNRESET"
+            ) {
+                unexpectedErrors.push(error);
+            }
+        });
+        connection.once("close", () => {
+            resolve(unexpectedErrors);
+        });
+    });
+
+for (const [code, disconnecting] of [
+    ["ECONNRESET", true],
+    ["ECONNRESET", false],
+    ["EPIPE", true],
+    [undefined, true],
+    [undefined, false],
+] as const) {
+    await test(`preview connection observer preserves unexpected errors (${code ?? "no code"}, disconnecting=${disconnecting})`, async (context) => {
+        const connection = new Socket();
+        context.after(() => connection.destroy());
+        const closed = observeConnectionClosure(
+            connection,
+            () => disconnecting,
+        );
+        const error = Object.assign(new Error("Injected socket failure"), {
+            code,
+        });
+        connection.destroy(error);
+        assert.deepEqual(
+            await closed,
+            code === "ECONNRESET" && disconnecting ? [] : [error],
+        );
+    });
+}
+
+await test("preview connection observer preserves an early reset after teardown starts", async (context) => {
+    const connection = new Socket();
+    context.after(() => connection.destroy());
+    let disconnecting = false;
+    const closed = observeConnectionClosure(connection, () => disconnecting);
+    const error = Object.assign(new Error("Early socket reset"), {
+        code: "ECONNRESET",
+    });
+    const errored = once(connection, "error");
+    connection.destroy(error);
+    await errored;
+    disconnecting = true;
+    assert.deepEqual(await closed, [error]);
+});
+
+await test("preview connection observer accepts a clean close", async (context) => {
+    const connection = new Socket();
+    context.after(() => connection.destroy());
+    const closed = observeConnectionClosure(connection, () => true);
+    connection.destroy();
+    assert.deepEqual(await closed, []);
+});
 
 await test("AVIF CLI prefers a same-basename PNG, preserves alpha and dimensions and supports empty trees", async (context) => {
     const directory = await temporaryDirectory(context);
@@ -296,7 +365,9 @@ for (const disconnectBeforeReadiness of [false, true]) {
         });
         context.after(async () => {
             if (server.exitCode === null && server.signalCode === null) {
-                const exited = once(server, "exit");
+                const exited = once(server, "exit", {
+                    signal: AbortSignal.timeout(5000),
+                });
                 assert(
                     server.kill(),
                     "Could not stop the owned preview process.",
@@ -309,21 +380,36 @@ for (const disconnectBeforeReadiness of [false, true]) {
             errors += chunk.toString();
         });
         const url = `http://127.0.0.1:${address.port}`;
+        let disconnecting = false;
+        let connectionClosed: Promise<Error[]> | undefined;
         if (!disconnectBeforeReadiness) {
             await once(server.stdout!, "data", {
                 signal: AbortSignal.timeout(5000),
             });
             assert.equal(await (await fetch(url)).text(), "Preview");
-            const connection = connect(address.port, "127.0.0.1");
+            const connection = new Socket();
             context.after(() => connection.destroy());
-            await once(connection, "connect");
+            connectionClosed = observeConnectionClosure(
+                connection,
+                () => disconnecting,
+            );
+            const connected = once(connection, "connect", {
+                signal: AbortSignal.timeout(5000),
+            });
+            connection.connect(address.port, "127.0.0.1");
+            await connected;
+            connection.resume();
             connection.write("GET / HTTP/1.1\r\nHost: localhost\r\n");
         }
         const exited = once(server, "exit", {
             signal: AbortSignal.timeout(5000),
         });
+        disconnecting = true;
         server.disconnect();
         assert.deepEqual(await exited, [0, null]);
+        if (connectionClosed) {
+            assert.deepEqual(await connectionClosed, []);
+        }
         assert.equal(errors, "");
         await assert.rejects(fetch(url));
     });
