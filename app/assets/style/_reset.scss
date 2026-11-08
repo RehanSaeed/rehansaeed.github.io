@@ -5,12 +5,6 @@
   text-box-edge: cap alphabetic;
 }
 
-// KaTeX positions superscripts and fractions with nested line boxes that trimming collapses.
-.katex,
-.katex * {
-  text-box-trim: none;
-}
-
 img,
 picture,
 svg,

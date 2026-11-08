@@ -73,6 +73,12 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
 }
 
 .post__content {
+  // KaTeX positions superscripts and fractions with nested line boxes that trimming collapses.
+  .katex,
+  .katex * {
+    text-box-trim: none;
+  }
+
   > h2:first-child {
     margin-block-start: 0;
   }
@@ -113,6 +119,12 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
   figure {
     margin-block: var(--global-space-fixed-5);
     margin-inline: 0;
+
+    &:has(> figcaption:last-child) {
+      margin-block-end: calc(
+        var(--global-space-fixed-5) + var(--global-text-box-trim-space)
+      );
+    }
 
     > p:has(.prose-image) {
       max-inline-size: none;
