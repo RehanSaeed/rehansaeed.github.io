@@ -17,6 +17,36 @@ preserved separately as evidence for that decision.
 
 ## Custom lifecycle and scope
 
+### Rendered-origin investigation (2026-11-09)
+
+The author reported that the hero always appeared to animate from the top.
+Actual native first/mid/end PNGs were captured with animations explicitly allowed
+and paused at 0, 100 and 200 ms. This avoids the earlier shared-browser screenshot
+command, which did not preserve intermediate animations.
+
+With the source positioned at y=150, the pixels and computed image group were at
+y=150, approximately 348 and 407. With the source at y=650, a physical title click
+produced pixels and image-group positions at y=650, approximately 463 and 407:
+the image moved upwards from the lower card position. These captures therefore do
+not reproduce a fixed page-top origin in standalone Chromium/Edge. They do not
+disprove the author's experience in the embedded preview, and no production
+animation change is claimed as a fix for that unresolved observation.
+
+Source/listing, first, midpoint and end PNGs are preserved as
+`files/origin-150-*.png` and `files/origin-650-*.png` in session storage. The latter
+was captured in Edge 157 with its own context and no test-fixture routing.
+The owned capture completed, but teardown stalled; its exact owned process tree
+was stopped. A separate MCP context disappeared, and later MCP attempts reported
+an in-use profile; no other session's browser or profile was killed or modified.
+
+The latest expansion head's CI browser shards all failed **before test execution**
+because Playwright disallows configuring the worker-scoped trace fixture within
+a `describe` group. The trace setting is now at file scope. Test collection
+successfully found all 60 cases; focused lint/format checks validate the fixture
+correction, not runtime acceptance. A planned second-origin regression edit was
+blocked twice by a Windows user-mapped-file lock and was not forced through.
+The existing snapshot-origin assertions and earlier acceptance gaps remain.
+
 `app/plugins/post-view-transition.client.ts` intercepts only ordinary primary-button
 or keyboard activation of a main-listing card's title link or a next/previous
 article card. It leaves NuxtLink's

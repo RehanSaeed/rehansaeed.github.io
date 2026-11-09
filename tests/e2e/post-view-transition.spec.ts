@@ -2,6 +2,8 @@ import { expect, test } from "./fixtures";
 import type { Locator, Page } from "@playwright/test";
 import { writeFile } from "node:fs/promises";
 
+test.use({ trace: "retain-on-failure" });
+
 type Capture = {
   scrollY: number;
   top: number;
@@ -254,7 +256,6 @@ test.describe("Bounded card-to-article hero continuity", () => {
     reducedMotion: "no-preference",
     viewport: { width: 1280, height: 1000 },
     navigationTimeout: 15_000,
-    trace: "retain-on-failure",
   });
 
   test.afterEach(async ({ page }) => {
