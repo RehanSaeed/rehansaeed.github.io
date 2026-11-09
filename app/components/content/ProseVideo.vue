@@ -56,8 +56,8 @@
       </span>
       <span class="prose-video__row">
         <span class="prose-video__playback">
-          <button
-            type="button"
+          <u-button
+            variant="icon"
             class="prose-video__button"
             :aria-label="
               ended ? 'Replay video' : playing ? 'Pause video' : 'Play video'
@@ -72,9 +72,9 @@
                     ? 'fa-solid:pause'
                     : 'fa-solid:play'
               " />
-          </button>
-          <button
-            type="button"
+          </u-button>
+          <u-button
+            variant="icon"
             class="prose-video__button"
             :aria-label="muted ? 'Unmute video' : 'Mute video'"
             :title="muted ? 'Unmute' : 'Mute'"
@@ -86,7 +86,7 @@
                   ? 'fa-solid:volume-mute'
                   : 'fa-solid:volume-up'
               " />
-          </button>
+          </u-button>
           <label v-if="volumeSupported" class="prose-video__volume">
             <span class="prose-video__visually-hidden">Volume</span>
             <input
@@ -112,7 +112,7 @@
             class="prose-video__disclosure"
             @toggle="onMenuToggle">
             <summary
-              class="prose-video__button"
+              class="button button--icon prose-video__button"
               :class="{ 'prose-video__button--active': selectedCaption !== -1 }"
               :aria-label="
                 selectedCaption === -1
@@ -144,7 +144,7 @@
           </details>
           <details class="prose-video__disclosure" @toggle="onMenuToggle">
             <summary
-              class="prose-video__button"
+              class="button button--icon prose-video__button"
               :aria-label="`Playback speed: ${playbackRate === 1 ? 'Normal' : `${playbackRate}×`}`"
               title="Playback speed">
               <u-icon name="fa-solid:tachometer-alt" />
@@ -159,13 +159,13 @@
                 >{{ playbackRate.toFixed(2) }}×</output
               >
               <span class="prose-video__speed-adjust">
-                <button
-                  type="button"
+                <u-button
+                  variant="icon"
                   aria-label="Decrease playback speed"
                   :disabled="playbackRate <= minimumSpeed"
                   @click="adjustSpeed(-speedStep)">
                   −
-                </button>
+                </u-button>
                 <label>
                   <span class="prose-video__visually-hidden"
                     >Playback speed</span
@@ -179,13 +179,13 @@
                     :aria-valuetext="`${playbackRate.toFixed(2)} times normal speed`"
                     @input="onSpeedInput" />
                 </label>
-                <button
-                  type="button"
+                <u-button
+                  variant="icon"
                   aria-label="Increase playback speed"
                   :disabled="playbackRate >= maximumSpeed"
                   @click="adjustSpeed(speedStep)">
                   +
-                </button>
+                </u-button>
               </span>
               <span class="prose-video__speed-presets">
                 <button
@@ -198,14 +198,11 @@
                   {{ Number.isInteger(speed) ? speed.toFixed(1) : speed }}
                 </button>
               </span>
-              <span class="prose-video__speed-description">{{
-                playbackRate === 1 ? "Normal" : `${playbackRate}× speed`
-              }}</span>
             </span>
           </details>
-          <button
+          <u-button
             v-if="pipSupported"
-            type="button"
+            variant="icon"
             class="prose-video__button prose-video__pip"
             :aria-label="
               inPictureInPicture
@@ -215,17 +212,17 @@
             title="Picture-in-picture"
             @click="togglePictureInPicture">
             <u-icon name="fa-solid:clone" />
-          </button>
-          <button
+          </u-button>
+          <u-button
             v-if="fullscreenSupported"
-            type="button"
+            variant="icon"
             class="prose-video__button"
             :aria-label="fullscreen ? 'Exit fullscreen' : 'Enter fullscreen'"
             :title="fullscreen ? 'Exit fullscreen' : 'Fullscreen'"
             @click="toggleFullscreen">
             <u-icon
               :name="fullscreen ? 'fa-solid:compress' : 'fa-solid:expand'" />
-          </button>
+          </u-button>
         </span>
       </span>
     </span>
@@ -278,7 +275,7 @@ const buffering = ref(false);
 const message = ref("");
 const sourceUrl = ref("");
 const playbackRate = ref(1);
-const speeds = [1, 1.25, 1.5, 2, 3];
+const speeds = [1, 1.25, 1.5, 2, 2.5, 3];
 const minimumSpeed = 0.5;
 const maximumSpeed = 3;
 const speedStep = 0.25;
@@ -650,8 +647,21 @@ const selectCaptionOption = (index: number, event: Event): void => {
   closeMenu(event);
 };
 
+const onFullscreenMouseMove = (): void => {
+  if (!touch.value) {
+    scheduleHide();
+  }
+};
+
 const syncFullscreen = (): void => {
   fullscreen.value = document.fullscreenElement === player.value;
+  // Fullscreen host input need not target the player or its descendants.
+  if (fullscreen.value) {
+    globalThis.addEventListener("mousemove", onFullscreenMouseMove);
+  } else {
+    globalThis.removeEventListener("mousemove", onFullscreenMouseMove);
+  }
+  scheduleHide();
 };
 
 const toggleFullscreen = async (): Promise<void> => {
@@ -722,6 +732,7 @@ onUnmounted(() => {
   enhanced.value = false;
   positionCaptions();
   clearTimeout(hideTimer);
+  globalThis.removeEventListener("mousemove", onFullscreenMouseMove);
   document.removeEventListener("fullscreenchange", syncFullscreen);
   document.removeEventListener("pointerdown", dismissMenus);
   document.removeEventListener("keydown", onMenuKeydown);
@@ -742,6 +753,7 @@ watch(controlsHidden, positionCaptions);
   --video-panel: rgb(0 0 0 / 65%);
   --video-border: rgb(255 255 255 / 65%);
   --video-accent: var(--global-accent-color);
+  --button-icon-hover-background: rgb(255 255 255 / 15%);
 
   position: relative;
   container-type: inline-size;
@@ -791,7 +803,7 @@ watch(controlsHidden, positionCaptions);
 .prose-video__seek {
   display: grid;
   align-items: center;
-  block-size: 16px;
+  block-size: 8px;
   margin: 0;
   position: relative;
   min-inline-size: 0;
@@ -819,6 +831,7 @@ watch(controlsHidden, positionCaptions);
 
 .prose-video__seek input {
   appearance: none;
+  padding-block-start: 28px;
   position: absolute;
   inset-block-end: 0;
   margin: 0;
@@ -860,7 +873,7 @@ watch(controlsHidden, positionCaptions);
   inline-size: 100%;
   block-size: 4px;
   position: absolute;
-  inset-block-end: 20px;
+  inset-block-end: 6px;
   pointer-events: none;
 
   &::-webkit-progress-bar {
@@ -894,23 +907,6 @@ watch(controlsHidden, positionCaptions);
 }
 
 .prose-video__button {
-  display: grid;
-  place-items: center;
-  color: var(--video-foreground);
-  background: transparent;
-  border: 0;
-  border-radius: var(--global-border-radius);
-  font-size: 1rem;
-  line-height: 1;
-  cursor: pointer;
-  inline-size: 44px;
-  block-size: 44px;
-  padding: 8px;
-
-  &:hover {
-    background: rgb(255 255 255 / 15%);
-  }
-
   &--active {
     box-shadow: inset 0 -3px var(--video-accent);
   }
@@ -996,7 +992,7 @@ watch(controlsHidden, positionCaptions);
 .prose-video__menu--speed {
   gap: 8px;
   padding: 12px;
-  inline-size: 280px;
+  inline-size: 360px;
   max-block-size: min(280px, 70cqw, 60vh);
 }
 
@@ -1050,7 +1046,7 @@ watch(controlsHidden, positionCaptions);
 
 .prose-video__speed-presets {
   display: grid;
-  grid-template-columns: repeat(5, minmax(44px, 1fr));
+  grid-template-columns: repeat(6, minmax(44px, 1fr));
   gap: 4px;
 
   button {
@@ -1061,11 +1057,6 @@ watch(controlsHidden, positionCaptions);
     padding: 4px;
     min-inline-size: 44px;
   }
-}
-
-.prose-video__speed-description {
-  font-size: 0.75rem;
-  line-height: 1.2;
 }
 
 .prose-video__status {
@@ -1118,6 +1109,12 @@ watch(controlsHidden, positionCaptions);
 @container (max-width: 420px) {
   .prose-video__duration {
     display: none;
+  }
+}
+
+@container (max-width: 340px) {
+  .prose-video__speed-presets {
+    grid-template-columns: repeat(3, minmax(44px, 1fr));
   }
 }
 

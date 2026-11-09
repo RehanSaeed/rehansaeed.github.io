@@ -63,6 +63,20 @@ test("Custom controls play, pause, seek, mute and change speed through a compact
     "aria-valuetext",
     `0:01 of ${Math.floor(totalSeconds / 60)}:${String(totalSeconds % 60).padStart(2, "0")}`,
   );
+  const progress = await player.locator(".prose-video__progress").boundingBox();
+  await page.mouse.click(
+    progress!.x + progress!.width / 2,
+    progress!.y + progress!.height / 2,
+  );
+  await expect
+    .poll(() =>
+      video.evaluate((element) =>
+        element instanceof HTMLVideoElement
+          ? Math.abs(element.currentTime - element.duration / 2)
+          : Infinity,
+      ),
+    )
+    .toBeLessThanOrEqual(1);
 
   await player.getByRole("button", { name: "Mute video", exact: true }).click();
   await expect(
@@ -195,15 +209,24 @@ test("Playback speed popup supports slider, step buttons and quick presets", asy
       ),
     )
     .toBe(0.75);
-  await options.getByRole("button", { name: "2×", exact: true }).click();
+  await expect(options).not.toContainText("0.75× speed");
+  await options.getByRole("button", { name: "2.5×", exact: true }).click();
   await expect(options).toBeHidden();
   await expect(
     player.getByTitle("Playback speed", { exact: true }),
   ).toBeFocused();
   await player.getByTitle("Playback speed", { exact: true }).click();
   await expect(
-    options.getByRole("button", { name: "2×", exact: true }),
+    options.getByRole("button", { name: "2.5×", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");
+  await expect(rate).toHaveText("2.50×");
+  await expect
+    .poll(() =>
+      video.evaluate((element) =>
+        element instanceof HTMLVideoElement ? element.playbackRate : 0,
+      ),
+    )
+    .toBe(2.5);
 });
 
 test("Failed playback stays paused and exposes an actionable message", async ({
@@ -306,6 +329,18 @@ test("Full-width controls remain contained with large touch targets in both them
           right: bounds.right,
           overflow: element.scrollWidth > element.clientWidth,
           height: bounds.height,
+          seekGap:
+            element.querySelector(".prose-video__row")!.getBoundingClientRect()
+              .top -
+            element
+              .querySelector(".prose-video__progress")!
+              .getBoundingClientRect().bottom,
+          seekHitAreaBottom: element
+            .querySelector(".prose-video__seek input")!
+            .getBoundingClientRect().bottom,
+          rowTop: element
+            .querySelector(".prose-video__row")!
+            .getBoundingClientRect().top,
           timeSpacing: Number.parseFloat(
             getComputedStyle(element.querySelector(".prose-video__time")!)
               .paddingInlineStart,
@@ -335,6 +370,9 @@ test("Full-width controls remain contained with large touch targets in both them
       expect(layout.overflow).toBe(false);
       expect(layout.targets).toBe(true);
       expect(layout.height).toBeLessThanOrEqual(64);
+      expect(layout.seekGap).toBeGreaterThanOrEqual(0);
+      expect(layout.seekGap).toBeLessThanOrEqual(8);
+      expect(layout.seekHitAreaBottom).toBeLessThanOrEqual(layout.rowTop);
       expect(layout.timeSpacing).toBeGreaterThanOrEqual(width > 600 ? 12 : 8);
       expect(layout.rowBackground).toBe("rgba(0, 0, 0, 0)");
       expect(layout.overlayBackground).toBe("rgba(0, 0, 0, 0)");
@@ -351,6 +389,42 @@ test("Full-width controls remain contained with large touch targets in both them
       expect(menu!.x + menu!.width).toBeLessThanOrEqual(width);
       await page.keyboard.press("Escape");
       await expect(languages).toBeHidden();
+      await player.getByTitle("Playback speed", { exact: true }).click();
+      const speeds = player.getByRole("group", {
+        name: "Playback speed options",
+      });
+      await expect(speeds).toBeVisible();
+      const speedMenu = await speeds.boundingBox();
+      expect(speedMenu!.x).toBeGreaterThanOrEqual(0);
+      expect(speedMenu!.x + speedMenu!.width).toBeLessThanOrEqual(width);
+      expect(speedMenu!.width).toBeCloseTo(
+        Math.min(360, layout.right - layout.left - 16),
+        3,
+      );
+      const presets = speeds.locator(".prose-video__speed-presets button");
+      await expect(presets).toHaveCount(6);
+      for (const preset of await presets.all()) {
+        const bounds = await preset.boundingBox();
+        expect(bounds!.width).toBeGreaterThanOrEqual(44);
+        expect(bounds!.height).toBeGreaterThanOrEqual(44);
+        expect(bounds!.x).toBeGreaterThanOrEqual(speedMenu!.x);
+        expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(
+          speedMenu!.x + speedMenu!.width,
+        );
+      }
+      await page.keyboard.press("Escape");
+      await expect(speeds).toBeHidden();
+      const play = player.getByRole("button", {
+        name: "Play video",
+        exact: true,
+      });
+      await play.hover();
+      await expect(play).toHaveCSS("border-radius", "50%");
+      await expect(play).toHaveCSS("color", "rgb(255, 255, 255)");
+      await expect(play).toHaveCSS(
+        "background-color",
+        "rgba(255, 255, 255, 0.15)",
+      );
     }
   }
   await page.emulateMedia({ forcedColors: "active" });
@@ -459,6 +533,45 @@ test("Denied PiP requests expose feedback rather than fake success", async ({
 
 test.describe("Playing control visibility", () => {
   test.use({ reducedMotion: "no-preference" });
+
+  test("Mouse movement restores idle fullscreen controls across the window", async ({
+    page,
+    baseURL,
+  }) => {
+    const { player } = await openVideo(page, baseURL);
+    await expect(
+      player.getByRole("button", { name: "Pause video", exact: true }),
+    ).toBeAttached();
+    await player
+      .getByRole("button", { name: "Enter fullscreen", exact: true })
+      .click();
+    await expect
+      .poll(() => page.evaluate(() => document.fullscreenElement !== null))
+      .toBe(true);
+    await player.evaluate(() => {
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
+    });
+    await expect(player).toHaveCSS("opacity", "0");
+    await page.evaluate(() => {
+      globalThis.dispatchEvent(new MouseEvent("mousemove"));
+    });
+    await expect(player).toHaveCSS("opacity", "1");
+    await expect(player).toHaveCSS("opacity", "0");
+    const viewport = page.viewportSize()!;
+    await page.mouse.move(viewport.width / 2, 8);
+    await expect(player).toHaveCSS("opacity", "1");
+    await expect(player).toHaveCSS("opacity", "0");
+    await page.mouse.move(viewport.width / 2, viewport.height / 2);
+    await expect(player).toHaveCSS("opacity", "1");
+    await player
+      .getByRole("button", { name: "Exit fullscreen", exact: true })
+      .click();
+    await expect
+      .poll(() => page.evaluate(() => document.fullscreenElement === null))
+      .toBe(true);
+  });
 
   test("Keyboard focus and open icon menus pin idle controls and dismiss accessibly", async ({
     page,
