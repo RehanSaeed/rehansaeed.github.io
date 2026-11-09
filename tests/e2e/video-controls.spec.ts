@@ -23,7 +23,7 @@ const openVideo = async (page: Page, baseURL: string | undefined) => {
   return { video, player };
 };
 
-test("Custom controls play, pause, seek, mute and change speed with native fallback", async ({
+test("Custom controls play, pause, seek, mute and change speed through a compact icon menu", async ({
   page,
   baseURL,
 }) => {
@@ -84,8 +84,21 @@ test("Custom controls play, pause, seek, mute and change speed with native fallb
   await expect(
     player.getByLabel("Video settings", { exact: true }),
   ).toHaveCount(0);
-  await expect(player.getByLabel("Playback speed")).toBeVisible();
-  await player.getByLabel("Playback speed").selectOption("1.5");
+  const speed = player.getByText("Playback speed", { exact: true });
+  const speedButton = player.getByLabel("Playback speed: Normal", {
+    exact: true,
+  });
+  await expect(speed).toHaveCount(0);
+  await expect(player.getByRole("combobox")).toHaveCount(0);
+  await expect(
+    player.getByRole("button", { name: "Use browser controls" }),
+  ).toHaveCount(0);
+  await speedButton.click();
+  const options = player.getByRole("group", { name: "Playback speed options" });
+  await expect(
+    options.getByRole("button", { name: "Normal", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await options.getByRole("button", { name: "1.5×", exact: true }).click();
   await expect
     .poll(() =>
       video.evaluate((element) =>
@@ -93,9 +106,11 @@ test("Custom controls play, pause, seek, mute and change speed with native fallb
       ),
     )
     .toBe(1.5);
-  await player.getByRole("button", { name: "Use browser controls" }).click();
-  await expect(video).toHaveAttribute("controls", "");
-  await expect(player).toHaveCount(0);
+  await expect(options).toBeHidden();
+  await expect(
+    player.getByLabel("Playback speed: 1.5×", { exact: true }),
+  ).toBeFocused();
+  await expect(video).not.toHaveAttribute("controls");
   await expect(page.locator(".post__content iframe")).toHaveAttribute(
     "src",
     "https://www.youtube-nocookie.com/embed/PLMOVlZC4eU",
@@ -107,9 +122,7 @@ test("Caption controls appear only for real text tracks and toggle their showing
   baseURL,
 }) => {
   const { video, player } = await openVideo(page, baseURL);
-  await expect(
-    player.getByRole("button", { name: "Captions", exact: true }),
-  ).toHaveCount(0);
+  await expect(player.getByTitle("Captions", { exact: true })).toHaveCount(0);
   await video.evaluate((element) => {
     if (!(element instanceof HTMLVideoElement)) {
       throw new TypeError("Expected video.");
@@ -118,13 +131,12 @@ test("Caption controls appear only for real text tracks and toggle their showing
     track.addCue(new VTTCue(0, 10, "Test caption"));
     track.mode = "disabled";
   });
-  const captions = player.getByRole("button", {
-    name: "Captions",
-    exact: true,
-  });
+  const captions = player.getByTitle("Captions", { exact: true });
   await expect(captions).toBeVisible();
   await captions.click();
-  await expect(captions).toHaveAttribute("aria-pressed", "true");
+  const languages = player.getByRole("group", { name: "Caption language" });
+  await languages.getByRole("button", { name: "English", exact: true }).click();
+  await expect(captions).toHaveAttribute("aria-label", "Captions: English");
   await expect
     .poll(() =>
       video.evaluate((element) =>
@@ -134,10 +146,14 @@ test("Caption controls appear only for real text tracks and toggle their showing
       ),
     )
     .toBe("showing");
-  await expect(player.getByLabel("Caption language")).toBeVisible();
-  await expect(player.getByLabel("Caption language")).toHaveValue("0");
-  await player.getByLabel("Caption language").selectOption("-1");
-  await expect(captions).toHaveAttribute("aria-pressed", "false");
+  await expect(languages).toBeHidden();
+  await expect(captions).toBeFocused();
+  await captions.click();
+  await expect(
+    languages.getByRole("button", { name: "English", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await languages.getByRole("button", { name: "Off", exact: true }).click();
+  await expect(captions).toHaveAttribute("aria-label", "Captions: off");
 });
 
 test("Failed playback stays paused and exposes an actionable message", async ({
@@ -212,7 +228,7 @@ test("Full-width controls remain contained with large touch targets in both them
       "en",
     ).mode = "disabled";
   });
-  await expect(player.getByLabel("Caption language")).toBeVisible();
+  await expect(player.getByTitle("Captions", { exact: true })).toBeVisible();
   for (const theme of ["light", "dark"]) {
     await page.evaluate((theme) => {
       document.documentElement.dataset.theme = theme;
@@ -223,12 +239,16 @@ test("Full-width controls remain contained with large touch targets in both them
       const layout = await player.evaluate((element) => {
         const bounds = element.getBoundingClientRect();
         const buttons = Array.from(
-          element.querySelectorAll("button, select"),
+          element.querySelectorAll("button, summary"),
         ).filter((button) => button.getBoundingClientRect().height > 0);
         return {
           left: bounds.left,
           right: bounds.right,
           overflow: element.scrollWidth > element.clientWidth,
+          height: bounds.height,
+          rowBackground: getComputedStyle(
+            element.querySelector(".prose-video__row")!,
+          ).backgroundColor,
           targets: buttons.every((button) => {
             const box = button.getBoundingClientRect();
             return box.width >= 44 && box.height >= 44;
@@ -239,11 +259,24 @@ test("Full-width controls remain contained with large touch targets in both them
       expect(layout.right).toBeLessThanOrEqual(width);
       expect(layout.overflow).toBe(false);
       expect(layout.targets).toBe(true);
+      expect(layout.height).toBeLessThanOrEqual(64);
+      expect(layout.rowBackground).toBe("rgba(0, 0, 0, 0)");
+      await player.getByTitle("Captions", { exact: true }).click();
+      const languages = player.getByRole("group", { name: "Caption language" });
+      await expect(languages).toBeVisible();
+      const menu = await languages.boundingBox();
+      expect(menu!.x).toBeGreaterThanOrEqual(0);
+      expect(menu!.x + menu!.width).toBeLessThanOrEqual(width);
+      await page.keyboard.press("Escape");
+      await expect(languages).toBeHidden();
     }
   }
   await page.emulateMedia({ forcedColors: "active" });
   const play = player.getByRole("button", { name: "Play video", exact: true });
   await play.focus();
+  await page.keyboard.press("Tab");
+  await page.keyboard.press("Shift+Tab");
+  await expect(play).toBeFocused();
   await expect(play).toHaveCSS("border-top-style", "solid");
   await expect(play).toHaveCSS("outline-style", "solid");
 });
@@ -345,7 +378,7 @@ test("Denied PiP requests expose feedback rather than fake success", async ({
 test.describe("Playing control visibility", () => {
   test.use({ reducedMotion: "no-preference" });
 
-  test("Keyboard focus on direct toolbar options pins idle controls", async ({
+  test("Keyboard focus and open icon menus pin idle controls and dismiss accessibly", async ({
     page,
     baseURL,
   }) => {
@@ -359,11 +392,23 @@ test.describe("Playing control visibility", () => {
     await expect(player).toHaveCSS("opacity", "0");
     await pause.focus();
     await expect(player).toHaveCSS("opacity", "1");
-    await player.getByLabel("Playback speed").focus();
-    await player.getByLabel("Playback speed").selectOption("1.25");
+    const speed = player.getByTitle("Playback speed", { exact: true });
+    await speed.focus();
+    await page.keyboard.press("Enter");
+    const options = player.getByRole("group", {
+      name: "Playback speed options",
+    });
+    await expect(options).toBeVisible();
+    await options.getByRole("button", { name: "1.25×", exact: true }).focus();
     await page.mouse.move(0, 0);
-    await expect(player.getByLabel("Playback speed")).toBeVisible();
+    await expect(player).toHaveCSS("opacity", "1");
+    await page.keyboard.press("Escape");
+    await expect(options).toBeHidden();
+    await expect(speed).toBeFocused();
+    await speed.click();
+    await expect(options).toBeVisible();
     await pause.click();
+    await expect(options).toBeHidden();
     await expect(player).toHaveCSS("opacity", "1");
   });
 });

@@ -35,133 +35,158 @@
       class="prose-video__controls"
       role="group"
       :aria-label="controlsLabel">
-      <label class="prose-video__seek">
-        <span class="prose-video__visually-hidden">Video position</span>
-        <input
-          type="range"
-          min="0"
-          :max="duration || 1"
-          step="1"
+      <span class="prose-video__seek">
+        <progress
+          class="prose-video__progress"
           :value="currentTime"
-          :disabled="!canSeek"
-          :aria-valuetext="`${formatTime(currentTime)} of ${formatTime(duration)}`"
-          @input="onSeek" />
-      </label>
-      <span class="prose-video__row">
-        <button
-          type="button"
-          class="prose-video__button"
-          :aria-label="
-            ended ? 'Replay video' : playing ? 'Pause video' : 'Play video'
-          "
-          :title="ended ? 'Replay' : playing ? 'Pause' : 'Play'"
-          @click="togglePlayback">
-          <u-icon
-            :name="
-              ended
-                ? 'fa-solid:undo'
-                : playing
-                  ? 'fa-solid:pause'
-                  : 'fa-solid:play'
-            " />
-        </button>
-        <button
-          type="button"
-          class="prose-video__button"
-          :aria-label="muted ? 'Unmute video' : 'Mute video'"
-          :title="muted ? 'Unmute' : 'Mute'"
-          :aria-pressed="muted"
-          @click="toggleMute">
-          <u-icon
-            :name="
-              muted || volume === 0
-                ? 'fa-solid:volume-mute'
-                : 'fa-solid:volume-up'
-            " />
-        </button>
-        <label v-if="volumeSupported" class="prose-video__volume">
-          <span class="prose-video__visually-hidden">Volume</span>
+          :max="duration || 1"
+          aria-hidden="true"></progress>
+        <label>
+          <span class="prose-video__visually-hidden">Video position</span>
           <input
             type="range"
             min="0"
-            max="100"
+            :max="duration || 1"
             step="1"
-            :value="muted ? 0 : volume * 100"
-            :aria-valuetext="`${muted ? 0 : Math.round(volume * 100)} percent`"
-            @input="onVolume" />
+            :value="currentTime"
+            :disabled="!canSeek"
+            :aria-valuetext="`${formatTime(currentTime)} of ${formatTime(duration)}`"
+            @input="onSeek" />
         </label>
-        <span class="prose-video__time"
-          >{{ formatTime(currentTime) }} / {{ formatTime(duration) }}</span
-        >
-        <span class="prose-video__spacer"></span>
-        <button
-          v-if="captionTracks.length"
-          type="button"
-          class="prose-video__button"
-          aria-label="Captions"
-          title="Captions"
-          :aria-pressed="selectedCaption !== -1"
-          @click="toggleCaptions">
-          <u-icon name="fa-solid:closed-captioning" />
-        </button>
-        <button
-          v-if="pipSupported"
-          type="button"
-          class="prose-video__button"
-          :aria-label="
-            inPictureInPicture
-              ? 'Exit picture-in-picture'
-              : 'Enter picture-in-picture'
-          "
-          title="Picture-in-picture"
-          @click="togglePictureInPicture">
-          <u-icon name="fa-solid:clone" />
-        </button>
-        <button
-          v-if="fullscreenSupported"
-          type="button"
-          class="prose-video__button"
-          :aria-label="fullscreen ? 'Exit fullscreen' : 'Enter fullscreen'"
-          :title="fullscreen ? 'Exit fullscreen' : 'Fullscreen'"
-          @click="toggleFullscreen">
-          <u-icon
-            :name="fullscreen ? 'fa-solid:compress' : 'fa-solid:expand'" />
-        </button>
       </span>
-      <span class="prose-video__options">
-        <label
-          >Speed
-          <select
-            aria-label="Playback speed"
-            :value="playbackRate"
-            @change="onSpeed">
-            <option v-for="speed in speeds" :key="speed" :value="speed">
-              {{ speed === 1 ? "Normal" : `${speed}×` }}
-            </option>
-          </select>
-        </label>
-        <label v-if="captionTracks.length"
-          >Captions
-          <select
-            aria-label="Caption language"
-            :value="selectedCaption"
-            @change="onCaptionSelection">
-            <option :value="-1">Off</option>
-            <option
-              v-for="(track, index) in captionTracks"
-              :key="index"
-              :value="index">
-              {{ track.label || track.language || `Track ${index + 1}` }}
-            </option>
-          </select>
-        </label>
-        <button
-          type="button"
-          aria-label="Use browser controls"
-          title="Use browser controls"
-          @click="useNativeControls">
-          Browser controls
-        </button>
+      <span class="prose-video__row">
+        <span class="prose-video__playback">
+          <button
+            type="button"
+            class="prose-video__button"
+            :aria-label="
+              ended ? 'Replay video' : playing ? 'Pause video' : 'Play video'
+            "
+            :title="ended ? 'Replay' : playing ? 'Pause' : 'Play'"
+            @click="togglePlayback">
+            <u-icon
+              :name="
+                ended
+                  ? 'fa-solid:undo'
+                  : playing
+                    ? 'fa-solid:pause'
+                    : 'fa-solid:play'
+              " />
+          </button>
+          <button
+            type="button"
+            class="prose-video__button"
+            :aria-label="muted ? 'Unmute video' : 'Mute video'"
+            :title="muted ? 'Unmute' : 'Mute'"
+            :aria-pressed="muted"
+            @click="toggleMute">
+            <u-icon
+              :name="
+                muted || volume === 0
+                  ? 'fa-solid:volume-mute'
+                  : 'fa-solid:volume-up'
+              " />
+          </button>
+          <label v-if="volumeSupported" class="prose-video__volume">
+            <span class="prose-video__visually-hidden">Volume</span>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              :value="muted ? 0 : volume * 100"
+              :aria-valuetext="`${muted ? 0 : Math.round(volume * 100)} percent`"
+              @input="onVolume" />
+          </label>
+          <span class="prose-video__time"
+            >{{ formatTime(currentTime)
+            }}<span class="prose-video__duration">
+              / {{ formatTime(duration) }}</span
+            ></span
+          >
+        </span>
+        <span class="prose-video__spacer"></span>
+        <span class="prose-video__utilities">
+          <details
+            v-if="captionTracks.length"
+            class="prose-video__disclosure"
+            @toggle="onMenuToggle">
+            <summary
+              class="prose-video__button"
+              :class="{ 'prose-video__button--active': selectedCaption !== -1 }"
+              :aria-label="
+                selectedCaption === -1
+                  ? 'Captions: off'
+                  : `Captions: ${captionTracks[selectedCaption]?.label || captionTracks[selectedCaption]?.language}`
+              "
+              title="Captions">
+              <u-icon name="fa-solid:closed-captioning" />
+            </summary>
+            <span
+              class="prose-video__menu"
+              role="group"
+              aria-label="Caption language">
+              <button
+                type="button"
+                :aria-pressed="selectedCaption === -1"
+                @click="selectCaptionOption(-1, $event)">
+                Off
+              </button>
+              <button
+                v-for="(track, index) in captionTracks"
+                :key="index"
+                type="button"
+                :aria-pressed="selectedCaption === index"
+                @click="selectCaptionOption(index, $event)">
+                {{ track.label || track.language || `Track ${index + 1}` }}
+              </button>
+            </span>
+          </details>
+          <details class="prose-video__disclosure" @toggle="onMenuToggle">
+            <summary
+              class="prose-video__button"
+              :aria-label="`Playback speed: ${playbackRate === 1 ? 'Normal' : `${playbackRate}×`}`"
+              title="Playback speed">
+              <u-icon name="fa-solid:tachometer-alt" />
+            </summary>
+            <span
+              class="prose-video__menu"
+              role="group"
+              aria-label="Playback speed options">
+              <button
+                v-for="speed in speeds"
+                :key="speed"
+                type="button"
+                :aria-pressed="playbackRate === speed"
+                @click="selectSpeed(speed, $event)">
+                {{ speed === 1 ? "Normal" : `${speed}×` }}
+              </button>
+            </span>
+          </details>
+          <button
+            v-if="pipSupported"
+            type="button"
+            class="prose-video__button prose-video__pip"
+            :aria-label="
+              inPictureInPicture
+                ? 'Exit picture-in-picture'
+                : 'Enter picture-in-picture'
+            "
+            title="Picture-in-picture"
+            @click="togglePictureInPicture">
+            <u-icon name="fa-solid:clone" />
+          </button>
+          <button
+            v-if="fullscreenSupported"
+            type="button"
+            class="prose-video__button"
+            :aria-label="fullscreen ? 'Exit fullscreen' : 'Enter fullscreen'"
+            :title="fullscreen ? 'Exit fullscreen' : 'Fullscreen'"
+            @click="toggleFullscreen">
+            <u-icon
+              :name="fullscreen ? 'fa-solid:compress' : 'fa-solid:expand'" />
+          </button>
+        </span>
       </span>
     </span>
     <span
@@ -222,6 +247,7 @@ const fullscreen = ref(false);
 const pipSupported = ref(false);
 const inPictureInPicture = ref(false);
 const idle = ref(false);
+const menuOpen = ref(false);
 const touch = ref(false);
 const controlsHidden = computed(
   () =>
@@ -229,6 +255,7 @@ const controlsHidden = computed(
     playing.value &&
     !buffering.value &&
     !message.value &&
+    !menuOpen.value &&
     !touch.value,
 );
 let hideTimer: ReturnType<typeof setTimeout> | undefined;
@@ -356,7 +383,7 @@ const positionCaptions = (): void => {
         (cue.line === "auto" || repositionedCues.has(cue))
       ) {
         repositionedCues.add(cue);
-        cue.line = (player.value?.clientWidth ?? 0) <= 600 ? -10 : -8;
+        cue.line = -4;
       }
     }
   }
@@ -392,7 +419,7 @@ const showControls = (): void => {
 
 const scheduleHide = (): void => {
   showControls();
-  if (!playing.value || touch.value) {
+  if (!playing.value || touch.value || menuOpen.value) {
     return;
   }
   hideTimer = setTimeout(() => {
@@ -430,7 +457,7 @@ const onMediaError = (event: Event): void => {
   }
   buffering.value = false;
   message.value =
-    "The video could not be loaded. Try browser controls or open the video file.";
+    "The video could not be loaded. Open the video file to try native playback.";
   syncMedia();
   showControls();
 };
@@ -452,7 +479,7 @@ const togglePlayback = async (): Promise<void> => {
   } catch (error: unknown) {
     if (!(error instanceof DOMException && error.name === "AbortError")) {
       message.value =
-        "Playback could not start. Try browser controls or open the video file.";
+        "Playback could not start. Open the video file to try native playback.";
       showControls();
     }
   }
@@ -490,10 +517,65 @@ const onVolume = (event: Event): void => {
   }
 };
 
-const onSpeed = (event: Event): void => {
-  if (video.value && event.target instanceof HTMLSelectElement) {
-    video.value.playbackRate = Number(event.target.value);
+const closeMenu = (event: Event): void => {
+  const element = event.target;
+  if (!(element instanceof HTMLElement)) {
+    return;
   }
+  const menu = element.closest("details");
+  if (menu) {
+    menu.open = false;
+    menu.querySelector("summary")?.focus();
+  }
+};
+
+const onMenuToggle = (event: Event): void => {
+  if (!(event.target instanceof HTMLDetailsElement)) {
+    return;
+  }
+  if (event.target.open) {
+    for (const menu of player.value?.querySelectorAll("details") ?? []) {
+      if (menu !== event.target) {
+        menu.open = false;
+      }
+    }
+  }
+  menuOpen.value = !!player.value?.querySelector("details[open]");
+  scheduleHide();
+};
+
+const dismissMenus = (event: PointerEvent): void => {
+  if (!(event.target instanceof Node)) {
+    return;
+  }
+  for (const menu of player.value?.querySelectorAll<HTMLDetailsElement>(
+    "details[open]",
+  ) ?? []) {
+    if (!menu.contains(event.target)) {
+      menu.open = false;
+    }
+  }
+};
+
+const onMenuKeydown = (event: KeyboardEvent): void => {
+  if (
+    event.key === "Escape" &&
+    event.target instanceof HTMLElement &&
+    player.value?.contains(event.target) &&
+    event.target.closest("details[open]")
+  ) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeMenu(event);
+  }
+};
+
+const selectSpeed = (speed: number, event: Event): void => {
+  if (video.value) {
+    video.value.playbackRate = speed;
+    syncMedia();
+  }
+  closeMenu(event);
 };
 
 const selectCaption = (index: number): void => {
@@ -503,20 +585,9 @@ const selectCaption = (index: number): void => {
   syncCaptions();
 };
 
-const toggleCaptions = (): void => {
-  selectCaption(selectedCaption.value === -1 ? 0 : -1);
-};
-const onCaptionSelection = (event: Event): void => {
-  if (event.target instanceof HTMLSelectElement) {
-    selectCaption(Number(event.target.value));
-  }
-};
-
-const useNativeControls = (): void => {
-  enhanced.value = false;
-  positionCaptions();
-  showControls();
-  video.value?.focus();
+const selectCaptionOption = (index: number, event: Event): void => {
+  selectCaption(index);
+  closeMenu(event);
 };
 
 const syncFullscreen = (): void => {
@@ -532,7 +603,7 @@ const toggleFullscreen = async (): Promise<void> => {
     }
   } catch {
     message.value =
-      "Fullscreen is unavailable. Use browser controls for native playback.";
+      "Fullscreen is unavailable. Open the video file for native playback.";
     showControls();
   }
 };
@@ -577,6 +648,8 @@ onMounted(() => {
     typeof element.requestPictureInPicture === "function" &&
     !element.disablePictureInPicture;
   document.addEventListener("fullscreenchange", syncFullscreen);
+  document.addEventListener("pointerdown", dismissMenus);
+  document.addEventListener("keydown", onMenuKeydown);
   element.addEventListener("enterpictureinpicture", syncPictureInPicture);
   element.addEventListener("leavepictureinpicture", syncPictureInPicture);
   element.textTracks.addEventListener("addtrack", syncCaptions);
@@ -590,6 +663,8 @@ onUnmounted(() => {
   positionCaptions();
   clearTimeout(hideTimer);
   document.removeEventListener("fullscreenchange", syncFullscreen);
+  document.removeEventListener("pointerdown", dismissMenus);
+  document.removeEventListener("keydown", onMenuKeydown);
   const element = video.value;
   element?.removeEventListener("enterpictureinpicture", syncPictureInPicture);
   element?.removeEventListener("leavepictureinpicture", syncPictureInPicture);
@@ -604,7 +679,7 @@ watch(controlsHidden, positionCaptions);
 <style lang="scss">
 .prose-video {
   --video-foreground: #fff;
-  --video-panel: rgb(0 0 0 / 82%);
+  --video-panel: rgb(0 0 0 / 65%);
   --video-border: rgb(255 255 255 / 65%);
   --video-accent: var(--global-alternate-accent-color);
 
@@ -648,12 +723,8 @@ watch(controlsHidden, positionCaptions);
 .prose-video__controls {
   display: grid;
   color: var(--video-foreground);
-  background: linear-gradient(
-    to bottom,
-    rgb(0 0 0 / 0%),
-    var(--video-panel) 40%
-  );
-  padding: 0 12px 8px;
+  background: linear-gradient(to bottom, rgb(0 0 0 / 0%), var(--video-panel));
+  padding: 0 8px 4px;
 
   position: absolute;
   inset-inline: 0;
@@ -664,9 +735,16 @@ watch(controlsHidden, positionCaptions);
 .prose-video__seek {
   display: grid;
   align-items: center;
-  background: var(--video-panel);
-  border-radius: var(--global-border-radius);
+  block-size: 16px;
   margin: 0;
+  position: relative;
+  min-inline-size: 0;
+
+  label {
+    margin: 0;
+    position: absolute;
+    inset: 0;
+  }
 }
 
 .prose-video__seek input,
@@ -683,14 +761,78 @@ watch(controlsHidden, positionCaptions);
   block-size: 44px;
 }
 
+.prose-video__seek input {
+  appearance: none;
+  position: absolute;
+  inset-block-end: 0;
+  margin: 0;
+
+  &::-webkit-slider-runnable-track {
+    background: transparent;
+    block-size: 3px;
+  }
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    background: var(--video-accent);
+    border: 0;
+    border-radius: 50%;
+    inline-size: 12px;
+    block-size: 12px;
+    margin-block-start: -4.5px;
+  }
+
+  &::-moz-range-track,
+  &::-moz-range-progress {
+    background: transparent;
+    block-size: 3px;
+  }
+
+  &::-moz-range-thumb {
+    background: var(--video-accent);
+    border: 0;
+    border-radius: 50%;
+    inline-size: 12px;
+    block-size: 12px;
+  }
+}
+
+.prose-video__progress {
+  appearance: none;
+  background: rgb(255 255 255 / 40%);
+  border: 0;
+  inline-size: 100%;
+  block-size: 3px;
+  position: absolute;
+  inset-block-end: 20px;
+  pointer-events: none;
+
+  &::-webkit-progress-bar {
+    background: rgb(255 255 255 / 40%);
+  }
+
+  &::-webkit-progress-value {
+    background: var(--video-accent);
+  }
+
+  &::-moz-progress-bar {
+    background: var(--video-accent);
+  }
+}
+
 .prose-video__row {
   display: grid;
-  grid-template-columns: auto auto auto auto 1fr repeat(3, auto);
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 4px;
+  gap: 0;
+}
 
-  background: var(--video-panel);
-  border-radius: var(--global-border-radius);
+.prose-video__playback,
+.prose-video__utilities {
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  gap: 0;
 }
 
 .prose-video__button {
@@ -711,7 +853,7 @@ watch(controlsHidden, positionCaptions);
     background: rgb(255 255 255 / 15%);
   }
 
-  &[aria-pressed="true"] {
+  &--active {
     box-shadow: inset 0 -3px var(--video-accent);
   }
 }
@@ -722,6 +864,8 @@ watch(controlsHidden, positionCaptions);
 }
 
 .prose-video__volume {
+  display: grid;
+  align-items: center;
   inline-size: 72px;
   margin: 0;
 }
@@ -730,42 +874,64 @@ watch(controlsHidden, positionCaptions);
   font-family: var(--global-font-family-monospace);
   font-size: 0.75rem;
   white-space: nowrap;
+  padding-inline: 4px;
 }
 
 .prose-video__spacer {
   min-inline-size: 0;
 }
 
-.prose-video__options {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 80px), 1fr));
-  align-items: end;
-  gap: 8px;
-  background: var(--video-panel);
-  border-radius: var(--global-border-radius);
-  padding: 4px 8px 8px;
+.prose-video__disclosure {
+  position: static;
 
-  label {
-    display: grid;
-    gap: 4px;
-    color: var(--video-foreground);
-    font-size: 0.75rem;
-    min-inline-size: 0;
-    margin: 0;
+  summary {
+    list-style: none;
+
+    &::marker,
+    &::-webkit-details-marker {
+      display: none;
+    }
   }
+}
 
-  button,
-  select {
+.prose-video__menu {
+  display: grid;
+  gap: 0;
+  background: var(--video-panel);
+  border: 1px solid var(--video-border);
+  border-radius: var(--global-border-radius);
+  padding: 4px;
+  inline-size: max-content;
+  max-inline-size: calc(100% - 16px);
+  max-block-size: min(280px, 40cqw, 60vh);
+  overflow-y: auto;
+  position: absolute;
+  inset-inline-end: 8px;
+  inset-block-end: 100%;
+  z-index: 2;
+
+  button {
     color: var(--video-foreground);
-    background: #000;
-    border: 1px solid var(--video-border);
+    background: transparent;
+    border: 0;
     border-radius: var(--global-border-radius);
     font: inherit;
-    padding: 8px;
-    min-inline-size: 0;
+    text-align: start;
+    padding: 8px 16px;
+    min-inline-size: 88px;
     min-block-size: 44px;
     inline-size: 100%;
-    font-size: 0.75rem;
+    font-size: 0.875rem;
+    overflow-wrap: anywhere;
+
+    &:hover {
+      background: rgb(255 255 255 / 15%);
+    }
+
+    &[aria-pressed="true"] {
+      box-shadow: inset 3px 0 var(--video-accent);
+      font-weight: bold;
+    }
   }
 }
 
@@ -809,40 +975,61 @@ watch(controlsHidden, positionCaptions);
   .prose-video__volume {
     display: none;
   }
+}
 
-  .prose-video__row {
-    grid-template-columns: auto auto 1fr repeat(3, auto);
-  }
-
-  .prose-video__time {
-    grid-column: 1 / -1;
-    grid-row: 1;
-    padding-inline: 8px;
-    padding-block-start: 4px;
+@container (max-width: 420px) {
+  .prose-video__duration {
+    display: none;
   }
 }
 
 @media (forced-colors: active) {
   .prose-video__controls,
-  .prose-video__options,
+  .prose-video__menu,
   .prose-video__status {
     color: CanvasText;
     background: Canvas;
     border: 1px solid CanvasText;
   }
 
-  .prose-video__button {
+  .prose-video__button,
+  .prose-video__menu button {
     color: ButtonText;
     background: ButtonFace;
     border: 1px solid ButtonText;
 
-    &[aria-pressed="true"] {
+    &[aria-pressed="true"],
+    &.prose-video__button--active {
       border-block-end: 3px solid Highlight;
     }
   }
 
   .prose-video__controls :focus-visible {
     outline-color: Highlight;
+  }
+
+  .prose-video__progress,
+  .prose-video__progress::-webkit-progress-bar {
+    background: Canvas;
+    border: 1px solid CanvasText;
+  }
+
+  .prose-video__progress::-webkit-progress-value {
+    background: Highlight;
+  }
+
+  .prose-video__progress::-moz-progress-bar {
+    background: Highlight;
+  }
+
+  .prose-video__seek input::-webkit-slider-thumb {
+    background: Highlight;
+    border: 1px solid CanvasText;
+  }
+
+  .prose-video__seek input::-moz-range-thumb {
+    background: Highlight;
+    border: 1px solid CanvasText;
   }
 }
 </style>

@@ -339,11 +339,14 @@ When explicitly asked to help draft an article, follow these guidelines:
 ### Video Captions
 
 - `ProseVideo` progressively enhances authored native controls with the blog's
-  bottom-overlay player; keep server-rendered controls until it mounts and retain
-  the toolbar escape to browser controls. Do not customise third-party iframes.
+  bottom-overlay player; keep server-rendered controls until it mounts. Do not
+  customise third-party iframes or add a Browser controls toolbar button.
 - Keep controls reachable through keyboard focus and visible on touch, while
-  paused, or while a toolbar control has focus. Keep speed and caption-language
-  options directly in the toolbar, without a Settings menu. Only hide controls during pointer-idle playback.
+  paused, or while a toolbar control has focus. Use a compact, translucent
+  single-row toolbar with icon-triggered speed and caption-language menus,
+  rather than visible selects or a Settings menu. Keep open menus visible and
+  support Escape, outside dismissal and focus return after selection.
+  Only hide controls during pointer-idle playback.
   Preserve the viewport autoplay/manual-pause/reduced-motion contract when
   changing controls. Add browser regressions in `video-controls.spec.ts` and
   retain `video-autoplay.spec.ts`.
