@@ -1,4 +1,9 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
+import type { NuxtApp } from "nuxt/app";
+
+type NuxtRoot = HTMLElement & {
+  __vue_app__?: { config: { globalProperties: { $nuxt: NuxtApp } } };
+};
 
 // The shared config emulates reduced motion, which disables autoplay. The
 // reduced-motion test below opts back in explicitly.
@@ -18,6 +23,16 @@ const openArticle = async (page: Page, baseURL: string | undefined) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/ai-learnings-from-upgrading-my-blog/", {
     waitUntil: "load",
+  });
+  // Initial hydration can restore the page's scroll position.
+  await page.waitForFunction(() => {
+    const app =
+      document.querySelector<NuxtRoot>("#__nuxt")?.__vue_app__?.config
+        .globalProperties.$nuxt;
+    return app && !app.isHydrating;
+  });
+  await page.evaluate(async () => {
+    await document.fonts.ready;
   });
   return page.getByLabel(videoLabel, { exact: true });
 };
@@ -162,9 +177,6 @@ test("The article video does not autoplay with reduced motion", async ({
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   const video = await openArticle(page, baseURL);
-  await video.evaluate((element) => {
-    element.scrollIntoView({ block: "center", behavior: "instant" });
-  });
   await expect
     .poll(() =>
       video.evaluate((element) =>
@@ -172,6 +184,9 @@ test("The article video does not autoplay with reduced motion", async ({
       ),
     )
     .toBeGreaterThanOrEqual(1);
+  await video.evaluate((element) => {
+    element.scrollIntoView({ block: "center", behavior: "instant" });
+  });
   expect(await visibilityAndPlayback(video)).toEqual({
     visibility: "full",
     playing: false,
