@@ -17,6 +17,37 @@ preserved separately as evidence for that decision.
 
 ## Custom lifecycle and scope
 
+### Fix-first review (2026-11-09)
+
+The browser shards on `0577107834` executed after the trace-configuration fix.
+All three browsers failed the partial-source title test; the other browser shards,
+Generate, Quality, CodeQL and Lighthouse passed. Build therefore failed and Deploy
+was skipped. These results supersede the earlier in-progress status, not the
+remaining manual acceptance gaps.
+
+The retained Chrome trace shows that Playwright's locator activation scrolls the
+stretched title link before dispatching its click: the title moves from the test's
+y=120 setup to y=0. The source image then no longer intersects the viewport, so
+normal navigation without a transition is the correct application behaviour.
+Firefox instead captured a source below the viewport top, contradicting the
+test's intended partially clipped setup. This establishes a test-action defect,
+not an application fix for the author's embedded-preview observation.
+
+The test now clicks the centre of the measured, visible title with the mouse
+without locator-driven scrolling. Its assertions for a partially clipped source,
+native completion, exactly one transition name and cleanup remain unchanged.
+No application behaviour, retries, deadlines or capture assertions changed.
+
+Focused ESLint, Prettier and diff checks passed, and Playwright collection found
+all 60 cases. A single bounded local command with
+`BASE_URL=http://127.0.0.1:8140` and
+`npx playwright test post-view-transition.spec.ts --project=chrome --project=edge --project=firefox --workers=1 --retries=0 --timeout=30000 --global-timeout=120000 --grep 'partly above'`
+hit both the suite and teardown deadlines: **3 did not run**. This is not a
+regression pass or evidence about the correction's runtime result. No repeat
+loop was run; remaining runtime acceptance is deferred to automatic CI. After
+the runner exited, no matching owned runner or Playwright worker remained.
+The author's requested preview was left running.
+
 ### Rendered-origin investigation (2026-11-09)
 
 The author reported that the hero always appeared to animate from the top.

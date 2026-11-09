@@ -524,7 +524,14 @@ test.describe("Bounded card-to-article hero continuity", () => {
     const source = await image.boundingBox();
     expect(source!.y).toBeLessThan(0);
     expect(source!.y + source!.height).toBeGreaterThan(0);
-    await activators.mouse(link);
+    const title = await link.boundingBox();
+    expect(title!.y).toBeGreaterThanOrEqual(0);
+    expect(title!.y + title!.height).toBeLessThanOrEqual(1000);
+    // Locator activation scrolls stretched links and changes the source geometry.
+    await page.mouse.click(
+      title!.x + title!.width / 2,
+      title!.y + title!.height / 2,
+    );
     await expectDestination(page);
     await expect
       .poll(() => page.evaluate(() => window.postViewTransitionProbe.finished))
