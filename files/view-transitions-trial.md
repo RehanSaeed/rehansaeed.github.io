@@ -40,7 +40,7 @@ it does not override the router's global scroll behaviour or access private Nuxt
 state. API-absent and reduced-motion navigation retains its original path.
 
 There is no image-decoding or network wait added to navigation. If the destination
-hero is not ready or fully visible after Vue's pending DOM updates, the animation is
+hero is not ready or does not intersect the viewport after Vue's pending DOM updates, the animation is
 skipped without waiting for image loading or decoding. A 600 ms deadline
 from the native update callback also skips capture while asynchronous Content is
 still pending, allowing normal loading to be shown instead of keeping the old
@@ -63,6 +63,51 @@ transition scroll or focus a newer destination.
 Theme changes, filtering, pagination changes themselves, article-to-article
 navigation, anchors and cross-document transitions remain unanimated. This is not
 approval for a wider rollout.
+
+### Visible movement correction (2026-11-09)
+
+Author review exposed an overly strict destination gate: in a 1280x720 preview,
+the article hero occupied y=407 to y=897. The image was visible, but its bottom
+extended below the viewport, so the trial skipped the native animation entirely.
+The destination now needs to intersect the viewport, not fit completely within
+it. The source still needs to be fully visible. This preserves image readiness,
+motion preferences, cancellation and the preparation deadline without changing
+the article layout or enabling other transitions.
+
+The regression case uses a laptop-height viewport and samples the rendered native
+image group at 0, 100 and 200 ms, with screenshots, rather than inferring movement
+from destination geometry or generated keyframes alone.
+
+The corrected, warmed 1280x720 shared-browser navigation reached native `ready`.
+Sampling its computed image group in a single bounded callback measured:
+
+| Time   | X       | Y       | Width   |
+| ------ | ------- | ------- | ------- |
+| 0 ms   | 261     | 151     | 742.891 |
+| 100 ms | 211.635 | 348.459 | 841.703 |
+| 200 ms | 197     | 407     | 871.016 |
+
+The source rectangle was x=261.047, y=150.781, width=742.891; the destination
+rectangle was x=196.984, y=407.016, width=871.016, bottom=896.953. The image
+therefore starts at the card's location and moves and grows towards the article,
+even though the destination extends below the viewport. These are computed
+rendered-group samples, not a recorded video or approval of intermediate pixels.
+The shared-browser screenshot command did not preserve a paused intermediate
+transition, so it is not used as midpoint evidence.
+
+`npm run build` (including SEO verification), `npm run typecheck` and
+`npm run lint` passed for the correction. Typecheck reported GitHub snapshot
+403 warnings while retaining saved data. One bounded, single-worker,
+zero-retry local Chrome attempt targeting movement, fragment bypass and warmed
+mouse activation stalled before producing any test result and was stopped.
+No repeat loop was run. The new regression cases therefore still require CI
+acceptance; the successful computed movement probe is not a full-suite pass.
+
+The previous implementation head's CI also revealed a definite fragment-test
+locator bug: changing the link's hash invalidated its original exact-href locator.
+The setup now locates the title link by the card's stable permalink metadata.
+The warmed mouse case failed once and passed on retry in Chrome/Edge; that remains
+a flake, not a clean pass, and has not been attributed to an unrelated cause.
 
 ## Original native experiment and reproduction
 

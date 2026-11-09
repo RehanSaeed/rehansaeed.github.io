@@ -19,6 +19,7 @@ type Probe = {
   errors: string[];
   captures: Capture[];
   sourceScroll: number[];
+  sourceBoxes: Array<{ x: number; y: number; width: number }>;
   skips: Array<{
     time: number;
     scrollY: number;
@@ -50,6 +51,7 @@ const instrument = async (page: Page) => {
       errors: [],
       captures: [],
       sourceScroll: [],
+      sourceBoxes: [],
       skips: [],
     };
     window.postViewTransitionProbe = probe;
@@ -60,6 +62,16 @@ const instrument = async (page: Page) => {
     document.startViewTransition = (update) => {
       probe.starts++;
       probe.sourceScroll.push(scrollY);
+      const source = document
+        .querySelector(".post-card__image--view-transition")
+        ?.getBoundingClientRect();
+      if (source) {
+        probe.sourceBoxes.push({
+          x: source.x,
+          y: source.y,
+          width: source.width,
+        });
+      }
       const started = performance.now();
       const transition = start(update);
       const skip = transition.skipTransition.bind(transition);
@@ -145,7 +157,10 @@ const prepare = async (page: Page, warm = true) => {
   await expect
     .poll(() => page.evaluate(() => document.fonts.status))
     .toBe("loaded");
-  const link = page.locator(`.post-card__title a[href="${destination}"]`);
+  await expect.poll(() => new URL(page.url()).pathname).toBe("/");
+  const link = page.locator(
+    `.post-card[data-post-permalink="${destination}"] .post-card__title a`,
+  );
   const card = page.locator(".post-card").filter({ has: link });
   await card.scrollIntoViewIfNeeded();
   await expect
@@ -305,6 +320,111 @@ test.describe("Bounded card-to-article hero continuity", () => {
       await expectClean(page);
     });
   }
+
+  test("Moves the shared image when the destination extends below a laptop viewport", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 720 });
+    const link = await prepare(page);
+    await page.evaluate(() => {
+      const start = document.startViewTransition.bind(document);
+      document.startViewTransition = (update) => {
+        const transition = start(update);
+        void transition.ready.then(
+          () => {
+            for (const animation of document.getAnimations()) {
+              if (
+                animation.effect instanceof KeyframeEffect &&
+                animation.effect.pseudoElement?.includes("view-transition")
+              ) {
+                animation.pause();
+                animation.currentTime = 0;
+              }
+            }
+          },
+          (error: unknown) => {
+            if (!(
+              error instanceof DOMException && error.name === "AbortError"
+            )) {
+              window.postViewTransitionProbe.errors.push(String(error));
+            }
+          },
+        );
+        return transition;
+      };
+    });
+    try {
+      await activators.Enter(link);
+      await expectDestination(page);
+      await expect
+        .poll(() => page.evaluate(() => window.postViewTransitionProbe.ready))
+        .toBe(1);
+      const capture = await page.evaluate(
+        () => window.postViewTransitionProbe.captures[0]!,
+      );
+      expect(capture.top).toBeLessThan(720);
+      expect(capture.bottom).toBeGreaterThan(720);
+      const samples = [];
+      for (const time of [0, 100, 200]) {
+        samples.push(
+          await page.evaluate((currentTime) => {
+            for (const animation of document.getAnimations()) {
+              if (
+                animation.effect instanceof KeyframeEffect &&
+                animation.effect.pseudoElement?.includes("view-transition")
+              ) {
+                animation.currentTime = currentTime;
+              }
+            }
+            const style = getComputedStyle(
+              document.documentElement,
+              "::view-transition-group(post-hero)",
+            );
+            return {
+              x: new DOMMatrixReadOnly(style.transform).m41,
+              y: new DOMMatrixReadOnly(style.transform).m42,
+              width: Number.parseFloat(style.width),
+            };
+          }, time),
+        );
+        const path = test.info().outputPath(`hero-movement-${time}ms.png`);
+        await page.screenshot({ path });
+        await test.info().attach(`hero-movement-${time}ms`, {
+          path,
+          contentType: "image/png",
+        });
+      }
+      const [source, midpoint, target] = samples;
+      const original = await page.evaluate(
+        () => window.postViewTransitionProbe.sourceBoxes[0]!,
+      );
+      expect(source!.x).toBeCloseTo(original.x, 0);
+      expect(source!.y).toBeCloseTo(original.y, 0);
+      expect(source!.width).toBeCloseTo(original.width, 0);
+      expect(Math.abs(target!.y - source!.y)).toBeGreaterThan(50);
+      expect(midpoint!.y).toBeGreaterThan(Math.min(source!.y, target!.y));
+      expect(midpoint!.y).toBeLessThan(Math.max(source!.y, target!.y));
+      expect(target!.y).toBeCloseTo(capture.top, 0);
+      expect(midpoint!.width).toBeGreaterThan(source!.width);
+      expect(midpoint!.width).toBeLessThan(target!.width);
+      await test.info().attach("hero-movement-measurements", {
+        body: JSON.stringify(samples, null, 2),
+        contentType: "application/json",
+      });
+    } finally {
+      await page.evaluate(() => {
+        for (const animation of document.getAnimations()) {
+          if (
+            animation.effect instanceof KeyframeEffect &&
+            animation.effect.pseudoElement?.includes("view-transition")
+          ) {
+            animation.finish();
+          }
+        }
+      });
+    }
+    await expectClean(page);
+  });
 
   test("Leaves article neighbours and section anchors unanimated", async ({
     page,

@@ -160,8 +160,12 @@ export default defineNuxtPlugin((nuxtApp) => {
         if (
           !hero.complete ||
           hero.naturalWidth === 0 ||
-          target.top < 0 ||
-          target.bottom > window.innerHeight
+          target.width === 0 ||
+          target.height === 0 ||
+          target.bottom <= 0 ||
+          target.top >= window.innerHeight ||
+          target.right <= 0 ||
+          target.left >= window.innerWidth
         ) {
           transition.skipTransition();
         }
