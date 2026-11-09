@@ -150,17 +150,57 @@
               <u-icon name="fa-solid:tachometer-alt" />
             </summary>
             <span
-              class="prose-video__menu"
+              class="prose-video__menu prose-video__menu--speed"
               role="group"
               aria-label="Playback speed options">
-              <button
-                v-for="speed in speeds"
-                :key="speed"
-                type="button"
-                :aria-pressed="playbackRate === speed"
-                @click="selectSpeed(speed, $event)">
-                {{ speed === 1 ? "Normal" : `${speed}×` }}
-              </button>
+              <output
+                class="prose-video__speed-value"
+                aria-label="Current playback speed"
+                >{{ playbackRate.toFixed(2) }}×</output
+              >
+              <span class="prose-video__speed-adjust">
+                <button
+                  type="button"
+                  aria-label="Decrease playback speed"
+                  :disabled="playbackRate <= minimumSpeed"
+                  @click="adjustSpeed(-speedStep)">
+                  −
+                </button>
+                <label>
+                  <span class="prose-video__visually-hidden"
+                    >Playback speed</span
+                  >
+                  <input
+                    type="range"
+                    :min="minimumSpeed"
+                    :max="maximumSpeed"
+                    :step="speedStep"
+                    :value="playbackRate"
+                    :aria-valuetext="`${playbackRate.toFixed(2)} times normal speed`"
+                    @input="onSpeedInput" />
+                </label>
+                <button
+                  type="button"
+                  aria-label="Increase playback speed"
+                  :disabled="playbackRate >= maximumSpeed"
+                  @click="adjustSpeed(speedStep)">
+                  +
+                </button>
+              </span>
+              <span class="prose-video__speed-presets">
+                <button
+                  v-for="speed in speeds"
+                  :key="speed"
+                  type="button"
+                  :aria-label="speed === 1 ? 'Normal' : `${speed}×`"
+                  :aria-pressed="playbackRate === speed"
+                  @click="selectSpeed(speed, $event)">
+                  {{ Number.isInteger(speed) ? speed.toFixed(1) : speed }}
+                </button>
+              </span>
+              <span class="prose-video__speed-description">{{
+                playbackRate === 1 ? "Normal" : `${playbackRate}× speed`
+              }}</span>
             </span>
           </details>
           <button
@@ -238,7 +278,10 @@ const buffering = ref(false);
 const message = ref("");
 const sourceUrl = ref("");
 const playbackRate = ref(1);
-const speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
+const speeds = [1, 1.25, 1.5, 2, 3];
+const minimumSpeed = 0.5;
+const maximumSpeed = 3;
+const speedStep = 0.25;
 const captionTracks = ref<TextTrack[]>([]);
 const selectedCaption = ref(-1);
 const repositionedCues = new Set<VTTCue>();
@@ -578,6 +621,23 @@ const selectSpeed = (speed: number, event: Event): void => {
   closeMenu(event);
 };
 
+const adjustSpeed = (change: number): void => {
+  if (video.value) {
+    video.value.playbackRate = Math.min(
+      maximumSpeed,
+      Math.max(minimumSpeed, playbackRate.value + change),
+    );
+    syncMedia();
+  }
+};
+
+const onSpeedInput = (event: Event): void => {
+  if (video.value && event.target instanceof HTMLInputElement) {
+    video.value.playbackRate = Number(event.target.value);
+    syncMedia();
+  }
+};
+
 const selectCaption = (index: number): void => {
   captionTracks.value.forEach((track, trackIndex) => {
     track.mode = trackIndex === index ? "showing" : "disabled";
@@ -681,7 +741,7 @@ watch(controlsHidden, positionCaptions);
   --video-foreground: #fff;
   --video-panel: rgb(0 0 0 / 65%);
   --video-border: rgb(255 255 255 / 65%);
-  --video-accent: var(--global-alternate-accent-color);
+  --video-accent: var(--global-accent-color);
 
   position: relative;
   container-type: inline-size;
@@ -689,10 +749,6 @@ watch(controlsHidden, positionCaptions);
   video {
     display: block;
     block-size: auto;
-  }
-
-  [data-theme="dark"] & {
-    --video-accent: var(--global-accent-color);
   }
 
   .post__content &:fullscreen {
@@ -723,7 +779,7 @@ watch(controlsHidden, positionCaptions);
 .prose-video__controls {
   display: grid;
   color: var(--video-foreground);
-  background: linear-gradient(to bottom, rgb(0 0 0 / 0%), var(--video-panel));
+  background: transparent;
   padding: 0 8px 4px;
 
   position: absolute;
@@ -769,7 +825,7 @@ watch(controlsHidden, positionCaptions);
 
   &::-webkit-slider-runnable-track {
     background: transparent;
-    block-size: 3px;
+    block-size: 4px;
   }
 
   &::-webkit-slider-thumb {
@@ -779,13 +835,13 @@ watch(controlsHidden, positionCaptions);
     border-radius: 50%;
     inline-size: 12px;
     block-size: 12px;
-    margin-block-start: -4.5px;
+    margin-block-start: -4px;
   }
 
   &::-moz-range-track,
   &::-moz-range-progress {
     background: transparent;
-    block-size: 3px;
+    block-size: 4px;
   }
 
   &::-moz-range-thumb {
@@ -802,7 +858,7 @@ watch(controlsHidden, positionCaptions);
   background: rgb(255 255 255 / 40%);
   border: 0;
   inline-size: 100%;
-  block-size: 3px;
+  block-size: 4px;
   position: absolute;
   inset-block-end: 20px;
   pointer-events: none;
@@ -833,6 +889,8 @@ watch(controlsHidden, positionCaptions);
   grid-auto-flow: column;
   align-items: center;
   gap: 0;
+  background: var(--video-panel);
+  border-radius: 999px;
 }
 
 .prose-video__button {
@@ -874,7 +932,7 @@ watch(controlsHidden, positionCaptions);
   font-family: var(--global-font-family-monospace);
   font-size: 0.75rem;
   white-space: nowrap;
-  padding-inline: 4px;
+  padding-inline: 12px 8px;
 }
 
 .prose-video__spacer {
@@ -935,6 +993,81 @@ watch(controlsHidden, positionCaptions);
   }
 }
 
+.prose-video__menu--speed {
+  gap: 8px;
+  padding: 12px;
+  inline-size: 280px;
+  max-block-size: min(280px, 70cqw, 60vh);
+}
+
+.prose-video__speed-value {
+  color: var(--video-foreground);
+  font-size: 1.125rem;
+  font-weight: bold;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.prose-video__speed-adjust {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: 8px;
+
+  label {
+    display: grid;
+    margin: 0;
+    min-inline-size: 0;
+  }
+
+  input {
+    appearance: auto;
+    accent-color: var(--video-accent);
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    inline-size: 100%;
+    min-inline-size: 0;
+    block-size: 44px;
+  }
+
+  button {
+    background: rgb(255 255 255 / 15%);
+    border-radius: 50%;
+    font-size: 1.25rem;
+    text-align: center;
+    padding: 0;
+    min-inline-size: 44px;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+  }
+}
+
+.prose-video__speed-presets {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(44px, 1fr));
+  gap: 4px;
+
+  button {
+    background: rgb(255 255 255 / 15%);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    text-align: center;
+    padding: 4px;
+    min-inline-size: 44px;
+  }
+}
+
+.prose-video__speed-description {
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+
 .prose-video__status {
   color: var(--video-foreground);
   background: var(--video-panel);
@@ -975,6 +1108,11 @@ watch(controlsHidden, positionCaptions);
   .prose-video__volume {
     display: none;
   }
+
+  .prose-video__time {
+    font-size: 0.6875rem;
+    padding-inline: 8px 4px;
+  }
 }
 
 @container (max-width: 420px) {
@@ -984,12 +1122,18 @@ watch(controlsHidden, positionCaptions);
 }
 
 @media (forced-colors: active) {
-  .prose-video__controls,
   .prose-video__menu,
   .prose-video__status {
     color: CanvasText;
     background: Canvas;
     border: 1px solid CanvasText;
+  }
+
+  .prose-video__playback,
+  .prose-video__utilities {
+    color: CanvasText;
+    background: Canvas;
+    outline: 1px solid CanvasText;
   }
 
   .prose-video__button,

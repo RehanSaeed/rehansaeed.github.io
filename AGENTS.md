@@ -342,8 +342,9 @@ When explicitly asked to help draft an article, follow these guidelines:
   bottom-overlay player; keep server-rendered controls until it mounts. Do not
   customise third-party iframes or add a Browser controls toolbar button.
 - Keep controls reachable through keyboard focus and visible on touch, while
-  paused, or while a toolbar control has focus. Use a compact, translucent
-  single-row toolbar with icon-triggered speed and caption-language menus,
+  paused, or while a toolbar control has focus. Use a compact single-row toolbar
+  with translucent backgrounds only behind its left and right control groups
+  and icon-triggered speed and caption-language menus,
   rather than visible selects or a Settings menu. Keep open menus visible and
   support Escape, outside dismissal and focus return after selection.
   Only hide controls during pointer-idle playback.

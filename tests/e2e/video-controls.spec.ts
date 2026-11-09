@@ -84,11 +84,9 @@ test("Custom controls play, pause, seek, mute and change speed through a compact
   await expect(
     player.getByLabel("Video settings", { exact: true }),
   ).toHaveCount(0);
-  const speed = player.getByText("Playback speed", { exact: true });
   const speedButton = player.getByLabel("Playback speed: Normal", {
     exact: true,
   });
-  await expect(speed).toHaveCount(0);
   await expect(player.getByRole("combobox")).toHaveCount(0);
   await expect(
     player.getByRole("button", { name: "Use browser controls" }),
@@ -154,6 +152,58 @@ test("Caption controls appear only for real text tracks and toggle their showing
   ).toHaveAttribute("aria-pressed", "true");
   await languages.getByRole("button", { name: "Off", exact: true }).click();
   await expect(captions).toHaveAttribute("aria-label", "Captions: off");
+});
+
+test("Playback speed popup supports slider, step buttons and quick presets", async ({
+  page,
+  baseURL,
+}) => {
+  const { video, player } = await openVideo(page, baseURL);
+  await player.getByTitle("Playback speed", { exact: true }).click();
+  const options = player.getByRole("group", { name: "Playback speed options" });
+  const rate = options.getByLabel("Current playback speed");
+  const slider = options.getByRole("slider", {
+    name: "Playback speed",
+    exact: true,
+  });
+  await expect(rate).toHaveText("1.00×");
+  await options
+    .getByRole("button", { name: "Increase playback speed" })
+    .click();
+  await expect(rate).toHaveText("1.25×");
+  await options
+    .getByRole("button", { name: "Decrease playback speed" })
+    .click();
+  await expect(rate).toHaveText("1.00×");
+  await slider.focus();
+  await page.keyboard.press("End");
+  await expect(rate).toHaveText("3.00×");
+  await expect(
+    options.getByRole("button", { name: "Increase playback speed" }),
+  ).toBeDisabled();
+  await page.keyboard.press("Home");
+  await expect(rate).toHaveText("0.50×");
+  await expect(
+    options.getByRole("button", { name: "Decrease playback speed" }),
+  ).toBeDisabled();
+  await page.keyboard.press("ArrowRight");
+  await expect(rate).toHaveText("0.75×");
+  await expect
+    .poll(() =>
+      video.evaluate((element) =>
+        element instanceof HTMLVideoElement ? element.playbackRate : 0,
+      ),
+    )
+    .toBe(0.75);
+  await options.getByRole("button", { name: "2×", exact: true }).click();
+  await expect(options).toBeHidden();
+  await expect(
+    player.getByTitle("Playback speed", { exact: true }),
+  ).toBeFocused();
+  await player.getByTitle("Playback speed", { exact: true }).click();
+  await expect(
+    options.getByRole("button", { name: "2×", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
 });
 
 test("Failed playback stays paused and exposes an actionable message", async ({
@@ -229,6 +279,10 @@ test("Full-width controls remain contained with large touch targets in both them
     ).mode = "disabled";
   });
   await expect(player.getByTitle("Captions", { exact: true })).toBeVisible();
+  await expect(player.locator(".prose-video__progress")).toHaveCSS(
+    "height",
+    "4px",
+  );
   for (const theme of ["light", "dark"]) {
     await page.evaluate((theme) => {
       document.documentElement.dataset.theme = theme;
@@ -242,13 +296,33 @@ test("Full-width controls remain contained with large touch targets in both them
           element.querySelectorAll("button, summary"),
         ).filter((button) => button.getBoundingClientRect().height > 0);
         return {
+          accent: getComputedStyle(element)
+            .getPropertyValue("--video-accent")
+            .trim(),
+          themeAccent: getComputedStyle(document.documentElement)
+            .getPropertyValue("--global-accent-color")
+            .trim(),
           left: bounds.left,
           right: bounds.right,
           overflow: element.scrollWidth > element.clientWidth,
           height: bounds.height,
+          timeSpacing: Number.parseFloat(
+            getComputedStyle(element.querySelector(".prose-video__time")!)
+              .paddingInlineStart,
+          ),
           rowBackground: getComputedStyle(
             element.querySelector(".prose-video__row")!,
           ).backgroundColor,
+          overlayBackground: getComputedStyle(element).backgroundColor,
+          overlayImage: getComputedStyle(element).backgroundImage,
+          groupBackgrounds: [
+            ".prose-video__playback",
+            ".prose-video__utilities",
+          ].map(
+            (selector) =>
+              getComputedStyle(element.querySelector(selector)!)
+                .backgroundColor,
+          ),
           targets: buttons.every((button) => {
             const box = button.getBoundingClientRect();
             return box.width >= 44 && box.height >= 44;
@@ -256,11 +330,19 @@ test("Full-width controls remain contained with large touch targets in both them
         };
       });
       expect(layout.left).toBeGreaterThanOrEqual(0);
+      expect(layout.accent).toBe(layout.themeAccent);
       expect(layout.right).toBeLessThanOrEqual(width);
       expect(layout.overflow).toBe(false);
       expect(layout.targets).toBe(true);
       expect(layout.height).toBeLessThanOrEqual(64);
+      expect(layout.timeSpacing).toBeGreaterThanOrEqual(width > 600 ? 12 : 8);
       expect(layout.rowBackground).toBe("rgba(0, 0, 0, 0)");
+      expect(layout.overlayBackground).toBe("rgba(0, 0, 0, 0)");
+      expect(layout.overlayImage).toBe("none");
+      expect(layout.groupBackgrounds).toEqual([
+        "rgba(0, 0, 0, 0.65)",
+        "rgba(0, 0, 0, 0.65)",
+      ]);
       await player.getByTitle("Captions", { exact: true }).click();
       const languages = player.getByRole("group", { name: "Caption language" });
       await expect(languages).toBeVisible();
