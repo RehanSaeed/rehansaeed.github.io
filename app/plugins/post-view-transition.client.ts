@@ -7,6 +7,13 @@ export default defineNuxtPlugin((nuxtApp) => {
   const root = document.documentElement;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const forcedColors = window.matchMedia("(forced-colors: active)");
+  const intersectsViewport = (box: DOMRect) =>
+    box.width > 0 &&
+    box.height > 0 &&
+    box.bottom > 0 &&
+    box.top < window.innerHeight &&
+    box.right > 0 &&
+    box.left < window.innerWidth;
   let active:
     { destination: string; cancel: () => void; skip: () => void } | undefined;
 
@@ -69,12 +76,16 @@ export default defineNuxtPlugin((nuxtApp) => {
         forcedColors.matches ||
         document.hidden ||
         document.querySelector('dialog[open], [aria-modal="true"]') ||
-        !link.matches(".post-card__title a")
+        !link.matches(".post-card__title a, .post-navigation__link")
       ) {
         return;
       }
-      const card = link.closest<HTMLElement>(".posts .post-card");
-      const image = card?.querySelector<HTMLImageElement>(".post-card__image");
+      const card = link.closest<HTMLElement>(
+        ".posts .post-card, .post-navigation__card",
+      );
+      const image = card?.querySelector<HTMLImageElement>(
+        ".post-card__image, .post-navigation__image",
+      );
       if (
         !card ||
         !image ||
@@ -89,15 +100,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       ) {
         return;
       }
-      const box = image.getBoundingClientRect();
-      if (
-        box.width === 0 ||
-        box.height === 0 ||
-        box.top < 0 ||
-        box.bottom > window.innerHeight ||
-        box.left < 0 ||
-        box.right > window.innerWidth
-      ) {
+      if (!intersectsViewport(image.getBoundingClientRect())) {
         return;
       }
 
@@ -128,7 +131,11 @@ export default defineNuxtPlugin((nuxtApp) => {
       active = state;
       const isCurrent = () =>
         !canceled && router.currentRoute.value.fullPath === destination;
-      image.classList.add("post-card__image--view-transition");
+      const sourceClass = card.matches(".post-card")
+        ? "post-card__image--view-transition"
+        : "post-navigation__image--view-transition";
+      let targetImage: HTMLImageElement | undefined;
+      image.classList.add(sourceClass);
       root.classList.add("post-view-transition");
 
       const unhookLoading = nuxtApp.hook("page:loading:end", async () => {
@@ -147,6 +154,8 @@ export default defineNuxtPlugin((nuxtApp) => {
           cancel();
           return;
         }
+        targetImage = hero;
+        hero.classList.add("post__photo--view-transition");
         // Public loading completion precedes Nuxt's deferred router scroll.
         window.scrollTo({ top: 0, left: 0, behavior: "instant" });
         heading.focus({ preventScroll: true });
@@ -156,16 +165,10 @@ export default defineNuxtPlugin((nuxtApp) => {
         if (!isCurrent()) {
           return;
         }
-        const target = hero.getBoundingClientRect();
         if (
           !hero.complete ||
           hero.naturalWidth === 0 ||
-          target.width === 0 ||
-          target.height === 0 ||
-          target.bottom <= 0 ||
-          target.top >= window.innerHeight ||
-          target.right <= 0 ||
-          target.left >= window.innerWidth
+          !intersectsViewport(hero.getBoundingClientRect())
         ) {
           transition.skipTransition();
         }
@@ -210,7 +213,8 @@ export default defineNuxtPlugin((nuxtApp) => {
         unhookLoading();
         unhookError();
         unhookRouterError();
-        image.classList.remove("post-card__image--view-transition");
+        image.classList.remove(sourceClass);
+        targetImage?.classList.remove("post__photo--view-transition");
         root.classList.remove("post-view-transition");
         if (active === state) {
           active = undefined;

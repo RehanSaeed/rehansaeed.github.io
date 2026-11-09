@@ -20,6 +20,14 @@ type Probe = {
   captures: Capture[];
   sourceScroll: number[];
   sourceBoxes: Array<{ x: number; y: number; width: number }>;
+  sourceNames: number[];
+  activations: Array<{
+    destination: string;
+    currentPath: string;
+    imageReady: boolean;
+    top: number;
+    bottom: number;
+  }>;
   skips: Array<{
     time: number;
     scrollY: number;
@@ -52,9 +60,36 @@ const instrument = async (page: Page) => {
       captures: [],
       sourceScroll: [],
       sourceBoxes: [],
+      sourceNames: [],
+      activations: [],
       skips: [],
     };
     window.postViewTransitionProbe = probe;
+    document.addEventListener(
+      "click",
+      (event) => {
+        const link =
+          event.target instanceof Element
+            ? event.target.closest<HTMLAnchorElement>(
+                ".post-card__title a, .post-navigation__link",
+              )
+            : null;
+        const image = link
+          ?.closest(".post-card, .post-navigation__card")
+          ?.querySelector<HTMLImageElement>("img");
+        if (link && image) {
+          const box = image.getBoundingClientRect();
+          probe.activations.push({
+            destination: link.pathname,
+            currentPath: location.pathname,
+            imageReady: image.complete && image.naturalWidth > 0,
+            top: box.top,
+            bottom: box.bottom,
+          });
+        }
+      },
+      { capture: true },
+    );
     if (typeof document.startViewTransition !== "function") {
       return;
     }
@@ -63,7 +98,9 @@ const instrument = async (page: Page) => {
       probe.starts++;
       probe.sourceScroll.push(scrollY);
       const source = document
-        .querySelector(".post-card__image--view-transition")
+        .querySelector(
+          ".post-card__image--view-transition, .post-navigation__image--view-transition",
+        )
         ?.getBoundingClientRect();
       if (source) {
         probe.sourceBoxes.push({
@@ -72,6 +109,15 @@ const instrument = async (page: Page) => {
           width: source.width,
         });
       }
+      probe.sourceNames.push(
+        [
+          ...document.querySelectorAll(
+            ".post-card__image, .post-navigation__image, .post__photo",
+          ),
+        ].filter(
+          (image) => getComputedStyle(image).viewTransitionName === "post-hero",
+        ).length,
+      );
       const started = performance.now();
       const transition = start(update);
       const skip = transition.skipTransition.bind(transition);
@@ -101,7 +147,9 @@ const instrument = async (page: Page) => {
             bottom: box.bottom,
             imageReady: hero.complete && hero.naturalWidth > 0,
             names: [
-              ...document.querySelectorAll(".post-card__image, .post__photo"),
+              ...document.querySelectorAll(
+                ".post-card__image, .post-navigation__image, .post__photo",
+              ),
             ].filter(
               (image) =>
                 getComputedStyle(image).viewTransitionName === "post-hero",
@@ -158,10 +206,8 @@ const prepare = async (page: Page, warm = true) => {
     .poll(() => page.evaluate(() => document.fonts.status))
     .toBe("loaded");
   await expect.poll(() => new URL(page.url()).pathname).toBe("/");
-  const link = page.locator(
-    `.post-card[data-post-permalink="${destination}"] .post-card__title a`,
-  );
-  const card = page.locator(".post-card").filter({ has: link });
+  const card = page.locator(`.post-card[data-post-permalink="${destination}"]`);
+  const link = card.locator(".post-card__title a");
   await card.scrollIntoViewIfNeeded();
   await expect
     .poll(() =>
@@ -193,9 +239,11 @@ const expectDestination = async (page: Page) => {
 };
 const expectClean = async (page: Page) => {
   await expect(page.locator("html")).not.toHaveClass(/post-view-transition/);
-  await expect(page.locator(".post-card__image--view-transition")).toHaveCount(
-    0,
-  );
+  await expect(
+    page.locator(
+      ".post-card__image--view-transition, .post-navigation__image--view-transition, .post__photo--view-transition",
+    ),
+  ).toHaveCount(0);
   expect(
     await page.evaluate(() => window.postViewTransitionProbe.errors),
   ).toEqual([]);
@@ -206,6 +254,20 @@ test.describe("Bounded card-to-article hero continuity", () => {
     reducedMotion: "no-preference",
     viewport: { width: 1280, height: 1000 },
     navigationTimeout: 15_000,
+    trace: "retain-on-failure",
+  });
+
+  test.afterEach(async ({ page }) => {
+    if (!page.isClosed()) {
+      await test.info().attach("transition-lifecycle", {
+        body: JSON.stringify(
+          await page.evaluate(() => window.postViewTransitionProbe),
+          null,
+          2,
+        ),
+        contentType: "application/json",
+      });
+    }
   });
 
   test.describe("Warmed captures", () => {
@@ -426,9 +488,7 @@ test.describe("Bounded card-to-article hero continuity", () => {
     await expectClean(page);
   });
 
-  test("Leaves article neighbours and section anchors unanimated", async ({
-    page,
-  }) => {
+  test("Leaves article section anchors unanimated", async ({ page }) => {
     await instrument(page);
     await page.goto(
       "/optimally-configuring-open-telemetry-tracing-for-asp-net-core/",
@@ -444,16 +504,107 @@ test.describe("Bounded card-to-article hero continuity", () => {
     expect(
       await page.evaluate(() => window.postViewTransitionProbe.starts),
     ).toBe(0);
-    const neighbour = page.locator(".post-navigation a").first();
-    await neighbour.click({ noWaitAfter: true });
-    await expect(page).not.toHaveURL(
-      /\/optimally-configuring-open-telemetry-tracing-for-asp-net-core\//,
-    );
-    expect(
-      await page.evaluate(() => window.postViewTransitionProbe.starts),
-    ).toBe(0);
     await expectClean(page);
   });
+
+  test("Animates a listing title when its source image is partly above the viewport", async ({
+    page,
+  }) => {
+    const link = await prepare(page);
+    await link.evaluate((anchor) => {
+      window.scrollBy({
+        top: anchor.getBoundingClientRect().top - 120,
+        behavior: "instant",
+      });
+    });
+    const image = page.locator(
+      `.post-card[data-post-permalink="${destination}"] img`,
+    );
+    const source = await image.boundingBox();
+    expect(source!.y).toBeLessThan(0);
+    expect(source!.y + source!.height).toBeGreaterThan(0);
+    await activators.mouse(link);
+    await expectDestination(page);
+    await expect
+      .poll(() => page.evaluate(() => window.postViewTransitionProbe.finished))
+      .toBe(1);
+    const probe = await page.evaluate(() => window.postViewTransitionProbe);
+    expect(probe.ready).toBe(1);
+    expect(probe.skipped).toBe(0);
+    expect(probe.sourceBoxes[0]!.y).toBeLessThan(0);
+    expect(probe.sourceNames).toEqual([1]);
+    await expectClean(page);
+  });
+
+  for (const direction of ["prev", "next"] as const) {
+    test(`Animates the ${direction} article thumbnail without naming the current hero`, async ({
+      page,
+    }) => {
+      await instrument(page);
+      await page.goto(destination, { waitUntil: "commit" });
+      await expect(
+        page.getByRole("button", { name: "Open search", exact: true }),
+      ).toBeEnabled();
+      const link = page.locator(`.post-navigation__link[rel="${direction}"]`);
+      const href = await link.getAttribute("href");
+      const title = await link.locator(".post-navigation__title").innerText();
+      // Warm the destination through an offscreen source, which is not eligible.
+      await link.evaluate((anchor: HTMLAnchorElement) => {
+        anchor.click();
+      });
+      await expect(page).toHaveURL(new RegExp(`${href}$`));
+      await expect(page.locator(".post-page__title-container h1")).toHaveText(
+        title,
+      );
+      await page
+        .locator(".post__photo")
+        .evaluate((image: HTMLImageElement) => image.decode());
+      await page.goBack();
+      await expect(page).toHaveURL(new RegExp(`${destination}$`));
+      await expect(page.locator(".post-page__title-container h1")).toHaveText(
+        "Live Streaming .NET",
+      );
+      // Let Nuxt's deferred history scroll finish before positioning lazy media.
+      await page.evaluate(
+        () =>
+          new Promise<void>((resolve) => {
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                resolve();
+              });
+            });
+          }),
+      );
+      await link.locator("img").evaluate((image) => {
+        image.scrollIntoView({ block: "center", behavior: "instant" });
+      });
+      await link
+        .locator("img")
+        .evaluate((image: HTMLImageElement) => image.decode());
+      await activators.mouse(link);
+      await expect(page).toHaveURL(new RegExp(`${href}$`));
+      await expect(page.locator(".post-page__title-container h1")).toHaveText(
+        title,
+      );
+      await expect(page.locator(".nuxt-route-announcer")).toContainText(title);
+      await expect
+        .poll(() =>
+          page.evaluate(() => window.postViewTransitionProbe.finished),
+        )
+        .toBe(1);
+      const probe = await page.evaluate(() => window.postViewTransitionProbe);
+      expect(probe.starts).toBe(1);
+      expect(probe.ready).toBe(1);
+      expect(probe.skipped).toBe(0);
+      expect(probe.sourceNames).toEqual([1]);
+      expect(probe.captures[0]!.names).toBe(1);
+      expect(probe.captures[0]!.scrollY).toBe(0);
+      await expect(
+        page.locator(".post-page__title-container h1"),
+      ).toBeFocused();
+      await expectClean(page);
+    });
+  }
 
   test("Skips frozen capture while cold Content is still loading", async ({
     page,
@@ -611,7 +762,6 @@ test.describe("Bounded card-to-article hero continuity", () => {
           value: undefined,
         });
       }),
-    clipped: (page: Page) => page.setViewportSize({ width: 1280, height: 200 }),
   };
   for (const [bypass, configure] of Object.entries(bypasses)) {
     test(`Leaves ${bypass} navigation unanimated`, async ({ page }) => {
@@ -625,6 +775,21 @@ test.describe("Bounded card-to-article hero continuity", () => {
       await expectClean(page);
     });
   }
+
+  test("Leaves a completely offscreen source unanimated", async ({ page }) => {
+    const link = await prepare(page);
+    await page.evaluate(() => {
+      window.scrollTo({ top: 0, behavior: "instant" });
+    });
+    await link.evaluate((anchor: HTMLAnchorElement) => {
+      anchor.click();
+    });
+    await expectDestination(page);
+    expect(
+      await page.evaluate(() => window.postViewTransitionProbe.starts),
+    ).toBe(0);
+    await expectClean(page);
+  });
 
   test("Does not intercept a card href containing a fragment", async ({
     page,

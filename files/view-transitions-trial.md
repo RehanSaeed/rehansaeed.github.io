@@ -18,15 +18,20 @@ preserved separately as evidence for that decision.
 ## Custom lifecycle and scope
 
 `app/plugins/post-view-transition.client.ts` intercepts only ordinary primary-button
-or keyboard activation of a main-listing card's title link. It leaves NuxtLink's
+or keyboard activation of a main-listing card's title link or a next/previous
+article card. It leaves NuxtLink's
 normal handling untouched when the API is unavailable, motion is reduced, forced
-colours are active, a dialog is open, the source hero is unloaded/broken/clipped,
+colours are active, a dialog is open, the source hero is unloaded/broken/offscreen,
 or the link is modified, external, a download, a new tab or contains a query/hash.
-Tag listings without heroes and article neighbours do not opt in.
+Tag listings without heroes do not opt in. Partially visible source images are
+eligible; completely offscreen ones are not.
 
 Only the selected source image and the corresponding destination hero share the
 `post-hero` name. Card/article metadata verifies the permalink and underlying hero
-identity. The root snapshot is disabled during the effect, so the persistent
+identity. The destination receives its transition name only after the matching
+article has rendered, so the current article hero cannot collide with a selected
+next/previous thumbnail during source capture.
+The root snapshot is disabled during the effect, so the persistent
 header, article text and other layout content do not crossfade. The effect uses
 the existing 200 ms duration and easing tokens, with pointer events passed through
 to the live page.
@@ -60,9 +65,59 @@ Cancellation releases the native update independently of a still-pending router
 data request. It does not abort shared Content downloads or let a canceled
 transition scroll or focus a newer destination.
 
-Theme changes, filtering, pagination changes themselves, article-to-article
-navigation, anchors and cross-document transitions remain unanimated. This is not
+Theme changes, filtering, pagination changes themselves, ordinary article links,
+anchors and cross-document transitions remain unanimated. This is not
 approval for a wider rollout.
+
+### Approved title and neighbour extension (2026-11-09)
+
+The author explicitly selected **"Support partially visible listing images and
+next/previous article cards"** after review. A direct listing-title mouse click
+started the original effect when the source was fully visible (top=77, bottom=488).
+Moving the title near the top of the viewport left the same loaded source at
+top=-320, bottom=91; the old visibility gate skipped it. This was not a different
+title-link handler.
+
+Both source and destination now require a nonzero rectangle intersecting the
+viewport. Next/previous cards carry the target permalink and hero identity, and
+their destination thumbnail is the shared source, not the current article hero.
+Reduced motion, forced colours, API absence, unloaded/broken/wholly offscreen
+media, modified clicks, hashes and all cancellation safeguards still bypass or
+skip the effect. The tests cover partially visible listing-title activation and
+both neighbour directions, including exactly one source/destination name,
+normal top scroll, destination-title focus and route announcements.
+
+Warmed shared-browser checks reached native `ready` and `finished` for all three
+new paths: partial-source listing title, previous thumbnail and next thumbnail.
+The partial listing source was y=-319.703 to y=91.063; neighbour sources were
+approximately 402x226 and grew to approximately 831x467 destination heroes.
+Each capture had one named source and one named destination, with the current
+article hero unnamed, scroll Y=0 and the appropriate article title focused.
+The raw observations are saved as `files/hero-expanded-runtime.json` in session
+storage. These checks do not establish intermediate-pixel or screen-reader
+approval.
+
+`npm run build` (including artifact/SEO verification), `npm run typecheck` and
+`npm run lint` passed for the expanded implementation. Initial test lint findings
+were corrected without changing lint rules. The spec now has 20 cases per browser.
+
+With `BASE_URL=http://127.0.0.1:8140`, the bounded command
+`npx playwright test post-view-transition.spec.ts --project=chrome --workers=1 --retries=0 --timeout=30000 --global-timeout=90000 --grep 'partly above|article thumbnail'`
+failed during setup: a relative `has` locator incorrectly looked for a nested card,
+and the previous-thumbnail image decode waited while history scroll returned to
+the article top. The locator now uses card metadata directly, and the neighbour
+setup waits for the source title and two animation frames before positioning lazy
+media, respecting Nuxt's deferred scroll rather than adding a fixed sleep.
+
+A single corrected bounded command with the same options and
+`--grep 'partly above|article thumbnail|completely offscreen'` produced **2 passed,
+2 failed**: previous-thumbnail capture and wholly offscreen bypass passed;
+partial-title activation observed no finished transition, and next-thumbnail
+capture was skipped before ready. These failures are not called unrelated or
+passed. The corresponding shared-browser paths succeeded, so the local automated
+acceptance remains unresolved. No further repeat loop was run. Assertions and
+zero retries remain unchanged; each test now retains failed traces and attaches
+click eligibility/native lifecycle evidence to support final-head CI diagnosis.
 
 ### Visible movement correction (2026-11-09)
 
@@ -70,7 +125,8 @@ Author review exposed an overly strict destination gate: in a 1280x720 preview,
 the article hero occupied y=407 to y=897. The image was visible, but its bottom
 extended below the viewport, so the trial skipped the native animation entirely.
 The destination now needs to intersect the viewport, not fit completely within
-it. The source still needs to be fully visible. This preserves image readiness,
+it. At that stage the source still needed to be fully visible; the later explicitly
+approved extension above changes that source gate. This preserves image readiness,
 motion preferences, cancellation and the preparation deadline without changing
 the article layout or enabling other transitions.
 

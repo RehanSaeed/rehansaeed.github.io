@@ -10,6 +10,8 @@
         :key="item.rel"
         class="post-navigation__card"
         :class="`post-navigation__card--${item.rel}`"
+        :data-post-permalink="item.post.permalink"
+        :data-post-hero="item.post.heroImage"
         tag="li"
         hoverable
         focusable>

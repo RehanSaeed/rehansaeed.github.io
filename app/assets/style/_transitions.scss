@@ -4,7 +4,8 @@
   }
 
   .post-card__image--view-transition,
-  .post-view-transition .post-page .post__photo {
+  .post-navigation__image--view-transition,
+  .post__photo--view-transition {
     view-transition-name: post-hero;
   }
 
