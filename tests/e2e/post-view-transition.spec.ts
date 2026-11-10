@@ -1,4 +1,5 @@
-import { expect, test } from "./fixtures";
+// Warm captures need HTTP caching; the shared routing fixture disables it.
+import { expect, test } from "@playwright/test";
 import type { Locator, Page } from "@playwright/test";
 import { writeFile } from "node:fs/promises";
 
@@ -18,6 +19,7 @@ type Probe = {
   ready: number;
   skipped: number;
   finished: number;
+  failures: string[];
   errors: string[];
   captures: Capture[];
   sourceScroll: number[];
@@ -58,6 +60,7 @@ const instrument = async (page: Page) => {
       ready: 0,
       skipped: 0,
       finished: 0,
+      failures: [],
       errors: [],
       captures: [],
       sourceScroll: [],
@@ -161,15 +164,24 @@ const instrument = async (page: Page) => {
             focus: document.activeElement?.getAttribute("id") ?? null,
           });
         },
-        (error: unknown) => {
-          if (!(error instanceof DOMException && error.name === "AbortError")) {
-            probe.errors.push(String(error));
+        async (error: unknown) => {
+          if (error instanceof DOMException && error.name === "AbortError") {
+            return;
           }
+          try {
+            await transition.updateCallbackDone;
+          } catch (updateError) {
+            // Navigation rejections are asserted through finished, not as capture errors.
+            if (Object.is(error, updateError)) {
+              return;
+            }
+          }
+          probe.errors.push(String(error));
         },
       );
       void transition.finished.then(
         () => probe.finished++,
-        (error: unknown) => probe.errors.push(String(error)),
+        (error: unknown) => probe.failures.push(String(error)),
       );
       return transition;
     };
@@ -239,7 +251,7 @@ const expectDestination = async (page: Page) => {
     "Live Streaming .NET",
   );
 };
-const expectClean = async (page: Page) => {
+const expectClean = async (page: Page, expectedFailures = 0) => {
   await expect(page.locator("html")).not.toHaveClass(/post-view-transition/);
   await expect(
     page.locator(
@@ -249,6 +261,9 @@ const expectClean = async (page: Page) => {
   expect(
     await page.evaluate(() => window.postViewTransitionProbe.errors),
   ).toEqual([]);
+  expect(
+    await page.evaluate(() => window.postViewTransitionProbe.failures),
+  ).toHaveLength(expectedFailures);
 };
 
 test.describe("Bounded card-to-article hero continuity", () => {
@@ -751,9 +766,17 @@ test.describe("Bounded card-to-article hero continuity", () => {
       page.getByRole("heading", { name: "404 Not Found", exact: true }),
     ).toBeVisible();
     await expect
-      .poll(() => page.evaluate(() => window.postViewTransitionProbe.finished))
+      .poll(() =>
+        page.evaluate(() => window.postViewTransitionProbe.failures.length),
+      )
       .toBe(1);
-    await expectClean(page);
+    expect(
+      await page.evaluate(() => window.postViewTransitionProbe.finished),
+    ).toBe(0);
+    expect(
+      await page.evaluate(() => window.postViewTransitionProbe.ready),
+    ).toBe(0);
+    await expectClean(page, 1);
     await page
       .getByRole("link", { name: "Go Home", exact: true })
       .click({ noWaitAfter: true });
@@ -771,6 +794,21 @@ test.describe("Bounded card-to-article hero continuity", () => {
         });
       }),
   };
+
+  test("Leaves ordinary navigation outside the hero trial", async ({
+    page,
+  }) => {
+    await prepare(page);
+    await page
+      .getByRole("link", { name: "About", exact: true })
+      .click({ noWaitAfter: true });
+    await expect(page).toHaveURL(/\/about\/$/);
+    expect(
+      await page.evaluate(() => window.postViewTransitionProbe.starts),
+    ).toBe(0);
+    await expectClean(page);
+  });
+
   for (const [bypass, configure] of Object.entries(bypasses)) {
     test(`Leaves ${bypass} navigation unanimated`, async ({ page }) => {
       await configure(page);
