@@ -799,7 +799,8 @@ watch(controlsHidden, positionCaptions);
   display: grid;
   color: var(--video-foreground);
   background: transparent;
-  padding: 0 8px 4px;
+  padding-block: 0 8px;
+  padding-inline: 8px;
 
   position: absolute;
   inset-inline: 0;
@@ -838,7 +839,7 @@ watch(controlsHidden, positionCaptions);
 
 .prose-video__seek input {
   appearance: none;
-  padding-block-start: 28px;
+  padding-block-start: 24px;
   position: absolute;
   inset-block-end: 0;
   margin: 0;
@@ -880,7 +881,7 @@ watch(controlsHidden, positionCaptions);
   inline-size: 100%;
   block-size: 4px;
   position: absolute;
-  inset-block-end: 6px;
+  inset-block-end: 8px;
   pointer-events: none;
 
   &::-webkit-progress-bar {

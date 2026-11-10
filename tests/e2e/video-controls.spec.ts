@@ -315,6 +315,18 @@ test("Full-width controls remain contained with large touch targets in both them
       await video.scrollIntoViewIfNeeded();
       const layout = await player.evaluate((element) => {
         const bounds = element.getBoundingClientRect();
+        const mediaBounds = element
+          .closest(".prose-video")!
+          .getBoundingClientRect();
+        const playbackBounds = element
+          .querySelector(".prose-video__playback button")!
+          .getBoundingClientRect();
+        const utilityBounds = element
+          .querySelector(".prose-video__utilities")!
+          .getBoundingClientRect();
+        const progressBounds = element
+          .querySelector(".prose-video__progress")!
+          .getBoundingClientRect();
         const buttons = Array.from(
           element.querySelectorAll("button, summary"),
         ).filter((button) => button.getBoundingClientRect().height > 0);
@@ -329,6 +341,14 @@ test("Full-width controls remain contained with large touch targets in both them
           right: bounds.right,
           overflow: element.scrollWidth > element.clientWidth,
           height: bounds.height,
+          controlSpacing: [
+            playbackBounds.left - mediaBounds.left,
+            mediaBounds.right - utilityBounds.right,
+            mediaBounds.bottom - playbackBounds.bottom,
+            mediaBounds.bottom - utilityBounds.bottom,
+            playbackBounds.top - progressBounds.bottom,
+            utilityBounds.top - progressBounds.bottom,
+          ],
           seekGap:
             element.querySelector(".prose-video__row")!.getBoundingClientRect()
               .top -
@@ -370,6 +390,9 @@ test("Full-width controls remain contained with large touch targets in both them
       expect(layout.overflow).toBe(false);
       expect(layout.targets).toBe(true);
       expect(layout.height).toBeLessThanOrEqual(64);
+      for (const spacing of layout.controlSpacing) {
+        expect(spacing).toBeCloseTo(8, 3);
+      }
       expect(layout.seekGap).toBeGreaterThanOrEqual(0);
       expect(layout.seekGap).toBeLessThanOrEqual(8);
       expect(layout.seekHitAreaBottom).toBeLessThanOrEqual(layout.rowTop);
