@@ -753,7 +753,10 @@ watch(controlsHidden, positionCaptions);
   --video-panel: rgb(0 0 0 / 65%);
   --video-border: rgb(255 255 255 / 65%);
   --video-accent: var(--global-accent-color);
-  --button-icon-hover-background: rgb(255 255 255 / 15%);
+  --video-hover-foreground: var(--global-accent-color);
+  --button-icon-color: var(--video-foreground);
+  --button-icon-hover-color: var(--video-hover-foreground);
+  --button-icon-hover-background: var(--video-foreground);
 
   position: relative;
   container-type: inline-size;
@@ -786,6 +789,10 @@ watch(controlsHidden, positionCaptions);
       max-block-size: 100%;
     }
   }
+}
+
+[data-theme="dark"] .prose-video {
+  --video-hover-foreground: var(--global-alternate-accent-color);
 }
 
 .prose-video__controls {
@@ -908,12 +915,12 @@ watch(controlsHidden, positionCaptions);
 
 .prose-video__button {
   &--active {
-    box-shadow: inset 0 -3px var(--video-accent);
+    box-shadow: inset 0 -3px currentColor;
   }
 }
 
 .prose-video__controls :focus-visible {
-  outline: 2px solid var(--video-foreground);
+  outline: 2px solid currentColor;
   outline-offset: -2px;
 }
 
@@ -978,12 +985,13 @@ watch(controlsHidden, positionCaptions);
     font-size: 0.875rem;
     overflow-wrap: anywhere;
 
-    &:hover {
-      background: rgb(255 255 255 / 15%);
+    &:is(:hover, :focus-visible):not(:disabled) {
+      color: var(--video-hover-foreground);
+      background: var(--button-icon-hover-background);
     }
 
     &[aria-pressed="true"] {
-      box-shadow: inset 3px 0 var(--video-accent);
+      box-shadow: inset 3px 0 currentColor;
       font-weight: bold;
     }
   }
@@ -1138,6 +1146,11 @@ watch(controlsHidden, positionCaptions);
     color: ButtonText;
     background: ButtonFace;
     border: 1px solid ButtonText;
+
+    &:is(:hover, :focus-visible):not(:disabled) {
+      color: HighlightText;
+      background: Highlight;
+    }
 
     &[aria-pressed="true"],
     &.prose-video__button--active {

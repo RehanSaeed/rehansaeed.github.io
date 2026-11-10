@@ -381,9 +381,25 @@ test("Full-width controls remain contained with large touch targets in both them
         "rgba(0, 0, 0, 0.65)",
         "rgba(0, 0, 0, 0.65)",
       ]);
-      await player.getByTitle("Captions", { exact: true }).click();
+      const captions = player.getByTitle("Captions", { exact: true });
+      await captions.click();
+      await expect(captions).toHaveCSS("color", "rgb(107, 23, 232)");
+      await expect(captions).toHaveCSS(
+        "background-color",
+        "rgb(255, 255, 255)",
+      );
       const languages = player.getByRole("group", { name: "Caption language" });
       await expect(languages).toBeVisible();
+      const captionsOff = languages.getByRole("button", {
+        name: "Off",
+        exact: true,
+      });
+      await captionsOff.hover();
+      await expect(captionsOff).toHaveCSS("color", "rgb(107, 23, 232)");
+      await expect(captionsOff).toHaveCSS(
+        "background-color",
+        "rgb(255, 255, 255)",
+      );
       const menu = await languages.boundingBox();
       expect(menu!.x).toBeGreaterThanOrEqual(0);
       expect(menu!.x + menu!.width).toBeLessThanOrEqual(width);
@@ -412,19 +428,60 @@ test("Full-width controls remain contained with large touch targets in both them
           speedMenu!.x + speedMenu!.width,
         );
       }
+      const fasterPreset = presets.filter({ hasText: "2.5" });
+      await fasterPreset.hover();
+      await expect(fasterPreset).toHaveCSS("color", "rgb(107, 23, 232)");
+      await expect(fasterPreset).toHaveCSS(
+        "background-color",
+        "rgb(255, 255, 255)",
+      );
       await page.keyboard.press("Escape");
       await expect(speeds).toBeHidden();
       const play = player.getByRole("button", {
         name: "Play video",
         exact: true,
       });
+      await page.mouse.move(0, 0);
+      await expect(play).toHaveCSS("color", "rgb(255, 255, 255)");
+      await expect(play).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
       await play.hover();
       await expect(play).toHaveCSS("border-radius", "50%");
-      await expect(play).toHaveCSS("color", "rgb(255, 255, 255)");
-      await expect(play).toHaveCSS(
-        "background-color",
-        "rgba(255, 255, 255, 0.15)",
-      );
+      await expect(play).toHaveCSS("color", "rgb(107, 23, 232)");
+      await expect(play).toHaveCSS("background-color", "rgb(255, 255, 255)");
+      const hoverContrast = await play.evaluate((element) => {
+        const luminance = (colour: string) => {
+          const channels = colour
+            .match(/[\d.]+/g)!
+            .slice(0, 3)
+            .map(Number);
+          const linear = channels.map((channel) => {
+            const value = channel / 255;
+            return value <= 0.04045
+              ? value / 12.92
+              : ((value + 0.055) / 1.055) ** 2.4;
+          });
+          return (
+            linear[0]! * 0.2126 + linear[1]! * 0.7152 + linear[2]! * 0.0722
+          );
+        };
+        const style = getComputedStyle(element);
+        const foreground = luminance(style.color);
+        const background = luminance(style.backgroundColor);
+        return (
+          (Math.max(foreground, background) + 0.05) /
+          (Math.min(foreground, background) + 0.05)
+        );
+      });
+      expect(hoverContrast).toBeGreaterThanOrEqual(4.5);
+      await page.mouse.move(0, 0);
+      await play.focus();
+      await page.keyboard.press("Tab");
+      await page.keyboard.press("Shift+Tab");
+      await expect(play).toBeFocused();
+      await expect(play).toHaveCSS("color", "rgb(107, 23, 232)");
+      await expect(play).toHaveCSS("background-color", "rgb(255, 255, 255)");
+      await expect(play).toHaveCSS("outline-color", "rgb(107, 23, 232)");
+      await page.keyboard.press("Tab");
     }
   }
   await page.emulateMedia({ forcedColors: "active" });
