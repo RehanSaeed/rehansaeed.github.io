@@ -220,10 +220,13 @@ When explicitly asked to help draft an article, follow these guidelines:
 - Use full, descriptive tag names, including an acronym in parentheses where
   useful: for example, `Artificial Intelligence (AI)` rather than `AI`.
   Prefer an existing full-name tag over introducing an acronym-only variant.
-- Use an existing, relevant hero image or supply an appropriately licensed one.
-  Hero images must match the schema's `/images/...-<width>x<height>.png` or JPEG
-  naming pattern, with dimensions matching the actual file. Choose an image
-  relevant to the article rather than copying another post's image by default.
+- For each new post, include a newly generated, article-specific hero as part of
+  completion, following the [hero workflow](#new-post-hero-completion) and existing
+  house style below. Do not silently reuse another post's hero. Honour explicit
+  user-approved exceptions, including reusing a chosen image, supplying a licensed
+  asset or excluding image generation.
+- Hero images must match the schema's `/images/...-<width>x<height>.png` or JPEG
+  naming pattern, with dimensions matching the actual file.
 - For new posts, use a **1600x900** hero image, the larger of the two common
   formats in this repository; **1366x768** is the older format. Prefer a source
   image at least that large, preserve its aspect ratio and avoid cropping
@@ -277,6 +280,31 @@ When explicitly asked to help draft an article, follow these guidelines:
 - Silent or video-only clips need no captions track; do not add an empty one
   just to satisfy the linter. Describe the clip with the video's accessible name
   and visible figure caption instead.
+
+### New-Post Hero Completion
+
+- Obtain explicit user authorisation to generate an image before invoking image
+  tooling; a request to add an article alone is not image-generation permission.
+  If authorisation or tooling is missing, report the hero as blocked and identify
+  the approval or capability needed. Do not silently substitute an existing image
+  or declare the new-post work complete.
+- Generate a concept specific to the article using the established
+  [reference art style](#reference-art-style), passing its reference image to the
+  tool where supported. When depicting the author, also use the actual profile
+  photo as required below, not a previous generated character alone.
+- Prepare the final **1600x900** image without stretching or cropping important
+  content, inspect its real dimensions, and save it under `public/images/hero/`
+  with a descriptive filename ending in `-1600x900.png` or `-1600x900.jpg`.
+  Point the post's `heroImage` at the matching `/images/hero/...` path.
+- Follow [Image Optimisation](#image-optimisation), generate the AVIF companion
+  with `npm run images:avif`, and preserve required Git LFS tracking. Inspect the
+  actual image at full resolution and thumbnail size, then check it on the
+  rendered article and a small card preview in both light and dark themes.
+  Correct malformed anatomy or misleading details and show the result for review.
+- Record any user-approved exception or unperformed check in the PR and handoff.
+  Generated Open Graph social cards do not replace the article hero. Hero review
+  does not authorise article publication; retain `published: false` until the user
+  separately approves publication.
 
 ### Hero Image House Style
 
