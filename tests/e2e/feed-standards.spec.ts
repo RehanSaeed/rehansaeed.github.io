@@ -125,3 +125,51 @@ test("Rendered feed discovery declares the format-specific media types", async (
     expect(links.attr("type"), path).toBe(type);
   }
 });
+
+test("Both RSS endpoints expose each article's generated OG image to Mailchimp", async ({
+  request,
+}) => {
+  const [response, legacyResponse] = await Promise.all([
+    request.get("/rss.xml"),
+    request.get("/feed/index.xml"),
+  ]);
+  expect(response.ok()).toBe(true);
+  expect(legacyResponse.ok()).toBe(true);
+  const xml = await response.text();
+  const rss = load(xml, { xml: true });
+  const legacy = load(await legacyResponse.text(), { xml: true });
+  expect(legacy("rss").attr("xmlns:media")).toBe(
+    "http://search.yahoo.com/mrss/",
+  );
+  expect(legacy("channel > item").toString()).toBe(
+    rss("channel > item").toString(),
+  );
+  expect(rss("rss").attr("xmlns:media")).toBe("http://search.yahoo.com/mrss/");
+  const items = rss("channel > item").toArray();
+  expect(items.length).toBeGreaterThan(0);
+
+  for (const node of items) {
+    const item = rss(node);
+    const url = item.children("link").text();
+    const page = await request.get(new URL(url).pathname);
+    expect(page.ok(), url).toBe(true);
+    const html = load(await page.text());
+    const media = item.children("media\\:content");
+    const image = html('meta[property="og:image"]').attr("content");
+    expect(media, url).toHaveLength(1);
+    expect(media.attr("url"), url).toBe(image);
+    expect(media.attr("medium"), url).toBe("image");
+    expect(media.attr("type"), url).toBe("image/png");
+    expect(media.attr("width"), url).toBe("1200");
+    expect(media.attr("height"), url).toBe("630");
+    expect(image, url).toMatch(
+      /^https:\/\/rehansaeed\.com\/_og\/s\/o_[a-f0-9]+\.png$/,
+    );
+    const png = await request.get(new URL(image!).pathname);
+    expect(png.ok(), image).toBe(true);
+    expect(png.headers()["content-type"], image).toContain("image/png");
+    const buffer = await png.body();
+    expect(buffer.readUInt32BE(16), image).toBe(1200);
+    expect(buffer.readUInt32BE(20), image).toBe(630);
+  }
+});
