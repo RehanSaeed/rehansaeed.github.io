@@ -220,10 +220,13 @@ When explicitly asked to help draft an article, follow these guidelines:
 - Use full, descriptive tag names, including an acronym in parentheses where
   useful: for example, `Artificial Intelligence (AI)` rather than `AI`.
   Prefer an existing full-name tag over introducing an acronym-only variant.
-- Use an existing, relevant hero image or supply an appropriately licensed one.
-  Hero images must match the schema's `/images/...-<width>x<height>.png` or JPEG
-  naming pattern, with dimensions matching the actual file. Choose an image
-  relevant to the article rather than copying another post's image by default.
+- A request to create a new post includes authorisation to generate a fresh,
+  article-specific hero without asking again. Follow the existing house style,
+  reference images and image preparation instructions below. Honour explicit user
+  exceptions, including reuse or no generation; if tooling is unavailable, report
+  the blocker rather than silently reusing another post's hero.
+- Hero images must match the schema's `/images/...-<width>x<height>.png` or JPEG
+  naming pattern, with dimensions matching the actual file.
 - For new posts, use a **1600x900** hero image, the larger of the two common
   formats in this repository; **1366x768** is the older format. Prefer a source
   image at least that large, preserve its aspect ratio and avoid cropping
