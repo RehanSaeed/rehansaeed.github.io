@@ -73,6 +73,14 @@ unavailable-image and navigation-error cases still install their explicit routes
 Capture geometry, image-readiness assertions and preparation deadlines are not
 relaxed to accommodate an unready image.
 
+Nuxt's payload guard can wait before its native transition starts. To exercise
+the 600 ms limit on an actually frozen update, cold-data tests return an empty
+article payload and delay the subsequent Content SQL request. Delaying the
+prerendered payload instead would test a pre-capture loading phase, not that limit.
+Source-geometry tests also await the card's existing focus animation before
+activation, so their reference rectangle is stationary when the browser captures
+it. They do not loosen pixel tolerances or disable application animations.
+
 Nuxt rejects its native update when navigation fails. The error regression checks
 that rejection, the visible error page, cleared transition state and recovery;
 it does not require the former custom controller's successful native completion.

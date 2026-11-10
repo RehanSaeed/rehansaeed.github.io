@@ -47,8 +47,13 @@ declare global {
 }
 
 const destination = "/live-streaming-dotnet/";
-const destinationContent =
-  /\/(?:__nuxt_content\/posts\/sql_dump\.txt|live-streaming-dotnet\/_payload\.json)(?:\?|$)/;
+const destinationContent = /\/__nuxt_content\/posts\/sql_dump\.txt(?:\?|$)/;
+const destinationPayload = /\/live-streaming-dotnet\/_payload\.json(?:\?|$)/;
+const forceClientContentQuery = (page: Page) =>
+  // An empty devalue payload makes the article query the client Content database.
+  page.route(destinationPayload, (route) =>
+    route.fulfill({ json: [{ data: 1 }, {}] }),
+  );
 const activators = {
   mouse: (link: Locator) => link.click({ noWaitAfter: true }),
   Enter: (link: Locator) => link.press("Enter", { noWaitAfter: true }),
@@ -239,6 +244,11 @@ const prepare = async (page: Page, warm = true) => {
     image.scrollIntoView({ block: "center", behavior: "instant" });
   });
   await link.focus();
+  await card.evaluate(async (element) => {
+    await Promise.all(
+      element.getAnimations().map((animation) => animation.finished),
+    );
+  });
   return link;
 };
 
@@ -632,6 +642,7 @@ test.describe("Bounded card-to-article hero continuity", () => {
   test("Skips frozen capture while cold Content is still loading", async ({
     page,
   }) => {
+    await forceClientContentQuery(page);
     let release!: () => void;
     const blocked = new Promise<void>((resolve) => {
       release = resolve;
@@ -720,6 +731,7 @@ test.describe("Bounded card-to-article hero continuity", () => {
   test("Cancels a pending transition when another route is selected", async ({
     page,
   }) => {
+    await forceClientContentQuery(page);
     let release!: () => void;
     const blocked = new Promise<void>((resolve) => {
       release = resolve;
@@ -759,6 +771,7 @@ test.describe("Bounded card-to-article hero continuity", () => {
   test("Releases transition state when the destination fails to load", async ({
     page,
   }) => {
+    await page.route(destinationPayload, (route) => route.abort());
     await page.route(destinationContent, (route) => route.abort());
     const link = await prepare(page, false);
     await activators.Enter(link);
