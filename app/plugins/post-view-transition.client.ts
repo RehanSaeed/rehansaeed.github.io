@@ -38,23 +38,67 @@ export default defineNuxtPlugin((nuxtApp) => {
     reset();
   };
 
-  router.beforeEach((to) => {
-    to.meta.viewTransition =
-      to.fullPath === selected?.permalink &&
-      !reducedMotion.matches &&
-      !forcedColors.matches;
-    if (!to.meta.viewTransition) {
-      cancel();
+  const selectSource = (event: MouseEvent) => {
+    const link =
+      event.target instanceof Element
+        ? event.target.closest<HTMLAnchorElement>(
+            ".post-card__title a, .post-navigation__link",
+          )
+        : null;
+    if (!link) {
+      return;
     }
-  });
-  router.afterEach((_to, _from, failure) => {
-    if (failure || !selected?.transition) {
+    if (selected) {
       cancel();
+      return;
     }
-  });
-  router.onError(cancel);
-  nuxtApp.hook("app:error", cancel);
-  nuxtApp.hook("page:view-transition:start", (transition) => {
+    if (
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.altKey ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.shiftKey ||
+      link.hasAttribute("download") ||
+      (link.target && link.target !== "_self") ||
+      reducedMotion.matches ||
+      forcedColors.matches ||
+      document.hidden ||
+      document.querySelector('dialog[open], [aria-modal="true"]')
+    ) {
+      return;
+    }
+    const card = link.closest<HTMLElement>(
+      ".posts .post-card, .post-navigation__card",
+    );
+    const image = card?.querySelector<HTMLImageElement>(
+      ".post-card__image, .post-navigation__image",
+    );
+    if (
+      !card ||
+      !image?.complete ||
+      image.naturalWidth === 0 ||
+      !card.dataset.postHero ||
+      link.href !== `${location.origin}${card.dataset.postPermalink}` ||
+      link.pathname === router.currentRoute.value.path ||
+      !intersectsViewport(image.getBoundingClientRect())
+    ) {
+      return;
+    }
+    const sourceClass = card.matches(".post-card")
+      ? "post-card__image--view-transition"
+      : "post-navigation__image--view-transition";
+    selected = {
+      permalink: link.pathname,
+      hero: card.dataset.postHero,
+      source: image,
+      sourceClass,
+    };
+    image.classList.add(sourceClass);
+    root.classList.add("post-view-transition");
+  };
+
+  const trackTransition = (transition: ViewTransition) => {
     const selection = selected;
     if (!selection) {
       transition.skipTransition();
@@ -70,8 +114,9 @@ export default defineNuxtPlugin((nuxtApp) => {
       }
     };
     void transition.finished.then(cleanup, cleanup);
-  });
-  nuxtApp.hook("page:finish", () => {
+  };
+
+  const prepareDestination = () => {
     if (!selected?.transition) {
       return;
     }
@@ -101,7 +146,27 @@ export default defineNuxtPlugin((nuxtApp) => {
     ) {
       skip();
     }
+  };
+
+  router.beforeEach((to) => {
+    to.meta.viewTransition =
+      to.fullPath === selected?.permalink &&
+      !reducedMotion.matches &&
+      !forcedColors.matches;
+    if (!to.meta.viewTransition) {
+      cancel();
+    }
   });
+  router.afterEach((_to, _from, failure) => {
+    if (failure || !selected?.transition) {
+      cancel();
+    }
+  });
+  router.onError(cancel);
+  nuxtApp.hook("app:error", cancel);
+  nuxtApp.hook("page:view-transition:start", trackTransition);
+  nuxtApp.hook("page:finish", prepareDestination);
+  document.addEventListener("click", selectSource, { capture: true });
 
   reducedMotion.addEventListener("change", skip);
   forcedColors.addEventListener("change", skip);
@@ -129,67 +194,4 @@ export default defineNuxtPlugin((nuxtApp) => {
       skip();
     }
   });
-  document.addEventListener(
-    "click",
-    (event) => {
-      const link =
-        event.target instanceof Element
-          ? event.target.closest<HTMLAnchorElement>(
-              ".post-card__title a, .post-navigation__link",
-            )
-          : null;
-      if (!link) {
-        return;
-      }
-      if (selected) {
-        cancel();
-        return;
-      }
-      if (
-        event.defaultPrevented ||
-        event.button !== 0 ||
-        event.altKey ||
-        event.ctrlKey ||
-        event.metaKey ||
-        event.shiftKey ||
-        link.hasAttribute("download") ||
-        (link.target && link.target !== "_self") ||
-        reducedMotion.matches ||
-        forcedColors.matches ||
-        document.hidden ||
-        document.querySelector('dialog[open], [aria-modal="true"]')
-      ) {
-        return;
-      }
-      const card = link.closest<HTMLElement>(
-        ".posts .post-card, .post-navigation__card",
-      );
-      const image = card?.querySelector<HTMLImageElement>(
-        ".post-card__image, .post-navigation__image",
-      );
-      if (
-        !card ||
-        !image?.complete ||
-        image.naturalWidth === 0 ||
-        !card.dataset.postHero ||
-        link.href !== `${location.origin}${card.dataset.postPermalink}` ||
-        link.pathname === router.currentRoute.value.path ||
-        !intersectsViewport(image.getBoundingClientRect())
-      ) {
-        return;
-      }
-      const sourceClass = card.matches(".post-card")
-        ? "post-card__image--view-transition"
-        : "post-navigation__image--view-transition";
-      selected = {
-        permalink: link.pathname,
-        hero: card.dataset.postHero,
-        source: image,
-        sourceClass,
-      };
-      image.classList.add(sourceClass);
-      root.classList.add("post-view-transition");
-    },
-    { capture: true },
-  );
 });
