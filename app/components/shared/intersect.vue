@@ -6,7 +6,6 @@ import {
   nextTick,
   onMounted,
   onUnmounted,
-  shallowRef,
   type PropType,
 } from "vue";
 export default defineComponent({
@@ -19,7 +18,7 @@ export default defineComponent({
       default: () => [0, 0.2],
     },
     /** Element used as the intersection observer's viewport. */ root: {
-      type: Object as PropType<HTMLElement | SVGElement | Document | null>,
+      type: Object as PropType<Element | Document | null>,
       required: false,
       default: () => null,
     },
@@ -32,48 +31,47 @@ export default defineComponent({
   },
   setup(props, { emit, slots }) {
     const instance = getCurrentInstance();
-    const target = shallowRef<HTMLElement | SVGElement>();
     let hasIntersected = false;
-    useIntersectionObserver(
-      target,
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) {
-            emit("leave", [entry]);
-          } else {
-            emit("enter", [entry]);
-            if (!hasIntersected) {
-              hasIntersected = true;
-              emit("enterFirstTime", [entry]);
-            }
-          }
-
-          emit("change", [entry]);
-        }
-      },
-      {
-        threshold: props.threshold,
-        root: props.root,
-        rootMargin: props.rootMargin,
-      },
-    );
+    let observer: IntersectionObserver | undefined;
     onMounted(() => {
+      observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) {
+              emit("leave", [entry]);
+            } else {
+              emit("enter", [entry]);
+              if (!hasIntersected) {
+                hasIntersected = true;
+                emit("enterFirstTime", [entry]);
+              }
+            }
+
+            emit("change", [entry]);
+          }
+        },
+        {
+          threshold: props.threshold,
+          root: props.root,
+          rootMargin: props.rootMargin,
+        },
+      );
+
       void nextTick(() => {
         const element: unknown = instance?.proxy?.$el;
-        if (!(
-          element instanceof HTMLElement || element instanceof SVGElement
-        )) {
+        if (!(element instanceof Element)) {
           console.warn(
             "You must have exactly one element inside a <u-intersect> component.",
           );
           return;
         }
 
-        target.value = element;
+        observer?.observe(element);
       });
     });
     onUnmounted(() => {
       emit("destroyed");
+      observer?.disconnect();
     });
     return () => {
       const nodes = slots.default?.() ?? [];

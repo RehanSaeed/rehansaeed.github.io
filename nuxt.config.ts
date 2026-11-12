@@ -33,15 +33,12 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "@nuxtjs/seo",
     "@vite-pwa/nuxt",
-    "@vueuse/nuxt",
     "@nuxt/a11y",
     "@nuxt/eslint",
     "@nuxt/fonts",
   ],
 
   colorMode: {
-    preference: "system",
-    fallback: "light",
     storageKey: "theme",
     dataValue: "theme",
   },
