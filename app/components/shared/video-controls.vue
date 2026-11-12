@@ -581,6 +581,16 @@ onUnmounted(() => {
   }
 }
 
+.prose-video__button.button--icon {
+  background-clip: content-box;
+  font-size: 24px;
+  padding: 4px;
+
+  &:focus-visible {
+    outline-offset: -6px;
+  }
+}
+
 .prose-video__controls :focus-visible {
   outline: 2px solid currentColor;
   outline-offset: -2px;

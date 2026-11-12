@@ -378,8 +378,14 @@ test("Seek hover thickens the track and previews pointer time without seeking", 
     );
     const expected = `${Math.floor(time / 60)}:${String(Math.floor(time % 60)).padStart(2, "0")}`;
     await expect(tooltip).toHaveText(expected);
-    const preview = await tooltip.boundingBox();
-    expect(Math.abs(preview!.x + preview!.width / 2 - x)).toBeLessThan(1);
+    await expect
+      .poll(async () => {
+        const preview = await tooltip.boundingBox();
+        return preview
+          ? Math.abs(preview.x + preview.width / 2 - x)
+          : Number.POSITIVE_INFINITY;
+      })
+      .toBeLessThan(1);
     await expect
       .poll(() =>
         video.evaluate((element) =>
@@ -586,6 +592,27 @@ test("Full-width controls remain contained with large touch targets in both them
             const box = button.getBoundingClientRect();
             return box.width >= 44 && box.height >= 44;
           }),
+          toolbarFaces: Array.from(
+            element.querySelectorAll(".prose-video__button"),
+            (button) => {
+              const target = button.getBoundingClientRect();
+              const icon = button
+                .querySelector(".icon")!
+                .getBoundingClientRect();
+              const style = getComputedStyle(button);
+              return {
+                target: [target.width, target.height],
+                icon: [icon.width, icon.height],
+                padding: [
+                  style.paddingBlockStart,
+                  style.paddingBlockEnd,
+                  style.paddingInlineStart,
+                  style.paddingInlineEnd,
+                ],
+                backgroundClip: style.backgroundClip,
+              };
+            },
+          ),
         };
       });
       expect(layout.left).toBeGreaterThanOrEqual(0);
@@ -593,6 +620,16 @@ test("Full-width controls remain contained with large touch targets in both them
       expect(layout.right).toBeLessThanOrEqual(width);
       expect(layout.overflow).toBe(false);
       expect(layout.targets).toBe(true);
+      for (const face of layout.toolbarFaces) {
+        for (const dimension of face.target) {
+          expect(dimension).toBeCloseTo(44, 3);
+        }
+        for (const dimension of face.icon) {
+          expect(dimension).toBeCloseTo(24, 3);
+        }
+        expect(face.padding).toEqual(["4px", "4px", "4px", "4px"]);
+        expect(face.backgroundClip).toBe("content-box");
+      }
       expect(layout.height).toBeLessThanOrEqual(64);
       for (const spacing of layout.controlSpacing) {
         expect(spacing).toBeCloseTo(8, 3);
@@ -739,6 +776,7 @@ test("Full-width controls remain contained with large touch targets in both them
       await expect(play).toHaveCSS("color", "rgb(107, 23, 232)");
       await expect(play).toHaveCSS("background-color", "rgb(255, 255, 255)");
       await expect(play).toHaveCSS("outline-color", "rgb(107, 23, 232)");
+      await expect(play).toHaveCSS("outline-offset", "-6px");
       await page.keyboard.press("Tab");
     }
   }
