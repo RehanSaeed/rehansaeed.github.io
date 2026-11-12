@@ -19,7 +19,7 @@
     }
 
     :root.pagination-view-transition::view-transition-group(pagination-list) {
-      animation: none;
+      animation-name: none;
     }
 
     :root.pagination-view-transition::view-transition-old(pagination-list),
