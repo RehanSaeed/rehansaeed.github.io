@@ -1,9 +1,12 @@
 <template>
-  <section class="image-carousel" aria-label="Image gallery">
+  <section
+    class="image-carousel"
+    :class="{ 'image-carousel--interactive': isInteractive }"
+    aria-label="Image gallery">
     <p class="image-carousel__hint" :id="hintId">
       Scroll, swipe or use arrow keys when the gallery is focused.
       <template v-if="isInteractive">
-        Drag the image or use Previous and Next to move between images.
+        Drag the image, use Previous and Next, or choose an image below.
       </template>
     </p>
     <div class="image-carousel__viewport">
@@ -23,33 +26,44 @@
         <span
           class="image-carousel__arrows"
           :class="{ 'image-carousel__arrows--unavailable': !arrowTarget }">
-          <u-tooltip v-slot="{ trigger }" text="Previous image">
+          <u-tooltip
+            v-if="currentIndex > 0"
+            v-slot="{ trigger }"
+            text="Previous image">
             <u-button
               v-bind="trigger"
-              class="image-carousel__button"
-              variant="secondary"
+              class="image-carousel__button image-carousel__button--previous"
+              variant="icon"
               aria-label="Previous image"
               :aria-controls="trackId"
-              :disabled="currentIndex === 0"
-              @click="navigate(-1)">
+              @click="navigateToImage(currentIndex - 1)">
               <u-icon name="feather:arrow-left" aria-hidden="true" />
             </u-button>
           </u-tooltip>
-          <u-tooltip v-slot="{ trigger }" text="Next image">
+          <u-tooltip
+            v-if="currentIndex < count - 1"
+            v-slot="{ trigger }"
+            text="Next image">
             <u-button
               v-bind="trigger"
-              class="image-carousel__button"
-              variant="secondary"
+              class="image-carousel__button image-carousel__button--next"
+              variant="icon"
               aria-label="Next image"
               :aria-controls="trackId"
-              :disabled="currentIndex === count - 1"
-              @click="navigate(1)">
+              @click="navigateToImage(currentIndex + 1)">
               <u-icon name="feather:arrow-right" aria-hidden="true" />
             </u-button>
           </u-tooltip>
         </span>
       </Teleport>
     </div>
+    <u-carousel-pagination
+      v-if="isInteractive"
+      class="image-carousel__pagination"
+      :count="count"
+      :current-index="currentIndex"
+      :controls="trackId"
+      @select="navigateToImage" />
     <p class="image-carousel__position" aria-live="polite" aria-atomic="true">
       <template v-if="isInteractive">
         Image {{ currentIndex + 1 }} of {{ count }}
@@ -104,7 +118,12 @@ const updatePosition = () => {
   }
 };
 
-const updateArrowTarget = () => {
+const updateActiveSlide = () => {
+  for (const [index, slide] of Array.from(
+    track.value?.children ?? [],
+  ).entries()) {
+    slide.toggleAttribute("data-current", index === currentIndex.value);
+  }
   const frame = track.value?.children[currentIndex.value]?.querySelector(
     ":scope > p, :scope > figure > p",
   );
@@ -118,18 +137,17 @@ const updateArrowTarget = () => {
     focused.classList.contains("image-carousel__button")
   ) {
     void nextTick(() => {
-      if (!focused.disabled) {
+      if (focused.isConnected && !focused.disabled) {
         focused.focus({ preventScroll: true });
+      } else {
+        track.value?.focus({ preventScroll: true });
       }
     });
   }
 };
 
-const navigate = (direction: number) => {
-  const index = Math.max(
-    0,
-    Math.min(props.count - 1, currentIndex.value + direction),
-  );
+const navigateToImage = (requestedIndex: number) => {
+  const index = Math.max(0, Math.min(props.count - 1, requestedIndex));
   track.value?.scrollTo({
     left: index * slideStep(),
     behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -210,7 +228,7 @@ const preventImageDrag = (event: DragEvent) => {
   }
 };
 
-watch(currentIndex, updateArrowTarget);
+watch(currentIndex, updateActiveSlide);
 
 const pointerHandlers = [
   ["pointerdown", startDrag],
@@ -227,7 +245,7 @@ onMounted(() => {
   track.value?.addEventListener("dragstart", preventImageDrag);
   track.value?.addEventListener("click", preventDraggedClick, true);
   updatePosition();
-  updateArrowTarget();
+  updateActiveSlide();
   isInteractive.value = true;
 });
 
@@ -241,6 +259,8 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="scss">
+@use "~/assets/style/abstracts/visually-hidden";
+
 .image-carousel {
   --image-carousel-slide-size: min(90vw, var(--global-space-content-max-width));
 
@@ -330,6 +350,19 @@ onBeforeUnmount(() => {
   margin-inline: 0;
 }
 
+.image-carousel--interactive .image-carousel__slide .prose-image {
+  opacity: 0.5;
+  scale: 0.88;
+  transition:
+    opacity var(--global-duration-2) var(--ease-in-out-cubic),
+    scale var(--global-duration-2) var(--ease-in-out-cubic);
+}
+
+.image-carousel--interactive .image-carousel__slide[data-current] .prose-image {
+  opacity: 1;
+  scale: 1;
+}
+
 .image-carousel__arrows {
   position: absolute;
   inset-block: 0;
@@ -345,19 +378,26 @@ onBeforeUnmount(() => {
   visibility: hidden;
 }
 
-.image-carousel__position {
-  min-inline-size: 0;
+.image-carousel__pagination {
+  padding-inline: var(--global-space-fixed-3);
   margin-block-start: var(--global-space-fixed-3);
-  margin-block-end: 0;
-  margin-inline: auto;
-  text-align: center;
-  font-size: var(--global-font-size-1);
+}
+
+.image-carousel__position {
+  @include visually-hidden.visually-hidden();
 }
 
 .image-carousel__button {
   background-color: var(--global-content-background-color);
-  min-block-size: 44px;
   pointer-events: auto;
+}
+
+.image-carousel__button--previous {
+  grid-column: 1;
+}
+
+.image-carousel__button--next {
+  grid-column: 2;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -379,14 +419,14 @@ onBeforeUnmount(() => {
   }
 }
 
-.image-carousel .image-carousel__button:focus-visible {
-  outline: 2px solid var(--global-accent-color);
-  outline-offset: 3px;
+@media (prefers-reduced-motion: reduce) {
+  .image-carousel--interactive .image-carousel__slide .prose-image {
+    transition: none;
+  }
 }
 
 @media (forced-colors: active) {
-  .image-carousel__track:focus-visible,
-  .image-carousel .image-carousel__button:focus-visible {
+  .image-carousel__track:focus-visible {
     outline-color: Highlight;
   }
 }

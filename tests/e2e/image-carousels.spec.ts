@@ -42,8 +42,15 @@ for (const width of [1440, 640, 375, 320]) {
     await track.scrollIntoViewIfNeeded();
     const previous = gallery.getByRole("button", { name: "Previous image" });
     const next = gallery.getByRole("button", { name: "Next image" });
-    await expect(previous).toBeDisabled();
+    await expect(previous).toHaveCount(0);
     await expect(next).toBeEnabled();
+    await expect(next).toHaveClass(/button--icon/);
+    await expect(next).toHaveCSS("border-radius", "50%");
+    const pagination = gallery.getByRole("group", { name: "Choose image" });
+    await expect(pagination.getByRole("button")).toHaveCount(2);
+    await expect(
+      pagination.locator('[aria-current="true"]'),
+    ).toHaveAccessibleName("Go to image 1 of 2");
 
     for (const theme of ["light", "dark"]) {
       await page.evaluate((value) => {
@@ -92,8 +99,12 @@ for (const width of [1440, 640, 375, 320]) {
     await expect(gallery.locator(".image-carousel__position")).toHaveText(
       "Image 2 of 2",
     );
-    await expect(next).toBeDisabled();
+    await expect(next).toHaveCount(0);
     await expect(previous).toBeEnabled();
+    await expect(track).toBeFocused();
+    await expect(
+      pagination.locator('[aria-current="true"]'),
+    ).toHaveAccessibleName("Go to image 2 of 2");
     await expect(images.nth(1)).toBeInViewport();
     await expect
       .poll(() =>
@@ -138,8 +149,9 @@ for (const width of [1440, 640, 375, 320]) {
     await expect(gallery.locator(".image-carousel__position")).toHaveText(
       "Image 1 of 2",
     );
-    await expect(previous).toBeDisabled();
+    await expect(previous).toHaveCount(0);
     await expect(next).toBeEnabled();
+    await expect(track).toBeFocused();
   });
 }
 
@@ -240,7 +252,17 @@ test("Buttons advance one slide and galleries have independent controls", async 
   await expect(gallery.locator(".image-carousel__position")).toHaveText(
     "Image 3 of 3",
   );
-  await expect(next).toBeDisabled();
+  await expect(next).toHaveCount(0);
+  await expect(gallery.locator(".image-carousel__track")).toBeFocused();
+  const firstDot = gallery.getByRole("button", { name: "Go to image 1 of 3" });
+  await firstDot.focus();
+  await firstDot.press("Enter");
+  await expect(gallery.locator(".image-carousel__position")).toHaveText(
+    "Image 1 of 3",
+  );
+  await expect(firstDot).toBeFocused();
+  await expect(firstDot).toHaveAttribute("aria-current", "true");
+  await expect(previous).toHaveCount(0);
   await expect(
     galleries
       .filter({ hasNot: page.locator(".image-carousel__slide:nth-child(3)") })
@@ -265,7 +287,8 @@ test("Galleries and their images render with JavaScript disabled", async ({
   });
   await expect(track.locator("img")).toHaveCount(2);
   const buttons = page.locator(".image-carousel button");
-  await expect(buttons).toHaveCount(2);
+  await expect(buttons).toHaveCount(1);
+  await expect(page.locator(".carousel-pagination")).toHaveCount(0);
   await expect(page.locator(".image-carousel__position")).toHaveText(
     "2 images",
   );
@@ -293,6 +316,8 @@ test("Overlay buttons reveal on hover and keyboard focus with dismissible toolti
   const image = gallery.locator("img").first();
   const next = gallery.getByRole("button", { name: "Next image" });
   await expect(next).toBeEnabled();
+  await expect(next).toHaveCSS("inline-size", "44px");
+  await expect(next).toHaveCSS("block-size", "44px");
   await track.scrollIntoViewIfNeeded();
   await page.mouse.move(0, 0);
   // Hybrid devices retain visible controls for their touch input.
@@ -328,6 +353,102 @@ test("Overlay buttons reveal on hover and keyboard focus with dismissible toolti
   await expect(page.getByRole("tooltip", { name: "Next image" })).toBeVisible();
   await next.press("Escape");
   await expect(page.getByRole("tooltip")).toBeHidden();
+});
+
+test("Dot navigation selects images and respects reduced motion in both themes", async ({
+  page,
+}) => {
+  await page.goto("/ai-learnings-from-upgrading-my-blog/", {
+    waitUntil: "domcontentloaded",
+  });
+  const gallery = page.locator(".image-carousel");
+  const pictures = gallery.locator(".prose-image");
+  const firstDot = gallery.getByRole("button", { name: "Go to image 1 of 2" });
+  const secondDot = gallery.getByRole("button", { name: "Go to image 2 of 2" });
+  await gallery.scrollIntoViewIfNeeded();
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate((value) => {
+      document.documentElement.dataset.theme = value;
+    }, theme);
+    await firstDot.click();
+    await expect(pictures.nth(0)).toHaveCSS("opacity", "1");
+    await expect(pictures.nth(0)).toHaveCSS("scale", "1");
+    await expect(pictures.nth(1)).toHaveCSS("opacity", "0.5");
+    await expect(pictures.nth(1)).toHaveCSS("scale", "0.88");
+    await expect(pictures.nth(1)).toHaveCSS("transition-duration", "0s");
+    await secondDot.click();
+    await expect(secondDot).toHaveAttribute("aria-current", "true");
+    await expect(firstDot).not.toHaveAttribute("aria-current");
+    await expect(pictures.nth(1)).toHaveCSS("opacity", "1");
+    await expect(pictures.nth(1)).toHaveCSS("scale", "1");
+    await expect(pictures.nth(0)).toHaveCSS("opacity", "0.5");
+    await expect(pictures.nth(0)).toHaveCSS("scale", "0.88");
+  }
+  await page.emulateMedia({ forcedColors: "active" });
+  await firstDot.focus();
+  await firstDot.press("Tab");
+  await expect(secondDot).toBeFocused();
+  await expect(secondDot).toHaveCSS("outline-style", "solid");
+  await expect(secondDot.locator("span")).not.toHaveCSS(
+    "background-color",
+    await firstDot
+      .locator("span")
+      .evaluate((element) => getComputedStyle(element).backgroundColor),
+  );
+});
+
+test.describe("Image focus animations", () => {
+  test.use({ reducedMotion: "no-preference" });
+
+  test("The centred image fades and grows to full size without changing snap geometry", async ({
+    page,
+  }) => {
+    await page.goto("/ai-learnings-from-upgrading-my-blog/", {
+      waitUntil: "domcontentloaded",
+    });
+    const gallery = page.locator(".image-carousel");
+    const pictures = gallery.locator(".prose-image");
+    const next = gallery.getByRole("button", { name: "Next image" });
+    await expect(next).toBeEnabled();
+    await gallery.scrollIntoViewIfNeeded();
+    await expect(pictures.nth(1)).toHaveCSS("opacity", "0.5");
+    await gallery.locator("img").first().hover();
+    await expect(next).toHaveCSS("opacity", "1");
+    const transitions = pictures.nth(1).evaluate(
+      (element) =>
+        new Promise<string[]>((resolve) => {
+          const properties = new Set<string>();
+          element.addEventListener("transitionend", (event) => {
+            if (
+              !(event instanceof TransitionEvent) ||
+              event.target !== element
+            ) {
+              return;
+            }
+            properties.add(event.propertyName);
+            if (properties.has("opacity") && properties.has("scale")) {
+              resolve([...properties]);
+            }
+          });
+        }),
+    );
+    await next.click();
+    expect(await transitions).toEqual(
+      expect.arrayContaining(["opacity", "scale"]),
+    );
+    await expect(pictures.nth(1)).toHaveCSS("opacity", "1");
+    await expect(pictures.nth(1)).toHaveCSS("scale", "1");
+    await expect(pictures.nth(0)).toHaveCSS("opacity", "0.5");
+    await expect(pictures.nth(0)).toHaveCSS("scale", "0.88");
+    await expect
+      .poll(() =>
+        pictures.nth(1).evaluate((element) => {
+          const bounds = element.getBoundingClientRect();
+          return Math.abs(bounds.x + bounds.width / 2 - window.innerWidth / 2);
+        }),
+      )
+      .toBeLessThanOrEqual(1);
+  });
 });
 
 test.describe("Touch-capable devices", () => {
