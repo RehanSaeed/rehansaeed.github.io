@@ -20,10 +20,12 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
         await page.addInitScript(() => {
           Object.defineProperty(navigator, "share", { value: undefined });
         });
-        await page.goto("/");
-        if (title !== "Search") {
-          await page.locator(".post-card__title").first().click();
-        }
+        // Keep dialog coverage independent of the newest post and page transitions.
+        await page.goto(
+          title === "Search"
+            ? "/"
+            : "/on-the-etiquette-of-pull-request-comments/",
+        );
         const opener = page
           .getByRole("button", { name: trigger, exact: true })
           .first();
