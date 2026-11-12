@@ -1,4 +1,6 @@
-export default defineNuxtPlugin((nuxtApp) => {
+import type { NuxtApp } from "#app";
+
+const setupPostViewTransition = (nuxtApp: NuxtApp): void => {
   if (typeof document.startViewTransition !== "function") {
     return;
   }
@@ -26,6 +28,8 @@ export default defineNuxtPlugin((nuxtApp) => {
         hero: string;
         source: HTMLImageElement;
         target?: HTMLImageElement;
+        bridge?: HTMLImageElement;
+        bridgeStyle?: HTMLStyleElement;
       }
     | undefined;
   let activeTransition: ViewTransition | undefined;
@@ -36,6 +40,8 @@ export default defineNuxtPlugin((nuxtApp) => {
     activeTransition = undefined;
     selected?.source.classList.remove("post-view-transition__hero");
     selected?.target?.classList.remove("post-view-transition__hero");
+    selected?.bridge?.remove();
+    selected?.bridgeStyle?.remove();
     root.classList.remove("post-view-transition");
     selected = undefined;
   };
@@ -57,7 +63,10 @@ export default defineNuxtPlugin((nuxtApp) => {
     !reducedMotion.matches &&
     !forcedColors.matches &&
     !document.hidden &&
-    !document.querySelector('dialog[open], [aria-modal="true"]');
+    ![...document.querySelectorAll('dialog[open], [aria-modal="true"]')].some(
+      (modal) =>
+        !modal.matches("dialog.search-dialogue") || !modal.contains(link),
+    );
 
   const findSource = (link: HTMLAnchorElement) => {
     const card = link.closest<HTMLElement>("[data-view-transition-source]");
@@ -73,10 +82,34 @@ export default defineNuxtPlugin((nuxtApp) => {
     ) {
       return;
     }
+    let bridge: HTMLImageElement | undefined;
+    let bridgeStyle: HTMLStyleElement | undefined;
+    if (link.closest("dialog.search-dialogue[open]")) {
+      // The modal must close before capture. Keep only its selected image in
+      // viewport coordinates, outside the top layer, until the new page is ready.
+      const box = image.getBoundingClientRect();
+      bridge = document.createElement("img");
+      bridge.className = `${image.className} post-view-transition__bridge`;
+      bridge.dataset.viewTransitionImage = "";
+      bridge.src = image.currentSrc;
+      bridge.alt = "";
+      bridge.setAttribute("aria-hidden", "true");
+      bridgeStyle = document.createElement("style");
+      bridgeStyle.textContent = `.post-view-transition__bridge {
+        left: ${box.left}px;
+        top: ${box.top}px;
+        inline-size: ${box.width}px;
+        block-size: ${box.height}px;
+      }`;
+      document.head.append(bridgeStyle);
+      document.body.append(bridge);
+    }
     return {
       permalink: link.pathname,
       hero: card.dataset.postHero,
-      source: image,
+      source: bridge ?? image,
+      bridge,
+      bridgeStyle,
     };
   };
 
@@ -158,6 +191,8 @@ export default defineNuxtPlugin((nuxtApp) => {
     }
     const { hero, heading } = destination;
     selected.target = hero;
+    selected.bridge?.remove();
+    selected.bridgeStyle?.remove();
     hero.classList.add("post-view-transition__hero");
     // Nuxt captures after page:finish; its normal router scroll waits another frame.
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
@@ -259,4 +294,12 @@ export default defineNuxtPlugin((nuxtApp) => {
   if (import.meta.hot) {
     import.meta.hot.dispose(dispose);
   }
+};
+
+export default defineNuxtPlugin({
+  name: "post-view-transition",
+  // Prepare snapshots before Nuxt releases its page:finish transition barrier.
+  enforce: "pre",
+  dependsOn: ["nuxt:router"],
+  setup: setupPostViewTransition,
 });

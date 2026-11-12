@@ -1,6 +1,7 @@
 <template>
   <Transition name="dialog" @enter="open" @after-leave="hide">
     <dialog
+      ref="dialog"
       v-show="isOpen"
       class="dialog"
       :class="{ 'dialog--fullscreen': fullscreen }"
@@ -34,11 +35,12 @@
 </template>
 
 <script setup lang="ts">
-import { useId } from "vue";
+import { useId, useTemplateRef } from "vue";
 
 defineOptions({ name: "u-dialogue" });
 const emit = defineEmits<{ close: [] }>();
 const titleId = useId();
+const dialog = useTemplateRef<HTMLDialogElement>("dialog");
 const props = defineProps({
   /** Whether the dialog fills the viewport. */ fullscreen: {
     default: false,
@@ -78,6 +80,11 @@ const close = () => {
     emit("close");
   }
 };
+// Navigation must remove the top layer before Nuxt captures either page.
+const closeForNavigation = () => {
+  dialog.value?.close();
+};
+defineExpose({ closeForNavigation });
 </script>
 
 <style lang="scss">
