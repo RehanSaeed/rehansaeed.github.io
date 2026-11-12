@@ -40,7 +40,7 @@ const propertiesPath = join(process.cwd(), "app/assets/style/_properties.scss");
 const properties = compileString(readFileSync(propertiesPath, "utf8"), {
   url: pathToFileURL(propertiesPath),
 }).css;
-const variants = ["plain", "secondary", "primary"] as const;
+const variants = ["plain", "secondary", "primary", "icon"] as const;
 
 for (const variant of variants) {
   unitTest(
@@ -71,7 +71,17 @@ for (const theme of ["light", "dark"]) {
       `<html data-theme="${theme}"><body><div id="app"></div></body></html>`,
     );
     await page.addStyleTag({
-      content: `${properties}\n${styles}\n.button { transition: none; }`,
+      content: `${properties}\n${styles}
+        .button:not(.button--icon) { transition: none; }
+        .overlay {
+          color: white;
+          background: #222;
+          --button-icon-color: white;
+          --button-icon-hover-color: #410c83;
+          --button-icon-hover-background: white;
+          --button-icon-disabled-color: rgb(255 255 255 / 65%);
+          --button-icon-disabled-background: rgb(255 255 255 / 15%);
+        }`,
     });
     await page.addScriptTag({
       path: loadDependency.resolve("vue/dist/vue.global.js"),
@@ -93,6 +103,14 @@ for (const theme of ["light", "dark"]) {
               </u-button>
               <u-button variant="secondary" :disabled="disabled" @click="clicks++">secondary</u-button>
               <u-button variant="primary" :disabled="disabled" @click="clicks++">primary</u-button>
+              <u-button variant="icon" aria-label="icon" :disabled="disabled" @click="clicks++">
+                <svg aria-hidden="true" width="20" height="20"><path d="M0 0h20v20H0z" /></svg>
+              </u-button>
+              <div class="overlay">
+                <u-button variant="icon" aria-label="overlay action" :disabled="disabled" @click="clicks++">
+                  <svg aria-hidden="true" width="20" height="20"><path d="M0 0h20v20H0z" /></svg>
+                </u-button>
+              </div>
               <u-button variant="primary" submit :disabled="disabled">Submit</u-button>
               <button type="button" @click="disabled=!disabled">Toggle disabled</button>
               <output :data-clicks="clicks" :data-submits="submits" :data-entered="entered"></output>
@@ -107,6 +125,8 @@ for (const theme of ["light", "dark"]) {
       exact: true,
     });
     const primary = page.getByRole("button", { name: "primary", exact: true });
+    const icon = page.getByRole("button", { name: "icon", exact: true });
+    const overlay = page.getByRole("button", { name: "overlay action" });
     const submit = page.getByRole("button", { name: "Submit", exact: true });
     const output = page.locator("output");
     const tokens = await primary.evaluate((element) => {
@@ -130,6 +150,20 @@ for (const theme of ["light", "dark"]) {
     await expect(plain).toHaveClass("button button--plain forwarded");
     await expect(secondary).toHaveClass("button button--secondary");
     await expect(primary).toHaveClass("button button--primary");
+    for (const control of [icon, overlay]) {
+      await expect(control).toHaveClass("button button--icon");
+      await expect(control).toHaveCSS("width", "44px");
+      await expect(control).toHaveCSS("height", "44px");
+      await expect(control).toHaveCSS("border-radius", "50%");
+      await expect(control.locator("svg")).toBeVisible();
+    }
+    await expect(icon).toHaveCSS(
+      "color",
+      await icon.evaluate(
+        (element) => getComputedStyle(element.parentElement!).color,
+      ),
+    );
+    await expect(overlay).toHaveCSS("color", "rgb(255, 255, 255)");
     await expect(plain.locator("svg")).toBeVisible();
     await expect(plain).toHaveCSS("padding", "0px");
     await expect(plain).toHaveCSS("border-top-width", "0px");
@@ -164,10 +198,24 @@ for (const theme of ["light", "dark"]) {
     await expect(output).toHaveAttribute("data-clicks", "1");
     await expect(output).toHaveAttribute("data-submits", "0");
 
-    for (const control of [plain, secondary, primary]) {
+    for (const control of [plain, secondary, primary, icon, overlay]) {
       await expect(control).toHaveAttribute("type", "button");
       await control.hover();
-      if (control !== plain) {
+      if (control === icon || control === overlay) {
+        await expect(control).toHaveCSS(
+          "background-color",
+          control === icon ? tokens.border : "rgb(255, 255, 255)",
+        );
+        await expect(control).toHaveCSS(
+          "color",
+          control === icon
+            ? await control.evaluate(
+                (element) => getComputedStyle(element.parentElement!).color,
+              )
+            : "rgb(65, 12, 131)",
+        );
+        await expect(control).toHaveCSS("transform", "none");
+      } else if (control !== plain) {
         await expect(control).toHaveCSS(
           "transform",
           "matrix(1, 0, 0, 1, 0, -2)",
@@ -193,6 +241,14 @@ for (const theme of ["light", "dark"]) {
           "matrix(1.07, 0, 0, 1.07, 0, 0)",
         );
         await expect(control).toHaveCSS("color", tokens.accent);
+      } else if (control === icon || control === overlay) {
+        await expect(control).toHaveCSS("outline-style", "solid");
+        await expect(control).toHaveCSS("outline-width", "2px");
+        await expect(control).toHaveCSS("transform", "none");
+        await expect(control).toHaveCSS(
+          "background-color",
+          control === icon ? tokens.border : "rgb(255, 255, 255)",
+        );
       } else {
         await expect(control).toHaveCSS("outline-style", "none");
         await expect(control).toHaveCSS(
@@ -222,12 +278,15 @@ for (const theme of ["light", "dark"]) {
 
     await page.getByRole("button", { name: "Toggle disabled" }).click();
     const clicks = await output.getAttribute("data-clicks");
-    for (const control of [plain, secondary, primary, submit]) {
+    for (const control of [plain, secondary, primary, icon, overlay, submit]) {
       await expect(control).toBeDisabled();
       // Disabled controls cannot pass actionability checks; exercise their disabled hover styles.
       // eslint-disable-next-line playwright/no-force-option
       await control.hover({ force: true });
-      await expect(control).toHaveCSS("color", tokens.disabled);
+      await expect(control).toHaveCSS(
+        "color",
+        control === overlay ? "rgba(255, 255, 255, 0.65)" : tokens.disabled,
+      );
       await expect(control).toHaveCSS("cursor", "not-allowed");
       // Deliberately dispatch a click to verify disabled controls do not invoke their handlers.
       // eslint-disable-next-line playwright/no-force-option
@@ -235,12 +294,74 @@ for (const theme of ["light", "dark"]) {
     }
     await expect(output).toHaveAttribute("data-clicks", clicks!);
     await expect(output).toHaveAttribute("data-submits", "1");
+    await expect(icon).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+    await expect(overlay).toHaveCSS(
+      "background-color",
+      "rgba(255, 255, 255, 0.15)",
+    );
     await expect(primary).toHaveCSS("background-color", tokens.border);
     await expect(primary).toHaveCSS("border-top-color", tokens.border);
     await expect(primary).toHaveCSS("transform", "none");
     await page.getByRole("button", { name: "Toggle disabled" }).click();
     await expect(primary).toBeEnabled();
     await expect(primary).toHaveCSS("background-color", tokens.accent);
+    await page.addStyleTag({
+      content: ".button { color: var(--global-title-color); }",
+    });
+    await expect(icon).toHaveCSS(
+      "color",
+      await icon.evaluate(
+        (element) => getComputedStyle(element.parentElement!).color,
+      ),
+    );
+    await expect(overlay).toHaveCSS("color", "rgb(255, 255, 255)");
+    for (const motion of ["reduce", "no-preference"] as const) {
+      await page.emulateMedia({ reducedMotion: motion });
+      await icon.focus();
+      const beforeKeyboardClick = Number(
+        await output.getAttribute("data-clicks"),
+      );
+      await page.keyboard.press("Space");
+      await expect(output).toHaveAttribute(
+        "data-clicks",
+        String(beforeKeyboardClick + 1),
+      );
+      await expect(output).toHaveAttribute("data-submits", "1");
+      await expect(icon).toHaveCSS("transform", "none");
+      await expect(icon).toHaveCSS("transition-duration", "0s");
+    }
+    await page.emulateMedia({ forcedColors: "active" });
+    for (const control of [icon, overlay]) {
+      await control.focus();
+      await page.keyboard.press("Tab");
+      await page.keyboard.press("Shift+Tab");
+      await expect(control).toBeFocused();
+      await expect(control).toHaveCSS("border-top-style", "solid");
+      await expect(control).toHaveCSS("outline-style", "solid");
+      await expect(control).toHaveCSS("outline-width", "2px");
+    }
+    await page.getByRole("button", { name: "Toggle disabled" }).click();
+    const systemColors = await page.evaluate(() => {
+      const probe = document.createElement("span");
+      probe.style.color = "GrayText";
+      probe.style.backgroundColor = "ButtonFace";
+      document.body.append(probe);
+      const computed = getComputedStyle(probe);
+      const colors = {
+        disabled: computed.color,
+        background: computed.backgroundColor,
+      };
+      probe.remove();
+      return colors;
+    });
+    for (const control of [icon, overlay]) {
+      await expect(control).toBeDisabled();
+      await expect(control).toHaveCSS("color", systemColors.disabled);
+      await expect(control).toHaveCSS(
+        "background-color",
+        systemColors.background,
+      );
+    }
   }
 
   test(`Variants preserve geometry, interactions and forwarding in ${theme}`, async ({
