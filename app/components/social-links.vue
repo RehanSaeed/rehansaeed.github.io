@@ -34,6 +34,7 @@
         v-bind="trigger"
         class="social__link"
         label="GitHub"
+        :sound="socialSounds.gitHub"
         :href="metadata.author.gitHub.url"
         rel="me authn">
         <u-icon name="fa-brands:github" />
@@ -73,6 +74,7 @@
         v-bind="trigger"
         class="social__link"
         label="Bluesky"
+        :sound="socialSounds.bluesky"
         :href="metadata.author.bluesky.url"
         rel="me">
         <u-icon name="simple-icons:bluesky" />
@@ -96,6 +98,7 @@
         v-bind="trigger"
         class="social__link"
         label="Email"
+        :sound="socialSounds.email"
         href="#"
         @click="openEmail">
         <u-icon name="fa-regular:envelope" />
@@ -114,6 +117,7 @@
 </template>
 
 <script setup lang="ts">
+import { socialSounds } from "#shared/utils/sounds";
 import { decode } from "~/framework/obfuscate";
 
 defineOptions({ name: "u-social-links" });
