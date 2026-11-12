@@ -106,6 +106,34 @@ test("Intersection observes the slotted root, loads once and disconnects on navi
 test("Skeleton SVG masks follow slotted geometry as the viewport resizes", async ({
   page,
 }) => {
+  await page.addInitScript(() => {
+    let active = 0;
+    const NativeObserver = window.ResizeObserver;
+    window.ResizeObserver = class extends NativeObserver {
+      readonly skeletons = new Set<Element>();
+
+      override observe(target: Element, options?: ResizeObserverOptions) {
+        if (
+          target.matches(
+            ".webmention-faces-skeleton, .webmention-replies-skeleton",
+          ) &&
+          !this.skeletons.has(target)
+        ) {
+          this.skeletons.add(target);
+          active++;
+          document.documentElement.dataset.skeletonObservers = String(active);
+        }
+        super.observe(target, options);
+      }
+
+      override disconnect() {
+        active -= this.skeletons.size;
+        this.skeletons.clear();
+        document.documentElement.dataset.skeletonObservers = String(active);
+        super.disconnect();
+      }
+    };
+  });
   let resume!: () => void;
   const pending = new Promise<void>((resolve) => {
     resume = resolve;
@@ -159,6 +187,10 @@ test("Skeleton SVG masks follow slotted geometry as the viewport resizes", async
     resume();
   }
   await expect(mentions).toHaveAttribute("aria-busy", "false");
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-skeleton-observers",
+    "0",
+  );
   await expect(faces).toHaveCount(0);
 });
 

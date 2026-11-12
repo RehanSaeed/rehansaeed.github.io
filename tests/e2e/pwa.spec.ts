@@ -40,6 +40,61 @@ test.beforeEach(async ({ page, baseURL }) => {
   );
 });
 
+test("Analytics tracks display-mode changes and installation events", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const query =
+      "(display-mode: standalone), (display-mode: minimal-ui), (display-mode: fullscreen)";
+    const matchMedia = window.matchMedia.bind(window);
+    const media = matchMedia(query);
+    let standalone = false;
+    Object.defineProperty(media, "matches", { get: () => standalone });
+    window.matchMedia = (value) =>
+      value === query ? media : matchMedia(value);
+    document.addEventListener("test-display-mode", () => {
+      standalone = !standalone;
+      media.dispatchEvent(
+        new MediaQueryListEvent("change", {
+          matches: standalone,
+          media: query,
+        }),
+      );
+    });
+  });
+  await page.goto("/");
+  await expect(
+    page.getByRole("button", { name: "Open search", exact: true }),
+  ).toBeEnabled();
+  const events = () =>
+    page.evaluate((): unknown => Reflect.get(window, "dataLayer"));
+  await expect
+    .poll(events)
+    .toContainEqual([
+      "event",
+      "dom_content_loaded",
+      { event_category: "app-launch", event_label: "browser tab" },
+    ]);
+  await page.evaluate(() => {
+    document.dispatchEvent(new Event("test-display-mode"));
+    window.dispatchEvent(new Event("appinstalled"));
+  });
+  await expect.poll(events).toEqual(
+    expect.arrayContaining([
+      [
+        "event",
+        "display_mode_changed",
+        { event_category: "app-launch", event_label: "standalone" },
+      ],
+      [
+        "event",
+        "installed",
+        { event_category: "pwa-install", event_label: "browser" },
+      ],
+    ]),
+  );
+});
+
 test("Manifest preserves install identity and serves valid desktop and mobile previews", async ({
   request,
 }) => {

@@ -186,12 +186,13 @@ const mountTicker = async (
       );
       const utilitiesUrl = moduleUrl(utilitiesSource);
       const componentUrl = moduleUrl(
-        componentSource
-          .replace(/(["'])vue\1/g, JSON.stringify(vueUrl))
-          .replace(
-            /(["'])#shared\/utils\/ticker\1/g,
-            JSON.stringify(utilitiesUrl),
-          ),
+        `import { usePreferredReducedMotion, useDocumentVisibility, useIntervalFn } from ${JSON.stringify(vueuseUrl)};\n` +
+          componentSource
+            .replace(/(["'])vue\1/g, JSON.stringify(vueUrl))
+            .replace(
+              /(["'])#shared\/utils\/ticker\1/g,
+              JSON.stringify(utilitiesUrl),
+            ),
       );
       const { createApp, defineComponent, h, nextTick, ref } = (await import(
         vueUrl
@@ -748,6 +749,10 @@ test("Hidden tabs suspend the timer and returning visitors catch up at the avera
       configurable: true,
       value: true,
     });
+    Object.defineProperty(document, "visibilityState", {
+      configurable: true,
+      value: "hidden",
+    });
     document.dispatchEvent(new Event("visibilitychange"));
   });
   await page.clock.runFor(60_000);
@@ -756,6 +761,10 @@ test("Hidden tabs suspend the timer and returning visitors catch up at the avera
     Object.defineProperty(document, "hidden", {
       configurable: true,
       value: false,
+    });
+    Object.defineProperty(document, "visibilityState", {
+      configurable: true,
+      value: "visible",
     });
     document.dispatchEvent(new Event("visibilitychange"));
   });
@@ -813,6 +822,10 @@ test("Entering the viewport cannot bypass a hidden tab or reduced motion", async
       configurable: true,
       value: true,
     });
+    Object.defineProperty(document, "visibilityState", {
+      configurable: true,
+      value: "hidden",
+    });
     document.dispatchEvent(new Event("visibilitychange"));
   });
   await moveTicker(page, false);
@@ -822,6 +835,10 @@ test("Entering the viewport cannot bypass a hidden tab or reduced motion", async
     Object.defineProperty(document, "hidden", {
       configurable: true,
       value: false,
+    });
+    Object.defineProperty(document, "visibilityState", {
+      configurable: true,
+      value: "visible",
     });
     document.dispatchEvent(new Event("visibilitychange"));
   });

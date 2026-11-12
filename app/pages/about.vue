@@ -300,7 +300,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 
 defineOptions({ name: "u-about" });
 const metadata = useAppConfig().site;
@@ -390,11 +390,8 @@ const setTheme = (event: Event) => {
 };
 onMounted(() => {
   theme.value = window.__theme;
-  window.addEventListener("__themeChanged", setTheme);
 });
-onUnmounted(() => {
-  window.removeEventListener("__themeChanged", setTheme);
-});
+useEventListener("__themeChanged", setTheme);
 </script>
 
 <style lang="scss">

@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { appThemeChanged, appThemeLoaded } from "~/framework/analytics";
 
 defineOptions({ name: "u-theme-button", inheritAttrs: false });
@@ -35,12 +35,9 @@ const onToggleTheme = () => {
 
 onMounted(() => {
   setTheme();
-  window.addEventListener("__themeChanged", setTheme);
   appThemeLoaded(theme.value);
 });
-onBeforeUnmount(() => {
-  window.removeEventListener("__themeChanged", setTheme);
-});
+useEventListener("__themeChanged", setTheme);
 </script>
 
 <style lang="scss">

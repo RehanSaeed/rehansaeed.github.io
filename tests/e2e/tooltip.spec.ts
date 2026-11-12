@@ -74,6 +74,24 @@ for (const colorScheme of ["light", "dark"] as const) {
   });
 }
 
+test("Leaving a trigger cancels its pending tooltip before it can open", async ({
+  page,
+}) => {
+  await page.clock.install();
+  await page.goto("/");
+  const search = page.getByRole("button", { name: "Open search", exact: true });
+  await expect(search).toBeEnabled();
+  await search.dispatchEvent("pointerenter", { pointerType: "mouse" });
+  await search.dispatchEvent("pointerleave", { pointerType: "mouse" });
+  await page.clock.fastForward(1000);
+  await expect(page.getByRole("tooltip")).toHaveCount(0);
+  await search.dispatchEvent("pointerenter", { pointerType: "mouse" });
+  await page.clock.fastForward(1000);
+  await expect(
+    page.getByRole("tooltip", { name: "Search", exact: true }),
+  ).toBeVisible();
+});
+
 test("Tooltips flip, clamp, track resizing and stay above dialogs", async ({
   page,
 }) => {
