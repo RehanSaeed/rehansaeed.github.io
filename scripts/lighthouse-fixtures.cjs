@@ -1,41 +1,26 @@
-const { readFile } = require("node:fs/promises");
-const { join } = require("node:path");
 const { chromium } = require("@playwright/test");
-
 const configuredBrowsers = new WeakSet();
 
-// LHCI invokes this before Lighthouse creates its page. Context routing also
-// covers that new page without racing a target-created callback.
+// Context routing covers Lighthouse's new page before it can load the badge.
 module.exports = async (browser) => {
     if (configuredBrowsers.has(browser)) {
         return;
     }
-    const body = await readFile(
-        join(__dirname, "..", "tests", "fixtures", "stackoverflow-flair.svg"),
-    );
     const connection = await chromium.connectOverCDP(browser.wsEndpoint());
-    const [context] = connection.contexts();
-    if (!context) {
-        throw new Error(
-            "Lighthouse fixture requires the default browser context",
+    await connection
+        .contexts()[0]
+        .route(
+            /^https:\/\/stackoverflow\.com\/users\/flair\/1212017\.png\?theme=(?:dark|light)$/,
+            (route) =>
+                route.request().resourceType() === "image"
+                    ? route.fulfill({
+                          contentType: "image/svg+xml",
+                          body: '<svg xmlns="http://www.w3.org/2000/svg" width="208" height="58"><rect width="208" height="58" fill="#222"/><text x="8" y="33" fill="white" font-size="13">Stack Overflow test fixture</text></svg>',
+                      })
+                    : route.continue(),
         );
-    }
-    await context.route(
-        /^https:\/\/stackoverflow\.com\/users\/flair\/1212017\.png\?theme=(?:dark|light)$/,
-        async (route) => {
-            if (route.request().resourceType() !== "image") {
-                await route.continue();
-                return;
-            }
-            await route.fulfill({
-                status: 200,
-                contentType: "image/svg+xml",
-                body,
-            });
-        },
-    );
     configuredBrowsers.add(browser);
     console.log(
-        "Lighthouse: mocking only Stack Overflow flair 1212017; production availability is not audited. Run npm run test:flair-live separately.",
+        "Lighthouse: only Stack Overflow flair 1212017 is mocked; live availability is not audited.",
     );
 };
