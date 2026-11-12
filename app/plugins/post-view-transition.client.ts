@@ -173,17 +173,24 @@ export default defineNuxtPlugin((nuxtApp) => {
       if (to.fullPath !== selected?.permalink) {
         cancel();
       }
-      to.meta.viewTransition =
-        to.fullPath !== historyDestination &&
-        !to.hash &&
-        !reducedMotion.matches &&
-        !forcedColors.matches;
-      historyDestination = undefined;
-      if (!to.meta.viewTransition) {
+      const options = {
+        // Router guards can run before our popstate listener. Nuxt reads this at beforeResolve.
+        get enabled() {
+          return (
+            to.fullPath !== historyDestination &&
+            !to.hash &&
+            !reducedMotion.matches &&
+            !forcedColors.matches
+          );
+        },
+      };
+      to.meta.viewTransition = options;
+      if (!options.enabled) {
         cancel();
       }
     }),
     router.afterEach((_to, _from, failure) => {
+      historyDestination = undefined;
       if (failure || !activeTransition) {
         cancel();
       }

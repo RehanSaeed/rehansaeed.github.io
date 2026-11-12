@@ -191,3 +191,34 @@ await test("Unsupported browsers install no plugin observers", () => {
     assert.equal(app.hotDispose.length, 0);
     assert.equal(app.listenerCount, 0);
 });
+
+await test("History policy observes popstate even when beforeEach ran first", () => {
+    const app = createHarness();
+    const [beforeEach, afterEach] = [...app.guards];
+    const route = {
+        fullPath: "/",
+        hash: "",
+        meta: { viewTransition: { enabled: true } },
+    };
+    beforeEach!(route);
+    assert.equal(route.meta.viewTransition.enabled, true);
+    app.interrupt();
+    assert.equal(route.meta.viewTransition.enabled, false);
+    afterEach!(route, route);
+    beforeEach!(route);
+    assert.equal(route.meta.viewTransition.enabled, true);
+    app.unmount[0]!();
+});
+
+await test("Fragment destinations disable the native transition policy", () => {
+    const app = createHarness();
+    const [beforeEach] = [...app.guards];
+    const route = {
+        fullPath: "/example/#main",
+        hash: "#main",
+        meta: { viewTransition: { enabled: true } },
+    };
+    beforeEach!(route);
+    assert.equal(route.meta.viewTransition.enabled, false);
+    app.unmount[0]!();
+});

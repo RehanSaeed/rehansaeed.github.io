@@ -2,6 +2,7 @@
 import { expect, test } from "@playwright/test";
 import type { Locator, Page } from "@playwright/test";
 import { writeFile } from "node:fs/promises";
+import type { Router } from "vue-router";
 
 test.use({ trace: "retain-on-failure" });
 
@@ -987,7 +988,7 @@ test.describe("Bounded card-to-article hero continuity", () => {
     await expectFadeWithoutHero(page);
   });
 
-  test("Does not intercept a card href containing a fragment", async ({
+  test("Does not name a hero when the DOM href differs from the router destination", async ({
     page,
   }) => {
     const link = await prepare(page);
@@ -995,6 +996,32 @@ test.describe("Bounded card-to-article hero continuity", () => {
       anchor.hash = "main";
     });
     await activators.Enter(link);
+    await expect(page.locator(".post-page__title-container h1")).toHaveText(
+      "Live Streaming .NET",
+    );
+    // NuxtLink navigates its `to` prop, not a subsequently mutated DOM href.
+    await expectDestination(page);
+    await expectFadeWithoutHero(page);
+  });
+
+  test("Does not animate an in-app fragment destination", async ({ page }) => {
+    await prepare(page);
+    await page.evaluate(async (to) => {
+      const root = document.querySelector<
+        HTMLElement & {
+          /** Mounted Vue application, used to exercise real router navigation. */
+          __vue_app__: {
+            /** Nuxt application owning the router under test. */
+            $nuxt: {
+              /** Real SPA router; no document navigation or URL-only mutation. */
+              $router: Router;
+            };
+          };
+        }
+      >("#__nuxt");
+      await root!.__vue_app__.$nuxt.$router.push(to);
+    }, `${destination}#main`);
+    await expect(page).toHaveURL(new RegExp(`${destination}#main$`));
     await expect(page.locator(".post-page__title-container h1")).toHaveText(
       "Live Streaming .NET",
     );
