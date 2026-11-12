@@ -369,7 +369,8 @@ test("Seek hover thickens the track and previews pointer time without seeking", 
   });
   const bounds = await progress.boundingBox();
   for (const fraction of [0.25, 0.75]) {
-    const x = bounds!.x + bounds!.width * fraction;
+    // Firefox rounds synthetic pointer coordinates to whole CSS pixels.
+    const x = Math.round(bounds!.x + bounds!.width * fraction);
     await page.mouse.move(x, bounds!.y + bounds!.height / 2);
     await expect(progress).toHaveCSS("height", "6px");
     const time = Math.min(
