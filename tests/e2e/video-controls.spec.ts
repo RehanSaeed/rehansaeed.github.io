@@ -625,7 +625,7 @@ test("Full-width controls remain contained with large touch targets in both them
           expect(dimension).toBeCloseTo(44, 3);
         }
         for (const dimension of face.icon) {
-          expect(dimension).toBeCloseTo(24, 3);
+          expect(dimension).toBeCloseTo(20, 3);
         }
         expect(face.padding).toEqual(["4px", "4px", "4px", "4px"]);
         expect(face.backgroundClip).toBe("content-box");

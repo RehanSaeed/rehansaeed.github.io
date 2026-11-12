@@ -583,7 +583,7 @@ onUnmounted(() => {
 
 .prose-video__button.button--icon {
   background-clip: content-box;
-  font-size: 24px;
+  font-size: 20px;
   padding: 4px;
 
   &:focus-visible {
