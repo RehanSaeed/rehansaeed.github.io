@@ -8,9 +8,7 @@
         role="group"
         aria-label="Gallery images; use Left and Right arrow keys to browse"
         tabindex="0"
-        @scroll.passive="updatePosition"
-        @keydown="onKeydown"
-        @focusin="onFocus">
+        @scroll.passive="updatePosition">
         <slot />
       </div>
     </div>
@@ -143,6 +141,8 @@ onMounted(() => {
     navigate(currentIndex.value, true);
   });
   if (track.value) {
+    track.value.addEventListener("keydown", onKeydown);
+    track.value.addEventListener("focusin", onFocus);
     resizeObserver.observe(track.value);
     const first = slides()[0];
     if (first) {
@@ -152,6 +152,8 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  track.value?.removeEventListener("keydown", onKeydown);
+  track.value?.removeEventListener("focusin", onFocus);
   resizeObserver?.disconnect();
   clearTimeout(announcementTimer);
 });

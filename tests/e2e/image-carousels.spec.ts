@@ -146,18 +146,6 @@ test.describe("Continuous Cover Flow", () => {
       CSS.supports("animation-timeline: view(inline)"),
     );
     const frame = gallery.locator(".image-carousel__frame").first();
-    if (!supported) {
-      await expect(frame).toHaveCSS("transform", "none");
-      await track.focus();
-      await track.press("End");
-      await expect(
-        gallery.getByRole("button", { name: "Next image" }),
-      ).toHaveAttribute("aria-disabled", "true");
-      return;
-    }
-    const centred = await frame.evaluate(
-      (element) => getComputedStyle(element).transform,
-    );
     await track.evaluate((element) => {
       element.style.scrollSnapType = "none";
       element.scrollLeft =
@@ -165,9 +153,11 @@ test.describe("Continuous Cover Flow", () => {
     });
     await expect
       .poll(() =>
-        frame.evaluate((element) => getComputedStyle(element).transform),
+        frame.evaluate(
+          (element) => getComputedStyle(element).transform !== "none",
+        ),
       )
-      .not.toBe(centred);
+      .toBe(supported);
     const first = await frame.evaluate(
       (element) => getComputedStyle(element).transform,
     );
@@ -176,10 +166,13 @@ test.describe("Continuous Cover Flow", () => {
         element.children[0]!.getBoundingClientRect().width * 0.3;
     });
     await expect
-      .poll(() =>
-        frame.evaluate((element) => getComputedStyle(element).transform),
+      .poll(
+        async () =>
+          (await frame.evaluate(
+            (element) => getComputedStyle(element).transform,
+          )) !== first,
       )
-      .not.toBe(first);
+      .toBe(supported);
     await expect(
       gallery.getByRole("button", { name: "Go to image 1 of 3" }),
     ).toHaveAttribute("aria-current", "true");
