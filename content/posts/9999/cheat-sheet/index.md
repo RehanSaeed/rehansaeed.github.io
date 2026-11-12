@@ -38,7 +38,7 @@ Duis aliquet ex eu scelerisque ultricies. Nam ac sagittis ligula. Vestibulum vel
 # Links
 
 [Link](https://example.com)
-[Empty Link]()
+[Empty Link](<>)
 
 # Horizontal Rule
 
@@ -182,12 +182,12 @@ docker image build --tag foo:1.0.0 --label "build"="123" --label "changeset"="0d
 // Code Title, Line Numbers, Line Highlight
 // Code Title, Line Numbers, Line Highlight
 export default {
-  data () {
+  data() {
     return {
-      msg: 'All'
-    }
-  }
-}
+      msg: "All",
+    };
+  },
+};
 ```
 
 # Math
@@ -256,6 +256,24 @@ To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>`
 ![Code](./images/Code-1600x900.jpg)
 
 <figcaption>A code-themed illustration.</figcaption>
+</figure>
+
+# Image Carousels
+
+Two or more consecutive image-only paragraphs or image figures automatically become a full-width, horizontally scrolling gallery with a centred current image. Images on consecutive lines in one paragraph also work. Scroll, swipe, drag an image, use the Previous and Next buttons, or focus the gallery and use the arrow keys. The buttons appear over the current image on hover or keyboard focus and remain visible on touch devices. Prose, headings and other blocks end the gallery; a standalone image is unchanged. Keep captions inside their image's `<figure>` and image links around the image.
+
+<figure>
+
+[![A linked code illustration in the first gallery slide.](./images/Code-1600x900.jpg)](/css-general-rules-of-thumb/)
+
+<figcaption>The first gallery image retains its link.</figcaption>
+</figure>
+
+<figure>
+
+![A code illustration in the second gallery slide.](./images/Code-1600x900.jpg)
+
+<figcaption>The second gallery image retains its caption.</figcaption>
 </figure>
 
 # Embed Videos
