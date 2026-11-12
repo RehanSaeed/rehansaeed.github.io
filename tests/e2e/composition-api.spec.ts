@@ -35,6 +35,15 @@ test("Intersection observes the slotted root, loads once and disconnects on navi
     const NativeObserver = window.IntersectionObserver;
     window.IntersectionObserver = class extends NativeObserver {
       readonly targets = new Set<Element>();
+      readonly configuredThresholds: IntersectionObserverInit["threshold"];
+
+      constructor(
+        callback: IntersectionObserverCallback,
+        options?: IntersectionObserverInit,
+      ) {
+        super(callback, options);
+        this.configuredThresholds = options?.threshold;
+      }
 
       override observe(target: Element) {
         this.targets.add(target);
@@ -42,7 +51,7 @@ test("Intersection observes the slotted root, loads once and disconnects on navi
           target.setAttribute("data-observed-root", target.tagName);
           target.setAttribute(
             "data-observer-thresholds",
-            this.thresholds.join(","),
+            String(this.configuredThresholds),
           );
           target.setAttribute("data-observer-margin", this.rootMargin);
         }
