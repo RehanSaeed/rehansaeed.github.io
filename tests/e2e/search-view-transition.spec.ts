@@ -167,6 +167,15 @@ const openResult = async (page: Page) => {
     .fill(searchTerm);
   const link = page.locator(`.search-result__link[href="${destination}"]`);
   await expect(link).toBeVisible();
+  await expect
+    .poll(() =>
+      link
+        .locator("img")
+        .evaluate(
+          (image: HTMLImageElement) => image.complete && image.naturalWidth > 0,
+        ),
+    )
+    .toBe(true);
   await link
     .locator("img")
     .evaluate((image: HTMLImageElement) => image.decode());

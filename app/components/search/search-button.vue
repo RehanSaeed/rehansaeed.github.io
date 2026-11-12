@@ -90,6 +90,9 @@ const disposers = [
       focusDestination = undefined;
     }
   }),
+  router.onError(() => {
+    focusDestination = undefined;
+  }),
 ];
 onBeforeUnmount(() => {
   for (const dispose of disposers) {
