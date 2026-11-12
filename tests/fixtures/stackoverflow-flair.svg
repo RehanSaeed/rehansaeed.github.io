@@ -1,0 +1,13 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="208"
+  height="58"
+  viewBox="0 0 208 58">
+  <rect width="208" height="58" fill="#222" />
+  <text x="12" y="24" fill="#fff" font-family="sans-serif" font-size="14">
+    Stack Overflow
+  </text>
+  <text x="12" y="44" fill="#fff" font-family="sans-serif" font-size="12">
+    Audit fixture (not live stats)
+  </text>
+</svg>
