@@ -167,58 +167,89 @@ export default defineNuxtPlugin((nuxtApp) => {
     }
   };
 
-  router.beforeEach((to) => {
-    if (to.fullPath !== selected?.permalink) {
-      cancel();
-    }
-    to.meta.viewTransition =
-      to.fullPath !== historyDestination &&
-      !to.hash &&
-      !reducedMotion.matches &&
-      !forcedColors.matches;
-    historyDestination = undefined;
-    if (!to.meta.viewTransition) {
-      cancel();
-    }
-  });
-  router.afterEach((_to, _from, failure) => {
-    if (failure || !activeTransition) {
-      cancel();
-    }
-  });
-  router.onError(cancel);
-  nuxtApp.hook("app:error", cancel);
-  nuxtApp.hook("page:view-transition:start", trackTransition);
-  nuxtApp.hook("page:finish", prepareDestination);
-  document.addEventListener("click", selectSource, { capture: true });
+  const listeners = new AbortController();
+  const disposers = [
+    router.beforeEach((to) => {
+      if (to.fullPath !== selected?.permalink) {
+        cancel();
+      }
+      to.meta.viewTransition =
+        to.fullPath !== historyDestination &&
+        !to.hash &&
+        !reducedMotion.matches &&
+        !forcedColors.matches;
+      historyDestination = undefined;
+      if (!to.meta.viewTransition) {
+        cancel();
+      }
+    }),
+    router.afterEach((_to, _from, failure) => {
+      if (failure || !activeTransition) {
+        cancel();
+      }
+    }),
+    router.onError(cancel),
+    nuxtApp.hook("app:error", cancel),
+    nuxtApp.hook("page:view-transition:start", trackTransition),
+    nuxtApp.hook("page:finish", prepareDestination),
+  ];
+  const { signal } = listeners;
+  document.addEventListener("click", selectSource, { capture: true, signal });
 
-  reducedMotion.addEventListener("change", skip);
-  forcedColors.addEventListener("change", skip);
-  window.addEventListener("popstate", () => {
-    historyDestination = `${location.pathname}${location.search}${location.hash}`;
-    cancel();
-  });
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
+  reducedMotion.addEventListener("change", skip, { signal });
+  forcedColors.addEventListener("change", skip, { signal });
+  window.addEventListener(
+    "popstate",
+    () => {
+      historyDestination = `${location.pathname}${location.search}${location.hash}`;
       cancel();
-    }
-  });
+    },
+    { signal },
+  );
+  document.addEventListener(
+    "visibilitychange",
+    () => {
+      if (document.hidden) {
+        cancel();
+      }
+    },
+    { signal },
+  );
   for (const event of ["wheel", "touchstart"]) {
-    window.addEventListener(event, skip, { passive: true });
+    window.addEventListener(event, skip, { passive: true, signal });
   }
-  document.addEventListener("keydown", (event) => {
-    if (
-      [
-        "Escape",
-        "ArrowUp",
-        "ArrowDown",
-        "PageUp",
-        "PageDown",
-        "Home",
-        "End",
-      ].includes(event.key)
-    ) {
-      skip();
+  document.addEventListener(
+    "keydown",
+    (event) => {
+      if (
+        [
+          "Escape",
+          "ArrowUp",
+          "ArrowDown",
+          "PageUp",
+          "PageDown",
+          "Home",
+          "End",
+        ].includes(event.key)
+      ) {
+        skip();
+      }
+    },
+    { signal },
+  );
+
+  const dispose = () => {
+    if (signal.aborted) {
+      return;
     }
-  });
+    listeners.abort();
+    for (const unregister of disposers) {
+      unregister();
+    }
+    cancel();
+  };
+  nuxtApp.vueApp.onUnmount(dispose);
+  if (import.meta.hot) {
+    import.meta.hot.dispose(dispose);
+  }
 });
