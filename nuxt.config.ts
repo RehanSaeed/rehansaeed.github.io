@@ -32,6 +32,7 @@ export default defineNuxtConfig({
     "@nuxt/scripts",
     "@nuxtjs/seo",
     "@vite-pwa/nuxt",
+    "@vueuse/nuxt",
     "@nuxt/a11y",
     "@nuxt/eslint",
     "@nuxt/fonts",

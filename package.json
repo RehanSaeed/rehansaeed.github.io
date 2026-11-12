@@ -32,6 +32,8 @@
     "@nuxtjs/sitemap": "9.1.0",
     "@sindresorhus/slugify": "4.0.1",
     "@vite-pwa/nuxt": "1.1.1",
+    "@vueuse/core": "15.0.0",
+    "@vueuse/nuxt": "15.0.0",
     "date-fns": "4.4.0",
     "feed": "6.0.0",
     "flexsearch": "0.8.212",
