@@ -67,7 +67,17 @@ test("Analytics tracks display-mode changes and installation events", async ({
     page.getByRole("button", { name: "Open search", exact: true }),
   ).toBeEnabled();
   const events = () =>
-    page.evaluate((): unknown => Reflect.get(window, "dataLayer"));
+    page.evaluate((): unknown => {
+      const queue: unknown = Reflect.get(window, "dataLayer");
+      // Google Analytics can replace gtag and queue arguments objects, not arrays.
+      return Array.isArray(queue)
+        ? queue.map((command: unknown) =>
+            typeof command === "object" && command !== null
+              ? Object.values(command)
+              : command,
+          )
+        : queue;
+    });
   await expect
     .poll(events)
     .toContainEqual([
