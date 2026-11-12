@@ -1,8 +1,17 @@
 import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import type { Page } from "@playwright/test";
+import sharp from "sharp";
 import { tagPath } from "../../shared/utils/tag";
 import { expect, test } from "./fixtures";
+
+const openComparison = async (page: Page) => {
+  await page.goto("/__design/tags/", { waitUntil: "domcontentloaded" });
+  // Initial router scrolling must finish before testing a pointer hover.
+  await expect(
+    page.getByRole("button", { name: "Toggle dark/light" }),
+  ).toBeEnabled();
+};
 
 const captureReview = async (page: Page, name: string) => {
   const screenshotDir = process.env.TAG_STYLE_SCREENSHOT_DIR;
@@ -23,9 +32,155 @@ const captureReview = async (page: Page, name: string) => {
   });
 };
 
+const captureRaisedReview = async (page: Page, name: string) => {
+  const screenshotDir = process.env.TAG_STYLE_SCREENSHOT_DIR;
+  if (!screenshotDir) {
+    return;
+  }
+  await mkdir(screenshotDir, { recursive: true });
+  await page.addStyleTag({
+    content:
+      "#nuxt-devtools-container, nuxt-devtools-inspect-panel { display: none !important; }",
+  });
+  const panels = [];
+  let height = 0;
+  let width = 0;
+  for (const option of await page.locator(".tag-study__option").all()) {
+    const tag = option.locator(".tags__link").first();
+    await tag.hover();
+    await expect(tag).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -2)");
+    const input = await option.screenshot();
+    const size = await sharp(input).metadata();
+    panels.push({ input, top: height, left: 0 });
+    height += size.height;
+    width = Math.max(width, size.width);
+  }
+  await sharp({
+    create: { width, height, channels: 4, background: "#00000000" },
+  })
+    .composite(panels)
+    .png()
+    .toFile(join(screenshotDir, `${name}.png`));
+};
+
 // Opt in against `npm run dev -- --port 8097` with TAG_STYLE_PREVIEW=1
 // and BASE_URL=http://localhost:8097. The normal static suite checks isolation.
 if (process.env.TAG_STYLE_PREVIEW === "1") {
+  for (const theme of ["light", "dark"] as const) {
+    test(`raised tag interactions match the original button / ${theme}`, async ({
+      page,
+    }) => {
+      await page.emulateMedia({
+        colorScheme: theme,
+        reducedMotion: "no-preference",
+      });
+      await page.setViewportSize({ width: 1440, height: 1000 });
+      await openComparison(page);
+      await page.locator(".tag-study__baseline summary").click();
+      const original = page.locator(".tag-study__baseline .tags__link").first();
+      await original.hover();
+      await expect(original).toHaveCSS(
+        "transform",
+        "matrix(1, 0, 0, 1, 0, -2)",
+      );
+      await expect
+        .poll(() =>
+          original.evaluate(
+            (element) => getComputedStyle(element, "::before").opacity,
+          ),
+        )
+        .toBe("1");
+      const raised = await original.evaluate((element) => ({
+        shadow: getComputedStyle(element, "::before").boxShadow,
+        transition: getComputedStyle(element).transition,
+        shadowTransition: getComputedStyle(element, "::before").transition,
+      }));
+      await page.mouse.down();
+      await expect(original).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, 0)");
+      const pressedShadow = await original.evaluate(
+        (element) => getComputedStyle(element, "::before").boxShadow,
+      );
+      await page.mouse.move(0, 0);
+      await page.mouse.up();
+
+      const tags = page.locator(".tag-study__option .tags > a:first-child");
+      await expect(tags).toHaveCount(20);
+      for (const tag of await tags.all()) {
+        await tag.hover();
+        await expect(tag).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -2)");
+        await expect(tag).toHaveCSS("transition", raised.transition);
+        await expect
+          .poll(() =>
+            tag.evaluate((element) => ({
+              shadow: getComputedStyle(element, "::before").boxShadow,
+              opacity: getComputedStyle(element, "::before").opacity,
+              transition: getComputedStyle(element, "::before").transition,
+            })),
+          )
+          .toEqual({
+            shadow: raised.shadow,
+            opacity: "1",
+            transition: raised.shadowTransition,
+          });
+        await page.mouse.down();
+        await expect(tag).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, 0)");
+        expect(
+          await tag.evaluate(
+            (element) => getComputedStyle(element, "::before").boxShadow,
+          ),
+        ).toBe(pressedShadow);
+        await page.mouse.move(0, 0);
+        await page.mouse.up();
+        await page.keyboard.press("Tab");
+        await tag.focus();
+        await expect(tag).toHaveCSS("outline-width", "3px");
+        await expect(tag).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -2)");
+      }
+    });
+
+    if (process.env.TAG_STYLE_SCREENSHOT_DIR) {
+      test(`raised tag review capture / ${theme}`, async ({ page }) => {
+        await page.emulateMedia({
+          colorScheme: theme,
+          reducedMotion: "no-preference",
+        });
+        await page.setViewportSize({ width: 1440, height: 1000 });
+        await openComparison(page);
+        await expect(page.locator(".tag-study__option")).toHaveCount(10);
+        await captureRaisedReview(page, `tag-styles-raised-${theme}`);
+      });
+    }
+  }
+
+  test("reduced motion keeps raised shadows without movement", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await openComparison(page);
+    const tags = page.locator(".tag-study__option .tags > a:first-child");
+    await expect(tags).toHaveCount(20);
+    for (const tag of await tags.all()) {
+      await tag.hover();
+      await expect(tag).toHaveCSS("transform", "none");
+      await expect(tag).toHaveCSS("transition-duration", "0s");
+      await expect
+        .poll(() =>
+          tag.evaluate(
+            (element) => getComputedStyle(element, "::before").opacity,
+          ),
+        )
+        .toBe("1");
+      const shadow = await tag.evaluate((element) => ({
+        shadow: getComputedStyle(element, "::before").boxShadow,
+        opacity: getComputedStyle(element, "::before").opacity,
+        duration: getComputedStyle(element, "::before").transitionDuration,
+      }));
+      expect(shadow.shadow).not.toBe("none");
+      expect(shadow.opacity).toBe("1");
+      expect(shadow.duration).toBe("0s");
+    }
+  });
+
   for (const theme of ["light", "dark"] as const) {
     for (const width of [1440, 390]) {
       const minimumRows = width === 390 ? 2 : 1;
@@ -35,7 +190,7 @@ if (process.env.TAG_STYLE_PREVIEW === "1") {
       }) => {
         await page.emulateMedia({ colorScheme: theme });
         await page.setViewportSize({ width, height: 1000 });
-        await page.goto("/__design/tags/");
+        await openComparison(page);
         await expect(page.getByRole("heading", { level: 1 })).toHaveText(
           "Small tags. Different personalities.",
         );
@@ -151,7 +306,7 @@ if (process.env.TAG_STYLE_PREVIEW === "1") {
     page,
   }) => {
     await page.emulateMedia({ colorScheme: "light" });
-    await page.goto("/__design/tags/");
+    await openComparison(page);
     await page.getByRole("button", { name: "Toggle dark/light" }).click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
     await page.getByRole("button", { name: "Toggle dark/light" }).click();
@@ -178,7 +333,7 @@ if (process.env.TAG_STYLE_PREVIEW === "1") {
   test("tag links still navigate to the existing tag page", async ({
     page,
   }) => {
-    await page.goto("/__design/tags/");
+    await openComparison(page);
     await page.locator("#quiet-pill .tags__link").first().click();
     await expect(page).toHaveURL(/\/tag\/c\/$/);
     await expect(

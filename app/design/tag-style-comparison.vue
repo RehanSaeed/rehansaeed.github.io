@@ -25,8 +25,8 @@
 
     <p class="tag-study__instructions">
       Use the moon/sun to compare themes. Tab to any tag for its focus ring;
-      hover for its underline. All tags remain real navigation links. Narrow the
-      window to compare wrapping.
+      hover for the site's raised-button effect and an underline. All tags
+      remain real navigation links. Narrow the window to compare wrapping.
     </p>
 
     <section
@@ -131,7 +131,7 @@ const options = [
     id: "hairline-capsule",
     name: "Hairline capsule",
     description:
-      "Open accent outline with the site's Audiowide lettering. No elevation.",
+      "Open accent outline with the site's Audiowide lettering. No elevation at rest.",
   },
   {
     number: "03",
@@ -378,16 +378,6 @@ const options = [
     text-decoration: none;
     text-underline-offset: 0.2em;
     opacity: 1;
-    transform: none;
-    transition: none;
-    will-change: auto;
-
-    &::before {
-      content: none;
-      position: static;
-      box-shadow: none;
-      opacity: 1;
-    }
 
     &:hover,
     &:focus-visible {
@@ -424,8 +414,10 @@ const options = [
     padding-inline: 0;
     color: var(--global-title-color);
 
-    &::before {
+    // Leave ::before available for ULinkButton's raised shadow.
+    &::after {
       content: "";
+      order: -1;
       flex: 0 0 0.4rem;
       block-size: 0.4rem;
       border: 1px solid currentColor;
@@ -499,8 +491,9 @@ const options = [
   color: var(--global-title-color);
   font-weight: 600;
 
-  &::before {
+  &::after {
     content: "";
+    order: -1;
     flex: 0 0 1em;
     block-size: 1em;
     background: var(--global-accent-color);
@@ -512,6 +505,17 @@ const options = [
 @media (width < 800px) {
   .tag-study__contexts {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tag-study__option .tags__link {
+    transform: none;
+    transition: none;
+
+    &::before {
+      transition: none;
+    }
   }
 }
 
@@ -527,6 +531,10 @@ const options = [
     }
 
     &::before {
+      box-shadow: none;
+    }
+
+    &::after {
       background: LinkText;
       color: LinkText;
     }
