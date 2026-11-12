@@ -41,7 +41,7 @@ test("Groups article images with working links, captions and stable endpoint foc
   await expect(next).toHaveAttribute("aria-disabled", "true");
   await expect(next).toBeFocused();
   await expect(gallery.locator("[aria-live]")).toHaveText("Image 3 of 3");
-  await next.click();
+  await next.press("Enter");
   await expect(next).toBeFocused();
   await track.focus();
   await track.press("Home");
