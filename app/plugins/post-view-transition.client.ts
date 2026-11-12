@@ -25,10 +25,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         permalink: string;
         source: HTMLElement;
         target?: HTMLElement;
-      } & (
-        | { kind: "post"; hero: string }
-        | { kind: "tag"; title: string }
-      ))
+      } & ({ kind: "post"; hero: string } | { kind: "tag"; title: string }))
     | undefined;
   let activeTransition: ViewTransition | undefined;
   let deadline: ReturnType<typeof setTimeout> | undefined;

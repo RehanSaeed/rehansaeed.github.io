@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import type { Page } from "@playwright/test";
+import type { Locator, Page } from "@playwright/test";
 
 type TagCapture = {
   names: number;
@@ -29,6 +29,23 @@ declare global {
 }
 
 const destination = "/tag/net/";
+const activators = {
+  mouse: (link: Locator) => link.click({ noWaitAfter: true }),
+  Enter: (link: Locator) => link.press("Enter", { noWaitAfter: true }),
+};
+const bypasses = {
+  "reduced motion": (page: Page) =>
+    page.emulateMedia({ reducedMotion: "reduce" }),
+  "forced colours": (page: Page) =>
+    page.emulateMedia({ forcedColors: "active" }),
+  "unsupported API": (page: Page) =>
+    page.addInitScript(() => {
+      Object.defineProperty(document, "startViewTransition", {
+        configurable: true,
+        value: undefined,
+      });
+    }),
+};
 const instrument = (page: Page) =>
   page.addInitScript(() => {
     const createProbe = (): TagProbe => ({
@@ -69,7 +86,9 @@ const instrument = (page: Page) =>
       void transition.ready.then(
         () => {
           probe.ready++;
-          const heading = document.querySelector("[data-tag-transition-heading]");
+          const heading = document.querySelector(
+            "[data-tag-transition-heading]",
+          );
           const target = heading?.querySelector("[data-tag-transition-label]");
           if (target) {
             const box = target.getBoundingClientRect();
@@ -103,7 +122,9 @@ const prepare = async (page: Page) => {
   await page.goto(destination);
   await expect(page.getByRole("button", { name: "Open search" })).toBeEnabled();
   await page.getByRole("link", { name: "Blog", exact: true }).click();
-  const links = page.locator(`a[data-tag-transition-link][href="${destination}"]`);
+  const links = page.locator(
+    `a[data-tag-transition-link][href="${destination}"]`,
+  );
   await expect(links.first()).toBeVisible();
   const link = links.first();
   await link.scrollIntoViewIfNeeded();
@@ -119,14 +140,18 @@ const prepare = async (page: Page) => {
       }),
     )
     .toBe(true);
-  await page.evaluate(() => window.resetTagTransitionProbe());
+  await page.evaluate(() => {
+    window.resetTagTransitionProbe();
+  });
   return link;
 };
 
 const expectClean = async (page: Page) => {
   await expect(page.locator(".tag-view-transition__title")).toHaveCount(0);
   await expect(page.locator("html")).not.toHaveClass(/post-view-transition/);
-  expect(await page.evaluate(() => window.tagTransitionProbe.errors)).toEqual([]);
+  expect(await page.evaluate(() => window.tagTransitionProbe.errors)).toEqual(
+    [],
+  );
 };
 
 test.describe("Selected tag to tag-title continuity", () => {
@@ -138,7 +163,9 @@ test.describe("Selected tag to tag-title continuity", () => {
 
   test.afterEach(async ({ page }) => {
     await test.info().attach("tag-transition-lifecycle", {
-      body: JSON.stringify(await page.evaluate(() => window.tagTransitionProbe)),
+      body: JSON.stringify(
+        await page.evaluate(() => window.tagTransitionProbe),
+      ),
       contentType: "application/json",
     });
   });
@@ -154,13 +181,12 @@ test.describe("Selected tag to tag-title continuity", () => {
           .count(),
       ).toBeGreaterThan(1);
       await expect(link).toHaveAttribute("href", destination);
-      if (activation === "mouse") {
-        await link.click({ noWaitAfter: true });
-      } else {
-        await link.press("Enter", { noWaitAfter: true });
-      }
+      await activators[activation](link);
       await expect(page).toHaveURL(new RegExp(`${destination}$`));
-      const heading = page.getByRole("heading", { name: "# .NET", exact: true });
+      const heading = page.getByRole("heading", {
+        name: "# .NET",
+        exact: true,
+      });
       await expect(heading).toBeVisible();
       await expect(page.locator(".nuxt-route-announcer")).toContainText(".NET");
       await expect
@@ -198,14 +224,18 @@ test.describe("Selected tag to tag-title continuity", () => {
     await page.goBack();
     await expect.poll(() => new URL(page.url()).pathname).toBe("/");
     await expect(link).toBeVisible();
-    await expect.poll(() => page.evaluate(() => scrollY)).toBeCloseTo(before, 0);
+    await expect
+      .poll(() => page.evaluate(() => scrollY))
+      .toBeCloseTo(before, 0);
     expect(await page.evaluate(() => window.tagTransitionProbe.starts)).toBe(1);
     await link.evaluate((anchor: HTMLAnchorElement) => {
       anchor.hash = ".net";
     });
     await link.click();
     await expect(page).toHaveURL(/\/tag\/net\/#\.net$/);
-    await expect(page.getByRole("heading", { name: "# .NET" })).toBeInViewport();
+    await expect(
+      page.getByRole("heading", { name: "# .NET" }),
+    ).toBeInViewport();
     expect(await page.evaluate(() => window.tagTransitionProbe.starts)).toBe(1);
     await expectClean(page);
   });
@@ -214,9 +244,13 @@ test.describe("Selected tag to tag-title continuity", () => {
     page,
   }) => {
     const link = await prepare(page);
-    await page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight }));
+    await page.evaluate(() => {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "instant" });
+    });
     await expect(link).not.toBeInViewport();
-    await link.evaluate((anchor: HTMLAnchorElement) => anchor.click());
+    await link.evaluate((anchor: HTMLAnchorElement) => {
+      anchor.click();
+    });
     await expect(page).toHaveURL(new RegExp(`${destination}$`));
     await expect
       .poll(() => page.evaluate(() => window.tagTransitionProbe.finished))
@@ -253,24 +287,15 @@ test.describe("Selected tag to tag-title continuity", () => {
     "unsupported API",
   ] as const) {
     test(`Keeps native tag navigation with ${fallback}`, async ({ page }) => {
-      if (fallback === "reduced motion") {
-        await page.emulateMedia({ reducedMotion: "reduce" });
-      } else if (fallback === "forced colours") {
-        await page.emulateMedia({ forcedColors: "active" });
-      } else {
-        await page.addInitScript(() => {
-          Object.defineProperty(document, "startViewTransition", {
-            configurable: true,
-            value: undefined,
-          });
-        });
-      }
+      await bypasses[fallback](page);
       const link = await prepare(page);
       await link.press("Enter");
       await expect(page).toHaveURL(new RegExp(`${destination}$`));
       await expect(page.getByRole("heading", { name: "# .NET" })).toBeVisible();
       await expect(page.locator(".nuxt-route-announcer")).toContainText(".NET");
-      expect(await page.evaluate(() => window.tagTransitionProbe.starts)).toBe(0);
+      expect(await page.evaluate(() => window.tagTransitionProbe.starts)).toBe(
+        0,
+      );
       await expectClean(page);
     });
   }
