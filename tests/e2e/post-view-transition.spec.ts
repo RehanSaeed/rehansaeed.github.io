@@ -922,6 +922,7 @@ test.describe("Bounded card-to-article hero continuity", () => {
           .first()
           .innerText();
         const link = pager.getByRole("link", { name: direction, exact: true });
+        await link.scrollIntoViewIfNeeded();
         await link.focus();
         await link.press("Enter", { noWaitAfter: true });
         await expect(page).toHaveURL(direction === "Next" ? /\/2\/$/ : /\/$/);
