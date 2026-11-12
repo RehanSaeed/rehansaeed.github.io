@@ -38,7 +38,7 @@ Duis aliquet ex eu scelerisque ultricies. Nam ac sagittis ligula. Vestibulum vel
 # Links
 
 [Link](https://example.com)
-[Empty Link]()
+[Empty Link](<>)
 
 # Horizontal Rule
 
@@ -182,12 +182,12 @@ docker image build --tag foo:1.0.0 --label "build"="123" --label "changeset"="0d
 // Code Title, Line Numbers, Line Highlight
 // Code Title, Line Numbers, Line Highlight
 export default {
-  data () {
+  data() {
     return {
-      msg: 'All'
-    }
-  }
-}
+      msg: "All",
+    };
+  },
+};
 ```
 
 # Math
@@ -256,6 +256,31 @@ To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>`
 ![Code](./images/Code-1600x900.jpg)
 
 <figcaption>A code-themed illustration.</figcaption>
+</figure>
+
+# Image Carousels
+
+Consecutive image-only paragraphs or figures become a full-bleed gallery. Scroll or swipe to browse, use the buttons, or focus the gallery and press Left, Right, Home or End. In supporting browsers the images turn continuously with the scroll position, inspired by [the CSS Cover Flow demo](https://scroll-driven-animations.style/demos/cover-flow/css/). The centred image keeps its normal article dimensions; captions and image links are preserved. Reduced motion, High Contrast Mode and browsers without CSS view timelines use a flat scrolling gallery instead. Prose and headings end a gallery; a standalone image is unchanged.
+
+<figure>
+
+[![A code illustration with a link to CSS guidance.](./images/Code-1600x900.jpg)](/css-general-rules-of-thumb/)
+
+<figcaption>The first image retains its link.</figcaption>
+</figure>
+
+<figure>
+
+![An illustration of upgrading a blog with AI agents and human code review.](/images/hero/AI-Agents-Upgrading-a-Blog-With-Human-Code-Review-1600x900.png)
+
+<figcaption>Human review remains part of the workflow.</figcaption>
+</figure>
+
+<figure>
+
+![A code illustration at the end of the gallery.](./images/Code-1600x900.jpg)
+
+<figcaption>The last image can be centred too.</figcaption>
 </figure>
 
 # Embed Videos

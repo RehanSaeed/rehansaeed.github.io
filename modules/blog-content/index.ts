@@ -38,6 +38,7 @@ import { accountWatchers } from "./watchers";
 import site from "../../site.json";
 import { readImageDimensions } from "./images";
 import { filterMarkdownSitemap } from "./seo";
+import { groupImageCarousels } from "./carousels";
 
 const postsPerPage = 10;
 
@@ -131,6 +132,7 @@ export default defineNuxtModule({
         "portfolio.ts",
         "nuget.ts",
         "images.ts",
+        "carousels.ts",
       ].map((name) =>
         readFile(
           join(nuxt.options.rootDir, "modules", "blog-content", name),
@@ -229,6 +231,9 @@ export default defineNuxtModule({
         );
       }
       prerenderCodeBlocks(body.value);
+      if (collection.name === "posts") {
+        groupImageCarousels(body.value);
+      }
       content.headings = headings(file.body);
       // An empty YAML key (e.g. "tags:") parses as null; normalise it to an empty list.
       for (const key of ["categories", "tags"] as const) {

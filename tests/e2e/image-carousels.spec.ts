@@ -1,0 +1,210 @@
+import { expect, test } from "@playwright/test";
+
+test.beforeEach(async ({ page, baseURL }) => {
+  await page.route(
+    (url) => url.origin !== new URL(baseURL!).origin,
+    (route) =>
+      route.fulfill({
+        status: route.request().isNavigationRequest() ? 200 : 204,
+        contentType: "text/html",
+      }),
+  );
+  await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
+});
+
+const gallerySelector = ".image-carousel";
+
+test("Groups article images with working links, captions and stable endpoint focus", async ({
+  page,
+}) => {
+  const gallery = page.locator(gallerySelector).first();
+  const track = gallery.locator(".image-carousel__track");
+  await gallery.scrollIntoViewIfNeeded();
+  await expect(gallery.locator(".image-carousel__slide")).toHaveCount(3);
+  await expect(gallery.getByRole("link")).toHaveAttribute(
+    "href",
+    "/css-general-rules-of-thumb/",
+  );
+  await expect(gallery.locator("figcaption")).toHaveText([
+    "The first image retains its link.",
+    "Human review remains part of the workflow.",
+    "The last image can be centred too.",
+  ]);
+  const previous = gallery.getByRole("button", { name: "Previous image" });
+  const next = gallery.getByRole("button", { name: "Next image" });
+  await expect(previous).toHaveAttribute("aria-disabled", "true");
+  await next.click();
+  await expect(
+    gallery.getByRole("button", { name: "Go to image 2 of 3" }),
+  ).toHaveAttribute("aria-current", "true");
+  await next.click();
+  await expect(next).toHaveAttribute("aria-disabled", "true");
+  await expect(next).toBeFocused();
+  await expect(gallery.locator("[aria-live]")).toHaveText("Image 3 of 3");
+  await next.click();
+  await expect(next).toBeFocused();
+  await track.focus();
+  await track.press("Home");
+  await expect(previous).toHaveAttribute("aria-disabled", "true");
+  await track.press("End");
+  await expect(next).toHaveAttribute("aria-disabled", "true");
+  await track.press("ArrowLeft");
+  await expect(
+    gallery.getByRole("button", { name: "Go to image 2 of 3" }),
+  ).toHaveAttribute("aria-current", "true");
+  await gallery.getByRole("link").focus();
+  await expect(previous).toHaveAttribute("aria-disabled", "true");
+  await expect(gallery.getByRole("link")).toBeFocused();
+  await gallery.getByRole("link").click();
+  await expect(page).toHaveURL(/\/css-general-rules-of-thumb\/$/);
+});
+
+test("Native horizontal scrolling updates the selected image", async ({
+  page,
+}) => {
+  const gallery = page.locator(gallerySelector).first();
+  const track = gallery.locator(".image-carousel__track");
+  await track.hover();
+  await page.mouse.wheel(800, 0);
+  await expect
+    .poll(() => track.evaluate((element) => element.scrollLeft))
+    .toBeGreaterThan(0);
+  await expect(
+    gallery.getByRole("button", { name: "Go to image 1 of 3" }),
+  ).not.toHaveAttribute("aria-current", "true");
+});
+
+test("Normal image size, first/last centring and controls survive narrow and scaled layouts", async ({
+  page,
+}) => {
+  const gallery = page.locator(gallerySelector).first();
+  for (const width of [1280, 640, 375, 320]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const theme of ["light", "dark"]) {
+      await page.evaluate((value) => {
+        document.documentElement.dataset.theme = value;
+      }, theme);
+      for (const number of [1, 3]) {
+        await gallery
+          .getByRole("button", { name: `Go to image ${number} of 3` })
+          .click();
+        await expect(
+          gallery.getByRole("button", { name: `Go to image ${number} of 3` }),
+        ).toHaveAttribute("aria-current", "true");
+        const image = gallery.locator("img").nth(number - 1);
+        const bounds = await image.boundingBox();
+        expect(bounds).not.toBeNull();
+        expect(bounds!.x + bounds!.width / 2).toBeCloseTo(width / 2, 0);
+        expect(bounds!.width / bounds!.height).toBeCloseTo(16 / 9, 2);
+        expect(bounds!.x).toBeGreaterThanOrEqual(0);
+        expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
+        await expect(
+          gallery.getByRole("button", { name: "Previous image" }),
+        ).toBeVisible();
+        await expect(
+          gallery.getByRole("button", { name: "Next image" }),
+        ).toBeVisible();
+      }
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth),
+      ).toBeLessThanOrEqual(width);
+    }
+  }
+});
+
+test("Reduced motion and forced colours retain a flat, keyboard-operable gallery", async ({
+  page,
+}) => {
+  const gallery = page.locator(gallerySelector).first();
+  const track = gallery.locator(".image-carousel__track");
+  for (const forcedColors of ["none", "active"] as const) {
+    await page.emulateMedia({ reducedMotion: "reduce", forcedColors });
+    await track.focus();
+    await track.press("End");
+    await expect(
+      gallery.getByRole("button", { name: "Next image" }),
+    ).toHaveAttribute("aria-disabled", "true");
+    await expect(gallery.locator(".image-carousel__frame").last()).toHaveCSS(
+      "transform",
+      "none",
+    );
+    await expect(track).toBeFocused();
+    await expect(track).toHaveCSS("outline-style", "solid");
+  }
+});
+
+test.describe("Continuous Cover Flow", () => {
+  test.use({ reducedMotion: "no-preference" });
+
+  test("Transforms follow fractional scroll positions, not just the selected image", async ({
+    page,
+  }) => {
+    const gallery = page.locator(gallerySelector).first();
+    const track = gallery.locator(".image-carousel__track");
+    await gallery.scrollIntoViewIfNeeded();
+    const supported = await page.evaluate(() =>
+      CSS.supports("animation-timeline: view(inline)"),
+    );
+    const frame = gallery.locator(".image-carousel__frame").first();
+    if (!supported) {
+      await expect(frame).toHaveCSS("transform", "none");
+      await track.focus();
+      await track.press("End");
+      await expect(
+        gallery.getByRole("button", { name: "Next image" }),
+      ).toHaveAttribute("aria-disabled", "true");
+      return;
+    }
+    const centred = await frame.evaluate(
+      (element) => getComputedStyle(element).transform,
+    );
+    await track.evaluate((element) => {
+      element.style.scrollSnapType = "none";
+      element.scrollLeft =
+        element.children[0]!.getBoundingClientRect().width * 0.1;
+    });
+    await expect
+      .poll(() =>
+        frame.evaluate((element) => getComputedStyle(element).transform),
+      )
+      .not.toBe(centred);
+    const first = await frame.evaluate(
+      (element) => getComputedStyle(element).transform,
+    );
+    await track.evaluate((element) => {
+      element.scrollLeft =
+        element.children[0]!.getBoundingClientRect().width * 0.3;
+    });
+    await expect
+      .poll(() =>
+        frame.evaluate((element) => getComputedStyle(element).transform),
+      )
+      .not.toBe(first);
+    await expect(
+      gallery.getByRole("button", { name: "Go to image 1 of 3" }),
+    ).toHaveAttribute("aria-current", "true");
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await expect(frame).toHaveCSS("transform", "none");
+  });
+});
+
+test.describe("Without JavaScript", () => {
+  test.use({ javaScriptEnabled: false });
+
+  test("Server-rendered images and captions remain available to native scrolling", async ({
+    page,
+  }) => {
+    const gallery = page.locator(gallerySelector).first();
+    await expect(gallery.locator("img")).toHaveCount(3);
+    await expect(gallery.locator("figcaption").last()).toHaveText(
+      "The last image can be centred too.",
+    );
+    await expect(gallery.locator(".image-carousel__controls")).toHaveCount(0);
+    const track = gallery.locator(".image-carousel__track");
+    await track.focus();
+    await track.press("ArrowRight");
+    await expect
+      .poll(() => track.evaluate((element) => element.scrollLeft))
+      .toBeGreaterThan(0);
+  });
+});
