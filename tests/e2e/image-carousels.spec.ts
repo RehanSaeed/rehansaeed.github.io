@@ -199,6 +199,39 @@ test.describe("Continuous scroll-linked motion", () => {
   });
 });
 
+test("Neighbour preview is actually painted beyond the article card, not merely laid out there", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
+  const gallery = page.getByRole("region", { name: "Image gallery" });
+  await gallery.scrollIntoViewIfNeeded();
+  await expect(
+    gallery.getByRole("button", { name: "Go to image 1 of 3" }),
+  ).toHaveAttribute("aria-current", "true");
+  await expect
+    .poll(() =>
+      gallery
+        .locator("img")
+        .nth(1)
+        .evaluate((image) => {
+          const bounds = image.getBoundingClientRect();
+          const article = image.closest("article")!.getBoundingClientRect();
+          const x = Math.min(
+            innerWidth - 8,
+            Math.max(article.right + 8, bounds.left + 8),
+          );
+          const y = bounds.top + bounds.height / 2;
+          return (
+            x > article.right &&
+            x < bounds.right &&
+            Boolean(document.elementFromPoint(x, y)?.closest(".image-carousel"))
+          );
+        }),
+    )
+    .toBe(true);
+});
+
 test("Mouse dragging a linked image scrolls without opening its link, but a normal click still works", async ({
   page,
 }) => {
