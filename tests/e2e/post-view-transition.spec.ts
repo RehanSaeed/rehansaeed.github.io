@@ -965,6 +965,9 @@ test.describe("Bounded card-to-article hero continuity", () => {
                     style("::view-transition-new(pagination-list)").opacity,
                   ),
                   rootName: getComputedStyle(root).viewTransitionName,
+                  groupAnimation: style(
+                    "::view-transition-group(pagination-list)",
+                  ).animationName,
                   named: [...document.querySelectorAll("*")]
                     .filter(
                       (element) =>
@@ -1001,6 +1004,7 @@ test.describe("Bounded card-to-article hero continuity", () => {
           expect(target!.new).toBe(1);
           for (const sample of samples) {
             expect(sample.rootName).toBe("none");
+            expect(sample.groupAnimation).toBe("none");
             expect(sample.named).toEqual(["posts__items"]);
             expect(sample.pseudos.length).toBeGreaterThan(0);
             expect(
