@@ -96,6 +96,34 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
 test.describe("Dialog transitions", () => {
   test.use({ reducedMotion: "no-preference" });
 
+  for (const { title, trigger } of dialogs.slice(1)) {
+    test(`${title} remains interactive after client navigation`, async ({
+      page,
+    }) => {
+      // Keep native navigation and animation clocks real in this regression.
+      await page.addInitScript(() => {
+        Object.defineProperty(navigator, "share", { value: undefined });
+      });
+      await page.goto("/");
+      await expect(
+        page.getByRole("button", { name: "Open search", exact: true }),
+      ).toBeEnabled();
+      await page.locator(".post-card__title").first().click();
+
+      const opener = page
+        .getByRole("button", { name: trigger, exact: true })
+        .first();
+      const dialog = page.getByRole("dialog", { name: title, exact: true });
+      await opener.click();
+      await expect(dialog).toBeVisible();
+      await dialog
+        .getByRole("button", { name: `Close ${title}`, exact: true })
+        .click();
+      await expect(dialog).toBeHidden();
+      await expect(opener).toBeFocused();
+    });
+  }
+
   test("a queued close event does not close a reopened dialog", async ({
     page,
   }) => {
