@@ -21,18 +21,20 @@ export default defineNuxtPlugin((nuxtApp) => {
         source: HTMLImageElement;
         sourceClass: string;
         target?: HTMLImageElement;
-        transition?: ViewTransition;
-        deadline?: ReturnType<typeof setTimeout>;
       }
     | undefined;
+  let activeTransition: ViewTransition | undefined;
+  let deadline: ReturnType<typeof setTimeout> | undefined;
+  let historyDestination: string | undefined;
   const reset = () => {
-    clearTimeout(selected?.deadline);
+    clearTimeout(deadline);
+    activeTransition = undefined;
     selected?.source.classList.remove(selected.sourceClass);
     selected?.target?.classList.remove("post__photo--view-transition");
     root.classList.remove("post-view-transition");
     selected = undefined;
   };
-  const skip = () => selected?.transition?.skipTransition();
+  const skip = () => activeTransition?.skipTransition();
   const cancel = () => {
     skip();
     reset();
@@ -48,7 +50,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     if (!link) {
       return;
     }
-    if (selected) {
+    if (selected || activeTransition) {
       cancel();
       return;
     }
@@ -99,17 +101,13 @@ export default defineNuxtPlugin((nuxtApp) => {
   };
 
   const trackTransition = (transition: ViewTransition) => {
-    const selection = selected;
-    if (!selection) {
-      transition.skipTransition();
-      return;
-    }
-    selection.transition = transition;
-    selection.deadline = setTimeout(() => {
+    clearTimeout(deadline);
+    activeTransition = transition;
+    deadline = setTimeout(() => {
       transition.skipTransition();
     }, 600);
     const cleanup = () => {
-      if (selected === selection) {
+      if (activeTransition === transition) {
         reset();
       }
     };
@@ -117,10 +115,15 @@ export default defineNuxtPlugin((nuxtApp) => {
   };
 
   const prepareDestination = () => {
-    if (!selected?.transition) {
+    clearTimeout(deadline);
+    if (!activeTransition) {
       return;
     }
-    clearTimeout(selected.deadline);
+    if (!selected) {
+      // Prepare ordinary page fades before Nuxt's deferred router scroll, too.
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      return;
+    }
     const page = document.querySelector<HTMLElement>(".post-page");
     const hero = page?.querySelector<HTMLImageElement>(".post__photo");
     const heading = page?.querySelector<HTMLHeadingElement>("h1");
@@ -149,16 +152,21 @@ export default defineNuxtPlugin((nuxtApp) => {
   };
 
   router.beforeEach((to) => {
+    if (to.fullPath !== selected?.permalink) {
+      cancel();
+    }
     to.meta.viewTransition =
-      to.fullPath === selected?.permalink &&
+      to.fullPath !== historyDestination &&
+      !to.hash &&
       !reducedMotion.matches &&
       !forcedColors.matches;
+    historyDestination = undefined;
     if (!to.meta.viewTransition) {
       cancel();
     }
   });
   router.afterEach((_to, _from, failure) => {
-    if (failure || !selected?.transition) {
+    if (failure || !activeTransition) {
       cancel();
     }
   });
@@ -170,7 +178,10 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   reducedMotion.addEventListener("change", skip);
   forcedColors.addEventListener("change", skip);
-  window.addEventListener("popstate", cancel);
+  window.addEventListener("popstate", () => {
+    historyDestination = `${location.pathname}${location.search}${location.hash}`;
+    cancel();
+  });
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       cancel();

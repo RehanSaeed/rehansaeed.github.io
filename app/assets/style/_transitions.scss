@@ -1,8 +1,4 @@
 @media (prefers-reduced-motion: no-preference) {
-  :root.post-view-transition {
-    view-transition-name: none;
-  }
-
   .post-card__image--view-transition,
   .post-navigation__image--view-transition,
   .post__photo--view-transition {

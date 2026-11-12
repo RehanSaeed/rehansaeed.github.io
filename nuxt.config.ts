@@ -351,7 +351,7 @@ export default defineNuxtConfig({
   css: ["~/assets/style/index.scss", "katex/dist/katex.min.css"],
 
   app: {
-    viewTransition: false,
+    viewTransition: true,
     head: {
       htmlAttrs: { lang: site.language },
       // Fall back to the site name for pages without a title (the streaming pages).

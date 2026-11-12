@@ -43,6 +43,8 @@ declare global {
   interface Window {
     /** Observed native transition lifecycle for the browser regression tests. */
     postViewTransitionProbe: Probe;
+    /** Clear observations after warm-up navigation has completed. */
+    resetPostViewTransitionProbe: () => void;
   }
 }
 
@@ -60,7 +62,7 @@ const activators = {
 };
 const instrument = async (page: Page) => {
   await page.addInitScript(() => {
-    const probe: Probe = {
+    const createProbe = (): Probe => ({
       starts: 0,
       ready: 0,
       skipped: 0,
@@ -73,8 +75,13 @@ const instrument = async (page: Page) => {
       sourceNames: [],
       activations: [],
       skips: [],
-    };
+    });
+    let probe = createProbe();
     window.postViewTransitionProbe = probe;
+    window.resetPostViewTransitionProbe = () => {
+      probe = createProbe();
+      window.postViewTransitionProbe = probe;
+    };
     document.addEventListener(
       "click",
       (event) => {
@@ -119,15 +126,14 @@ const instrument = async (page: Page) => {
           width: source.width,
         });
       }
-      probe.sourceNames.push(
-        [
-          ...document.querySelectorAll(
-            ".post-card__image, .post-navigation__image, .post__photo",
-          ),
-        ].filter(
-          (image) => getComputedStyle(image).viewTransitionName === "post-hero",
-        ).length,
-      );
+      const sourceNames = [
+        ...document.querySelectorAll(
+          ".post-card__image, .post-navigation__image, .post__photo",
+        ),
+      ].filter(
+        (image) => getComputedStyle(image).viewTransitionName === "post-hero",
+      ).length;
+      probe.sourceNames.push(sourceNames);
       const started = performance.now();
       const transition = start(update);
       const skip = transition.skipTransition.bind(transition);
@@ -147,7 +153,9 @@ const instrument = async (page: Page) => {
           probe.ready++;
           const hero = document.querySelector<HTMLImageElement>(".post__photo");
           if (!hero) {
-            probe.errors.push("Destination hero missing at capture.");
+            if (sourceNames > 0) {
+              probe.errors.push("Destination hero missing at capture.");
+            }
             return;
           }
           const box = hero.getBoundingClientRect();
@@ -193,6 +201,20 @@ const instrument = async (page: Page) => {
   });
 };
 
+const resetProbe = async (page: Page) => {
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const probe = window.postViewTransitionProbe;
+        return probe.finished + probe.failures.length === probe.starts;
+      }),
+    )
+    .toBe(true);
+  await page.evaluate(() => {
+    window.resetPostViewTransitionProbe();
+  });
+};
+
 const prepare = async (page: Page, warm = true) => {
   await instrument(page);
   await page.goto("/", { waitUntil: "commit" });
@@ -201,7 +223,7 @@ const prepare = async (page: Page, warm = true) => {
   ).toBeEnabled();
   if (warm) {
     // Warm the actual client Content and article picture, not just SSR data.
-    // The deep card is offscreen, so this setup navigation is not eligible.
+    // The offscreen source uses only the default page fade during warm-up.
     await page
       .locator(`.post-card__title a[href="${destination}"]`)
       .evaluate((anchor: HTMLAnchorElement) => {
@@ -249,6 +271,7 @@ const prepare = async (page: Page, warm = true) => {
       element.getAnimations().map((animation) => animation.finished),
     );
   });
+  await resetProbe(page);
   return link;
 };
 
@@ -275,6 +298,62 @@ const expectClean = async (page: Page, expectedFailures = 0) => {
     await page.evaluate(() => window.postViewTransitionProbe.failures),
   ).toHaveLength(expectedFailures);
 };
+
+const expectFadeWithoutHero = async (page: Page) => {
+  await expect
+    .poll(() => page.evaluate(() => window.postViewTransitionProbe.finished))
+    .toBe(1);
+  const probe = await page.evaluate(() => window.postViewTransitionProbe);
+  expect(probe.starts).toBe(1);
+  expect(probe.ready).toBe(1);
+  expect(probe.skipped).toBe(0);
+  expect(probe.sourceNames).toEqual([0]);
+  for (const capture of probe.captures) {
+    expect(capture.names).toBe(0);
+    expect(capture.rootName).toBe("root");
+  }
+  await expectClean(page);
+};
+
+const pauseTransitions = async (page: Page) => {
+  await page.evaluate(() => {
+    const start = document.startViewTransition.bind(document);
+    document.startViewTransition = (update) => {
+      const transition = start(update);
+      void transition.ready.then(
+        () => {
+          for (const animation of document.getAnimations()) {
+            if (
+              animation.effect instanceof KeyframeEffect &&
+              animation.effect.pseudoElement?.includes("view-transition")
+            ) {
+              animation.pause();
+              animation.currentTime = 0;
+            }
+          }
+        },
+        (error: unknown) => {
+          if (!(error instanceof DOMException && error.name === "AbortError")) {
+            window.postViewTransitionProbe.errors.push(String(error));
+          }
+        },
+      );
+      return transition;
+    };
+  });
+};
+
+const finishTransitions = (page: Page) =>
+  page.evaluate(() => {
+    for (const animation of document.getAnimations()) {
+      if (
+        animation.effect instanceof KeyframeEffect &&
+        animation.effect.pseudoElement?.includes("view-transition")
+      ) {
+        animation.finish();
+      }
+    }
+  });
 
 test.describe("Bounded card-to-article hero continuity", () => {
   test.use({
@@ -341,7 +420,7 @@ test.describe("Bounded card-to-article hero continuity", () => {
         expect(capture.bottom).toBeLessThanOrEqual(1000);
         expect(capture.imageReady).toBe(true);
         expect(capture.names).toBe(1);
-        expect(capture.rootName).toBe("none");
+        expect(capture.rootName).toBe("root");
         expect(capture.focus).toBe(
           await page
             .locator(".post-page__title-container h1")
@@ -414,33 +493,7 @@ test.describe("Bounded card-to-article hero continuity", () => {
   }) => {
     await page.setViewportSize({ width: 1280, height: 720 });
     const link = await prepare(page);
-    await page.evaluate(() => {
-      const start = document.startViewTransition.bind(document);
-      document.startViewTransition = (update) => {
-        const transition = start(update);
-        void transition.ready.then(
-          () => {
-            for (const animation of document.getAnimations()) {
-              if (
-                animation.effect instanceof KeyframeEffect &&
-                animation.effect.pseudoElement?.includes("view-transition")
-              ) {
-                animation.pause();
-                animation.currentTime = 0;
-              }
-            }
-          },
-          (error: unknown) => {
-            if (!(
-              error instanceof DOMException && error.name === "AbortError"
-            )) {
-              window.postViewTransitionProbe.errors.push(String(error));
-            }
-          },
-        );
-        return transition;
-      };
-    });
+    await pauseTransitions(page);
     try {
       await activators.Enter(link);
       await expectDestination(page);
@@ -472,6 +525,18 @@ test.describe("Bounded card-to-article hero continuity", () => {
               x: new DOMMatrixReadOnly(style.transform).m41,
               y: new DOMMatrixReadOnly(style.transform).m42,
               width: Number.parseFloat(style.width),
+              oldPageOpacity: Number.parseFloat(
+                getComputedStyle(
+                  document.documentElement,
+                  "::view-transition-old(root)",
+                ).opacity,
+              ),
+              newPageOpacity: Number.parseFloat(
+                getComputedStyle(
+                  document.documentElement,
+                  "::view-transition-new(root)",
+                ).opacity,
+              ),
             };
           }, time),
         );
@@ -495,21 +560,18 @@ test.describe("Bounded card-to-article hero continuity", () => {
       expect(target!.y).toBeCloseTo(capture.top, 0);
       expect(midpoint!.width).toBeGreaterThan(source!.width);
       expect(midpoint!.width).toBeLessThan(target!.width);
+      expect(source!.oldPageOpacity).toBe(1);
+      expect(source!.newPageOpacity).toBe(0);
+      expect(midpoint!.oldPageOpacity).toBeGreaterThan(0);
+      expect(midpoint!.oldPageOpacity).toBeLessThan(1);
+      expect(midpoint!.newPageOpacity).toBeGreaterThan(0);
+      expect(midpoint!.newPageOpacity).toBeLessThan(1);
       await test.info().attach("hero-movement-measurements", {
         body: JSON.stringify(samples, null, 2),
         contentType: "application/json",
       });
     } finally {
-      await page.evaluate(() => {
-        for (const animation of document.getAnimations()) {
-          if (
-            animation.effect instanceof KeyframeEffect &&
-            animation.effect.pseudoElement?.includes("view-transition")
-          ) {
-            animation.finish();
-          }
-        }
-      });
+      await finishTransitions(page);
     }
     await expectClean(page);
   });
@@ -581,7 +643,7 @@ test.describe("Bounded card-to-article hero continuity", () => {
       const link = page.locator(`.post-navigation__link[rel="${direction}"]`);
       const href = await link.getAttribute("href");
       const title = await link.locator(".post-navigation__title").innerText();
-      // Warm the destination through an offscreen source, which is not eligible.
+      // Warm the destination through an offscreen source, using only a page fade.
       await link.evaluate((anchor: HTMLAnchorElement) => {
         anchor.click();
       });
@@ -614,6 +676,7 @@ test.describe("Bounded card-to-article hero continuity", () => {
       await link
         .locator("img")
         .evaluate((image: HTMLImageElement) => image.decode());
+      await resetProbe(page);
       await activators.mouse(link);
       await expect(page).toHaveURL(new RegExp(`${href}$`));
       await expect(page.locator(".post-page__title-container h1")).toHaveText(
@@ -758,7 +821,7 @@ test.describe("Bounded card-to-article hero continuity", () => {
         .poll(() =>
           page.evaluate(() => window.postViewTransitionProbe.finished),
         )
-        .toBe(1);
+        .toBe(2);
       await expectClean(page);
     } finally {
       release();
@@ -808,18 +871,68 @@ test.describe("Bounded card-to-article hero continuity", () => {
       }),
   };
 
-  test("Leaves ordinary navigation outside the hero trial", async ({
-    page,
-  }) => {
+  test("Cross-fades ordinary pages without naming a hero", async ({ page }) => {
     await prepare(page);
-    await page
-      .getByRole("link", { name: "About", exact: true })
-      .click({ noWaitAfter: true });
-    await expect(page).toHaveURL(/\/about\/$/);
-    expect(
-      await page.evaluate(() => window.postViewTransitionProbe.starts),
-    ).toBe(0);
-    await expectClean(page);
+    await pauseTransitions(page);
+    try {
+      await page
+        .getByRole("link", { name: "About", exact: true })
+        .click({ noWaitAfter: true });
+      await expect(page).toHaveURL(/\/about\/$/);
+      await expect
+        .poll(() => page.evaluate(() => window.postViewTransitionProbe.ready))
+        .toBe(1);
+      expect(await page.evaluate(() => scrollY)).toBe(0);
+      const samples = [];
+      for (const progress of [0, 0.5, 1]) {
+        samples.push(
+          await page.evaluate((fraction) => {
+            for (const animation of document.getAnimations()) {
+              const effect = animation.effect;
+              if (
+                effect instanceof KeyframeEffect &&
+                effect.pseudoElement?.includes("view-transition")
+              ) {
+                const duration = effect.getTiming().duration;
+                if (typeof duration === "number") {
+                  animation.currentTime = duration * fraction;
+                }
+              }
+            }
+            return {
+              old: Number.parseFloat(
+                getComputedStyle(
+                  document.documentElement,
+                  "::view-transition-old(root)",
+                ).opacity,
+              ),
+              new: Number.parseFloat(
+                getComputedStyle(
+                  document.documentElement,
+                  "::view-transition-new(root)",
+                ).opacity,
+              ),
+            };
+          }, progress),
+        );
+        const path = test.info().outputPath(`page-fade-${progress}.png`);
+        await page.screenshot({ path });
+        await test.info().attach(`page-fade-${progress}`, {
+          path,
+          contentType: "image/png",
+        });
+      }
+      const [source, midpoint, target] = samples;
+      expect(source).toEqual({ old: 1, new: 0 });
+      expect(midpoint!.old).toBeGreaterThan(0);
+      expect(midpoint!.old).toBeLessThan(1);
+      expect(midpoint!.new).toBeGreaterThan(0);
+      expect(midpoint!.new).toBeLessThan(1);
+      expect(target).toEqual({ old: 0, new: 1 });
+    } finally {
+      await finishTransitions(page);
+    }
+    await expectFadeWithoutHero(page);
   });
 
   for (const [bypass, configure] of Object.entries(bypasses)) {
@@ -835,19 +948,22 @@ test.describe("Bounded card-to-article hero continuity", () => {
     });
   }
 
-  test("Leaves a completely offscreen source unanimated", async ({ page }) => {
+  test("Uses only a page fade for a completely offscreen source", async ({
+    page,
+  }) => {
     const link = await prepare(page);
     await page.evaluate(() => {
       window.scrollTo({ top: 0, behavior: "instant" });
     });
+    const source = await page
+      .locator(`.post-card[data-post-permalink="${destination}"] img`)
+      .boundingBox();
+    expect(source!.y).toBeGreaterThanOrEqual(1000);
     await link.evaluate((anchor: HTMLAnchorElement) => {
       anchor.click();
     });
     await expectDestination(page);
-    expect(
-      await page.evaluate(() => window.postViewTransitionProbe.starts),
-    ).toBe(0);
-    await expectClean(page);
+    await expectFadeWithoutHero(page);
   });
 
   test("Does not intercept a card href containing a fragment", async ({
@@ -882,7 +998,7 @@ test.describe("Bounded card-to-article hero continuity", () => {
     await expectClean(page);
   });
 
-  test("Bypasses a broken source hero", async ({ page }) => {
+  test("Uses only a page fade for a broken source hero", async ({ page }) => {
     const link = await prepare(page);
     await page.route("**/unavailable-post-hero", (route) => route.abort());
     await link.evaluate((anchor) => {
@@ -911,9 +1027,6 @@ test.describe("Bounded card-to-article hero continuity", () => {
       .toBe(0);
     await activators.Enter(link);
     await expectDestination(page);
-    expect(
-      await page.evaluate(() => window.postViewTransitionProbe.starts),
-    ).toBe(0);
-    await expectClean(page);
+    await expectFadeWithoutHero(page);
   });
 });
