@@ -532,6 +532,16 @@ export default defineNuxtConfig({
     // Nuxt prerenders static page routes by their path. Give them the canonical trailing slash so
     // "/about" and the crawled "/about/" aren't both rendered to dist/about/index.html.
     "pages:extend": (pages) => {
+      // Design comparisons are local review tools, never production routes or bundles.
+      if (process.env.NODE_ENV === "development") {
+        pages.push({
+          name: "tag-style-comparison",
+          path: "/__design/tags/",
+          file: fileURLToPath(
+            new URL("./app/design/tag-style-comparison.vue", import.meta.url),
+          ),
+        });
+      }
       for (const page of pages) {
         if (page.path !== "/" && !page.path.includes(":")) {
           page.path = page.path.replace(/\/?$/, "/");
