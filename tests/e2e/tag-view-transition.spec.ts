@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import type { Locator, Page } from "@playwright/test";
+import type { Router } from "vue-router";
 
 type TagCapture = {
   names: number;
@@ -15,6 +16,7 @@ type TagProbe = {
   finished: number;
   skipped: number;
   sourceNames: number[];
+  sourceScroll: number[];
   sourceText: Array<string | null>;
   captures: TagCapture[];
   errors: string[];
@@ -54,6 +56,7 @@ const instrument = (page: Page) =>
       finished: 0,
       skipped: 0,
       sourceNames: [],
+      sourceScroll: [],
       sourceText: [],
       captures: [],
       errors: [],
@@ -74,6 +77,7 @@ const instrument = (page: Page) =>
     const start = document.startViewTransition.bind(document);
     document.startViewTransition = (update) => {
       probe.starts++;
+      probe.sourceScroll.push(scrollY);
       const source = namedLabels();
       probe.sourceNames.push(source.length);
       probe.sourceText.push(source[0]?.textContent ?? null);
@@ -216,22 +220,36 @@ test.describe("Selected tag to tag-title continuity", () => {
     page,
   }) => {
     const link = await prepare(page);
-    const before = await page.evaluate(() => scrollY);
     await link.click();
     await expect
       .poll(() => page.evaluate(() => window.tagTransitionProbe.finished))
       .toBe(1);
+    const sourceScroll = await page.evaluate(
+      () => window.tagTransitionProbe.sourceScroll[0],
+    );
+    expect(sourceScroll).toBeGreaterThan(0);
     await page.goBack();
     await expect.poll(() => new URL(page.url()).pathname).toBe("/");
     await expect(link).toBeVisible();
     await expect
       .poll(() => page.evaluate(() => scrollY))
-      .toBeCloseTo(before, 0);
+      .toBeCloseTo(sourceScroll!, 0);
     expect(await page.evaluate(() => window.tagTransitionProbe.starts)).toBe(1);
-    await link.evaluate((anchor: HTMLAnchorElement) => {
-      anchor.hash = ".net";
-    });
-    await link.click();
+    await page.evaluate(async (to) => {
+      const root = document.querySelector<
+        HTMLElement & {
+          /** Mounted Vue application for exercising real router navigation. */
+          __vue_app__: {
+            /** Nuxt application owning the router. */
+            $nuxt: {
+              /** SPA router, preserving normal fragment scroll behaviour. */
+              $router: Router;
+            };
+          };
+        }
+      >("#__nuxt");
+      await root!.__vue_app__.$nuxt.$router.push(to);
+    }, `${destination}#.net`);
     await expect(page).toHaveURL(/\/tag\/net\/#\.net$/);
     await expect(
       page.getByRole("heading", { name: "# .NET" }),
