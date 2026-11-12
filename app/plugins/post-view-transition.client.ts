@@ -37,6 +37,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     selected?.source.classList.remove("post-view-transition__hero");
     selected?.target?.classList.remove("post-view-transition__hero");
     root.classList.remove("post-view-transition");
+    root.classList.remove("pagination-view-transition");
     selected = undefined;
   };
   const skip = () => activeTransition?.skipTransition();
@@ -169,7 +170,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   const listeners = new AbortController();
   const disposers = [
-    router.beforeEach((to) => {
+    router.beforeEach((to, from) => {
       if (to.fullPath !== selected?.permalink) {
         cancel();
       }
@@ -187,6 +188,12 @@ export default defineNuxtPlugin((nuxtApp) => {
       to.meta.viewTransition = options;
       if (!options.enabled) {
         cancel();
+      } else if (
+        (from.name === "index" || from.name === "page") &&
+        (to.name === "index" || to.name === "page") &&
+        from.path !== to.path
+      ) {
+        root.classList.add("pagination-view-transition");
       }
     }),
     router.afterEach((_to, _from, failure) => {

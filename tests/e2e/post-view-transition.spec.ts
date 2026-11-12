@@ -893,6 +893,178 @@ test.describe("Bounded card-to-article hero continuity", () => {
       }),
   };
 
+  for (const colorScheme of ["light", "dark"] as const) {
+    test(`Fades only the pagination list with a stationary shell in ${colorScheme} mode`, async ({
+      page,
+    }) => {
+      await page.emulateMedia({ colorScheme });
+      await prepare(page);
+      const pager = page.locator(".posts__pager");
+      const next = pager.getByRole("link", { name: "Next", exact: true });
+      const previous = pager.getByRole("link", {
+        name: "Previous",
+        exact: true,
+      });
+      await expect(next).toHaveAttribute("href", "/2/");
+      // Warm both list routes before inspecting the short native capture.
+      await next.click({ noWaitAfter: true });
+      await expect(pager).toContainText("Page 2 of");
+      await resetProbe(page);
+      await previous.click({ noWaitAfter: true });
+      await expect(pager).toContainText("Page 1 of");
+      await resetProbe(page);
+      await pauseTransitions(page);
+      let historyScroll = 0;
+
+      for (const direction of ["Next", "Previous"] as const) {
+        const oldTitle = await page
+          .locator(".post-card__title")
+          .first()
+          .innerText();
+        const link = pager.getByRole("link", { name: direction, exact: true });
+        await link.focus();
+        await link.press("Enter", { noWaitAfter: true });
+        await expect(page).toHaveURL(direction === "Next" ? /\/2\/$/ : /\/$/);
+        await expect(page.locator(".post-card__title").first()).not.toHaveText(
+          oldTitle,
+        );
+        await expect
+          .poll(() => page.evaluate(() => window.postViewTransitionProbe.ready))
+          .toBe(1);
+        historyScroll = await page.evaluate(
+          () => window.postViewTransitionProbe.sourceScroll[0]!,
+        );
+        const samples = [];
+        try {
+          for (const progress of [0, 0.5, 1]) {
+            samples.push(
+              await page.evaluate((fraction) => {
+                const animations = document
+                  .getAnimations()
+                  .filter(
+                    (animation) =>
+                      animation.effect instanceof KeyframeEffect &&
+                      animation.effect.pseudoElement?.includes(
+                        "view-transition",
+                      ),
+                  );
+                for (const animation of animations) {
+                  const duration = animation.effect?.getTiming().duration;
+                  if (typeof duration === "number") {
+                    animation.currentTime = duration * fraction;
+                  }
+                }
+                const root = document.documentElement;
+                const style = (pseudo: string) =>
+                  getComputedStyle(root, pseudo);
+                return {
+                  old: Number.parseFloat(
+                    style("::view-transition-old(pagination-list)").opacity,
+                  ),
+                  new: Number.parseFloat(
+                    style("::view-transition-new(pagination-list)").opacity,
+                  ),
+                  rootName: getComputedStyle(root).viewTransitionName,
+                  named: [...document.querySelectorAll("*")]
+                    .filter(
+                      (element) =>
+                        getComputedStyle(element).viewTransitionName !== "none",
+                    )
+                    .map((element) => element.className),
+                  pseudos: animations.map((animation) =>
+                    animation.effect instanceof KeyframeEffect
+                      ? animation.effect.pseudoElement
+                      : null,
+                  ),
+                  shell: [".navigation", ".author", ".posts__arrows"].map(
+                    (selector) => {
+                      const element = document.querySelector(selector)!;
+                      const computed = getComputedStyle(element);
+                      return {
+                        opacity: computed.opacity,
+                        transform: computed.transform,
+                      };
+                    },
+                  ),
+                };
+              }, progress),
+            );
+          }
+          const [source, midpoint, target] = samples;
+          expect(source!.old).toBe(1);
+          expect(source!.new).toBe(0);
+          expect(midpoint!.old).toBeGreaterThan(0);
+          expect(midpoint!.old).toBeLessThan(1);
+          expect(midpoint!.new).toBeGreaterThan(0);
+          expect(midpoint!.new).toBeLessThan(1);
+          expect(target!.old).toBe(0);
+          expect(target!.new).toBe(1);
+          for (const sample of samples) {
+            expect(sample.rootName).toBe("none");
+            expect(sample.named).toEqual(["posts__items"]);
+            expect(sample.pseudos.length).toBeGreaterThan(0);
+            expect(
+              sample.pseudos.every((pseudo) =>
+                pseudo?.includes("pagination-list"),
+              ),
+            ).toBe(true);
+            expect(sample.shell).toEqual([
+              { opacity: "1", transform: "none" },
+              { opacity: "1", transform: "none" },
+              { opacity: "1", transform: "none" },
+            ]);
+          }
+          expect(await page.evaluate(() => scrollY)).toBe(0);
+        } finally {
+          await finishTransitions(page);
+        }
+        await expect(page.locator("html")).not.toHaveClass(
+          /pagination-view-transition/,
+        );
+        await expectClean(page);
+        await expect(page.locator(".nuxt-route-announcer")).toContainText(
+          direction === "Next" ? "Blog - Page 2" : "Blog",
+        );
+        await resetProbe(page);
+      }
+
+      await page.goBack();
+      await expect(pager).toContainText("Page 2 of");
+      await expect
+        .poll(() => page.evaluate(() => scrollY))
+        .toBeCloseTo(historyScroll, 0);
+      expect(
+        await page.evaluate(() => window.postViewTransitionProbe.starts),
+      ).toBe(0);
+      await expect(page.locator("html")).not.toHaveClass(
+        /pagination-view-transition/,
+      );
+    });
+  }
+
+  for (const [bypass, configure] of Object.entries(bypasses)) {
+    test(`Preserves pagination links with the ${bypass} fallback`, async ({
+      page,
+    }) => {
+      await configure(page);
+      await prepare(page, false);
+      const pager = page.locator(".posts__pager");
+      await pager.getByRole("link", { name: "Next", exact: true }).click();
+      await expect(page).toHaveURL(/\/2\/$/);
+      await expect(pager).toContainText("Page 2 of");
+      await expect(
+        pager.getByRole("link", { name: "Previous", exact: true }),
+      ).toHaveAttribute("href", "/");
+      expect(
+        await page.evaluate(() => window.postViewTransitionProbe.starts),
+      ).toBe(0);
+      await expect(page.locator("html")).not.toHaveClass(
+        /pagination-view-transition/,
+      );
+      await expectClean(page);
+    });
+  }
+
   test("Cross-fades ordinary pages without naming a hero", async ({ page }) => {
     await prepare(page);
     await pauseTransitions(page);

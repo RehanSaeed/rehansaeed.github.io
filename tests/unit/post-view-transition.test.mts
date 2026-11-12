@@ -47,12 +47,16 @@ const createHarness = (supported = true) => {
         startViewTransition: supported ? () => {} : undefined,
         documentElement: {
             classList: {
+                add: (name: string) => classes.add(name),
                 remove: (name: string) => classes.delete(name),
             },
         },
         hidden: false,
     });
-    const media = [new EventTarget(), new EventTarget()];
+    const media = [
+        Object.assign(new EventTarget(), { matches: false }),
+        Object.assign(new EventTarget(), { matches: false }),
+    ];
     const window = Object.assign(new EventTarget(), {
         matchMedia: (query: string) =>
             media[query.includes("reduced-motion") ? 0 : 1],
@@ -114,6 +118,7 @@ const createHarness = (supported = true) => {
         hotDispose,
         timers,
         classes,
+        media,
         transition,
         finish,
         interrupt,
@@ -196,16 +201,18 @@ await test("History policy observes popstate even when beforeEach ran first", ()
     const app = createHarness();
     const [beforeEach, afterEach] = [...app.guards];
     const route = {
+        name: "index",
+        path: "/",
         fullPath: "/",
         hash: "",
         meta: { viewTransition: { enabled: true } },
     };
-    beforeEach!(route);
+    beforeEach!(route, route);
     assert.equal(route.meta.viewTransition.enabled, true);
     app.interrupt();
     assert.equal(route.meta.viewTransition.enabled, false);
     afterEach!(route, route);
-    beforeEach!(route);
+    beforeEach!(route, route);
     assert.equal(route.meta.viewTransition.enabled, true);
     app.unmount[0]!();
 });
@@ -218,7 +225,115 @@ await test("Fragment destinations disable the native transition policy", () => {
         hash: "#main",
         meta: { viewTransition: { enabled: true } },
     };
-    beforeEach!(route);
+    beforeEach!(route, route);
     assert.equal(route.meta.viewTransition.enabled, false);
     app.unmount[0]!();
 });
+
+await test("Pagination names only the list until the native transition finishes", async () => {
+    const app = createHarness();
+    const [beforeEach] = [...app.guards];
+    const from = {
+        name: "index",
+        path: "/",
+        fullPath: "/",
+        hash: "",
+        meta: {},
+    };
+    const to = {
+        name: "page",
+        path: "/2/",
+        fullPath: "/2/",
+        hash: "",
+        meta: {},
+    };
+    beforeEach!(to, from);
+    assert.ok(app.classes.has("pagination-view-transition"));
+    app.hooks.get("page:view-transition:start")!(app.transition);
+    app.finish();
+    await app.transition.finished;
+    assert.equal(app.classes.size, 0);
+    app.unmount[0]!();
+});
+
+for (const [label, fromName, toName, fromPath, toPath] of [
+    ["next", "page", "page", "/2/", "/3/"],
+    ["previous", "page", "index", "/2/", "/"],
+    ["article", "index", "slug", "/", "/article/"],
+    ["return from article", "slug", "index", "/article/", "/"],
+    ["same page", "page", "page", "/2/", "/2/"],
+] as const) {
+    await test(`${label} navigation selects only the appropriate pagination mode`, () => {
+        const app = createHarness();
+        const [beforeEach] = [...app.guards];
+        beforeEach!(
+            {
+                name: toName,
+                path: toPath,
+                fullPath: toPath,
+                hash: "",
+                meta: {},
+            },
+            { name: fromName, path: fromPath },
+        );
+        assert.equal(
+            app.classes.has("pagination-view-transition"),
+            label === "next" || label === "previous",
+        );
+        app.unmount[0]!();
+    });
+}
+
+for (const preference of [0, 1]) {
+    await test(`Pagination respects media fallback ${preference}`, () => {
+        const app = createHarness();
+        app.media[preference]!.matches = true;
+        const [beforeEach] = [...app.guards];
+        const to = {
+            name: "page",
+            path: "/2/",
+            fullPath: "/2/",
+            hash: "",
+            meta: { viewTransition: { enabled: true } },
+        };
+        beforeEach!(to, { name: "index", path: "/" });
+        assert.equal(to.meta.viewTransition.enabled, false);
+        assert.equal(app.classes.size, 0);
+        app.unmount[0]!();
+    });
+}
+
+for (const interruption of ["history", "failure", "another route"] as const) {
+    await test(`Pagination capture is released after ${interruption}`, () => {
+        const app = createHarness();
+        const [beforeEach, afterEach] = [...app.guards];
+        const from = { name: "index", path: "/" };
+        const to = {
+            name: "page",
+            path: "/2/",
+            fullPath: "/2/",
+            hash: "",
+            meta: {},
+        };
+        beforeEach!(to, from);
+        assert.ok(app.classes.has("pagination-view-transition"));
+        if (interruption === "history") {
+            app.interrupt();
+        } else if (interruption === "failure") {
+            afterEach!(to, from, new Error("Navigation aborted"));
+        } else {
+            beforeEach!(
+                {
+                    name: "about",
+                    path: "/about/",
+                    fullPath: "/about/",
+                    hash: "",
+                    meta: {},
+                },
+                from,
+            );
+        }
+        assert.equal(app.classes.size, 0);
+        app.unmount[0]!();
+    });
+}

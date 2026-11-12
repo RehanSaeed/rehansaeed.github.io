@@ -3,8 +3,29 @@
     view-transition-name: post-hero;
   }
 
-  :root.post-view-transition::view-transition {
+  :root.post-view-transition::view-transition,
+  :root.pagination-view-transition::view-transition {
     pointer-events: none;
+  }
+
+  @media (forced-colors: none) {
+    :root.pagination-view-transition {
+      // Keep the shell live; only the changing list participates in the capture.
+      view-transition-name: none;
+
+      .posts__items {
+        view-transition-name: pagination-list;
+      }
+    }
+
+    :root.pagination-view-transition::view-transition-group(pagination-list) {
+      animation: none;
+    }
+
+    :root.pagination-view-transition::view-transition-old(pagination-list),
+    :root.pagination-view-transition::view-transition-new(pagination-list) {
+      animation-duration: var(--global-duration-1);
+    }
   }
 
   :root.post-view-transition::view-transition-group(post-hero) {
