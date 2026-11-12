@@ -5,8 +5,9 @@
       bordered
       v-for="tag of tags"
       :key="tag"
+      data-tag-transition-link
       :to="tagPath(tag)"
-      >{{ tag }}</u-link-button
+      ><span data-tag-transition-label>{{ tag }}</span></u-link-button
     >
   </div>
 </template>
