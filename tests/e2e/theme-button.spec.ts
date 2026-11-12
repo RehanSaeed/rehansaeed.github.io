@@ -1,5 +1,10 @@
 import type { Locator } from "@playwright/test";
-import { delayClientScripts, expect, test } from "./fixtures";
+import {
+  delayClientScripts,
+  expect,
+  getAnalyticsEvents,
+  test,
+} from "./fixtures";
 
 async function settle(button: Locator) {
   await button.evaluate(async (element) => {
@@ -46,12 +51,23 @@ test("Theme colour and shapes animate in both directions without replacing SVGs"
   }
 
   for (const theme of ["dark", "light"] as const) {
-    const transitions = await button.evaluate((element) => {
+    const transitions = await button.evaluate(async (element) => {
       if (!(element instanceof HTMLButtonElement)) {
         throw new Error("Expected a native theme button");
       }
-      // Start and pause in one browser task so even short colour transitions are captured.
+      // Capture the reactive DOM commit before the next animation frame.
+      const changed = new Promise<void>((resolve) => {
+        const observer = new MutationObserver(() => {
+          observer.disconnect();
+          resolve();
+        });
+        observer.observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ["data-theme"],
+        });
+      });
       element.click();
+      await changed;
       const animations = element.getAnimations({ subtree: true });
       const properties = animations
         .filter(
@@ -182,4 +198,72 @@ test("A saved dark theme displays the sun before hydration", async ({
   } finally {
     await scripts.dispose();
   }
+});
+
+for (const saved of ["light", "dark"] as const) {
+  test(`Saved ${saved} preference survives OS changes, navigation and reload`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: saved });
+    await page.addInitScript((theme) => {
+      if (!localStorage.getItem("theme")) {
+        localStorage.setItem("theme", theme);
+      }
+    }, saved);
+    await page.goto("/");
+    const button = page.getByRole("button", { name: "Toggle dark/light" });
+    await expect(button).toBeEnabled();
+    await page.emulateMedia({
+      colorScheme: saved === "light" ? "dark" : "light",
+    });
+    await expect(page.locator("html")).toHaveAttribute("data-theme", saved);
+    await expectTheme(button, saved);
+    await expect
+      .poll(async () =>
+        (await getAnalyticsEvents(page)).filter(
+          (event) => event.category === "app-theme",
+        ),
+      )
+      .toEqual([
+        { category: "app-theme", action: "theme-loaded", label: saved },
+      ]);
+    await page.locator('.navigation__item[href="/about/"]').click();
+    await expect(page).toHaveURL(/\/about\/$/);
+    await expect(page.locator("html")).toHaveAttribute("data-theme", saved);
+    await expect(page.locator("img.about__github-statistics")).toHaveAttribute(
+      "src",
+      saved === "light"
+        ? /profile-green-animate\.svg$/
+        : /profile-night-green\.svg$/,
+    );
+    await page.reload();
+    await expect(button).toBeEnabled();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", saved);
+    expect(await page.evaluate(() => localStorage.getItem("theme"))).toBe(
+      saved,
+    );
+  });
+}
+
+test("Unavailable theme storage still supports system mode and toggling", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    Storage.prototype.getItem = () => {
+      throw new DOMException("Storage blocked", "SecurityError");
+    };
+    Storage.prototype.setItem = () => {
+      throw new DOMException("Storage blocked", "SecurityError");
+    };
+  });
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.goto("/");
+  const button = page.getByRole("button", { name: "Toggle dark/light" });
+  await expect(button).toBeEnabled();
+  await expectTheme(button, "dark");
+  await page.emulateMedia({ colorScheme: "light" });
+  await expectTheme(button, "light");
+  await button.click();
+  await expectTheme(button, "dark");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
 });

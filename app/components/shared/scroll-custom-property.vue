@@ -1,47 +1,29 @@
 <script lang="ts">
-import {
-  defineComponent,
-  getCurrentInstance,
-  onMounted,
-  onUnmounted,
-} from "vue";
+import { defineComponent, getCurrentInstance } from "vue";
 export default defineComponent({
   name: "u-scroll-custom-property",
   setup(_props, { slots }) {
     const instance = getCurrentInstance();
-    let previousScroll = 0;
     let scroll = 0;
-    onMounted(() => {
-      window.addEventListener("scroll", onScroll);
-    });
-    onUnmounted(() => {
-      window.removeEventListener("scroll", onScroll);
-    });
-    const onScroll = () => {
-      requestAnimationFrame(() => {
-        previousScroll = scroll;
+    const { resume } = useRafFn(
+      () => {
+        const previousScroll = scroll;
         scroll =
           window.pageYOffset /
           (document.body.offsetHeight - window.innerHeight);
-        update();
-      });
-    };
-    const update = () => {
-      const element: unknown = instance?.proxy?.$el;
-      if (!(element instanceof HTMLElement)) {
-        return;
-      }
+        const element: unknown = instance?.proxy?.$el;
+        if (!(element instanceof HTMLElement)) {
+          return;
+        }
 
-      element.style.setProperty("--scroll", String(scroll));
+        element.style.setProperty("--scroll", String(scroll));
 
-      if (scroll > previousScroll) {
-        element.classList.add("scroll-down");
-        element.classList.remove("scroll-up");
-      } else {
-        element.classList.remove("scroll-down");
-        element.classList.add("scroll-up");
-      }
-    };
+        element.classList.toggle("scroll-down", scroll > previousScroll);
+        element.classList.toggle("scroll-up", scroll <= previousScroll);
+      },
+      { immediate: false, once: true },
+    );
+    useEventListener("scroll", resume, { passive: true });
     return () => {
       const nodes = slots.default?.() ?? [];
       return nodes.length === 1 ? nodes[0] : nodes;

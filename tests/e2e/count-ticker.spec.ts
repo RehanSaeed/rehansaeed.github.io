@@ -26,7 +26,15 @@ const mountTicker = async (
     };
   } = {},
 ) => {
-  const [component, utilities, vue, intersect, statistics] = await Promise.all([
+  const [
+    component,
+    utilities,
+    vue,
+    intersect,
+    statistics,
+    vueuse,
+    vueuseShared,
+  ] = await Promise.all([
     readFile(
       join(process.cwd(), "app", "components", "shared", "number-ticker.vue"),
       "utf8",
@@ -48,6 +56,28 @@ const mountTicker = async (
     ),
     readFile(
       join(process.cwd(), "app", "components", "portfolio-statistics.vue"),
+      "utf8",
+    ),
+    readFile(
+      join(
+        process.cwd(),
+        "node_modules",
+        "@vueuse",
+        "core",
+        "dist",
+        "index.js",
+      ),
+      "utf8",
+    ),
+    readFile(
+      join(
+        process.cwd(),
+        "node_modules",
+        "@vueuse",
+        "shared",
+        "dist",
+        "index.js",
+      ),
       "utf8",
     ),
   ]);
@@ -92,6 +122,8 @@ const mountTicker = async (
       vue,
       intersectSource,
       statisticsSource,
+      vueuse,
+      vueuseShared,
       options,
     }) => {
       const intervals = new Set<number>();
@@ -144,6 +176,14 @@ const mountTicker = async (
       const moduleUrl = (source: string) =>
         URL.createObjectURL(new Blob([source], { type: "text/javascript" }));
       const vueUrl = moduleUrl(vue);
+      const vueuseSharedUrl = moduleUrl(
+        vueuseShared.replace(/(["'])vue\1/g, JSON.stringify(vueUrl)),
+      );
+      const vueuseUrl = moduleUrl(
+        vueuse
+          .replace(/(["'])vue\1/g, JSON.stringify(vueUrl))
+          .replace(/(["'])@vueuse\/shared\1/g, JSON.stringify(vueuseSharedUrl)),
+      );
       const utilitiesUrl = moduleUrl(utilitiesSource);
       const componentUrl = moduleUrl(
         componentSource
@@ -153,7 +193,7 @@ const mountTicker = async (
             JSON.stringify(utilitiesUrl),
           ),
       );
-      const { createApp, defineComponent, h, ref } = (await import(
+      const { createApp, defineComponent, h, nextTick, ref } = (await import(
         vueUrl
       )) as typeof import("vue");
       const { default: Ticker } = (await import(componentUrl)) as {
@@ -161,7 +201,8 @@ const mountTicker = async (
       };
       const { default: Intersect } = (await import(
         moduleUrl(
-          intersectSource.replace(/(["'])vue\1/g, JSON.stringify(vueUrl)),
+          `import { useIntersectionObserver } from ${JSON.stringify(vueuseUrl)};\n` +
+            intersectSource.replace(/(["'])vue\1/g, JSON.stringify(vueUrl)),
         )
       )) as { default: import("vue").Component };
       const { default: Statistics } = (await import(
@@ -212,6 +253,9 @@ const mountTicker = async (
         .querySelector("#ticker-test")!
         .classList.toggle("offscreen", options.offscreen ?? false);
       app.mount("#ticker-test");
+      // Resolve the slotted root and its post-flush observer before advancing the fake clock.
+      await nextTick();
+      await nextTick();
       for (const [label, model] of [
         ["Number", number],
         ["Rate", rate],
@@ -234,6 +278,8 @@ const mountTicker = async (
       vue,
       intersectSource: transpile(intersectSource),
       statisticsSource,
+      vueuse,
+      vueuseShared,
       options,
     },
   );

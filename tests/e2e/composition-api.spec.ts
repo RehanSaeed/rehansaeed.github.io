@@ -40,6 +40,11 @@ test("Intersection observes the slotted root, loads once and disconnects on navi
         this.targets.add(target);
         if (target.matches(".webmentions")) {
           target.setAttribute("data-observed-root", target.tagName);
+          target.setAttribute(
+            "data-observer-thresholds",
+            this.thresholds.join(","),
+          );
+          target.setAttribute("data-observer-margin", this.rootMargin);
         }
         super.observe(target);
       }
@@ -67,6 +72,11 @@ test("Intersection observes the slotted root, loads once and disconnects on navi
   await page.goto(postPath);
   const mentions = page.locator(".webmentions");
   await expect(mentions).toHaveAttribute("data-observed-root", "SECTION");
+  await expect(mentions).toHaveAttribute("data-observer-thresholds", "0,0.2");
+  await expect(mentions).toHaveAttribute(
+    "data-observer-margin",
+    "0px 0px 0px 0px",
+  );
   expect(requests).toBe(0);
   await mentions.scrollIntoViewIfNeeded();
   await expect(mentions).toHaveAttribute("aria-busy", "false");
@@ -174,4 +184,36 @@ test("Scroll updates the unwrapped layout root and reverses direction", async ({
     Number(element.style.getPropertyValue("--scroll")),
   );
   expect(up).toBeLessThan(down.progress);
+});
+
+test("Batched scroll events keep the latest direction rather than reversing on a duplicate frame", async ({
+  page,
+}) => {
+  await page.goto(postPath);
+  await expect(
+    page.getByRole("button", { name: "Open search", exact: true }),
+  ).toBeEnabled();
+  const root = page.locator("#app");
+  await page.evaluate(() => {
+    window.scrollTo({ top: 800, behavior: "instant" });
+    window.dispatchEvent(new Event("scroll"));
+    window.dispatchEvent(new Event("scroll"));
+  });
+  await expect(root).toHaveClass(/scroll-down/);
+  await expect(root).not.toHaveClass(/scroll-up/);
+  const down = await root.evaluate((element: HTMLElement) =>
+    Number(element.style.getPropertyValue("--scroll")),
+  );
+  await page.evaluate(() => {
+    window.scrollTo({ top: 200, behavior: "instant" });
+    window.dispatchEvent(new Event("scroll"));
+    window.dispatchEvent(new Event("scroll"));
+  });
+  await expect(root).toHaveClass(/scroll-up/);
+  await expect(root).not.toHaveClass(/scroll-down/);
+  expect(
+    await root.evaluate((element: HTMLElement) =>
+      Number(element.style.getPropertyValue("--scroll")),
+    ),
+  ).toBeLessThan(down);
 });
