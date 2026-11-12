@@ -373,6 +373,49 @@ test.describe("Bounded card-to-article hero continuity", () => {
   });
 
   test.describe("Warmed captures", () => {
+    for (const { title, trigger } of [
+      { title: "Search", trigger: "Open search" },
+      { title: "Share", trigger: "Share" },
+      { title: "Buy me a Coffee", trigger: "Buy me a Coffee" },
+    ]) {
+      test(`Opening ${title} interrupts the navigation snapshot and keeps the dialog interactive`, async ({
+        page,
+      }) => {
+        await page.addInitScript(() => {
+          Object.defineProperty(navigator, "share", { value: undefined });
+        });
+        const link = await prepare(page);
+        // Hold the real native snapshot so modal entry always overlaps it.
+        await pauseTransitions(page);
+        await link.click();
+        await expectDestination(page);
+        await expect
+          .poll(() => page.evaluate(() => window.postViewTransitionProbe.ready))
+          .toBe(1);
+        expect(
+          await page.evaluate(() => window.postViewTransitionProbe.finished),
+        ).toBe(0);
+
+        const opener = page
+          .getByRole("button", { name: trigger, exact: true })
+          .first();
+        const dialog = page.getByRole("dialog", { name: title, exact: true });
+        await opener.press("Enter");
+        await expect(dialog).toBeVisible();
+        await dialog
+          .getByRole("button", { name: `Close ${title}`, exact: true })
+          .click();
+        await expect(dialog).toBeHidden();
+        await expect(opener).toBeFocused();
+        await expect
+          .poll(() =>
+            page.evaluate(() => window.postViewTransitionProbe.finished),
+          )
+          .toBe(1);
+        await expectClean(page);
+      });
+    }
+
     for (const activation of ["mouse", "Enter"] as const) {
       test(`Captures the warmed hero after deep-scroll restoration using ${activation}`, async ({
         page,
