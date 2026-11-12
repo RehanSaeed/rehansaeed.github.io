@@ -3,12 +3,6 @@
     class="image-carousel"
     :class="{ 'image-carousel--interactive': isInteractive }"
     aria-label="Image gallery">
-    <p class="image-carousel__hint" :id="hintId">
-      Scroll, swipe or use arrow keys when the gallery is focused.
-      <template v-if="isInteractive">
-        Drag the image, use Previous and Next, or choose an image below.
-      </template>
-    </p>
     <div class="image-carousel__viewport">
       <div
         :id="trackId"
@@ -17,7 +11,6 @@
         :class="{ 'image-carousel__track--dragging': isDragging }"
         role="group"
         aria-label="Gallery images"
-        :aria-describedby="hintId"
         tabindex="0"
         @scroll.passive="updatePosition">
         <slot />
@@ -90,7 +83,6 @@ const props = defineProps<{
 }>();
 const id = useId();
 const trackId = `image-gallery-${id}`;
-const hintId = `${trackId}-hint`;
 const track = useTemplateRef<HTMLDivElement>("track");
 const currentIndex = ref(0);
 const isInteractive = ref(false);
@@ -262,24 +254,21 @@ onBeforeUnmount(() => {
 @use "~/assets/style/abstracts/visually-hidden";
 
 .image-carousel {
-  --image-carousel-slide-size: min(90vw, var(--global-space-content-max-width));
+  --image-carousel-inactive-scale: 0.88;
+  --button-icon-color: #fff;
+  --button-icon-hover-color: var(--global-accent-color);
+  --button-icon-hover-background: #fff;
 
-  inline-size: 100vw;
+  container-type: inline-size;
   margin-block: var(--global-space-fixed-5);
-  margin-inline: calc(50% - 50vw);
-}
-
-.image-carousel__hint {
-  max-inline-size: none;
-  min-inline-size: 0;
-  padding-inline: var(--global-space-fluid-6);
-  margin-block-end: var(--global-space-fixed-3);
-  text-align: center;
-  font-size: var(--global-font-size-1);
 }
 
 .image-carousel__viewport {
+  --image-carousel-slide-size: calc(100cqi + (2 * var(--global-space-fluid-6)));
+
   position: relative;
+  inline-size: 100vw;
+  margin-inline: calc(50% - 50vw);
 }
 
 .image-carousel__track {
@@ -288,12 +277,12 @@ onBeforeUnmount(() => {
   grid-auto-flow: column;
   grid-auto-columns: var(--image-carousel-slide-size);
   align-items: start;
-  gap: var(--global-space-fixed-4);
+  gap: var(--global-space-fixed-3);
   overflow-x: auto;
   overscroll-behavior-inline: contain;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
-  padding-block: var(--global-space-fixed-2);
+  padding-block-start: var(--global-space-fixed-2);
   padding-inline: calc((100vw - var(--image-carousel-slide-size)) / 2);
 
   &::-webkit-scrollbar {
@@ -352,10 +341,26 @@ onBeforeUnmount(() => {
 
 .image-carousel--interactive .image-carousel__slide .prose-image {
   opacity: 0.5;
-  scale: 0.88;
+  scale: var(--image-carousel-inactive-scale);
+  translate: 0;
   transition:
     opacity var(--global-duration-2) var(--ease-in-out-cubic),
-    scale var(--global-duration-2) var(--ease-in-out-cubic);
+    scale var(--global-duration-2) var(--ease-in-out-cubic),
+    translate var(--global-duration-2) var(--ease-in-out-cubic);
+}
+
+// Offset half the scaled-away width so previews keep their inner edge nearby.
+.image-carousel--interactive
+  .image-carousel__slide:has(~ [data-current])
+  .prose-image {
+  translate: calc((1 - var(--image-carousel-inactive-scale)) * 50%);
+}
+
+.image-carousel--interactive
+  .image-carousel__slide[data-current]
+  ~ .image-carousel__slide
+  .prose-image {
+  translate: calc((var(--image-carousel-inactive-scale) - 1) * 50%);
 }
 
 .image-carousel--interactive .image-carousel__slide[data-current] .prose-image {
@@ -380,7 +385,6 @@ onBeforeUnmount(() => {
 
 .image-carousel__pagination {
   padding-inline: var(--global-space-fixed-3);
-  margin-block-start: var(--global-space-fixed-3);
 }
 
 .image-carousel__position {
@@ -388,8 +392,12 @@ onBeforeUnmount(() => {
 }
 
 .image-carousel__button {
-  background-color: var(--global-content-background-color);
+  background-color: rgb(0 0 0 / 65%);
   pointer-events: auto;
+}
+
+[data-theme="dark"] .image-carousel {
+  --button-icon-hover-color: var(--global-alternate-accent-color);
 }
 
 .image-carousel__button--previous {

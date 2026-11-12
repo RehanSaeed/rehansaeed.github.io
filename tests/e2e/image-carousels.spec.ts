@@ -35,6 +35,12 @@ for (const width of [1440, 640, 375, 320]) {
     await expect(track).toHaveCSS("scroll-snap-type", "x mandatory");
     await expect(track).toHaveCSS("scrollbar-width", "none");
     await expect(gallery).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+    await expect(gallery).not.toContainText(
+      "Scroll, swipe or use arrow keys when the gallery is focused.",
+    );
+    await expect(gallery).not.toContainText(
+      "Drag the image, use Previous and Next, or choose an image below.",
+    );
     await expect(track.locator(".image-carousel__slide").first()).toHaveCSS(
       "scroll-snap-stop",
       "always",
@@ -51,12 +57,29 @@ for (const width of [1440, 640, 375, 320]) {
     await expect(
       pagination.locator('[aria-current="true"]'),
     ).toHaveAccessibleName("Go to image 1 of 2");
+    const [currentPicture, nextPicture, dot] = await Promise.all([
+      gallery.locator(".prose-image").nth(0).boundingBox(),
+      gallery.locator(".prose-image").nth(1).boundingBox(),
+      pagination.locator(".carousel-pagination__dot").first().boundingBox(),
+    ]);
+    expect(currentPicture).not.toBeNull();
+    expect(nextPicture).not.toBeNull();
+    expect(dot).not.toBeNull();
+    const previewGap =
+      nextPicture!.x - (currentPicture!.x + currentPicture!.width);
+    const dotGap = dot!.y - (currentPicture!.y + currentPicture!.height);
+    expect(previewGap).toBeGreaterThanOrEqual(0);
+    expect(previewGap).toBeLessThanOrEqual(16);
+    expect(dotGap).toBeGreaterThanOrEqual(0);
+    expect(dotGap).toBeLessThanOrEqual(16);
 
     for (const theme of ["light", "dark"]) {
       await page.evaluate((value) => {
         document.documentElement.dataset.theme = value;
       }, theme);
-      const bounds = await gallery.boundingBox();
+      const bounds = await gallery
+        .locator(".image-carousel__viewport")
+        .boundingBox();
       expect(bounds).not.toBeNull();
       expect(bounds!.x).toBeCloseTo(0, 0);
       expect(bounds!.width).toBeCloseTo(width, 0);
@@ -141,7 +164,6 @@ for (const width of [1440, 640, 375, 320]) {
     await expect(track).toBeFocused();
     await expect(track).toHaveCSS("outline-style", "solid");
     await expect(images.nth(1)).toBeVisible();
-    await expect(gallery.locator(".image-carousel__hint")).toBeVisible();
     await track.press("Tab");
     await expect(previous).toBeFocused();
     await expect(previous).toHaveCSS("outline-style", "solid");
@@ -179,6 +201,24 @@ test("Figure galleries keep captions, links and the standalone image outside the
   ).toBeEnabled();
   await gallery.scrollIntoViewIfNeeded();
   const image = gallery.locator("img").first();
+  const standaloneImage = page.locator(".post__content > figure img").first();
+  for (const width of [1440, 640, 375, 320]) {
+    await page.setViewportSize({ width, height: 900 });
+    await expect(gallery.locator(".prose-image").first()).toHaveCSS(
+      "scale",
+      "1",
+    );
+    const [normalBounds, currentBounds] = await Promise.all([
+      standaloneImage.boundingBox(),
+      image.boundingBox(),
+    ]);
+    expect(normalBounds).not.toBeNull();
+    expect(currentBounds).not.toBeNull();
+    expect(currentBounds!.width).toBeCloseTo(normalBounds!.width, 0);
+    expect(currentBounds!.height).toBeCloseTo(normalBounds!.height, 0);
+    expect(currentBounds!.x).toBeCloseTo(normalBounds!.x, 0);
+  }
+  await gallery.scrollIntoViewIfNeeded();
   const bounds = await image.boundingBox();
   expect(bounds).not.toBeNull();
   const x = bounds!.x + bounds!.width * 0.8;
@@ -341,7 +381,17 @@ test("Overlay buttons reveal on hover and keyboard focus with dismissible toolti
   expect(control!.y + control!.height).toBeLessThanOrEqual(
     picture!.y + picture!.height + 1,
   );
-  await next.hover();
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate((value) => {
+      document.documentElement.dataset.theme = value;
+    }, theme);
+    await image.hover();
+    await expect(next).toHaveCSS("background-color", "rgba(0, 0, 0, 0.65)");
+    await expect(next).toHaveCSS("color", "rgb(255, 255, 255)");
+    await next.hover();
+    await expect(next).toHaveCSS("background-color", "rgb(255, 255, 255)");
+    await expect(next).not.toHaveCSS("color", "rgb(255, 255, 255)");
+  }
   await expect(page.getByRole("tooltip", { name: "Next image" })).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.getByRole("tooltip")).toBeHidden();

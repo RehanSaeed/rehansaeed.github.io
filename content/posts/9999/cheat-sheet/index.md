@@ -260,7 +260,7 @@ To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>`
 
 # Image Carousels
 
-Two or more consecutive image-only paragraphs or image figures automatically become a full-width, horizontally scrolling gallery with a centred current image. Images on consecutive lines in one paragraph also work. Scroll, swipe, drag an image, choose a pagination dot, use the Previous and Next buttons, or focus the gallery and use the arrow keys. The icon buttons appear over the current image on hover or keyboard focus and remain visible on touch devices; unavailable directions are hidden. Other images appear smaller and faded, returning to full size and opacity when centred. These changes animate unless reduced motion is requested. Prose, headings and other blocks end the gallery; a standalone image is unchanged. Keep captions inside their image's `<figure>` and image links around the image.
+Two or more consecutive image-only paragraphs or image figures automatically become a full-width, horizontally scrolling gallery with a centred current image sized like a standalone article image. Images on consecutive lines in one paragraph also work. Scroll, swipe, drag an image, choose a pagination dot, use the Previous and Next buttons, or focus the gallery and use the arrow keys. The icon buttons appear over the current image on hover or keyboard focus and remain visible on touch devices; unavailable directions are hidden. Other images appear smaller and faded, returning to full size and opacity when centred. These changes animate unless reduced motion is requested. Prose, headings and other blocks end the gallery; a standalone image is unchanged. Keep captions inside their image's `<figure>` and image links around the image.
 
 <figure>
 
