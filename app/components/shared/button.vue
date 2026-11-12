@@ -5,6 +5,7 @@
       'button--plain': variant === 'plain',
       'button--secondary': variant === 'secondary',
       'button--primary': variant === 'primary',
+      'button--icon': variant === 'icon',
       'button--hydrating': !hydrated && !disabled && !submit,
     }"
     :disabled="disabled || (!hydrated && !submit)"
@@ -21,11 +22,11 @@ const props = defineProps({
   /** Whether the button is disabled. */ disabled: {
     type: Boolean,
   },
-  /** Visual variant of the button. */ variant: {
-    type: String as PropType<"plain" | "secondary" | "primary">,
+  /** Visual variant; icon is a circular 44px control. */ variant: {
+    type: String as PropType<"plain" | "secondary" | "primary" | "icon">,
     default: "plain",
     validator: (value: string) =>
-      ["plain", "secondary", "primary"].includes(value),
+      ["plain", "secondary", "primary", "icon"].includes(value),
   },
   /** Whether the button submits its containing form. */ submit: {
     type: Boolean,
@@ -137,6 +138,73 @@ onMounted(() => {
     border-color: var(--global-border-color);
     background-color: var(--global-border-color);
     color: var(--global-disabled-color);
+  }
+}
+
+// Retain both classes so late base button rules cannot override icon colours.
+.button.button--icon {
+  display: grid;
+  place-items: center;
+  color: var(--button-icon-color, inherit);
+  border-radius: 50%;
+  font: inherit;
+  font-size: 1rem;
+  inline-size: 44px;
+  block-size: 44px;
+  padding: 8px;
+  transition: none;
+  will-change: auto;
+
+  &:hover,
+  &:focus {
+    color: var(--button-icon-color, inherit);
+    transform: none;
+  }
+
+  &:is(:hover, :focus-visible):not(:disabled) {
+    color: var(--button-icon-hover-color, var(--button-icon-color, inherit));
+    background-color: var(
+      --button-icon-hover-background,
+      var(--global-border-color)
+    );
+  }
+
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+  }
+
+  &:disabled {
+    color: var(--button-icon-disabled-color, var(--global-disabled-color));
+    background-color: var(--button-icon-disabled-background, transparent);
+  }
+}
+
+@media (forced-colors: active) {
+  .button.button--icon {
+    color: ButtonText;
+    background-color: ButtonFace;
+    border: 1px solid ButtonText;
+
+    &:hover,
+    &:focus {
+      color: ButtonText;
+    }
+
+    &:is(:hover, :focus-visible):not(:disabled) {
+      color: HighlightText;
+      background-color: Highlight;
+    }
+
+    &:focus-visible {
+      outline-color: Highlight;
+    }
+
+    &:disabled {
+      color: GrayText;
+      background-color: ButtonFace;
+      border-color: GrayText;
+    }
   }
 }
 </style>

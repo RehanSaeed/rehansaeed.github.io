@@ -10,16 +10,23 @@
         :key="item.rel"
         class="post-navigation__card"
         :class="`post-navigation__card--${item.rel}`"
+        data-view-transition-source
+        :data-post-permalink="item.post.permalink"
+        :data-post-hero="item.post.heroImage"
         tag="li"
         hoverable
         focusable>
         <NuxtLink
+          data-view-transition-link
           class="post-navigation__link"
           :to="item.post.permalink"
           :rel="item.rel">
           <NuxtPicture
             class="post-navigation__picture"
-            :img-attrs="{ class: 'post-navigation__image' }"
+            :img-attrs="{
+              class: 'post-navigation__image',
+              'data-view-transition-image': '',
+            }"
             format="avif"
             :legacy-format="getLegacyImageFormat(item.post.heroImage)"
             :src="item.post.heroImage"

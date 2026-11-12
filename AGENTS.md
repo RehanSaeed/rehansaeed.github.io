@@ -116,12 +116,42 @@ authorise publishing the article or posting to social media.
   Test observable behaviour, not implementation details.
 - Run `npm run test:lint` for lint-configuration changes and `npm run test:unit`
   for changes to the tested shared utilities.
-- Batch related edits and run the smallest relevant local checks while
-  developing. Reserve pushes and full CI runs for review-ready milestones or
-  validation that genuinely requires CI, not every intermediate edit.
-  Before handing off application or dependency changes, run `npm run build`,
-  `npm run typecheck`, `npm run lint`, and relevant Playwright tests.
-  Instruction-only changes need a focused Prettier check.
+- Start with the smallest affected checks and batch related edits before
+  expensive generation or browser runs. Instruction-only changes need a focused
+  Prettier check and `git diff --check`, not application builds or browser tests.
+  Reserve pushes and full CI runs for meaningful review milestones or validation
+  that genuinely requires CI, not every intermediate edit.
+- Run heavy checks serially within a session. In particular, `npm run build`
+  and `npm run typecheck` both prepare Nuxt and recreate shared content-image
+  output; do not overlap them in one worktree. Coordinate heavy checks across
+  Project sessions and confirm what is still running before starting; requesting
+  a pause does not establish exclusive use of the machine.
+- Preserve supported same-branch build caches instead of clearing them routinely.
+  Responsive images use `.cache/nuxt-images`; its fingerprint includes the full
+  lockfile, Nuxt configuration, source images, Node/platform and cache-module
+  inputs. Config or dependency edits can invalidate it, and builds failing before
+  Nitro's compiled hook may not save it. Nuxt OG `buildCache` is also enabled.
+  Cache reuse still requires generating and checking current output; do not copy
+  unverified artifacts from another branch.
+- Playwright's automatic server runs `npm start` against prebuilt `dist`; it
+  does not build the site. Verify the served output belongs to the current
+  worktree and reflects the changes, especially when reusing port 8080. For a
+  dedicated port, serve this worktree's output with `PORT` and `scripts/serve.mts`.
+  `BASE_URL` skips the automatic server but also changes workers, retries and
+  timeouts; it is not a generic speed switch. Under load, start with a bounded
+  affected-file run such as
+  `npx playwright test <test-file> --project=chrome --workers=1 --retries=0 --max-failures=1`.
+  This is early feedback, not a replacement for required cross-browser coverage.
+- If generation or browser setup/teardown stalls, inspect process activity,
+  logs, server readiness and resource contention before retrying. Stop only
+  identified task-owned processes when necessary; do not repeatedly launch
+  suites, inflate timeouts or attribute failures to load without evidence.
+- Open an implemented PR without waiting for every expensive check; disclose
+  pending, failed and unrun validation rather than claiming readiness. Application
+  or dependency changes still require `npm run build`, `npm run typecheck`,
+  `npm run lint` and relevant Playwright verification before final readiness.
+  Opening a PR does not relax assertions, security or accessibility requirements,
+  or the final-head CI gates below.
 - Treat a build as successful only when the command exits successfully,
   including SEO verification. A successful build does not prove accessibility,
   browser behaviour or article code samples are correct.

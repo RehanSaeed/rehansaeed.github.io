@@ -1,10 +1,16 @@
 <template>
-  <div class="post-page h-entry">
+  <div
+    class="post-page h-entry"
+    data-view-transition-destination
+    :data-post-permalink="post.permalink"
+    :data-post-hero="post.heroImage">
     <div class="post-page__title-container">
       <u-heading
+        data-view-transition-heading
         :id="titleId"
         class="p-name u-url"
         level="1"
+        tabindex="-1"
         center
         :to="post.permalink"
         >{{ title }}</u-heading

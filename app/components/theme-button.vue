@@ -17,27 +17,31 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, watch } from "vue";
 import { appThemeChanged, appThemeLoaded } from "~/framework/analytics";
 
 defineOptions({ name: "u-theme-button", inheritAttrs: false });
-const darkTheme = ref(false);
-const theme = computed(() => (darkTheme.value ? "dark" : "light"));
-
-const setTheme = () => {
-  darkTheme.value = window.__theme === "dark";
-};
+const colorMode = useColorMode();
+const darkTheme = computed(
+  () => !colorMode.unknown && colorMode.value === "dark",
+);
 const onToggleTheme = () => {
-  darkTheme.value = !darkTheme.value;
-  window.__setPreferredTheme(theme.value);
-  appThemeChanged(theme.value);
+  const theme = darkTheme.value ? "light" : "dark";
+  colorMode.preference = theme;
+  appThemeChanged(theme);
 };
 
 onMounted(() => {
-  setTheme();
-  appThemeLoaded(theme.value);
+  watch(
+    () => colorMode.unknown,
+    (unknown) => {
+      if (!unknown) {
+        appThemeLoaded(colorMode.value);
+      }
+    },
+    { immediate: true },
+  );
 });
-useEventListener("__themeChanged", setTheme);
 </script>
 
 <style lang="scss">

@@ -56,6 +56,16 @@ module.exports = {
     collect: {
       staticDistDir: "./dist",
       chromePath: process.env.CHROME_PATH || chromium.executablePath(),
+      // Other CI page jobs keep their existing browser launch path.
+      ...(selectedPaths.includes("/about/")
+        ? {
+            puppeteerScript: "./scripts/lighthouse-fixtures.cjs",
+            puppeteerLaunchOptions: {
+              args:
+                process.env.GITHUB_ACTIONS === "true" ? ["--no-sandbox"] : [],
+            },
+          }
+        : {}),
       numberOfRuns: 3,
       settings: {
         // Hosted Ubuntu's AppArmor profile disallows the downloaded Chromium sandbox.

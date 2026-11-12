@@ -300,7 +300,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed } from "vue";
 
 defineOptions({ name: "u-about" });
 const metadata = useAppConfig().site;
@@ -340,7 +340,8 @@ useHead({
     { property: "fb:app_id", content: metadata.facebookAppId },
   ],
 });
-const theme = ref("light");
+const colorMode = useColorMode();
+const theme = computed(() => (colorMode.unknown ? "light" : colorMode.value));
 const relativeUrl = "/about/";
 const stackOverflowUrl = computed(() => metadata.author.stackOverflow.url);
 const oppositeTheme = computed(() =>
@@ -380,18 +381,6 @@ const youtubeBadgeImageUrl = (statistic: string, label: string) => {
   });
   return `https://img.shields.io/badge/dynamic/json?${query}`;
 };
-const setTheme = (event: Event) => {
-  if (event instanceof CustomEvent) {
-    const value: unknown = event.detail;
-    if (value === "light" || value === "dark") {
-      theme.value = value;
-    }
-  }
-};
-onMounted(() => {
-  theme.value = window.__theme;
-});
-useEventListener("__themeChanged", setTheme);
 </script>
 
 <style lang="scss">
