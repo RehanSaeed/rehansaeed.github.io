@@ -38,7 +38,7 @@ Duis aliquet ex eu scelerisque ultricies. Nam ac sagittis ligula. Vestibulum vel
 # Links
 
 [Link](https://example.com)
-[Empty Link]()
+[Empty Link](<>)
 
 # Horizontal Rule
 
@@ -182,12 +182,12 @@ docker image build --tag foo:1.0.0 --label "build"="123" --label "changeset"="0d
 // Code Title, Line Numbers, Line Highlight
 // Code Title, Line Numbers, Line Highlight
 export default {
-  data () {
+  data() {
     return {
-      msg: 'All'
-    }
-  }
-}
+      msg: "All",
+    };
+  },
+};
 ```
 
 # Math
@@ -256,6 +256,31 @@ To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>`
 ![Code](./images/Code-1600x900.jpg)
 
 <figcaption>A code-themed illustration.</figcaption>
+</figure>
+
+# Image Carousels
+
+Consecutive image-only paragraphs or figures become a full-bleed gallery. The centred image keeps the same dimensions as a normal article image. Swipe, scroll horizontally, drag an image or use the numbered controls. Focus the gallery to use the arrow keys, Home and End. Images grow and fade continuously with the scroll position, not when they pass a halfway point. Reduced motion and High Contrast Mode keep the images static and fully opaque. Captions and links retain their normal semantics; prose and headings end a gallery.
+
+<figure>
+
+[![A linked code illustration in the first gallery slide.](./images/Code-1600x900.jpg)](/css-general-rules-of-thumb/)
+
+<figcaption>The first gallery image retains its link.</figcaption>
+</figure>
+
+<figure>
+
+![A code illustration in the second gallery slide.](./images/Code-1600x900.jpg)
+
+<figcaption>The second gallery image retains its caption.</figcaption>
+</figure>
+
+<figure>
+
+![A code illustration in the third gallery slide.](./images/Code-1600x900.jpg)
+
+<figcaption>The third gallery image demonstrates the last endpoint.</figcaption>
 </figure>
 
 # Embed Videos
