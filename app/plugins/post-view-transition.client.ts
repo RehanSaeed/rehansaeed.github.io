@@ -25,7 +25,6 @@ export default defineNuxtPlugin((nuxtApp) => {
         permalink: string;
         hero: string;
         source: HTMLImageElement;
-        sourceClass: string;
         target?: HTMLImageElement;
       }
     | undefined;
@@ -35,8 +34,8 @@ export default defineNuxtPlugin((nuxtApp) => {
   const reset = () => {
     clearTimeout(deadline);
     activeTransition = undefined;
-    selected?.source.classList.remove(selected.sourceClass);
-    selected?.target?.classList.remove("post__photo--view-transition");
+    selected?.source.classList.remove("post-view-transition__hero");
+    selected?.target?.classList.remove("post-view-transition__hero");
     root.classList.remove("post-view-transition");
     selected = undefined;
   };
@@ -61,11 +60,9 @@ export default defineNuxtPlugin((nuxtApp) => {
     !document.querySelector('dialog[open], [aria-modal="true"]');
 
   const findSource = (link: HTMLAnchorElement) => {
-    const card = link.closest<HTMLElement>(
-      ".posts .post-card, .post-navigation__card",
-    );
+    const card = link.closest<HTMLElement>("[data-view-transition-source]");
     const image = card?.querySelector<HTMLImageElement>(
-      ".post-card__image, .post-navigation__image",
+      "img[data-view-transition-image]",
     );
     if (
       !card ||
@@ -80,16 +77,19 @@ export default defineNuxtPlugin((nuxtApp) => {
       permalink: link.pathname,
       hero: card.dataset.postHero,
       source: image,
-      sourceClass: card.matches(".post-card")
-        ? "post-card__image--view-transition"
-        : "post-navigation__image--view-transition",
     };
   };
 
   const findDestination = (selection: NonNullable<typeof selected>) => {
-    const page = document.querySelector<HTMLElement>(".post-page");
-    const hero = page?.querySelector<HTMLImageElement>(".post__photo");
-    const heading = page?.querySelector<HTMLHeadingElement>("h1");
+    const page = document.querySelector<HTMLElement>(
+      "[data-view-transition-destination]",
+    );
+    const hero = page?.querySelector<HTMLImageElement>(
+      "img[data-view-transition-image]",
+    );
+    const heading = page?.querySelector<HTMLHeadingElement>(
+      "[data-view-transition-heading]",
+    );
     if (
       router.currentRoute.value.fullPath !== selection.permalink ||
       page?.dataset.postPermalink !== selection.permalink ||
@@ -106,7 +106,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     const link =
       event.target instanceof Element
         ? event.target.closest<HTMLAnchorElement>(
-            ".post-card__title a, .post-navigation__link",
+            "a[data-view-transition-link], [data-view-transition-link] a",
           )
         : null;
     if (!link) {
@@ -123,7 +123,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     if (!selected) {
       return;
     }
-    selected.source.classList.add(selected.sourceClass);
+    selected.source.classList.add("post-view-transition__hero");
     root.classList.add("post-view-transition");
   };
 
@@ -158,7 +158,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     }
     const { hero, heading } = destination;
     selected.target = hero;
-    hero.classList.add("post__photo--view-transition");
+    hero.classList.add("post-view-transition__hero");
     // Nuxt captures after page:finish; its normal router scroll waits another frame.
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     heading.focus({ preventScroll: true });

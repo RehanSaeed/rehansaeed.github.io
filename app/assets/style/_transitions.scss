@@ -1,7 +1,5 @@
 @media (prefers-reduced-motion: no-preference) {
-  .post-card__image--view-transition,
-  .post-navigation__image--view-transition,
-  .post__photo--view-transition {
+  .post-view-transition__hero {
     view-transition-name: post-hero;
   }
 

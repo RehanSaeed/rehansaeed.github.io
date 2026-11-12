@@ -88,12 +88,12 @@ const instrument = async (page: Page) => {
         const link =
           event.target instanceof Element
             ? event.target.closest<HTMLAnchorElement>(
-                ".post-card__title a, .post-navigation__link",
+                "a[data-view-transition-link], [data-view-transition-link] a",
               )
             : null;
         const image = link
-          ?.closest(".post-card, .post-navigation__card")
-          ?.querySelector<HTMLImageElement>("img");
+          ?.closest("[data-view-transition-source]")
+          ?.querySelector<HTMLImageElement>("img[data-view-transition-image]");
         if (link && image) {
           const box = image.getBoundingClientRect();
           probe.activations.push({
@@ -116,7 +116,7 @@ const instrument = async (page: Page) => {
       probe.sourceScroll.push(scrollY);
       const source = document
         .querySelector(
-          ".post-card__image--view-transition, .post-navigation__image--view-transition",
+          "[data-view-transition-source] .post-view-transition__hero",
         )
         ?.getBoundingClientRect();
       if (source) {
@@ -127,9 +127,7 @@ const instrument = async (page: Page) => {
         });
       }
       const sourceNames = [
-        ...document.querySelectorAll(
-          ".post-card__image, .post-navigation__image, .post__photo",
-        ),
+        ...document.querySelectorAll("img[data-view-transition-image]"),
       ].filter(
         (image) => getComputedStyle(image).viewTransitionName === "post-hero",
       ).length;
@@ -139,7 +137,9 @@ const instrument = async (page: Page) => {
       const skip = transition.skipTransition.bind(transition);
       transition.skipTransition = () => {
         probe.skipped++;
-        const hero = document.querySelector<HTMLImageElement>(".post__photo");
+        const hero = document.querySelector<HTMLImageElement>(
+          "[data-view-transition-destination] img[data-view-transition-image]",
+        );
         probe.skips.push({
           time: performance.now() - started,
           scrollY,
@@ -151,7 +151,9 @@ const instrument = async (page: Page) => {
       void transition.ready.then(
         () => {
           probe.ready++;
-          const hero = document.querySelector<HTMLImageElement>(".post__photo");
+          const hero = document.querySelector<HTMLImageElement>(
+            "[data-view-transition-destination] img[data-view-transition-image]",
+          );
           if (!hero) {
             if (sourceNames > 0) {
               probe.errors.push("Destination hero missing at capture.");
@@ -165,9 +167,7 @@ const instrument = async (page: Page) => {
             bottom: box.bottom,
             imageReady: hero.complete && hero.naturalWidth > 0,
             names: [
-              ...document.querySelectorAll(
-                ".post-card__image, .post-navigation__image, .post__photo",
-              ),
+              ...document.querySelectorAll("img[data-view-transition-image]"),
             ].filter(
               (image) =>
                 getComputedStyle(image).viewTransitionName === "post-hero",
@@ -286,11 +286,7 @@ const expectDestination = async (page: Page) => {
 };
 const expectClean = async (page: Page, expectedFailures = 0) => {
   await expect(page.locator("html")).not.toHaveClass(/post-view-transition/);
-  await expect(
-    page.locator(
-      ".post-card__image--view-transition, .post-navigation__image--view-transition, .post__photo--view-transition",
-    ),
-  ).toHaveCount(0);
+  await expect(page.locator(".post-view-transition__hero")).toHaveCount(0);
   expect(
     await page.evaluate(() => window.postViewTransitionProbe.errors),
   ).toEqual([]);
@@ -595,6 +591,29 @@ test.describe("Bounded card-to-article hero continuity", () => {
     await expectClean(page);
   });
 
+  test("Finds a hero source independently of title styling classes", async ({
+    page,
+  }) => {
+    await prepare(page);
+    const link = page.locator(
+      `[data-view-transition-source][data-post-permalink="${destination}"] [data-view-transition-link] a`,
+    );
+    await link.evaluate((anchor) => {
+      anchor.closest("[data-view-transition-link]")?.removeAttribute("class");
+    });
+    await activators.Enter(link);
+    await expectDestination(page);
+    await expect
+      .poll(() => page.evaluate(() => window.postViewTransitionProbe.finished))
+      .toBe(1);
+    const probe = await page.evaluate(() => window.postViewTransitionProbe);
+    expect(probe.ready).toBe(1);
+    expect(probe.skipped).toBe(0);
+    expect(probe.sourceNames).toEqual([1]);
+    expect(probe.captures[0]!.names).toBe(1);
+    await expectClean(page);
+  });
+
   test("Animates a listing title when its source image is partly above the viewport", async ({
     page,
   }) => {
@@ -754,7 +773,9 @@ test.describe("Bounded card-to-article hero continuity", () => {
     });
     await page.evaluate(() => {
       const observer = new MutationObserver(() => {
-        const hero = document.querySelector<HTMLImageElement>(".post__photo");
+        const hero = document.querySelector<HTMLImageElement>(
+          "[data-view-transition-destination] img[data-view-transition-image]",
+        );
         if (!hero) {
           return;
         }
