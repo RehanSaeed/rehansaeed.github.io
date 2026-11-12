@@ -356,6 +356,7 @@ export default defineNuxtConfig({
   css: ["~/assets/style/index.scss"],
 
   app: {
+    viewTransition: true,
     head: {
       htmlAttrs: { lang: site.language },
       // Fall back to the site name for pages without a title (the streaming pages).
@@ -607,6 +608,7 @@ export default defineNuxtConfig({
   },
 
   experimental: {
+    viewTransition: true,
     defaults: {
       nuxtLink: {
         trailingSlash: "append",
