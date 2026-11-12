@@ -176,6 +176,44 @@ authorise publishing the article or posting to social media.
   checks that could not be run. Distinguish local validation, CI results and
   manual accessibility checks.
 
+### Pre-merge App Previews
+
+- For app-affecting PRs, give the user a running, accessible preview of the actual
+  changed app before merging. Screenshots, source diffs and green checks are not
+  substitutes. Instruction-only changes need no app preview.
+- Start the preview as soon as the changed app is runnable, not after full CI or
+  every expensive check finishes. Coordinate resource use with other sessions
+  without leaving preview startup indefinitely queued behind heavy validation.
+  Surface startup failures, contention or access blockers promptly.
+- Use `npm run dev -- --port <unused-port>` for early review, or
+  `PORT=<unused-port> npm start` for already-generated, current-worktree `dist`
+  (set `$env:PORT` in PowerShell). Choose the workflow that exercises the change;
+  dev mode does not prove production-only behaviour. Do not require a full
+  rebuild for every preview, serve stale output or borrow another branch's
+  artifacts. Use a fresh browser context or clear this preview origin's stale
+  service worker/cache so PWA content cannot mask the changes.
+- Select an unused dedicated port. Before stopping or restarting any server,
+  positively verify task ownership from its recorded process handle or PID,
+  command and worktree/output path; a port number alone is not ownership.
+  Never stop unrelated listeners. Use the execution tool's detached/long-lived
+  mode for a review server that must survive the reply, not a short-lived shell
+  or a test helper that tears it down.
+- Verify readiness by opening the affected real page and exercising the requested
+  interaction in the browser. A listening port, startup log or homepage-only
+  probe is insufficient; HTTP 500/503 responses, error pages and broken
+  interactions are not usable previews. Confirm the page shows the current
+  changes, and recheck after any restart or output replacement.
+- Share the precise working URL to the affected page or an accessible app browser
+  preview, with any needed interaction steps. A remote host's localhost URL is
+  not user-accessible without forwarding. Keep the dedicated preview available
+  for user review; coordinate checks that regenerate shared output so they do
+  not break it. State pending, failed and unrun validation explicitly; an early
+  preview is not a claim that work is complete or merge-ready.
+- Preview review and the final build/test/CI gates above are independent
+  requirements. Do not merge or enable auto-merge until the user has had an
+  opportunity to try the app (or explicitly waived the preview) and has given
+  merge authorisation; a preview waiver does not waive validation.
+
 ## Nuxt Components
 
 - Use Composition API with `<script setup lang="ts">` by default.
