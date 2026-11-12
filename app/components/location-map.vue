@@ -168,6 +168,7 @@ const locationSchema = z.object({
   latitude: coordinate(-85, 85),
 });
 const avatarClipId = `${useId()}-location-avatar`;
+const colorMode = useColorMode();
 const mapContainer = ref<HTMLDivElement>();
 const markerTemplate = ref<HTMLDivElement>();
 const visitorTemplate = ref<HTMLDivElement>();
@@ -534,13 +535,10 @@ const loadMap = async () => {
   }
 };
 
-onMounted(() => {
-  window.addEventListener("__themeChanged", updateTheme);
-});
+watch(() => colorMode.value, updateTheme, { flush: "post" });
 
 onBeforeUnmount(() => {
   disposed = true;
-  window.removeEventListener("__themeChanged", updateTheme);
   removeMap();
 });
 </script>
