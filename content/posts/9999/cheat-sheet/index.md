@@ -38,7 +38,7 @@ Duis aliquet ex eu scelerisque ultricies. Nam ac sagittis ligula. Vestibulum vel
 # Links
 
 [Link](https://example.com)
-[Empty Link]()
+[Empty Link](<>)
 
 # Horizontal Rule
 
@@ -182,12 +182,12 @@ docker image build --tag foo:1.0.0 --label "build"="123" --label "changeset"="0d
 // Code Title, Line Numbers, Line Highlight
 // Code Title, Line Numbers, Line Highlight
 export default {
-  data () {
+  data() {
     return {
-      msg: 'All'
-    }
-  }
-}
+      msg: "All",
+    };
+  },
+};
 ```
 
 # Math
@@ -256,6 +256,35 @@ To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>`
 ![Code](./images/Code-1600x900.jpg)
 
 <figcaption>A code-themed illustration.</figcaption>
+</figure>
+
+# Image Carousels
+
+Two or more consecutive image-only paragraphs or figures become a full-bleed, scroll-snap gallery. Prose and other blocks end the group; standalone images are unchanged. Keep image links and captions in their original markup.
+
+This Window/Parallax alternative is inspired by the [CSS Window Carousel](https://scroll-driven-animations.style/demos/parallax-carousel/css/). In supporting browsers, each image pans continuously through an opening window as you scroll. The centred image opens fully, preserving its original aspect ratio and article sizing rather than permanently cropping screenshots into the reference's portrait frames. Captions remain stationary. Reduced motion and browsers without CSS view timelines show uncropped images with the same native scrolling and controls, without a polyfill or autoplay.
+
+Swipe, horizontally scroll, drag an image, or use the overlay arrows and pagination dots. Focus the gallery to use Left/Right and Home/End. Unavailable arrows are hidden; keyboard focus returns to the gallery when an endpoint removes the focused arrow.
+
+<figure>
+
+[![Code in a text editor](./images/Code-1600x900.jpg)](./images/Code-1600x900.jpg)
+
+<figcaption>A linked code image; open it to see the original.</figcaption>
+</figure>
+
+<figure>
+
+![A second code image](./images/Code-1600x900.jpg)
+
+<figcaption>The caption stays outside the moving image window.</figcaption>
+</figure>
+
+<figure>
+
+![A third code image](./images/Code-1600x900.jpg)
+
+<figcaption>Use Home and End to reach either end of the gallery.</figcaption>
 </figure>
 
 # Embed Videos
