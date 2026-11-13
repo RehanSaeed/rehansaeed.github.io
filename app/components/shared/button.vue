@@ -5,7 +5,7 @@
     :class="[
       `button--${variant}`,
       {
-        'button--tag': tagVariant,
+        'button--tag-base': tagVariant,
         'button--tag-icon': variant === 'code-token' && tagIcon,
         'button--hydrating': !to && !hydrated && !disabled && !submit,
       },
@@ -18,7 +18,7 @@
     :type="to ? undefined : type"
     @click="onClick">
     <span
-      v-if="variant === 'tag-shaped'"
+      v-if="variant === 'tag'"
       class="button__tag-surface"
       aria-hidden="true" />
     <slot />
@@ -35,20 +35,18 @@ const props = defineProps({
   /** Whether the button is disabled. */ disabled: {
     type: Boolean,
   },
-  /** Visual variant; icon is a circular 44px control. */ variant: {
+  /**
+   * Visual variant; icon is a circular 44px control, tag is a pointed label,
+   * and code-token is a rectangular monospace label.
+   */ variant: {
     type: String as PropType<
-      "plain" | "secondary" | "primary" | "icon" | "code-token" | "tag-shaped"
+      "plain" | "secondary" | "primary" | "icon" | "code-token" | "tag"
     >,
     default: "plain",
     validator: (value: string) =>
-      [
-        "plain",
-        "secondary",
-        "primary",
-        "icon",
-        "code-token",
-        "tag-shaped",
-      ].includes(value),
+      ["plain", "secondary", "primary", "icon", "code-token", "tag"].includes(
+        value,
+      ),
   },
   /** Render a navigation link instead of a native button when supplied. */ to: {
     type: String,
@@ -63,7 +61,7 @@ const props = defineProps({
 const hydrated = useMounted();
 const type = computed(() => (props.submit ? "submit" : "button"));
 const tagVariant = computed(
-  () => props.variant === "code-token" || props.variant === "tag-shaped",
+  () => props.variant === "code-token" || props.variant === "tag",
 );
 const tag = computed(() =>
   props.to ? (props.disabled ? "a" : NuxtLink) : "button",
@@ -114,7 +112,7 @@ const onClick = (event: MouseEvent) => {
 
 .button--primary,
 .button--secondary,
-.button--tag {
+.button--tag-base {
   background-color: var(--global-background-color);
   border: var(--global-border-width-1) solid var(--global-border-color);
   border-radius: var(--global-border-radius);
@@ -140,7 +138,7 @@ const onClick = (event: MouseEvent) => {
 
 .button--primary::before,
 .button--secondary::before,
-.button--tag::before {
+.button--tag-base::before {
   content: "";
 
   position: absolute;
@@ -157,14 +155,14 @@ const onClick = (event: MouseEvent) => {
 .button--primary:focus::before,
 .button--secondary:hover::before,
 .button--secondary:focus::before,
-.button--tag:hover::before,
-.button--tag:focus::before {
+.button--tag-base:hover::before,
+.button--tag-base:focus::before {
   opacity: 1;
 }
 
 .button--primary:active::before,
 .button--secondary:active::before,
-.button--tag:active::before {
+.button--tag-base:active::before {
   box-shadow: var(--global-shadow-1);
   opacity: 1;
 }
@@ -186,7 +184,7 @@ const onClick = (event: MouseEvent) => {
   }
 }
 
-.button--tag {
+.button--tag-base {
   --button-tag-text-color: var(--global-title-color);
 
   display: inline-flex;
@@ -254,7 +252,7 @@ const onClick = (event: MouseEvent) => {
     center / contain no-repeat;
 }
 
-.button--tag-shaped {
+.button--tag {
   --button-tag-point: 1rem;
   --button-tag-surface: var(--global-background-color);
   --button-tag-edge: var(--global-border-color);
@@ -347,7 +345,7 @@ const onClick = (event: MouseEvent) => {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .button.button--tag {
+  .button.button--tag-base {
     transform: none;
     transition: none;
 
@@ -401,7 +399,7 @@ const onClick = (event: MouseEvent) => {
 }
 
 @media (forced-colors: active) {
-  .button.button--tag {
+  .button.button--tag-base {
     --button-tag-text-color: LinkText;
 
     border-color: LinkText;
@@ -421,7 +419,7 @@ const onClick = (event: MouseEvent) => {
     }
   }
 
-  .button.button--tag-shaped {
+  .button.button--tag {
     --button-tag-surface: Canvas;
     --button-tag-edge: LinkText;
     --button-tag-shadow: none;

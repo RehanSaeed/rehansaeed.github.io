@@ -15,7 +15,7 @@ test("selected tags render accessible navigation before hydration", async ({
     expect(tags.length).toBeGreaterThan(0);
     for (const tag of tags.toArray()) {
       const link = $(tag);
-      expect(link.is("a.button--tag-shaped")).toBe(true);
+      expect(link.is("a.button--tag")).toBe(true);
       expect(link.find(".button__tag-surface").attr("aria-hidden")).toBe(
         "true",
       );
@@ -45,7 +45,7 @@ for (const { theme, width, minimumRows } of [
     await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
     const tags = page.locator(".portfolio-card .tags__link");
     const first = tags.first();
-    await expect(first).toHaveClass(/button--tag-shaped/);
+    await expect(first).toHaveClass(/(?:^|\s)button--tag(?:\s|$)/);
     await expect(first).toHaveAccessibleName("Windows");
     await expect(first).toHaveAttribute("href", "/tag/windows/");
     await expect(first).toHaveCSS("text-decoration-line", "none");
@@ -148,7 +148,7 @@ for (const { theme, width, minimumRows } of [
       page.getByRole("button", { name: "Toggle dark/light" }),
     ).toBeEnabled();
     const postTag = page.locator(".post__tags .tags__link").first();
-    await expect(postTag).toHaveClass(/button--tag-shaped/);
+    await expect(postTag).toHaveClass(/(?:^|\s)button--tag(?:\s|$)/);
     const name = (await postTag.textContent())!.trim();
     await expect(postTag).toHaveAccessibleName(name);
     await expect(postTag).toHaveCSS("text-decoration-line", "none");
@@ -189,7 +189,7 @@ for (const { theme, width, minimumRows } of [
     await page.emulateMedia({ forcedColors: "none" });
     await page.goto("/", { waitUntil: "domcontentloaded" });
     const cardTag = page.locator(".post-card__tags .tags__link").first();
-    await expect(cardTag).toHaveClass(/button--tag-shaped/);
+    await expect(cardTag).toHaveClass(/(?:^|\s)button--tag(?:\s|$)/);
     const cardName = (await cardTag.textContent())!.trim();
     await expect(cardTag).toHaveAccessibleName(cardName);
     await expect(cardTag).toHaveAttribute("href", tagPath(cardName));

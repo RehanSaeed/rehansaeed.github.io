@@ -4,7 +4,7 @@
       v-for="tag of tags"
       :key="tag"
       class="tags__link"
-      variant="tag-shaped"
+      variant="tag"
       data-tag-transition-link
       :to="tagPath(tag)"
       ><span data-tag-transition-label>{{ tag }}</span></u-button

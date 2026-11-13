@@ -54,7 +54,7 @@ const properties = compileString(readFileSync(propertiesPath, "utf8"), {
   url: pathToFileURL(propertiesPath),
 }).css;
 const variants = ["plain", "secondary", "primary", "icon"] as const;
-const tagVariants = ["code-token", "tag-shaped"] as const;
+const tagVariants = ["code-token", "tag"] as const;
 
 for (const variant of [...variants, ...tagVariants]) {
   unitTest(
@@ -94,7 +94,7 @@ unitTest(
       expect(html.includes("button--tag-icon")).toBe(variant === "code-token");
       expect(
         html.includes('class="button__tag-surface" aria-hidden="true"'),
-      ).toBe(variant === "tag-shaped");
+      ).toBe(variant === "tag");
       const disabled = await renderToString(
         h(button, { variant, to: "/tag/c/", disabled: true }, () => "C#"),
       );
@@ -225,7 +225,7 @@ for (const theme of ["light", "dark"]) {
               </u-button>
               <u-button variant="secondary" :disabled="disabled" @click="clicks++">secondary</u-button>
               <u-button variant="primary" :disabled="disabled" @click="clicks++">primary</u-button>
-              <u-button variant="tag-shaped" tag-icon :disabled="disabled" @click="clicks++">
+              <u-button variant="tag" tag-icon :disabled="disabled" @click="clicks++">
                 Windows Presentation Foundation (WPF)
               </u-button>
               <u-button variant="icon" aria-label="icon" :disabled="disabled" @click="clicks++">
@@ -241,7 +241,7 @@ for (const theme of ["light", "dark"]) {
               <output :data-clicks="clicks" :data-submits="submits" :data-entered="entered"></output>
             </form>
             <div class="silhouette-sample">
-              <u-button variant="tag-shaped">Shape sample</u-button>
+              <u-button variant="tag">Shape sample</u-button>
             </div>\`
         }).mount("#app");
       }`,
@@ -304,7 +304,7 @@ for (const theme of ["light", "dark"]) {
     await expect(primary).toHaveCSS("background-color", tokens.accent);
     await expect(primary).toHaveCSS("border-top-color", tokens.accent);
     await expect(primary).toHaveCSS("color", tokens.content);
-    await expect(shaped).toHaveClass("button button--tag-shaped button--tag");
+    await expect(shaped).toHaveClass("button button--tag button--tag-base");
     const surface = shaped.locator(".button__tag-surface");
     await expect(surface).toHaveAttribute("aria-hidden", "true");
     await expect(surface).toHaveCSS("clip-path", "none");
