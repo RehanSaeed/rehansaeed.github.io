@@ -40,11 +40,7 @@ const props = defineProps({
         "plain",
         "secondary",
         "primary",
-        "quiet-pill",
-        "hairline-capsule",
-        "solid-lozenge",
         "code-token",
-        "code-token-rounded",
         "keycap",
         "tag-label",
       ].includes(value),
@@ -238,51 +234,13 @@ onMounted(() => {
   }
 }
 
-.button--quiet-pill {
-  --button-tag-text-color: #000;
-
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--global-accent-color) 9%, transparent);
-}
-
-.button--hairline-capsule {
-  --button-tag-text-color: #000;
-
-  border-color: var(--global-accent-color);
-  border-radius: 999px;
-  padding-inline: 1rem;
-  font-family: var(--font-heading);
-  font-size: 0.8rem;
-}
-
-[data-theme="dark"] {
-  .button--quiet-pill,
-  .button--hairline-capsule {
-    --button-tag-text-color: var(--global-title-color);
-  }
-}
-
-.button--solid-lozenge {
-  border-radius: 0.3rem;
-  background: color-mix(
-    in srgb,
-    var(--global-accent-color) 16%,
-    var(--global-content-background-color)
-  );
-  font-weight: 600;
-}
-
-.button--code-token,
-.button--code-token-rounded {
+.button--code-token {
   border-inline-start: 3px solid var(--global-accent-color);
+  border-start-end-radius: 0.4rem;
   border-end-end-radius: 0.4rem;
   background: var(--global-background-color);
   font-family: var(--global-font-family-monospace);
   font-size: 0.8rem;
-}
-
-.button--code-token-rounded {
-  border-radius: 0.4rem;
 }
 
 .button--keycap {

@@ -17,7 +17,7 @@
           v-model="showIcons"
           type="checkbox"
           :disabled="!supportsTagIcon(selectedStyle)" />
-        Add the tag icon to styles 6 and 8 (including 6b)
+        Add the tag icon to styles 6 and 8
       </label>
       <NuxtLink :to="{ name: 'tag-style-comparison' }"
         >Back to all comparisons</NuxtLink

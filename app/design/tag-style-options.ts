@@ -1,39 +1,15 @@
 import type { TagButtonVariant } from "~/types/button";
 
 export const supportsTagIcon = (variant: TagButtonVariant) =>
-  ["code-token", "code-token-rounded", "keycap"].includes(variant);
+  ["code-token", "keycap"].includes(variant);
 
 export const tagStyleOptions = [
-  {
-    number: "01",
-    id: "quiet-pill",
-    name: "Quiet pill",
-    description: "Black text on a soft lavender wash with fully rounded ends.",
-  },
-  {
-    number: "02",
-    id: "hairline-capsule",
-    name: "Hairline capsule",
-    description: "Black Audiowide lettering within a fine accent outline.",
-  },
-  {
-    number: "04",
-    id: "solid-lozenge",
-    name: "Muted lozenge",
-    description: "A restrained lavender tint instead of a solid accent fill.",
-  },
   {
     number: "06",
     id: "code-token",
     name: "Code token",
-    description: "Monospace, an accent rule and a rounded bottom-right corner.",
-  },
-  {
-    number: "06b",
-    id: "code-token-rounded",
-    name: "Rounded code token",
     description:
-      "The same monospace accent-rule treatment with all corners rounded.",
+      "Monospace, an accent rule and matching rounded right corners.",
   },
   {
     number: "08",

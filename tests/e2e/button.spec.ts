@@ -52,15 +52,7 @@ const properties = compileString(readFileSync(propertiesPath, "utf8"), {
   url: pathToFileURL(propertiesPath),
 }).css;
 const variants = ["plain", "secondary", "primary"] as const;
-const tagVariants = [
-  "quiet-pill",
-  "hairline-capsule",
-  "solid-lozenge",
-  "code-token",
-  "code-token-rounded",
-  "keycap",
-  "tag-label",
-] as const;
+const tagVariants = ["code-token", "keycap", "tag-label"] as const;
 
 for (const variant of [...variants, ...tagVariants]) {
   unitTest(

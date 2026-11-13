@@ -2,7 +2,7 @@
   <div class="tag-study">
     <header class="tag-study__header">
       <div>
-        <p class="tag-study__eyebrow">Design study / 6 styles + rounded 6b</p>
+        <p class="tag-study__eyebrow">Design study / styles 6, 8 and 10</p>
         <h1>Small tags. Different personalities.</h1>
         <p>
           Compare the same labels in a blog footer and a portfolio card. Nothing

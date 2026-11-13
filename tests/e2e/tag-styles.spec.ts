@@ -108,7 +108,7 @@ if (process.env.TAG_STYLE_PREVIEW === "1") {
       (element) => getComputedStyle(element, "::after").maskImage,
     );
     expect(iconMask).not.toBe("none");
-    for (const id of ["code-token", "code-token-rounded", "keycap"]) {
+    for (const id of ["code-token", "keycap"]) {
       const section = page.locator(`#${id}`);
       const checkbox = section.getByRole("checkbox", {
         name: "Add the tag icon",
@@ -161,15 +161,20 @@ if (process.env.TAG_STYLE_PREVIEW === "1") {
       page.getByRole("button", { name: "Toggle dark/light" }),
     ).toBeEnabled();
     const toggle = page.getByRole("checkbox", {
-      name: "Add the tag icon to styles 6 and 8 (including 6b)",
+      name: "Add the tag icon to styles 6 and 8",
       exact: true,
     });
     const selector = page.getByLabel("Preview tag style");
+    await expect(selector.locator("option")).toHaveText([
+      "06 / Code token",
+      "08 / Keycap",
+      "10 / Tag label",
+    ]);
     const tags = page.locator(".portfolio-card .tags__link");
     await expect(toggle).not.toBeChecked();
     await expect(page.locator(".button--tag-icon")).toHaveCount(0);
     const originalNames = await tags.allTextContents();
-    for (const variant of ["code-token", "keycap", "code-token-rounded"]) {
+    for (const variant of ["code-token", "keycap"]) {
       await selector.selectOption(variant);
       await toggle.check();
       await expect(page).toHaveURL(new RegExp(`style=${variant}&icons=tag$`));
@@ -200,11 +205,7 @@ if (process.env.TAG_STYLE_PREVIEW === "1") {
   }) => {
     await openComparison(page);
     await expect(page.locator(".tag-study__number")).toHaveText([
-      "01",
-      "02",
-      "04",
       "06",
-      "06b",
       "08",
       "10",
     ]);
@@ -231,60 +232,30 @@ if (process.env.TAG_STYLE_PREVIEW === "1") {
     }
   });
 
-  test("requested colours and both code-token corner treatments", async ({
+  test("style 6 matches right corners with icons on and off", async ({
     page,
   }) => {
     await page.emulateMedia({ colorScheme: "light" });
     await openComparison(page);
-    for (const id of ["quiet-pill", "hairline-capsule"]) {
-      const link = page.locator(`#${id} .tags__link`).first();
-      await expect(link).toHaveCSS("color", "rgb(0, 0, 0)");
-      await link.hover();
-      await expect(link).toHaveCSS("color", "rgb(0, 0, 0)");
-      await link.focus();
-      await expect(link).toHaveCSS("color", "rgb(0, 0, 0)");
-    }
     const token = page.locator("#code-token .tags__link").first();
     await expect(token).toHaveCSS("border-top-left-radius", "0px");
-    await expect(token).toHaveCSS("border-top-right-radius", "0px");
     await expect(token).toHaveCSS("border-bottom-left-radius", "0px");
-    const rounded = page.locator("#code-token-rounded .tags__link").first();
     const radius = await token.evaluate(
       (element) => getComputedStyle(element).borderBottomRightRadius,
     );
     expect(Number.parseFloat(radius)).toBeGreaterThan(0);
-    for (const corner of [
-      "border-top-left-radius",
-      "border-top-right-radius",
-      "border-bottom-left-radius",
-      "border-bottom-right-radius",
-    ]) {
-      await expect(rounded).toHaveCSS(corner, radius);
-    }
-    const muted = await page
-      .locator("#solid-lozenge .tags__link")
-      .first()
-      .evaluate((element) => {
-        const style = getComputedStyle(element);
-        const canvas = document.createElement("canvas");
-        canvas.width = canvas.height = 1;
-        const context = canvas.getContext("2d")!;
-        const rgb = (colour: string) => {
-          context.fillStyle = colour;
-          context.fillRect(0, 0, 1, 1);
-          return Array.from(context.getImageData(0, 0, 1, 1).data).slice(0, 3);
-        };
-        const fill = rgb(style.backgroundColor);
-        const accent = rgb(style.getPropertyValue("--global-accent-color"));
-        return {
-          fill,
-          accent,
-          saturation: Math.max(...fill) - Math.min(...fill),
-          accentSaturation: Math.max(...accent) - Math.min(...accent),
-        };
-      });
-    expect(muted.fill).not.toEqual(muted.accent);
-    expect(muted.saturation).toBeLessThan(muted.accentSaturation / 2);
+    await expect(token).toHaveCSS("border-top-right-radius", radius);
+    const iconToggle = page
+      .locator("#code-token")
+      .getByRole("checkbox", { name: "Add the tag icon", exact: true });
+    await iconToggle.check();
+    await expect(token).toHaveCSS("border-top-right-radius", radius);
+    await expect(token).toHaveCSS("border-bottom-right-radius", radius);
+    await expect(token).toHaveCSS("border-top-left-radius", "0px");
+    await expect(token).toHaveCSS("border-bottom-left-radius", "0px");
+    await iconToggle.uncheck();
+    await expect(token).toHaveCSS("border-top-right-radius", radius);
+    await expect(token).toHaveCSS("border-bottom-right-radius", radius);
   });
 
   for (const theme of ["light", "dark"] as const) {
@@ -367,7 +338,7 @@ if (process.env.TAG_STYLE_PREVIEW === "1") {
         });
         await page.setViewportSize({ width: 1440, height: 1000 });
         await openComparison(page);
-        await expect(page.locator(".tag-study__option")).toHaveCount(7);
+        await expect(page.locator(".tag-study__option")).toHaveCount(3);
         await captureRaisedReview(page, `tag-styles-raised-${theme}`);
       });
     }
@@ -421,7 +392,7 @@ if (process.env.TAG_STYLE_PREVIEW === "1") {
           "noindex, nofollow",
         );
         const options = page.locator(".tag-study__option");
-        await expect(options).toHaveCount(7);
+        await expect(options).toHaveCount(3);
         await page.keyboard.press("Tab");
 
         for (const option of await options.all()) {
@@ -555,7 +526,7 @@ if (process.env.TAG_STYLE_PREVIEW === "1") {
     page,
   }) => {
     await openComparison(page);
-    await page.locator("#quiet-pill .tags__link").first().click();
+    await page.locator("#code-token .tags__link").first().click();
     await expect(page).toHaveURL(/\/tag\/c\/$/);
     await expect(
       page.getByRole("heading", { level: 1, name: "# C#", exact: true }),
@@ -639,7 +610,7 @@ if (process.env.TAG_STYLE_PREVIEW === "1") {
     await openComparison(page);
     await page
       .getByRole("link", {
-        name: "View the full portfolio with Quiet pill",
+        name: "View the full portfolio with Code token",
         exact: true,
       })
       .click();
