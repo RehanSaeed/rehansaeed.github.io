@@ -57,6 +57,10 @@ const onClose = () => {
   isOpen.value = false;
   searchClosed();
 };
+const closeForNavigation = () => {
+  dialogue.value?.closeForNavigation();
+  isOpen.value = false;
+};
 const focusArticle = () => {
   if (!focusDestination || route.fullPath !== focusDestination) {
     return;
@@ -73,24 +77,46 @@ const focusArticle = () => {
 };
 const onSelected = (searchTerm: string, permalink: string) => {
   focusDestination = permalink.startsWith("/") ? permalink : undefined;
-  dialogue.value?.closeForNavigation();
-  isOpen.value = false;
   searchResultSelected(searchTerm);
-  if (route.fullPath === focusDestination) {
+  if (!focusDestination || route.fullPath === focusDestination) {
+    closeForNavigation();
     focusArticle();
   }
 };
 const disposers = [
+  // startViewTransition schedules its old snapshot for the next render. Close
+  // synchronously in Nuxt's start hook, before that render, not at activation.
+  nuxtApp.hook("page:view-transition:start", () => {
+    if (focusDestination) {
+      closeForNavigation();
+    }
+  }),
+  // Keep the result visible while lazy routes load, then remove the top layer
+  // here as well when native transitions are disabled or unsupported.
+  router.beforeResolve(() => {
+    if (focusDestination) {
+      closeForNavigation();
+    }
+  }),
   nuxtApp.hook("page:finish", focusArticle),
   nuxtApp.hook("app:error", () => {
+    if (focusDestination) {
+      closeForNavigation();
+    }
     focusDestination = undefined;
   }),
   router.afterEach((to, _from, failure) => {
     if (failure || to.fullPath !== focusDestination) {
+      if (focusDestination) {
+        closeForNavigation();
+      }
       focusDestination = undefined;
     }
   }),
   router.onError(() => {
+    if (focusDestination) {
+      closeForNavigation();
+    }
     focusDestination = undefined;
   }),
 ];

@@ -35,6 +35,10 @@ declare global {
   interface Window {
     /** Native snapshot and focus observations for search activation. */
     searchTransitionProbe: SearchTransitionProbe;
+    /** Release the deliberately pending navigation in the cold-route regression. */
+    releaseSearchNavigation?: () => void;
+    /** Whether the test's route guard is currently holding navigation. */
+    searchNavigationPending?: boolean;
   }
 }
 
@@ -72,16 +76,24 @@ const instrument = (page: Page, unsupported = false) =>
     const start = document.startViewTransition.bind(document);
     document.startViewTransition = (update) => {
       probe.starts++;
-      probe.sourceDialogs.push(
-        document.querySelectorAll("dialog[open]").length,
-      );
       probe.sourceNames.push(countHeroes());
       const source = document.querySelector(".post-view-transition__bridge");
       if (source) {
         const { x, y, width, height } = source.getBoundingClientRect();
         probe.sourceBoxes.push({ x, y, width, height });
       }
-      const transition = start(update);
+      const callback = typeof update === "function" ? update : update?.update;
+      const capture = async () => {
+        // The native old snapshot is taken immediately before this callback,
+        // after Nuxt's synchronous start hooks have closed the dialog.
+        probe.sourceDialogs.push(
+          document.querySelectorAll("dialog[open]").length,
+        );
+        await callback?.();
+      };
+      const transition = start(
+        typeof update === "function" ? capture : { ...update, update: capture },
+      );
       void transition.ready.then(
         () => {
           probe.ready++;
@@ -208,6 +220,65 @@ test.describe("Search result article continuity", () => {
     navigationTimeout: 15_000,
   });
   test.setTimeout(30_000);
+
+  test("A cold pending navigation keeps search visible until the snapshot boundary", async ({
+    page,
+  }) => {
+    await instrument(page);
+    await page.goto("/");
+    const opener = page.getByRole("button", {
+      name: "Open search",
+      exact: true,
+    });
+    await expect(opener).toBeEnabled();
+    await page.evaluate((path) => {
+      const root = document.querySelector<
+        HTMLElement & {
+          /** Mounted Nuxt application exposing the real router. */
+          __vue_app__: { $nuxt: { $router: Router } };
+        }
+      >("#__nuxt");
+      const unregister = root!.__vue_app__.$nuxt.$router.beforeEach((to) => {
+        if (to.path === path) {
+          window.searchNavigationPending = true;
+          return new Promise<void>((resolve) => {
+            window.releaseSearchNavigation = () => {
+              unregister();
+              resolve();
+            };
+          });
+        }
+      });
+    }, destination);
+    await opener.click();
+    await page
+      .getByRole("searchbox", { name: "Search", exact: true })
+      .fill(searchTerm);
+    const link = page.locator(`.search-result__link[href="${destination}"]`);
+    await expect(link).toBeVisible();
+    await Promise.all([
+      link.click({ noWaitAfter: true }),
+      (async () => {
+        await expect
+          .poll(() => page.evaluate(() => window.searchNavigationPending))
+          .toBe(true);
+        await expect(
+          page.getByRole("dialog", { name: "Search", exact: true }),
+        ).toBeVisible();
+        await expect(link).toBeVisible();
+        expect(
+          await page.evaluate(() => window.searchTransitionProbe.starts),
+        ).toBe(0);
+        await page.evaluate(() => {
+          window.releaseSearchNavigation!();
+        });
+      })(),
+    ]);
+    await expectArticle(page);
+    expect(
+      await page.evaluate(() => window.searchTransitionProbe.sourceDialogs),
+    ).toEqual([0]);
+  });
 
   for (const activation of ["mouse", "Enter"] as const) {
     test(`Captures only the selected image, without a modal, using ${activation}`, async ({

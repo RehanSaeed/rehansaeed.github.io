@@ -12,9 +12,10 @@ const source = stripTypeScriptTypes(
     component.match(/<script setup lang="ts">([\s\S]*?)<\/script>/)![1]!,
 ).replace(/^import[\s\S]*?from ["'][^"']+["'];\r?$/gm, "");
 
-await test("A thrown navigation error clears search focus intent before a later article navigation", () => {
+const createHarness = () => {
     const hooks = new Map<string, () => void>();
     const errors = new Set<() => void>();
+    let beforeResolve = () => {};
     const route = { fullPath: "/", query: {} };
     let closes = 0;
     let focuses = 0;
@@ -29,6 +30,10 @@ await test("A thrown navigation error clears search focus intent before a later 
         computed: (value: () => unknown) => ({ value: value() }),
         useRoute: () => route,
         useRouter: () => ({
+            beforeResolve: (callback: () => void) => {
+                beforeResolve = callback;
+                return () => {};
+            },
             afterEach: () => () => {},
             onError: (callback: () => void) => {
                 errors.add(callback);
@@ -60,15 +65,50 @@ await test("A thrown navigation error clears search focus intent before a later 
             }),
         },
     }) as { onSelected: (term: string, permalink: string) => void };
+    return {
+        search,
+        hooks,
+        errors,
+        route,
+        resolve: () => {
+            beforeResolve();
+        },
+        get closes() {
+            return closes;
+        },
+        get focuses() {
+            return focuses;
+        },
+    };
+};
 
-    search.onSelected("article", "/article/");
-    assert.equal(closes, 1);
-    for (const onError of errors) {
+await test("A thrown navigation error clears search focus intent before a later article navigation", () => {
+    const app = createHarness();
+    app.search.onSelected("article", "/article/");
+    assert.equal(app.closes, 0);
+    for (const onError of app.errors) {
         onError();
     }
+    assert.equal(app.closes, 1);
 
     // A later, unrelated router navigation must not inherit the failed search.
-    route.fullPath = "/article/";
-    hooks.get("page:finish")!();
-    assert.equal(focuses, 0);
+    app.route.fullPath = "/article/";
+    app.hooks.get("page:finish")!();
+    assert.equal(app.focuses, 0);
+});
+
+await test("Search stays open during route loading and closes before the native snapshot", () => {
+    const app = createHarness();
+    app.search.onSelected("article", "/article/");
+    assert.equal(app.closes, 0);
+    app.hooks.get("page:view-transition:start")!();
+    assert.equal(app.closes, 1);
+});
+
+await test("Without a native snapshot search closes when the route resolves", () => {
+    const app = createHarness();
+    app.search.onSelected("article", "/article/");
+    assert.equal(app.closes, 0);
+    app.resolve();
+    assert.equal(app.closes, 1);
 });
