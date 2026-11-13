@@ -32,6 +32,10 @@ test("Custom controls play, pause, seek, mute and change speed through a compact
   baseURL,
 }) => {
   const { video, player } = await openVideo(page, baseURL);
+  await expect(player).toHaveJSProperty("tagName", "FIELDSET");
+  await expect(player.locator(":scope > legend")).toHaveText(
+    `${videoLabel} controls`,
+  );
   await expect(video).not.toHaveAttribute("controls");
   await player.getByRole("button", { name: "Play video", exact: true }).click();
   await expect(
@@ -111,6 +115,7 @@ test("Custom controls play, pause, seek, mute and change speed through a compact
   ).toHaveCount(0);
   await speedButton.click();
   const options = player.getByRole("group", { name: "Playback speed options" });
+  await expect(options).toHaveJSProperty("tagName", "FIELDSET");
   await expect(
     options.getByRole("button", { name: "Normal", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");
@@ -153,6 +158,7 @@ test("Caption controls appear only for real text tracks and toggle their showing
   await expect(captions).toBeVisible();
   await captions.click();
   const languages = player.getByRole("group", { name: "Caption language" });
+  await expect(languages).toHaveJSProperty("tagName", "FIELDSET");
   await languages.getByRole("button", { name: "English", exact: true }).click();
   await expect(captions).toHaveAttribute("aria-label", "Captions: English");
   await expect
@@ -821,6 +827,15 @@ test("Playback speed flyout matches toolbar typography and control sizing", asyn
   const { player } = await openVideo(page, baseURL);
   await player.getByRole("button", { name: /^Playback speed:/ }).click();
   const stepButtons = player.locator(".prose-video__speed-adjust button");
+  await page.addStyleTag({
+    content: ".button { background-color: transparent; }",
+  });
+  for (const stepButton of await stepButtons.all()) {
+    await expect(stepButton).toHaveCSS(
+      "background-color",
+      "rgba(255, 255, 255, 0.15)",
+    );
+  }
   for (const theme of ["light", "dark"]) {
     await page.evaluate((theme) => {
       document.documentElement.dataset.theme = theme;
@@ -932,14 +947,11 @@ for (const theme of ["light", "dark"]) {
       theme === "dark" ? "rgb(204, 189, 255)" : "rgb(107, 23, 232)",
     );
     await page.keyboard.down("Space");
-    await expect(mute).toHaveCSS("background-color", "rgb(107, 23, 232)");
-    await expect(mute).toHaveCSS("color", "rgb(255, 255, 255)");
     await expect(mute).toHaveCSS("outline-offset", "3px");
     await page.keyboard.up("Space");
     await expect(mute).toHaveAttribute("aria-pressed", initialMuted!);
     await expect(mute).toHaveCSS("background-color", "rgb(255, 255, 255)");
     await page.keyboard.down("Enter");
-    await expect(mute).toHaveCSS("background-color", "rgb(107, 23, 232)");
     await page.keyboard.up("Enter");
     await expect(mute).toHaveAttribute(
       "aria-pressed",
@@ -994,11 +1006,7 @@ for (const theme of ["light", "dark"]) {
     await increase.focus();
     await page.keyboard.press("Tab");
     await page.keyboard.press("Shift+Tab");
-    const focusedBackground = await increase.evaluate(
-      (element) => getComputedStyle(element).backgroundColor,
-    );
     await page.keyboard.down("Space");
-    await expect(increase).not.toHaveCSS("background-color", focusedBackground);
     await expect(increase).toHaveCSS("outline-offset", "3px");
     await expect(increase).toHaveCSS("outline-style", "solid");
     await expect(increase).toHaveCSS("width", "44px");

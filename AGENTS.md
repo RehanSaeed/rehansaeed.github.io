@@ -56,6 +56,9 @@ authorise publishing the article or posting to social media.
 - Do not use inline styles (`style` attributes or Vue `:style` bindings). Put
   styling in component stylesheets and use intrinsic HTML sizing where suitable.
 - Follow Block Element Modifier (BEM) naming for CSS classes.
+- Use class selectors for component styling, including nested selectors; avoid
+  HTML tag selectors. The element-based `app/assets/style/dom/` rules below are
+  the exception.
 - Keep `app/assets/style/dom/` stylesheets element-based. Use element selectors
   and their pseudo-classes or pseudo-elements, not class or ID selectors,
   including inside `:not()`, `:is()` or `:where()`. Put component-specific rules

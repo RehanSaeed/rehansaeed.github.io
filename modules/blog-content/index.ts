@@ -10,6 +10,7 @@ import {
   contentImagePattern,
   findEmailsOutsideCode,
   headings,
+  normalizeVideoParagraphs,
   prerenderCodeBlocks,
   restoreKeptTags,
   rewriteRelativeImages,
@@ -219,6 +220,7 @@ export default defineNuxtModule({
         comments: [],
       };
       restoreKeptTags(body.value);
+      normalizeVideoParagraphs(body.value);
       const fileDir = posix.dirname(toPosix(relative(contentDir, file.path)));
       rewriteRelativeImages(body.value, fileDir, imageMetadata);
       content.timeToRead = timeToRead(body);

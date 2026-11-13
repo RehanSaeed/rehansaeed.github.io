@@ -1,16 +1,13 @@
 <template>
-  <span
-    ref="controls"
-    class="prose-video__controls"
-    role="group"
-    :aria-label="controlsLabel">
-    <span class="prose-video__seek">
+  <fieldset ref="controls" class="prose-video__controls">
+    <legend class="prose-video__visually-hidden">{{ controlsLabel }}</legend>
+    <div class="prose-video__seek">
       <progress
         class="prose-video__progress"
         :value="currentTime"
         :max="duration || 1"
         aria-hidden="true"></progress>
-      <label>
+      <label class="prose-video__seek-label">
         <span class="prose-video__visually-hidden">Video position</span>
         <u-tooltip
           v-slot="{ trigger }"
@@ -19,6 +16,7 @@
           follow-pointer>
           <input
             v-bind="trigger"
+            class="prose-video__seek-input"
             type="range"
             min="0"
             :max="duration || 1"
@@ -33,9 +31,9 @@
             @input="onSeek" />
         </u-tooltip>
       </label>
-    </span>
-    <span class="prose-video__row">
-      <span class="prose-video__playback">
+    </div>
+    <div class="prose-video__row">
+      <div class="prose-video__playback">
         <u-tooltip
           v-slot="{ trigger }"
           :text="ended ? 'Replay' : playing ? 'Pause' : 'Play'"
@@ -85,6 +83,7 @@
             :disabled="controlsHidden || menuOpen">
             <input
               v-bind="trigger"
+              class="prose-video__volume-input"
               type="range"
               min="0"
               max="100"
@@ -100,9 +99,9 @@
             / {{ formatTime(duration) }}</span
           ></span
         >
-      </span>
-      <span class="prose-video__spacer"></span>
-      <span class="prose-video__utilities">
+      </div>
+      <div class="prose-video__spacer"></div>
+      <div class="prose-video__utilities">
         <details
           v-if="captionTracks.length"
           class="prose-video__disclosure"
@@ -115,10 +114,11 @@
               v-bind="trigger"
               role="button"
               tabindex="0"
-              class="button button--icon prose-video__button"
+              class="button button--icon prose-video__button prose-video__summary"
               :class="{
                 'prose-video__button--active': selectedCaption !== -1,
-                'button--pressed': pressedDisclosure === 'captions',
+                'prose-video__summary--pressed':
+                  pressedDisclosure === 'captions',
               }"
               @keydown.space="pressedDisclosure = 'captions'"
               @keydown.enter="pressedDisclosure = 'captions'"
@@ -133,11 +133,12 @@
               <u-icon name="fa-solid:closed-captioning" />
             </summary>
           </u-tooltip>
-          <span
-            class="prose-video__menu"
-            role="group"
-            aria-label="Caption language">
+          <fieldset class="prose-video__menu">
+            <legend class="prose-video__visually-hidden">
+              Caption language
+            </legend>
             <button
+              class="prose-video__menu-button"
               type="button"
               :aria-pressed="selectedCaption === -1"
               @click="selectCaptionOption(-1, $event)">
@@ -146,12 +147,13 @@
             <button
               v-for="(track, index) in captionTracks"
               :key="index"
+              class="prose-video__menu-button"
               type="button"
               :aria-pressed="selectedCaption === index"
               @click="selectCaptionOption(index, $event)">
               {{ track.label || track.language || `Track ${index + 1}` }}
             </button>
-          </span>
+          </fieldset>
         </details>
         <details class="prose-video__disclosure" @toggle="onMenuToggle">
           <u-tooltip
@@ -162,8 +164,10 @@
               v-bind="trigger"
               role="button"
               tabindex="0"
-              class="button button--icon prose-video__button"
-              :class="{ 'button--pressed': pressedDisclosure === 'speed' }"
+              class="button button--icon prose-video__button prose-video__summary"
+              :class="{
+                'prose-video__summary--pressed': pressedDisclosure === 'speed',
+              }"
               @keydown.space="pressedDisclosure = 'speed'"
               @keydown.enter="pressedDisclosure = 'speed'"
               @keyup.space="pressedDisclosure = null"
@@ -173,27 +177,29 @@
               <u-icon name="fa-solid:tachometer-alt" />
             </summary>
           </u-tooltip>
-          <span
-            class="prose-video__menu prose-video__menu--speed"
-            role="group"
-            aria-label="Playback speed options">
+          <fieldset class="prose-video__menu prose-video__menu--speed">
+            <legend class="prose-video__visually-hidden">
+              Playback speed options
+            </legend>
             <strong class="prose-video__menu-title">Playback Speed</strong>
             <output
               class="prose-video__speed-value"
               aria-label="Current playback speed"
               >{{ playbackRate.toFixed(2) }}×</output
             >
-            <span class="prose-video__speed-adjust">
+            <div class="prose-video__speed-adjust">
               <u-button
                 variant="icon"
+                class="prose-video__menu-button prose-video__speed-step"
                 aria-label="Decrease playback speed"
                 :disabled="playbackRate <= minimumSpeed"
                 @click="adjustSpeed(-speedStep)">
                 <u-icon name="fa-solid:minus" />
               </u-button>
-              <label>
+              <label class="prose-video__speed-label">
                 <span class="prose-video__visually-hidden">Playback speed</span>
                 <input
+                  class="prose-video__speed-input"
                   type="range"
                   :min="minimumSpeed"
                   :max="maximumSpeed"
@@ -204,24 +210,26 @@
               </label>
               <u-button
                 variant="icon"
+                class="prose-video__menu-button prose-video__speed-step"
                 aria-label="Increase playback speed"
                 :disabled="playbackRate >= maximumSpeed"
                 @click="adjustSpeed(speedStep)">
                 <u-icon name="fa-solid:plus" />
               </u-button>
-            </span>
-            <span class="prose-video__speed-presets">
+            </div>
+            <div class="prose-video__speed-presets">
               <button
                 v-for="speed in speeds"
                 :key="speed"
+                class="prose-video__menu-button prose-video__speed-preset"
                 type="button"
                 :aria-label="speed === 1 ? 'Normal' : `${speed}×`"
                 :aria-pressed="playbackRate === speed"
                 @click="selectSpeed(speed, $event)">
                 {{ speed.toFixed(1) }}
               </button>
-            </span>
-          </span>
+            </div>
+          </fieldset>
         </details>
         <u-tooltip
           v-if="pipSupported"
@@ -256,9 +264,9 @@
               :name="fullscreen ? 'fa-solid:compress' : 'fa-solid:expand'" />
           </u-button>
         </u-tooltip>
-      </span>
-    </span>
-  </span>
+      </div>
+    </div>
+  </fieldset>
 </template>
 
 <script setup lang="ts">
@@ -320,7 +328,7 @@ const emit = defineEmits<{
 }>();
 const { muted, volume, currentTime, duration, canSeek, playbackRate } =
   toRefs(props);
-const controls = useTemplateRef<HTMLSpanElement>("controls");
+const controls = useTemplateRef<HTMLFieldSetElement>("controls");
 const menuOpen = ref(false);
 const seekPreviewTime = ref<number | null>(null);
 const pressedDisclosure = ref<"captions" | "speed" | null>(null);
@@ -475,8 +483,11 @@ onUnmounted(() => {
   display: grid;
   color: var(--video-foreground);
   background: transparent;
+  border: 0;
   padding-block: 0 8px;
   padding-inline: 8px;
+  margin: 0;
+  min-inline-size: 0;
 
   position: absolute;
   inset-inline: 0;
@@ -491,16 +502,16 @@ onUnmounted(() => {
   margin: 0;
   position: relative;
   min-inline-size: 0;
-
-  label {
-    margin: 0;
-    position: absolute;
-    inset: 0;
-  }
 }
 
-.prose-video__seek input,
-.prose-video__volume input {
+.prose-video__seek-label {
+  margin: 0;
+  position: absolute;
+  inset: 0;
+}
+
+.prose-video__seek-input,
+.prose-video__volume-input {
   appearance: auto;
   accent-color: var(--video-accent);
   background: transparent;
@@ -513,7 +524,7 @@ onUnmounted(() => {
   block-size: 44px;
 }
 
-.prose-video__seek input {
+.prose-video__seek-input {
   appearance: none;
   padding-block-start: 24px;
   position: absolute;
@@ -602,7 +613,7 @@ onUnmounted(() => {
 }
 
 .prose-video__button.button--icon,
-.prose-video__speed-adjust .button.button--icon {
+.prose-video__speed-step.button.button--icon {
   background-clip: content-box;
   font-size: 20px;
   padding: 4px;
@@ -634,15 +645,22 @@ onUnmounted(() => {
 
 .prose-video__disclosure {
   position: static;
+}
 
-  summary {
-    list-style: none;
+.prose-video__summary {
+  list-style: none;
 
-    &::marker,
-    &::-webkit-details-marker {
-      display: none;
-    }
+  &::marker,
+  &::-webkit-details-marker {
+    display: none;
   }
+}
+
+.prose-video__summary.button.button--icon.prose-video__summary--pressed:not(
+    :disabled
+  ) {
+  color: var(--button-icon-active-color);
+  background-color: var(--button-icon-active-background);
 }
 
 .prose-video__menu {
@@ -652,7 +670,9 @@ onUnmounted(() => {
   border: 0;
   border-radius: var(--global-border-radius);
   padding: 5px;
+  margin: 0;
   inline-size: max-content;
+  min-inline-size: 0;
   max-inline-size: calc(100% - 16px);
   max-block-size: min(280px, 40cqw, 60vh);
   overflow-y: auto;
@@ -660,34 +680,35 @@ onUnmounted(() => {
   inset-inline-end: 8px;
   inset-block-end: calc(100% + 12px);
   z-index: 2;
+}
 
-  button {
-    color: var(--video-foreground);
-    background: transparent;
-    border: 0;
-    border-radius: var(--global-border-radius);
-    font: inherit;
-    text-align: start;
-    padding: 8px 16px;
-    min-inline-size: 88px;
-    min-block-size: 44px;
-    inline-size: 100%;
-    font-size: 0.875rem;
-    overflow-wrap: anywhere;
+.prose-video__menu-button {
+  color: var(--video-foreground);
+  background: transparent;
+  border: 0;
+  border-radius: var(--global-border-radius);
+  font: inherit;
+  text-align: start;
+  padding: 8px 16px;
+  min-inline-size: 88px;
+  min-block-size: 44px;
+  inline-size: 100%;
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
 
-    &:is(:hover, :focus-visible):not(:disabled) {
-      color: var(--video-hover-foreground);
-      background-color: var(--button-icon-hover-background);
-    }
+  &:is(:hover, :focus-visible):not(:disabled) {
+    color: var(--video-hover-foreground);
+    background-color: var(--button-icon-hover-background);
+  }
 
-    &:active:not(:disabled) {
-      color: var(--button-icon-active-color);
-      background-color: var(--button-icon-active-background);
-    }
+  &:active:not(:disabled) {
+    color: var(--button-icon-active-color);
+    background-color: var(--button-icon-active-background);
   }
 }
 
-.prose-video__menu:not(.prose-video__menu--speed) button[aria-pressed="true"] {
+.prose-video__menu:not(.prose-video__menu--speed)
+  .prose-video__menu-button[aria-pressed="true"] {
   box-shadow: inset 3px 0 currentColor;
   font-weight: bold;
 }
@@ -725,57 +746,55 @@ onUnmounted(() => {
 
 .prose-video__speed-adjust {
   align-items: center;
+}
 
-  label {
-    display: grid;
-    grid-column: 2 / -2;
-    margin: 0;
-    min-inline-size: 0;
-  }
+.prose-video__speed-label {
+  display: grid;
+  grid-column: 2 / -2;
+  margin: 0;
+  min-inline-size: 0;
+}
 
-  input {
-    appearance: auto;
-    accent-color: var(--video-accent);
-    background: transparent;
-    border: 0;
-    box-shadow: none;
-    padding: 0;
-    margin: 0;
-    inline-size: 100%;
-    min-inline-size: 0;
-    block-size: 44px;
-  }
+.prose-video__speed-input {
+  appearance: auto;
+  accent-color: var(--video-accent);
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+  inline-size: 100%;
+  min-inline-size: 0;
+  block-size: 44px;
+}
 
-  button {
-    background: rgb(255 255 255 / 15%);
-    border-radius: 50%;
-    text-align: center;
-    min-inline-size: 44px;
+.prose-video__speed-step.button {
+  background: rgb(255 255 255 / 15%);
+  border-radius: 50%;
+  text-align: center;
+  min-inline-size: 44px;
 
-    &:disabled {
-      cursor: default;
-    }
-  }
-
-  .button.button--icon {
-    inline-size: 44px;
-    block-size: 44px;
+  &:disabled {
+    cursor: default;
   }
 }
 
-.prose-video__speed-presets {
-  button {
-    background: rgb(255 255 255 / 15%);
-    background-clip: content-box;
-    border-radius: 50%;
-    font-family: var(--global-font-family-monospace);
-    font-size: 0.75rem;
-    text-align: center;
-    padding: 4px;
-    inline-size: 44px;
-    min-inline-size: 44px;
-    block-size: 44px;
-  }
+.prose-video__speed-step.button.button--icon {
+  inline-size: 44px;
+  block-size: 44px;
+}
+
+.prose-video__speed-preset {
+  background: rgb(255 255 255 / 15%);
+  background-clip: content-box;
+  border-radius: 50%;
+  font-family: var(--global-font-family-monospace);
+  font-size: 0.75rem;
+  text-align: center;
+  padding: 4px;
+  inline-size: 44px;
+  min-inline-size: 44px;
+  block-size: 44px;
 }
 
 .prose-video__visually-hidden {
@@ -830,6 +849,14 @@ onUnmounted(() => {
 }
 
 @media (forced-colors: active) {
+  .prose-video__summary.button.button--icon.prose-video__summary--pressed:not(
+      :disabled
+    ) {
+    color: ButtonFace;
+    background-color: ButtonText;
+    border-color: ButtonText;
+  }
+
   .prose-video__menu {
     color: CanvasText;
     background: Canvas;
@@ -844,7 +871,8 @@ onUnmounted(() => {
   }
 
   .prose-video__button,
-  .prose-video__menu button {
+  .prose-video__menu-button,
+  .prose-video__speed-step.button {
     color: ButtonText;
     background: ButtonFace;
     border: 1px solid ButtonText;
@@ -864,7 +892,7 @@ onUnmounted(() => {
   .prose-video__button[aria-pressed="true"],
   .prose-video__button--active,
   .prose-video__menu:not(.prose-video__menu--speed)
-    button[aria-pressed="true"] {
+    .prose-video__menu-button[aria-pressed="true"] {
     border-block-end: 3px solid Highlight;
   }
 
@@ -886,12 +914,12 @@ onUnmounted(() => {
     background: Highlight;
   }
 
-  .prose-video__seek input::-webkit-slider-thumb {
+  .prose-video__seek-input::-webkit-slider-thumb {
     background: Highlight;
     border: 1px solid CanvasText;
   }
 
-  .prose-video__seek input::-moz-range-thumb {
+  .prose-video__seek-input::-moz-range-thumb {
     background: Highlight;
     border: 1px solid CanvasText;
   }

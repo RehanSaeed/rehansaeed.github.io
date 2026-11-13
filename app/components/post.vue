@@ -115,7 +115,7 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
     max-inline-size: none;
   }
 
-  .prose-video video {
+  .prose-video__media {
     inline-size: 100%;
     max-inline-size: 100%;
     margin-inline: 0;

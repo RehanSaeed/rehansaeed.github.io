@@ -2,7 +2,10 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { delayClientScripts, expect, test } from "./fixtures";
 import { parse } from "yaml";
-import { timeToRead } from "../../modules/blog-content/fields";
+import {
+  normalizeVideoParagraphs,
+  timeToRead,
+} from "../../modules/blog-content/fields";
 import { workflowSchema } from "./data";
 import { z } from "zod";
 
@@ -327,6 +330,48 @@ test.describe("Nuxt best practices", () => {
       })
       .parse(await feed.json());
     expect(feedData.items[0]!.content_html).toContain("<p>");
+  });
+
+  test("Video paragraphs retain their content in flow containers without changing normal paragraphs", () => {
+    const nodes: Parameters<typeof normalizeVideoParagraphs>[0] = [
+      [
+        "blockquote",
+        {},
+        [
+          "p",
+          { id: "demonstration" },
+          "Before ",
+          [
+            "video",
+            { src: "/demo.mp4" },
+            ["a", { href: "/demo.mp4" }, "Watch"],
+          ],
+          " after.",
+        ],
+        ["p", {}, "An ordinary paragraph."],
+      ],
+      ["figure", {}, ["video", { src: "/captioned.mp4" }]],
+    ];
+    normalizeVideoParagraphs(nodes);
+    expect(nodes).toEqual([
+      [
+        "blockquote",
+        {},
+        [
+          "div",
+          { id: "demonstration" },
+          "Before ",
+          [
+            "video",
+            { src: "/demo.mp4" },
+            ["a", { href: "/demo.mp4" }, "Watch"],
+          ],
+          " after.",
+        ],
+        ["p", {}, "An ordinary paragraph."],
+      ],
+      ["figure", {}, ["video", { src: "/captioned.mp4" }]],
+    ]);
   });
 
   test("Renders every Mermaid diagram after hydration and client navigation", async ({

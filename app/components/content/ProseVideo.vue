@@ -1,5 +1,5 @@
 <template>
-  <span
+  <div
     ref="player"
     class="prose-video"
     :class="{ 'prose-video--idle': controlsHidden }"
@@ -11,6 +11,7 @@
       <!-- eslint-disable-next-line vuejs-accessibility/media-has-caption -- Each post supplies reviewed tracks for meaningful audio; see AGENTS.md. -->
       <video
         ref="video"
+        class="prose-video__media"
         v-bind="$attrs"
         :controls="!enhanced && nativeControls"
         @play="onPlay"
@@ -63,9 +64,14 @@
       class="prose-video__status"
       role="status">
       {{ message || "Loading video…" }}
-      <a v-if="message && sourceUrl" :href="sourceUrl">Open video file</a>
+      <a
+        v-if="message && sourceUrl"
+        class="prose-video__status-link"
+        :href="sourceUrl"
+        >Open video file</a
+      >
     </span>
-  </span>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -84,8 +90,7 @@ defineOptions({ inheritAttrs: false });
 const fullyVisibleRatio = 0.99;
 const threshold = [0, fullyVisibleRatio, 1];
 const video = useTemplateRef<HTMLVideoElement>("video");
-const motion = usePreferredReducedMotion();
-const player = useTemplateRef<HTMLSpanElement>("player");
+const player = useTemplateRef<HTMLDivElement>("player");
 const attrs = useAttrs();
 const nativeControls = computed(
   () => attrs.controls !== undefined && attrs.controls !== false,
@@ -127,6 +132,7 @@ const controlsHidden = computed(
     !touch.value,
 );
 let hideTimer: ReturnType<typeof setTimeout> | undefined;
+const motion = usePreferredReducedMotion();
 let expectingPlay = false;
 let expectingPause = false;
 let hasAutoplayed = false;
@@ -508,7 +514,7 @@ watch(controlsHidden, positionCaptions);
   position: relative;
   container-type: inline-size;
 
-  video {
+  .prose-video__media {
     display: block;
     block-size: auto;
   }
@@ -518,7 +524,7 @@ watch(controlsHidden, positionCaptions);
     margin-inline: 0;
   }
 
-  video::cue {
+  .prose-video__media::cue {
     color: #fff;
     background: #000;
   }
@@ -531,7 +537,7 @@ watch(controlsHidden, positionCaptions);
     block-size: 100%;
     margin: 0;
 
-    video {
+    .prose-video__media {
       object-fit: contain;
       max-block-size: 100%;
     }
@@ -554,7 +560,7 @@ watch(controlsHidden, positionCaptions);
   inset-block-start: 12px;
   inset-inline-start: 12px;
 
-  a {
+  .prose-video__status-link {
     color: var(--video-accent);
   }
 }
