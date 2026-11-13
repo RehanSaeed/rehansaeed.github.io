@@ -49,12 +49,14 @@ const expectPinInsideMap = async (page: Page, selector: string) => {
     .toBe(true);
 };
 
-const expectCaptionCentred = async (figure: Locator) => {
-  const map = (await figure.boundingBox())!;
+const expectCaptionAlignedWithCopy = async (page: Page, figure: Locator) => {
+  const paragraph = (await page
+    .locator(".about__description")
+    .first()
+    .boundingBox())!;
   const caption = (await figure.locator("figcaption").boundingBox())!;
-  expect(
-    Math.abs(caption.x + caption.width / 2 - map.x - map.width / 2),
-  ).toBeLessThan(1);
+  expect(caption.x).toBeCloseTo(paragraph.x, 0);
+  expect(caption.width).toBeCloseTo(paragraph.width, 0);
 };
 
 const expectLocationsFillView = async (
@@ -387,7 +389,10 @@ for (const width of [320, 375, 1280]) {
         "United Kingdom",
       );
       const caption = figure.locator("figcaption");
-      await expect(caption).toHaveCSS("font-style", "italic");
+      await expect(caption.locator(".location-map__caption-text")).toHaveCSS(
+        "font-style",
+        "italic",
+      );
       await expect(caption).toHaveCSS("text-align", "start");
       await expect(caption).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
       await expect(caption.locator("small")).toHaveCSS("font-style", "normal");
@@ -446,7 +451,7 @@ for (const width of [320, 375, 1280]) {
         .evaluate((element) =>
           Number.parseFloat(getComputedStyle(element).paddingInlineStart),
         );
-      await expectCaptionCentred(figure);
+      await expectCaptionAlignedWithCopy(page, figure);
       expect(captionBounds.x).toBeGreaterThanOrEqual(
         cardBounds.x + cardPadding - 1,
       );
@@ -945,7 +950,7 @@ for (const [place, longitude, latitude] of [
       `I'm from East London, roughly ${miles} miles away from your current location, according to your IP address.`,
     );
     await expect(figure.locator("figcaption em")).toHaveText(`${miles} miles`);
-    await expectCaptionCentred(figure);
+    await expectCaptionAlignedWithCopy(page, figure);
     await expect(figure.locator("figcaption")).toHaveAttribute(
       "aria-live",
       "polite",
@@ -963,7 +968,7 @@ for (const [place, longitude, latitude] of [
     await expect(figure).toContainText("GeoJS");
     expect(lookups).toEqual([geoUrl]);
     await page.setViewportSize({ width: 375, height: 900 });
-    await expectCaptionCentred(figure);
+    await expectCaptionAlignedWithCopy(page, figure);
     await expectPinInsideMap(page, ".location-map__marker");
     await expectPinInsideMap(page, ".location-map__visitor");
     await expectLocationsFillView(page, [Number(longitude), Number(latitude)]);
