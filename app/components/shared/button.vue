@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, type PropType } from "vue";
+import { computed, type PropType } from "vue";
 
 defineOptions({ name: "u-button" });
 const props = defineProps({
@@ -32,11 +32,8 @@ const props = defineProps({
     type: Boolean,
   },
 });
-const hydrated = ref(false);
+const hydrated = useMounted();
 const type = computed(() => (props.submit ? "submit" : "button"));
-onMounted(() => {
-  hydrated.value = true;
-});
 </script>
 
 <style lang="scss">
