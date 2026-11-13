@@ -169,6 +169,8 @@ test("Keyboard endpoints, focus continuity, captions, links and resizing", async
   await track.press("Home");
   await link.focus();
   await expect(link).toBeFocused();
+  await expect(link).toHaveCSS("outline-style", "solid");
+  await expect(link).toHaveCSS("outline-offset", "-2px");
   const href = await link.getAttribute("href");
   await link.press("Enter");
   await expect(page).toHaveURL(new RegExp(href!.replaceAll(".", "\\.")));

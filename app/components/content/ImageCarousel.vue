@@ -402,6 +402,12 @@ onBeforeUnmount(() => {
   block-size: 100%;
 }
 
+.image-carousel__slide > p > a:focus-visible,
+.image-carousel__slide > figure > p > a:focus-visible {
+  outline: 2px solid var(--global-accent-color);
+  outline-offset: -2px;
+}
+
 .post__content .image-carousel__slide .prose-image .prose-image__image {
   inline-size: 100%;
   block-size: 100%;
@@ -498,7 +504,9 @@ onBeforeUnmount(() => {
 }
 
 @media (forced-colors: active) {
-  .image-carousel__track:focus-visible {
+  .image-carousel__track:focus-visible,
+  .image-carousel__slide > p > a:focus-visible,
+  .image-carousel__slide > figure > p > a:focus-visible {
     outline-color: Highlight;
   }
 }
