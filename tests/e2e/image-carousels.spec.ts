@@ -64,6 +64,7 @@ test("Native horizontal scrolling updates the selected image", async ({
 }) => {
   const gallery = page.locator(gallerySelector).first();
   const track = gallery.locator(".image-carousel__track");
+  await expect(gallery.locator(".image-carousel__controls")).toBeVisible();
   await track.hover();
   await page.mouse.wheel(800, 0);
   await expect
@@ -117,6 +118,7 @@ test("Reduced motion and forced colours retain a flat, keyboard-operable gallery
 }) => {
   const gallery = page.locator(gallerySelector).first();
   const track = gallery.locator(".image-carousel__track");
+  await expect(gallery.locator(".image-carousel__controls")).toBeVisible();
   for (const forcedColors of ["none", "active"] as const) {
     await page.emulateMedia({ reducedMotion: "reduce", forcedColors });
     await track.focus();
@@ -141,6 +143,7 @@ test.describe("Continuous Cover Flow", () => {
   }) => {
     const gallery = page.locator(gallerySelector).first();
     const track = gallery.locator(".image-carousel__track");
+    await expect(gallery.locator(".image-carousel__controls")).toBeVisible();
     await gallery.scrollIntoViewIfNeeded();
     const supported = await page.evaluate(() =>
       CSS.supports("animation-timeline: view(inline)"),
