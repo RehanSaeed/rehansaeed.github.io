@@ -188,13 +188,15 @@ test("Mouse dragging a linked image scrolls without opening the link", async ({
   await track.scrollIntoViewIfNeeded();
   const bounds = await track.locator("img").first().boundingBox();
   await page.mouse.move(
-    bounds!.x + bounds!.width * 0.8,
+    bounds!.x + bounds!.width * 0.4,
     bounds!.y + bounds!.height / 2,
   );
   await page.mouse.down();
-  await page.mouse.move(bounds!.x, bounds!.y + bounds!.height / 2, {
-    steps: 12,
-  });
+  await page.mouse.move(
+    bounds!.x - bounds!.width * 0.4,
+    bounds!.y + bounds!.height / 2,
+    { steps: 12 },
+  );
   await page.mouse.up();
   await expect(gallery.locator(".image-carousel__position")).toHaveText(
     "Image 2 of 3",
