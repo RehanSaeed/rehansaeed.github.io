@@ -134,17 +134,15 @@
         class="location-map__caption"
         aria-live="polite"
         aria-atomic="true">
-        <span class="location-map__caption-text">
-          I'm from East London<span v-if="distanceMiles !== undefined"
-            >, roughly
-            <em>{{ distanceMiles.toLocaleString("en-GB") }} miles</em> away from
-            your current location, according to your IP address</span
-          >.
-          <small v-if="!mapReady">
-            Map data:
-            <a href="https://www.naturalearthdata.com/">Natural Earth</a>
-          </small>
-        </span>
+        I'm from East London<span v-if="distanceMiles !== undefined"
+          >, roughly
+          <em>{{ distanceMiles.toLocaleString("en-GB") }} miles</em> away from
+          your current location, according to your IP address</span
+        >.
+        <small v-if="!mapReady">
+          Map data:
+          <a href="https://www.naturalearthdata.com/">Natural Earth</a>
+        </small>
       </figcaption>
       <p v-if="mapStatus" class="location-map__notice" role="status">
         {{ mapStatus }}
@@ -565,24 +563,23 @@ const onIntersectionChange = (entries: IntersectionObserverEntry[]) => {
   loadOnApproach();
 };
 
-const onFirstScroll = () => {
-  hasScrolled = true;
-  loadOnApproach();
-};
+useEventListener(
+  "scroll",
+  () => {
+    hasScrolled = true;
+    loadOnApproach();
+  },
+  { once: true, passive: true },
+);
 
 onMounted(() => {
   hasScrolled = window.scrollY > 0;
-  window.addEventListener("scroll", onFirstScroll, {
-    once: true,
-    passive: true,
-  });
 });
 
 watch(() => colorMode.value, updateTheme, { flush: "post" });
 
 onBeforeUnmount(() => {
   disposed = true;
-  window.removeEventListener("scroll", onFirstScroll);
   removeMap();
 });
 </script>
@@ -794,23 +791,7 @@ onBeforeUnmount(() => {
 }
 
 .location-map__caption {
-  // Resolve the shared readable measure in body typography.
-  font-size: inherit;
-  font-style: inherit;
-
-  justify-self: center;
-  inline-size: calc(
-    100% - (2 * var(--card-space, var(--global-space-fixed-4)))
-  );
   margin-inline: var(--card-space, var(--global-space-fixed-4));
-}
-
-.location-map__caption-text {
-  font-size: var(--global-font-size-1);
-  font-style: italic;
-  line-height: var(--global-line-height-1);
-
-  display: block;
 }
 
 @media (forced-colors: active) {
