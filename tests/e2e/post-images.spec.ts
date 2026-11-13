@@ -72,7 +72,7 @@ for (const width of [1280, 375, 320]) {
     await expect(image).toBeVisible();
   });
 
-  test(`Currency Converter Pro screenshots fit at ${width}px`, async ({
+  test(`Currency Converter Pro screenshots fit without distortion in static windows at ${width}px`, async ({
     page,
   }) => {
     await page.setViewportSize({ width, height: 900 });
@@ -105,13 +105,15 @@ for (const width of [1280, 375, 320]) {
         expect(bounds).not.toBeNull();
         expect(bounds!.width).toBeGreaterThan(0);
         expect(bounds!.width).toBeLessThanOrEqual(1999);
-        const textWidth = await page
-          .locator(".post__content")
-          .evaluate((element) => element.getBoundingClientRect().width);
-        expect(bounds!.width).toBeGreaterThan(textWidth);
         expect(bounds!.x).toBeGreaterThanOrEqual(0);
-        expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
-        expect(bounds!.width / bounds!.height).toBeCloseTo(1999 / 1124, 2);
+        expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width + 1);
+        expect(bounds!.width / bounds!.height).toBeCloseTo(5 / 7, 2);
+        await expect(image).toHaveCSS("object-fit", "contain");
+        const intrinsicRatio = await image.evaluate((element) => {
+          const image = element as HTMLImageElement;
+          return image.naturalWidth / image.naturalHeight;
+        });
+        expect(intrinsicRatio).toBeCloseTo(1999 / 1124, 2);
       }
       await page.emulateMedia({ forcedColors: "active" });
       await expect(image).toBeVisible();

@@ -93,22 +93,35 @@ let mouseDrag:
 let suppressClick = false;
 let resizeObserver: ResizeObserver | undefined;
 
-const slideStep = () => {
-  const first = track.value?.firstElementChild;
-  const second = first?.nextElementSibling;
-  return first instanceof HTMLElement && second instanceof HTMLElement
-    ? second.offsetLeft - first.offsetLeft
+const slidePosition = (index: number) => {
+  const element = track.value;
+  const slide = element?.children[index];
+  return element && slide instanceof HTMLElement
+    ? Math.max(
+        0,
+        Math.min(
+          element.scrollWidth - element.clientWidth,
+          slide.offsetLeft + (slide.offsetWidth - element.clientWidth) / 2,
+        ),
+      )
     : 0;
 };
 
 const updatePosition = () => {
-  const step = slideStep();
-  if (track.value && step > 0) {
-    currentIndex.value = Math.max(
-      0,
-      Math.min(props.count - 1, Math.round(track.value.scrollLeft / step)),
-    );
+  const element = track.value;
+  if (!element) {
+    return;
   }
+  let nearest = 0;
+  for (let index = 1; index < props.count; index++) {
+    if (
+      Math.abs(element.scrollLeft - slidePosition(index)) <
+      Math.abs(element.scrollLeft - slidePosition(nearest))
+    ) {
+      nearest = index;
+    }
+  }
+  currentIndex.value = nearest;
 };
 
 const updateActiveSlide = () => {
@@ -142,7 +155,7 @@ const updateActiveSlide = () => {
 const navigateToImage = (requestedIndex: number) => {
   const index = Math.max(0, Math.min(props.count - 1, requestedIndex));
   track.value?.scrollTo({
-    left: index * slideStep(),
+    left: slidePosition(index),
     behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
       ? "instant"
       : "smooth",
@@ -264,7 +277,7 @@ onMounted(() => {
   isInteractive.value = true;
   resizeObserver = new ResizeObserver(() => {
     track.value?.scrollTo({
-      left: currentIndex.value * slideStep(),
+      left: slidePosition(currentIndex.value),
       behavior: "instant",
     });
   });
@@ -292,12 +305,12 @@ onBeforeUnmount(() => {
   --button-icon-hover-color: var(--global-accent-color);
   --button-icon-hover-background: #fff;
 
-  container-type: inline-size;
   margin-block: var(--global-space-fixed-5);
 }
 
 .image-carousel__viewport {
-  --image-carousel-slide-size: calc(100cqi + (2 * var(--global-space-fluid-6)));
+  --image-carousel-slide-size: clamp(12rem, 36vmin, 24rem);
+  --image-carousel-gap: clamp(0.75rem, 2vw, 2rem);
 
   position: relative;
   inline-size: 100vw;
@@ -310,13 +323,17 @@ onBeforeUnmount(() => {
   grid-auto-flow: column;
   grid-auto-columns: var(--image-carousel-slide-size);
   align-items: start;
-  gap: var(--global-space-fixed-3);
+  gap: var(--image-carousel-gap);
   overflow-x: auto;
   overscroll-behavior-inline: contain;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
+  inline-size: min(
+    100%,
+    calc(2 * var(--image-carousel-slide-size) - var(--image-carousel-gap))
+  );
+  margin-inline: auto;
   padding-block-start: var(--global-space-fixed-2);
-  padding-inline: calc((100vw - var(--image-carousel-slide-size)) / 2);
 
   &::-webkit-scrollbar {
     display: none;
@@ -363,60 +380,61 @@ onBeforeUnmount(() => {
 .post__content .image-carousel__slide > p,
 .post__content .image-carousel__slide > figure > p {
   position: relative;
-  inline-size: fit-content;
+  overflow: clip;
+  aspect-ratio: 5 / 7;
+  inline-size: 100%;
   max-inline-size: 100%;
   min-inline-size: 0;
   margin-inline: auto;
 }
 
 .post__content .image-carousel__slide .prose-image {
+  display: block;
   inline-size: 100%;
+  block-size: 100%;
   margin-inline: 0;
 }
 
-// Inspired by the Window Carousel at scroll-driven-animations.style (Apache-2.0).
-// Unlike the demo's fixed portrait crop, the centre opens to the entire image.
+.image-carousel__slide .prose-image > picture,
+.image-carousel__slide > p > a,
+.image-carousel__slide > figure > p > a {
+  display: block;
+  block-size: 100%;
+}
+
+.post__content .image-carousel__slide .prose-image .prose-image__image {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+  object-position: 50% 50%;
+}
+
+// Original adaptation of the adjacent windows at scroll-driven-animations.style.
 @supports (animation-timeline: view(inline)) {
   @media (prefers-reduced-motion: no-preference) {
-    .image-carousel--window .image-carousel__slide .prose-image {
-      animation: image-window-aperture linear both;
-      animation-timeline: --image-window;
-    }
-
-    .image-carousel--window .image-carousel__slide .prose-image__image {
+    .post__content .image-carousel__slide .prose-image .prose-image__image {
+      object-fit: cover;
       animation: image-window-pan linear both;
       animation-timeline: --image-window;
     }
 
-    .image-carousel__slide:focus-within .prose-image,
-    .image-carousel__slide:focus-within .prose-image__image {
+    .post__content
+      .image-carousel__slide:focus-within
+      .prose-image
+      .prose-image__image {
+      object-fit: contain;
       animation: none;
     }
   }
 }
 
-@keyframes image-window-aperture {
-  0%,
-  100% {
-    clip-path: inset(0 14%);
-  }
-
-  50% {
-    clip-path: inset(0);
-  }
-}
-
 @keyframes image-window-pan {
   from {
-    translate: -12% 0;
-  }
-
-  50% {
-    translate: 0 0;
+    object-position: 100% 50%;
   }
 
   to {
-    translate: 12% 0;
+    object-position: 0 50%;
   }
 }
 

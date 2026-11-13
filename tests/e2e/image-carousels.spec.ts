@@ -11,8 +11,8 @@ test.beforeEach(async ({ page, baseURL }) => {
   );
 });
 
-for (const width of [1440, 640, 320]) {
-  test(`Window gallery preserves images and full-bleed geometry at ${width}px`, async ({
+for (const width of [1440, 640, 390, 320]) {
+  test(`Adjacent portrait windows and their small gap remain visible at ${width}px`, async ({
     page,
   }) => {
     await page.setViewportSize({ width, height: 900 });
@@ -39,6 +39,32 @@ for (const width of [1440, 640, 320]) {
         .boundingBox();
       expect(bounds!.x).toBeCloseTo(0, 0);
       expect(bounds!.width).toBeCloseTo(width, 0);
+      await gallery.getByRole("button", { name: "Go to image 1 of 2" }).click();
+      const adjacency = await track.evaluate((element) => {
+        const viewport = element.getBoundingClientRect();
+        const frames = Array.from(element.querySelectorAll(".prose-image")).map(
+          (frame) => frame.getBoundingClientRect(),
+        );
+        return {
+          gap: frames[1]!.left - frames[0]!.right,
+          width: frames[0]!.width,
+          height: frames[0]!.height,
+          firstLeft: frames[0]!.left,
+          viewportLeft: viewport.left,
+          viewportRight: viewport.right,
+          secondVisibleWidth:
+            Math.min(viewport.right, frames[1]!.right) -
+            Math.max(viewport.left, frames[1]!.left),
+        };
+      });
+      expect(adjacency.firstLeft).toBeCloseTo(adjacency.viewportLeft, 0);
+      expect(adjacency.viewportLeft).toBeGreaterThanOrEqual(0);
+      expect(adjacency.viewportRight).toBeLessThanOrEqual(width);
+      expect(adjacency.width).toBeLessThan(width * 0.65);
+      expect(adjacency.width / adjacency.height).toBeCloseTo(5 / 7, 2);
+      expect(adjacency.gap).toBeGreaterThan(0);
+      expect(adjacency.gap).toBeLessThanOrEqual(40);
+      expect(adjacency.secondVisibleWidth).toBeGreaterThan(adjacency.width / 2);
       for (const index of [0, 1]) {
         await gallery
           .getByRole("button", { name: `Go to image ${index + 1} of 2` })
@@ -48,30 +74,14 @@ for (const width of [1440, 640, 320]) {
         );
         const image = images.nth(index);
         const dimensions = await image.boundingBox();
-        expect(dimensions!.x + dimensions!.width / 2).toBeCloseTo(width / 2, 0);
-        expect(dimensions!.width / dimensions!.height).toBeCloseTo(
-          1999 / 1124,
-          2,
+        const viewport = await track.boundingBox();
+        expect(dimensions!.x).toBeGreaterThanOrEqual(viewport!.x - 1);
+        expect(dimensions!.x + dimensions!.width).toBeLessThanOrEqual(
+          viewport!.x + viewport!.width + 1,
         );
-        const standalone = await image.evaluate((element) => {
-          const paragraph = document.createElement("p");
-          const picture = element.closest(".prose-image")!.cloneNode(true);
-          paragraph.append(picture);
-          element.closest(".post__content")!.append(paragraph);
-          const bounds = paragraph
-            .querySelector("img")!
-            .getBoundingClientRect();
-          const result = {
-            x: bounds.x,
-            width: bounds.width,
-            height: bounds.height,
-          };
-          paragraph.remove();
-          return result;
-        });
-        expect(dimensions!.x).toBeCloseTo(standalone.x, 0);
-        expect(dimensions!.width).toBeCloseTo(standalone.width, 0);
-        expect(dimensions!.height).toBeCloseTo(standalone.height, 0);
+        expect(dimensions!.width / dimensions!.height).toBeCloseTo(5 / 7, 2);
+        await expect(image).toHaveCSS("object-fit", "contain");
+        await expect(image).toHaveCSS("object-position", "50% 50%");
         await expect(image).toHaveCSS("translate", "none");
       }
       expect(
@@ -193,7 +203,7 @@ test("Mouse dragging a linked image scrolls without opening the link", async ({
 test.describe("Continuous window motion", () => {
   test.use({ reducedMotion: "no-preference" });
 
-  test("Pans continuously within a clipping window, fully opening at the centre", async ({
+  test("Pans image content continuously inside adjacent fixed windows", async ({
     page,
   }) => {
     await page.goto("/cheat-sheet/");
@@ -207,55 +217,49 @@ test.describe("Continuous window motion", () => {
       CSS.supports("animation-timeline: view(inline)"),
     );
     const firstImage = track.locator("img").first();
-    const frame = track.locator(".prose-image").first();
     await expect(firstImage).toHaveCSS(
       "animation-name",
       supported ? "image-window-pan" : "none",
     );
-    const centredPan = async () =>
-      firstImage.evaluate((element) => {
-        const translate = getComputedStyle(element).translate;
-        return translate === "none"
-          ? 0
-          : Math.abs(Number.parseFloat(translate));
-      });
-    await expect.poll(centredPan).toBeLessThan(0.01);
+    await expect(firstImage).toHaveCSS(
+      "object-fit",
+      supported ? "cover" : "contain",
+    );
+    const pan = () =>
+      firstImage.evaluate((element) =>
+        Number.parseFloat(getComputedStyle(element).objectPosition),
+      );
+    const initialPan = await pan();
     // Stop snapping only to sample two genuine between-slide scroll positions.
     await page.addStyleTag({
       content: ".image-carousel__track { scroll-snap-type: none; }",
     });
     const sample = async (fraction: number, previousPan: number) => {
       await track.evaluate((element, value) => {
-        const slides = element.children;
-        const step =
-          (slides[1] as HTMLElement).offsetLeft -
-          (slides[0] as HTMLElement).offsetLeft;
-        element.scrollLeft = step * value;
+        element.scrollLeft =
+          (element.scrollWidth - element.clientWidth) * value;
       }, fraction);
       await expect
         .poll(() =>
           firstImage.evaluate(
             (element, previous) =>
-              Number.parseFloat(getComputedStyle(element).translate) > previous,
+              Number.parseFloat(getComputedStyle(element).objectPosition) <
+              previous,
             previousPan,
           ),
         )
         .toBe(supported);
       return {
-        pan: Number.parseFloat(
-          await firstImage.evaluate(
-            (element) => getComputedStyle(element).translate,
-          ),
-        ),
-        clip: await frame.evaluate(
-          (element) => getComputedStyle(element).clipPath,
-        ),
+        pan: await pan(),
+        frame: await firstImage.boundingBox(),
       };
     };
-    const early = await sample(0.2, 0);
+    const early = await sample(0.2, initialPan);
     const later = await sample(0.4, early.pan);
-    expect(later.pan > early.pan).toBe(supported);
-    expect(later.clip !== early.clip).toBe(supported);
+    expect(early.pan - later.pan > 3).toBe(supported);
+    expect(later.frame!.width).toBeCloseTo(early.frame!.width, 1);
+    expect(later.frame!.height).toBeCloseTo(early.frame!.height, 1);
+    expect(later.frame!.width / later.frame!.height).toBeCloseTo(5 / 7, 2);
     await expect(gallery.locator("figcaption").first()).toHaveCSS(
       "translate",
       "none",
@@ -267,26 +271,15 @@ test.describe("Continuous window motion", () => {
     await track.evaluate((element) => {
       element.scrollLeft = 0;
     });
-    await expect.poll(centredPan).toBeLessThan(0.01);
-    await expect
-      .poll(() =>
-        frame.evaluate((element) => {
-          const clip = getComputedStyle(element).clipPath;
-          return (
-            clip === "none" ||
-            (clip.match(/-?[\d.]+/g) ?? []).every(
-              (value) => Math.abs(Number(value)) < 0.01,
-            )
-          );
-        }),
-      )
-      .toBe(true);
     await track.locator("a").first().focus();
-    await expect(frame).toHaveCSS("clip-path", "none");
+    await expect(firstImage).toHaveCSS("object-fit", "contain");
+    await expect(firstImage).toHaveCSS("animation-name", "none");
+    await track.focus();
     await page.emulateMedia({ reducedMotion: "reduce" });
     await expect(firstImage).toHaveCSS("animation-name", "none");
     await expect(firstImage).toHaveCSS("translate", "none");
-    await expect(frame).toHaveCSS("clip-path", "none");
+    await expect(firstImage).toHaveCSS("object-fit", "contain");
+    await expect(firstImage).toHaveCSS("object-position", "50% 50%");
   });
 });
 
