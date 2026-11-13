@@ -167,8 +167,19 @@ const type = computed(() => (props.submit ? "submit" : "button"));
   }
 
   &:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: -2px;
+    outline: var(--global-border-width-2) solid var(--global-accent-color);
+    outline-offset: var(--global-focus-outline-offset);
+  }
+
+  &:active:not(:disabled) {
+    color: var(
+      --button-icon-active-color,
+      var(--global-content-background-color)
+    );
+    background-color: var(
+      --button-icon-active-background,
+      var(--global-accent-color)
+    );
   }
 
   &:disabled {
@@ -195,6 +206,12 @@ const type = computed(() => (props.submit ? "submit" : "button"));
 
     &:focus-visible {
       outline-color: Highlight;
+    }
+
+    &:active:not(:disabled) {
+      color: ButtonFace;
+      background-color: ButtonText;
+      border-color: ButtonText;
     }
 
     &:disabled {
