@@ -32,6 +32,7 @@ test("Groups article images with working links, captions and stable endpoint foc
   ]);
   const previous = gallery.getByRole("button", { name: "Previous image" });
   const next = gallery.getByRole("button", { name: "Next image" });
+  await gallery.locator(".image-carousel__track").hover();
   await expect(previous).toHaveAttribute("aria-disabled", "true");
   await next.click();
   await expect(
@@ -57,6 +58,107 @@ test("Groups article images with working links, captions and stable endpoint foc
   await expect(gallery.getByRole("link")).toBeFocused();
   await gallery.getByRole("link").click();
   await expect(page).toHaveURL(/\/css-general-rules-of-thumb\/$/);
+});
+
+test("Mouse dragging browses images without following links and ordinary clicks still navigate", async ({
+  page,
+}) => {
+  const gallery = page.locator(gallerySelector).first();
+  const track = gallery.locator(".image-carousel__track");
+  await expect(gallery.locator(".image-carousel__controls")).toBeVisible();
+  await gallery.scrollIntoViewIfNeeded();
+  await expect(track).toHaveCSS("scrollbar-width", "none");
+  const image = gallery.locator("img").first();
+  const bounds = await image.boundingBox();
+  expect(bounds).not.toBeNull();
+  const startX = bounds!.x + bounds!.width * 0.8;
+  const y = bounds!.y + bounds!.height / 3;
+  await page.mouse.move(startX, y);
+  await page.mouse.down();
+  await page.mouse.move(startX - bounds!.width * 0.75, y, { steps: 15 });
+  await page.mouse.up();
+  await expect(page).toHaveURL(/\/cheat-sheet\/$/);
+  await expect(
+    gallery.getByRole("button", { name: "Go to image 2 of 3" }),
+  ).toHaveAttribute("aria-current", "true");
+  await expect(track).toHaveCSS("cursor", "grab");
+
+  const middle = await gallery.locator("img").nth(1).boundingBox();
+  expect(middle).not.toBeNull();
+  await page.mouse.move(
+    middle!.x + middle!.width * 0.2,
+    middle!.y + middle!.height / 3,
+  );
+  await page.mouse.down();
+  await page.mouse.move(
+    middle!.x + middle!.width * 0.95,
+    middle!.y + middle!.height / 3,
+    { steps: 15 },
+  );
+  await page.mouse.up();
+  await expect(
+    gallery.getByRole("button", { name: "Previous image" }),
+  ).toHaveAttribute("aria-disabled", "true");
+  await gallery.getByRole("link").click();
+  await expect(page).toHaveURL(/\/css-general-rules-of-thumb\/$/);
+});
+
+test("Overlay arrows appear on hover or keyboard focus without covering captions", async ({
+  page,
+}) => {
+  const gallery = page.locator(gallerySelector).first();
+  const track = gallery.locator(".image-carousel__track");
+  const next = gallery.getByRole("button", { name: "Next image" });
+  await expect(gallery.locator(".image-carousel__controls")).toBeVisible();
+  await gallery.scrollIntoViewIfNeeded();
+  await page.mouse.move(0, 0);
+  await expect(next).toHaveCSS("opacity", "0");
+  await track.hover();
+  await expect(next).toHaveCSS("opacity", "1");
+  const image = await gallery.locator("img").first().boundingBox();
+  const button = await next.boundingBox();
+  expect(image).not.toBeNull();
+  expect(button).not.toBeNull();
+  expect(button!.x).toBeGreaterThanOrEqual(image!.x);
+  expect(button!.x + button!.width).toBeLessThanOrEqual(
+    image!.x + image!.width,
+  );
+  expect(button!.y).toBeGreaterThan(image!.y);
+  expect(button!.y + button!.height).toBeLessThan(image!.y + image!.height);
+  await page.mouse.move(0, 0);
+  await expect(next).toHaveCSS("opacity", "0");
+  await track.focus();
+  await expect(next).toHaveCSS("opacity", "1");
+  await page.keyboard.press("Tab");
+  await expect(gallery.getByRole("link")).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(
+    gallery.getByRole("button", { name: "Previous image" }),
+  ).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(next).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(
+    gallery.getByRole("button", { name: "Go to image 2 of 3" }),
+  ).toHaveAttribute("aria-current", "true");
+});
+
+test.describe("Touch input", () => {
+  test.use({ hasTouch: true });
+
+  test("Overlay arrows remain available without hover on touch devices", async ({
+    page,
+  }) => {
+    const gallery = page.locator(gallerySelector).first();
+    const next = gallery.getByRole("button", { name: "Next image" });
+    await expect(gallery.locator(".image-carousel__controls")).toBeVisible();
+    await gallery.scrollIntoViewIfNeeded();
+    await expect(next).toHaveCSS("opacity", "1");
+    await next.tap();
+    await expect(
+      gallery.getByRole("button", { name: "Go to image 2 of 3" }),
+    ).toHaveAttribute("aria-current", "true");
+  });
 });
 
 test("Native horizontal scrolling updates the selected image", async ({

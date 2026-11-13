@@ -260,7 +260,7 @@ To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>`
 
 # Image Carousels
 
-Consecutive image-only paragraphs or figures become a full-bleed gallery. Scroll or swipe to browse, use the buttons, or focus the gallery and press Left, Right, Home or End. In supporting browsers the images turn continuously with the scroll position, inspired by [the CSS Cover Flow demo](https://scroll-driven-animations.style/demos/cover-flow/css/). The centred image keeps its normal article dimensions; captions and image links are preserved. Reduced motion, High Contrast Mode and browsers without CSS view timelines use a flat scrolling gallery instead. Prose and headings end a gallery; a standalone image is unchanged.
+Consecutive image-only paragraphs or figures become a full-bleed gallery without a visible scrollbar. Scroll, swipe or drag the images to browse, use the buttons, or focus the gallery and press Left, Right, Home or End. Arrow buttons appear over the images on hover or keyboard focus and remain visible on touch devices. In supporting browsers the images turn continuously with the scroll position, inspired by [the CSS Cover Flow demo](https://scroll-driven-animations.style/demos/cover-flow/css/). The centred image keeps its normal article dimensions; captions and image links are preserved. Reduced motion, High Contrast Mode and browsers without CSS view timelines use a flat scrolling gallery instead. Prose and headings end a gallery; a standalone image is unchanged.
 
 <figure>
 
