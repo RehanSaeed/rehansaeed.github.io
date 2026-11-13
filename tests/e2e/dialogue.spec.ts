@@ -377,14 +377,16 @@ test.describe("Dialog transitions", () => {
       await page.locator(".post-card__title").first().click();
       // Protocol auto-scroll during a snapshot can desynchronise Firefox's visual viewport.
       // Finish navigation before scrolling to the offscreen Share/Coffee controls.
+      await expect
+        .poll(() =>
+          page.evaluate(() => Reflect.has(window, "dialogNavigationFinished")),
+        )
+        .toBe(true);
       await page.evaluate(async () => {
         const finished: unknown = Reflect.get(
           window,
           "dialogNavigationFinished",
         );
-        if (finished === undefined) {
-          throw new Error("Expected a native navigation transition");
-        }
         await Promise.resolve(finished);
       });
 
