@@ -165,10 +165,13 @@ const configureMotion = () => {
 
 const navigateToImage = (requestedIndex: number, instant = false) => {
   const index = Math.max(0, Math.min(props.count - 1, requestedIndex));
-  const left = index * slideStep();
   if (!track.value) {
     return;
   }
+  const left = Math.min(
+    index * slideStep(),
+    track.value.scrollWidth - track.value.clientWidth,
+  );
   if (Math.abs(track.value.scrollLeft - left) <= 1) {
     navigationTarget = undefined;
     return;
