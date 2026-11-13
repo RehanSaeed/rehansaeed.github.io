@@ -109,8 +109,8 @@ for (const width of [1440, 640, 375, 320]) {
     );
     await expect(gallery.getByRole("link")).toBeFocused();
     await page.emulateMedia({ forcedColors: "active" });
-    await track.focus();
-    await track.press("Home");
+    await page.keyboard.press("Shift+Tab");
+    await expect(track).toBeFocused();
     await expect(track).toHaveCSS("outline-style", "solid");
     await expect(image).toHaveCSS("opacity", "1");
     await gallery.getByRole("button", { name: "Go to image 3 of 3" }).click();
@@ -129,6 +129,7 @@ test.describe("Continuous scroll-linked motion", () => {
     await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
     const gallery = page.getByRole("region", { name: "Image gallery" });
     const track = gallery.getByRole("group", { name: "Gallery images" });
+    await gallery.scrollIntoViewIfNeeded();
     await expect(
       gallery.getByRole("button", { name: "Go to image 1 of 3" }),
     ).toHaveAttribute("aria-current", "true");
@@ -151,15 +152,18 @@ test.describe("Continuous scroll-linked motion", () => {
             .evaluate((element) => Number(getComputedStyle(element).opacity)),
         )
         .toBeCloseTo(1 - progress * 0.55, 2);
+      // Avoid main-world role queries: https://github.com/microsoft/playwright/issues/43967.
       samples.push(
-        await track.locator(".prose-image").evaluateAll((images) =>
-          images.slice(0, 2).map((image) => {
-            const style = getComputedStyle(image);
-            return {
-              opacity: Number(style.opacity),
-              scale: image.getBoundingClientRect().width / image.clientWidth,
-            };
-          }),
+        await track.evaluate((element) =>
+          Array.from(element.querySelectorAll(".prose-image"))
+            .slice(0, 2)
+            .map((image) => {
+              const style = getComputedStyle(image);
+              return {
+                opacity: Number(style.opacity),
+                scale: image.getBoundingClientRect().width / image.clientWidth,
+              };
+            }),
         ),
       );
     }
