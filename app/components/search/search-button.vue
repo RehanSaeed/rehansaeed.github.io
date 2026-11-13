@@ -11,10 +11,10 @@
     </u-tooltip>
 
     <u-dialogue
-      ref="dialogue"
       fullscreen
       title="Search"
       :is-open="isOpen"
+      :animate-close="animateClose"
       @close="onClose"
       class="search-dialogue">
       <u-search
@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import {
   searchOpened,
   searchClosed,
@@ -37,11 +37,8 @@ defineOptions({ name: "u-search-button" });
 const route = useRoute();
 const router = useRouter();
 const nuxtApp = useNuxtApp();
-const dialogue = useTemplateRef<{
-  /** Remove the native modal immediately before navigation. */
-  closeForNavigation: () => void;
-}>("dialogue");
 const isOpen = ref(false);
+const animateClose = ref(true);
 let focusDestination: string | undefined;
 const initialSearch = computed(() => {
   const value = route.query.search;
@@ -50,6 +47,7 @@ const initialSearch = computed(() => {
 
 const onOpen = () => {
   focusDestination = undefined;
+  animateClose.value = true;
   isOpen.value = true;
   searchOpened();
 };
@@ -58,7 +56,7 @@ const onClose = () => {
   searchClosed();
 };
 const closeForNavigation = () => {
-  dialogue.value?.closeForNavigation();
+  animateClose.value = false;
   isOpen.value = false;
 };
 const focusArticle = () => {
@@ -85,7 +83,7 @@ const onSelected = (searchTerm: string, permalink: string) => {
 };
 const disposers = [
   // startViewTransition schedules its old snapshot for the next render. Close
-  // synchronously in Nuxt's start hook, before that render, not at activation.
+  // without a leave animation before that render, not at activation.
   nuxtApp.hook("page:view-transition:start", () => {
     if (focusDestination) {
       closeForNavigation();
