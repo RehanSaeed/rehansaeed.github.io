@@ -535,6 +535,13 @@ export default defineNuxtConfig({
       // Design comparisons are local review tools, never production routes or bundles.
       if (process.env.NODE_ENV === "development") {
         pages.push({
+          name: "tag-portfolio-preview",
+          path: "/__design/tags/portfolio/",
+          file: fileURLToPath(
+            new URL("./app/design/tag-portfolio-preview.vue", import.meta.url),
+          ),
+        });
+        pages.push({
           name: "tag-style-comparison",
           path: "/__design/tags/",
           file: fileURLToPath(

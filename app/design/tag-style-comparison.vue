@@ -25,22 +25,29 @@
 
     <p class="tag-study__instructions">
       Use the moon/sun to compare themes. Tab to any tag for its focus ring;
-      hover for the site's raised-button effect and an underline. All tags
-      remain real navigation links. Narrow the window to compare wrapping.
+      hover for the site's raised-button effect. All tags remain real navigation
+      links. Narrow the window to compare wrapping.
     </p>
 
     <section
       v-for="option of options"
       :id="option.id"
       :key="option.id"
-      class="tag-study__option"
-      :class="`tag-study__option--${option.id}`"
+      class="tag-study__option tag-variant"
+      :class="`tag-variant--${option.id}`"
       :aria-labelledby="`${option.id}-title`">
       <header class="tag-study__option-heading">
         <span class="tag-study__number">{{ option.number }}</span>
         <div>
           <h2 :id="`${option.id}-title`">{{ option.name }}</h2>
           <p>{{ option.description }}</p>
+          <NuxtLink
+            :to="{
+              name: 'tag-portfolio-preview',
+              query: { style: option.id },
+            }">
+            View the full portfolio with {{ option.name }}
+          </NuxtLink>
         </div>
       </header>
 
@@ -93,6 +100,8 @@
 </template>
 
 <script setup lang="ts">
+import "./tag-variants.scss";
+
 definePageMeta({ layout: "empty" });
 useHead({ title: "Tag style comparison" });
 useSeoMeta({ robots: "noindex, nofollow" });
@@ -152,7 +161,7 @@ const options = [
     id: "editorial-index",
     name: "Editorial index",
     description:
-      "Serif italics and a fine underline. More reading list than UI control.",
+      "Unboxed serif italics and generous spacing. More reading list than UI control.",
   },
   {
     number: "06",
@@ -351,193 +360,9 @@ const options = [
   font-size: 0.85rem;
 }
 
-// Only comparison sections opt in; the real UTags default remains untouched.
-.tag-study__option {
-  .tags {
-    gap: 0.5rem;
-  }
-
-  .tags__link {
-    display: inline-flex;
-    gap: 0.45em;
-    align-items: center;
-    min-inline-size: 24px;
-    max-inline-size: 100%;
-    min-block-size: 36px;
-    border: 1px solid transparent;
-    border-radius: 0;
-    padding: 0.35rem 0.75rem;
-    background: transparent;
-    box-shadow: none;
-    color: var(--global-accent-color);
-    font-family: var(--global-font-family-sans-serif);
-    font-size: 0.875rem;
-    font-weight: 500;
-    line-height: 1.5;
-    overflow-wrap: anywhere;
-    text-decoration: none;
-    text-underline-offset: 0.2em;
-    opacity: 1;
-
-    &:hover,
-    &:focus-visible {
-      text-decoration: underline;
-      text-decoration-thickness: 2px;
-    }
-
-    &:focus-visible {
-      outline: 3px solid var(--global-accent-color);
-      outline-offset: 4px;
-    }
-  }
-}
-
-.tag-study__option--quiet-pill .tags__link {
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--global-accent-color) 9%, transparent);
-}
-
-.tag-study__option--hairline-capsule .tags__link {
-  border-color: var(--global-accent-color);
-  border-radius: 999px;
-  padding-inline: 1rem;
-  font-family: var(--font-heading);
-  font-size: 0.8rem;
-}
-
-.tag-study__option--topic-dot {
-  .tags {
-    column-gap: 1.25rem;
-  }
-
-  .tags__link {
-    padding-inline: 0;
-    color: var(--global-title-color);
-
-    // Leave ::before available for ULinkButton's raised shadow.
-    &::after {
-      content: "";
-      order: -1;
-      flex: 0 0 0.4rem;
-      block-size: 0.4rem;
-      border: 1px solid currentColor;
-      border-radius: 50%;
-      background: var(--global-accent-color);
-      color: var(--global-accent-color);
-    }
-  }
-}
-
-.tag-study__option--solid-lozenge .tags__link {
-  border-radius: 0.3rem;
-  background: var(--global-accent-color);
-  color: var(--global-content-background-color);
-  font-weight: 600;
-}
-
-.tag-study__option--editorial-index {
-  .tags {
-    column-gap: 1.25rem;
-  }
-
-  .tags__link {
-    border-block-end-color: currentColor;
-    padding-inline: 0.1rem;
-    font-family: var(--global-font-family-serif);
-    font-size: 1rem;
-    font-style: italic;
-  }
-}
-
-.tag-study__option--code-token .tags__link {
-  border-inline-start: 3px solid var(--global-accent-color);
-  background: var(--global-background-color);
-  color: var(--global-title-color);
-  font-family: var(--global-font-family-monospace);
-  font-size: 0.8rem;
-}
-
-.tag-study__option--ticket-stub .tags__link {
-  border: 1px dashed var(--global-accent-color);
-  border-radius: 0.8rem 0.2rem;
-  padding-inline: 0.9rem;
-  letter-spacing: 0.04em;
-}
-
-.tag-study__option--keycap .tags__link {
-  border: 1px solid var(--global-accent-color);
-  border-block-end-width: 3px;
-  border-radius: 0.4rem;
-  background: var(--global-background-color);
-  box-shadow: 0 2px 0 var(--global-border-color);
-  color: var(--global-title-color);
-  font-family: var(--global-font-family-monospace);
-  font-size: 0.8rem;
-}
-
-.tag-study__option--corner-tab .tags__link {
-  border-inline-start: 4px solid var(--global-accent-color);
-  border-start-end-radius: 1rem;
-  padding-inline: 0.65rem 1rem;
-  background: color-mix(in srgb, var(--global-accent-color) 9%, transparent);
-  font-family: var(--font-heading);
-  font-size: 0.8rem;
-}
-
-.tag-study__option--tag-label .tags__link {
-  border-color: var(--global-border-color);
-  border-radius: var(--global-border-radius);
-  background: var(--global-background-color);
-  color: var(--global-title-color);
-  font-weight: 600;
-
-  &::after {
-    content: "";
-    order: -1;
-    flex: 0 0 1em;
-    block-size: 1em;
-    background: var(--global-accent-color);
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='black' stroke-width='2' stroke-linejoin='round' d='M3 3h7l11 11-7 7L3 10V3Z'/%3E%3Ccircle cx='7.5' cy='7.5' r='1.5'/%3E%3C/svg%3E")
-      center / contain no-repeat;
-  }
-}
-
 @media (width < 800px) {
   .tag-study__contexts {
     grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .tag-study__option .tags__link {
-    transform: none;
-    transition: none;
-
-    &::before {
-      transition: none;
-    }
-  }
-}
-
-@media (forced-colors: active) {
-  .tag-study__option .tags__link {
-    border-color: LinkText;
-    background: Canvas;
-    box-shadow: none;
-    color: LinkText;
-
-    &:focus-visible {
-      outline-color: Highlight;
-    }
-
-    &::before {
-      box-shadow: none;
-    }
-
-    &::after {
-      background: LinkText;
-      color: LinkText;
-    }
   }
 }
 </style>

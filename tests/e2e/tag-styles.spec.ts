@@ -2,6 +2,7 @@ import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import type { Page } from "@playwright/test";
 import sharp from "sharp";
+import { tagStyleOptions } from "../../app/design/tag-style-options";
 import { tagPath } from "../../shared/utils/tag";
 import { expect, test } from "./fixtures";
 
@@ -13,14 +14,45 @@ const openComparison = async (page: Page) => {
   ).toBeEnabled();
 };
 
+const allowReviewBadges = async (page: Page) => {
+  if (process.env.TAG_STYLE_SCREENSHOT_DIR) {
+    await page.route("https://img.shields.io/**", (route) => route.continue());
+  }
+};
+
 const captureReview = async (page: Page, name: string) => {
   const screenshotDir = process.env.TAG_STYLE_SCREENSHOT_DIR;
   if (!screenshotDir) {
     return;
   }
   await mkdir(screenshotDir, { recursive: true });
+  const portfolioImages = page.locator(".portfolio-card__image");
+  await portfolioImages.evaluateAll((images) => {
+    for (const image of images) {
+      if (image instanceof HTMLImageElement) {
+        image.loading = "eager";
+      }
+    }
+  });
+  await expect
+    .poll(() =>
+      portfolioImages.evaluateAll((images) =>
+        images.every(
+          (image) =>
+            image instanceof HTMLImageElement &&
+            image.complete &&
+            image.naturalWidth > 0,
+        ),
+      ),
+    )
+    .toBe(true);
   await page.mouse.move(0, 0);
-  await page.locator("h1").click();
+  await page.evaluate(() => {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+    window.scrollTo({ top: 0, behavior: "instant" });
+  });
   await page.evaluate(() => document.fonts.ready);
   await page.addStyleTag({
     content:
@@ -225,7 +257,7 @@ if (process.env.TAG_STYLE_PREVIEW === "1") {
           await expect(first).toHaveCSS("outline-style", "solid");
           await expect(first).toHaveCSS("outline-width", "3px");
           await first.hover();
-          await expect(first).toHaveCSS("text-decoration-line", "underline");
+          await expect(first).toHaveCSS("text-decoration-line", "none");
 
           const rows = await option
             .locator(".tags")
@@ -340,6 +372,109 @@ if (process.env.TAG_STYLE_PREVIEW === "1") {
       page.getByRole("heading", { level: 1, name: "# C#", exact: true }),
     ).toBeVisible();
   });
+
+  for (const theme of ["light", "dark"] as const) {
+    for (const width of [1440, 390]) {
+      for (const option of tagStyleOptions) {
+        test(`full portfolio / ${option.id} / ${theme} / ${width}`, async ({
+          page,
+        }) => {
+          await page.emulateMedia({
+            colorScheme: theme,
+            reducedMotion: "no-preference",
+          });
+          await page.setViewportSize({ width, height: 1000 });
+          await allowReviewBadges(page);
+          await page.goto(`/__design/tags/portfolio/?style=${option.id}`, {
+            waitUntil: "domcontentloaded",
+          });
+          await expect(
+            page.getByRole("button", { name: "Toggle dark/light" }),
+          ).toBeEnabled();
+          await expect(page.getByLabel("Preview tag style")).toHaveValue(
+            option.id,
+          );
+          await expect(page.locator("meta[name=robots]")).toHaveAttribute(
+            "content",
+            "noindex, nofollow",
+          );
+          await expect(
+            page.locator(".navigation").getByRole("link", { name: "Home" }),
+          ).toBeVisible();
+          await expect(
+            page.getByRole("heading", {
+              level: 1,
+              name: "Portfolio",
+              exact: true,
+            }),
+          ).toBeVisible();
+          const cards = page.locator(".portfolio-card");
+          expect(await cards.count()).toBeGreaterThan(10);
+          await expect(
+            page.getByRole("heading", { name: "Contributions at Microsoft" }),
+          ).toBeVisible();
+          await expect(page.locator(".portfolio-statistics")).toHaveCount(1);
+          const tags = page.locator(".portfolio-card .tags__link");
+          const decorations = await tags.evaluateAll((links) =>
+            links.map((link) => getComputedStyle(link).textDecorationLine),
+          );
+          expect(decorations.length).toBeGreaterThan(20);
+          expect(decorations.every((line) => line === "none")).toBe(true);
+          const tag = tags.first();
+          await tag.hover();
+          await expect(tag).toHaveCSS("text-decoration-line", "none");
+          await expect(tag).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -2)");
+          await page.keyboard.press("Tab");
+          await tag.focus();
+          await expect(tag).toHaveCSS("outline-width", "3px");
+          await expect(tag).toHaveCSS("text-decoration-line", "none");
+          await expect(tag).toHaveAttribute(
+            "href",
+            tagPath((await tag.textContent())!.trim()),
+          );
+          expect(
+            await page.evaluate(() => document.documentElement.scrollWidth),
+          ).toBeLessThanOrEqual(width);
+          await captureReview(
+            page,
+            `tag-portfolio-${option.id}-${theme}-${width}`,
+          );
+        });
+      }
+    }
+  }
+
+  test("portfolio selector switches all tags without changing production", async ({
+    page,
+  }) => {
+    await openComparison(page);
+    await page
+      .getByRole("link", {
+        name: "View the full portfolio with Quiet pill",
+        exact: true,
+      })
+      .click();
+    await expect(
+      page.locator(".portfolio__open-source .portfolio-card__title").first(),
+    ).toBeVisible();
+    const titles = await page
+      .locator(".portfolio-card__title")
+      .allTextContents();
+    for (const option of tagStyleOptions) {
+      await page.getByLabel("Preview tag style").selectOption(option.id);
+      await expect(page.locator(".tag-variant")).toHaveClass(
+        `tag-variant tag-variant--${option.id}`,
+      );
+      await expect(page).toHaveURL(new RegExp(`style=${option.id}$`));
+    }
+    await page.goto("/portfolio/", { waitUntil: "domcontentloaded" });
+    await expect(page.locator(".tag-variant")).toHaveCount(0);
+    await expect(page.locator(".portfolio-card__title")).toHaveText(titles);
+    await expect(page.locator(".tags__link").first()).toHaveCSS(
+      "font-family",
+      /Audiowide/,
+    );
+  });
 } else {
   test("design comparison is absent from the production site", async ({
     page,
@@ -347,6 +482,8 @@ if (process.env.TAG_STYLE_PREVIEW === "1") {
     const response = await page.goto("/__design/tags/");
     expect(response?.status()).toBe(404);
     await expect(page.locator(".tag-study")).toHaveCount(0);
+    const portfolioPreview = await page.goto("/__design/tags/portfolio/");
+    expect(portfolioPreview?.status()).toBe(404);
     await page.goto("/portfolio/");
     await expect(page.locator(".portfolio-card__tags").first()).toBeVisible();
     await expect(page.locator(".tag-study__option")).toHaveCount(0);
