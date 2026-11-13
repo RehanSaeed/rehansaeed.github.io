@@ -5,6 +5,7 @@
         v-if="variant"
         class="tags__link"
         :variant="variant"
+        :tag-icon="tagIcon"
         :to="tagPath(tag)"
         >{{ tag }}</u-button
       >
@@ -22,6 +23,9 @@ import type { TagButtonVariant } from "~/types/button";
 
 defineOptions({ name: "u-tags" });
 defineProps({
+  /** Add the tag-label outline icon to an opt-in button variant. */ tagIcon: {
+    type: Boolean,
+  },
   /** Tags associated with the content. */ tags: {
     required: true,
     type: Array as PropType<string[]>,

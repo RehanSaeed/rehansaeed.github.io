@@ -25,6 +25,7 @@
           :key="item.id"
           :portfolio="item"
           :tag-variant="tagVariant"
+          :tag-icon="tagIcon"
           :priority="index < 2" />
       </div>
     </section>
@@ -41,7 +42,8 @@
           v-for="item of openSourceProjects"
           :key="item.id"
           :portfolio="item"
-          :tag-variant="tagVariant" />
+          :tag-variant="tagVariant"
+          :tag-icon="tagIcon" />
       </div>
     </section>
   </div>
@@ -51,6 +53,8 @@
 import type { TagButtonVariant } from "~/types/button";
 
 defineProps<{
+  /** Add the decorative outline icon to the selected tag-button variant. */
+  tagIcon?: boolean;
   /** Optional button variant for every portfolio tag; defaults are unchanged. */
   tagVariant?: TagButtonVariant;
 }>();

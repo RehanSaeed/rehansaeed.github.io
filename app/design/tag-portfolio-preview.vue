@@ -12,20 +12,29 @@
           {{ option.number }} / {{ option.name }}
         </option>
       </select>
+      <label class="tag-portfolio-preview__icon-toggle">
+        <input
+          v-model="showIcons"
+          type="checkbox"
+          :disabled="!supportsTagIcon(selectedStyle)" />
+        Add the tag icon to styles 6 and 8 (including 6b)
+      </label>
       <NuxtLink :to="{ name: 'tag-style-comparison' }"
         >Back to all comparisons</NuxtLink
       >
       <p>Design preview only. The production default is unchanged.</p>
     </aside>
     <div class="tag-portfolio-preview__page">
-      <PortfolioPage :tag-variant="selectedStyle" />
+      <PortfolioPage
+        :tag-variant="selectedStyle"
+        :tag-icon="showIcons && supportsTagIcon(selectedStyle)" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import PortfolioPage from "~/pages/portfolio.vue";
-import { tagStyleOptions } from "./tag-style-options";
+import { supportsTagIcon, tagStyleOptions } from "./tag-style-options";
 import type { TagButtonVariant } from "~/types/button";
 
 useSeoMeta({ robots: "noindex, nofollow" });
@@ -35,7 +44,26 @@ const selectedStyle = computed({
     tagStyleOptions.find((option) => option.id === route.query.style)?.id ??
     tagStyleOptions[0]!.id,
   set: (style: TagButtonVariant) => {
-    void navigateTo({ path: route.path, query: { style } }, { replace: true });
+    void navigateTo(
+      { path: route.path, query: { ...route.query, style } },
+      { replace: true },
+    );
+  },
+});
+const showIcons = computed({
+  get: () => route.query.icons === "tag",
+  set: (enabled: boolean) => {
+    void navigateTo(
+      {
+        path: route.path,
+        query: {
+          ...route.query,
+          style: selectedStyle.value,
+          icons: enabled ? "tag" : undefined,
+        },
+      },
+      { replace: true },
+    );
   },
 });
 </script>
@@ -60,6 +88,14 @@ const selectedStyle = computed({
     background: var(--global-content-background-color);
     color: var(--global-title-color);
     font: inherit;
+  }
+
+  .tag-portfolio-preview__icon-toggle {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.5rem;
+    align-items: center;
+    min-block-size: 44px;
   }
 
   p {

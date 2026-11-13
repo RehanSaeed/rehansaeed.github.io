@@ -6,6 +6,7 @@
       `button--${variant}`,
       {
         'button--tag': tagVariant,
+        'button--tag-icon': tagVariant && tagIcon,
         'button--hydrating': !to && !hydrated && !disabled && !submit,
       },
     ]"
@@ -54,6 +55,10 @@ const props = defineProps({
   /** Whether the button submits its containing form. */ submit: {
     type: Boolean,
   },
+  /** Add the decorative outline icon used by the tag-label variant. */ tagIcon:
+    {
+      type: Boolean,
+    },
 });
 const hydrated = ref(false);
 const type = computed(() => (props.submit ? "submit" : "button"));
@@ -295,16 +300,17 @@ onMounted(() => {
   border-radius: var(--global-border-radius);
   background: var(--global-background-color);
   font-weight: 600;
+}
 
-  &::after {
-    content: "";
-    order: -1;
-    flex: 0 0 1em;
-    block-size: 1em;
-    background: var(--global-accent-color);
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='black' stroke-width='2' stroke-linejoin='round' d='M3 3h7l11 11-7 7L3 10V3Z'/%3E%3Ccircle cx='7.5' cy='7.5' r='1.5'/%3E%3C/svg%3E")
-      center / contain no-repeat;
-  }
+.button--tag-label::after,
+.button--tag-icon::after {
+  content: "";
+  order: -1;
+  flex: 0 0 1em;
+  block-size: 1em;
+  background: var(--global-accent-color);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='black' stroke-width='2' stroke-linejoin='round' d='M3 3h7l11 11-7 7L3 10V3Z'/%3E%3Ccircle cx='7.5' cy='7.5' r='1.5'/%3E%3C/svg%3E")
+    center / contain no-repeat;
 }
 
 @media (prefers-reduced-motion: reduce) {

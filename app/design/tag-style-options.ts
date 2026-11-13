@@ -1,5 +1,8 @@
 import type { TagButtonVariant } from "~/types/button";
 
+export const supportsTagIcon = (variant: TagButtonVariant) =>
+  ["code-token", "code-token-rounded", "keycap"].includes(variant);
+
 export const tagStyleOptions = [
   {
     number: "01",

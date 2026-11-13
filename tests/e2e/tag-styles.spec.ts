@@ -98,6 +98,103 @@ const captureRaisedReview = async (page: Page, name: string) => {
 // Opt in against `npm run dev -- --port 8097` with TAG_STYLE_PREVIEW=1
 // and BASE_URL=http://localhost:8097. The normal static suite checks isolation.
 if (process.env.TAG_STYLE_PREVIEW === "1") {
+  test("optional tag icons reuse style 10 without replacing icon-free designs", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: "light" });
+    await openComparison(page);
+    const reference = page.locator("#tag-label .tags__link").first();
+    const iconMask = await reference.evaluate(
+      (element) => getComputedStyle(element, "::after").maskImage,
+    );
+    expect(iconMask).not.toBe("none");
+    for (const id of ["code-token", "code-token-rounded", "keycap"]) {
+      const section = page.locator(`#${id}`);
+      const checkbox = section.getByRole("checkbox", {
+        name: "Add the tag icon",
+        exact: true,
+      });
+      const tag = section.locator(".tags__link").first();
+      await expect(checkbox).not.toBeChecked();
+      await expect(tag).toHaveCSS("text-decoration-line", "none");
+      expect(
+        await tag.evaluate(
+          (element) => getComputedStyle(element, "::after").content,
+        ),
+      ).toBe("none");
+      await checkbox.check();
+      await expect(tag).toHaveAccessibleName("C#");
+      for (const control of [
+        tag,
+        section.getByRole("button", { name: "Example button", exact: true }),
+      ]) {
+        await expect
+          .poll(() =>
+            control.evaluate(
+              (element) => getComputedStyle(element, "::after").maskImage,
+            ),
+          )
+          .toBe(iconMask);
+      }
+      await expect(
+        section.getByRole("link", { name: /View the full portfolio/ }),
+      ).toHaveAttribute("href", new RegExp(`style=${id}&icons=tag$`));
+      await checkbox.uncheck();
+      await expect(tag).not.toHaveClass(/button--tag-icon/);
+    }
+    expect(
+      await reference.evaluate(
+        (element) => getComputedStyle(element, "::after").maskImage,
+      ),
+    ).toBe(iconMask);
+  });
+
+  test("portfolio icon toggle preserves both states, styles and navigation on dark mobile", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: "dark" });
+    await page.setViewportSize({ width: 390, height: 1000 });
+    await page.goto("/__design/tags/portfolio/?style=code-token", {
+      waitUntil: "domcontentloaded",
+    });
+    await expect(
+      page.getByRole("button", { name: "Toggle dark/light" }),
+    ).toBeEnabled();
+    const toggle = page.getByRole("checkbox", {
+      name: "Add the tag icon to styles 6 and 8 (including 6b)",
+      exact: true,
+    });
+    const selector = page.getByLabel("Preview tag style");
+    const tags = page.locator(".portfolio-card .tags__link");
+    await expect(toggle).not.toBeChecked();
+    await expect(page.locator(".button--tag-icon")).toHaveCount(0);
+    const originalNames = await tags.allTextContents();
+    for (const variant of ["code-token", "keycap", "code-token-rounded"]) {
+      await selector.selectOption(variant);
+      await toggle.check();
+      await expect(page).toHaveURL(new RegExp(`style=${variant}&icons=tag$`));
+      await expect(page.locator(".button--tag-icon")).toHaveCount(
+        originalNames.length,
+      );
+      await expect(tags).toHaveText(originalNames);
+      await expect(tags.first()).toHaveAttribute("href", "/tag/windows/");
+      await tags.first().focus();
+      await expect(tags.first()).toHaveCSS("outline-width", "3px");
+      await toggle.uncheck();
+      await expect(page.locator(".button--tag-icon")).toHaveCount(0);
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth),
+      ).toBeLessThanOrEqual(390);
+    }
+    await selector.selectOption("tag-label");
+    await expect(toggle).toBeDisabled();
+    expect(
+      await tags
+        .first()
+        .evaluate((element) => getComputedStyle(element, "::after").maskImage),
+    ).not.toBe("none");
+  });
+
   test("selected alternatives are reusable native button and link variants", async ({
     page,
   }) => {

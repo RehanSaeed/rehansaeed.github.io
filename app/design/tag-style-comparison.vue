@@ -41,11 +41,22 @@
         <div>
           <h2 :id="`${option.id}-title`">{{ option.name }}</h2>
           <p>{{ option.description }}</p>
-          <code>&lt;u-button variant="{{ option.id }}"&gt;</code>
+          <code
+            >&lt;u-button variant="{{ option.id }}"{{
+              iconOptions[option.id] ? " tag-icon" : ""
+            }}&gt;</code
+          >
+          <label v-if="supportsTagIcon(option.id)">
+            <input v-model="iconOptions[option.id]" type="checkbox" />
+            Add the tag icon
+          </label>
           <NuxtLink
             :to="{
               name: 'tag-portfolio-preview',
-              query: { style: option.id },
+              query: {
+                style: option.id,
+                icons: iconOptions[option.id] ? 'tag' : undefined,
+              },
             }">
             View the full portfolio with {{ option.name }}
           </NuxtLink>
@@ -55,10 +66,16 @@
       <div class="tag-study__buttons">
         <u-button
           :variant="option.id"
+          :tag-icon="iconOptions[option.id]"
           @click="buttonClicks[option.id] = (buttonClicks[option.id] ?? 0) + 1"
           >Example button</u-button
         >
-        <u-button :variant="option.id" disabled>Disabled button</u-button>
+        <u-button
+          :variant="option.id"
+          :tag-icon="iconOptions[option.id]"
+          disabled
+          >Disabled button</u-button
+        >
         <output aria-live="polite" aria-label="Example button click count"
           >Clicks: {{ buttonClicks[option.id] ?? 0 }}</output
         >
@@ -83,7 +100,10 @@
             </p>
             <footer class="tag-study__footer">
               <span class="tag-study__meta">Filed under</span>
-              <u-tags :tags="blogTags" :variant="option.id" />
+              <u-tags
+                :tags="blogTags"
+                :variant="option.id"
+                :tag-icon="iconOptions[option.id]" />
             </footer>
           </u-card>
         </div>
@@ -91,7 +111,8 @@
           <p class="tag-study__eyebrow">Portfolio / project card</p>
           <u-portfolio-card
             :portfolio="{ ...portfolio, id: option.id }"
-            :tag-variant="option.id" />
+            :tag-variant="option.id"
+            :tag-icon="iconOptions[option.id]" />
         </div>
       </div>
     </section>
@@ -115,7 +136,10 @@
 </template>
 
 <script setup lang="ts">
-import { tagStyleOptions as options } from "./tag-style-options";
+import {
+  supportsTagIcon,
+  tagStyleOptions as options,
+} from "./tag-style-options";
 import type { TagButtonVariant } from "~/types/button";
 
 definePageMeta({ layout: "empty" });
@@ -144,6 +168,7 @@ const portfolio = {
   nugetDownloads: 0,
 };
 const buttonClicks = reactive<Partial<Record<TagButtonVariant, number>>>({});
+const iconOptions = reactive<Partial<Record<TagButtonVariant, boolean>>>({});
 </script>
 
 <style lang="scss">
