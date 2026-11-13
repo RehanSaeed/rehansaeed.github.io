@@ -5,8 +5,6 @@
     :class="[
       `button--${variant}`,
       {
-        'button--tag-base': tagVariant,
-        'button--tag-icon': variant === 'code-token' && tagIcon,
         'button--hydrating': !to && !hydrated && !disabled && !submit,
       },
     ]"
@@ -36,17 +34,14 @@ const props = defineProps({
     type: Boolean,
   },
   /**
-   * Visual variant; icon is a circular 44px control, tag is a pointed label,
-   * and code-token is a rectangular monospace label.
+   * Visual variant; icon is a circular 44px control and tag is a pointed label.
    */ variant: {
     type: String as PropType<
-      "plain" | "secondary" | "primary" | "icon" | "code-token" | "tag"
+      "plain" | "secondary" | "primary" | "icon" | "tag"
     >,
     default: "plain",
     validator: (value: string) =>
-      ["plain", "secondary", "primary", "icon", "code-token", "tag"].includes(
-        value,
-      ),
+      ["plain", "secondary", "primary", "icon", "tag"].includes(value),
   },
   /** Render a navigation link instead of a native button when supplied. */ to: {
     type: String,
@@ -54,15 +49,9 @@ const props = defineProps({
   /** Whether the button submits its containing form. */ submit: {
     type: Boolean,
   },
-  /** Add a decorative tag outline to the code-token variant. */ tagIcon: {
-    type: Boolean,
-  },
 });
 const hydrated = useMounted();
 const type = computed(() => (props.submit ? "submit" : "button"));
-const tagVariant = computed(
-  () => props.variant === "code-token" || props.variant === "tag",
-);
 const tag = computed(() =>
   props.to ? (props.disabled ? "a" : NuxtLink) : "button",
 );
@@ -112,7 +101,7 @@ const onClick = (event: MouseEvent) => {
 
 .button--primary,
 .button--secondary,
-.button--tag-base {
+.button--tag {
   background-color: var(--global-background-color);
   border: var(--global-border-width-1) solid var(--global-border-color);
   border-radius: var(--global-border-radius);
@@ -138,7 +127,7 @@ const onClick = (event: MouseEvent) => {
 
 .button--primary::before,
 .button--secondary::before,
-.button--tag-base::before {
+.button--tag::before {
   content: "";
 
   position: absolute;
@@ -155,14 +144,14 @@ const onClick = (event: MouseEvent) => {
 .button--primary:focus::before,
 .button--secondary:hover::before,
 .button--secondary:focus::before,
-.button--tag-base:hover::before,
-.button--tag-base:focus::before {
+.button--tag:hover::before,
+.button--tag:focus::before {
   opacity: 1;
 }
 
 .button--primary:active::before,
 .button--secondary:active::before,
-.button--tag-base:active::before {
+.button--tag:active::before {
   box-shadow: var(--global-shadow-1);
   opacity: 1;
 }
@@ -184,9 +173,21 @@ const onClick = (event: MouseEvent) => {
   }
 }
 
-.button--tag-base {
+.button--tag {
   --button-tag-text-color: var(--global-title-color);
+  --button-tag-point: 1rem;
+  --button-tag-surface: var(--global-background-color);
+  --button-tag-edge: var(--global-border-color);
+  --button-tag-shadow: none;
+  --button-tag-outline: polygon(
+    var(--button-tag-point) 0,
+    100% 0,
+    100% 100%,
+    var(--button-tag-point) 100%,
+    0 50%
+  );
 
+  isolation: isolate;
   display: inline-flex;
   gap: 0.45em;
   align-items: center;
@@ -195,12 +196,15 @@ const onClick = (event: MouseEvent) => {
   min-block-size: 36px;
   border: 1px solid transparent;
   border-radius: 0;
+  border-start-end-radius: 0.4rem;
+  border-end-end-radius: 0.4rem;
   padding: 0.35rem 0.75rem;
+  padding-inline-start: calc(var(--button-tag-point) + 1rem);
   background: transparent;
   box-shadow: none;
   color: var(--button-tag-text-color);
-  font-family: var(--global-font-family-sans-serif);
-  font-size: 0.875rem;
+  font-family: var(--global-font-family-monospace);
+  font-size: 0.8rem;
   font-weight: 500;
   line-height: 1.5;
   overflow-wrap: anywhere;
@@ -218,59 +222,6 @@ const onClick = (event: MouseEvent) => {
     outline: 3px solid var(--global-accent-color);
     outline-offset: 4px;
   }
-
-  &:disabled,
-  &[aria-disabled="true"] {
-    border-color: var(--global-border-color);
-    box-shadow: none;
-    color: var(--global-disabled-color);
-    cursor: not-allowed;
-    transform: none;
-
-    &::before {
-      opacity: 0;
-    }
-  }
-}
-
-.button--code-token {
-  border-inline-start: 3px solid var(--global-accent-color);
-  border-start-end-radius: 0.4rem;
-  border-end-end-radius: 0.4rem;
-  background: var(--global-background-color);
-  font-family: var(--global-font-family-monospace);
-  font-size: 0.8rem;
-}
-
-.button--tag-icon::after {
-  content: "";
-  order: -1;
-  flex: 0 0 1em;
-  block-size: 1em;
-  background: var(--global-accent-color);
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='black' stroke-width='2' stroke-linejoin='round' d='M3 3h7l11 11-7 7L3 10V3Z'/%3E%3Ccircle cx='7.5' cy='7.5' r='1.5'/%3E%3C/svg%3E")
-    center / contain no-repeat;
-}
-
-.button--tag {
-  --button-tag-point: 1rem;
-  --button-tag-surface: var(--global-background-color);
-  --button-tag-edge: var(--global-border-color);
-  --button-tag-shadow: none;
-  --button-tag-outline: polygon(
-    var(--button-tag-point) 0,
-    100% 0,
-    100% 100%,
-    var(--button-tag-point) 100%,
-    0 50%
-  );
-
-  isolation: isolate;
-  border-start-end-radius: 0.4rem;
-  border-end-end-radius: 0.4rem;
-  padding-inline-start: calc(var(--button-tag-point) + 1rem);
-  font-family: var(--global-font-family-monospace);
-  font-size: 0.8rem;
 
   &::before {
     content: none;
@@ -306,6 +257,14 @@ const onClick = (event: MouseEvent) => {
     --button-tag-shadow: none;
 
     border-color: transparent;
+    box-shadow: none;
+    color: var(--global-disabled-color);
+    cursor: not-allowed;
+    transform: none;
+
+    &::before {
+      opacity: 0;
+    }
 
     &::after {
       background: var(--global-disabled-color);
@@ -345,7 +304,7 @@ const onClick = (event: MouseEvent) => {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .button.button--tag-base {
+  .button.button--tag {
     transform: none;
     transition: none;
 
@@ -399,12 +358,16 @@ const onClick = (event: MouseEvent) => {
 }
 
 @media (forced-colors: active) {
-  .button.button--tag-base {
+  .button.button--tag {
     --button-tag-text-color: LinkText;
+    --button-tag-surface: Canvas;
+    --button-tag-edge: LinkText;
+    --button-tag-shadow: none;
 
-    border-color: LinkText;
-    background: Canvas;
+    border-color: transparent;
+    background: transparent;
     box-shadow: none;
+    forced-color-adjust: none;
 
     &:focus-visible {
       outline-color: Highlight;
@@ -417,17 +380,6 @@ const onClick = (event: MouseEvent) => {
     &::after {
       background: LinkText;
     }
-  }
-
-  .button.button--tag {
-    --button-tag-surface: Canvas;
-    --button-tag-edge: LinkText;
-    --button-tag-shadow: none;
-
-    border-color: transparent;
-    background: transparent;
-    forced-color-adjust: none;
-
     &:disabled,
     &[aria-disabled="true"] {
       --button-tag-text-color: GrayText;

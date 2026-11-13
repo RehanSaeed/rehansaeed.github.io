@@ -53,10 +53,9 @@ const propertiesPath = join(process.cwd(), "app/assets/style/_properties.scss");
 const properties = compileString(readFileSync(propertiesPath, "utf8"), {
   url: pathToFileURL(propertiesPath),
 }).css;
-const variants = ["plain", "secondary", "primary", "icon"] as const;
-const tagVariants = ["code-token", "tag"] as const;
+const variants = ["plain", "secondary", "primary", "icon", "tag"] as const;
 
-for (const variant of [...variants, ...tagVariants]) {
+for (const variant of variants) {
   unitTest(
     `${variant} preserves server-rendered disabled and submit behaviour`,
     async () => {
@@ -80,32 +79,27 @@ for (const variant of [...variants, ...tagVariants]) {
 }
 
 unitTest(
-  "button variants preserve navigation semantics before hydration",
+  "tag links preserve navigation semantics before hydration",
   async () => {
-    for (const variant of tagVariants) {
-      const html = await renderToString(
-        h(button, { variant, tagIcon: true, to: "/tag/c/" }, () => "C#"),
-      );
-      expect(html).toContain("<a");
-      expect(html).toContain('href="/tag/c/"');
-      expect(html).not.toContain("disabled");
-      expect(html).not.toContain("type=");
-      expect(html).toContain(`button--${variant}`);
-      expect(html.includes("button--tag-icon")).toBe(variant === "code-token");
-      expect(
-        html.includes('class="button__tag-surface" aria-hidden="true"'),
-      ).toBe(variant === "tag");
-      const disabled = await renderToString(
-        h(button, { variant, to: "/tag/c/", disabled: true }, () => "C#"),
-      );
-      expect(disabled).toContain('aria-disabled="true"');
-      expect(disabled).toContain('role="link"');
-      expect(disabled).not.toContain("href=");
-    }
+    const html = await renderToString(
+      h(button, { variant: "tag", to: "/tag/c/" }, () => "C#"),
+    );
+    expect(html).toContain("<a");
+    expect(html).toContain('href="/tag/c/"');
+    expect(html).not.toContain("disabled");
+    expect(html).not.toContain("type=");
+    expect(html).toContain("button--tag");
+    expect(html).toContain('class="button__tag-surface" aria-hidden="true"');
+    const disabled = await renderToString(
+      h(button, { variant: "tag", to: "/tag/c/", disabled: true }, () => "C#"),
+    );
+    expect(disabled).toContain('aria-disabled="true"');
+    expect(disabled).toContain('role="link"');
+    expect(disabled).not.toContain("href=");
   },
 );
 
-test("navigation variants forward clicks and become inert when disabled", async ({
+test("tag links forward clicks and become inert when disabled", async ({
   page,
 }) => {
   await page.setContent('<div id="app"></div>');
@@ -134,36 +128,24 @@ test("navigation variants forward clicks and become inert when disabled", async 
       ${source}
       Vue.createApp({
         components: { UButton: exports.default },
-        data: () => ({ variants: ${JSON.stringify(tagVariants)}, disabled: false, clicks: 0 }),
+        data: () => ({ disabled: false, clicks: 0 }),
         template: \`
-          <u-button v-for="variant of variants" :key="variant" :variant="variant"
-            to="/destination/" :disabled="disabled" @click.prevent="clicks++">{{ variant }}</u-button>
+          <u-button variant="tag" to="/destination/" :disabled="disabled" @click.prevent="clicks++">Tag</u-button>
           <button @click="disabled=!disabled">Toggle disabled links</button>
           <output :data-clicks="clicks"></output>\`
       }).mount("#app");
     }`,
   });
-  const links = page.getByRole("link");
-  await expect(links).toHaveCount(tagVariants.length);
-  for (const link of await links.all()) {
-    await expect(link).toHaveAttribute("href", "/destination/");
-    await link.click();
-  }
-  await expect(page.locator("output")).toHaveAttribute(
-    "data-clicks",
-    String(tagVariants.length),
-  );
+  const link = page.getByRole("link", { name: "Tag", exact: true });
+  await expect(link).toHaveAttribute("href", "/destination/");
+  await link.click();
+  await expect(page.locator("output")).toHaveAttribute("data-clicks", "1");
   await page.getByRole("button", { name: "Toggle disabled links" }).click();
-  for (const link of await links.all()) {
-    await expect(link).toBeDisabled();
-    await expect(link).toHaveAttribute("tabindex", "-1");
-    await expect(link).not.toHaveAttribute("href");
-    await link.dispatchEvent("click");
-  }
-  await expect(page.locator("output")).toHaveAttribute(
-    "data-clicks",
-    String(tagVariants.length),
-  );
+  await expect(link).toBeDisabled();
+  await expect(link).toHaveAttribute("tabindex", "-1");
+  await expect(link).not.toHaveAttribute("href");
+  await link.dispatchEvent("click");
+  await expect(page.locator("output")).toHaveAttribute("data-clicks", "1");
 });
 
 for (const theme of ["light", "dark"]) {
@@ -225,7 +207,7 @@ for (const theme of ["light", "dark"]) {
               </u-button>
               <u-button variant="secondary" :disabled="disabled" @click="clicks++">secondary</u-button>
               <u-button variant="primary" :disabled="disabled" @click="clicks++">primary</u-button>
-              <u-button variant="tag" tag-icon :disabled="disabled" @click="clicks++">
+              <u-button variant="tag" :disabled="disabled" @click="clicks++">
                 Windows Presentation Foundation (WPF)
               </u-button>
               <u-button variant="icon" aria-label="icon" :disabled="disabled" @click="clicks++">
@@ -304,7 +286,7 @@ for (const theme of ["light", "dark"]) {
     await expect(primary).toHaveCSS("background-color", tokens.accent);
     await expect(primary).toHaveCSS("border-top-color", tokens.accent);
     await expect(primary).toHaveCSS("color", tokens.content);
-    await expect(shaped).toHaveClass("button button--tag button--tag-base");
+    await expect(shaped).toHaveClass("button button--tag");
     const surface = shaped.locator(".button__tag-surface");
     await expect(surface).toHaveAttribute("aria-hidden", "true");
     await expect(surface).toHaveCSS("clip-path", "none");
