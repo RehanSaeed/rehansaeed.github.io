@@ -268,9 +268,9 @@ Swipe, horizontally scroll, drag an image, or use the overlay arrows and paginat
 
 <figure>
 
-[![Code in a text editor](./images/Code-1600x900.jpg)](./images/Code-1600x900.jpg)
+[![Code in a text editor](./images/Code-1600x900.jpg)](/css-general-rules-of-thumb/)
 
-<figcaption>A linked code image; open it to see the original.</figcaption>
+<figcaption>A linked code image; open it to read the CSS guidelines.</figcaption>
 </figure>
 
 <figure>

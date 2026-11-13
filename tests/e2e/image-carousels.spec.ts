@@ -120,10 +120,10 @@ test("Keyboard endpoints, focus continuity, captions, links and resizing", async
   await expect(next).toBeEnabled();
   await expect(gallery.locator("figcaption")).toHaveCount(3);
   await expect(gallery.locator("figcaption").first()).toHaveText(
-    "A linked code image; open it to see the original.",
+    "A linked code image; open it to read the CSS guidelines.",
   );
   const link = track.locator("a").first();
-  await expect(link).toHaveAttribute("href", /Code-1600x900\.jpg/);
+  await expect(link).toHaveAttribute("href", "/css-general-rules-of-thumb/");
   await expect(link.getByRole("button")).toHaveCount(0);
   await track.focus();
   await track.press("End");
@@ -285,7 +285,7 @@ test.describe("Native no-JavaScript fallback", () => {
     await expect(gallery.getByRole("button")).toHaveCount(0);
     await expect(track.locator("a")).toHaveAttribute(
       "href",
-      /Code-1600x900\.jpg/,
+      "/css-general-rules-of-thumb/",
     );
     await track.focus();
     await track.press("End");
