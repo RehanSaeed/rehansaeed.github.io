@@ -372,9 +372,11 @@ for (const theme of ["light", "dark"]) {
     await page.keyboard.down("Space");
     await expect(icon).toHaveClass(/button--pressed/);
     // Change the prop without moving focus, so blur cannot hide a stuck state.
-    await page.getByRole("button", { name: "Toggle disabled" }).evaluate(
-      (element: HTMLButtonElement) => element.click(),
-    );
+    await page
+      .getByRole("button", { name: "Toggle disabled" })
+      .evaluate((element: HTMLButtonElement) => {
+        element.click();
+      });
     await expect(icon).toBeDisabled();
     await expect(icon).not.toHaveClass(/button--pressed/);
     await page.keyboard.up("Space");
