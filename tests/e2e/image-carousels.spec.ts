@@ -250,12 +250,12 @@ test("Mouse dragging a linked image scrolls without opening the link", async ({
   await track.scrollIntoViewIfNeeded();
   const bounds = await track.locator("img").first().boundingBox();
   await page.mouse.move(
-    bounds!.x + bounds!.width * 0.4,
+    bounds!.x + bounds!.width * 0.7,
     bounds!.y + bounds!.height / 2,
   );
   await page.mouse.down();
   await page.mouse.move(
-    bounds!.x - bounds!.width * 0.4,
+    bounds!.x + bounds!.width * 0.05,
     bounds!.y + bounds!.height / 2,
     { steps: 12 },
   );
