@@ -43,7 +43,7 @@
     "nuxt-og-image": "7.0.7",
     "rehype-katex": "7.0.1",
     "remark-math": "6.0.0",
-    "sanitize-html": "2.18.1",
+    "sanitize-html": "2.18.2",
     "vue": "3.5.45",
     "zod": "4.6.7"
   },
