@@ -698,15 +698,15 @@ test("Full-width controls remain contained with large touch targets in both them
       expect(speedMenu!.x).toBeGreaterThanOrEqual(0);
       expect(speedMenu!.x + speedMenu!.width).toBeLessThanOrEqual(width);
       expect(speedMenu!.width).toBeCloseTo(
-        Math.min(360, layout.right - layout.left - 16),
+        Math.min(328, layout.right - layout.left - 16),
         3,
       );
       const presets = speeds.locator(".prose-video__speed-presets button");
       await expect(presets).toHaveCount(6);
       for (const preset of await presets.all()) {
         const bounds = await preset.boundingBox();
-        expect(bounds!.width).toBeCloseTo(48, 3);
-        expect(bounds!.height).toBeCloseTo(48, 3);
+        expect(bounds!.width).toBeCloseTo(44, 3);
+        expect(bounds!.height).toBeCloseTo(44, 3);
         await expect(preset).toHaveCSS("border-radius", "50%");
         expect(bounds!.x).toBeGreaterThanOrEqual(speedMenu!.x);
         expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(
@@ -719,8 +719,8 @@ test("Full-width controls remain contained with large touch targets in both them
         const alignedPreset = await presets
           .nth(index === 0 ? 0 : width <= 340 ? 2 : 5)
           .boundingBox();
-        expect(bounds!.width).toBeCloseTo(48, 3);
-        expect(bounds!.height).toBeCloseTo(48, 3);
+        expect(bounds!.width).toBeCloseTo(44, 3);
+        expect(bounds!.height).toBeCloseTo(44, 3);
         expect(bounds!.x).toBeCloseTo(alignedPreset!.x, 3);
         await expect(stepButton).toHaveCSS("border-radius", "50%");
       }
@@ -791,7 +791,7 @@ test("Full-width controls remain contained with large touch targets in both them
   await expect(play).toHaveCSS("outline-style", "solid");
 });
 
-test("Playback speed icons match toolbar sizing with full preset-sized circles", async ({
+test("Playback speed flyout matches toolbar typography and control sizing", async ({
   page,
   baseURL,
 }) => {
@@ -804,6 +804,37 @@ test("Playback speed icons match toolbar sizing with full preset-sized circles",
     }, theme);
     for (const width of [1280, 320]) {
       await page.setViewportSize({ width, height: 900 });
+      const typography = await player.evaluate((element) => {
+        const style = (selector: string) =>
+          getComputedStyle(element.querySelector(selector)!);
+        return {
+          timeFont: style(".prose-video__time").fontFamily,
+          presetFont: style(".prose-video__speed-presets button").fontFamily,
+          rateFont: style(".prose-video__speed-value").fontFamily,
+          titleSize: Number.parseFloat(
+            style(".prose-video__menu-title").fontSize,
+          ),
+          rateSize: Number.parseFloat(
+            style(".prose-video__speed-value").fontSize,
+          ),
+          rootSize: Number.parseFloat(
+            getComputedStyle(document.documentElement).fontSize,
+          ),
+        };
+      });
+      expect(typography.presetFont).toBe(typography.timeFont);
+      expect(typography.rateFont).toBe(typography.timeFont);
+      expect(typography.titleSize / typography.rootSize).toBeCloseTo(0.75, 2);
+      expect(typography.rateSize / typography.rootSize).toBeCloseTo(0.875, 2);
+      for (const button of await player
+        .locator(".prose-video__speed-presets button")
+        .all()) {
+        const bounds = await button.boundingBox();
+        expect(bounds!.width).toBeCloseTo(44, 3);
+        expect(bounds!.height).toBeCloseTo(44, 3);
+        await expect(button).toHaveCSS("padding", "4px");
+        await expect(button).toHaveCSS("background-clip", "content-box");
+      }
       for (const stepButton of await stepButtons.all()) {
         const icon = stepButton.locator(".icon");
         const bounds = await icon.boundingBox();
@@ -811,9 +842,10 @@ test("Playback speed icons match toolbar sizing with full preset-sized circles",
         expect(bounds!.height).toBeCloseTo(20, 3);
         await expect(icon).toHaveAttribute("aria-hidden", "true");
         await expect(icon.locator("path")).toHaveCount(1);
-        await expect(stepButton).toHaveCSS("padding", "0px");
-        await expect(stepButton).toHaveCSS("background-clip", "border-box");
+        await expect(stepButton).toHaveCSS("padding", "4px");
+        await expect(stepButton).toHaveCSS("background-clip", "content-box");
         await stepButton.hover();
+        await expect(stepButton).toHaveCSS("background-clip", "content-box");
         await expect(stepButton).toHaveCSS("color", "rgb(107, 23, 232)");
         await expect(stepButton).toHaveCSS(
           "background-color",
@@ -823,7 +855,7 @@ test("Playback speed icons match toolbar sizing with full preset-sized circles",
         await page.keyboard.press("Tab");
         await page.keyboard.press("Shift+Tab");
         await expect(stepButton).toBeFocused();
-        await expect(stepButton).toHaveCSS("outline-offset", "-2px");
+        await expect(stepButton).toHaveCSS("outline-offset", "-6px");
       }
     }
   }

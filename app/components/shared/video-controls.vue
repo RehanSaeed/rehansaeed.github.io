@@ -581,7 +581,8 @@ onUnmounted(() => {
   }
 }
 
-.prose-video__button.button--icon {
+.prose-video__button.button--icon,
+.prose-video__speed-adjust .button.button--icon {
   background-clip: content-box;
   font-size: 20px;
   padding: 4px;
@@ -660,7 +661,7 @@ onUnmounted(() => {
 
     &:is(:hover, :focus-visible):not(:disabled) {
       color: var(--video-hover-foreground);
-      background: var(--button-icon-hover-background);
+      background-color: var(--button-icon-hover-background);
     }
   }
 }
@@ -673,20 +674,22 @@ onUnmounted(() => {
 .prose-video__menu--speed {
   gap: 8px;
   padding: 12px;
-  inline-size: 360px;
+  inline-size: 328px;
   max-block-size: min(280px, 70cqw, 60vh);
 }
 
 .prose-video__menu-title {
   color: var(--video-foreground);
-  font-size: 0.875rem;
+  font-size: 0.75rem;
+  font-weight: 600;
   text-align: center;
 }
 
 .prose-video__speed-value {
   color: var(--video-foreground);
-  font-size: 1.125rem;
-  font-weight: bold;
+  font-family: var(--global-font-family-monospace);
+  font-size: 0.875rem;
+  font-weight: normal;
   line-height: 1.2;
   text-align: center;
 }
@@ -694,7 +697,7 @@ onUnmounted(() => {
 .prose-video__speed-adjust,
 .prose-video__speed-presets {
   display: grid;
-  grid-template-columns: repeat(6, 48px);
+  grid-template-columns: repeat(6, 44px);
   justify-content: center;
   gap: var(--video-control-gap);
 }
@@ -726,7 +729,7 @@ onUnmounted(() => {
     background: rgb(255 255 255 / 15%);
     border-radius: 50%;
     text-align: center;
-    min-inline-size: 48px;
+    min-inline-size: 44px;
 
     &:disabled {
       cursor: default;
@@ -734,23 +737,27 @@ onUnmounted(() => {
   }
 
   .button.button--icon {
-    font-size: 20px;
-    padding: 0;
-    inline-size: 48px;
-    block-size: 48px;
+    inline-size: 44px;
+    block-size: 44px;
   }
 }
 
 .prose-video__speed-presets {
   button {
     background: rgb(255 255 255 / 15%);
+    background-clip: content-box;
     border-radius: 50%;
+    font-family: var(--global-font-family-monospace);
     font-size: 0.75rem;
     text-align: center;
     padding: 4px;
-    inline-size: 48px;
-    min-inline-size: 48px;
-    block-size: 48px;
+    inline-size: 44px;
+    min-inline-size: 44px;
+    block-size: 44px;
+
+    &:focus-visible {
+      outline-offset: -6px;
+    }
   }
 }
 
@@ -801,7 +808,7 @@ onUnmounted(() => {
 
   .prose-video__speed-adjust,
   .prose-video__speed-presets {
-    grid-template-columns: repeat(3, 48px);
+    grid-template-columns: repeat(3, 44px);
   }
 }
 
