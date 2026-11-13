@@ -3,47 +3,30 @@
     class="image-carousel"
     :class="{
       'image-carousel--interactive': isInteractive,
-      'image-carousel--window': sideLayout === 'window',
-      'image-carousel--natural': sideLayout === 'natural',
     }"
     aria-label="Image gallery">
-    <fieldset
-      v-if="comparisonEnabled && isInteractive"
-      class="image-carousel__comparison">
-      <legend>Side images (preview comparison)</legend>
-      <label class="image-carousel__choice">
-        <input
-          v-model="sideLayout"
-          type="radio"
-          :name="`${trackId}-side-layout`"
-          value="window" />
-        Cropped windows
-      </label>
-      <label class="image-carousel__choice">
-        <input
-          v-model="sideLayout"
-          type="radio"
-          :name="`${trackId}-side-layout`"
-          value="natural" />
-        Original proportions
-      </label>
-    </fieldset>
     <div class="image-carousel__viewport">
       <div
         :id="trackId"
         ref="track"
         class="image-carousel__track"
-        :class="{ 'image-carousel__track--dragging': isDragging }"
+        :class="{
+          'image-carousel__track--dragging': isDragging,
+          'image-carousel__track--settling': isSettling,
+        }"
         role="group"
         aria-label="Gallery images"
         tabindex="0"
-        @scroll.passive="updatePosition">
+        @scroll.passive="updatePosition"
+        @scrollend="finishSettling">
         <slot />
       </div>
       <Teleport :to="arrowTarget ?? 'body'" :disabled="!arrowTarget">
         <span
           class="image-carousel__arrows"
-          :class="{ 'image-carousel__arrows--unavailable': !arrowTarget }">
+          :class="{
+            'image-carousel__arrows--unavailable': !arrowTarget || isDragging,
+          }">
           <u-tooltip
             v-if="currentIndex > 0"
             v-slot="{ trigger }"
@@ -106,20 +89,19 @@ import {
 const props = defineProps<{
   /** Number of image slides grouped from the article's source. */ count: number;
 }>();
-const route = useRoute();
 const id = useId();
 const trackId = `image-gallery-${id}`;
 const track = useTemplateRef<HTMLDivElement>("track");
 const currentIndex = ref(0);
 const isInteractive = ref(false);
 const isDragging = ref(false);
-const sideLayout = ref<"window" | "natural">("window");
-const comparisonEnabled = ref(false);
+const isSettling = ref(false);
 const arrowTarget = shallowRef<HTMLElement | null>(null);
 let mouseDrag:
   { pointerId: number; x: number; y: number; scrollLeft: number } | undefined;
 let suppressClick = false;
 let resizeObserver: ResizeObserver | undefined;
+let settlingTarget = 0;
 
 const slidePosition = (index: number) => {
   const element = track.value;
@@ -150,6 +132,13 @@ const updatePosition = () => {
     }
   }
   currentIndex.value = nearest;
+  if (
+    isSettling.value &&
+    !isDragging.value &&
+    Math.abs(element.scrollLeft - settlingTarget) < 1
+  ) {
+    isSettling.value = false;
+  }
 };
 
 const updateActiveSlide = () => {
@@ -190,12 +179,23 @@ const updateActiveSlide = () => {
 
 const navigateToImage = (requestedIndex: number) => {
   const index = Math.max(0, Math.min(props.count - 1, requestedIndex));
+  settlingTarget = slidePosition(index);
+  if (Math.abs((track.value?.scrollLeft ?? 0) - settlingTarget) < 1) {
+    isSettling.value = false;
+  }
   track.value?.scrollTo({
-    left: slidePosition(index),
+    left: settlingTarget,
     behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
       ? "instant"
       : "smooth",
   });
+};
+
+const finishSettling = () => {
+  if (isSettling.value && !isDragging.value && !mouseDrag) {
+    updatePosition();
+    navigateToImage(currentIndex.value);
+  }
 };
 
 const onKeydown = (event: KeyboardEvent) => {
@@ -230,6 +230,7 @@ const startDrag = (event: PointerEvent) => {
   ) {
     return;
   }
+  track.value.scrollTo({ left: track.value.scrollLeft, behavior: "instant" });
   mouseDrag = {
     pointerId: event.pointerId,
     x: event.clientX,
@@ -267,7 +268,13 @@ const finishDrag = (event: PointerEvent) => {
   }
   suppressClick = isDragging.value;
   mouseDrag = undefined;
+  updatePosition();
+  // Restoring native snapping before the smooth scroll finishes causes a jump.
+  isSettling.value ||= isDragging.value;
   isDragging.value = false;
+  if (isSettling.value) {
+    navigateToImage(currentIndex.value);
+  }
   if (track.value?.hasPointerCapture(event.pointerId)) {
     track.value.releasePointerCapture(event.pointerId);
   }
@@ -292,17 +299,6 @@ const preventImageDrag = (event: DragEvent) => {
 };
 
 watch(currentIndex, updateActiveSlide);
-watch(
-  () => route.query["carousel-sides"],
-  (requestedSideLayout) => {
-    comparisonEnabled.value =
-      requestedSideLayout === "window" || requestedSideLayout === "natural";
-    if (requestedSideLayout === "window" || requestedSideLayout === "natural") {
-      sideLayout.value = requestedSideLayout;
-    }
-  },
-  { immediate: true },
-);
 
 const pointerHandlers = [
   ["pointerdown", startDrag],
@@ -323,6 +319,7 @@ onMounted(() => {
   updateActiveSlide();
   isInteractive.value = true;
   resizeObserver = new ResizeObserver(() => {
+    isSettling.value = false;
     track.value?.scrollTo({
       left: slidePosition(currentIndex.value),
       behavior: "instant",
@@ -354,37 +351,6 @@ onBeforeUnmount(() => {
 
   container-type: inline-size;
   margin-block: var(--global-space-fixed-5);
-}
-
-.image-carousel__comparison {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
-  gap: var(--global-space-fixed-3);
-  min-inline-size: 0;
-  margin-block-end: var(--global-space-fixed-4);
-}
-
-.image-carousel__choice {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  gap: var(--global-space-fixed-3);
-  min-block-size: 44px;
-  cursor: pointer;
-}
-
-.image-carousel__choice input {
-  accent-color: var(--global-accent-color);
-  inline-size: 1.1em;
-  block-size: 1.1em;
-  min-inline-size: 0;
-  margin: 0;
-  padding: 0;
-
-  &:focus-visible {
-    outline: 2px solid var(--global-accent-color);
-    outline-offset: 2px;
-  }
 }
 
 .image-carousel__viewport {
@@ -424,8 +390,12 @@ onBeforeUnmount(() => {
   cursor: grab;
 }
 
-.image-carousel__track--dragging {
+.image-carousel__track--dragging,
+.image-carousel__track--settling {
   scroll-snap-type: none;
+}
+
+.image-carousel__track--dragging {
   user-select: none;
 
   img {
@@ -483,53 +453,28 @@ onBeforeUnmount(() => {
   object-position: 50% 50%;
 }
 
-.image-carousel--window .image-carousel__slide[data-side="before"] > p,
-.image-carousel--window
-  .image-carousel__slide[data-side="before"]
-  > figure
-  > p {
+.image-carousel__slide[data-side="before"] > p,
+.image-carousel__slide[data-side="before"] > figure > p {
   clip-path: inset(0 0 0 60%);
 }
 
-.image-carousel--window .image-carousel__slide[data-side="after"] > p,
-.image-carousel--window .image-carousel__slide[data-side="after"] > figure > p {
+.image-carousel__slide[data-side="after"] > p,
+.image-carousel__slide[data-side="after"] > figure > p {
   clip-path: inset(0 60% 0 0);
-}
-
-.image-carousel--natural .image-carousel__slide[data-side] > p,
-.image-carousel--natural .image-carousel__slide[data-side] > figure > p {
-  scale: 0.4;
-  transform-origin: 0 50%;
-}
-
-.image-carousel--natural .image-carousel__slide[data-side="before"] > p,
-.image-carousel--natural
-  .image-carousel__slide[data-side="before"]
-  > figure
-  > p {
-  transform-origin: 100% 50%;
 }
 
 // Keep the edges between neighbours fixed while cropping their outer edges.
 @supports (animation-timeline: view(inline)) {
   @media (prefers-reduced-motion: no-preference) {
-    .image-carousel--window .image-carousel__slide > p,
-    .image-carousel--window .image-carousel__slide > figure > p {
+    .image-carousel__slide > p,
+    .image-carousel__slide > figure > p {
       animation: image-window-aperture linear both;
       animation-timeline: --image-window;
     }
 
-    .image-carousel--window .image-carousel__slide .prose-image__image {
+    .image-carousel__slide .prose-image__image {
       animation: image-window-pan linear both;
       animation-timeline: --image-window;
-    }
-
-    .image-carousel--natural .image-carousel__slide > p,
-    .image-carousel--natural .image-carousel__slide > figure > p {
-      animation:
-        image-natural-scale linear both,
-        image-natural-anchor steps(1, end) both;
-      animation-timeline: --image-window, --image-window;
     }
   }
 }
@@ -537,7 +482,6 @@ onBeforeUnmount(() => {
 .image-carousel .image-carousel__slide:focus-within > p,
 .image-carousel .image-carousel__slide:focus-within > figure > p {
   clip-path: none;
-  scale: none;
   animation: none;
 }
 
@@ -571,28 +515,6 @@ onBeforeUnmount(() => {
 
   to {
     translate: 12% 0;
-  }
-}
-
-@keyframes image-natural-scale {
-  from,
-  to {
-    scale: 0.4;
-  }
-
-  50% {
-    scale: 1;
-  }
-}
-
-@keyframes image-natural-anchor {
-  from {
-    transform-origin: 0 50%;
-  }
-
-  50%,
-  to {
-    transform-origin: 100% 50%;
   }
 }
 
@@ -657,7 +579,6 @@ onBeforeUnmount(() => {
 
 @media (forced-colors: active) {
   .image-carousel__track:focus-visible,
-  .image-carousel__choice input:focus-visible,
   .image-carousel__slide > p > a:focus-visible,
   .image-carousel__slide > figure > p > a:focus-visible {
     outline-color: Highlight;

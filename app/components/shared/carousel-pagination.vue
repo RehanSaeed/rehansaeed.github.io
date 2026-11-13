@@ -31,13 +31,12 @@ const emit = defineEmits<{ select: [index: number] }>();
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: var(--global-space-fixed-1);
 }
 
 .carousel-pagination__button {
   display: grid;
   place-items: center;
-  inline-size: 44px;
+  inline-size: 28px;
   block-size: 44px;
   padding: 0;
 
@@ -53,20 +52,27 @@ const emit = defineEmits<{ select: [index: number] }>();
 }
 
 .carousel-pagination__dot {
-  inline-size: 14px;
-  block-size: 14px;
+  inline-size: 10px;
+  block-size: 10px;
+  border: 1px solid currentColor;
   border-radius: 50%;
-  background-color: color-mix(
-    in srgb,
-    var(--global-body-color) 75%,
-    var(--global-background-color)
-  );
+  background-color: var(--global-body-color);
 }
 
 .carousel-pagination__button[aria-current="true"] .carousel-pagination__dot {
-  inline-size: 20px;
-  block-size: 20px;
-  background-color: var(--global-title-color);
+  inline-size: 16px;
+  block-size: 16px;
+  border-color: var(--global-accent-color);
+  background-color: var(--global-accent-color);
+}
+
+@media (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+  .carousel-pagination__dot {
+    transition:
+      inline-size var(--global-duration-1) var(--ease-in-out-cubic),
+      block-size var(--global-duration-1) var(--ease-in-out-cubic),
+      background-color var(--global-duration-1) var(--ease-in-out-cubic);
+  }
 }
 
 @media (forced-colors: active) {

@@ -12,13 +12,11 @@ test.beforeEach(async ({ page, baseURL }) => {
 });
 
 for (const width of [1440, 640, 390, 320]) {
-  test(`Normal-sized central images and both side layouts at ${width}px`, async ({
+  test(`Normal-sized central images and adjacent cropped windows at ${width}px`, async ({
     page,
   }) => {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto(
-      "/ai-learnings-from-upgrading-my-blog/?carousel-sides=window",
-    );
+    await page.goto("/ai-learnings-from-upgrading-my-blog/");
     const gallery = page.locator(".image-carousel");
     const track = gallery.getByRole("group", { name: "Gallery images" });
     const images = gallery.locator("img");
@@ -30,140 +28,123 @@ for (const width of [1440, 640, 390, 320]) {
     await expect(
       gallery.getByRole("button", { name: "Next image" }),
     ).toBeEnabled();
+    await expect(gallery.getByRole("radio")).toHaveCount(0);
     await track.scrollIntoViewIfNeeded();
     await page.addStyleTag({
       content: ".image-carousel__track--unsnapped { scroll-snap-type: none; }",
     });
 
-    for (const sideLayout of ["Cropped windows", "Original proportions"]) {
-      const selected = await gallery
-        .locator(".image-carousel__position")
-        .innerText();
-      await gallery.getByRole("radio", { name: sideLayout }).check();
-      await expect(
-        gallery.getByRole("radio", { name: sideLayout }),
-      ).toBeChecked();
-      await expect(gallery.locator(".image-carousel__position")).toHaveText(
-        selected,
-      );
-      for (const theme of ["light", "dark"]) {
-        await page.evaluate((value) => {
-          document.documentElement.dataset.theme = value;
-        }, theme);
-        const bounds = await gallery
-          .locator(".image-carousel__viewport")
-          .boundingBox();
-        expect(bounds!.x).toBeCloseTo(0, 0);
-        expect(bounds!.width).toBeCloseTo(width, 0);
-        await gallery
-          .getByRole("button", { name: "Go to image 1 of 2" })
-          .click();
-        await expect(gallery.locator(".image-carousel__position")).toHaveText(
-          "Image 1 of 2",
-        );
-        const adjacency = await track.evaluate((element) => {
-          const viewport = element.getBoundingClientRect();
-          const frames = Array.from(
-            element.querySelectorAll(".prose-image"),
-          ).map((frame) => frame.getBoundingClientRect());
-          return {
-            gap: frames[1]!.left - frames[0]!.right,
-            width: frames[0]!.width,
-            height: frames[0]!.height,
-            firstLeft: frames[0]!.left,
-            viewportLeft: viewport.left,
-            viewportRight: viewport.right,
-            secondVisibleWidth:
-              Math.min(viewport.right, frames[1]!.right) -
-              Math.max(viewport.left, frames[1]!.left),
-          };
-        });
-        expect(adjacency.firstLeft + adjacency.width / 2).toBeCloseTo(
-          width / 2,
-          0,
-        );
-        expect(adjacency.gap).toBeGreaterThan(0);
-        expect(adjacency.gap).toBeLessThanOrEqual(40);
-        expect(Math.max(0, adjacency.secondVisibleWidth)).toBeCloseTo(
-          Math.max(0, (width - adjacency.width) / 2 - adjacency.gap),
-          0,
-        );
-        for (const index of [0, 1]) {
-          await gallery
-            .getByRole("button", { name: `Go to image ${index + 1} of 2` })
-            .click();
-          await expect(gallery.locator(".image-carousel__position")).toHaveText(
-            `Image ${index + 1} of 2`,
-          );
-          const image = images.nth(index);
-          const dimensions = await image.boundingBox();
-          const viewport = await track.boundingBox();
-          expect(dimensions!.x).toBeGreaterThanOrEqual(viewport!.x - 1);
-          expect(dimensions!.x + dimensions!.width).toBeLessThanOrEqual(
-            viewport!.x + viewport!.width + 1,
-          );
-          const standalone = await image.evaluate((element) => {
-            const paragraph = document.createElement("p");
-            paragraph.append(element.closest(".prose-image")!.cloneNode(true));
-            element.closest(".post__content")!.append(paragraph);
-            const bounds = paragraph
-              .querySelector("img")!
-              .getBoundingClientRect();
-            const result = {
-              x: bounds.x,
-              width: bounds.width,
-              height: bounds.height,
-            };
-            paragraph.remove();
-            return result;
-          });
-          expect(dimensions!.x).toBeCloseTo(standalone.x, 0);
-          expect(dimensions!.width).toBeCloseTo(standalone.width, 0);
-          expect(dimensions!.height).toBeCloseTo(standalone.height, 0);
-          await expect(image).toHaveCSS("object-fit", "contain");
-          await expect(image).toHaveCSS("object-position", "50% 50%");
-          await expect(image).toHaveCSS("translate", "none");
-        }
-        expect(
-          await page.evaluate(
-            () => document.documentElement.scrollWidth <= innerWidth,
-          ),
-        ).toBe(true);
-      }
+    for (const theme of ["light", "dark"]) {
+      await page.evaluate((value) => {
+        document.documentElement.dataset.theme = value;
+      }, theme);
+      const bounds = await gallery
+        .locator(".image-carousel__viewport")
+        .boundingBox();
+      expect(bounds!.x).toBeCloseTo(0, 0);
+      expect(bounds!.width).toBeCloseTo(width, 0);
       await gallery.getByRole("button", { name: "Go to image 1 of 2" }).click();
       await expect(gallery.locator(".image-carousel__position")).toHaveText(
         "Image 1 of 2",
       );
-      const frames = gallery.locator(".prose-image");
-      const central = await frames.first().boundingBox();
-      const side = await frames.last().boundingBox();
-      expect(side!.height / central!.height).toBeCloseTo(
-        sideLayout === "Original proportions" ? 0.4 : 1,
-        2,
-      );
-      await track.evaluate((element) => {
-        element.classList.add("image-carousel__track--unsnapped");
-        element.scrollLeft = (element.scrollWidth - element.clientWidth) * 0.3;
-      });
-      const between = await track.evaluate((element) => {
-        const port = element.getBoundingClientRect();
-        return Array.from(element.querySelectorAll(".prose-image")).map(
-          (frame) => {
-            const bounds = frame.getBoundingClientRect();
-            return (
-              Math.min(port.right, bounds.right) -
-              Math.max(port.left, bounds.left)
-            );
-          },
+      const adjacency = await track.evaluate((element) => {
+        const viewport = element.getBoundingClientRect();
+        const frames = Array.from(element.querySelectorAll(".prose-image")).map(
+          (frame) => frame.getBoundingClientRect(),
         );
+        return {
+          gap: frames[1]!.left - frames[0]!.right,
+          width: frames[0]!.width,
+          height: frames[0]!.height,
+          firstLeft: frames[0]!.left,
+          viewportLeft: viewport.left,
+          viewportRight: viewport.right,
+          secondVisibleWidth:
+            Math.min(viewport.right, frames[1]!.right) -
+            Math.max(viewport.left, frames[1]!.left),
+        };
       });
-      expect(between.every((visible) => visible > 0)).toBe(true);
-      await track.evaluate((element) => {
-        element.scrollLeft = 0;
-        element.classList.remove("image-carousel__track--unsnapped");
-      });
+      expect(adjacency.firstLeft + adjacency.width / 2).toBeCloseTo(
+        width / 2,
+        0,
+      );
+      expect(adjacency.gap).toBeGreaterThan(0);
+      expect(adjacency.gap).toBeLessThanOrEqual(40);
+      expect(Math.max(0, adjacency.secondVisibleWidth)).toBeCloseTo(
+        Math.max(0, (width - adjacency.width) / 2 - adjacency.gap),
+        0,
+      );
+      for (const index of [0, 1]) {
+        await gallery
+          .getByRole("button", { name: `Go to image ${index + 1} of 2` })
+          .click();
+        await expect(gallery.locator(".image-carousel__position")).toHaveText(
+          `Image ${index + 1} of 2`,
+        );
+        const image = images.nth(index);
+        const dimensions = await image.boundingBox();
+        const viewport = await track.boundingBox();
+        expect(dimensions!.x).toBeGreaterThanOrEqual(viewport!.x - 1);
+        expect(dimensions!.x + dimensions!.width).toBeLessThanOrEqual(
+          viewport!.x + viewport!.width + 1,
+        );
+        const standalone = await image.evaluate((element) => {
+          const paragraph = document.createElement("p");
+          paragraph.append(element.closest(".prose-image")!.cloneNode(true));
+          element.closest(".post__content")!.append(paragraph);
+          const bounds = paragraph
+            .querySelector("img")!
+            .getBoundingClientRect();
+          const result = {
+            x: bounds.x,
+            width: bounds.width,
+            height: bounds.height,
+          };
+          paragraph.remove();
+          return result;
+        });
+        expect(dimensions!.x).toBeCloseTo(standalone.x, 0);
+        expect(dimensions!.width).toBeCloseTo(standalone.width, 0);
+        expect(dimensions!.height).toBeCloseTo(standalone.height, 0);
+        await expect(image).toHaveCSS("object-fit", "contain");
+        await expect(image).toHaveCSS("object-position", "50% 50%");
+        await expect(image).toHaveCSS("translate", "none");
+      }
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      ).toBe(true);
     }
-
+    await gallery.getByRole("button", { name: "Go to image 1 of 2" }).click();
+    await expect(gallery.locator(".image-carousel__position")).toHaveText(
+      "Image 1 of 2",
+    );
+    const frames = gallery.locator(".prose-image");
+    const central = await frames.first().boundingBox();
+    const side = await frames.last().boundingBox();
+    expect(side!.height).toBeCloseTo(central!.height, 1);
+    await track.evaluate((element) => {
+      element.classList.add("image-carousel__track--unsnapped");
+      element.scrollLeft = (element.scrollWidth - element.clientWidth) * 0.3;
+    });
+    const between = await track.evaluate((element) => {
+      const port = element.getBoundingClientRect();
+      return Array.from(element.querySelectorAll(".prose-image")).map(
+        (frame) => {
+          const bounds = frame.getBoundingClientRect();
+          return (
+            Math.min(port.right, bounds.right) -
+            Math.max(port.left, bounds.left)
+          );
+        },
+      );
+    });
+    expect(between.every((visible) => visible > 0)).toBe(true);
+    await track.evaluate((element) => {
+      element.scrollLeft = 0;
+      element.classList.remove("image-carousel__track--unsnapped");
+    });
     await page.emulateMedia({ forcedColors: "active" });
     await track.focus();
     await track.press("Tab");
@@ -180,6 +161,13 @@ for (const width of [1440, 640, 390, 320]) {
     const secondDot = gallery.getByRole("button", {
       name: "Go to image 2 of 2",
     });
+    const dotSpacing = await secondDot.evaluate((element) => {
+      const previous = element.previousElementSibling!;
+      return (
+        element.getBoundingClientRect().x - previous.getBoundingClientRect().x
+      );
+    });
+    expect(dotSpacing).toBeLessThanOrEqual(32);
     await firstDot.focus();
     await firstDot.press("Tab");
     await expect(secondDot).toBeFocused();
@@ -271,6 +259,7 @@ test("Mouse dragging a linked image scrolls without opening the link", async ({
     bounds!.y + bounds!.height / 2,
     { steps: 12 },
   );
+  await expect(gallery.locator(".image-carousel__arrows")).toBeHidden();
   await page.mouse.up();
   await expect(gallery.locator(".image-carousel__position")).toHaveText(
     "Image 2 of 3",
@@ -358,54 +347,74 @@ test.describe("Continuous window motion", () => {
     await expect(firstImage).toHaveCSS("object-position", "50% 50%");
   });
 
-  test("Natural side images retain their proportions and grow continuously to the centre", async ({
+  test("Mouse release smoothly settles from the dragged position without jumping", async ({
     page,
   }) => {
-    await page.goto("/cheat-sheet/?carousel-sides=natural");
+    await page.goto("/ai-learnings-from-upgrading-my-blog/");
     const gallery = page.locator(".image-carousel");
     const track = gallery.getByRole("group", { name: "Gallery images" });
-    await expect(
-      gallery.getByRole("radio", { name: "Original proportions" }),
-    ).toBeChecked();
     await expect(
       gallery.getByRole("button", { name: "Next image" }),
     ).toBeEnabled();
     await track.scrollIntoViewIfNeeded();
-    const first = track.locator("img").first();
-    const initial = await first.boundingBox();
-    const supported = await page.evaluate(() =>
-      CSS.supports("animation-timeline: view(inline)"),
+    const image = await track.locator("img").first().boundingBox();
+    const y = image!.y + image!.height / 2;
+    await page.mouse.move(image!.x + image!.width * 0.6, y);
+    await page.mouse.down();
+    await page.mouse.move(image!.x - image!.width * 0.05, y, { steps: 12 });
+    await expect(gallery.locator(".image-carousel__arrows")).toBeHidden();
+    const releasedPosition = await track.evaluate(
+      (element) => element.scrollLeft,
     );
-    await page.addStyleTag({
-      content: ".image-carousel__track { scroll-snap-type: none; }",
-    });
-    const sampleWidth = async (fraction: number) => {
-      await track.evaluate((element, value) => {
-        element.scrollLeft =
-          (element.scrollWidth - element.clientWidth) * value;
-      }, fraction);
-      await expect
-        .poll(
-          async () => (await first.boundingBox())!.width < initial!.width - 1,
-        )
-        .toBe(supported);
-      const bounds = await first.boundingBox();
-      expect(bounds!.width / bounds!.height).toBeCloseTo(1600 / 900, 2);
-      return bounds!.width;
-    };
-    const early = await sampleWidth(0.1);
+    const target = await track.evaluate(
+      (element) => element.scrollWidth - element.clientWidth,
+    );
+    expect(releasedPosition).toBeGreaterThan(target / 2);
+    expect(releasedPosition).toBeLessThan(target - 30);
     await track.evaluate((element) => {
-      element.scrollLeft = (element.scrollWidth - element.clientWidth) * 0.2;
+      element.addEventListener(
+        "pointerup",
+        () => {
+          const start = element.scrollLeft;
+          const end = element.scrollWidth - element.clientWidth;
+          let intermediate = 0;
+          const sample = () => {
+            const position = element.scrollLeft;
+            if (position > start + 1 && position < end - 1) {
+              intermediate++;
+            }
+            element.dataset.releaseIntermediateFrames = String(intermediate);
+            if (position < end - 1) {
+              requestAnimationFrame(sample);
+            }
+          };
+          requestAnimationFrame(sample);
+        },
+        { once: true },
+      );
     });
+    await page.mouse.up();
     await expect
-      .poll(async () => (await first.boundingBox())!.width < early - 1)
-      .toBe(supported);
-    await track.evaluate((element) => {
-      element.scrollLeft = 0;
-    });
+      .poll(() =>
+        track.evaluate((element) =>
+          Math.abs(
+            element.scrollLeft - (element.scrollWidth - element.clientWidth),
+          ),
+        ),
+      )
+      .toBeLessThan(1);
+    expect(
+      Number(await track.getAttribute("data-release-intermediate-frames")),
+    ).toBeGreaterThanOrEqual(2);
+    await expect(track).toHaveCSS("scroll-snap-type", "x mandatory");
+    await expect(gallery.locator(".image-carousel__arrows")).toBeVisible();
+    await expect(gallery.locator(".image-carousel__position")).toHaveText(
+      "Image 2 of 2",
+    );
+    await track.press("Home");
     await expect
-      .poll(async () => (await first.boundingBox())!.width)
-      .toBeCloseTo(initial!.width, 0);
+      .poll(() => track.evaluate((element) => element.scrollLeft))
+      .toBeLessThan(1);
   });
 });
 
