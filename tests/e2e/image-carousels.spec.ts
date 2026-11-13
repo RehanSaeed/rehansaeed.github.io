@@ -83,6 +83,9 @@ for (const width of [1440, 640, 320]) {
 
     await page.emulateMedia({ forcedColors: "active" });
     await track.focus();
+    await track.press("Tab");
+    await page.keyboard.press("Shift+Tab");
+    await expect(track).toBeFocused();
     await track.press("Home");
     await expect(track).toHaveCSS("outline-style", "solid");
     await expect(gallery.locator(".image-carousel__position")).toHaveText(
