@@ -118,6 +118,10 @@ test.describe("Dialog transitions", () => {
               window,
               "dialogNavigationPointerEventCounts",
             );
+            const openerEvents: unknown = Reflect.get(
+              window,
+              "dialogNavigationOpenerEvents",
+            );
             const close = document.querySelector(
               ".dialog[open] .dialog__close",
             );
@@ -132,6 +136,7 @@ test.describe("Dialog transitions", () => {
               events,
               pointerEvents,
               pointerEventCounts,
+              openerEvents,
               root: document.documentElement.className,
               hit: hit?.tagName,
               hitClass: hit?.getAttribute("class"),
@@ -157,20 +162,62 @@ test.describe("Dialog transitions", () => {
         Reflect.set(window, "dialogNavigationEvents", events);
         const pointerEvents: Array<Record<string, unknown>> = [];
         const pointerEventCounts: Record<string, number> = {};
+        const openerEvents: Array<Record<string, unknown>> = [];
+        Reflect.set(window, "dialogNavigationOpenerEvents", openerEvents);
         Reflect.set(window, "dialogNavigationPointerEvents", pointerEvents);
         Reflect.set(
           window,
           "dialogNavigationPointerEventCounts",
           pointerEventCounts,
         );
-        const describeElement = (element: Element | null) =>
-          element
-            ? {
-                tag: element.tagName,
-                id: element.id,
-                class: element.getAttribute("class"),
-              }
-            : null;
+        const identities = new WeakMap<Element, number>();
+        let nextIdentity = 0;
+        const describeElement = (element: Element | null) => {
+          if (!element) {
+            return null;
+          }
+          if (!identities.has(element)) {
+            identities.set(element, ++nextIdentity);
+          }
+          return {
+            identity: identities.get(element),
+            connected: element.isConnected,
+            tag: element.tagName,
+            id: element.id,
+            class: element.getAttribute("class"),
+          };
+        };
+        const openerSelector = ".post__share > button, .post__support > button";
+        const controlState = () =>
+          [...document.querySelectorAll<HTMLButtonElement>(openerSelector)].map(
+            (button) => {
+              const dialog = button.parentElement?.querySelector("dialog");
+              return {
+                button: describeElement(button),
+                disabled: button.disabled,
+                hydrating: button.classList.contains("button--hydrating"),
+                dialog: describeElement(dialog ?? null),
+                open: dialog?.open,
+                display: dialog ? getComputedStyle(dialog).display : undefined,
+              };
+            },
+          );
+        const recordOpener = (phase: string, event: MouseEvent) => {
+          if (openerEvents.length === 32) {
+            openerEvents.splice(8, 1);
+          }
+          openerEvents.push({
+            phase,
+            at: performance.now(),
+            eventTime: event.timeStamp,
+            target: describeElement(
+              event.target instanceof Element ? event.target : null,
+            ),
+            defaultPrevented: event.defaultPrevented,
+            controls: controlState(),
+            nativeShare: typeof navigator.share,
+          });
+        };
         for (const type of [
           "pointermove",
           "pointerdown",
@@ -184,7 +231,13 @@ test.describe("Dialog transitions", () => {
               const close = document.querySelector(
                 ".dialog[open] .dialog__close",
               );
-              if (!close) {
+              const opener =
+                (event.target instanceof Element
+                  ? event.target.closest<HTMLButtonElement>(openerSelector)
+                  : null) ??
+                document.querySelector<HTMLButtonElement>(openerSelector);
+              const control = close ?? opener;
+              if (!control) {
                 return;
               }
               pointerEventCounts[type] = (pointerEventCounts[type] ?? 0) + 1;
@@ -192,13 +245,15 @@ test.describe("Dialog transitions", () => {
               if (pointerEvents.length === 32) {
                 pointerEvents.splice(8, 1);
               }
-              const box = close.getBoundingClientRect();
+              const box = control.getBoundingClientRect();
               const viewport = window.visualViewport;
               pointerEvents.push({
                 type,
                 at: performance.now(),
                 eventTime: event.timeStamp,
                 trusted: event.isTrusted,
+                phase: close ? "modal-open" : "opener",
+                controls: close ? undefined : controlState(),
                 target: describeElement(
                   event.target instanceof Element ? event.target : null,
                 ),
@@ -211,7 +266,7 @@ test.describe("Dialog transitions", () => {
                     box.y + box.height / 2,
                   ),
                 ),
-                close: {
+                control: {
                   x: box.x,
                   y: box.y,
                   width: box.width,
@@ -233,6 +288,29 @@ test.describe("Dialog transitions", () => {
             { capture: true, passive: true },
           );
         }
+        window.addEventListener(
+          "click",
+          (event) => {
+            if (!document.querySelector(openerSelector)) {
+              return;
+            }
+            recordOpener("capture", event);
+            // Observe after dispatch and Vue's queued update without delaying input.
+            requestAnimationFrame(() => {
+              recordOpener("next-frame", event);
+            });
+          },
+          { capture: true, passive: true },
+        );
+        window.addEventListener(
+          "click",
+          (event) => {
+            if (document.querySelector(openerSelector)) {
+              recordOpener("bubble", event);
+            }
+          },
+          { passive: true },
+        );
         const record = (kind: string, id?: number, details?: unknown) => {
           events.push({
             kind,
@@ -240,6 +318,7 @@ test.describe("Dialog transitions", () => {
             root: document.documentElement.className,
             id,
             details,
+            controls: controlState(),
           });
         };
         if (typeof document.startViewTransition === "function") {
