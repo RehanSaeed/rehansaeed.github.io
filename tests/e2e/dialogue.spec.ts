@@ -1,6 +1,8 @@
 import type { E2EFixtures } from "./fixtures";
 import { expect, test } from "./fixtures";
 
+test.use({ trace: "retain-on-failure" });
+
 const dialogs = [
   { title: "Search", trigger: "Open search" },
   { title: "Share", trigger: "Share" },
@@ -96,6 +98,44 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
 test.describe("Dialog transitions", () => {
   test.use({ reducedMotion: "no-preference" });
 
+  test.afterEach(async ({ page }, testInfo) => {
+    if (
+      testInfo.title.includes("remains interactive after client navigation") &&
+      !page.isClosed()
+    ) {
+      await testInfo.attach("dialog-navigation-lifecycle", {
+        body: JSON.stringify(
+          await page.evaluate(() => {
+            const events: unknown = Reflect.get(
+              window,
+              "dialogNavigationEvents",
+            );
+            const close = document.querySelector(
+              ".dialog[open] .dialog__close",
+            );
+            const box = close?.getBoundingClientRect();
+            const hit = box
+              ? document.elementFromPoint(
+                  box.x + box.width / 2,
+                  box.y + box.height / 2,
+                )
+              : null;
+            return {
+              events,
+              root: document.documentElement.className,
+              hit: hit?.tagName,
+              hitClass: hit?.getAttribute("class"),
+              tooltip: !!document.querySelector('[role="tooltip"]'),
+            };
+          }),
+          null,
+          2,
+        ),
+        contentType: "application/json",
+      });
+    }
+  });
+
   for (const { title, trigger } of dialogs.slice(1)) {
     test(`${title} remains interactive after client navigation`, async ({
       page,
@@ -103,6 +143,60 @@ test.describe("Dialog transitions", () => {
       // Keep native navigation and animation clocks real in this regression.
       await page.addInitScript(() => {
         Object.defineProperty(navigator, "share", { value: undefined });
+        const events: Array<Record<string, unknown>> = [];
+        Reflect.set(window, "dialogNavigationEvents", events);
+        const record = (kind: string, id?: number, details?: unknown) => {
+          events.push({
+            kind,
+            at: performance.now(),
+            root: document.documentElement.className,
+            id,
+            details,
+          });
+        };
+        if (typeof document.startViewTransition === "function") {
+          let sequence = 0;
+          const start = document.startViewTransition.bind(document);
+          document.startViewTransition = (update) => {
+            const id = ++sequence;
+            const transition = start(update);
+            record("transition-start", id);
+            const skip = transition.skipTransition.bind(transition);
+            transition.skipTransition = () => {
+              record("transition-skip", id);
+              skip();
+            };
+            void transition.ready.then(
+              () => {
+                record("transition-ready", id);
+              },
+              (error: unknown) => {
+                record("transition-ready-rejected", id, String(error));
+              },
+            );
+            void transition.finished.then(
+              () => {
+                record("transition-finished", id);
+              },
+              (error: unknown) => {
+                record("transition-finished-rejected", id, String(error));
+              },
+            );
+            return transition;
+          };
+        }
+        document.addEventListener(
+          "beforetoggle",
+          (event) => {
+            if (event.target instanceof HTMLDialogElement) {
+              record("dialog-beforetoggle", undefined, {
+                newState:
+                  event instanceof ToggleEvent ? event.newState : undefined,
+              });
+            }
+          },
+          true,
+        );
       });
       await page.goto("/");
       await expect(

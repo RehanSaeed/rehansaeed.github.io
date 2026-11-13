@@ -181,8 +181,7 @@ let marker: MapLibreMarker | undefined;
 let visitorMarker: MapLibreMarker | undefined;
 let visitorLocation: [number, number] | undefined;
 let locationController: AbortController | undefined;
-let resizeObserver: ResizeObserver | undefined;
-let attributionTimeout: ReturnType<typeof setTimeout> | undefined;
+const preferredMotion = usePreferredReducedMotion();
 let reduceMotion = false;
 let styleReady = false;
 let userMovedMap = false;
@@ -209,8 +208,32 @@ const createMarker = (
     .addTo(map);
 };
 
+const { start: startAttributionTimeout, stop: stopAttributionTimeout } =
+  useTimeoutFn(
+    () => {
+      const attribution = map
+        ?.getContainer()
+        .querySelector(".maplibregl-ctrl-attrib");
+      if (attribution?.classList.contains("maplibregl-compact-show")) {
+        attribution
+          .querySelector<HTMLElement>(".maplibregl-ctrl-attrib-button")
+          ?.click();
+      }
+    },
+    5000,
+    { immediate: false },
+  );
+const { start: startLocationTimeout, stop: stopLocationTimeout } = useTimeoutFn(
+  () => locationController?.abort(),
+  8000,
+  {
+    immediate: false,
+  },
+);
+
 const removeMap = () => {
-  clearTimeout(attributionTimeout);
+  stopAttributionTimeout();
+  stopLocationTimeout();
   locationController?.abort();
   visitorMarker?.remove();
   visitorMarker = undefined;
@@ -223,7 +246,7 @@ const removeMap = () => {
   styleReady = false;
   locationStatus.value = "";
   distanceMiles.value = undefined;
-  resizeObserver?.disconnect();
+  stopResizeObserver();
 };
 
 const failMap = (error: unknown) => {
@@ -267,6 +290,12 @@ const frameMap = (animate: boolean) => {
     },
   );
 };
+const { stop: stopResizeObserver } = useResizeObserver(mapContainer, () => {
+  map?.resize();
+  if (mapReady.value) {
+    frameMap(false);
+  }
+});
 
 const applyMapPalette = () => {
   if (!map || !mapContainer.value) {
@@ -388,9 +417,7 @@ const loadVisitorLocation = async (
 ) => {
   const controller = new AbortController();
   locationController = controller;
-  const timeout = setTimeout(() => {
-    controller.abort();
-  }, 8000);
+  startLocationTimeout();
   try {
     const response = await fetch("https://get.geojs.io/v1/ip/geo.json", {
       signal: controller.signal,
@@ -427,8 +454,8 @@ const loadVisitorLocation = async (
     locationStatus.value =
       "Your approximate location is unavailable. Showing East London and Europe.";
   } finally {
-    clearTimeout(timeout);
     if (locationController === controller) {
+      stopLocationTimeout();
       locationController = undefined;
     }
   }
@@ -463,9 +490,7 @@ const loadMap = async () => {
       throw new Error("The map container is missing.");
     }
     maplibregl.setWorkerUrl(workerUrl);
-    reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
+    reduceMotion = preferredMotion.value === "reduce";
     map = new maplibregl.Map({
       container: mapContainer.value,
       style: mapStyle(),
@@ -508,26 +533,10 @@ const loadMap = async () => {
       }
       mapReady.value = true;
       mapStatus.value = "";
-      attributionTimeout = setTimeout(() => {
-        const attribution = map
-          ?.getContainer()
-          .querySelector(".maplibregl-ctrl-attrib");
-        if (attribution?.classList.contains("maplibregl-compact-show")) {
-          attribution
-            .querySelector<HTMLElement>(".maplibregl-ctrl-attrib-button")
-            ?.click();
-        }
-      }, 5000);
+      startAttributionTimeout();
       frameMap(true);
       void loadVisitorLocation(maplibregl);
     });
-    resizeObserver = new ResizeObserver(() => {
-      map?.resize();
-      if (mapReady.value) {
-        frameMap(false);
-      }
-    });
-    resizeObserver.observe(mapContainer.value);
   } catch (error) {
     if (!isDisposed()) {
       failMap(error);

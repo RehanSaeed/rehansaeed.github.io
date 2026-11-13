@@ -202,6 +202,20 @@ export default defineNuxtPlugin((nuxtApp) => {
   ];
   const { signal } = listeners;
   document.addEventListener("click", selectSource, { capture: true, signal });
+  document.addEventListener(
+    "beforetoggle",
+    (event) => {
+      if (
+        event instanceof ToggleEvent &&
+        event.newState === "open" &&
+        event.target instanceof HTMLDialogElement
+      ) {
+        // Firefox can retain stale snapshot hit targets if a modal opens mid-transition.
+        skip();
+      }
+    },
+    { capture: true, signal },
+  );
 
   reducedMotion.addEventListener("change", skip, { signal });
   forcedColors.addEventListener("change", skip, { signal });

@@ -14,16 +14,12 @@
 <script setup lang="ts">
 import {
   computed,
-  nextTick,
-  onMounted,
-  onUnmounted,
   ref,
   useTemplateRef,
   type ComponentPublicInstance,
 } from "vue";
 defineOptions({ name: "u-webmention-faces-skeleton" });
 const skeleton = useTemplateRef<ComponentPublicInstance>("skeleton");
-let resizeObserver: ResizeObserver | undefined;
 const width = ref(0);
 const props = defineProps({
   /** Amount by which adjacent avatar placeholders overlap. */ overlap: {
@@ -49,22 +45,11 @@ const getXPosition = (n: number) => {
   const offset = props.overlap;
   return x - nOverlap + offset;
 };
-onMounted(() => {
-  resizeObserver = new ResizeObserver((entries) => {
-    const entry = entries[0];
-    if (entry) {
-      width.value = Math.floor(entry.contentRect.width);
-    }
-  });
-  void nextTick(() => {
-    const element: unknown = skeleton.value?.$el;
-    if (element instanceof Element) {
-      resizeObserver?.observe(element);
-    }
-  });
-});
-onUnmounted(() => {
-  resizeObserver?.disconnect();
+useResizeObserver(skeleton, (entries) => {
+  const entry = entries[0];
+  if (entry) {
+    width.value = Math.floor(entry.contentRect.width);
+  }
 });
 </script>
 
