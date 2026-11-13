@@ -218,12 +218,22 @@ test.describe("Continuous scroll-linked motion", () => {
         samples[index - 1]![1]!.scale,
       );
     }
+    const finishPreviousScroll = () =>
+      track.evaluate((element) => {
+        element.dispatchEvent(
+          new Event("scrollend", {
+            bubbles: true,
+            cancelable: true,
+            composed: true,
+          }),
+        );
+      });
     await gallery.locator("img").nth(1).hover();
     await gallery
       .getByRole("button", { name: "Next image", exact: true })
       .click();
     // A prior focus/visibility scroll can finish after smooth navigation starts.
-    await track.dispatchEvent("scrollend");
+    await finishPreviousScroll();
     await expect
       .poll(() =>
         track.evaluate(
@@ -238,7 +248,7 @@ test.describe("Continuous scroll-linked motion", () => {
     await gallery
       .getByRole("button", { name: "Previous image", exact: true })
       .click();
-    await track.dispatchEvent("scrollend");
+    await finishPreviousScroll();
     await expect
       .poll(() => track.evaluate((element) => element.scrollLeft))
       .toBeCloseTo(step, 0);
