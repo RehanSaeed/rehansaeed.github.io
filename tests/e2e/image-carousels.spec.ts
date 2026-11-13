@@ -218,6 +218,22 @@ test.describe("Continuous scroll-linked motion", () => {
         samples[index - 1]![1]!.scale,
       );
     }
+    await gallery.locator("img").nth(1).hover();
+    await gallery
+      .getByRole("button", { name: "Next image", exact: true })
+      .click();
+    // A prior focus/visibility scroll can finish after smooth navigation starts.
+    await track.dispatchEvent("scrollend");
+    await expect
+      .poll(() => track.evaluate((element) => element.scrollLeft))
+      .toBeCloseTo(step * 2, 0);
+    await gallery
+      .getByRole("button", { name: "Previous image", exact: true })
+      .click();
+    await track.dispatchEvent("scrollend");
+    await expect
+      .poll(() => track.evaluate((element) => element.scrollLeft))
+      .toBeCloseTo(step, 0);
     await page.emulateMedia({ reducedMotion: "reduce" });
     await expect(track.locator(".prose-image").first()).toHaveCSS(
       "transform",

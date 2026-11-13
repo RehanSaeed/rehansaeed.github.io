@@ -91,6 +91,7 @@ const arrowTarget = shallowRef<HTMLElement | null>(null);
 let frame = 0;
 let settleFrame = 0;
 let previousStep = 0;
+let navigationTarget: number | undefined;
 let resizeObserver: ResizeObserver | undefined;
 let motionPreference: MediaQueryList | undefined;
 let contrastPreference: MediaQueryList | undefined;
@@ -113,7 +114,7 @@ const updatePosition = () => {
   }
   // A resize can emit scroll before ResizeObserver restores the selected slide.
   if (previousStep && step !== previousStep && !drag) {
-    navigateToImage(currentIndex.value, true);
+    navigateToImage(navigationTarget ?? currentIndex.value, true);
   }
   previousStep = step;
   const position = track.value.scrollLeft / step;
@@ -165,9 +166,14 @@ const configureMotion = () => {
 const navigateToImage = (requestedIndex: number, instant = false) => {
   const index = Math.max(0, Math.min(props.count - 1, requestedIndex));
   const left = index * slideStep();
-  if (!track.value || Math.abs(track.value.scrollLeft - left) <= 1) {
+  if (!track.value) {
     return;
   }
+  if (Math.abs(track.value.scrollLeft - left) <= 1) {
+    navigationTarget = undefined;
+    return;
+  }
+  navigationTarget = index;
   track.value.scrollTo({
     left,
     behavior: instant || motionPreference?.matches ? "instant" : "smooth",
@@ -177,8 +183,12 @@ const navigateToImage = (requestedIndex: number, instant = false) => {
 const settlePosition = () => {
   if (!drag && !settleFrame) {
     updatePosition();
-    navigateToImage(currentIndex.value);
+    navigateToImage(navigationTarget ?? currentIndex.value);
   }
+};
+
+const interruptNavigation = () => {
+  navigationTarget = undefined;
 };
 
 const updateArrowTarget = () => {
@@ -252,6 +262,7 @@ const startDrag = (event: PointerEvent) => {
     !event.target.closest("button, a:not(:has(img))") &&
     (event.pointerType !== "mouse" || event.target.closest("img"))
   ) {
+    interruptNavigation();
     cancelAnimationFrame(settleFrame);
     settleFrame = 0;
     track.value.scrollTo({
@@ -355,11 +366,14 @@ onMounted(() => {
   track.value?.addEventListener("keydown", onKeydown);
   track.value?.addEventListener("focusin", onFocus);
   track.value?.addEventListener("scrollend", settlePosition);
+  track.value?.addEventListener("wheel", interruptNavigation, {
+    passive: true,
+  });
   configureMotion();
   updateArrowTarget();
   resizeObserver = new ResizeObserver(() => {
     if (!drag) {
-      navigateToImage(currentIndex.value, true);
+      navigateToImage(navigationTarget ?? currentIndex.value, true);
       updatePosition();
     }
   });
@@ -386,6 +400,7 @@ onBeforeUnmount(() => {
   track.value?.removeEventListener("keydown", onKeydown);
   track.value?.removeEventListener("focusin", onFocus);
   track.value?.removeEventListener("scrollend", settlePosition);
+  track.value?.removeEventListener("wheel", interruptNavigation);
 });
 </script>
 
