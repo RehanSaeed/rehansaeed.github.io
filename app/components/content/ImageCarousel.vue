@@ -7,7 +7,7 @@
         class="image-carousel__track"
         :class="{
           'image-carousel__track--draggable': mounted,
-          'image-carousel__track--dragging': dragging,
+          'image-carousel__track--dragging': dragging || settling,
         }"
         role="group"
         aria-label="Gallery images; use Left and Right arrow keys to browse"
@@ -15,7 +15,10 @@
         @scroll.passive="updatePosition">
         <slot />
       </div>
-      <div v-if="mounted" class="image-carousel__arrows">
+      <div
+        v-if="mounted"
+        class="image-carousel__arrows"
+        :class="{ 'image-carousel__arrows--dragging': dragging }">
         <span
           ref="previousArrow"
           class="image-carousel__arrow-shell"
@@ -52,22 +55,12 @@
       </div>
     </div>
     <div v-if="mounted" class="image-carousel__controls">
-      <div
+      <u-carousel-pagination
         class="image-carousel__pagination"
-        role="group"
-        aria-label="Choose image">
-        <button
-          v-for="number in count"
-          :key="number"
-          type="button"
-          class="image-carousel__dot"
-          :aria-label="`Go to image ${number} of ${count}`"
-          :aria-controls="trackId"
-          :aria-current="number - 1 === currentIndex ? 'true' : undefined"
-          @click="navigate(number - 1)">
-          <span aria-hidden="true" />
-        </button>
-      </div>
+        :count="count"
+        :current-index="currentIndex"
+        :controls="trackId"
+        @select="navigate" />
     </div>
     <p class="image-carousel__position" aria-live="polite" aria-atomic="true">
       {{ announcement }}
@@ -88,6 +81,7 @@ const previousArrow = useTemplateRef<HTMLSpanElement>("previousArrow");
 const nextArrow = useTemplateRef<HTMLSpanElement>("nextArrow");
 const mounted = ref(false);
 const dragging = ref(false);
+const settling = ref(false);
 const currentIndex = ref(0);
 const announcement = ref(`Image 1 of ${props.count}`);
 let resizeObserver: ResizeObserver | undefined;
@@ -100,6 +94,7 @@ let drag:
     }
   | undefined;
 let suppressClick = false;
+let settlePosition: number | undefined;
 
 const slides = () =>
   Array.from(track.value?.children ?? []).filter(
@@ -128,6 +123,13 @@ const updatePosition = () => {
     container.focus({ preventScroll: true });
   }
   currentIndex.value = index;
+  if (
+    settlePosition !== undefined &&
+    Math.abs(container.scrollLeft - settlePosition) <= 1
+  ) {
+    settlePosition = undefined;
+    settling.value = false;
+  }
   clearTimeout(announcementTimer);
   announcementTimer = setTimeout(() => {
     announcement.value = `Image ${currentIndex.value + 1} of ${props.count}`;
@@ -137,6 +139,9 @@ const updatePosition = () => {
 const navigate = (requested: number, instant = false) => {
   const slide = slides()[Math.max(0, Math.min(props.count - 1, requested))];
   if (slide) {
+    if (settling.value) {
+      settlePosition = positionFor(slide);
+    }
     track.value?.scrollTo({
       left: positionFor(slide),
       behavior:
@@ -144,6 +149,13 @@ const navigate = (requested: number, instant = false) => {
           ? "instant"
           : "smooth",
     });
+  }
+};
+
+const finishSettling = () => {
+  if (settling.value && !drag) {
+    updatePosition();
+    navigate(currentIndex.value);
   }
 };
 
@@ -193,6 +205,10 @@ const onPointerDown = (event: PointerEvent) => {
   ) {
     return;
   }
+  track.value?.scrollTo({
+    left: track.value.scrollLeft,
+    behavior: "instant",
+  });
   drag = {
     pointerId: event.pointerId,
     startX: event.clientX,
@@ -203,6 +219,10 @@ const onPointerDown = (event: PointerEvent) => {
 const onPointerMove = (event: PointerEvent) => {
   const container = track.value;
   if (!container || !drag || drag.pointerId !== event.pointerId) {
+    return;
+  }
+  if (event.buttons !== 1) {
+    finishDrag();
     return;
   }
   const distance = event.clientX - drag.startX;
@@ -225,9 +245,15 @@ const finishDrag = () => {
     track.value.releasePointerCapture(pointerId);
   }
   if (dragging.value) {
-    dragging.value = false;
     updatePosition();
+    const slide = slides()[currentIndex.value];
+    if (slide) {
+      settlePosition = positionFor(slide);
+      settling.value = true;
+    }
+    dragging.value = false;
     navigate(currentIndex.value);
+    updatePosition();
   }
 };
 
@@ -255,10 +281,13 @@ const onClick = (event: MouseEvent) => {
 onMounted(() => {
   mounted.value = true;
   resizeObserver = new ResizeObserver(() => {
+    settlePosition = undefined;
+    settling.value = false;
     navigate(currentIndex.value, true);
   });
   if (track.value) {
     track.value.addEventListener("keydown", onKeydown);
+    track.value.addEventListener("scrollend", finishSettling);
     track.value.addEventListener("focusin", onFocus);
     track.value.addEventListener("pointerdown", onPointerDown);
     track.value.addEventListener("lostpointercapture", onPointerEnd);
@@ -278,6 +307,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   track.value?.removeEventListener("keydown", onKeydown);
+  track.value?.removeEventListener("scrollend", finishSettling);
   track.value?.removeEventListener("focusin", onFocus);
   track.value?.removeEventListener("pointerdown", onPointerDown);
   track.value?.removeEventListener("lostpointercapture", onPointerEnd);
@@ -374,6 +404,16 @@ onBeforeUnmount(() => {
   figcaption {
     padding-inline: var(--global-space-fixed-3);
   }
+
+  > p,
+  > figure > p {
+    overflow: clip;
+  }
+
+  a:focus-visible {
+    outline: 2px solid var(--global-accent-color);
+    outline-offset: -2px;
+  }
 }
 
 .image-carousel__arrows {
@@ -407,6 +447,10 @@ onBeforeUnmount(() => {
   &--unavailable {
     visibility: hidden;
   }
+}
+
+.image-carousel__arrows--dragging {
+  visibility: hidden;
 }
 
 .image-carousel__arrows .image-carousel__arrow {
@@ -462,54 +506,8 @@ onBeforeUnmount(() => {
   }
 }
 
-.image-carousel__pagination {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.image-carousel__dot {
-  display: grid;
-  place-items: center;
-  inline-size: 28px;
-  block-size: 44px;
-  padding: 0;
-  border: 0;
-  border-radius: var(--global-border-radius);
-  background: transparent;
-  cursor: pointer;
-
-  span {
-    inline-size: 10px;
-    block-size: 10px;
-    border: 1px solid currentColor;
-    border-radius: 50%;
-    background: var(--global-body-color);
-  }
-
-  &[aria-current="true"] span {
-    inline-size: 16px;
-    block-size: 16px;
-    background: var(--global-accent-color);
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--global-accent-color);
-    outline-offset: -2px;
-  }
-}
-
 .image-carousel__position {
   @include visually-hidden.visually-hidden();
-}
-
-@media (prefers-reduced-motion: no-preference) and (forced-colors: none) {
-  .image-carousel__dot span {
-    transition:
-      inline-size var(--global-duration-1) var(--ease-in-out-cubic),
-      block-size var(--global-duration-1) var(--ease-in-out-cubic),
-      background-color var(--global-duration-1) var(--ease-in-out-cubic);
-  }
 }
 
 @keyframes gallery-cover-turn {
@@ -534,6 +532,30 @@ onBeforeUnmount(() => {
   }
 }
 
+@keyframes gallery-window-aperture {
+  from {
+    clip-path: inset(0 60% 0 0);
+  }
+  50% {
+    clip-path: inset(0);
+  }
+  to {
+    clip-path: inset(0 0 0 60%);
+  }
+}
+
+@keyframes gallery-window-pan {
+  from {
+    translate: -12% 0;
+  }
+  50% {
+    translate: 0 0;
+  }
+  to {
+    translate: 12% 0;
+  }
+}
+
 // Keep geometry stable: only the frame turns, never the timeline's subject.
 @supports (animation-timeline: view(inline)) {
   @media (prefers-reduced-motion: no-preference) and (forced-colors: none) {
@@ -553,22 +575,45 @@ onBeforeUnmount(() => {
       animation: gallery-cover-turn linear both;
       animation-timeline: --gallery-cover;
     }
+
+    .image-carousel__frame > p,
+    .image-carousel__frame > figure > p {
+      animation: gallery-window-aperture linear both;
+      animation-timeline: --gallery-cover;
+    }
+
+    .image-carousel__frame .prose-image__image {
+      animation: gallery-window-pan linear both;
+      animation-timeline: --gallery-cover;
+    }
+
+    .image-carousel__slide:has(:focus-visible) {
+      z-index: 11;
+      animation: none;
+
+      .image-carousel__frame {
+        transform: none;
+        animation: none;
+      }
+
+      .image-carousel__frame > p,
+      .image-carousel__frame > figure > p {
+        clip-path: none;
+        animation: none;
+      }
+
+      .prose-image__image {
+        translate: none;
+        animation: none;
+      }
+    }
   }
 }
 
 @media (forced-colors: active) {
   .image-carousel__track:focus-visible,
-  .image-carousel__dot:focus-visible {
+  .image-carousel__frame a:focus-visible {
     outline-color: Highlight;
-  }
-
-  .image-carousel__dot span {
-    background: ButtonText;
-  }
-
-  .image-carousel__dot[aria-current="true"] span {
-    background: Highlight;
-    forced-color-adjust: none;
   }
 
   .image-carousel__arrow-shell {

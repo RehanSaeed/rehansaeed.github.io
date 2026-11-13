@@ -376,7 +376,7 @@ test.describe("Continuous Cover Flow", () => {
           endpoint: number[];
         }>((resolve) => {
           const buttons = element.querySelectorAll<HTMLButtonElement>(
-            ".image-carousel__dot",
+            ".carousel-pagination__button",
           );
           const spans = [buttons[0]!, buttons[1]!].map((button) =>
             button.querySelector("span")!,
@@ -480,6 +480,213 @@ test.describe("Continuous Cover Flow", () => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await expect(frame).toHaveCSS("transform", "none");
   });
+
+  test("Cropped image windows and inner parallax move continuously without altering slide geometry", async ({
+    page,
+  }) => {
+    const gallery = page.locator(gallerySelector).first();
+    const track = gallery.locator(".image-carousel__track");
+    const slide = gallery.locator(".image-carousel__slide").nth(1);
+    const frame = slide.locator(".image-carousel__frame");
+    const media = frame.locator("figure > p");
+    const image = media.locator("img");
+    await expect(gallery.locator(".image-carousel__controls")).toBeVisible();
+    await gallery.scrollIntoViewIfNeeded();
+    const supported = await page.evaluate(() =>
+      CSS.supports("animation-timeline: view(inline)"),
+    );
+    const geometry = await slide.evaluate((element) => ({
+      width: (element as HTMLElement).offsetWidth,
+      left: (element as HTMLElement).offsetLeft,
+    }));
+    await track.evaluate((element) => {
+      element.style.scrollSnapType = "none";
+      element.scrollLeft =
+        (element.children[0] as HTMLElement).offsetWidth * 0.1;
+    });
+    await expect
+      .poll(() =>
+        media.evaluate(
+          (element) => getComputedStyle(element).clipPath !== "none",
+        ),
+      )
+      .toBe(supported);
+    const start = await image.evaluate(
+      (element) => getComputedStyle(element).translate,
+    );
+    const aperture = await media.evaluate(
+      (element) => getComputedStyle(element).clipPath,
+    );
+    await track.evaluate((element) => {
+      element.scrollLeft =
+        (element.children[0] as HTMLElement).offsetWidth * 0.3;
+    });
+    await expect
+      .poll(
+        async () =>
+          (await image.evaluate(
+            (element) => getComputedStyle(element).translate,
+          )) !== start,
+      )
+      .toBe(supported);
+    await expect
+      .poll(
+        async () =>
+          (await media.evaluate(
+            (element) => getComputedStyle(element).clipPath,
+          )) !== aperture,
+      )
+      .toBe(supported);
+    expect(
+      await slide.evaluate((element) => ({
+        width: (element as HTMLElement).offsetWidth,
+        left: (element as HTMLElement).offsetLeft,
+      })),
+    ).toEqual(geometry);
+    await expect(frame.locator("figcaption")).toHaveCSS("clip-path", "none");
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await expect(media).toHaveCSS("clip-path", "none");
+    await expect(image).toHaveCSS("translate", "none");
+    await page.emulateMedia({
+      reducedMotion: "no-preference",
+      forcedColors: "active",
+    });
+    await expect(media).toHaveCSS("clip-path", "none");
+    await expect(image).toHaveCSS("translate", "none");
+    await expect(frame).toHaveCSS("transform", "none");
+  });
+
+  test("Mouse drag hides overlays and settles precisely on an image before restoring snap", async ({
+    page,
+  }) => {
+    const gallery = page.locator(gallerySelector).first();
+    const track = gallery.locator(".image-carousel__track");
+    await expect(gallery.locator(".image-carousel__controls")).toBeVisible();
+    await gallery.scrollIntoViewIfNeeded();
+    const bounds = await gallery.locator("img").first().boundingBox();
+    expect(bounds).not.toBeNull();
+    const step = await gallery
+      .locator(".image-carousel__slide")
+      .first()
+      .evaluate((element) => (element as HTMLElement).offsetWidth);
+    const x = bounds!.x + bounds!.width * 0.8;
+    const y = bounds!.y + bounds!.height / 3;
+    await page.mouse.move(x, y);
+    await page.mouse.down();
+    await page.mouse.move(x - step * 0.7, y, { steps: 15 });
+    await expect(gallery.locator(".image-carousel__arrows")).toBeHidden();
+    const releasedPosition = await track.evaluate(
+      (element) => element.scrollLeft,
+    );
+    expect(releasedPosition).toBeGreaterThan(step / 2);
+    expect(releasedPosition).toBeLessThan(step - 30);
+    await track.evaluate((element) => {
+      element.addEventListener(
+        "pointerup",
+        () => {
+          const start = element.scrollLeft;
+          const slide = element.children[1] as HTMLElement;
+          const target =
+            slide.offsetLeft + (slide.offsetWidth - element.clientWidth) / 2;
+          let intermediate = 0;
+          const sample = () => {
+            const position = element.scrollLeft;
+            if (position > start + 1 && position < target - 1) {
+              intermediate++;
+            }
+            element.dataset.releaseIntermediateFrames = String(intermediate);
+            if (position < target - 1) {
+              requestAnimationFrame(sample);
+            }
+          };
+          requestAnimationFrame(sample);
+        },
+        { once: true },
+      );
+    });
+    await page.mouse.up();
+    await expect(
+      gallery.getByRole("button", { name: "Go to image 2 of 3" }),
+    ).toHaveAttribute("aria-current", "true");
+    await expect
+      .poll(() =>
+        track.evaluate((element) => {
+          const slide = element.children[1] as HTMLElement;
+          return Math.abs(
+            element.scrollLeft -
+              (slide.offsetLeft +
+                (slide.offsetWidth - element.clientWidth) / 2),
+          );
+        }),
+      )
+      .toBeLessThanOrEqual(1);
+    expect(
+      Number(await track.getAttribute("data-release-intermediate-frames")),
+    ).toBeGreaterThanOrEqual(2);
+    await expect(track).toHaveCSS("scroll-snap-type", "x mandatory");
+    await expect(page).toHaveURL(/\/cheat-sheet\/$/);
+  });
+});
+
+test("Real article galleries preserve screenshot links, natural proportions and endpoint navigation", async ({
+  page,
+}) => {
+  await page.goto(
+    "/ai-learnings-from-upgrading-my-blog/#currency-converter-pro",
+  );
+  const gallery = page.locator(gallerySelector).first();
+  await expect(gallery.locator(".image-carousel__controls")).toBeVisible();
+  await gallery.scrollIntoViewIfNeeded();
+  const images = gallery.locator("img");
+  expect(await images.count()).toBeGreaterThan(1);
+  await expect(images.first()).toHaveAttribute("alt", /Currency/i);
+  await expect
+    .poll(() =>
+      images
+        .first()
+        .evaluate(
+          (element: HTMLImageElement) =>
+            element.complete && element.naturalWidth > 0,
+        ),
+    )
+    .toBe(true);
+  const track = gallery.locator(".image-carousel__track");
+  await track.focus();
+  await track.press("End");
+  await expect(
+    gallery.getByRole("button", { name: "Next image", includeHidden: true }),
+  ).toBeHidden();
+  await track.press("Home");
+  await expect(
+    gallery.getByRole("button", {
+      name: "Previous image",
+      includeHidden: true,
+    }),
+  ).toBeHidden();
+  const ratio = await images.first().evaluate((element: HTMLImageElement) => ({
+    intrinsic: element.naturalWidth / element.naturalHeight,
+    rendered:
+      element.getBoundingClientRect().width /
+      element.getBoundingClientRect().height,
+  }));
+  expect(ratio.rendered).toBeCloseTo(ratio.intrinsic, 2);
+  const normalSize = await images.first().evaluate((element) => {
+    const paragraph = document.createElement("p");
+    const content = element.closest(".post__content")!;
+    paragraph.append(element.closest(".prose-image")!.cloneNode(true));
+    content.append(paragraph);
+    const standalone = paragraph.querySelector("img")!.getBoundingClientRect();
+    const actual = element.getBoundingClientRect();
+    paragraph.remove();
+    return {
+      width: actual.width,
+      height: actual.height,
+      standaloneWidth: standalone.width,
+      standaloneHeight: standalone.height,
+    };
+  });
+  expect(normalSize.width).toBeCloseTo(normalSize.standaloneWidth, 0);
+  expect(normalSize.height).toBeCloseTo(normalSize.standaloneHeight, 0);
 });
 
 test.describe("Without JavaScript", () => {

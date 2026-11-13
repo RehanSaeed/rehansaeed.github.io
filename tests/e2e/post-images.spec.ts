@@ -84,7 +84,13 @@ for (const width of [1280, 375, 320]) {
     );
     await expect(images).toHaveCount(2);
 
-    for (const image of await images.all()) {
+    for (const [index, image] of (await images.all()).entries()) {
+      await page
+        .getByRole("button", { name: `Go to image ${index + 1} of 2` })
+        .click();
+      await expect(page.locator(".image-carousel__position")).toHaveText(
+        `Image ${index + 1} of 2`,
+      );
       await image.scrollIntoViewIfNeeded();
       await expect
         .poll(() =>
