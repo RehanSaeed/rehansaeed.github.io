@@ -6,6 +6,7 @@ import { pathToFileURL } from "node:url";
 import { runInNewContext } from "node:vm";
 import { test as unitTest } from "@playwright/test";
 import { compileString } from "sass-embedded";
+import sharp from "sharp";
 import { ModuleKind, ScriptTarget, transpileModule } from "typescript";
 import { defineComponent, h, type ComponentOptions } from "vue";
 import { compileScript, parse } from "vue/compiler-sfc";
@@ -174,6 +175,11 @@ for (const theme of ["light", "dark"]) {
     await page.addStyleTag({
       content: `${properties}\n${styles}
         .button:not(.button--icon) { transition: none; }
+        .silhouette-sample { padding: 32px; }
+        .silhouette-sample .button {
+          --button-tag-point: 96px;
+          min-block-size: 128px;
+        }
         .overlay {
           color: white;
           background: #222;
@@ -233,7 +239,10 @@ for (const theme of ["light", "dark"]) {
               <u-button variant="primary" submit :disabled="disabled">Submit</u-button>
               <button type="button" @click="disabled=!disabled">Toggle disabled</button>
               <output :data-clicks="clicks" :data-submits="submits" :data-entered="entered"></output>
-            </form>\`
+            </form>
+            <div class="silhouette-sample">
+              <u-button variant="tag-shaped">Shape sample</u-button>
+            </div>\`
         }).mount("#app");
       }`,
     });
@@ -298,7 +307,12 @@ for (const theme of ["light", "dark"]) {
     await expect(shaped).toHaveClass("button button--tag-shaped button--tag");
     const surface = shaped.locator(".button__tag-surface");
     await expect(surface).toHaveAttribute("aria-hidden", "true");
-    await expect(surface).not.toHaveCSS("clip-path", "none");
+    await expect(surface).toHaveCSS("clip-path", "none");
+    expect(
+      await surface.evaluate(
+        (element) => getComputedStyle(element, "::before").clipPath,
+      ),
+    ).not.toBe("none");
     await expect(shaped).toHaveCSS("clip-path", "none");
     await expect
       .poll(() =>
@@ -408,11 +422,20 @@ for (const theme of ["light", "dark"]) {
             ),
           )
           .toBe("1");
-        expect(
-          await control.evaluate(
-            (element) => getComputedStyle(element, "::before").boxShadow,
-          ),
-        ).not.toBe("none");
+        if (control === shaped) {
+          expect(
+            await control.evaluate(
+              (element) => getComputedStyle(element, "::before").content,
+            ),
+          ).toBe("none");
+          await expect(surface).not.toHaveCSS("filter", "none");
+        } else {
+          expect(
+            await control.evaluate(
+              (element) => getComputedStyle(element, "::before").boxShadow,
+            ),
+          ).not.toBe("none");
+        }
       }
       if (control === primary) {
         await expect(control).toHaveCSS("color", tokens.content);
@@ -448,6 +471,7 @@ for (const theme of ["light", "dark"]) {
     }
     await expect(output).toHaveAttribute("data-clicks", clicks!);
     await expect(output).toHaveAttribute("data-submits", "1");
+    await expect(surface).toHaveCSS("filter", "none");
     await expect(icon).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
     await expect(overlay).toHaveCSS(
       "background-color",
@@ -484,6 +508,9 @@ for (const theme of ["light", "dark"]) {
         "transform",
         motion === "reduce" ? "none" : "matrix(1, 0, 0, 1, 0, -2)",
       );
+      if (motion === "reduce") {
+        await expect(surface).toHaveCSS("transition-duration", "0s");
+      }
       await icon.focus();
       const beforeKeyboardClick = Number(
         await output.getAttribute("data-clicks"),
@@ -497,6 +524,41 @@ for (const theme of ["light", "dark"]) {
       await expect(icon).toHaveCSS("transform", "none");
       await expect(icon).toHaveCSS("transition-duration", "0s");
     }
+    // Enlarge the point so a rectangular backing cannot hide in the shadow blur.
+    const sample = page.getByRole("button", {
+      name: "Shape sample",
+      exact: true,
+    });
+    await sample.hover();
+    await expect(sample).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -2)");
+    const bounds = await sample.boundingBox();
+    expect(bounds).not.toBeNull();
+    const screenshot = await page.screenshot({
+      path: test.info().outputPath(`pointed-hover-${theme}.png`),
+      omitBackground: true,
+      scale: "css",
+      animations: "disabled",
+      clip: {
+        x: Math.floor(bounds!.x) - 16,
+        y: Math.floor(bounds!.y) - 16,
+        width: Math.ceil(bounds!.width) + 32,
+        height: Math.ceil(bounds!.height) + 32,
+      },
+    });
+    const { data, info } = await sharp(screenshot)
+      .ensureAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    const alphaAt = (x: number, y: number) =>
+      data[(y * info.width + x) * info.channels + 3]!;
+    expect(
+      alphaAt(14, 24),
+      "No rectangular shadow above the pointed edge",
+    ).toBe(0);
+    expect(
+      alphaAt(14, 16 + Math.floor(bounds!.height / 2)),
+      "The triangle itself casts a raised shadow",
+    ).toBeGreaterThan(0);
     await page.emulateMedia({ forcedColors: "active" });
     await shaped.focus();
     await page.keyboard.press("Tab");
@@ -509,9 +571,10 @@ for (const theme of ["light", "dark"]) {
       ),
     ).toMatch(/,\s*0\)$/);
     const surfaceColours = await surface.evaluate((element) => ({
-      edge: getComputedStyle(element).backgroundColor,
+      edge: getComputedStyle(element, "::before").backgroundColor,
       fill: getComputedStyle(element, "::after").backgroundColor,
     }));
+    await expect(surface).toHaveCSS("filter", "none");
     expect(surfaceColours.edge).not.toBe(surfaceColours.fill);
     for (const control of [icon, overlay]) {
       await control.focus();

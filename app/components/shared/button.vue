@@ -258,6 +258,14 @@ const onClick = (event: MouseEvent) => {
   --button-tag-point: 1rem;
   --button-tag-surface: var(--global-background-color);
   --button-tag-edge: var(--global-border-color);
+  --button-tag-shadow: none;
+  --button-tag-outline: polygon(
+    var(--button-tag-point) 0,
+    100% 0,
+    100% 100%,
+    var(--button-tag-point) 100%,
+    0 50%
+  );
 
   isolation: isolate;
   border-start-end-radius: 0.4rem;
@@ -265,6 +273,22 @@ const onClick = (event: MouseEvent) => {
   padding-inline-start: calc(var(--button-tag-point) + 1rem);
   font-family: var(--global-font-family-monospace);
   font-size: 0.8rem;
+
+  &::before {
+    content: none;
+    box-shadow: none;
+  }
+
+  &:hover,
+  &:focus {
+    --button-tag-shadow: drop-shadow(var(--global-shadow-2-near))
+      drop-shadow(var(--global-shadow-2-middle))
+      drop-shadow(var(--global-shadow-2-far));
+  }
+
+  &:active {
+    --button-tag-shadow: drop-shadow(var(--global-shadow-1));
+  }
 
   &::after {
     content: "";
@@ -281,6 +305,8 @@ const onClick = (event: MouseEvent) => {
 
   &:disabled,
   &[aria-disabled="true"] {
+    --button-tag-shadow: none;
+
     border-color: transparent;
 
     &::after {
@@ -289,21 +315,25 @@ const onClick = (event: MouseEvent) => {
   }
 }
 
-// Clip only the decorative surface, leaving the shared shadow and focus ring visible.
+// Filter the clipped paint, not the rectangular control or its focus outline.
 .button__tag-surface {
   position: absolute;
   inset: 0;
   z-index: -1;
   border-radius: inherit;
-  background: var(--button-tag-edge);
-  clip-path: polygon(
-    var(--button-tag-point) 0,
-    100% 0,
-    100% 100%,
-    var(--button-tag-point) 100%,
-    0 50%
-  );
+  filter: var(--button-tag-shadow);
   pointer-events: none;
+  transition: filter var(--global-duration-1) var(--ease-in-out-cubic);
+
+  &::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--button-tag-edge);
+    clip-path: var(--button-tag-outline);
+  }
 
   &::after {
     content: "";
@@ -312,7 +342,7 @@ const onClick = (event: MouseEvent) => {
     inset: 1px;
     border-radius: inherit;
     background: var(--button-tag-surface);
-    clip-path: inherit;
+    clip-path: var(--button-tag-outline);
   }
 }
 
@@ -322,6 +352,10 @@ const onClick = (event: MouseEvent) => {
     transition: none;
 
     &::before {
+      transition: none;
+    }
+
+    .button__tag-surface {
       transition: none;
     }
   }
@@ -390,6 +424,7 @@ const onClick = (event: MouseEvent) => {
   .button.button--tag-shaped {
     --button-tag-surface: Canvas;
     --button-tag-edge: LinkText;
+    --button-tag-shadow: none;
 
     border-color: transparent;
     background: transparent;

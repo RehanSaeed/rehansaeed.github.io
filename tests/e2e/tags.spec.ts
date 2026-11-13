@@ -208,7 +208,21 @@ if (process.env.TAG_STYLE_PREVIEW === "true") {
         expect(
           await page.evaluate(() => document.documentElement.scrollWidth),
         ).toBeLessThanOrEqual(width);
-        await tags.first().scrollIntoViewIfNeeded();
+        await tags.first().hover();
+        await expect(tags.first()).toHaveCSS(
+          "transform",
+          "matrix(1, 0, 0, 1, 0, -2)",
+        );
+        await expect(
+          tags.first().locator(".button__tag-surface"),
+        ).not.toHaveCSS("filter", "none");
+        expect(
+          await tags
+            .first()
+            .evaluate(
+              (element) => getComputedStyle(element, "::before").content,
+            ),
+        ).toBe("none");
         await page.screenshot({
           path: test.info().outputPath(`${context}-${theme}-tag-shaped.png`),
         });
