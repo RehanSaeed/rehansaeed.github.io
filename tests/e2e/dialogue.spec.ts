@@ -110,6 +110,14 @@ test.describe("Dialog transitions", () => {
               window,
               "dialogNavigationEvents",
             );
+            const pointerEvents: unknown = Reflect.get(
+              window,
+              "dialogNavigationPointerEvents",
+            );
+            const pointerEventCounts: unknown = Reflect.get(
+              window,
+              "dialogNavigationPointerEventCounts",
+            );
             const close = document.querySelector(
               ".dialog[open] .dialog__close",
             );
@@ -122,6 +130,8 @@ test.describe("Dialog transitions", () => {
               : null;
             return {
               events,
+              pointerEvents,
+              pointerEventCounts,
               root: document.documentElement.className,
               hit: hit?.tagName,
               hitClass: hit?.getAttribute("class"),
@@ -145,6 +155,84 @@ test.describe("Dialog transitions", () => {
         Object.defineProperty(navigator, "share", { value: undefined });
         const events: Array<Record<string, unknown>> = [];
         Reflect.set(window, "dialogNavigationEvents", events);
+        const pointerEvents: Array<Record<string, unknown>> = [];
+        const pointerEventCounts: Record<string, number> = {};
+        Reflect.set(window, "dialogNavigationPointerEvents", pointerEvents);
+        Reflect.set(
+          window,
+          "dialogNavigationPointerEventCounts",
+          pointerEventCounts,
+        );
+        const describeElement = (element: Element | null) =>
+          element
+            ? {
+                tag: element.tagName,
+                id: element.id,
+                class: element.getAttribute("class"),
+              }
+            : null;
+        for (const type of [
+          "pointermove",
+          "pointerdown",
+          "mousedown",
+          "mouseup",
+          "click",
+        ] as const) {
+          window.addEventListener(
+            type,
+            (event) => {
+              const close = document.querySelector(
+                ".dialog[open] .dialog__close",
+              );
+              if (!close) {
+                return;
+              }
+              pointerEventCounts[type] = (pointerEventCounts[type] ?? 0) + 1;
+              // Preserve the first eight samples and the latest 24 retries.
+              if (pointerEvents.length === 32) {
+                pointerEvents.splice(8, 1);
+              }
+              const box = close.getBoundingClientRect();
+              const viewport = window.visualViewport;
+              pointerEvents.push({
+                type,
+                at: performance.now(),
+                eventTime: event.timeStamp,
+                trusted: event.isTrusted,
+                target: describeElement(
+                  event.target instanceof Element ? event.target : null,
+                ),
+                hit: describeElement(
+                  document.elementFromPoint(event.clientX, event.clientY),
+                ),
+                centerHit: describeElement(
+                  document.elementFromPoint(
+                    box.x + box.width / 2,
+                    box.y + box.height / 2,
+                  ),
+                ),
+                close: {
+                  x: box.x,
+                  y: box.y,
+                  width: box.width,
+                  height: box.height,
+                },
+                client: { x: event.clientX, y: event.clientY },
+                page: { x: event.pageX, y: event.pageY },
+                screen: { x: event.screenX, y: event.screenY },
+                scroll: { x: window.scrollX, y: window.scrollY },
+                viewport: {
+                  width: window.innerWidth,
+                  height: window.innerHeight,
+                  offsetLeft: viewport?.offsetLeft,
+                  offsetTop: viewport?.offsetTop,
+                  scale: viewport?.scale,
+                },
+              });
+            },
+            { capture: true, passive: true },
+          );
+        }
         const record = (kind: string, id?: number, details?: unknown) => {
           events.push({
             kind,
