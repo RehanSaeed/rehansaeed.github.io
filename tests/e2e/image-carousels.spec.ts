@@ -58,6 +58,9 @@ for (const width of [1440, 640, 390, 320]) {
         await gallery
           .getByRole("button", { name: "Go to image 1 of 2" })
           .click();
+        await expect(gallery.locator(".image-carousel__position")).toHaveText(
+          "Image 1 of 2",
+        );
         const adjacency = await track.evaluate((element) => {
           const viewport = element.getBoundingClientRect();
           const frames = Array.from(
@@ -128,6 +131,9 @@ for (const width of [1440, 640, 390, 320]) {
         ).toBe(true);
       }
       await gallery.getByRole("button", { name: "Go to image 1 of 2" }).click();
+      await expect(gallery.locator(".image-carousel__position")).toHaveText(
+        "Image 1 of 2",
+      );
       const frames = gallery.locator(".prose-image");
       const central = await frames.first().boundingBox();
       const side = await frames.last().boundingBox();

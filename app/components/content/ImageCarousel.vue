@@ -106,6 +106,7 @@ import {
 const props = defineProps<{
   /** Number of image slides grouped from the article's source. */ count: number;
 }>();
+const route = useRoute();
 const id = useId();
 const trackId = `image-gallery-${id}`;
 const track = useTemplateRef<HTMLDivElement>("track");
@@ -291,6 +292,17 @@ const preventImageDrag = (event: DragEvent) => {
 };
 
 watch(currentIndex, updateActiveSlide);
+watch(
+  () => route.query["carousel-sides"],
+  (requestedSideLayout) => {
+    comparisonEnabled.value =
+      requestedSideLayout === "window" || requestedSideLayout === "natural";
+    if (requestedSideLayout === "window" || requestedSideLayout === "natural") {
+      sideLayout.value = requestedSideLayout;
+    }
+  },
+  { immediate: true },
+);
 
 const pointerHandlers = [
   ["pointerdown", startDrag],
@@ -301,13 +313,6 @@ const pointerHandlers = [
 ] as const;
 
 onMounted(() => {
-  const requestedSideLayout = new URLSearchParams(window.location.search).get(
-    "carousel-sides",
-  );
-  if (requestedSideLayout === "window" || requestedSideLayout === "natural") {
-    sideLayout.value = requestedSideLayout;
-    comparisonEnabled.value = true;
-  }
   for (const [event, handler] of pointerHandlers) {
     track.value?.addEventListener(event, handler);
   }
