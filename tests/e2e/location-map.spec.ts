@@ -1,7 +1,7 @@
-import { test as unitTest, type Page } from "@playwright/test";
+import { test as unitTest, type Locator, type Page } from "@playwright/test";
 import sharp from "sharp";
 import { distanceInMiles } from "../../shared/utils/location";
-import { expect, test } from "./fixtures";
+import { delayClientScripts, expect, test } from "./fixtures";
 
 const photo = "/images/author/Muhammad-Rehan-Saeed/Logo-192x192.png";
 const geoUrl = "https://get.geojs.io/v1/ip/geo.json";
@@ -475,23 +475,36 @@ test.describe("Without JavaScript", () => {
   });
 });
 
-test("The map stays below the initial viewport without loading MapLibre", async ({
-  page,
-}) => {
-  for (const viewport of [
-    { width: 412, height: 823 },
-    { width: 1350, height: 940 },
-  ]) {
+for (const viewport of [
+  { width: 412, height: 823 },
+  { width: 1350, height: 940 },
+  { width: 1350, height: 2200 },
+]) {
+  test(`The introductory map defers loading before engagement at ${viewport.width}x${viewport.height}`, async ({
+    page,
+  }) => {
     await page.setViewportSize(viewport);
+    const mapRequests: string[] = [];
+    page.on("request", (request) => {
+      if (/maplibre-gl|openfreemap|geojs/.test(request.url())) {
+        mapRequests.push(request.url());
+      }
+    });
     const styles = await mockOpenFreeMap(page);
     await page.goto("/about/", { waitUntil: "load" });
     const figure = page.locator(".location-map");
-    await expect(figure).not.toBeInViewport();
-    const offset = await figure.evaluate(
-      (element) => element.getBoundingClientRect().top - window.innerHeight,
-    );
-    // u-intersect starts loading 200px before the map reaches the viewport.
-    expect(offset).toBeGreaterThan(200);
+    await expect(
+      page.getByRole("button", { name: "Open search" }),
+    ).toBeEnabled();
+    expect(
+      await figure.evaluate((element) => ({
+        before: element.previousElementSibling?.textContent,
+        after: element.nextElementSibling?.textContent,
+      })),
+    ).toEqual({
+      before: expect.stringContaining("I am a professional Software Developer"),
+      after: expect.stringContaining("I occasionally appear on"),
+    });
     await page.evaluate(
       () =>
         new Promise((resolve) => {
@@ -501,10 +514,100 @@ test("The map stays below the initial viewport without loading MapLibre", async 
         }),
     );
     expect(styles).toEqual([]);
+    expect(mapRequests).toEqual([]);
     await expect(figure).not.toHaveClass(/location-map--interactive/);
-    await page.unrouteAll();
+    await expect(figure).toHaveAttribute("tabindex", "0");
+  });
+}
+
+test("An initially visible map activates on a small scroll without leaving the viewport", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1350, height: 2200 });
+  const styles = await mockOpenFreeMap(page);
+  await page.goto("/about/", { waitUntil: "load" });
+  await requireWebGL(page);
+  const figure = page.locator(".location-map");
+  await expect(page.getByRole("button", { name: "Open search" })).toBeEnabled();
+  await expect(figure).toBeInViewport();
+  expect(styles).toEqual([]);
+
+  await page.mouse.wheel(0, 1);
+  await expect(figure).toHaveClass(/location-map--interactive/);
+  await expect(figure).toBeInViewport();
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+  expect(styles).toEqual(["positron"]);
+});
+
+test("Pre-hydration scrolling does not activate a map left offscreen", async ({
+  page,
+}) => {
+  const styles = await mockOpenFreeMap(page);
+  const scripts = await delayClientScripts(page);
+  try {
+    await page.goto("/about/", { waitUntil: "commit" });
+    const figure = page.locator(".location-map");
+    await figure.scrollIntoViewIfNeeded();
+    expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+    await page.evaluate(() => {
+      window.scrollTo({ top: 0, behavior: "instant" });
+    });
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+    expect(styles).toEqual([]);
+    scripts.resume();
+    await requireWebGL(page);
+    await expect(
+      page.getByRole("button", { name: "Open search" }),
+    ).toBeEnabled();
+    await expect(figure).not.toHaveClass(/location-map--interactive/);
+    expect(styles).toEqual([]);
+
+    await figure.scrollIntoViewIfNeeded();
+    await expect(figure).toHaveClass(/location-map--interactive/);
+    expect(styles).toEqual(["positron"]);
+  } finally {
+    await scripts.dispose();
   }
 });
+
+for (const { activation, engage, outline } of [
+  {
+    activation: "keyboard",
+    engage: (figure: Locator) => figure.focus(),
+    outline: "solid",
+  },
+  {
+    activation: "pointer",
+    engage: (figure: Locator) => figure.click(),
+    outline: "none",
+  },
+]) {
+  test(`An initially visible map loads on ${activation} engagement without scrolling`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1350, height: 2200 });
+    const styles = await mockOpenFreeMap(page);
+    await page.goto("/about/", { waitUntil: "load" });
+    await requireWebGL(page);
+    const figure = page.locator(".location-map");
+    const viewport = figure.locator(".location-map__viewport");
+    await expect(figure).toBeInViewport();
+    const initialBounds = await viewport.boundingBox();
+    expect(styles).toEqual([]);
+
+    await engage(figure);
+    await expect(figure).toBeFocused();
+    await expect(figure).toHaveCSS("outline-style", outline);
+    // Overlapping entry events must not construct two maps.
+    await figure.dispatchEvent("pointerdown");
+    await expect(figure).toHaveClass(/location-map--interactive/);
+    expect(styles).toEqual(["positron"]);
+    expect(await viewport.boundingBox()).toEqual(initialBounds);
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+    await expect(figure).toBeFocused();
+    await expect(figure.getByRole("button", { name: "Zoom in" })).toBeEnabled();
+  });
+}
 
 test("The free map loads on approach, shows Europe and follows the purple theme", async ({
   page,

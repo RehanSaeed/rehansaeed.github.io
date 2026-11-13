@@ -74,6 +74,24 @@ for (const colorScheme of ["light", "dark"] as const) {
   });
 }
 
+test("Leaving a trigger cancels its pending tooltip before it can open", async ({
+  page,
+}) => {
+  await page.clock.install();
+  await page.goto("/");
+  const search = page.getByRole("button", { name: "Open search", exact: true });
+  await expect(search).toBeEnabled();
+  await search.dispatchEvent("pointerenter", { pointerType: "mouse" });
+  await search.dispatchEvent("pointerleave", { pointerType: "mouse" });
+  await page.clock.fastForward(1000);
+  await expect(page.getByRole("tooltip")).toHaveCount(0);
+  await search.dispatchEvent("pointerenter", { pointerType: "mouse" });
+  await page.clock.fastForward(1000);
+  await expect(
+    page.getByRole("tooltip", { name: "Search", exact: true }),
+  ).toBeVisible();
+});
+
 test("Tooltips flip, clamp, track resizing and stay above dialogs", async ({
   page,
 }) => {
@@ -263,59 +281,69 @@ test("Tooltips try a perpendicular side and dismiss when their trigger is clippe
   await expect(search).not.toHaveAttribute("aria-describedby");
 });
 
-test("About image links describe their destinations without changing their layout", async ({
-  page,
-}) => {
-  await page.goto("/about/");
-  await expect(page.getByRole("button", { name: "Open search" })).toBeEnabled();
-  const groups = [
-    {
-      selector: ".about__youtube-images a",
-      text: "View my YouTube channel",
-      count: 2,
-    },
-    {
-      selector: ".github-badges li:nth-child(1) a",
-      text: "View my GitHub followers",
-      count: 1,
-    },
-    {
-      selector: ".github-badges li:nth-child(3) a",
-      text: "Sponsor me on GitHub",
-      count: 1,
-    },
-    {
-      selector: ".github-badges li:nth-child(2) a",
-      text: "Watch subscriptions across my public personal repositories, including forks and archives. Counted per repository, not per person. Updated on each site build.",
-      count: 1,
-    },
-    {
-      selector: ".about__github-statistics a",
-      text: "View my GitHub profile",
-      count: 1,
-    },
-    {
-      selector: ".about_awards-images a[href*='credly']",
-      text: "View my credentials on Credly",
-      count: 10,
-    },
-    {
-      selector: ".about_awards-images a[href='/open-uk-honouree/']",
-      text: "Read about my Open UK honour",
-      count: 1,
-    },
-    {
-      selector: "a:has(.about__stack-overflow-image)",
-      text: "View my Stack Overflow profile",
-      count: 1,
-    },
-    {
-      selector: ".about__mvp-images a",
-      text: "View the Microsoft MVP programme",
-      count: 1,
-    },
-  ];
-  for (const { selector, text, count } of groups) {
+for (const { name, selector, text, count } of [
+  {
+    name: "YouTube",
+    selector: ".about__youtube-images a",
+    text: "View my YouTube channel",
+    count: 2,
+  },
+  {
+    name: "GitHub followers",
+    selector: ".github-badges li:nth-child(1) a",
+    text: "View my GitHub followers",
+    count: 1,
+  },
+  {
+    name: "GitHub sponsorship",
+    selector: ".github-badges li:nth-child(3) a",
+    text: "Sponsor me on GitHub",
+    count: 1,
+  },
+  {
+    name: "GitHub watchers",
+    selector: ".github-badges li:nth-child(2) a",
+    text: "Watch subscriptions across my public personal repositories, including forks and archives. Counted per repository, not per person. Updated on each site build.",
+    count: 1,
+  },
+  {
+    name: "GitHub statistics",
+    selector: ".about__github-statistics a",
+    text: "View my GitHub profile",
+    count: 1,
+  },
+  {
+    name: "Credly credentials",
+    selector: ".about_awards-images a[href*='credly']",
+    text: "View my credentials on Credly",
+    count: 10,
+  },
+  {
+    name: "Open UK honour",
+    selector: ".about_awards-images a[href='/open-uk-honouree/']",
+    text: "Read about my Open UK honour",
+    count: 1,
+  },
+  {
+    name: "Stack Overflow",
+    selector: "a:has(.about__stack-overflow-image)",
+    text: "View my Stack Overflow profile",
+    count: 1,
+  },
+  {
+    name: "Microsoft MVP",
+    selector: ".about__mvp-images a",
+    text: "View the Microsoft MVP programme",
+    count: 1,
+  },
+]) {
+  test(`About image links describe their destinations without changing their layout: ${name}`, async ({
+    page,
+  }) => {
+    await page.goto("/about/");
+    await expect(
+      page.getByRole("button", { name: "Open search" }),
+    ).toBeEnabled();
     const links = page.locator(selector);
     await expect(links).toHaveCount(count);
     for (const link of await links.all()) {
@@ -329,8 +357,8 @@ test("About image links describe their destinations without changing their layou
       await page.keyboard.press("Escape");
       await expect(page.getByRole("tooltip")).toHaveCount(0);
     }
-  }
-});
+  });
+}
 
 test("GitHub badges describe stargazer and fork lists rather than actions", async ({
   page,

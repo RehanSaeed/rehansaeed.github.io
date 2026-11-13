@@ -65,18 +65,11 @@ const exactValue = computed(() => props.number.toLocaleString(props.locale));
 const formattedValue = computed(() =>
   displayValue.value.toLocaleString(props.locale),
 );
-let timer: ReturnType<typeof setInterval> | undefined;
+const motion = usePreferredReducedMotion();
+const visibility = useDocumentVisibility();
 let remainder = 0;
 let lastTick = 0;
-let motion: MediaQueryList | undefined;
 let inViewport = false;
-
-const clearTimer = () => {
-  if (timer !== undefined) {
-    clearInterval(timer);
-  }
-  timer = undefined;
-};
 
 const tick = (random = Math.random()) => {
   const now = Date.now();
@@ -91,18 +84,19 @@ const tick = (random = Math.random()) => {
   remainder = next.remainder;
   lastTick = now;
 };
+const { pause, resume } = useIntervalFn(tick, 1000, { immediate: false });
 
 const syncAnimation = () => {
-  running.value = !!motion && !motion.matches && props.rate !== 0;
+  running.value = motion.value === "no-preference" && props.rate !== 0;
   lastTick = Date.now();
   visibilityChanged();
 };
 
 const visibilityChanged = () => {
-  clearTimer();
-  if (running.value && inViewport && !document.hidden) {
+  pause();
+  if (running.value && inViewport && visibility.value === "visible") {
     tick(0.5);
-    timer = setInterval(tick, 1000);
+    resume();
   }
 };
 
@@ -120,18 +114,9 @@ watch([() => props.number, () => props.rate], () => {
   remainder = 0;
   syncAnimation();
 });
-onMounted(() => {
-  motion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  motion.addEventListener("change", syncAnimation);
-  document.addEventListener("visibilitychange", visibilityChanged);
-  syncAnimation();
-});
-
-onBeforeUnmount(() => {
-  clearTimer();
-  motion?.removeEventListener("change", syncAnimation);
-  document.removeEventListener("visibilitychange", visibilityChanged);
-});
+watch(motion, syncAnimation, { flush: "sync" });
+watch(visibility, visibilityChanged, { flush: "sync" });
+onMounted(syncAnimation);
 </script>
 
 <style lang="scss">

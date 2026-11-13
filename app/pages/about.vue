@@ -30,6 +30,7 @@
         Microsoft, my opinions are my own. If it’s written in HTML/CSS/JS, C# or
         .NET, I have probably written something using it in anger!
       </p>
+      <u-location-map />
       <p class="about__description">
         I occasionally appear on
         <a :href="youtubeUrl">Youtube</a> and
@@ -289,8 +290,6 @@
           </a>
         </u-tooltip>
       </div>
-      <!-- Keep the map below the initial viewport so its dynamic MapLibre import is deferred until visitors approach it. -->
-      <u-location-map />
       <p class="about__description">
         Do you have questions or comments about my work? Please feel free to
         contact me using any of the links above.
@@ -300,7 +299,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed } from "vue";
 
 defineOptions({ name: "u-about" });
 const metadata = useAppConfig().site;
@@ -340,7 +339,8 @@ useHead({
     { property: "fb:app_id", content: metadata.facebookAppId },
   ],
 });
-const theme = ref("light");
+const colorMode = useColorMode();
+const theme = computed(() => (colorMode.unknown ? "light" : colorMode.value));
 const relativeUrl = "/about/";
 const stackOverflowUrl = computed(() => metadata.author.stackOverflow.url);
 const oppositeTheme = computed(() =>
@@ -380,21 +380,6 @@ const youtubeBadgeImageUrl = (statistic: string, label: string) => {
   });
   return `https://img.shields.io/badge/dynamic/json?${query}`;
 };
-const setTheme = (event: Event) => {
-  if (event instanceof CustomEvent) {
-    const value: unknown = event.detail;
-    if (value === "light" || value === "dark") {
-      theme.value = value;
-    }
-  }
-};
-onMounted(() => {
-  theme.value = window.__theme;
-  window.addEventListener("__themeChanged", setTheme);
-});
-onUnmounted(() => {
-  window.removeEventListener("__themeChanged", setTheme);
-});
 </script>
 
 <style lang="scss">

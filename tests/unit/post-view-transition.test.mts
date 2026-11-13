@@ -140,6 +140,7 @@ const createHarness = (supported = true) => {
     runInNewContext(source, {
         AbortController,
         Element: FakeElement,
+        HTMLImageElement: FakeElement,
         document,
         window,
         location: {

@@ -30,12 +30,19 @@ export default defineNuxtConfig({
     "@nuxt/icon",
     "@nuxt/image",
     "@nuxt/scripts",
+    "@nuxtjs/color-mode",
     "@nuxtjs/seo",
     "@vite-pwa/nuxt",
+    "@vueuse/nuxt",
     "@nuxt/a11y",
     "@nuxt/eslint",
     "@nuxt/fonts",
   ],
+
+  colorMode: {
+    storageKey: "theme",
+    dataValue: "theme",
+  },
 
   eslint: {
     config: {
@@ -435,41 +442,6 @@ export default defineNuxtConfig({
         // Webmention
         { rel: "webmention", href: site.webmention.webmentionUrl },
         { rel: "pingback", href: site.webmention.pingbackUrl },
-      ],
-      script: [
-        {
-          // Resolve the theme before stylesheets and body parsing, not just before Vue loads.
-          // Otherwise the initial colour change can trigger the theme transitions.
-          tagPosition: "head",
-          tagPriority: 0,
-          innerHTML: `(function () {
-  function setTheme(newTheme) {
-    window.__theme = newTheme;
-    preferredTheme = newTheme;
-    document.documentElement.setAttribute("data-theme", newTheme);
-    window.dispatchEvent(new CustomEvent("__themeChanged", { detail: newTheme }));
-  }
-
-  var preferredTheme;
-  try {
-    preferredTheme = localStorage.getItem("theme");
-  } catch (err) {}
-
-  window.__setPreferredTheme = function (newTheme) {
-    setTheme(newTheme);
-    try {
-      localStorage.setItem("theme", newTheme);
-    } catch (err) {}
-  };
-
-  var darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
-  darkQuery.addListener(function (e) {
-    setTheme(e.matches ? "dark" : "light");
-  });
-
-  setTheme(preferredTheme || (darkQuery.matches ? "dark" : "light"));
-})();`,
-        },
       ],
     },
   },

@@ -25,6 +25,23 @@
     animation-duration: var(--global-duration-1);
   }
 
+  @media (forced-colors: none) {
+    .tag-view-transition__title {
+      display: inline-block;
+      view-transition-name: tag-title;
+    }
+
+    :root.post-view-transition::view-transition-group(tag-title) {
+      animation-duration: var(--global-duration-1);
+      animation-timing-function: var(--ease-out-quad);
+    }
+
+    :root.post-view-transition::view-transition-old(tag-title),
+    :root.post-view-transition::view-transition-new(tag-title) {
+      animation-duration: var(--global-duration-1);
+    }
+  }
+
   .fade-enter-active,
   .fade-leave-active {
     transition: opacity var(--global-duration-1) ease-in;

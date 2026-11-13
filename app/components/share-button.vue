@@ -37,13 +37,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, type PropType } from "vue";
+import { computed, ref, type PropType } from "vue";
 
 defineOptions({ name: "u-share-button" });
 const metadata = useAppConfig().site;
 const route = useRoute();
 const isDialogueOpen = ref(false);
-const isSupported = ref(false);
+const isSupported = useSupported(() => import.meta.client && !!navigator.share);
 const props = defineProps({
   /** Title displayed for this content. */ title: {
     type: String,
@@ -89,9 +89,6 @@ const mailUrl = computed(
   () => `mailto:?subject=${encodedTitle.value}&body=${encodedUrl.value}`,
 );
 
-onMounted(() => {
-  isSupported.value = !!navigator.share;
-});
 const open = () => {
   isDialogueOpen.value = true;
 };

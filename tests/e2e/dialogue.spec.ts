@@ -1,6 +1,8 @@
 import type { E2EFixtures } from "./fixtures";
 import { expect, test } from "./fixtures";
 
+test.use({ trace: "retain-on-failure" });
+
 const dialogs = [
   { title: "Search", trigger: "Open search" },
   { title: "Share", trigger: "Share" },
@@ -20,10 +22,12 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
         await page.addInitScript(() => {
           Object.defineProperty(navigator, "share", { value: undefined });
         });
-        await page.goto("/");
-        if (title !== "Search") {
-          await page.locator(".post-card__title").first().click();
-        }
+        // Keep dialog coverage independent of the newest post and page transitions.
+        await page.goto(
+          title === "Search"
+            ? "/"
+            : "/on-the-etiquette-of-pull-request-comments/",
+        );
         const opener = page
           .getByRole("button", { name: trigger, exact: true })
           .first();
@@ -93,6 +97,312 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
 
 test.describe("Dialog transitions", () => {
   test.use({ reducedMotion: "no-preference" });
+
+  test.afterEach(async ({ page }, testInfo) => {
+    if (
+      testInfo.title.includes("remains interactive after client navigation") &&
+      !page.isClosed()
+    ) {
+      await testInfo.attach("dialog-navigation-lifecycle", {
+        body: JSON.stringify(
+          await page.evaluate(() => {
+            const events: unknown = Reflect.get(
+              window,
+              "dialogNavigationEvents",
+            );
+            const pointerEvents: unknown = Reflect.get(
+              window,
+              "dialogNavigationPointerEvents",
+            );
+            const pointerEventCounts: unknown = Reflect.get(
+              window,
+              "dialogNavigationPointerEventCounts",
+            );
+            const openerEvents: unknown = Reflect.get(
+              window,
+              "dialogNavigationOpenerEvents",
+            );
+            const close = document.querySelector(
+              ".dialog[open] .dialog__close",
+            );
+            const box = close?.getBoundingClientRect();
+            const hit = box
+              ? document.elementFromPoint(
+                  box.x + box.width / 2,
+                  box.y + box.height / 2,
+                )
+              : null;
+            return {
+              events,
+              pointerEvents,
+              pointerEventCounts,
+              openerEvents,
+              root: document.documentElement.className,
+              hit: hit?.tagName,
+              hitClass: hit?.getAttribute("class"),
+              tooltip: !!document.querySelector('[role="tooltip"]'),
+            };
+          }),
+          null,
+          2,
+        ),
+        contentType: "application/json",
+      });
+    }
+  });
+
+  for (const { title, trigger } of dialogs.slice(1)) {
+    test(`${title} remains interactive after client navigation`, async ({
+      page,
+    }) => {
+      // Keep native navigation and animation clocks real in this regression.
+      await page.addInitScript(() => {
+        Object.defineProperty(navigator, "share", { value: undefined });
+        const events: Array<Record<string, unknown>> = [];
+        Reflect.set(window, "dialogNavigationEvents", events);
+        const pointerEvents: Array<Record<string, unknown>> = [];
+        const pointerEventCounts: Record<string, number> = {};
+        const openerEvents: Array<Record<string, unknown>> = [];
+        Reflect.set(window, "dialogNavigationOpenerEvents", openerEvents);
+        Reflect.set(window, "dialogNavigationPointerEvents", pointerEvents);
+        Reflect.set(
+          window,
+          "dialogNavigationPointerEventCounts",
+          pointerEventCounts,
+        );
+        const identities = new WeakMap<Element, number>();
+        let nextIdentity = 0;
+        const describeElement = (element: Element | null) => {
+          if (!element) {
+            return null;
+          }
+          if (!identities.has(element)) {
+            identities.set(element, ++nextIdentity);
+          }
+          return {
+            identity: identities.get(element),
+            connected: element.isConnected,
+            tag: element.tagName,
+            id: element.id,
+            class: element.getAttribute("class"),
+          };
+        };
+        const openerSelector = ".post__share > button, .post__support > button";
+        const controlState = () =>
+          [...document.querySelectorAll<HTMLButtonElement>(openerSelector)].map(
+            (button) => {
+              const dialog = button.parentElement?.querySelector("dialog");
+              return {
+                button: describeElement(button),
+                disabled: button.disabled,
+                hydrating: button.classList.contains("button--hydrating"),
+                dialog: describeElement(dialog ?? null),
+                open: dialog?.open,
+                display: dialog ? getComputedStyle(dialog).display : undefined,
+              };
+            },
+          );
+        const recordOpener = (phase: string, event: MouseEvent) => {
+          if (openerEvents.length === 32) {
+            openerEvents.splice(8, 1);
+          }
+          openerEvents.push({
+            phase,
+            at: performance.now(),
+            eventTime: event.timeStamp,
+            target: describeElement(
+              event.target instanceof Element ? event.target : null,
+            ),
+            defaultPrevented: event.defaultPrevented,
+            controls: controlState(),
+            nativeShare: typeof navigator.share,
+          });
+        };
+        for (const type of [
+          "pointermove",
+          "pointerdown",
+          "mousedown",
+          "mouseup",
+          "click",
+        ] as const) {
+          window.addEventListener(
+            type,
+            (event) => {
+              const close = document.querySelector(
+                ".dialog[open] .dialog__close",
+              );
+              const opener =
+                (event.target instanceof Element
+                  ? event.target.closest<HTMLButtonElement>(openerSelector)
+                  : null) ??
+                document.querySelector<HTMLButtonElement>(openerSelector);
+              const control = close ?? opener;
+              if (!control) {
+                return;
+              }
+              pointerEventCounts[type] = (pointerEventCounts[type] ?? 0) + 1;
+              // Preserve the first eight samples and the latest 24 retries.
+              if (pointerEvents.length === 32) {
+                pointerEvents.splice(8, 1);
+              }
+              const box = control.getBoundingClientRect();
+              const viewport = window.visualViewport;
+              pointerEvents.push({
+                type,
+                at: performance.now(),
+                eventTime: event.timeStamp,
+                trusted: event.isTrusted,
+                phase: close ? "modal-open" : "opener",
+                controls: close ? undefined : controlState(),
+                target: describeElement(
+                  event.target instanceof Element ? event.target : null,
+                ),
+                hit: describeElement(
+                  document.elementFromPoint(event.clientX, event.clientY),
+                ),
+                centerHit: describeElement(
+                  document.elementFromPoint(
+                    box.x + box.width / 2,
+                    box.y + box.height / 2,
+                  ),
+                ),
+                control: {
+                  x: box.x,
+                  y: box.y,
+                  width: box.width,
+                  height: box.height,
+                },
+                client: { x: event.clientX, y: event.clientY },
+                page: { x: event.pageX, y: event.pageY },
+                screen: { x: event.screenX, y: event.screenY },
+                scroll: { x: window.scrollX, y: window.scrollY },
+                viewport: {
+                  width: window.innerWidth,
+                  height: window.innerHeight,
+                  offsetLeft: viewport?.offsetLeft,
+                  offsetTop: viewport?.offsetTop,
+                  scale: viewport?.scale,
+                },
+              });
+            },
+            { capture: true, passive: true },
+          );
+        }
+        window.addEventListener(
+          "click",
+          (event) => {
+            if (!document.querySelector(openerSelector)) {
+              return;
+            }
+            recordOpener("capture", event);
+            // Observe after dispatch and Vue's queued update without delaying input.
+            requestAnimationFrame(() => {
+              recordOpener("next-frame", event);
+            });
+          },
+          { capture: true, passive: true },
+        );
+        window.addEventListener(
+          "click",
+          (event) => {
+            if (document.querySelector(openerSelector)) {
+              recordOpener("bubble", event);
+            }
+          },
+          { passive: true },
+        );
+        const record = (kind: string, id?: number, details?: unknown) => {
+          events.push({
+            kind,
+            at: performance.now(),
+            root: document.documentElement.className,
+            id,
+            details,
+            controls: controlState(),
+          });
+        };
+        if (typeof document.startViewTransition === "function") {
+          let sequence = 0;
+          const start = document.startViewTransition.bind(document);
+          document.startViewTransition = (update) => {
+            const id = ++sequence;
+            const transition = start(update);
+            Reflect.set(
+              window,
+              "dialogNavigationFinished",
+              transition.finished,
+            );
+            record("transition-start", id);
+            const skip = transition.skipTransition.bind(transition);
+            transition.skipTransition = () => {
+              record("transition-skip", id);
+              skip();
+            };
+            void transition.ready.then(
+              () => {
+                record("transition-ready", id);
+              },
+              (error: unknown) => {
+                record("transition-ready-rejected", id, String(error));
+              },
+            );
+            void transition.finished.then(
+              () => {
+                record("transition-finished", id);
+              },
+              (error: unknown) => {
+                record("transition-finished-rejected", id, String(error));
+              },
+            );
+            return transition;
+          };
+        }
+        document.addEventListener(
+          "beforetoggle",
+          (event) => {
+            if (event.target instanceof HTMLDialogElement) {
+              record("dialog-beforetoggle", undefined, {
+                newState:
+                  event instanceof ToggleEvent ? event.newState : undefined,
+              });
+            }
+          },
+          true,
+        );
+      });
+      await page.goto("/");
+      await expect(
+        page.getByRole("button", { name: "Open search", exact: true }),
+      ).toBeEnabled();
+      await page.locator(".post-card__title").first().click();
+      // Protocol auto-scroll during a snapshot can desynchronise Firefox's visual viewport.
+      // Finish navigation before scrolling to the offscreen Share/Coffee controls.
+      await expect
+        .poll(() =>
+          page.evaluate(() => Reflect.has(window, "dialogNavigationFinished")),
+        )
+        .toBe(true);
+      await page.evaluate(async () => {
+        const finished: unknown = Reflect.get(
+          window,
+          "dialogNavigationFinished",
+        );
+        await Promise.resolve(finished);
+      });
+
+      const opener = page
+        .getByRole("button", { name: trigger, exact: true })
+        .first();
+      const dialog = page.getByRole("dialog", { name: title, exact: true });
+      await opener.click();
+      await expect(dialog).toBeVisible();
+      await dialog
+        .getByRole("button", { name: `Close ${title}`, exact: true })
+        .click();
+      await expect(dialog).toBeHidden();
+      await expect(opener).toBeFocused();
+    });
+  }
 
   test("a queued close event does not close a reopened dialog", async ({
     page,

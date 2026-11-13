@@ -116,12 +116,48 @@ authorise publishing the article or posting to social media.
   Test observable behaviour, not implementation details.
 - Run `npm run test:lint` for lint-configuration changes and `npm run test:unit`
   for changes to the tested shared utilities.
-- Batch related edits and run the smallest relevant local checks while
-  developing. Reserve pushes and full CI runs for review-ready milestones or
-  validation that genuinely requires CI, not every intermediate edit.
-  Before handing off application or dependency changes, run `npm run build`,
-  `npm run typecheck`, `npm run lint`, and relevant Playwright tests.
-  Instruction-only changes need a focused Prettier check.
+- Start with the smallest affected checks and batch related edits before
+  expensive generation or browser runs. Instruction-only changes need a focused
+  Prettier check and `git diff --check`, not application builds or browser tests.
+  Reserve pushes and full CI runs for meaningful review milestones or validation
+  that genuinely requires CI, not every intermediate edit.
+- Run heavy checks serially within a session. In particular, `npm run build`
+  and `npm run typecheck` both prepare Nuxt and recreate shared content-image
+  output; do not overlap them in one worktree. Coordinate heavy checks across
+  Project sessions and confirm what is still running before starting; requesting
+  a pause does not establish exclusive use of the machine.
+- Preserve supported same-branch build caches instead of clearing them routinely.
+  Responsive images use `.cache/nuxt-images`; its fingerprint includes the full
+  lockfile, effective image/IPX settings, image-processing environment, source
+  images (including configured IPX roots), Node/platform and cache-module inputs.
+  Unrelated Nuxt configuration, such as bundled icons, does not invalidate it.
+  CI restores a candidate; only the module's fingerprint authorises reuse.
+  Non-serialisable image settings and custom provider implementations disable
+  reuse with a warning rather than hashing function text or ignoring closures.
+  The cache supports the local `/_ipx` provider. Image-setting or dependency edits
+  can invalidate it, and builds failing before
+  Nitro's compiled hook may not save it. Nuxt OG `buildCache` is also enabled.
+  Cache reuse still requires generating and checking current output; do not copy
+  unverified artifacts from another branch.
+- Playwright's automatic server runs `npm start` against prebuilt `dist`; it
+  does not build the site. Verify the served output belongs to the current
+  worktree and reflects the changes, especially when reusing port 8080. For a
+  dedicated port, serve this worktree's output with `PORT` and `scripts/serve.mts`.
+  `BASE_URL` skips the automatic server but also changes workers, retries and
+  timeouts; it is not a generic speed switch. Under load, start with a bounded
+  affected-file run such as
+  `npx playwright test <test-file> --project=chrome --workers=1 --retries=0 --max-failures=1`.
+  This is early feedback, not a replacement for required cross-browser coverage.
+- If generation or browser setup/teardown stalls, inspect process activity,
+  logs, server readiness and resource contention before retrying. Stop only
+  identified task-owned processes when necessary; do not repeatedly launch
+  suites, inflate timeouts or attribute failures to load without evidence.
+- Open an implemented PR without waiting for every expensive check; disclose
+  pending, failed and unrun validation rather than claiming readiness. Application
+  or dependency changes still require `npm run build`, `npm run typecheck`,
+  `npm run lint` and relevant Playwright verification before final readiness.
+  Opening a PR does not relax assertions, security or accessibility requirements,
+  or the final-head CI gates below.
 - Treat a build as successful only when the command exits successfully,
   including SEO verification. A successful build does not prove accessibility,
   browser behaviour or article code samples are correct.
@@ -145,6 +181,44 @@ authorise publishing the article or posting to social media.
 - Record exact validation commands and outcomes in the PR description, including
   checks that could not be run. Distinguish local validation, CI results and
   manual accessibility checks.
+
+### Pre-merge App Previews
+
+- For app-affecting PRs, give the user a running, accessible preview of the actual
+  changed app before merging. Screenshots, source diffs and green checks are not
+  substitutes. Instruction-only changes need no app preview.
+- Start the preview as soon as the changed app is runnable, not after full CI or
+  every expensive check finishes. Coordinate resource use with other sessions
+  without leaving preview startup indefinitely queued behind heavy validation.
+  Surface startup failures, contention or access blockers promptly.
+- Use `npm run dev -- --port <unused-port>` for early review, or
+  `PORT=<unused-port> npm start` for already-generated, current-worktree `dist`
+  (set `$env:PORT` in PowerShell). Choose the workflow that exercises the change;
+  dev mode does not prove production-only behaviour. Do not require a full
+  rebuild for every preview, serve stale output or borrow another branch's
+  artifacts. Use a fresh browser context or clear this preview origin's stale
+  service worker/cache so PWA content cannot mask the changes.
+- Select an unused dedicated port. Before stopping or restarting any server,
+  positively verify task ownership from its recorded process handle or PID,
+  command and worktree/output path; a port number alone is not ownership.
+  Never stop unrelated listeners. Use the execution tool's detached/long-lived
+  mode for a review server that must survive the reply, not a short-lived shell
+  or a test helper that tears it down.
+- Verify readiness by opening the affected real page and exercising the requested
+  interaction in the browser. A listening port, startup log or homepage-only
+  probe is insufficient; HTTP 500/503 responses, error pages and broken
+  interactions are not usable previews. Confirm the page shows the current
+  changes, and recheck after any restart or output replacement.
+- Share the precise working URL to the affected page or an accessible app browser
+  preview, with any needed interaction steps. A remote host's localhost URL is
+  not user-accessible without forwarding. Keep the dedicated preview available
+  for user review; coordinate checks that regenerate shared output so they do
+  not break it. State pending, failed and unrun validation explicitly; an early
+  preview is not a claim that work is complete or merge-ready.
+- Preview review and the final build/test/CI gates above are independent
+  requirements. Do not merge or enable auto-merge until the user has had an
+  opportunity to try the app (or explicitly waived the preview) and has given
+  merge authorisation; a preview waiver does not waive validation.
 
 ## Nuxt Components
 

@@ -1,8 +1,11 @@
 <template>
-  <u-intersect root-margin="200px" @enterFirstTime="loadMap">
+  <u-intersect root-margin="200px" @change="onIntersectionChange">
     <figure
       class="location-map"
-      :class="{ 'location-map--interactive': mapReady }">
+      :class="{ 'location-map--interactive': mapReady }"
+      :tabindex="mapReady ? -1 : 0"
+      @focusin="loadMap"
+      @pointerdown="loadMap">
       <div class="location-map__viewport">
         <div
           ref="mapContainer"
@@ -168,6 +171,7 @@ const locationSchema = z.object({
   latitude: coordinate(-85, 85),
 });
 const avatarClipId = `${useId()}-location-avatar`;
+const colorMode = useColorMode();
 const mapContainer = ref<HTMLDivElement>();
 const markerTemplate = ref<HTMLDivElement>();
 const visitorTemplate = ref<HTMLDivElement>();
@@ -180,12 +184,14 @@ let marker: MapLibreMarker | undefined;
 let visitorMarker: MapLibreMarker | undefined;
 let visitorLocation: [number, number] | undefined;
 let locationController: AbortController | undefined;
-let resizeObserver: ResizeObserver | undefined;
-let attributionTimeout: ReturnType<typeof setTimeout> | undefined;
+const preferredMotion = usePreferredReducedMotion();
 let reduceMotion = false;
 let styleReady = false;
 let userMovedMap = false;
 let disposed = false;
+let hasScrolled = false;
+let nearViewport = false;
+let started = false;
 const isDisposed = () => disposed;
 
 const mapStyle = () => {
@@ -208,8 +214,32 @@ const createMarker = (
     .addTo(map);
 };
 
+const { start: startAttributionTimeout, stop: stopAttributionTimeout } =
+  useTimeoutFn(
+    () => {
+      const attribution = map
+        ?.getContainer()
+        .querySelector(".maplibregl-ctrl-attrib");
+      if (attribution?.classList.contains("maplibregl-compact-show")) {
+        attribution
+          .querySelector<HTMLElement>(".maplibregl-ctrl-attrib-button")
+          ?.click();
+      }
+    },
+    5000,
+    { immediate: false },
+  );
+const { start: startLocationTimeout, stop: stopLocationTimeout } = useTimeoutFn(
+  () => locationController?.abort(),
+  8000,
+  {
+    immediate: false,
+  },
+);
+
 const removeMap = () => {
-  clearTimeout(attributionTimeout);
+  stopAttributionTimeout();
+  stopLocationTimeout();
   locationController?.abort();
   visitorMarker?.remove();
   visitorMarker = undefined;
@@ -222,7 +252,7 @@ const removeMap = () => {
   styleReady = false;
   locationStatus.value = "";
   distanceMiles.value = undefined;
-  resizeObserver?.disconnect();
+  stopResizeObserver();
 };
 
 const failMap = (error: unknown) => {
@@ -266,6 +296,12 @@ const frameMap = (animate: boolean) => {
     },
   );
 };
+const { stop: stopResizeObserver } = useResizeObserver(mapContainer, () => {
+  map?.resize();
+  if (mapReady.value) {
+    frameMap(false);
+  }
+});
 
 const applyMapPalette = () => {
   if (!map || !mapContainer.value) {
@@ -387,9 +423,7 @@ const loadVisitorLocation = async (
 ) => {
   const controller = new AbortController();
   locationController = controller;
-  const timeout = setTimeout(() => {
-    controller.abort();
-  }, 8000);
+  startLocationTimeout();
   try {
     const response = await fetch("https://get.geojs.io/v1/ip/geo.json", {
       signal: controller.signal,
@@ -426,8 +460,8 @@ const loadVisitorLocation = async (
     locationStatus.value =
       "Your approximate location is unavailable. Showing East London and Europe.";
   } finally {
-    clearTimeout(timeout);
     if (locationController === controller) {
+      stopLocationTimeout();
       locationController = undefined;
     }
   }
@@ -446,9 +480,10 @@ const updateTheme = () => {
 };
 
 const loadMap = async () => {
-  if (isDisposed()) {
+  if (isDisposed() || started) {
     return;
   }
+  started = true;
   try {
     const [maplibregl, , { default: workerUrl }] = await Promise.all([
       import("maplibre-gl"),
@@ -462,9 +497,7 @@ const loadMap = async () => {
       throw new Error("The map container is missing.");
     }
     maplibregl.setWorkerUrl(workerUrl);
-    reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
+    reduceMotion = preferredMotion.value === "reduce";
     map = new maplibregl.Map({
       container: mapContainer.value,
       style: mapStyle(),
@@ -507,26 +540,10 @@ const loadMap = async () => {
       }
       mapReady.value = true;
       mapStatus.value = "";
-      attributionTimeout = setTimeout(() => {
-        const attribution = map
-          ?.getContainer()
-          .querySelector(".maplibregl-ctrl-attrib");
-        if (attribution?.classList.contains("maplibregl-compact-show")) {
-          attribution
-            .querySelector<HTMLElement>(".maplibregl-ctrl-attrib-button")
-            ?.click();
-        }
-      }, 5000);
+      startAttributionTimeout();
       frameMap(true);
       void loadVisitorLocation(maplibregl);
     });
-    resizeObserver = new ResizeObserver(() => {
-      map?.resize();
-      if (mapReady.value) {
-        frameMap(false);
-      }
-    });
-    resizeObserver.observe(mapContainer.value);
   } catch (error) {
     if (!isDisposed()) {
       failMap(error);
@@ -534,13 +551,35 @@ const loadMap = async () => {
   }
 };
 
+const loadOnApproach = () => {
+  // Initial visibility on a tall screen is not a request to start WebGL.
+  if (hasScrolled && nearViewport) {
+    void loadMap();
+  }
+};
+
+const onIntersectionChange = (entries: IntersectionObserverEntry[]) => {
+  nearViewport = entries.some((entry) => entry.isIntersecting);
+  loadOnApproach();
+};
+
+useEventListener(
+  "scroll",
+  () => {
+    hasScrolled = true;
+    loadOnApproach();
+  },
+  { once: true, passive: true },
+);
+
 onMounted(() => {
-  window.addEventListener("__themeChanged", updateTheme);
+  hasScrolled = window.scrollY > 0;
 });
+
+watch(() => colorMode.value, updateTheme, { flush: "post" });
 
 onBeforeUnmount(() => {
   disposed = true;
-  window.removeEventListener("__themeChanged", updateTheme);
   removeMap();
 });
 </script>
@@ -590,6 +629,11 @@ onBeforeUnmount(() => {
   margin: 0 0 var(--global-space-fixed-5);
   margin-inline: calc(var(--card-space, 0px) * -1);
   overflow: hidden;
+
+  &:focus-visible {
+    outline: var(--global-border-width-2) solid var(--global-accent-color);
+    outline-offset: var(--global-focus-outline-offset);
+  }
 }
 
 [data-theme="dark"] .location-map {
@@ -798,6 +842,7 @@ onBeforeUnmount(() => {
     color: ButtonText;
   }
 
+  .location-map:focus-visible,
   .location-map :focus-visible {
     outline: var(--global-border-width-2) solid Highlight;
     outline-offset: var(--global-border-width-2);

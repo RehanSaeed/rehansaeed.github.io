@@ -8,6 +8,15 @@ for (const theme of ["light", "dark"] as const) {
     async function verifyInitialThemeTiming({
       page,
     }: Pick<E2EFixtures, "page">) {
+      const hydrationWarnings: string[] = [];
+      page.on("console", (message) => {
+        if (
+          ["error", "warning"].includes(message.type()) &&
+          /hydration/i.test(message.text())
+        ) {
+          hydrationWarnings.push(message.text());
+        }
+      });
       await page.emulateMedia({
         colorScheme: saved ? (theme === "dark" ? "light" : "dark") : theme,
       });
@@ -46,12 +55,20 @@ for (const theme of ["light", "dark"] as const) {
             const script = Array.from(
               document.head.querySelectorAll("script"),
             ).find((script) =>
-              script.textContent.includes("window.__setPreferredTheme"),
+              script.textContent.includes("__NUXT_COLOR_MODE__"),
             );
             const styles = Array.from(
               document.head.querySelectorAll('style, link[rel="stylesheet"]'),
             );
+            const charset = document.head.querySelector("meta[charset]");
             return {
+              charsetBeforeTheme:
+                !!script &&
+                !!charset &&
+                !!(
+                  charset.compareDocumentPosition(script) &
+                  Node.DOCUMENT_POSITION_FOLLOWING
+                ),
               themeBeforeStyles:
                 !!script &&
                 styles.length > 0 &&
@@ -69,6 +86,7 @@ for (const theme of ["light", "dark"] as const) {
                 .map((animation) => animation.transitionProperty),
             };
           });
+          expect(initial.charsetBeforeTheme).toBe(true);
           expect(initial.themeBeforeStyles).toBe(true);
           expect(initial.background).toBe(
             theme === "dark" ? "rgb(14, 38, 58)" : "rgb(249, 250, 251)",
@@ -80,6 +98,7 @@ for (const theme of ["light", "dark"] as const) {
           page.getByRole("button", { name: "Toggle dark/light" }),
         ).toBeEnabled();
         await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
+        expect(hydrationWarnings).toEqual([]);
       } finally {
         await scripts.dispose();
       }
@@ -127,7 +146,7 @@ for (const initialTheme of ["light", "dark"] as const) {
       );
     });
 
-    const samples = await toggle.evaluate((button: HTMLButtonElement) => {
+    const samples = await toggle.evaluate(async (button: HTMLButtonElement) => {
       const arrows = Array.from(document.querySelectorAll(".arrows__arrow"));
       // Firefox can still be transitioning from the initial transparent body.
       for (const animation of document.getAnimations()) {
@@ -139,7 +158,18 @@ for (const initialTheme of ["light", "dark"] as const) {
         }
       }
       const initialBackground = getComputedStyle(document.body).backgroundColor;
+      const changed = new Promise<void>((resolve) => {
+        const observer = new MutationObserver(() => {
+          observer.disconnect();
+          resolve();
+        });
+        observer.observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ["data-theme"],
+        });
+      });
       button.click();
+      await changed;
       const transitions = document
         .getAnimations()
         .filter(
