@@ -109,12 +109,13 @@ test("Overlay arrows appear on hover or keyboard focus without covering captions
   const gallery = page.locator(gallerySelector).first();
   const track = gallery.locator(".image-carousel__track");
   const next = gallery.getByRole("button", { name: "Next image" });
+  const shell = gallery.locator(".image-carousel__arrow-shell").last();
   await expect(gallery.locator(".image-carousel__controls")).toBeVisible();
   await gallery.scrollIntoViewIfNeeded();
   await page.mouse.move(0, 0);
-  await expect(next).toHaveCSS("opacity", "0");
+  await expect(shell).toHaveCSS("opacity", "0");
   await track.hover();
-  await expect(next).toHaveCSS("opacity", "1");
+  await expect(shell).toHaveCSS("opacity", "1");
   const image = await gallery.locator("img").first().boundingBox();
   const button = await next.boundingBox();
   expect(image).not.toBeNull();
@@ -126,9 +127,9 @@ test("Overlay arrows appear on hover or keyboard focus without covering captions
   expect(button!.y).toBeGreaterThan(image!.y);
   expect(button!.y + button!.height).toBeLessThan(image!.y + image!.height);
   await page.mouse.move(0, 0);
-  await expect(next).toHaveCSS("opacity", "0");
+  await expect(shell).toHaveCSS("opacity", "0");
   await track.focus();
-  await expect(next).toHaveCSS("opacity", "1");
+  await expect(shell).toHaveCSS("opacity", "1");
   await page.keyboard.press("Tab");
   await expect(gallery.getByRole("link")).toBeFocused();
   await page.keyboard.press("Tab");
@@ -159,6 +160,44 @@ test.describe("Touch input", () => {
       gallery.getByRole("button", { name: "Go to image 2 of 3" }),
     ).toHaveAttribute("aria-current", "true");
   });
+});
+
+test("Overlay arrows match the video control colours, targets and inset circles", async ({
+  page,
+}) => {
+  const gallery = page.locator(gallerySelector).first();
+  const next = gallery.getByRole("button", { name: "Next image" });
+  await expect(gallery.locator(".image-carousel__controls")).toBeVisible();
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate((value) => {
+      document.documentElement.dataset.theme = value;
+    }, theme);
+    await gallery.locator(".image-carousel__track").hover();
+    await expect(next).toHaveCSS("color", "rgb(255, 255, 255)");
+    await expect(next).toHaveCSS("inline-size", "44px");
+    await expect(next).toHaveCSS("block-size", "44px");
+    await expect(next).toHaveCSS("font-size", "20px");
+    await expect(next).toHaveCSS("padding", "4px");
+    await expect(next).toHaveCSS("background-clip", "content-box");
+    await expect(
+      gallery.locator(".image-carousel__arrow-shell").last(),
+    ).toHaveCSS("background-color", "rgba(0, 0, 0, 0.65)");
+    await next.hover();
+    await expect(next).toHaveCSS("background-color", "rgb(255, 255, 255)");
+    const hoverMatchesTheme = await next.evaluate((button, currentTheme) => {
+      const sample = document.createElement("span");
+      sample.style.color =
+        currentTheme === "dark"
+          ? "var(--global-alternate-accent-color)"
+          : "var(--global-accent-color)";
+      button.append(sample);
+      const matches =
+        getComputedStyle(button).color === getComputedStyle(sample).color;
+      sample.remove();
+      return matches;
+    }, theme);
+    expect(hoverMatchesTheme).toBe(true);
+  }
 });
 
 test("Native horizontal scrolling updates the selected image", async ({
@@ -239,6 +278,80 @@ test("Reduced motion and forced colours retain a flat, keyboard-operable gallery
 
 test.describe("Continuous Cover Flow", () => {
   test.use({ reducedMotion: "no-preference" });
+
+  test("Pagination animates both selected states and honours reduced motion", async ({
+    page,
+  }) => {
+    const gallery = page.locator(gallerySelector).first();
+    await expect(gallery.locator(".image-carousel__controls")).toBeVisible();
+    await gallery.scrollIntoViewIfNeeded();
+    const animation = await gallery.evaluate(
+      (element) =>
+        new Promise<{
+          properties: string[];
+          midpoint: number[];
+          endpoint: number[];
+        }>((resolve) => {
+          const buttons = element.querySelectorAll<HTMLButtonElement>(
+            ".image-carousel__dot",
+          );
+          const spans = [buttons[0]!, buttons[1]!].map((button) =>
+            button.querySelector("span")!,
+          );
+          spans.forEach((span) => span.getBoundingClientRect());
+          const observer = new MutationObserver(() => {
+            if (buttons[1]!.getAttribute("aria-current") !== "true") {
+              return;
+            }
+            observer.disconnect();
+            const transitions = spans.flatMap((span) => span.getAnimations());
+            transitions.forEach((transition) => {
+              transition.pause();
+              transition.currentTime = 100;
+            });
+            const midpoint = spans.map(
+              (span) => span.getBoundingClientRect().width,
+            );
+            transitions.forEach((transition) => {
+              transition.currentTime = 200;
+            });
+            resolve({
+              properties: transitions.map((transition) =>
+                transition instanceof CSSTransition
+                  ? transition.transitionProperty
+                  : "other",
+              ),
+              midpoint,
+              endpoint: spans.map((span) => span.getBoundingClientRect().width),
+            });
+          });
+          observer.observe(element, {
+            attributes: true,
+            subtree: true,
+            attributeFilter: ["aria-current"],
+          });
+          buttons[1]!.click();
+        }),
+    );
+    expect(animation.properties).toEqual(
+      expect.arrayContaining(["background-color"]),
+    );
+    for (const width of animation.midpoint) {
+      expect(width).toBeGreaterThan(10);
+      expect(width).toBeLessThan(16);
+    }
+    expect(animation.endpoint).toEqual([10, 16]);
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await gallery.getByRole("button", { name: "Go to image 1 of 3" }).click();
+    await expect(
+      gallery.getByRole("button", { name: "Go to image 1 of 3" }),
+    ).toHaveAttribute("aria-current", "true");
+    await expect(
+      gallery
+        .getByRole("button", { name: "Go to image 1 of 3" })
+        .locator("span"),
+    ).toHaveCSS("transition-duration", "0s");
+  });
 
   test("Transforms follow fractional scroll positions, not just the selected image", async ({
     page,

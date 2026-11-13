@@ -16,24 +16,28 @@
         <slot />
       </div>
       <div v-if="mounted" class="image-carousel__arrows">
-        <u-button
-          class="image-carousel__arrow"
-          variant="icon"
-          aria-label="Previous image"
-          :aria-controls="trackId"
-          :aria-disabled="currentIndex === 0"
-          @click="navigate(currentIndex - 1)">
-          <u-icon name="feather:arrow-left" aria-hidden="true" />
-        </u-button>
-        <u-button
-          class="image-carousel__arrow"
-          variant="icon"
-          aria-label="Next image"
-          :aria-controls="trackId"
-          :aria-disabled="currentIndex === count - 1"
-          @click="navigate(currentIndex + 1)">
-          <u-icon name="feather:arrow-right" aria-hidden="true" />
-        </u-button>
+        <span class="image-carousel__arrow-shell">
+          <u-button
+            class="image-carousel__arrow"
+            variant="icon"
+            aria-label="Previous image"
+            :aria-controls="trackId"
+            :aria-disabled="currentIndex === 0"
+            @click="navigate(currentIndex - 1)">
+            <u-icon name="feather:arrow-left" aria-hidden="true" />
+          </u-button>
+        </span>
+        <span class="image-carousel__arrow-shell">
+          <u-button
+            class="image-carousel__arrow"
+            variant="icon"
+            aria-label="Next image"
+            :aria-controls="trackId"
+            :aria-disabled="currentIndex === count - 1"
+            @click="navigate(currentIndex + 1)">
+            <u-icon name="feather:arrow-right" aria-hidden="true" />
+          </u-button>
+        </span>
       </div>
     </div>
     <div v-if="mounted" class="image-carousel__controls">
@@ -363,30 +367,59 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   pointer-events: none;
 
-  [aria-disabled="true"] {
-    --button-icon-color: var(--global-disabled-color);
-    --button-icon-hover-color: var(--global-disabled-color);
+  .image-carousel__arrow[aria-disabled="true"] {
+    --button-icon-color: rgb(255 255 255 / 65%);
+    --button-icon-hover-color: rgb(255 255 255 / 65%);
+    --button-icon-hover-background: rgb(255 255 255 / 15%);
 
     cursor: default;
   }
 }
 
+.image-carousel__arrow-shell {
+  display: grid;
+  border-radius: 50%;
+  background: rgb(0 0 0 / 65%);
+}
+
 .image-carousel__arrows .image-carousel__arrow {
-  background-color: var(--global-background-color);
-  box-shadow: var(--global-shadow-1);
+  --button-icon-color: #fff;
+  --button-icon-hover-color: var(
+    --gallery-button-hover-color,
+    var(--global-accent-color)
+  );
+  --button-icon-hover-background: #fff;
+
+  background-clip: content-box;
+  font-size: 20px;
+  padding: 4px;
   pointer-events: auto;
+
+  &:focus-visible {
+    outline-offset: -6px;
+  }
+}
+
+[data-theme="dark"] .image-carousel__arrows {
+  --gallery-button-hover-color: var(--global-alternate-accent-color);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .image-carousel__arrows .image-carousel__arrow {
+  .image-carousel__arrow-shell {
     opacity: 0;
+  }
+
+  .image-carousel__arrows .image-carousel__arrow {
     pointer-events: none;
   }
 
   .image-carousel__viewport:hover,
   .image-carousel:focus-within {
-    .image-carousel__arrow {
+    .image-carousel__arrow-shell {
       opacity: 1;
+    }
+
+    .image-carousel__arrow {
       pointer-events: auto;
     }
   }
@@ -431,6 +464,15 @@ onBeforeUnmount(() => {
 
 .image-carousel__position {
   @include visually-hidden.visually-hidden();
+}
+
+@media (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+  .image-carousel__dot span {
+    transition:
+      inline-size var(--global-duration-1) var(--ease-in-out-cubic),
+      block-size var(--global-duration-1) var(--ease-in-out-cubic),
+      background-color var(--global-duration-1) var(--ease-in-out-cubic);
+  }
 }
 
 @keyframes gallery-cover-turn {
@@ -492,9 +534,8 @@ onBeforeUnmount(() => {
     forced-color-adjust: none;
   }
 
-  .image-carousel__arrows .image-carousel__arrow {
-    background-color: ButtonFace;
-    box-shadow: none;
+  .image-carousel__arrow-shell {
+    background: ButtonFace;
   }
 
   .image-carousel__arrows [aria-disabled="true"] {
