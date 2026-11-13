@@ -30,21 +30,38 @@ test("Groups article images with working links, captions and stable endpoint foc
     "Human review remains part of the workflow.",
     "The last image can be centred too.",
   ]);
-  const previous = gallery.getByRole("button", { name: "Previous image" });
-  const next = gallery.getByRole("button", { name: "Next image" });
+  const previous = gallery.getByRole("button", {
+    name: "Previous image",
+    includeHidden: true,
+  });
+  const next = gallery.getByRole("button", {
+    name: "Next image",
+    includeHidden: true,
+  });
   await gallery.locator(".image-carousel__track").hover();
   await expect(previous).toHaveAttribute("aria-disabled", "true");
+  await expect(previous).toBeHidden();
+  await expect(next).toBeVisible();
   await next.click();
   await expect(
     gallery.getByRole("button", { name: "Go to image 2 of 3" }),
   ).toHaveAttribute("aria-current", "true");
   await next.click();
   await expect(next).toHaveAttribute("aria-disabled", "true");
-  await expect(next).toBeFocused();
+  await expect(next).toBeHidden();
+  await expect(track).toBeFocused();
+  await expect(previous).toBeVisible();
   await expect(gallery.locator("[aria-live]")).toHaveText("Image 3 of 3");
-  await next.press("Enter");
-  await expect(next).toBeFocused();
-  await track.focus();
+  await track.press("End");
+  await expect(track).toBeFocused();
+  await expect(next).toBeHidden();
+  await previous.click();
+  await expect(
+    gallery.getByRole("button", { name: "Go to image 2 of 3" }),
+  ).toHaveAttribute("aria-current", "true");
+  await previous.click();
+  await expect(previous).toBeHidden();
+  await expect(track).toBeFocused();
   await track.press("Home");
   await expect(previous).toHaveAttribute("aria-disabled", "true");
   await track.press("End");
@@ -97,8 +114,17 @@ test("Mouse dragging browses images without following links and ordinary clicks 
   );
   await page.mouse.up();
   await expect(
-    gallery.getByRole("button", { name: "Previous image" }),
+    gallery.getByRole("button", {
+      name: "Previous image",
+      includeHidden: true,
+    }),
   ).toHaveAttribute("aria-disabled", "true");
+  await expect(
+    gallery.getByRole("button", {
+      name: "Previous image",
+      includeHidden: true,
+    }),
+  ).toBeHidden();
   await gallery.getByRole("link").click();
   await expect(page).toHaveURL(/\/css-general-rules-of-thumb\/$/);
 });
@@ -126,16 +152,13 @@ test("Overlay arrows appear on hover or keyboard focus without covering captions
   );
   expect(button!.y).toBeGreaterThan(image!.y);
   expect(button!.y + button!.height).toBeLessThan(image!.y + image!.height);
-  await page.mouse.move(0, 0);
+  await gallery.locator("figcaption").first().hover();
   await expect(shell).toHaveCSS("opacity", "0");
+  await page.keyboard.press("Tab");
   await track.focus();
   await expect(shell).toHaveCSS("opacity", "1");
   await page.keyboard.press("Tab");
   await expect(gallery.getByRole("link")).toBeFocused();
-  await page.keyboard.press("Tab");
-  await expect(
-    gallery.getByRole("button", { name: "Previous image" }),
-  ).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(next).toBeFocused();
   await page.keyboard.press("Enter");
@@ -241,10 +264,15 @@ test("Normal image size, first/last centring and controls survive narrow and sca
         expect(bounds!.x).toBeGreaterThanOrEqual(0);
         expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
         await expect(
-          gallery.getByRole("button", { name: "Previous image" }),
-        ).toBeVisible();
+          gallery.getByRole("button", {
+            name: number === 1 ? "Previous image" : "Next image",
+            includeHidden: true,
+          }),
+        ).toBeHidden();
         await expect(
-          gallery.getByRole("button", { name: "Next image" }),
+          gallery.getByRole("button", {
+            name: number === 1 ? "Next image" : "Previous image",
+          }),
         ).toBeVisible();
       }
       expect(
@@ -265,8 +293,11 @@ test("Reduced motion and forced colours retain a flat, keyboard-operable gallery
     await track.focus();
     await track.press("End");
     await expect(
-      gallery.getByRole("button", { name: "Next image" }),
+      gallery.getByRole("button", { name: "Next image", includeHidden: true }),
     ).toHaveAttribute("aria-disabled", "true");
+    await expect(
+      gallery.getByRole("button", { name: "Next image", includeHidden: true }),
+    ).toBeHidden();
     await expect(gallery.locator(".image-carousel__frame").last()).toHaveCSS(
       "transform",
       "none",
@@ -278,6 +309,58 @@ test("Reduced motion and forced colours retain a flat, keyboard-operable gallery
 
 test.describe("Continuous Cover Flow", () => {
   test.use({ reducedMotion: "no-preference" });
+
+  test("Available arrows fade in over images, not captions or keyboard focus", async ({
+    page,
+  }) => {
+    const gallery = page.locator(gallerySelector).first();
+    const shell = gallery.locator(".image-carousel__arrow-shell").last();
+    const image = gallery.locator("img").first();
+    await expect(gallery.locator(".image-carousel__controls")).toBeVisible();
+    await gallery.scrollIntoViewIfNeeded();
+    await page.mouse.move(0, 0);
+    await expect(shell).toHaveCSS("opacity", "0");
+    await image.evaluate((element) => {
+      element.addEventListener(
+        "pointerenter",
+        () => {
+          element
+            .closest(".image-carousel")!
+            .querySelector(".image-carousel__arrow-shell:last-child")!
+            .getAnimations()
+            .forEach((animation) => {
+              animation.pause();
+              animation.currentTime = 100;
+            });
+        },
+        { once: true },
+      );
+    });
+    await image.hover();
+    const midpoint = await shell.evaluate((element) =>
+      Number(getComputedStyle(element).opacity),
+    );
+    expect(midpoint).toBeGreaterThan(0);
+    expect(midpoint).toBeLessThan(1);
+    await shell.evaluate((element) => {
+      element.getAnimations().forEach((animation) => {
+        animation.finish();
+      });
+    });
+    await gallery.locator("figcaption").first().hover();
+    await expect(shell).toHaveCSS("opacity", "0");
+    await page.keyboard.press("Tab");
+    await gallery.locator(".image-carousel__track").focus();
+    await expect(shell).toHaveCSS("opacity", "1");
+    await expect(shell).toHaveCSS("transition-duration", "0s");
+    await gallery.locator(".image-carousel__track").evaluate((element) => {
+      element.blur();
+    });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await image.hover();
+    await expect(shell).toHaveCSS("opacity", "1");
+    await expect(shell).toHaveCSS("transition-duration", "0s");
+  });
 
   test("Pagination animates both selected states and honours reduced motion", async ({
     page,

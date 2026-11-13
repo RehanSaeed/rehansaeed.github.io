@@ -16,7 +16,12 @@
         <slot />
       </div>
       <div v-if="mounted" class="image-carousel__arrows">
-        <span class="image-carousel__arrow-shell">
+        <span
+          ref="previousArrow"
+          class="image-carousel__arrow-shell"
+          :class="{
+            'image-carousel__arrow-shell--unavailable': currentIndex === 0,
+          }">
           <u-button
             class="image-carousel__arrow"
             variant="icon"
@@ -27,7 +32,13 @@
             <u-icon name="feather:arrow-left" aria-hidden="true" />
           </u-button>
         </span>
-        <span class="image-carousel__arrow-shell">
+        <span
+          ref="nextArrow"
+          class="image-carousel__arrow-shell"
+          :class="{
+            'image-carousel__arrow-shell--unavailable':
+              currentIndex === count - 1,
+          }">
           <u-button
             class="image-carousel__arrow"
             variant="icon"
@@ -73,6 +84,8 @@ const props = defineProps<{
 }>();
 const trackId = `image-gallery-${useId()}`;
 const track = useTemplateRef<HTMLDivElement>("track");
+const previousArrow = useTemplateRef<HTMLSpanElement>("previousArrow");
+const nextArrow = useTemplateRef<HTMLSpanElement>("nextArrow");
 const mounted = ref(false);
 const dragging = ref(false);
 const currentIndex = ref(0);
@@ -104,7 +117,17 @@ const updatePosition = () => {
   const positions = slides().map((slide) =>
     Math.abs(positionFor(slide) - container.scrollLeft),
   );
-  currentIndex.value = positions.indexOf(Math.min(...positions));
+  const index = positions.indexOf(Math.min(...positions));
+  const unavailable =
+    index === 0
+      ? previousArrow.value
+      : index === props.count - 1
+        ? nextArrow.value
+        : undefined;
+  if (unavailable?.contains(document.activeElement)) {
+    container.focus({ preventScroll: true });
+  }
+  currentIndex.value = index;
   clearTimeout(announcementTimer);
   announcementTimer = setTimeout(() => {
     announcement.value = `Image ${currentIndex.value + 1} of ${props.count}`;
@@ -380,6 +403,10 @@ onBeforeUnmount(() => {
   display: grid;
   border-radius: 50%;
   background: rgb(0 0 0 / 65%);
+
+  &--unavailable {
+    visibility: hidden;
+  }
 }
 
 .image-carousel__arrows .image-carousel__arrow {
@@ -413,8 +440,8 @@ onBeforeUnmount(() => {
     pointer-events: none;
   }
 
-  .image-carousel__viewport:hover,
-  .image-carousel:focus-within {
+  .image-carousel__viewport:has(img:hover, .image-carousel__arrow:hover),
+  .image-carousel:has(:focus-visible) {
     .image-carousel__arrow-shell {
       opacity: 1;
     }
@@ -422,6 +449,16 @@ onBeforeUnmount(() => {
     .image-carousel__arrow {
       pointer-events: auto;
     }
+  }
+
+  .image-carousel:has(:focus-visible) .image-carousel__arrow-shell {
+    transition: none;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+  .image-carousel__arrow-shell {
+    transition: opacity var(--global-duration-1) var(--ease-in-out-cubic);
   }
 }
 
