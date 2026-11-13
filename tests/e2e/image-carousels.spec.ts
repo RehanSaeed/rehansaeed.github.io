@@ -12,11 +12,13 @@ test.beforeEach(async ({ page, baseURL }) => {
 });
 
 for (const width of [1440, 640, 390, 320]) {
-  test(`Adjacent portrait windows and their small gap remain visible at ${width}px`, async ({
+  test(`Normal-sized central images and both side layouts at ${width}px`, async ({
     page,
   }) => {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto("/ai-learnings-from-upgrading-my-blog/");
+    await page.goto(
+      "/ai-learnings-from-upgrading-my-blog/?carousel-sides=window",
+    );
     const gallery = page.locator(".image-carousel");
     const track = gallery.getByRole("group", { name: "Gallery images" });
     const images = gallery.locator("img");
@@ -29,66 +31,131 @@ for (const width of [1440, 640, 390, 320]) {
       gallery.getByRole("button", { name: "Next image" }),
     ).toBeEnabled();
     await track.scrollIntoViewIfNeeded();
+    await page.addStyleTag({
+      content: ".image-carousel__track--unsnapped { scroll-snap-type: none; }",
+    });
 
-    for (const theme of ["light", "dark"]) {
-      await page.evaluate((value) => {
-        document.documentElement.dataset.theme = value;
-      }, theme);
-      const bounds = await gallery
-        .locator(".image-carousel__viewport")
-        .boundingBox();
-      expect(bounds!.x).toBeCloseTo(0, 0);
-      expect(bounds!.width).toBeCloseTo(width, 0);
-      await gallery.getByRole("button", { name: "Go to image 1 of 2" }).click();
-      const adjacency = await track.evaluate((element) => {
-        const viewport = element.getBoundingClientRect();
-        const frames = Array.from(element.querySelectorAll(".prose-image")).map(
-          (frame) => frame.getBoundingClientRect(),
-        );
-        return {
-          gap: frames[1]!.left - frames[0]!.right,
-          width: frames[0]!.width,
-          height: frames[0]!.height,
-          firstLeft: frames[0]!.left,
-          viewportLeft: viewport.left,
-          viewportRight: viewport.right,
-          secondVisibleWidth:
-            Math.min(viewport.right, frames[1]!.right) -
-            Math.max(viewport.left, frames[1]!.left),
-        };
-      });
-      expect(adjacency.firstLeft).toBeCloseTo(adjacency.viewportLeft, 0);
-      expect(adjacency.viewportLeft).toBeGreaterThanOrEqual(0);
-      expect(adjacency.viewportRight).toBeLessThanOrEqual(width);
-      expect(adjacency.width).toBeLessThan(width * 0.65);
-      expect(adjacency.width / adjacency.height).toBeCloseTo(5 / 7, 2);
-      expect(adjacency.gap).toBeGreaterThan(0);
-      expect(adjacency.gap).toBeLessThanOrEqual(40);
-      expect(adjacency.secondVisibleWidth).toBeGreaterThan(adjacency.width / 2);
-      for (const index of [0, 1]) {
+    for (const sideLayout of ["Cropped windows", "Original proportions"]) {
+      const selected = await gallery
+        .locator(".image-carousel__position")
+        .innerText();
+      await gallery.getByRole("radio", { name: sideLayout }).check();
+      await expect(
+        gallery.getByRole("radio", { name: sideLayout }),
+      ).toBeChecked();
+      await expect(gallery.locator(".image-carousel__position")).toHaveText(
+        selected,
+      );
+      for (const theme of ["light", "dark"]) {
+        await page.evaluate((value) => {
+          document.documentElement.dataset.theme = value;
+        }, theme);
+        const bounds = await gallery
+          .locator(".image-carousel__viewport")
+          .boundingBox();
+        expect(bounds!.x).toBeCloseTo(0, 0);
+        expect(bounds!.width).toBeCloseTo(width, 0);
         await gallery
-          .getByRole("button", { name: `Go to image ${index + 1} of 2` })
+          .getByRole("button", { name: "Go to image 1 of 2" })
           .click();
-        await expect(gallery.locator(".image-carousel__position")).toHaveText(
-          `Image ${index + 1} of 2`,
+        const adjacency = await track.evaluate((element) => {
+          const viewport = element.getBoundingClientRect();
+          const frames = Array.from(
+            element.querySelectorAll(".prose-image"),
+          ).map((frame) => frame.getBoundingClientRect());
+          return {
+            gap: frames[1]!.left - frames[0]!.right,
+            width: frames[0]!.width,
+            height: frames[0]!.height,
+            firstLeft: frames[0]!.left,
+            viewportLeft: viewport.left,
+            viewportRight: viewport.right,
+            secondVisibleWidth:
+              Math.min(viewport.right, frames[1]!.right) -
+              Math.max(viewport.left, frames[1]!.left),
+          };
+        });
+        expect(adjacency.firstLeft + adjacency.width / 2).toBeCloseTo(
+          width / 2,
+          0,
         );
-        const image = images.nth(index);
-        const dimensions = await image.boundingBox();
-        const viewport = await track.boundingBox();
-        expect(dimensions!.x).toBeGreaterThanOrEqual(viewport!.x - 1);
-        expect(dimensions!.x + dimensions!.width).toBeLessThanOrEqual(
-          viewport!.x + viewport!.width + 1,
+        expect(adjacency.gap).toBeGreaterThan(0);
+        expect(adjacency.gap).toBeLessThanOrEqual(40);
+        expect(Math.max(0, adjacency.secondVisibleWidth)).toBeCloseTo(
+          Math.max(0, (width - adjacency.width) / 2 - adjacency.gap),
+          0,
         );
-        expect(dimensions!.width / dimensions!.height).toBeCloseTo(5 / 7, 2);
-        await expect(image).toHaveCSS("object-fit", "contain");
-        await expect(image).toHaveCSS("object-position", "50% 50%");
-        await expect(image).toHaveCSS("translate", "none");
+        for (const index of [0, 1]) {
+          await gallery
+            .getByRole("button", { name: `Go to image ${index + 1} of 2` })
+            .click();
+          await expect(gallery.locator(".image-carousel__position")).toHaveText(
+            `Image ${index + 1} of 2`,
+          );
+          const image = images.nth(index);
+          const dimensions = await image.boundingBox();
+          const viewport = await track.boundingBox();
+          expect(dimensions!.x).toBeGreaterThanOrEqual(viewport!.x - 1);
+          expect(dimensions!.x + dimensions!.width).toBeLessThanOrEqual(
+            viewport!.x + viewport!.width + 1,
+          );
+          const standalone = await image.evaluate((element) => {
+            const paragraph = document.createElement("p");
+            paragraph.append(element.closest(".prose-image")!.cloneNode(true));
+            element.closest(".post__content")!.append(paragraph);
+            const bounds = paragraph
+              .querySelector("img")!
+              .getBoundingClientRect();
+            const result = {
+              x: bounds.x,
+              width: bounds.width,
+              height: bounds.height,
+            };
+            paragraph.remove();
+            return result;
+          });
+          expect(dimensions!.x).toBeCloseTo(standalone.x, 0);
+          expect(dimensions!.width).toBeCloseTo(standalone.width, 0);
+          expect(dimensions!.height).toBeCloseTo(standalone.height, 0);
+          await expect(image).toHaveCSS("object-fit", "contain");
+          await expect(image).toHaveCSS("object-position", "50% 50%");
+          await expect(image).toHaveCSS("translate", "none");
+        }
+        expect(
+          await page.evaluate(
+            () => document.documentElement.scrollWidth <= innerWidth,
+          ),
+        ).toBe(true);
       }
-      expect(
-        await page.evaluate(
-          () => document.documentElement.scrollWidth <= innerWidth,
-        ),
-      ).toBe(true);
+      await gallery.getByRole("button", { name: "Go to image 1 of 2" }).click();
+      const frames = gallery.locator(".prose-image");
+      const central = await frames.first().boundingBox();
+      const side = await frames.last().boundingBox();
+      expect(side!.height / central!.height).toBeCloseTo(
+        sideLayout === "Original proportions" ? 0.4 : 1,
+        2,
+      );
+      await track.evaluate((element) => {
+        element.classList.add("image-carousel__track--unsnapped");
+        element.scrollLeft = (element.scrollWidth - element.clientWidth) * 0.3;
+      });
+      const between = await track.evaluate((element) => {
+        const port = element.getBoundingClientRect();
+        return Array.from(element.querySelectorAll(".prose-image")).map(
+          (frame) => {
+            const bounds = frame.getBoundingClientRect();
+            return (
+              Math.min(port.right, bounds.right) -
+              Math.max(port.left, bounds.left)
+            );
+          },
+        );
+      });
+      expect(between.every((visible) => visible > 0)).toBe(true);
+      await track.evaluate((element) => {
+        element.scrollLeft = 0;
+        element.classList.remove("image-carousel__track--unsnapped");
+      });
     }
 
     await page.emulateMedia({ forcedColors: "active" });
@@ -131,6 +198,7 @@ test("Keyboard endpoints, focus continuity, captions, links and resizing", async
   const track = gallery.getByRole("group", { name: "Gallery images" });
   const next = gallery.getByRole("button", { name: "Next image" });
   await expect(next).toBeEnabled();
+  await expect(gallery.getByRole("radio")).toHaveCount(0);
   await expect(gallery.locator("figcaption")).toHaveCount(3);
   await expect(gallery.locator("figcaption").first()).toHaveText(
     "A linked code image; open it to read the CSS guidelines.",
@@ -207,7 +275,7 @@ test("Mouse dragging a linked image scrolls without opening the link", async ({
 test.describe("Continuous window motion", () => {
   test.use({ reducedMotion: "no-preference" });
 
-  test("Pans image content continuously inside adjacent fixed windows", async ({
+  test("Pans inside side windows while opening the centred image to normal size", async ({
     page,
   }) => {
     await page.goto("/cheat-sheet/");
@@ -225,15 +293,14 @@ test.describe("Continuous window motion", () => {
       "animation-name",
       supported ? "image-window-pan" : "none",
     );
-    await expect(firstImage).toHaveCSS(
-      "object-fit",
-      supported ? "cover" : "contain",
-    );
+    await expect(firstImage).toHaveCSS("object-fit", "contain");
     const pan = () =>
-      firstImage.evaluate((element) =>
-        Number.parseFloat(getComputedStyle(element).objectPosition),
-      );
-    const initialPan = await pan();
+      firstImage.evaluate((element) => {
+        const value = getComputedStyle(element).translate;
+        return value === "none" ? 0 : Number.parseFloat(value);
+      });
+    await expect.poll(pan).toBeLessThan(0.01);
+    await expect.poll(pan).toBeGreaterThan(-0.01);
     // Stop snapping only to sample two genuine between-slide scroll positions.
     await page.addStyleTag({
       content: ".image-carousel__track { scroll-snap-type: none; }",
@@ -247,8 +314,7 @@ test.describe("Continuous window motion", () => {
         .poll(() =>
           firstImage.evaluate(
             (element, previous) =>
-              Number.parseFloat(getComputedStyle(element).objectPosition) <
-              previous,
+              Number.parseFloat(getComputedStyle(element).translate) > previous,
             previousPan,
           ),
         )
@@ -258,12 +324,12 @@ test.describe("Continuous window motion", () => {
         frame: await firstImage.boundingBox(),
       };
     };
-    const early = await sample(0.2, initialPan);
-    const later = await sample(0.4, early.pan);
-    expect(early.pan - later.pan > 3).toBe(supported);
+    const early = await sample(0.1, 0);
+    const later = await sample(0.2, early.pan);
+    expect(later.pan > early.pan).toBe(supported);
     expect(later.frame!.width).toBeCloseTo(early.frame!.width, 1);
     expect(later.frame!.height).toBeCloseTo(early.frame!.height, 1);
-    expect(later.frame!.width / later.frame!.height).toBeCloseTo(5 / 7, 2);
+    expect(later.frame!.width / later.frame!.height).toBeCloseTo(1600 / 900, 2);
     await expect(gallery.locator("figcaption").first()).toHaveCSS(
       "translate",
       "none",
@@ -284,6 +350,56 @@ test.describe("Continuous window motion", () => {
     await expect(firstImage).toHaveCSS("translate", "none");
     await expect(firstImage).toHaveCSS("object-fit", "contain");
     await expect(firstImage).toHaveCSS("object-position", "50% 50%");
+  });
+
+  test("Natural side images retain their proportions and grow continuously to the centre", async ({
+    page,
+  }) => {
+    await page.goto("/cheat-sheet/?carousel-sides=natural");
+    const gallery = page.locator(".image-carousel");
+    const track = gallery.getByRole("group", { name: "Gallery images" });
+    await expect(
+      gallery.getByRole("radio", { name: "Original proportions" }),
+    ).toBeChecked();
+    await expect(
+      gallery.getByRole("button", { name: "Next image" }),
+    ).toBeEnabled();
+    await track.scrollIntoViewIfNeeded();
+    const first = track.locator("img").first();
+    const initial = await first.boundingBox();
+    const supported = await page.evaluate(() =>
+      CSS.supports("animation-timeline: view(inline)"),
+    );
+    await page.addStyleTag({
+      content: ".image-carousel__track { scroll-snap-type: none; }",
+    });
+    const sampleWidth = async (fraction: number) => {
+      await track.evaluate((element, value) => {
+        element.scrollLeft =
+          (element.scrollWidth - element.clientWidth) * value;
+      }, fraction);
+      await expect
+        .poll(
+          async () => (await first.boundingBox())!.width < initial!.width - 1,
+        )
+        .toBe(supported);
+      const bounds = await first.boundingBox();
+      expect(bounds!.width / bounds!.height).toBeCloseTo(1600 / 900, 2);
+      return bounds!.width;
+    };
+    const early = await sampleWidth(0.1);
+    await track.evaluate((element) => {
+      element.scrollLeft = (element.scrollWidth - element.clientWidth) * 0.2;
+    });
+    await expect
+      .poll(async () => (await first.boundingBox())!.width < early - 1)
+      .toBe(supported);
+    await track.evaluate((element) => {
+      element.scrollLeft = 0;
+    });
+    await expect
+      .poll(async () => (await first.boundingBox())!.width)
+      .toBeCloseTo(initial!.width, 0);
   });
 });
 

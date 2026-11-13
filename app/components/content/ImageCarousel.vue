@@ -1,8 +1,33 @@
 <template>
   <section
-    class="image-carousel image-carousel--window"
-    :class="{ 'image-carousel--interactive': isInteractive }"
+    class="image-carousel"
+    :class="{
+      'image-carousel--interactive': isInteractive,
+      'image-carousel--window': sideLayout === 'window',
+      'image-carousel--natural': sideLayout === 'natural',
+    }"
     aria-label="Image gallery">
+    <fieldset
+      v-if="comparisonEnabled && isInteractive"
+      class="image-carousel__comparison">
+      <legend>Side images (preview comparison)</legend>
+      <label class="image-carousel__choice">
+        <input
+          v-model="sideLayout"
+          type="radio"
+          :name="`${trackId}-side-layout`"
+          value="window" />
+        Cropped windows
+      </label>
+      <label class="image-carousel__choice">
+        <input
+          v-model="sideLayout"
+          type="radio"
+          :name="`${trackId}-side-layout`"
+          value="natural" />
+        Original proportions
+      </label>
+    </fieldset>
     <div class="image-carousel__viewport">
       <div
         :id="trackId"
@@ -87,6 +112,8 @@ const track = useTemplateRef<HTMLDivElement>("track");
 const currentIndex = ref(0);
 const isInteractive = ref(false);
 const isDragging = ref(false);
+const sideLayout = ref<"window" | "natural">("window");
+const comparisonEnabled = ref(false);
 const arrowTarget = shallowRef<HTMLElement | null>(null);
 let mouseDrag:
   { pointerId: number; x: number; y: number; scrollLeft: number } | undefined;
@@ -129,6 +156,14 @@ const updateActiveSlide = () => {
     track.value?.children ?? [],
   ).entries()) {
     slide.toggleAttribute("data-current", index === currentIndex.value);
+    if (index === currentIndex.value) {
+      slide.removeAttribute("data-side");
+    } else {
+      slide.setAttribute(
+        "data-side",
+        index < currentIndex.value ? "before" : "after",
+      );
+    }
   }
   const frame = track.value?.children[currentIndex.value]?.querySelector(
     ":scope > p, :scope > figure > p",
@@ -266,6 +301,13 @@ const pointerHandlers = [
 ] as const;
 
 onMounted(() => {
+  const requestedSideLayout = new URLSearchParams(window.location.search).get(
+    "carousel-sides",
+  );
+  if (requestedSideLayout === "window" || requestedSideLayout === "natural") {
+    sideLayout.value = requestedSideLayout;
+    comparisonEnabled.value = true;
+  }
   for (const [event, handler] of pointerHandlers) {
     track.value?.addEventListener(event, handler);
   }
@@ -305,11 +347,43 @@ onBeforeUnmount(() => {
   --button-icon-hover-color: var(--global-accent-color);
   --button-icon-hover-background: #fff;
 
+  container-type: inline-size;
   margin-block: var(--global-space-fixed-5);
 }
 
+.image-carousel__comparison {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--global-space-fixed-3);
+  min-inline-size: 0;
+  margin-block-end: var(--global-space-fixed-4);
+}
+
+.image-carousel__choice {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--global-space-fixed-3);
+  min-block-size: 44px;
+  cursor: pointer;
+}
+
+.image-carousel__choice input {
+  accent-color: var(--global-accent-color);
+  inline-size: 1.1em;
+  block-size: 1.1em;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+
+  &:focus-visible {
+    outline: 2px solid var(--global-accent-color);
+    outline-offset: 2px;
+  }
+}
+
 .image-carousel__viewport {
-  --image-carousel-slide-size: clamp(12rem, 36vmin, 24rem);
+  --image-carousel-slide-size: calc(100cqi + (2 * var(--global-space-fluid-6)));
   --image-carousel-gap: clamp(0.75rem, 2vw, 2rem);
 
   position: relative;
@@ -328,12 +402,8 @@ onBeforeUnmount(() => {
   overscroll-behavior-inline: contain;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
-  inline-size: min(
-    100%,
-    calc(2 * var(--image-carousel-slide-size) - var(--image-carousel-gap))
-  );
-  margin-inline: auto;
   padding-block-start: var(--global-space-fixed-2);
+  padding-inline: calc((100vw - var(--image-carousel-slide-size)) / 2);
 
   &::-webkit-scrollbar {
     display: none;
@@ -381,25 +451,20 @@ onBeforeUnmount(() => {
 .post__content .image-carousel__slide > figure > p {
   position: relative;
   overflow: clip;
-  aspect-ratio: 5 / 7;
-  inline-size: 100%;
+  inline-size: fit-content;
   max-inline-size: 100%;
   min-inline-size: 0;
   margin-inline: auto;
 }
 
 .post__content .image-carousel__slide .prose-image {
-  display: block;
   inline-size: 100%;
-  block-size: 100%;
   margin-inline: 0;
 }
 
-.image-carousel__slide .prose-image > picture,
 .image-carousel__slide > p > a,
 .image-carousel__slide > figure > p > a {
   display: block;
-  block-size: 100%;
 }
 
 .image-carousel__slide > p > a:focus-visible,
@@ -409,38 +474,120 @@ onBeforeUnmount(() => {
 }
 
 .post__content .image-carousel__slide .prose-image .prose-image__image {
-  inline-size: 100%;
-  block-size: 100%;
   object-fit: contain;
   object-position: 50% 50%;
 }
 
-// Original adaptation of the adjacent windows at scroll-driven-animations.style.
+.image-carousel--window .image-carousel__slide[data-side="before"] > p,
+.image-carousel--window
+  .image-carousel__slide[data-side="before"]
+  > figure
+  > p {
+  clip-path: inset(0 0 0 60%);
+}
+
+.image-carousel--window .image-carousel__slide[data-side="after"] > p,
+.image-carousel--window .image-carousel__slide[data-side="after"] > figure > p {
+  clip-path: inset(0 60% 0 0);
+}
+
+.image-carousel--natural .image-carousel__slide[data-side] > p,
+.image-carousel--natural .image-carousel__slide[data-side] > figure > p {
+  scale: 0.4;
+  transform-origin: 0 50%;
+}
+
+.image-carousel--natural .image-carousel__slide[data-side="before"] > p,
+.image-carousel--natural
+  .image-carousel__slide[data-side="before"]
+  > figure
+  > p {
+  transform-origin: 100% 50%;
+}
+
+// Keep the edges between neighbours fixed while cropping their outer edges.
 @supports (animation-timeline: view(inline)) {
   @media (prefers-reduced-motion: no-preference) {
-    .post__content .image-carousel__slide .prose-image .prose-image__image {
-      object-fit: cover;
+    .image-carousel--window .image-carousel__slide > p,
+    .image-carousel--window .image-carousel__slide > figure > p {
+      animation: image-window-aperture linear both;
+      animation-timeline: --image-window;
+    }
+
+    .image-carousel--window .image-carousel__slide .prose-image__image {
       animation: image-window-pan linear both;
       animation-timeline: --image-window;
     }
 
-    .post__content
-      .image-carousel__slide:focus-within
-      .prose-image
-      .prose-image__image {
-      object-fit: contain;
-      animation: none;
+    .image-carousel--natural .image-carousel__slide > p,
+    .image-carousel--natural .image-carousel__slide > figure > p {
+      animation:
+        image-natural-scale linear both,
+        image-natural-anchor steps(1, end) both;
+      animation-timeline: --image-window, --image-window;
     }
+  }
+}
+
+.image-carousel .image-carousel__slide:focus-within > p,
+.image-carousel .image-carousel__slide:focus-within > figure > p {
+  clip-path: none;
+  scale: none;
+  animation: none;
+}
+
+.image-carousel__slide:focus-within .prose-image__image {
+  translate: none;
+  animation: none;
+}
+
+@keyframes image-window-aperture {
+  from {
+    clip-path: inset(0 60% 0 0);
+  }
+
+  50% {
+    clip-path: inset(0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 60%);
   }
 }
 
 @keyframes image-window-pan {
   from {
-    object-position: 100% 50%;
+    translate: -12% 0;
+  }
+
+  50% {
+    translate: 0 0;
   }
 
   to {
-    object-position: 0 50%;
+    translate: 12% 0;
+  }
+}
+
+@keyframes image-natural-scale {
+  from,
+  to {
+    scale: 0.4;
+  }
+
+  50% {
+    scale: 1;
+  }
+}
+
+@keyframes image-natural-anchor {
+  from {
+    transform-origin: 0 50%;
+  }
+
+  50%,
+  to {
+    transform-origin: 100% 50%;
   }
 }
 
@@ -505,6 +652,7 @@ onBeforeUnmount(() => {
 
 @media (forced-colors: active) {
   .image-carousel__track:focus-visible,
+  .image-carousel__choice input:focus-visible,
   .image-carousel__slide > p > a:focus-visible,
   .image-carousel__slide > figure > p > a:focus-visible {
     outline-color: Highlight;
