@@ -90,6 +90,7 @@ const isDragging = ref(false);
 const arrowTarget = shallowRef<HTMLElement | null>(null);
 let frame = 0;
 let settleFrame = 0;
+let previousStep = 0;
 let resizeObserver: ResizeObserver | undefined;
 let motionPreference: MediaQueryList | undefined;
 let contrastPreference: MediaQueryList | undefined;
@@ -110,6 +111,11 @@ const updatePosition = () => {
   if (!track.value || step <= 0) {
     return;
   }
+  // A resize can emit scroll before ResizeObserver restores the selected slide.
+  if (previousStep && step !== previousStep && !drag) {
+    navigateToImage(currentIndex.value, true);
+  }
+  previousStep = step;
   const position = track.value.scrollLeft / step;
   currentIndex.value = Math.max(
     0,
@@ -183,15 +189,12 @@ const updateArrowTarget = () => {
     return;
   }
   const focused = document.activeElement;
-  const restoreFocus =
+  arrowTarget.value = target;
+  if (
     !drag &&
     focused instanceof HTMLButtonElement &&
-    focused.classList.contains("image-carousel__button");
-  if (restoreFocus) {
-    focused.blur();
-  }
-  arrowTarget.value = target;
-  if (restoreFocus) {
+    focused.classList.contains("image-carousel__button")
+  ) {
     void nextTick(() => {
       if (focused.isConnected) {
         focused.focus({ preventScroll: true });

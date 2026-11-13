@@ -143,8 +143,9 @@ test.describe("Continuous scroll-linked motion", () => {
       );
       return slides[1]!.offsetLeft - slides[0]!.offsetLeft;
     });
-    const x = bounds!.x + bounds!.width * 0.8;
+    const x = bounds!.x + bounds!.width * 0.95;
     const y = bounds!.y + bounds!.height * 0.3;
+    expect(x - step).toBeGreaterThan(0);
     await page.mouse.move(x, y);
     await page.mouse.down();
     const samples = [];
