@@ -12,22 +12,22 @@ export default defineNuxtPlugin({
     window.gtag = (...args) => {
       dataLayer.push(args);
     };
-    const displayMode = window.matchMedia(
+    const displayMode = useMediaQuery(
       "(display-mode: standalone), (display-mode: minimal-ui), (display-mode: fullscreen)",
     );
     const launchMode = () =>
       "standalone" in navigator && navigator.standalone === true
         ? "standalone-ios"
-        : displayMode.matches
+        : displayMode.value
           ? "standalone"
           : "browser tab";
     onNuxtReady(() => {
       appLaunchDomContentLoaded(launchMode());
     });
-    displayMode.addEventListener("change", () => {
+    watch(displayMode, () => {
       appLaunchDisplayModeChanged(launchMode());
     });
-    window.addEventListener("appinstalled", () => {
+    useEventListener(window, "appinstalled", () => {
       pwaInstallAppInstalled();
     });
     nuxtApp.hook("service-worker:registration-failed", ({ error }) => {

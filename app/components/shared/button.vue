@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, type PropType } from "vue";
+import { computed, type PropType } from "vue";
 import { NuxtLink } from "#components";
 
 defineOptions({ name: "u-button" });
@@ -49,7 +49,7 @@ const props = defineProps({
     type: Boolean,
   },
 });
-const hydrated = ref(false);
+const hydrated = useMounted();
 const type = computed(() => (props.submit ? "submit" : "button"));
 const tagVariant = computed(() => props.variant === "code-token");
 const tag = computed(() =>
@@ -62,9 +62,6 @@ const onClick = (event: MouseEvent) => {
   }
   emit("click", event);
 };
-onMounted(() => {
-  hydrated.value = true;
-});
 </script>
 
 <style lang="scss">
