@@ -102,7 +102,13 @@ for (const { theme, width, minimumRows } of [
     await page.mouse.down();
     await expect(first).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, 0)");
     await page.mouse.move(0, 0);
+    // Cancel native link dragging before testing an independent fresh hover.
+    await page.keyboard.press("Escape");
     await page.mouse.up();
+    expect(await first.evaluate((element) => element.matches(":active"))).toBe(
+      false,
+    );
+    await expect(page).toHaveURL("/portfolio/");
 
     const longTag = page.getByRole("link", {
       name: "Windows Presentation Foundation (WPF)",
