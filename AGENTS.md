@@ -128,8 +128,14 @@ authorise publishing the article or posting to social media.
   a pause does not establish exclusive use of the machine.
 - Preserve supported same-branch build caches instead of clearing them routinely.
   Responsive images use `.cache/nuxt-images`; its fingerprint includes the full
-  lockfile, Nuxt configuration, source images, Node/platform and cache-module
-  inputs. Config or dependency edits can invalidate it, and builds failing before
+  lockfile, effective image/IPX settings, image-processing environment, source
+  images (including configured IPX roots), Node/platform and cache-module inputs.
+  Unrelated Nuxt configuration, such as bundled icons, does not invalidate it.
+  CI restores a candidate; only the module's fingerprint authorises reuse.
+  Non-serialisable image settings and custom provider implementations disable
+  reuse with a warning rather than hashing function text or ignoring closures.
+  The cache supports the local `/_ipx` provider. Image-setting or dependency edits
+  can invalidate it, and builds failing before
   Nitro's compiled hook may not save it. Nuxt OG `buildCache` is also enabled.
   Cache reuse still requires generating and checking current output; do not copy
   unverified artifacts from another branch.
