@@ -49,6 +49,14 @@ const expectPinInsideMap = async (page: Page, selector: string) => {
     .toBe(true);
 };
 
+const expectCaptionCentred = async (figure: Locator) => {
+  const map = (await figure.boundingBox())!;
+  const caption = (await figure.locator("figcaption").boundingBox())!;
+  expect(
+    Math.abs(caption.x + caption.width / 2 - map.x - map.width / 2),
+  ).toBeLessThan(1);
+};
+
 const expectLocationsFillView = async (
   page: Page,
   visitor: [number, number],
@@ -438,7 +446,10 @@ for (const width of [320, 375, 1280]) {
         .evaluate((element) =>
           Number.parseFloat(getComputedStyle(element).paddingInlineStart),
         );
-      expect(captionBounds.x).toBeCloseTo(cardBounds.x + cardPadding, 0);
+      await expectCaptionCentred(figure);
+      expect(captionBounds.x).toBeGreaterThanOrEqual(
+        cardBounds.x + cardPadding - 1,
+      );
       expect(captionBounds.x + captionBounds.width).toBeLessThanOrEqual(
         cardBounds.x + cardBounds.width - cardPadding + 1,
       );
@@ -520,7 +531,26 @@ for (const viewport of [
   });
 }
 
-test("Scrolling to the map before hydration still activates it", async ({
+test("An initially visible map activates on a small scroll without leaving the viewport", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1350, height: 2200 });
+  const styles = await mockOpenFreeMap(page);
+  await page.goto("/about/", { waitUntil: "load" });
+  await requireWebGL(page);
+  const figure = page.locator(".location-map");
+  await expect(page.getByRole("button", { name: "Open search" })).toBeEnabled();
+  await expect(figure).toBeInViewport();
+  expect(styles).toEqual([]);
+
+  await page.mouse.wheel(0, 1);
+  await expect(figure).toHaveClass(/location-map--interactive/);
+  await expect(figure).toBeInViewport();
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+  expect(styles).toEqual(["positron"]);
+});
+
+test("Pre-hydration scrolling does not activate a map left offscreen", async ({
   page,
 }) => {
   const styles = await mockOpenFreeMap(page);
@@ -530,9 +560,20 @@ test("Scrolling to the map before hydration still activates it", async ({
     const figure = page.locator(".location-map");
     await figure.scrollIntoViewIfNeeded();
     expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+    await page.evaluate(() => {
+      window.scrollTo({ top: 0, behavior: "instant" });
+    });
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
     expect(styles).toEqual([]);
     scripts.resume();
     await requireWebGL(page);
+    await expect(
+      page.getByRole("button", { name: "Open search" }),
+    ).toBeEnabled();
+    await expect(figure).not.toHaveClass(/location-map--interactive/);
+    expect(styles).toEqual([]);
+
+    await figure.scrollIntoViewIfNeeded();
     await expect(figure).toHaveClass(/location-map--interactive/);
     expect(styles).toEqual(["positron"]);
   } finally {
@@ -904,6 +945,7 @@ for (const [place, longitude, latitude] of [
       `I'm from East London, roughly ${miles} miles away from your current location, according to your IP address.`,
     );
     await expect(figure.locator("figcaption em")).toHaveText(`${miles} miles`);
+    await expectCaptionCentred(figure);
     await expect(figure.locator("figcaption")).toHaveAttribute(
       "aria-live",
       "polite",
@@ -921,6 +963,7 @@ for (const [place, longitude, latitude] of [
     await expect(figure).toContainText("GeoJS");
     expect(lookups).toEqual([geoUrl]);
     await page.setViewportSize({ width: 375, height: 900 });
+    await expectCaptionCentred(figure);
     await expectPinInsideMap(page, ".location-map__marker");
     await expectPinInsideMap(page, ".location-map__visitor");
     await expectLocationsFillView(page, [Number(longitude), Number(latitude)]);

@@ -1,7 +1,6 @@
 <template>
-  <u-intersect root-margin="200px" @enter="loadOnApproach">
+  <u-intersect root-margin="200px" @change="onIntersectionChange">
     <figure
-      ref="figure"
       class="location-map"
       :class="{ 'location-map--interactive': mapReady }"
       :tabindex="mapReady ? -1 : 0"
@@ -173,7 +172,6 @@ const locationSchema = z.object({
 });
 const avatarClipId = `${useId()}-location-avatar`;
 const colorMode = useColorMode();
-const figure = ref<HTMLElement>();
 const mapContainer = ref<HTMLDivElement>();
 const markerTemplate = ref<HTMLDivElement>();
 const visitorTemplate = ref<HTMLDivElement>();
@@ -193,6 +191,7 @@ let styleReady = false;
 let userMovedMap = false;
 let disposed = false;
 let hasScrolled = false;
+let nearViewport = false;
 let started = false;
 const isDisposed = () => disposed;
 
@@ -545,21 +544,19 @@ const loadMap = async () => {
 
 const loadOnApproach = () => {
   // Initial visibility on a tall screen is not a request to start WebGL.
-  if (hasScrolled) {
+  if (hasScrolled && nearViewport) {
     void loadMap();
   }
 };
 
+const onIntersectionChange = (entries: IntersectionObserverEntry[]) => {
+  nearViewport = entries.some((entry) => entry.isIntersecting);
+  loadOnApproach();
+};
+
 const onFirstScroll = () => {
   hasScrolled = true;
-  const bounds = figure.value?.getBoundingClientRect();
-  if (
-    bounds &&
-    bounds.top <= window.innerHeight + 200 &&
-    bounds.bottom >= -200
-  ) {
-    void loadMap();
-  }
+  loadOnApproach();
 };
 
 onMounted(() => {
@@ -786,6 +783,7 @@ onBeforeUnmount(() => {
 }
 
 .location-map__caption {
+  justify-self: center;
   margin-inline: var(--card-space, var(--global-space-fixed-4));
 }
 
