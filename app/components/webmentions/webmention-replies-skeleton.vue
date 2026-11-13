@@ -13,36 +13,21 @@
 <script setup lang="ts">
 import {
   computed,
-  nextTick,
-  onMounted,
-  onUnmounted,
   ref,
   useTemplateRef,
   type ComponentPublicInstance,
 } from "vue";
 defineOptions({ name: "u-webmention-replies-skeleton" });
 const skeleton = useTemplateRef<ComponentPublicInstance>("skeleton");
-let resizeObserver: ResizeObserver | undefined;
 const width = ref(0);
 const commentWidth = computed(() => Math.max(0, width.value - 75));
 const viewBox = computed(() => `0 0 ${width.value} 92`);
 
-onMounted(() => {
-  resizeObserver = new ResizeObserver((entries) => {
-    const entry = entries[0];
-    if (entry) {
-      width.value = Math.floor(entry.contentRect.width);
-    }
-  });
-  void nextTick(() => {
-    const element: unknown = skeleton.value?.$el;
-    if (element instanceof Element) {
-      resizeObserver?.observe(element);
-    }
-  });
-});
-onUnmounted(() => {
-  resizeObserver?.disconnect();
+useResizeObserver(skeleton, (entries) => {
+  const entry = entries[0];
+  if (entry) {
+    width.value = Math.floor(entry.contentRect.width);
+  }
 });
 </script>
 

@@ -17,8 +17,9 @@ const { descriptor } = parse(
   readFileSync("app/components/shared/button.vue", "utf8"),
 );
 const source = transpileModule(
-  compileScript(descriptor, { id: "button-test", inlineTemplate: true })
-    .content,
+  'import { useMounted } from "@vueuse/core";\n' +
+    compileScript(descriptor, { id: "button-test", inlineTemplate: true })
+      .content,
   {
     compilerOptions: {
       module: ModuleKind.CommonJS,
@@ -87,9 +88,19 @@ for (const theme of ["light", "dark"]) {
       path: loadDependency.resolve("vue/dist/vue.global.js"),
     });
     await page.addScriptTag({
+      path: loadDependency.resolve("@vueuse/shared/index.iife.js"),
+    });
+    await page.addScriptTag({
+      path: loadDependency.resolve("@vueuse/core/index.iife.js"),
+    });
+    await page.addScriptTag({
       content: `{
         const exports = {};
-        const require = () => Vue;
+        const require = (name) => {
+          if (name === "vue") return Vue;
+          if (name === "@vueuse/core") return VueUse;
+          throw new Error("Unexpected button dependency: " + name);
+        };
         ${source}
         const Button = exports.default;
         Vue.createApp({

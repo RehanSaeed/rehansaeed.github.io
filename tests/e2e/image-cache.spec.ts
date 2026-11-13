@@ -277,41 +277,93 @@ test("A failed image-output save cannot mark a cold cache as complete", async ({
   }
 });
 
-test("Nuxt initialization fingerprints resolved IPX options after provider setup", async ({}, info) => {
-  const { loadNuxt, useNitro } = await import("nuxt/kit");
+const initializeImageNuxt = async (
+  root: string,
+  icons: string[],
+  animated = true,
+  providers: Record<string, { provider: string }> = {},
+) => {
+  const { loadNuxt } = await import("nuxt/kit");
   const { default: imageModule } = await import("@nuxt/image");
-  const { default: sharp } = await import("sharp");
-  const { createIPX, ipxFSStorage } = await import("ipx");
-  const root = await fixture(info.outputPath("nuxt"));
-  const cachedVariant = join(root, ".cache/nuxt-images/public", variant);
-  const initialize = (
-    icons: string[],
-    animated = true,
-    providers: Record<string, { provider: string }> = {},
-  ) => {
-    const configuration = {
+  return loadNuxt({
+    cwd: root,
+    dev: false,
+    overrides: {
       icon: { clientBundle: { icons } },
       image: {
         ipx: { sharpOptions: { animated } },
         providers,
       },
-    };
-    return loadNuxt({
-      cwd: root,
-      dev: false,
-      overrides: {
-        ...configuration,
-        workspaceDir: root,
-        modulesDir: [join(process.cwd(), "node_modules")],
-        dir: { modules: "unused-modules" },
-        modules: [imageModule, cacheModule],
-        nitro: {
-          static: true,
-          output: { publicDir: join(root, "dist") },
+      workspaceDir: root,
+      modulesDir: [join(process.cwd(), "node_modules")],
+      dir: { modules: "unused-modules" },
+      modules: [imageModule, cacheModule],
+      nitro: {
+        static: true,
+        output: { publicDir: join(root, "dist") },
+        prerender: {
+          crawlLinks: false,
+          concurrency: 1,
+          retry: 0,
+          failOnError: true,
         },
-        telemetry: false,
       },
+      hooks: {
+        "nitro:config": (config) => {
+          // Exercise the real image pipeline without building a Vue app.
+          config.renderer = undefined;
+          config.errorHandler = undefined;
+          config.plugins = [];
+        },
+      },
+      telemetry: false,
+    },
+  });
+};
+
+test("Nuxt reuses restored images during prerendering and generates new variants through IPX", async ({}, info) => {
+  const { useNitro } = await import("nuxt/kit");
+  const { default: sharp } = await import("sharp");
+  const { prerender, copyPublicAssets } = await import("nitropack");
+  const root = await fixture(info.outputPath("nuxt"));
+  const cachedVariant = join(root, ".cache/nuxt-images/public", variant);
+  const additional = variant.replace("20x10", "10x5");
+  const requests = join(root, "ipx-requests.txt");
+  const renderImages = async (
+    nuxt: Awaited<ReturnType<typeof initializeImageNuxt>>,
+    routes: string[],
+  ) => {
+    const nitro = nuxt.runWithContext(() => useNitro());
+    const ipxHandler = nitro.options._config.handlers?.find(
+      (handler) => handler.route === "/_ipx/**",
+    );
+    expect(ipxHandler).toBeDefined();
+    const handler = join(root, "ipx-handler.mjs");
+    await writeFile(requests, "");
+    await writeFile(
+      handler,
+      `import { appendFileSync } from "node:fs";
+import ipx from ${JSON.stringify(ipxHandler!.handler)};
+export default (event) => {
+  appendFileSync(${JSON.stringify(requests)}, event.path + "\\n");
+  return ipx(event);
+};`,
+    );
+    nitro.hooks.hook("prerender:routes", (pending) => {
+      pending.clear();
+      for (const route of routes) {
+        pending.add(route);
+      }
     });
+    nitro.hooks.hook("prerender:config", (config) => {
+      config.handlers = [
+        { ...ipxHandler!, handler: handler.replaceAll("\\", "/") },
+      ];
+    });
+    await prerender(nitro);
+    await copyPublicAssets(nitro);
+    await nitro.hooks.callHook("compiled");
+    return (await readFile(requests, "utf8")).split("\n").filter(Boolean);
   };
   try {
     await sharp({
@@ -319,33 +371,62 @@ test("Nuxt initialization fingerprints resolved IPX options after provider setup
     })
       .png()
       .toFile(join(root, image));
-    const cold = await initialize([]);
+    await rm(join(root, "dist", "_ipx"), { recursive: true });
+    const cold = await initializeImageNuxt(root, []);
     let encoded: Buffer;
     try {
       await expect(readFile(cachedVariant)).rejects.toMatchObject({
         code: "ENOENT",
       });
-      const ipx = createIPX({
-        storage: ipxFSStorage({ dir: join(root, "public") }),
-      });
-      encoded = Buffer.from(
-        (await ipx("images/photo.png", { f: "avif", s: "20x10" }).process())
-          .data,
-      );
+      encoded = await sharp(join(root, image)).avif().toBuffer();
+      await mkdir(dirname(join(root, "dist", variant)), { recursive: true });
       await writeFile(join(root, "dist", variant), encoded);
       await cold.runWithContext(() => useNitro()).hooks.callHook("compiled");
     } finally {
       await cold.close();
     }
 
-    const warm = await initialize(["fa-solid:minus", "fa-solid:plus"]);
+    const warm = await initializeImageNuxt(root, [
+      "fa-solid:minus",
+      "fa-solid:plus",
+    ]);
     try {
       expect(await readFile(cachedVariant)).toEqual(encoded);
+      await rm(join(root, "dist", "_ipx"), { recursive: true });
+      expect(
+        await renderImages(warm, [`/${variant}`, `/${additional}`]),
+      ).toEqual([`/${additional}`]);
+      expect(await readFile(join(root, "dist", variant))).toEqual(encoded);
+      const newImage = await readFile(join(root, "dist", additional));
+      expect(await sharp(newImage).metadata()).toMatchObject({
+        format: "heif",
+        width: 10,
+        height: 5,
+      });
+      expect(
+        await readFile(join(root, ".cache/nuxt-images/public", additional)),
+      ).toEqual(newImage);
     } finally {
       await warm.close();
     }
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
 
-    const changed = await initialize(
+test("Nuxt initialization fingerprints resolved IPX options and bypasses custom providers", async ({}, info) => {
+  const { useNitro } = await import("nuxt/kit");
+  const root = await fixture(info.outputPath("nuxt"));
+  const cachedVariant = join(root, ".cache/nuxt-images/public", variant);
+  try {
+    const cold = await initializeImageNuxt(root, []);
+    try {
+      await cold.runWithContext(() => useNitro()).hooks.callHook("compiled");
+    } finally {
+      await cold.close();
+    }
+    const changed = await initializeImageNuxt(
+      root,
       ["fa-solid:minus", "fa-solid:plus"],
       false,
     );
@@ -356,7 +437,9 @@ test("Nuxt initialization fingerprints resolved IPX options after provider setup
     } finally {
       await changed.close();
     }
-    const custom = await initialize([], true, { custom: { provider: "none" } });
+    const custom = await initializeImageNuxt(root, [], true, {
+      custom: { provider: "none" },
+    });
     try {
       await custom.runWithContext(() => useNitro()).hooks.callHook("compiled");
       await expect(
