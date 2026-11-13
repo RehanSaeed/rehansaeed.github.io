@@ -6,7 +6,7 @@
       `button--${variant}`,
       {
         'button--tag': tagVariant,
-        'button--tag-icon': tagVariant && tagIcon,
+        'button--tag-icon': variant === 'code-token' && tagIcon,
         'button--hydrating': !to && !hydrated && !disabled && !submit,
       },
     ]"
@@ -17,6 +17,10 @@
     :tabindex="to && disabled ? -1 : undefined"
     :type="to ? undefined : type"
     @click="onClick">
+    <span
+      v-if="variant === 'tag-shaped'"
+      class="button__tag-surface"
+      aria-hidden="true" />
     <slot />
   </component>
 </template>
@@ -33,11 +37,18 @@ const props = defineProps({
   },
   /** Visual variant; icon is a circular 44px control. */ variant: {
     type: String as PropType<
-      "plain" | "secondary" | "primary" | "icon" | "code-token"
+      "plain" | "secondary" | "primary" | "icon" | "code-token" | "tag-shaped"
     >,
     default: "plain",
     validator: (value: string) =>
-      ["plain", "secondary", "primary", "icon", "code-token"].includes(value),
+      [
+        "plain",
+        "secondary",
+        "primary",
+        "icon",
+        "code-token",
+        "tag-shaped",
+      ].includes(value),
   },
   /** Render a navigation link instead of a native button when supplied. */ to: {
     type: String,
@@ -51,7 +62,9 @@ const props = defineProps({
 });
 const hydrated = useMounted();
 const type = computed(() => (props.submit ? "submit" : "button"));
-const tagVariant = computed(() => props.variant === "code-token");
+const tagVariant = computed(
+  () => props.variant === "code-token" || props.variant === "tag-shaped",
+);
 const tag = computed(() =>
   props.to ? (props.disabled ? "a" : NuxtLink) : "button",
 );
@@ -241,6 +254,68 @@ const onClick = (event: MouseEvent) => {
     center / contain no-repeat;
 }
 
+.button--tag-shaped {
+  --button-tag-point: 1rem;
+  --button-tag-surface: var(--global-background-color);
+  --button-tag-edge: var(--global-border-color);
+
+  isolation: isolate;
+  border-start-end-radius: 0.4rem;
+  border-end-end-radius: 0.4rem;
+  padding-inline-start: calc(var(--button-tag-point) + 1rem);
+  font-family: var(--global-font-family-monospace);
+  font-size: 0.8rem;
+
+  &::after {
+    content: "";
+
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: calc(var(--button-tag-point) - 0.2rem);
+    inline-size: 0.4rem;
+    block-size: 0.4rem;
+    border-radius: 50%;
+    background: var(--global-accent-color);
+    transform: translateY(-50%);
+  }
+
+  &:disabled,
+  &[aria-disabled="true"] {
+    border-color: transparent;
+
+    &::after {
+      background: var(--global-disabled-color);
+    }
+  }
+}
+
+// Clip only the decorative surface, leaving the shared shadow and focus ring visible.
+.button__tag-surface {
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--button-tag-edge);
+  clip-path: polygon(
+    var(--button-tag-point) 0,
+    100% 0,
+    100% 100%,
+    var(--button-tag-point) 100%,
+    0 50%
+  );
+  pointer-events: none;
+
+  &::after {
+    content: "";
+
+    position: absolute;
+    inset: 1px;
+    border-radius: inherit;
+    background: var(--button-tag-surface);
+    clip-path: inherit;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .button.button--tag {
     transform: none;
@@ -288,6 +363,28 @@ const onClick = (event: MouseEvent) => {
   &:disabled {
     color: var(--button-icon-disabled-color, var(--global-disabled-color));
     background-color: var(--button-icon-disabled-background, transparent);
+  }
+
+  .button.button--tag-shaped {
+    --button-tag-surface: Canvas;
+    --button-tag-edge: LinkText;
+
+    border-color: transparent;
+    background: transparent;
+
+    .button__tag-surface {
+      forced-color-adjust: none;
+    }
+
+    &:disabled,
+    &[aria-disabled="true"] {
+      --button-tag-text-color: GrayText;
+      --button-tag-edge: GrayText;
+
+      &::after {
+        background: GrayText;
+      }
+    }
   }
 }
 

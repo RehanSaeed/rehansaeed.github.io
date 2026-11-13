@@ -11,6 +11,7 @@ test("selected tags render accessible navigation before hydration", async ({
     const response = await request.get(path);
     expect(response.ok()).toBe(true);
     const $ = load(await response.text());
+    expect($(".tag-style-switcher")).toHaveLength(0);
     const tags = $(".tags__link");
     expect(tags.length).toBeGreaterThan(0);
     for (const tag of tags.toArray()) {
@@ -147,5 +148,75 @@ for (const { theme, width, minimumRows } of [
         exact: true,
       }),
     ).toBeVisible();
+  });
+}
+
+if (process.env.TAG_STYLE_PREVIEW === "true") {
+  test("development preview switches real portfolio and article tags without changing their links", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    for (const { theme, width } of [
+      { theme: "light", width: 1440 },
+      { theme: "dark", width: 390 },
+    ] as const) {
+      await page.emulateMedia({ colorScheme: theme });
+      await page.setViewportSize({ width, height: 1100 });
+      for (const path of ["/portfolio/", postPath]) {
+        await page.goto(path, { waitUntil: "domcontentloaded" });
+        await expect(
+          page.getByRole("button", { name: "Toggle dark/light" }),
+        ).toBeEnabled();
+        const code = page.getByRole("radio", {
+          name: "Code token with tag icon",
+        });
+        const pointed = page.getByRole("radio", {
+          name: "Pointed tag with purple hole",
+        });
+        await expect(code).toBeChecked();
+        const tags = page.locator(".tags__link");
+        const namesAndLinks = await tags.evaluateAll((elements) =>
+          elements.map((element) => ({
+            name: element.textContent.trim(),
+            href: element.getAttribute("href"),
+          })),
+        );
+        expect(namesAndLinks.length).toBeGreaterThan(0);
+        const context = path === "/portfolio/" ? "portfolio" : "article";
+        await tags.first().scrollIntoViewIfNeeded();
+        await page.screenshot({
+          path: test.info().outputPath(`${context}-${theme}-code-token.png`),
+        });
+        await code.focus();
+        await page.keyboard.press("ArrowDown");
+        await expect(pointed).toBeChecked();
+        await expect(tags.first()).toHaveClass(/button--tag-shaped/);
+        await expect(
+          page.locator(".tags__link.button--code-token"),
+        ).toHaveCount(0);
+        expect(
+          await tags.evaluateAll((elements) =>
+            elements.map((element) => ({
+              name: element.textContent.trim(),
+              href: element.getAttribute("href"),
+            })),
+          ),
+        ).toEqual(namesAndLinks);
+        await expect(tags.first()).toHaveAccessibleName(namesAndLinks[0]!.name);
+        expect(
+          await page.evaluate(() => document.documentElement.scrollWidth),
+        ).toBeLessThanOrEqual(width);
+        await tags.first().scrollIntoViewIfNeeded();
+        await page.screenshot({
+          path: test.info().outputPath(`${context}-${theme}-tag-shaped.png`),
+        });
+        await code.check();
+        await expect(tags.first()).toHaveClass(/button--code-token/);
+        await expect(tags.first()).toHaveClass(/button--tag-icon/);
+        await expect(
+          page.locator(".tags__link.button--tag-shaped"),
+        ).toHaveCount(0);
+      }
+    }
   });
 }

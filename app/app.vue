@@ -2,6 +2,9 @@
   <NuxtRouteAnnouncer />
   <NuxtAnnouncer />
   <NuxtLayout>
+    <DevOnly>
+      <u-tag-style-switcher />
+    </DevOnly>
     <NuxtPage />
   </NuxtLayout>
   <ClientOnly>

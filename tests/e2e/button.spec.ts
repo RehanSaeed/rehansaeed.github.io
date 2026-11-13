@@ -53,7 +53,7 @@ const properties = compileString(readFileSync(propertiesPath, "utf8"), {
   url: pathToFileURL(propertiesPath),
 }).css;
 const variants = ["plain", "secondary", "primary", "icon"] as const;
-const tagVariants = ["code-token"] as const;
+const tagVariants = ["code-token", "tag-shaped"] as const;
 
 for (const variant of [...variants, ...tagVariants]) {
   unitTest(
@@ -90,7 +90,10 @@ unitTest(
       expect(html).not.toContain("disabled");
       expect(html).not.toContain("type=");
       expect(html).toContain(`button--${variant}`);
-      expect(html).toContain("button--tag-icon");
+      expect(html.includes("button--tag-icon")).toBe(variant === "code-token");
+      expect(
+        html.includes('class="button__tag-surface" aria-hidden="true"'),
+      ).toBe(variant === "tag-shaped");
       const disabled = await renderToString(
         h(button, { variant, to: "/tag/c/", disabled: true }, () => "C#"),
       );
@@ -164,6 +167,7 @@ test("navigation variants forward clicks and become inert when disabled", async 
 
 for (const theme of ["light", "dark"]) {
   async function verifyButtonVariants({ page }: Pick<E2EFixtures, "page">) {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.setContent(
       `<html data-theme="${theme}"><body><div id="app"></div></body></html>`,
     );
@@ -215,6 +219,9 @@ for (const theme of ["light", "dark"]) {
               </u-button>
               <u-button variant="secondary" :disabled="disabled" @click="clicks++">secondary</u-button>
               <u-button variant="primary" :disabled="disabled" @click="clicks++">primary</u-button>
+              <u-button variant="tag-shaped" tag-icon :disabled="disabled" @click="clicks++">
+                Windows Presentation Foundation (WPF)
+              </u-button>
               <u-button variant="icon" aria-label="icon" :disabled="disabled" @click="clicks++">
                 <svg aria-hidden="true" width="20" height="20"><path d="M0 0h20v20H0z" /></svg>
               </u-button>
@@ -237,6 +244,10 @@ for (const theme of ["light", "dark"]) {
       exact: true,
     });
     const primary = page.getByRole("button", { name: "primary", exact: true });
+    const shaped = page.getByRole("button", {
+      name: "Windows Presentation Foundation (WPF)",
+      exact: true,
+    });
     const icon = page.getByRole("button", { name: "icon", exact: true });
     const overlay = page.getByRole("button", { name: "overlay action" });
     const submit = page.getByRole("button", { name: "Submit", exact: true });
@@ -284,6 +295,23 @@ for (const theme of ["light", "dark"]) {
     await expect(primary).toHaveCSS("background-color", tokens.accent);
     await expect(primary).toHaveCSS("border-top-color", tokens.accent);
     await expect(primary).toHaveCSS("color", tokens.content);
+    await expect(shaped).toHaveClass("button button--tag-shaped button--tag");
+    const surface = shaped.locator(".button__tag-surface");
+    await expect(surface).toHaveAttribute("aria-hidden", "true");
+    await expect(surface).not.toHaveCSS("clip-path", "none");
+    await expect(shaped).toHaveCSS("clip-path", "none");
+    await expect
+      .poll(() =>
+        shaped.evaluate((element) => {
+          const hole = getComputedStyle(element, "::after");
+          return {
+            colour: hole.backgroundColor,
+            round: hole.borderRadius,
+            mask: hole.maskImage,
+          };
+        }),
+      )
+      .toEqual({ colour: tokens.accent, round: "50%", mask: "none" });
     for (const property of [
       "padding",
       "border-top-width",
@@ -310,7 +338,7 @@ for (const theme of ["light", "dark"]) {
     await expect(output).toHaveAttribute("data-clicks", "1");
     await expect(output).toHaveAttribute("data-submits", "0");
 
-    for (const control of [plain, secondary, primary, icon, overlay]) {
+    for (const control of [plain, secondary, primary, icon, overlay, shaped]) {
       await expect(control).toHaveAttribute("type", "button");
       await control.hover();
       if (control === icon || control === overlay) {
@@ -362,7 +390,13 @@ for (const theme of ["light", "dark"]) {
           control === icon ? tokens.border : "rgb(255, 255, 255)",
         );
       } else {
-        await expect(control).toHaveCSS("outline-style", "none");
+        await expect(control).toHaveCSS(
+          "outline-style",
+          control === shaped ? "solid" : "none",
+        );
+        if (control === shaped) {
+          await expect(control).toHaveCSS("outline-width", "3px");
+        }
         await expect(control).toHaveCSS(
           "transform",
           "matrix(1, 0, 0, 1, 0, -2)",
@@ -390,7 +424,15 @@ for (const theme of ["light", "dark"]) {
 
     await page.getByRole("button", { name: "Toggle disabled" }).click();
     const clicks = await output.getAttribute("data-clicks");
-    for (const control of [plain, secondary, primary, icon, overlay, submit]) {
+    for (const control of [
+      plain,
+      secondary,
+      primary,
+      icon,
+      overlay,
+      shaped,
+      submit,
+    ]) {
       await expect(control).toBeDisabled();
       // Disabled controls cannot pass actionability checks; exercise their disabled hover styles.
       // eslint-disable-next-line playwright/no-force-option
@@ -417,6 +459,14 @@ for (const theme of ["light", "dark"]) {
     await page.getByRole("button", { name: "Toggle disabled" }).click();
     await expect(primary).toBeEnabled();
     await expect(primary).toHaveCSS("background-color", tokens.accent);
+    await page.setViewportSize({ width: 320, height: 900 });
+    await expect(shaped).toHaveCSS("max-inline-size", "100%");
+    expect(
+      await shaped.evaluate((element) => ({
+        overflows: element.scrollWidth > element.clientWidth,
+        fits: element.getBoundingClientRect().right <= innerWidth,
+      })),
+    ).toEqual({ overflows: false, fits: true });
     await page.addStyleTag({
       content: ".button { color: var(--global-title-color); }",
     });
@@ -429,6 +479,11 @@ for (const theme of ["light", "dark"]) {
     await expect(overlay).toHaveCSS("color", "rgb(255, 255, 255)");
     for (const motion of ["reduce", "no-preference"] as const) {
       await page.emulateMedia({ reducedMotion: motion });
+      await shaped.hover();
+      await expect(shaped).toHaveCSS(
+        "transform",
+        motion === "reduce" ? "none" : "matrix(1, 0, 0, 1, 0, -2)",
+      );
       await icon.focus();
       const beforeKeyboardClick = Number(
         await output.getAttribute("data-clicks"),
@@ -443,6 +498,21 @@ for (const theme of ["light", "dark"]) {
       await expect(icon).toHaveCSS("transition-duration", "0s");
     }
     await page.emulateMedia({ forcedColors: "active" });
+    await shaped.focus();
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Shift+Tab");
+    await expect(shaped).toBeFocused();
+    await expect(shaped).toHaveCSS("outline-width", "3px");
+    expect(
+      await shaped.evaluate(
+        (element) => getComputedStyle(element).backgroundColor,
+      ),
+    ).toMatch(/,\s*0\)$/);
+    const surfaceColours = await surface.evaluate((element) => ({
+      edge: getComputedStyle(element).backgroundColor,
+      fill: getComputedStyle(element, "::after").backgroundColor,
+    }));
+    expect(surfaceColours.edge).not.toBe(surfaceColours.fill);
     for (const control of [icon, overlay]) {
       await control.focus();
       await page.keyboard.press("Tab");

@@ -4,7 +4,7 @@
       v-for="tag of tags"
       :key="tag"
       class="tags__link"
-      variant="code-token"
+      :variant="variant"
       tag-icon
       :to="tagPath(tag)"
       >{{ tag }}</u-button
@@ -14,6 +14,7 @@
 
 <script setup lang="ts">
 import type { PropType } from "vue";
+import { useTagStylePreview } from "~/composables/use-tag-style-preview";
 import { tagPath } from "#shared/utils/tag";
 
 defineOptions({ name: "u-tags" });
@@ -23,6 +24,9 @@ defineProps({
     type: Array as PropType<string[]>,
   },
 });
+const variant = import.meta.dev
+  ? useTagStylePreview()
+  : ref<"code-token">("code-token");
 </script>
 
 <style lang="scss">
