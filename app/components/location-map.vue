@@ -1,8 +1,12 @@
 <template>
-  <u-intersect root-margin="200px" @enterFirstTime="loadMap">
+  <u-intersect root-margin="200px" @enter="loadOnApproach">
     <figure
+      ref="figure"
       class="location-map"
-      :class="{ 'location-map--interactive': mapReady }">
+      :class="{ 'location-map--interactive': mapReady }"
+      :tabindex="mapReady ? -1 : 0"
+      @focusin="loadMap"
+      @pointerdown="loadMap">
       <div class="location-map__viewport">
         <div
           ref="mapContainer"
@@ -169,6 +173,7 @@ const locationSchema = z.object({
 });
 const avatarClipId = `${useId()}-location-avatar`;
 const colorMode = useColorMode();
+const figure = ref<HTMLElement>();
 const mapContainer = ref<HTMLDivElement>();
 const markerTemplate = ref<HTMLDivElement>();
 const visitorTemplate = ref<HTMLDivElement>();
@@ -187,6 +192,8 @@ let reduceMotion = false;
 let styleReady = false;
 let userMovedMap = false;
 let disposed = false;
+let hasScrolled = false;
+let started = false;
 const isDisposed = () => disposed;
 
 const mapStyle = () => {
@@ -447,9 +454,10 @@ const updateTheme = () => {
 };
 
 const loadMap = async () => {
-  if (isDisposed()) {
+  if (isDisposed() || started) {
     return;
   }
+  started = true;
   try {
     const [maplibregl, , { default: workerUrl }] = await Promise.all([
       import("maplibre-gl"),
@@ -535,10 +543,38 @@ const loadMap = async () => {
   }
 };
 
+const loadOnApproach = () => {
+  // Initial visibility on a tall screen is not a request to start WebGL.
+  if (hasScrolled) {
+    void loadMap();
+  }
+};
+
+const onFirstScroll = () => {
+  hasScrolled = true;
+  const bounds = figure.value?.getBoundingClientRect();
+  if (
+    bounds &&
+    bounds.top <= window.innerHeight + 200 &&
+    bounds.bottom >= -200
+  ) {
+    void loadMap();
+  }
+};
+
+onMounted(() => {
+  hasScrolled = window.scrollY > 0;
+  window.addEventListener("scroll", onFirstScroll, {
+    once: true,
+    passive: true,
+  });
+});
+
 watch(() => colorMode.value, updateTheme, { flush: "post" });
 
 onBeforeUnmount(() => {
   disposed = true;
+  window.removeEventListener("scroll", onFirstScroll);
   removeMap();
 });
 </script>
@@ -588,6 +624,11 @@ onBeforeUnmount(() => {
   margin: 0 0 var(--global-space-fixed-5);
   margin-inline: calc(var(--card-space, 0px) * -1);
   overflow: hidden;
+
+  &:focus-visible {
+    outline: var(--global-border-width-2) solid var(--global-accent-color);
+    outline-offset: var(--global-focus-outline-offset);
+  }
 }
 
 [data-theme="dark"] .location-map {
@@ -796,6 +837,7 @@ onBeforeUnmount(() => {
     color: ButtonText;
   }
 
+  .location-map:focus-visible,
   .location-map :focus-visible {
     outline: var(--global-border-width-2) solid Highlight;
     outline-offset: var(--global-border-width-2);
