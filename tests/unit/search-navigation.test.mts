@@ -5,7 +5,7 @@ import test from "node:test";
 import { runInNewContext } from "node:vm";
 
 const component = await readFile(
-    new URL("../../app/components/search/search-button.vue", import.meta.url),
+    new URL("../../app/components/search/search-dialogue.vue", import.meta.url),
     "utf8",
 );
 const source = stripTypeScriptTypes(
@@ -23,42 +23,43 @@ const createHarness = () => {
             focuses++;
         },
     };
+    const context = {
+        defineOptions: () => {},
+        ref: (value: unknown) => ({ value }),
+        computed: (value: () => unknown) => ({ value: value() }),
+        useRoute: () => route,
+        useRouter: () => ({
+            beforeResolve: (callback: () => void) => {
+                beforeResolve = callback;
+                return () => {};
+            },
+            afterEach: () => () => {},
+            onError: (callback: () => void) => {
+                errors.add(callback);
+                return () => errors.delete(callback);
+            },
+        }),
+        useNuxtApp: () => ({
+            hook: (name: string, callback: () => void) => {
+                hooks.set(name, callback);
+                return () => hooks.delete(name);
+            },
+        }),
+        onMounted: () => {},
+        onBeforeUnmount: () => {},
+        searchOpened: () => {},
+        searchClosed: () => {},
+        searchResultSelected: () => {},
+        document: {
+            querySelector: () => ({
+                dataset: { postPermalink: "/article/" },
+                querySelector: () => heading,
+            }),
+        },
+    };
     const search = runInNewContext(
         `${source}\n({ onSelected, onOpen, onClose, isOpen, animateClose });`,
-        {
-            defineOptions: () => {},
-            ref: (value: unknown) => ({ value }),
-            computed: (value: () => unknown) => ({ value: value() }),
-            useRoute: () => route,
-            useRouter: () => ({
-                beforeResolve: (callback: () => void) => {
-                    beforeResolve = callback;
-                    return () => {};
-                },
-                afterEach: () => () => {},
-                onError: (callback: () => void) => {
-                    errors.add(callback);
-                    return () => errors.delete(callback);
-                },
-            }),
-            useNuxtApp: () => ({
-                hook: (name: string, callback: () => void) => {
-                    hooks.set(name, callback);
-                    return () => hooks.delete(name);
-                },
-            }),
-            onMounted: () => {},
-            onBeforeUnmount: () => {},
-            searchOpened: () => {},
-            searchClosed: () => {},
-            searchResultSelected: () => {},
-            document: {
-                querySelector: () => ({
-                    dataset: { postPermalink: "/article/" },
-                    querySelector: () => heading,
-                }),
-            },
-        },
+        context,
     ) as {
         onSelected: (term: string, permalink: string) => void;
         onOpen: () => void;
