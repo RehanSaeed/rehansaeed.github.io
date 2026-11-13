@@ -15,8 +15,8 @@ test("selected tags render accessible navigation before hydration", async ({
     expect(tags.length).toBeGreaterThan(0);
     for (const tag of tags.toArray()) {
       const link = $(tag);
-      expect(link.is("a.button--tag")).toBe(true);
-      expect(link.find(".button__tag-surface").attr("aria-hidden")).toBe(
+      expect(link.is("a.link-button--tag")).toBe(true);
+      expect(link.find(".link-button__tag-surface").attr("aria-hidden")).toBe(
         "true",
       );
       expect(link.attr("href")).toBe(tagPath(link.text().trim()));
@@ -45,7 +45,7 @@ for (const { theme, width, minimumRows } of [
     await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
     const tags = page.locator(".portfolio-card .tags__link");
     const first = tags.first();
-    await expect(first).toHaveClass(/(?:^|\s)button--tag(?:\s|$)/);
+    await expect(first).toHaveClass(/(?:^|\s)link-button--tag(?:\s|$)/);
     await expect(first).toHaveAccessibleName("Windows");
     await expect(first).toHaveAttribute("href", "/tag/windows/");
     await expect(first).toHaveCSS("text-decoration-line", "none");
@@ -89,7 +89,7 @@ for (const { theme, width, minimumRows } of [
     });
     await first.hover();
     await expect(first).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -2)");
-    const surface = first.locator(".button__tag-surface");
+    const surface = first.locator(".link-button__tag-surface");
     await expect(surface).toHaveCSS("filter", raisedShadow);
     expect(
       await first.evaluate(
@@ -148,7 +148,7 @@ for (const { theme, width, minimumRows } of [
       page.getByRole("button", { name: "Toggle dark/light" }),
     ).toBeEnabled();
     const postTag = page.locator(".post__tags .tags__link").first();
-    await expect(postTag).toHaveClass(/(?:^|\s)button--tag(?:\s|$)/);
+    await expect(postTag).toHaveClass(/(?:^|\s)link-button--tag(?:\s|$)/);
     const name = (await postTag.textContent())!.trim();
     await expect(postTag).toHaveAccessibleName(name);
     await expect(postTag).toHaveCSS("text-decoration-line", "none");
@@ -157,7 +157,7 @@ for (const { theme, width, minimumRows } of [
     });
     await postTag.hover();
     await expect(postTag).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -2)");
-    await expect(postTag.locator(".button__tag-surface")).toHaveCSS(
+    await expect(postTag.locator(".link-button__tag-surface")).toHaveCSS(
       "filter",
       raisedShadow,
     );
@@ -170,7 +170,7 @@ for (const { theme, width, minimumRows } of [
     await expect(postTag).toBeFocused();
     await expect(postTag).toHaveCSS("outline-width", "3px");
     await expect(postTag).toHaveCSS("border-top-style", "solid");
-    const postSurface = postTag.locator(".button__tag-surface");
+    const postSurface = postTag.locator(".link-button__tag-surface");
     await expect(postSurface).toHaveCSS("filter", "none");
     const colours = await postSurface.evaluate((element) => ({
       edge: getComputedStyle(element, "::before").backgroundColor,
@@ -189,7 +189,7 @@ for (const { theme, width, minimumRows } of [
     await page.emulateMedia({ forcedColors: "none" });
     await page.goto("/", { waitUntil: "domcontentloaded" });
     const cardTag = page.locator(".post-card__tags .tags__link").first();
-    await expect(cardTag).toHaveClass(/(?:^|\s)button--tag(?:\s|$)/);
+    await expect(cardTag).toHaveClass(/(?:^|\s)link-button--tag(?:\s|$)/);
     const cardName = (await cardTag.textContent())!.trim();
     await expect(cardTag).toHaveAccessibleName(cardName);
     await expect(cardTag).toHaveAttribute("href", tagPath(cardName));
@@ -198,7 +198,7 @@ for (const { theme, width, minimumRows } of [
     });
     await cardTag.hover();
     await expect(cardTag).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -2)");
-    await expect(cardTag.locator(".button__tag-surface")).toHaveCSS(
+    await expect(cardTag.locator(".link-button__tag-surface")).toHaveCSS(
       "filter",
       raisedShadow,
     );

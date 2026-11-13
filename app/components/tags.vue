@@ -1,13 +1,13 @@
 <template>
   <div class="tags">
-    <u-button
+    <u-link-button
       v-for="tag of tags"
       :key="tag"
       class="tags__link"
-      variant="tag"
+      tag
       data-tag-transition-link
       :to="tagPath(tag)"
-      ><span data-tag-transition-label>{{ tag }}</span></u-button
+      ><span data-tag-transition-label>{{ tag }}</span></u-link-button
     >
   </div>
 </template>

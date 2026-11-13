@@ -6,9 +6,8 @@ import { pathToFileURL } from "node:url";
 import { runInNewContext } from "node:vm";
 import { test as unitTest } from "@playwright/test";
 import { compileString } from "sass-embedded";
-import sharp from "sharp";
 import { ModuleKind, ScriptTarget, transpileModule } from "typescript";
-import { defineComponent, h, type ComponentOptions } from "vue";
+import { h, type ComponentOptions } from "vue";
 import { compileScript, parse } from "vue/compiler-sfc";
 import { renderToString } from "vue/server-renderer";
 import { delayClientScripts, expect, test } from "./fixtures";
@@ -29,20 +28,9 @@ const source = transpileModule(
   },
 ).outputText;
 const componentExports: { default?: ComponentOptions } = {};
-const link = defineComponent({
-  props: {
-    /** Navigation destination for the rendered anchor. */
-    to: String,
-  },
-  setup:
-    (props, { slots }) =>
-    () =>
-      h("a", { href: props.to }, slots.default?.()),
-});
 runInNewContext(source, {
   exports: componentExports,
-  require: (id: string): unknown =>
-    id === "#components" ? { NuxtLink: link } : loadDependency(id),
+  require: loadDependency,
 });
 if (!componentExports.default) {
   throw new Error("Missing button component");
@@ -53,7 +41,7 @@ const propertiesPath = join(process.cwd(), "app/assets/style/_properties.scss");
 const properties = compileString(readFileSync(propertiesPath, "utf8"), {
   url: pathToFileURL(propertiesPath),
 }).css;
-const variants = ["plain", "secondary", "primary", "icon", "tag"] as const;
+const variants = ["plain", "secondary", "primary", "icon"] as const;
 
 for (const variant of variants) {
   unitTest(
@@ -78,90 +66,14 @@ for (const variant of variants) {
   );
 }
 
-unitTest(
-  "tag links preserve navigation semantics before hydration",
-  async () => {
-    const html = await renderToString(
-      h(button, { variant: "tag", to: "/tag/c/" }, () => "C#"),
-    );
-    expect(html).toContain("<a");
-    expect(html).toContain('href="/tag/c/"');
-    expect(html).not.toContain("disabled");
-    expect(html).not.toContain("type=");
-    expect(html).toContain("button--tag");
-    expect(html).toContain('class="button__tag-surface" aria-hidden="true"');
-    const disabled = await renderToString(
-      h(button, { variant: "tag", to: "/tag/c/", disabled: true }, () => "C#"),
-    );
-    expect(disabled).toContain('aria-disabled="true"');
-    expect(disabled).toContain('role="link"');
-    expect(disabled).not.toContain("href=");
-  },
-);
-
-test("tag links forward clicks and become inert when disabled", async ({
-  page,
-}) => {
-  await page.setContent('<div id="app"></div>');
-  await page.addScriptTag({
-    path: loadDependency.resolve("vue/dist/vue.global.js"),
-  });
-  await page.addScriptTag({
-    path: loadDependency.resolve("@vueuse/shared/index.iife.js"),
-  });
-  await page.addScriptTag({
-    path: loadDependency.resolve("@vueuse/core/index.iife.js"),
-  });
-  await page.addScriptTag({
-    content: `{
-      const exports = {};
-      const NuxtLink = {
-        props: ["to"],
-        setup: (props, { slots }) => () => Vue.h("a", { href: props.to }, slots.default?.())
-      };
-      const require = (name) => {
-        if (name === "vue") return Vue;
-        if (name === "@vueuse/core") return VueUse;
-        if (name === "#components") return { NuxtLink };
-        throw new Error("Unexpected button dependency: " + name);
-      };
-      ${source}
-      Vue.createApp({
-        components: { UButton: exports.default },
-        data: () => ({ disabled: false, clicks: 0 }),
-        template: \`
-          <u-button variant="tag" to="/destination/" :disabled="disabled" @click.prevent="clicks++">Tag</u-button>
-          <button @click="disabled=!disabled">Toggle disabled links</button>
-          <output :data-clicks="clicks"></output>\`
-      }).mount("#app");
-    }`,
-  });
-  const link = page.getByRole("link", { name: "Tag", exact: true });
-  await expect(link).toHaveAttribute("href", "/destination/");
-  await link.click();
-  await expect(page.locator("output")).toHaveAttribute("data-clicks", "1");
-  await page.getByRole("button", { name: "Toggle disabled links" }).click();
-  await expect(link).toBeDisabled();
-  await expect(link).toHaveAttribute("tabindex", "-1");
-  await expect(link).not.toHaveAttribute("href");
-  await link.dispatchEvent("click");
-  await expect(page.locator("output")).toHaveAttribute("data-clicks", "1");
-});
-
 for (const theme of ["light", "dark"]) {
   async function verifyButtonVariants({ page }: Pick<E2EFixtures, "page">) {
-    await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.setContent(
       `<html data-theme="${theme}"><body><div id="app"></div></body></html>`,
     );
     await page.addStyleTag({
       content: `${properties}\n${styles}
         .button:not(.button--icon) { transition: none; }
-        .silhouette-sample { padding: 32px; background: #808080; }
-        .silhouette-sample .button {
-          --button-tag-point: 96px;
-          min-block-size: 128px;
-        }
         .overlay {
           color: white;
           background: #222;
@@ -184,14 +96,9 @@ for (const theme of ["light", "dark"]) {
     await page.addScriptTag({
       content: `{
         const exports = {};
-        const NuxtLink = {
-          props: ["to"],
-          setup: (props, { slots }) => () => Vue.h("a", { href: props.to }, slots.default?.())
-        };
         const require = (name) => {
           if (name === "vue") return Vue;
           if (name === "@vueuse/core") return VueUse;
-          if (name === "#components") return { NuxtLink };
           throw new Error("Unexpected button dependency: " + name);
         };
         ${source}
@@ -207,9 +114,6 @@ for (const theme of ["light", "dark"]) {
               </u-button>
               <u-button variant="secondary" :disabled="disabled" @click="clicks++">secondary</u-button>
               <u-button variant="primary" :disabled="disabled" @click="clicks++">primary</u-button>
-              <u-button variant="tag" :disabled="disabled" @click="clicks++">
-                Windows Presentation Foundation (WPF)
-              </u-button>
               <u-button variant="icon" aria-label="icon" :disabled="disabled" @click="clicks++">
                 <svg aria-hidden="true" width="20" height="20"><path d="M0 0h20v20H0z" /></svg>
               </u-button>
@@ -221,10 +125,7 @@ for (const theme of ["light", "dark"]) {
               <u-button variant="primary" submit :disabled="disabled">Submit</u-button>
               <button type="button" @click="disabled=!disabled">Toggle disabled</button>
               <output :data-clicks="clicks" :data-submits="submits" :data-entered="entered"></output>
-            </form>
-            <div class="silhouette-sample">
-              <u-button variant="tag">Shape sample</u-button>
-            </div>\`
+            </form>\`
         }).mount("#app");
       }`,
     });
@@ -235,10 +136,6 @@ for (const theme of ["light", "dark"]) {
       exact: true,
     });
     const primary = page.getByRole("button", { name: "primary", exact: true });
-    const shaped = page.getByRole("button", {
-      name: "Windows Presentation Foundation (WPF)",
-      exact: true,
-    });
     const icon = page.getByRole("button", { name: "icon", exact: true });
     const overlay = page.getByRole("button", { name: "overlay action" });
     const submit = page.getByRole("button", { name: "Submit", exact: true });
@@ -286,28 +183,6 @@ for (const theme of ["light", "dark"]) {
     await expect(primary).toHaveCSS("background-color", tokens.accent);
     await expect(primary).toHaveCSS("border-top-color", tokens.accent);
     await expect(primary).toHaveCSS("color", tokens.content);
-    await expect(shaped).toHaveClass("button button--tag");
-    const surface = shaped.locator(".button__tag-surface");
-    await expect(surface).toHaveAttribute("aria-hidden", "true");
-    await expect(surface).toHaveCSS("clip-path", "none");
-    expect(
-      await surface.evaluate(
-        (element) => getComputedStyle(element, "::before").clipPath,
-      ),
-    ).not.toBe("none");
-    await expect(shaped).toHaveCSS("clip-path", "none");
-    await expect
-      .poll(() =>
-        shaped.evaluate((element) => {
-          const hole = getComputedStyle(element, "::after");
-          return {
-            colour: hole.backgroundColor,
-            round: hole.borderRadius,
-            mask: hole.maskImage,
-          };
-        }),
-      )
-      .toEqual({ colour: tokens.accent, round: "50%", mask: "none" });
     for (const property of [
       "padding",
       "border-top-width",
@@ -334,7 +209,7 @@ for (const theme of ["light", "dark"]) {
     await expect(output).toHaveAttribute("data-clicks", "1");
     await expect(output).toHaveAttribute("data-submits", "0");
 
-    for (const control of [plain, secondary, primary, icon, overlay, shaped]) {
+    for (const control of [plain, secondary, primary, icon, overlay]) {
       await expect(control).toHaveAttribute("type", "button");
       await control.hover();
       if (control === icon || control === overlay) {
@@ -415,13 +290,7 @@ for (const theme of ["light", "dark"]) {
           );
         }
       } else {
-        await expect(control).toHaveCSS(
-          "outline-style",
-          control === shaped ? "solid" : "none",
-        );
-        if (control === shaped) {
-          await expect(control).toHaveCSS("outline-width", "3px");
-        }
+        await expect(control).toHaveCSS("outline-style", "none");
         await expect(control).toHaveCSS(
           "transform",
           "matrix(1, 0, 0, 1, 0, -2)",
@@ -433,20 +302,11 @@ for (const theme of ["light", "dark"]) {
             ),
           )
           .toBe("1");
-        if (control === shaped) {
-          expect(
-            await control.evaluate(
-              (element) => getComputedStyle(element, "::before").content,
-            ),
-          ).toBe("none");
-          await expect(surface).not.toHaveCSS("filter", "none");
-        } else {
-          expect(
-            await control.evaluate(
-              (element) => getComputedStyle(element, "::before").boxShadow,
-            ),
-          ).not.toBe("none");
-        }
+        expect(
+          await control.evaluate(
+            (element) => getComputedStyle(element, "::before").boxShadow,
+          ),
+        ).not.toBe("none");
       }
       if (control === primary) {
         await expect(control).toHaveCSS("color", tokens.content);
@@ -458,15 +318,7 @@ for (const theme of ["light", "dark"]) {
 
     await page.getByRole("button", { name: "Toggle disabled" }).click();
     const clicks = await output.getAttribute("data-clicks");
-    for (const control of [
-      plain,
-      secondary,
-      primary,
-      icon,
-      overlay,
-      shaped,
-      submit,
-    ]) {
+    for (const control of [plain, secondary, primary, icon, overlay, submit]) {
       await expect(control).toBeDisabled();
       // Disabled controls cannot pass actionability checks; exercise their disabled hover styles.
       // eslint-disable-next-line playwright/no-force-option
@@ -482,7 +334,6 @@ for (const theme of ["light", "dark"]) {
     }
     await expect(output).toHaveAttribute("data-clicks", clicks!);
     await expect(output).toHaveAttribute("data-submits", "1");
-    await expect(surface).toHaveCSS("filter", "none");
     await expect(icon).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
     await expect(overlay).toHaveCSS(
       "background-color",
@@ -494,14 +345,6 @@ for (const theme of ["light", "dark"]) {
     await page.getByRole("button", { name: "Toggle disabled" }).click();
     await expect(primary).toBeEnabled();
     await expect(primary).toHaveCSS("background-color", tokens.accent);
-    await page.setViewportSize({ width: 320, height: 900 });
-    await expect(shaped).toHaveCSS("max-inline-size", "100%");
-    expect(
-      await shaped.evaluate((element) => ({
-        overflows: element.scrollWidth > element.clientWidth,
-        fits: element.getBoundingClientRect().right <= innerWidth,
-      })),
-    ).toEqual({ overflows: false, fits: true });
     await page.addStyleTag({
       content: ".button { color: var(--global-title-color); }",
     });
@@ -514,14 +357,6 @@ for (const theme of ["light", "dark"]) {
     await expect(overlay).toHaveCSS("color", "rgb(255, 255, 255)");
     for (const motion of ["reduce", "no-preference"] as const) {
       await page.emulateMedia({ reducedMotion: motion });
-      await shaped.hover();
-      await expect(shaped).toHaveCSS(
-        "transform",
-        motion === "reduce" ? "none" : "matrix(1, 0, 0, 1, 0, -2)",
-      );
-      if (motion === "reduce") {
-        await expect(surface).toHaveCSS("transition-duration", "0s");
-      }
       await icon.focus();
       const beforeKeyboardClick = Number(
         await output.getAttribute("data-clicks"),
@@ -535,63 +370,7 @@ for (const theme of ["light", "dark"]) {
       await expect(icon).toHaveCSS("transform", "none");
       await expect(icon).toHaveCSS("transition-duration", "0s");
     }
-    // Enlarge the point so a rectangular backing cannot hide in the shadow blur.
-    const sample = page.getByRole("button", {
-      name: "Shape sample",
-      exact: true,
-    });
-    await sample.hover();
-    await expect(sample).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -2)");
-    const bounds = await sample.boundingBox();
-    expect(bounds).not.toBeNull();
-    const screenshot = await page.screenshot({
-      path: test.info().outputPath(`pointed-hover-${theme}.png`),
-      scale: "css",
-      animations: "disabled",
-      clip: {
-        x: Math.floor(bounds!.x) - 16,
-        y: Math.floor(bounds!.y) - 16,
-        width: Math.ceil(bounds!.width) + 32,
-        height: Math.ceil(bounds!.height) + 32,
-      },
-    });
-    const { data, info } = await sharp(screenshot)
-      .ensureAlpha()
-      .raw()
-      .toBuffer({ resolveWithObject: true });
-    const colourAt = (x: number, y: number) => {
-      const offset = (y * info.width + x) * info.channels;
-      return [...data.subarray(offset, offset + 3)];
-    };
-    expect(
-      colourAt(14, 24),
-      "No rectangular shadow above the pointed edge",
-    ).toEqual([128, 128, 128]);
-    // Sample several rows because faint shadow pixels can be dithered.
-    const tipShadow = Array.from({ length: 8 }, (_, offset) =>
-      colourAt(14, 16 + Math.floor(bounds!.height / 2) + offset),
-    );
-    expect(
-      tipShadow.some((colour) => colour.some((channel) => channel !== 128)),
-      "The triangle itself casts a raised shadow",
-    ).toBe(true);
     await page.emulateMedia({ forcedColors: "active" });
-    await shaped.focus();
-    await page.keyboard.press("Tab");
-    await page.keyboard.press("Shift+Tab");
-    await expect(shaped).toBeFocused();
-    await expect(shaped).toHaveCSS("outline-width", "3px");
-    expect(
-      await shaped.evaluate(
-        (element) => getComputedStyle(element).backgroundColor,
-      ),
-    ).toMatch(/,\s*0\)$/);
-    const surfaceColours = await surface.evaluate((element) => ({
-      edge: getComputedStyle(element, "::before").backgroundColor,
-      fill: getComputedStyle(element, "::after").backgroundColor,
-    }));
-    await expect(surface).toHaveCSS("filter", "none");
-    expect(surfaceColours.edge).not.toBe(surfaceColours.fill);
     for (const control of [icon, overlay]) {
       await control.focus();
       await page.keyboard.press("Tab");
