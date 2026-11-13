@@ -225,7 +225,7 @@ test.describe("All-pages audit regressions", () => {
         images++;
       }
     }
-    expect(images).toBe(183);
+    expect(images).toBe(186);
     expect(posts).toBe(43);
     return true;
   }

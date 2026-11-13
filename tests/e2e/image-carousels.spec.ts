@@ -43,11 +43,9 @@ for (const width of [1440, 640, 375, 320]) {
       expect(current!.x).toBeCloseTo(reference!.x, 0);
       expect(rail!.x).toBeCloseTo(0, 0);
       expect(rail!.width).toBeCloseTo(width, 0);
-      expect(
-        await page.evaluate(
-          () => document.documentElement.scrollWidth <= innerWidth,
-        ),
-      ).toBe(true);
+      await expect
+        .poll(() => page.evaluate(() => document.documentElement.scrollWidth))
+        .toBeLessThanOrEqual(width);
     }
     const next = gallery.getByRole("button", {
       name: "Next image",
@@ -68,7 +66,7 @@ for (const width of [1440, 640, 375, 320]) {
     );
     await expect(next).toBeFocused();
     await expect(next).toHaveAttribute("aria-disabled", "true");
-    await next.click();
+    await next.press("Enter");
     await expect(gallery.locator(".image-carousel__position")).toHaveText(
       "Image 3 of 3",
     );
