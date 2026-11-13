@@ -175,7 +175,7 @@ for (const theme of ["light", "dark"]) {
     await page.addStyleTag({
       content: `${properties}\n${styles}
         .button:not(.button--icon) { transition: none; }
-        .silhouette-sample { padding: 32px; }
+        .silhouette-sample { padding: 32px; background: #808080; }
         .silhouette-sample .button {
           --button-tag-point: 96px;
           min-block-size: 128px;
@@ -535,7 +535,6 @@ for (const theme of ["light", "dark"]) {
     expect(bounds).not.toBeNull();
     const screenshot = await page.screenshot({
       path: test.info().outputPath(`pointed-hover-${theme}.png`),
-      omitBackground: true,
       scale: "css",
       animations: "disabled",
       clip: {
@@ -549,16 +548,22 @@ for (const theme of ["light", "dark"]) {
       .ensureAlpha()
       .raw()
       .toBuffer({ resolveWithObject: true });
-    const alphaAt = (x: number, y: number) =>
-      data[(y * info.width + x) * info.channels + 3]!;
+    const colourAt = (x: number, y: number) => {
+      const offset = (y * info.width + x) * info.channels;
+      return [...data.subarray(offset, offset + 3)];
+    };
     expect(
-      alphaAt(14, 24),
+      colourAt(14, 24),
       "No rectangular shadow above the pointed edge",
-    ).toBe(0);
+    ).toEqual([128, 128, 128]);
+    // Sample several rows because faint shadow pixels can be dithered.
+    const tipShadow = Array.from({ length: 8 }, (_, offset) =>
+      colourAt(14, 16 + Math.floor(bounds!.height / 2) + offset),
+    );
     expect(
-      alphaAt(14, 16 + Math.floor(bounds!.height / 2)),
+      tipShadow.some((colour) => colour.some((channel) => channel !== 128)),
       "The triangle itself casts a raised shadow",
-    ).toBeGreaterThan(0);
+    ).toBe(true);
     await page.emulateMedia({ forcedColors: "active" });
     await shaped.focus();
     await page.keyboard.press("Tab");
