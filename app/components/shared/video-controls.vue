@@ -114,10 +114,17 @@
             <summary
               v-bind="trigger"
               role="button"
+              tabindex="0"
               class="button button--icon prose-video__button"
               :class="{
                 'prose-video__button--active': selectedCaption !== -1,
+                'button--pressed': pressedDisclosure === 'captions',
               }"
+              @keydown.space="pressedDisclosure = 'captions'"
+              @keydown.enter="pressedDisclosure = 'captions'"
+              @keyup.space="pressedDisclosure = null"
+              @keyup.enter="pressedDisclosure = null"
+              @blur="clearPressedDisclosure"
               :aria-label="
                 selectedCaption === -1
                   ? 'Captions: off'
@@ -154,7 +161,14 @@
             <summary
               v-bind="trigger"
               role="button"
+              tabindex="0"
               class="button button--icon prose-video__button"
+              :class="{ 'button--pressed': pressedDisclosure === 'speed' }"
+              @keydown.space="pressedDisclosure = 'speed'"
+              @keydown.enter="pressedDisclosure = 'speed'"
+              @keyup.space="pressedDisclosure = null"
+              @keyup.enter="pressedDisclosure = null"
+              @blur="clearPressedDisclosure"
               :aria-label="`Playback speed: ${playbackRate === 1 ? 'Normal' : `${playbackRate}×`}`">
               <u-icon name="fa-solid:tachometer-alt" />
             </summary>
@@ -309,6 +323,10 @@ const { muted, volume, currentTime, duration, canSeek, playbackRate } =
 const controls = useTemplateRef<HTMLSpanElement>("controls");
 const menuOpen = ref(false);
 const seekPreviewTime = ref<number | null>(null);
+const pressedDisclosure = ref<"captions" | "speed" | null>(null);
+const clearPressedDisclosure = () => {
+  pressedDisclosure.value = null;
+};
 const volumePercent = computed(() =>
   muted.value ? 0 : Math.round(volume.value * 100),
 );
@@ -442,11 +460,13 @@ const onMenuKeydown = (event: KeyboardEvent): void => {
 onMounted(() => {
   document.addEventListener("pointerdown", dismissMenus);
   document.addEventListener("keydown", onMenuKeydown);
+  window.addEventListener("blur", clearPressedDisclosure);
 });
 
 onUnmounted(() => {
   document.removeEventListener("pointerdown", dismissMenus);
   document.removeEventListener("keydown", onMenuKeydown);
+  window.removeEventListener("blur", clearPressedDisclosure);
 });
 </script>
 
@@ -586,15 +606,11 @@ onUnmounted(() => {
   background-clip: content-box;
   font-size: 20px;
   padding: 4px;
-
-  &:focus-visible {
-    outline-offset: -6px;
-  }
 }
 
 .prose-video__controls :focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: -2px;
+  outline: var(--global-border-width-2) solid var(--video-accent);
+  outline-offset: var(--global-focus-outline-offset);
 }
 
 .prose-video__volume {
@@ -635,7 +651,7 @@ onUnmounted(() => {
   background: var(--video-panel);
   border: 0;
   border-radius: var(--global-border-radius);
-  padding: 4px;
+  padding: 5px;
   inline-size: max-content;
   max-inline-size: calc(100% - 16px);
   max-block-size: min(280px, 40cqw, 60vh);
@@ -662,6 +678,11 @@ onUnmounted(() => {
     &:is(:hover, :focus-visible):not(:disabled) {
       color: var(--video-hover-foreground);
       background-color: var(--button-icon-hover-background);
+    }
+
+    &:active:not(:disabled) {
+      color: var(--button-icon-active-color);
+      background-color: var(--button-icon-active-background);
     }
   }
 }
@@ -754,10 +775,6 @@ onUnmounted(() => {
     inline-size: 44px;
     min-inline-size: 44px;
     block-size: 44px;
-
-    &:focus-visible {
-      outline-offset: -6px;
-    }
   }
 }
 
@@ -835,6 +852,12 @@ onUnmounted(() => {
     &:is(:hover, :focus-visible):not(:disabled) {
       color: HighlightText;
       background: Highlight;
+    }
+
+    &:active:not(:disabled) {
+      color: ButtonFace;
+      background-color: ButtonText;
+      border-color: ButtonText;
     }
   }
 

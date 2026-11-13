@@ -500,6 +500,8 @@ watch(controlsHidden, positionCaptions);
   --button-icon-color: var(--video-foreground);
   --button-icon-hover-color: var(--video-hover-foreground);
   --button-icon-hover-background: var(--video-foreground);
+  --button-icon-active-color: var(--video-foreground);
+  --button-icon-active-background: var(--video-hover-foreground);
   --button-icon-disabled-color: rgb(255 255 255 / 65%);
   --button-icon-disabled-background: rgb(255 255 255 / 15%);
 

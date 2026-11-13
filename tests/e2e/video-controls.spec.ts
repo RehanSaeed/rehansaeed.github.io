@@ -796,8 +796,11 @@ test("Full-width controls remain contained with large touch targets in both them
       await expect(play).toBeFocused();
       await expect(play).toHaveCSS("color", "rgb(107, 23, 232)");
       await expect(play).toHaveCSS("background-color", "rgb(255, 255, 255)");
-      await expect(play).toHaveCSS("outline-color", "rgb(107, 23, 232)");
-      await expect(play).toHaveCSS("outline-offset", "-6px");
+      await expect(play).toHaveCSS(
+        "outline-color",
+        theme === "dark" ? "rgb(204, 189, 255)" : "rgb(107, 23, 232)",
+      );
+      await expect(play).toHaveCSS("outline-offset", "3px");
       await page.keyboard.press("Tab");
     }
   }
@@ -875,7 +878,7 @@ test("Playback speed flyout matches toolbar typography and control sizing", asyn
         await page.keyboard.press("Tab");
         await page.keyboard.press("Shift+Tab");
         await expect(stepButton).toBeFocused();
-        await expect(stepButton).toHaveCSS("outline-offset", "-6px");
+        await expect(stepButton).toHaveCSS("outline-offset", "3px");
       }
     }
   }
@@ -891,6 +894,121 @@ test("Playback speed flyout matches toolbar typography and control sizing", asyn
   await expect(increase).toHaveCSS("border-top-style", "solid");
   await expect(increase).toHaveCSS("outline-style", "solid");
 });
+
+for (const theme of ["light", "dark"]) {
+  test(`Video icon buttons show pressed feedback and outside focus in ${theme}`, async ({
+    page,
+    baseURL,
+  }) => {
+    const { player } = await openVideo(page, baseURL);
+    await page.evaluate((theme) => {
+      document.documentElement.dataset.theme = theme;
+    }, theme);
+    const mute = player.locator(".prose-video__playback .button--icon").nth(1);
+    const initialMuted = await mute.getAttribute("aria-pressed");
+    await mute.hover();
+    await page.mouse.down();
+    await expect(mute).toHaveCSS("background-color", "rgb(107, 23, 232)");
+    await expect(mute).toHaveCSS("color", "rgb(255, 255, 255)");
+    await expect(mute).toHaveCSS("background-clip", "content-box");
+    await expect(mute).toHaveCSS("width", "44px");
+    await expect(mute).toHaveCSS("height", "44px");
+    await expect(mute).toHaveAttribute("aria-pressed", initialMuted!);
+    await page.mouse.up();
+    await expect(mute).toHaveAttribute(
+      "aria-pressed",
+      String(initialMuted !== "true"),
+    );
+    await expect(mute).toHaveCSS("background-color", "rgb(255, 255, 255)");
+    await page.mouse.move(0, 0);
+    await mute.focus();
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Shift+Tab");
+    await expect(mute).toHaveCSS("outline-style", "solid");
+    await expect(mute).toHaveCSS("outline-width", "2px");
+    await expect(mute).toHaveCSS("outline-offset", "3px");
+    await expect(mute).toHaveCSS(
+      "outline-color",
+      theme === "dark" ? "rgb(204, 189, 255)" : "rgb(107, 23, 232)",
+    );
+    await page.keyboard.down("Space");
+    await expect(mute).toHaveCSS("background-color", "rgb(107, 23, 232)");
+    await expect(mute).toHaveCSS("color", "rgb(255, 255, 255)");
+    await expect(mute).toHaveCSS("outline-offset", "3px");
+    await page.keyboard.up("Space");
+    await expect(mute).toHaveAttribute("aria-pressed", initialMuted!);
+    await expect(mute).toHaveCSS("background-color", "rgb(255, 255, 255)");
+    await page.keyboard.down("Enter");
+    await expect(mute).toHaveCSS("background-color", "rgb(107, 23, 232)");
+    await page.keyboard.up("Enter");
+    await expect(mute).toHaveAttribute(
+      "aria-pressed",
+      String(initialMuted !== "true"),
+    );
+
+    const speed = player.getByRole("button", { name: /^Playback speed:/ });
+    await speed.hover();
+    await page.mouse.down();
+    await expect(speed).toHaveCSS("background-color", "rgb(107, 23, 232)");
+    await expect(speed).toHaveCSS("color", "rgb(255, 255, 255)");
+    await page.mouse.up();
+    await speed.focus();
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Shift+Tab");
+    await page.keyboard.down("Space");
+    await expect(speed).toHaveCSS("background-color", "rgb(107, 23, 232)");
+    await page.keyboard.up("Space");
+    await expect(player.locator(".prose-video__menu--speed")).toBeHidden();
+    await speed.click();
+    const increase = player.getByRole("button", {
+      name: "Increase playback speed",
+      exact: true,
+    });
+    await increase.hover();
+    await page.mouse.down();
+    await expect(increase).toHaveCSS("background-color", "rgb(107, 23, 232)");
+    await expect(increase).toHaveCSS("color", "rgb(255, 255, 255)");
+    await expect(increase).toHaveCSS("background-clip", "content-box");
+    await page.mouse.up();
+    await expect(player.locator(".prose-video__speed-value")).toHaveText(
+      "1.25×",
+    );
+    await increase.focus();
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Shift+Tab");
+    await expect(increase).toHaveCSS("outline-offset", "3px");
+    const preset = player.getByRole("button", { name: "1.25×", exact: true });
+    await preset.focus();
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Shift+Tab");
+    await expect(preset).toHaveCSS("outline-offset", "3px");
+    await expect(preset).toHaveAttribute("aria-pressed", "true");
+    await preset.hover();
+    await page.mouse.down();
+    await expect(preset).toHaveCSS("background-color", "rgb(107, 23, 232)");
+    await expect(preset).toHaveCSS("color", "rgb(255, 255, 255)");
+    await page.mouse.up();
+    await speed.click();
+
+    await page.emulateMedia({ forcedColors: "active" });
+    await increase.focus();
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Shift+Tab");
+    const focusedBackground = await increase.evaluate(
+      (element) => getComputedStyle(element).backgroundColor,
+    );
+    await page.keyboard.down("Space");
+    await expect(increase).not.toHaveCSS("background-color", focusedBackground);
+    await expect(increase).toHaveCSS("outline-offset", "3px");
+    await expect(increase).toHaveCSS("outline-style", "solid");
+    await expect(increase).toHaveCSS("width", "44px");
+    await expect(increase).toHaveCSS("height", "44px");
+    await page.keyboard.up("Space");
+    await expect(player.locator(".prose-video__speed-value")).toHaveText(
+      "1.50×",
+    );
+  });
+}
 
 test.describe("Server-rendered native fallback", () => {
   test.use({ javaScriptEnabled: false });
