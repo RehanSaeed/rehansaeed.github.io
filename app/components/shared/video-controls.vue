@@ -163,7 +163,7 @@
             class="prose-video__menu prose-video__menu--speed"
             role="group"
             aria-label="Playback speed options">
-            <strong class="prose-video__menu-title">Playback speed</strong>
+            <strong class="prose-video__menu-title">Playback Speed</strong>
             <output
               class="prose-video__speed-value"
               aria-label="Current playback speed"
@@ -204,7 +204,7 @@
                 :aria-label="speed === 1 ? 'Normal' : `${speed}×`"
                 :aria-pressed="playbackRate === speed"
                 @click="selectSpeed(speed, $event)">
-                {{ Number.isInteger(speed) ? speed.toFixed(1) : speed }}
+                {{ speed.toFixed(1) }}
               </button>
             </span>
           </span>
@@ -570,7 +570,7 @@ onUnmounted(() => {
   display: grid;
   grid-auto-flow: column;
   align-items: center;
-  gap: min(4px, var(--video-control-gap));
+  gap: min(3px, var(--video-control-gap));
   background: var(--video-panel);
   border-radius: 999px;
 }
@@ -672,9 +672,9 @@ onUnmounted(() => {
 }
 
 .prose-video__menu--speed {
-  gap: 8px;
-  padding: 12px;
-  inline-size: 328px;
+  gap: 4px;
+  padding: 10px;
+  inline-size: 314px;
   max-block-size: min(280px, 70cqw, 60vh);
 }
 
@@ -699,7 +699,7 @@ onUnmounted(() => {
   display: grid;
   grid-template-columns: repeat(6, 44px);
   justify-content: center;
-  gap: var(--video-control-gap);
+  gap: min(6px, var(--video-control-gap));
 }
 
 .prose-video__speed-adjust {

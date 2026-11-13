@@ -190,7 +190,7 @@ test("Playback speed popup supports slider, step buttons and quick presets", asy
   });
   const title = options.locator(".prose-video__menu-title");
   await expect(title).toBeVisible();
-  await expect(title).toHaveText("Playback speed");
+  await expect(title).toHaveText("Playback Speed");
   const titleBounds = await title.boundingBox();
   const rateBounds = await rate.boundingBox();
   expect(titleBounds!.y + titleBounds!.height).toBeLessThan(rateBounds!.y);
@@ -199,6 +199,13 @@ test("Playback speed popup supports slider, step buttons and quick presets", asy
     name: "Playback speed",
     exact: true,
   });
+  const adjustBounds = await options
+    .locator(".prose-video__speed-adjust")
+    .boundingBox();
+  expect(adjustBounds!.y - (rateBounds!.y + rateBounds!.height)).toBeCloseTo(
+    4,
+    3,
+  );
   await expect(rate).toHaveText("1.00×");
   await options
     .getByRole("button", { name: "Increase playback speed" })
@@ -287,6 +294,19 @@ test("Playback speed popup supports slider, step buttons and quick presets", asy
   await page.keyboard.press("Shift+Tab");
   await expect(selectedPreset).toBeFocused();
   await expect(selectedPreset).toHaveCSS("outline-style", "solid");
+  const roundedPreset = options.getByRole("button", {
+    name: "1.25×",
+    exact: true,
+  });
+  await expect(roundedPreset).toHaveText("1.3");
+  await roundedPreset.click();
+  await expect
+    .poll(() =>
+      video.evaluate((element) =>
+        element instanceof HTMLVideoElement ? element.playbackRate : 0,
+      ),
+    )
+    .toBe(1.25);
 });
 
 test("Toolbar actions use shared tooltips instead of native titles", async ({
@@ -640,10 +660,10 @@ test("Full-width controls remain contained with large touch targets in both them
       expect(layout.timeSpacing).toBe(width > 600 ? 12 : width > 340 ? 8 : 4);
       expect(layout.timeEndSpacing).toBe(width > 600 ? 16 : 8);
       for (const [selector, gap] of [
-        [".prose-video__playback", "4px"],
-        [".prose-video__utilities", "4px"],
-        [".prose-video__speed-adjust", "8px"],
-        [".prose-video__speed-presets", "8px"],
+        [".prose-video__playback", "3px"],
+        [".prose-video__utilities", "3px"],
+        [".prose-video__speed-adjust", "6px"],
+        [".prose-video__speed-presets", "6px"],
       ] as const) {
         await expect(player.locator(selector)).toHaveCSS(
           "column-gap",
@@ -651,7 +671,7 @@ test("Full-width controls remain contained with large touch targets in both them
         );
       }
       expect(layout.volumeGap).toEqual(
-        width > 600 ? expect.closeTo(4, 3) : null,
+        width > 600 ? expect.closeTo(3, 3) : null,
       );
       expect(layout.rowBackground).toBe("rgba(0, 0, 0, 0)");
       expect(layout.overlayBackground).toBe("rgba(0, 0, 0, 0)");
@@ -698,7 +718,7 @@ test("Full-width controls remain contained with large touch targets in both them
       expect(speedMenu!.x).toBeGreaterThanOrEqual(0);
       expect(speedMenu!.x + speedMenu!.width).toBeLessThanOrEqual(width);
       expect(speedMenu!.width).toBeCloseTo(
-        Math.min(328, layout.right - layout.left - 16),
+        Math.min(314, layout.right - layout.left - 16),
         3,
       );
       const presets = speeds.locator(".prose-video__speed-presets button");
