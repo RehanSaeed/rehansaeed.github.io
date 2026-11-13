@@ -1,8 +1,11 @@
 <template>
-  <u-intersect root-margin="200px" @enterFirstTime="loadMap">
+  <u-intersect root-margin="200px" @change="onIntersectionChange">
     <figure
       class="location-map"
-      :class="{ 'location-map--interactive': mapReady }">
+      :class="{ 'location-map--interactive': mapReady }"
+      :tabindex="mapReady ? -1 : 0"
+      @focusin="loadMap"
+      @pointerdown="loadMap">
       <div class="location-map__viewport">
         <div
           ref="mapContainer"
@@ -186,6 +189,9 @@ let reduceMotion = false;
 let styleReady = false;
 let userMovedMap = false;
 let disposed = false;
+let hasScrolled = false;
+let nearViewport = false;
+let started = false;
 const isDisposed = () => disposed;
 
 const mapStyle = () => {
@@ -474,9 +480,10 @@ const updateTheme = () => {
 };
 
 const loadMap = async () => {
-  if (isDisposed()) {
+  if (isDisposed() || started) {
     return;
   }
+  started = true;
   try {
     const [maplibregl, , { default: workerUrl }] = await Promise.all([
       import("maplibre-gl"),
@@ -544,6 +551,31 @@ const loadMap = async () => {
   }
 };
 
+const loadOnApproach = () => {
+  // Initial visibility on a tall screen is not a request to start WebGL.
+  if (hasScrolled && nearViewport) {
+    void loadMap();
+  }
+};
+
+const onIntersectionChange = (entries: IntersectionObserverEntry[]) => {
+  nearViewport = entries.some((entry) => entry.isIntersecting);
+  loadOnApproach();
+};
+
+useEventListener(
+  "scroll",
+  () => {
+    hasScrolled = true;
+    loadOnApproach();
+  },
+  { once: true, passive: true },
+);
+
+onMounted(() => {
+  hasScrolled = window.scrollY > 0;
+});
+
 watch(() => colorMode.value, updateTheme, { flush: "post" });
 
 onBeforeUnmount(() => {
@@ -597,6 +629,11 @@ onBeforeUnmount(() => {
   margin: 0 0 var(--global-space-fixed-5);
   margin-inline: calc(var(--card-space, 0px) * -1);
   overflow: hidden;
+
+  &:focus-visible {
+    outline: var(--global-border-width-2) solid var(--global-accent-color);
+    outline-offset: var(--global-focus-outline-offset);
+  }
 }
 
 [data-theme="dark"] .location-map {
@@ -805,6 +842,7 @@ onBeforeUnmount(() => {
     color: ButtonText;
   }
 
+  .location-map:focus-visible,
   .location-map :focus-visible {
     outline: var(--global-border-width-2) solid Highlight;
     outline-offset: var(--global-border-width-2);
