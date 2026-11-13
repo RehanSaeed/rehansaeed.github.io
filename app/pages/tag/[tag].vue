@@ -1,6 +1,14 @@
 <template>
   <div class="tag-page">
-    <u-heading :id="title" level="1" center :to="path"># {{ title }}</u-heading>
+    <u-heading
+      :id="title"
+      level="1"
+      tabindex="-1"
+      center
+      :to="path"
+      :data-tag-transition-heading="path"
+      ># <span data-tag-transition-label>{{ title }}</span></u-heading
+    >
 
     <u-arrows class="tag-page__arrows" />
 
