@@ -2,7 +2,7 @@
   <div class="tag-study">
     <header class="tag-study__header">
       <div>
-        <p class="tag-study__eyebrow">Design study / 10 alternatives</p>
+        <p class="tag-study__eyebrow">Design study / 6 styles + rounded 6b</p>
         <h1>Small tags. Different personalities.</h1>
         <p>
           Compare the same labels in a blog footer and a portfolio card. Nothing
@@ -21,6 +21,7 @@
     <details class="tag-study__baseline">
       <summary>Current default / raised Audiowide buttons (unchanged)</summary>
       <u-tags :tags="blogTags" />
+      <u-button variant="secondary">Original raised button</u-button>
     </details>
 
     <p class="tag-study__instructions">
@@ -33,14 +34,14 @@
       v-for="option of options"
       :id="option.id"
       :key="option.id"
-      class="tag-study__option tag-variant"
-      :class="`tag-variant--${option.id}`"
+      class="tag-study__option"
       :aria-labelledby="`${option.id}-title`">
       <header class="tag-study__option-heading">
         <span class="tag-study__number">{{ option.number }}</span>
         <div>
           <h2 :id="`${option.id}-title`">{{ option.name }}</h2>
           <p>{{ option.description }}</p>
+          <code>&lt;u-button variant="{{ option.id }}"&gt;</code>
           <NuxtLink
             :to="{
               name: 'tag-portfolio-preview',
@@ -50,6 +51,18 @@
           </NuxtLink>
         </div>
       </header>
+
+      <div class="tag-study__buttons">
+        <u-button
+          :variant="option.id"
+          @click="buttonClicks[option.id] = (buttonClicks[option.id] ?? 0) + 1"
+          >Example button</u-button
+        >
+        <u-button :variant="option.id" disabled>Disabled button</u-button>
+        <output aria-live="polite" aria-label="Example button click count"
+          >Clicks: {{ buttonClicks[option.id] ?? 0 }}</output
+        >
+      </div>
 
       <div class="tag-study__contexts">
         <div class="tag-study__context">
@@ -70,13 +83,15 @@
             </p>
             <footer class="tag-study__footer">
               <span class="tag-study__meta">Filed under</span>
-              <u-tags :tags="blogTags" />
+              <u-tags :tags="blogTags" :variant="option.id" />
             </footer>
           </u-card>
         </div>
         <div class="tag-study__context">
           <p class="tag-study__eyebrow">Portfolio / project card</p>
-          <u-portfolio-card :portfolio="{ ...portfolio, id: option.id }" />
+          <u-portfolio-card
+            :portfolio="{ ...portfolio, id: option.id }"
+            :tag-variant="option.id" />
         </div>
       </div>
     </section>
@@ -100,7 +115,8 @@
 </template>
 
 <script setup lang="ts">
-import "./tag-variants.scss";
+import { tagStyleOptions as options } from "./tag-style-options";
+import type { TagButtonVariant } from "~/types/button";
 
 definePageMeta({ layout: "empty" });
 useHead({ title: "Tag style comparison" });
@@ -127,78 +143,7 @@ const portfolio = {
   nugetPackages: [],
   nugetDownloads: 0,
 };
-const options = [
-  {
-    number: "01",
-    id: "quiet-pill",
-    name: "Quiet pill",
-    description:
-      "Soft lavender wash, fully rounded, compact sans-serif. Low visual weight.",
-  },
-  {
-    number: "02",
-    id: "hairline-capsule",
-    name: "Hairline capsule",
-    description:
-      "Open accent outline with the site's Audiowide lettering. No elevation at rest.",
-  },
-  {
-    number: "03",
-    id: "topic-dot",
-    name: "Topic dot",
-    description:
-      "Unboxed text with a small circular marker and generous horizontal space.",
-  },
-  {
-    number: "04",
-    id: "solid-lozenge",
-    name: "Solid lozenge",
-    description:
-      "Filled accent, contrasting semibold text, tight rectangular silhouette.",
-  },
-  {
-    number: "05",
-    id: "editorial-index",
-    name: "Editorial index",
-    description:
-      "Unboxed serif italics and generous spacing. More reading list than UI control.",
-  },
-  {
-    number: "06",
-    id: "code-token",
-    name: "Code token",
-    description:
-      "Monospace on a neutral slab with a precise accent rule. Developer-native.",
-  },
-  {
-    number: "07",
-    id: "ticket-stub",
-    name: "Ticket stub",
-    description:
-      "Dashed outline, pinched corners and airy tracking. A tactile label.",
-  },
-  {
-    number: "08",
-    id: "keycap",
-    name: "Keycap",
-    description:
-      "Monospace, rounded-square corners and a solid lower edge. Deliberately raised.",
-  },
-  {
-    number: "09",
-    id: "corner-tab",
-    name: "Corner tab",
-    description:
-      "Asymmetric rounded corner and a bold leading edge. A small folder tab.",
-  },
-  {
-    number: "10",
-    id: "tag-label",
-    name: "Tag label",
-    description:
-      "Decorative tag outline, soft border and medium-weight text. Explicit taxonomy.",
-  },
-];
+const buttonClicks = reactive<Partial<Record<TagButtonVariant, number>>>({});
 </script>
 
 <style lang="scss">
@@ -312,6 +257,13 @@ const options = [
   gap: 1.5rem;
   grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
   align-items: start;
+}
+
+.tag-study__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
 }
 
 .tag-study__context {

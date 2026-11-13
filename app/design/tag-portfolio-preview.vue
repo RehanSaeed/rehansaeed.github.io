@@ -6,10 +6,10 @@
       <label for="tag-style">Preview tag style</label>
       <select id="tag-style" v-model="selectedStyle">
         <option
-          v-for="(option, index) of tagStyleOptions"
+          v-for="option of tagStyleOptions"
           :key="option.id"
           :value="option.id">
-          {{ String(index + 1).padStart(2, "0") }} / {{ option.name }}
+          {{ option.number }} / {{ option.name }}
         </option>
       </select>
       <NuxtLink :to="{ name: 'tag-style-comparison' }"
@@ -17,8 +17,8 @@
       >
       <p>Design preview only. The production default is unchanged.</p>
     </aside>
-    <div class="tag-variant" :class="`tag-variant--${selectedStyle}`">
-      <PortfolioPage />
+    <div class="tag-portfolio-preview__page">
+      <PortfolioPage :tag-variant="selectedStyle" />
     </div>
   </div>
 </template>
@@ -26,7 +26,7 @@
 <script setup lang="ts">
 import PortfolioPage from "~/pages/portfolio.vue";
 import { tagStyleOptions } from "./tag-style-options";
-import "./tag-variants.scss";
+import type { TagButtonVariant } from "~/types/button";
 
 useSeoMeta({ robots: "noindex, nofollow" });
 const route = useRoute();
@@ -34,7 +34,7 @@ const selectedStyle = computed({
   get: () =>
     tagStyleOptions.find((option) => option.id === route.query.style)?.id ??
     tagStyleOptions[0]!.id,
-  set: (style: string) => {
+  set: (style: TagButtonVariant) => {
     void navigateTo({ path: route.path, query: { style } }, { replace: true });
   },
 });

@@ -94,6 +94,7 @@
       <u-tags
         v-if="portfolio.tags"
         class="portfolio-card__tags"
+        :variant="tagVariant"
         :tags="portfolio.tags" />
     </div>
   </u-card>
@@ -104,9 +105,13 @@ import { computed, type PropType } from "vue";
 import type { PortfolioCollectionItem } from "@nuxt/content";
 import { getImageMetadata } from "~/framework/images";
 import { contentImageSizes } from "#shared/utils/images";
+import type { TagButtonVariant } from "~/types/button";
 
 defineOptions({ name: "u-portfolio-card" });
 const props = defineProps({
+  /** Optional button variant for the project's tag links. */ tagVariant: {
+    type: String as PropType<TagButtonVariant>,
+  },
   /** Prioritize above-fold portfolio images. */ priority: {
     type: Boolean,
     default: false,

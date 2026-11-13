@@ -7,7 +7,7 @@ import { runInNewContext } from "node:vm";
 import { test as unitTest } from "@playwright/test";
 import { compileString } from "sass-embedded";
 import { ModuleKind, ScriptTarget, transpileModule } from "typescript";
-import { h, type ComponentOptions } from "vue";
+import { defineComponent, h, type ComponentOptions } from "vue";
 import { compileScript, parse } from "vue/compiler-sfc";
 import { renderToString } from "vue/server-renderer";
 import { delayClientScripts, expect, test } from "./fixtures";
@@ -27,9 +27,20 @@ const source = transpileModule(
   },
 ).outputText;
 const componentExports: { default?: ComponentOptions } = {};
+const link = defineComponent({
+  props: {
+    /** Navigation destination for the rendered anchor. */
+    to: String,
+  },
+  setup:
+    (props, { slots }) =>
+    () =>
+      h("a", { href: props.to }, slots.default?.()),
+});
 runInNewContext(source, {
   exports: componentExports,
-  require: loadDependency,
+  require: (id: string): unknown =>
+    id === "#components" ? { NuxtLink: link } : loadDependency(id),
 });
 if (!componentExports.default) {
   throw new Error("Missing button component");
@@ -41,8 +52,17 @@ const properties = compileString(readFileSync(propertiesPath, "utf8"), {
   url: pathToFileURL(propertiesPath),
 }).css;
 const variants = ["plain", "secondary", "primary"] as const;
+const tagVariants = [
+  "quiet-pill",
+  "hairline-capsule",
+  "solid-lozenge",
+  "code-token",
+  "code-token-rounded",
+  "keycap",
+  "tag-label",
+] as const;
 
-for (const variant of variants) {
+for (const variant of [...variants, ...tagVariants]) {
   unitTest(
     `${variant} preserves server-rendered disabled and submit behaviour`,
     async () => {
@@ -64,6 +84,78 @@ for (const variant of variants) {
     },
   );
 }
+
+unitTest(
+  "button variants preserve navigation semantics before hydration",
+  async () => {
+    for (const variant of tagVariants) {
+      const html = await renderToString(
+        h(button, { variant, to: "/tag/c/" }, () => "C#"),
+      );
+      expect(html).toContain("<a");
+      expect(html).toContain('href="/tag/c/"');
+      expect(html).not.toContain("disabled");
+      expect(html).not.toContain("type=");
+      expect(html).toContain(`button--${variant}`);
+      const disabled = await renderToString(
+        h(button, { variant, to: "/tag/c/", disabled: true }, () => "C#"),
+      );
+      expect(disabled).toContain('aria-disabled="true"');
+      expect(disabled).toContain('role="link"');
+      expect(disabled).not.toContain("href=");
+    }
+  },
+);
+
+test("navigation variants forward clicks and become inert when disabled", async ({
+  page,
+}) => {
+  await page.setContent('<div id="app"></div>');
+  await page.addScriptTag({
+    path: loadDependency.resolve("vue/dist/vue.global.js"),
+  });
+  await page.addScriptTag({
+    content: `{
+      const exports = {};
+      const NuxtLink = {
+        props: ["to"],
+        setup: (props, { slots }) => () => Vue.h("a", { href: props.to }, slots.default?.())
+      };
+      const require = (id) => id === "#components" ? { NuxtLink } : Vue;
+      ${source}
+      Vue.createApp({
+        components: { UButton: exports.default },
+        data: () => ({ variants: ${JSON.stringify(tagVariants)}, disabled: false, clicks: 0 }),
+        template: \`
+          <u-button v-for="variant of variants" :key="variant" :variant="variant"
+            to="/destination/" :disabled="disabled" @click.prevent="clicks++">{{ variant }}</u-button>
+          <button @click="disabled=!disabled">Toggle disabled links</button>
+          <output :data-clicks="clicks"></output>\`
+      }).mount("#app");
+    }`,
+  });
+  const links = page.getByRole("link");
+  await expect(links).toHaveCount(tagVariants.length);
+  for (const link of await links.all()) {
+    await expect(link).toHaveAttribute("href", "/destination/");
+    await link.click();
+  }
+  await expect(page.locator("output")).toHaveAttribute(
+    "data-clicks",
+    String(tagVariants.length),
+  );
+  await page.getByRole("button", { name: "Toggle disabled links" }).click();
+  for (const link of await links.all()) {
+    await expect(link).toBeDisabled();
+    await expect(link).toHaveAttribute("tabindex", "-1");
+    await expect(link).not.toHaveAttribute("href");
+    await link.dispatchEvent("click");
+  }
+  await expect(page.locator("output")).toHaveAttribute(
+    "data-clicks",
+    String(tagVariants.length),
+  );
+});
 
 for (const theme of ["light", "dark"]) {
   async function verifyButtonVariants({ page }: Pick<E2EFixtures, "page">) {

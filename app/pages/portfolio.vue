@@ -24,6 +24,7 @@
           v-for="(item, index) of microsoftProjects"
           :key="item.id"
           :portfolio="item"
+          :tag-variant="tagVariant"
           :priority="index < 2" />
       </div>
     </section>
@@ -39,13 +40,21 @@
         <u-portfolio-card
           v-for="item of openSourceProjects"
           :key="item.id"
-          :portfolio="item" />
+          :portfolio="item"
+          :tag-variant="tagVariant" />
       </div>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
+import type { TagButtonVariant } from "~/types/button";
+
+defineProps<{
+  /** Optional button variant for every portfolio tag; defaults are unchanged. */
+  tagVariant?: TagButtonVariant;
+}>();
+
 const site = useAppConfig().site;
 const title = "Portfolio";
 const description = `Portfolio of work by ${site.author.name}.`;

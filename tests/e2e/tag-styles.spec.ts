@@ -98,6 +98,98 @@ const captureRaisedReview = async (page: Page, name: string) => {
 // Opt in against `npm run dev -- --port 8097` with TAG_STYLE_PREVIEW=1
 // and BASE_URL=http://localhost:8097. The normal static suite checks isolation.
 if (process.env.TAG_STYLE_PREVIEW === "1") {
+  test("selected alternatives are reusable native button and link variants", async ({
+    page,
+  }) => {
+    await openComparison(page);
+    await expect(page.locator(".tag-study__number")).toHaveText([
+      "01",
+      "02",
+      "04",
+      "06",
+      "06b",
+      "08",
+      "10",
+    ]);
+    for (const option of tagStyleOptions) {
+      const section = page.locator(`#${option.id}`);
+      const button = section.getByRole("button", {
+        name: "Example button",
+        exact: true,
+      });
+      await expect(button).toHaveClass(
+        `button button--${option.id} button--tag`,
+      );
+      await button.click();
+      await expect(section.locator("output")).toHaveText("Clicks: 1");
+      await expect(
+        section.getByRole("button", { name: "Disabled button", exact: true }),
+      ).toBeDisabled();
+      const link = section.locator(".tags__link").first();
+      await expect(link).toHaveClass(
+        `button button--${option.id} button--tag tags__link`,
+      );
+      await expect(link).toHaveAttribute("href", "/tag/c/");
+      await expect(link).not.toHaveAttribute("type", "button");
+    }
+  });
+
+  test("requested colours and both code-token corner treatments", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: "light" });
+    await openComparison(page);
+    for (const id of ["quiet-pill", "hairline-capsule"]) {
+      const link = page.locator(`#${id} .tags__link`).first();
+      await expect(link).toHaveCSS("color", "rgb(0, 0, 0)");
+      await link.hover();
+      await expect(link).toHaveCSS("color", "rgb(0, 0, 0)");
+      await link.focus();
+      await expect(link).toHaveCSS("color", "rgb(0, 0, 0)");
+    }
+    const token = page.locator("#code-token .tags__link").first();
+    await expect(token).toHaveCSS("border-top-left-radius", "0px");
+    await expect(token).toHaveCSS("border-top-right-radius", "0px");
+    await expect(token).toHaveCSS("border-bottom-left-radius", "0px");
+    const rounded = page.locator("#code-token-rounded .tags__link").first();
+    const radius = await token.evaluate(
+      (element) => getComputedStyle(element).borderBottomRightRadius,
+    );
+    expect(Number.parseFloat(radius)).toBeGreaterThan(0);
+    for (const corner of [
+      "border-top-left-radius",
+      "border-top-right-radius",
+      "border-bottom-left-radius",
+      "border-bottom-right-radius",
+    ]) {
+      await expect(rounded).toHaveCSS(corner, radius);
+    }
+    const muted = await page
+      .locator("#solid-lozenge .tags__link")
+      .first()
+      .evaluate((element) => {
+        const style = getComputedStyle(element);
+        const canvas = document.createElement("canvas");
+        canvas.width = canvas.height = 1;
+        const context = canvas.getContext("2d")!;
+        const rgb = (colour: string) => {
+          context.fillStyle = colour;
+          context.fillRect(0, 0, 1, 1);
+          return Array.from(context.getImageData(0, 0, 1, 1).data).slice(0, 3);
+        };
+        const fill = rgb(style.backgroundColor);
+        const accent = rgb(style.getPropertyValue("--global-accent-color"));
+        return {
+          fill,
+          accent,
+          saturation: Math.max(...fill) - Math.min(...fill),
+          accentSaturation: Math.max(...accent) - Math.min(...accent),
+        };
+      });
+    expect(muted.fill).not.toEqual(muted.accent);
+    expect(muted.saturation).toBeLessThan(muted.accentSaturation / 2);
+  });
+
   for (const theme of ["light", "dark"] as const) {
     test(`raised tag interactions match the original button / ${theme}`, async ({
       page,
@@ -109,7 +201,7 @@ if (process.env.TAG_STYLE_PREVIEW === "1") {
       await page.setViewportSize({ width: 1440, height: 1000 });
       await openComparison(page);
       await page.locator(".tag-study__baseline summary").click();
-      const original = page.locator(".tag-study__baseline .tags__link").first();
+      const original = page.locator(".tag-study__baseline .button--secondary");
       await original.hover();
       await expect(original).toHaveCSS(
         "transform",
@@ -136,7 +228,7 @@ if (process.env.TAG_STYLE_PREVIEW === "1") {
       await page.mouse.up();
 
       const tags = page.locator(".tag-study__option .tags > a:first-child");
-      await expect(tags).toHaveCount(20);
+      await expect(tags).toHaveCount(tagStyleOptions.length * 2);
       for (const tag of await tags.all()) {
         await tag.hover();
         await expect(tag).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -2)");
@@ -178,7 +270,7 @@ if (process.env.TAG_STYLE_PREVIEW === "1") {
         });
         await page.setViewportSize({ width: 1440, height: 1000 });
         await openComparison(page);
-        await expect(page.locator(".tag-study__option")).toHaveCount(10);
+        await expect(page.locator(".tag-study__option")).toHaveCount(7);
         await captureRaisedReview(page, `tag-styles-raised-${theme}`);
       });
     }
@@ -190,7 +282,7 @@ if (process.env.TAG_STYLE_PREVIEW === "1") {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await openComparison(page);
     const tags = page.locator(".tag-study__option .tags > a:first-child");
-    await expect(tags).toHaveCount(20);
+    await expect(tags).toHaveCount(tagStyleOptions.length * 2);
     for (const tag of await tags.all()) {
       await tag.hover();
       await expect(tag).toHaveCSS("transform", "none");
@@ -217,7 +309,7 @@ if (process.env.TAG_STYLE_PREVIEW === "1") {
     for (const width of [1440, 390]) {
       const minimumRows = width === 390 ? 2 : 1;
 
-      test(`ten contextual tag alternatives / ${theme} / ${width}`, async ({
+      test(`selected contextual button variants / ${theme} / ${width}`, async ({
         page,
       }) => {
         await page.emulateMedia({ colorScheme: theme });
@@ -232,7 +324,7 @@ if (process.env.TAG_STYLE_PREVIEW === "1") {
           "noindex, nofollow",
         );
         const options = page.locator(".tag-study__option");
-        await expect(options).toHaveCount(10);
+        await expect(options).toHaveCount(7);
         await page.keyboard.press("Tab");
 
         for (const option of await options.all()) {
@@ -462,13 +554,13 @@ if (process.env.TAG_STYLE_PREVIEW === "1") {
       .allTextContents();
     for (const option of tagStyleOptions) {
       await page.getByLabel("Preview tag style").selectOption(option.id);
-      await expect(page.locator(".tag-variant")).toHaveClass(
-        `tag-variant tag-variant--${option.id}`,
-      );
+      await expect(
+        page.locator(".portfolio-card .tags__link").first(),
+      ).toHaveClass(`button button--${option.id} button--tag tags__link`);
       await expect(page).toHaveURL(new RegExp(`style=${option.id}$`));
     }
     await page.goto("/portfolio/", { waitUntil: "domcontentloaded" });
-    await expect(page.locator(".tag-variant")).toHaveCount(0);
+    await expect(page.locator(".button--tag")).toHaveCount(0);
     await expect(page.locator(".portfolio-card__title")).toHaveText(titles);
     await expect(page.locator(".tags__link").first()).toHaveCSS(
       "font-family",
