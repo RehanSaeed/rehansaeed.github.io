@@ -5,8 +5,9 @@
       :key="tag"
       class="tags__link"
       variant="tag-shaped"
+      data-tag-transition-link
       :to="tagPath(tag)"
-      >{{ tag }}</u-button
+      ><span data-tag-transition-label>{{ tag }}</span></u-button
     >
   </div>
 </template>

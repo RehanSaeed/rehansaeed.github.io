@@ -21,12 +21,11 @@ export default defineNuxtPlugin((nuxtApp) => {
     image.naturalWidth > 0 &&
     intersectsViewport(image.getBoundingClientRect());
   let selected:
-    | {
+    | ({
         permalink: string;
-        hero: string;
-        source: HTMLImageElement;
-        target?: HTMLImageElement;
-      }
+        source: HTMLElement;
+        target?: HTMLElement;
+      } & ({ kind: "post"; hero: string } | { kind: "tag"; title: string }))
     | undefined;
   let activeTransition: ViewTransition | undefined;
   let deadline: ReturnType<typeof setTimeout> | undefined;
@@ -34,8 +33,12 @@ export default defineNuxtPlugin((nuxtApp) => {
   const reset = () => {
     clearTimeout(deadline);
     activeTransition = undefined;
-    selected?.source.classList.remove("post-view-transition__hero");
-    selected?.target?.classList.remove("post-view-transition__hero");
+    const className =
+      selected?.kind === "tag"
+        ? "tag-view-transition__title"
+        : "post-view-transition__hero";
+    selected?.source.classList.remove(className);
+    selected?.target?.classList.remove(className);
     root.classList.remove("post-view-transition");
     selected = undefined;
   };
@@ -60,6 +63,27 @@ export default defineNuxtPlugin((nuxtApp) => {
     !document.querySelector('dialog[open], [aria-modal="true"]');
 
   const findSource = (link: HTMLAnchorElement) => {
+    if (link.hasAttribute("data-tag-transition-link")) {
+      const label = link.querySelector<HTMLElement>(
+        "[data-tag-transition-label]",
+      );
+      if (
+        link.origin !== location.origin ||
+        link.search ||
+        link.hash ||
+        link.pathname === router.currentRoute.value.path ||
+        !label?.textContent ||
+        !intersectsViewport(label.getBoundingClientRect())
+      ) {
+        return;
+      }
+      return {
+        kind: "tag" as const,
+        permalink: link.pathname,
+        title: label.textContent,
+        source: label,
+      };
+    }
     const card = link.closest<HTMLElement>("[data-view-transition-source]");
     const image = card?.querySelector<HTMLImageElement>(
       "img[data-view-transition-image]",
@@ -74,6 +98,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       return;
     }
     return {
+      kind: "post" as const,
       permalink: link.pathname,
       hero: card.dataset.postHero,
       source: image,
@@ -81,6 +106,23 @@ export default defineNuxtPlugin((nuxtApp) => {
   };
 
   const findDestination = (selection: NonNullable<typeof selected>) => {
+    if (selection.kind === "tag") {
+      const heading = document.querySelector<HTMLHeadingElement>(
+        "[data-tag-transition-heading]",
+      );
+      const target = heading?.querySelector<HTMLElement>(
+        "[data-tag-transition-label]",
+      );
+      if (
+        router.currentRoute.value.fullPath !== selection.permalink ||
+        heading?.dataset.tagTransitionHeading !== selection.permalink ||
+        !target ||
+        target.textContent !== selection.title
+      ) {
+        return;
+      }
+      return { target, heading };
+    }
     const page = document.querySelector<HTMLElement>(
       "[data-view-transition-destination]",
     );
@@ -99,14 +141,14 @@ export default defineNuxtPlugin((nuxtApp) => {
     ) {
       return;
     }
-    return { hero, heading };
+    return { target: hero, heading };
   };
 
   const selectSource = (event: MouseEvent) => {
     const link =
       event.target instanceof Element
         ? event.target.closest<HTMLAnchorElement>(
-            "a[data-view-transition-link], [data-view-transition-link] a",
+            "a[data-view-transition-link], [data-view-transition-link] a, a[data-tag-transition-link]",
           )
         : null;
     if (!link) {
@@ -123,7 +165,11 @@ export default defineNuxtPlugin((nuxtApp) => {
     if (!selected) {
       return;
     }
-    selected.source.classList.add("post-view-transition__hero");
+    selected.source.classList.add(
+      selected.kind === "tag"
+        ? "tag-view-transition__title"
+        : "post-view-transition__hero",
+    );
     root.classList.add("post-view-transition");
   };
 
@@ -156,13 +202,21 @@ export default defineNuxtPlugin((nuxtApp) => {
       cancel();
       return;
     }
-    const { hero, heading } = destination;
-    selected.target = hero;
-    hero.classList.add("post-view-transition__hero");
+    const { target, heading } = destination;
+    selected.target = target;
+    target.classList.add(
+      selected.kind === "tag"
+        ? "tag-view-transition__title"
+        : "post-view-transition__hero",
+    );
     // Nuxt captures after page:finish; its normal router scroll waits another frame.
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     heading.focus({ preventScroll: true });
-    if (!isVisibleLoadedImage(hero)) {
+    if (
+      selected.kind === "post"
+        ? !(target instanceof HTMLImageElement) || !isVisibleLoadedImage(target)
+        : !intersectsViewport(target.getBoundingClientRect())
+    ) {
       skip();
     }
   };
