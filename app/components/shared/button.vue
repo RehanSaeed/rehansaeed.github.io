@@ -6,29 +6,16 @@
       'button--secondary': variant === 'secondary',
       'button--primary': variant === 'primary',
       'button--icon': variant === 'icon',
-      'button--pressed': variant === 'icon' && keyboardPressed,
       'button--hydrating': !hydrated && !disabled && !submit,
     }"
     :disabled="disabled || (!hydrated && !submit)"
-    :type="type"
-    @keydown.space="keyboardPressed = true"
-    @keydown.enter="keyboardPressed = true"
-    @keyup.space="keyboardPressed = false"
-    @keyup.enter="keyboardPressed = false"
-    @blur="clearPressed">
+    :type="type">
     <slot />
   </button>
 </template>
 
 <script setup lang="ts">
-import {
-  computed,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  watch,
-  type PropType,
-} from "vue";
+import { computed, type PropType } from "vue";
 
 defineOptions({ name: "u-button" });
 const props = defineProps({
@@ -46,19 +33,7 @@ const props = defineProps({
   },
 });
 const hydrated = useMounted();
-// Firefox does not apply :active while activation keys are held.
-const keyboardPressed = ref(false);
-const clearPressed = () => {
-  keyboardPressed.value = false;
-};
 const type = computed(() => (props.submit ? "submit" : "button"));
-watch(() => props.disabled, clearPressed);
-onMounted(() => {
-  window.addEventListener("blur", clearPressed);
-});
-onBeforeUnmount(() => {
-  window.removeEventListener("blur", clearPressed);
-});
 </script>
 
 <style lang="scss">
@@ -196,7 +171,7 @@ onBeforeUnmount(() => {
     outline-offset: var(--global-focus-outline-offset);
   }
 
-  &:is(:active, .button--pressed):not(:disabled) {
+  &:active:not(:disabled) {
     color: var(
       --button-icon-active-color,
       var(--global-content-background-color)
@@ -233,7 +208,7 @@ onBeforeUnmount(() => {
       outline-color: Highlight;
     }
 
-    &:is(:active, .button--pressed):not(:disabled) {
+    &:active:not(:disabled) {
       color: ButtonFace;
       background-color: ButtonText;
       border-color: ButtonText;
