@@ -52,7 +52,7 @@ const properties = compileString(readFileSync(propertiesPath, "utf8"), {
   url: pathToFileURL(propertiesPath),
 }).css;
 const variants = ["plain", "secondary", "primary", "icon"] as const;
-const tagVariants = ["code-token", "keycap", "tag-label"] as const;
+const tagVariants = ["code-token"] as const;
 
 for (const variant of [...variants, ...tagVariants]) {
   unitTest(
@@ -82,13 +82,14 @@ unitTest(
   async () => {
     for (const variant of tagVariants) {
       const html = await renderToString(
-        h(button, { variant, to: "/tag/c/" }, () => "C#"),
+        h(button, { variant, tagIcon: true, to: "/tag/c/" }, () => "C#"),
       );
       expect(html).toContain("<a");
       expect(html).toContain('href="/tag/c/"');
       expect(html).not.toContain("disabled");
       expect(html).not.toContain("type=");
       expect(html).toContain(`button--${variant}`);
+      expect(html).toContain("button--tag-icon");
       const disabled = await renderToString(
         h(button, { variant, to: "/tag/c/", disabled: true }, () => "C#"),
       );

@@ -24,7 +24,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, type PropType } from "vue";
 import { NuxtLink } from "#components";
-import type { ButtonVariant } from "~/types/button";
 
 defineOptions({ name: "u-button" });
 const emit = defineEmits<{ click: [event: MouseEvent] }>();
@@ -33,18 +32,12 @@ const props = defineProps({
     type: Boolean,
   },
   /** Visual variant; icon is a circular 44px control. */ variant: {
-    type: String as PropType<ButtonVariant>,
+    type: String as PropType<
+      "plain" | "secondary" | "primary" | "icon" | "code-token"
+    >,
     default: "plain",
     validator: (value: string) =>
-      [
-        "plain",
-        "secondary",
-        "primary",
-        "icon",
-        "code-token",
-        "keycap",
-        "tag-label",
-      ].includes(value),
+      ["plain", "secondary", "primary", "icon", "code-token"].includes(value),
   },
   /** Render a navigation link instead of a native button when supplied. */ to: {
     type: String,
@@ -52,16 +45,13 @@ const props = defineProps({
   /** Whether the button submits its containing form. */ submit: {
     type: Boolean,
   },
-  /** Add the decorative outline icon used by the tag-label variant. */ tagIcon:
-    {
-      type: Boolean,
-    },
+  /** Add a decorative tag outline to the code-token variant. */ tagIcon: {
+    type: Boolean,
+  },
 });
 const hydrated = ref(false);
 const type = computed(() => (props.submit ? "submit" : "button"));
-const tagVariant = computed(
-  () => !["plain", "secondary", "primary", "icon"].includes(props.variant),
-);
+const tagVariant = computed(() => props.variant === "code-token");
 const tag = computed(() =>
   props.to ? (props.disabled ? "a" : NuxtLink) : "button",
 );
@@ -244,24 +234,6 @@ onMounted(() => {
   font-size: 0.8rem;
 }
 
-.button--keycap {
-  border: 1px solid var(--global-accent-color);
-  border-block-end-width: 3px;
-  border-radius: 0.4rem;
-  background: var(--global-background-color);
-  box-shadow: 0 2px 0 var(--global-border-color);
-  font-family: var(--global-font-family-monospace);
-  font-size: 0.8rem;
-}
-
-.button--tag-label {
-  border-color: var(--global-border-color);
-  border-radius: var(--global-border-radius);
-  background: var(--global-background-color);
-  font-weight: 600;
-}
-
-.button--tag-label::after,
 .button--tag-icon::after {
   content: "";
   order: -1;

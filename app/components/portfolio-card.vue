@@ -94,8 +94,6 @@
       <u-tags
         v-if="portfolio.tags"
         class="portfolio-card__tags"
-        :variant="tagVariant"
-        :tag-icon="tagIcon"
         :tags="portfolio.tags" />
     </div>
   </u-card>
@@ -106,17 +104,9 @@ import { computed, type PropType } from "vue";
 import type { PortfolioCollectionItem } from "@nuxt/content";
 import { getImageMetadata } from "~/framework/images";
 import { contentImageSizes } from "#shared/utils/images";
-import type { TagButtonVariant } from "~/types/button";
 
 defineOptions({ name: "u-portfolio-card" });
 const props = defineProps({
-  /** Add the decorative tag icon when using an opt-in button variant. */ tagIcon:
-    {
-      type: Boolean,
-    },
-  /** Optional button variant for the project's tag links. */ tagVariant: {
-    type: String as PropType<TagButtonVariant>,
-  },
   /** Prioritize above-fold portfolio images. */ priority: {
     type: Boolean,
     default: false,
