@@ -89,6 +89,7 @@ const isInteractive = ref(false);
 const isDragging = ref(false);
 const arrowTarget = shallowRef<HTMLElement | null>(null);
 let frame = 0;
+let settleFrame = 0;
 let resizeObserver: ResizeObserver | undefined;
 let motionPreference: MediaQueryList | undefined;
 let contrastPreference: MediaQueryList | undefined;
@@ -168,7 +169,7 @@ const navigateToImage = (requestedIndex: number, instant = false) => {
 };
 
 const settlePosition = () => {
-  if (!drag) {
+  if (!drag && !settleFrame) {
     updatePosition();
     navigateToImage(currentIndex.value);
   }
@@ -182,12 +183,15 @@ const updateArrowTarget = () => {
     return;
   }
   const focused = document.activeElement;
-  arrowTarget.value = target;
-  if (
+  const restoreFocus =
     !drag &&
     focused instanceof HTMLButtonElement &&
-    focused.classList.contains("image-carousel__button")
-  ) {
+    focused.classList.contains("image-carousel__button");
+  if (restoreFocus) {
+    focused.blur();
+  }
+  arrowTarget.value = target;
+  if (restoreFocus) {
     void nextTick(() => {
       if (focused.isConnected) {
         focused.focus({ preventScroll: true });
@@ -245,6 +249,8 @@ const startDrag = (event: PointerEvent) => {
     !event.target.closest("button, a:not(:has(img))") &&
     (event.pointerType !== "mouse" || event.target.closest("img"))
   ) {
+    cancelAnimationFrame(settleFrame);
+    settleFrame = 0;
     track.value.scrollTo({
       left: track.value.scrollLeft,
       behavior: "instant",
@@ -262,13 +268,23 @@ const finishDrag = (event: PointerEvent) => {
   if (!drag || drag.id !== event.pointerId) {
     return;
   }
+  // Touch transfers implicit image capture to the rail on first movement.
+  if (
+    event.type === "lostpointercapture" &&
+    track.value?.hasPointerCapture(event.pointerId)
+  ) {
+    return;
+  }
   suppressClick = isDragging.value;
   drag = undefined;
   isDragging.value = false;
   if (track.value?.hasPointerCapture(event.pointerId)) {
     track.value.releasePointerCapture(event.pointerId);
   }
-  settlePosition();
+  settleFrame = requestAnimationFrame(() => {
+    settleFrame = 0;
+    settlePosition();
+  });
 };
 
 const moveDrag = (event: PointerEvent) => {
@@ -352,6 +368,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   cancelAnimationFrame(frame);
+  cancelAnimationFrame(settleFrame);
   resizeObserver?.disconnect();
   motionPreference?.removeEventListener("change", configureMotion);
   contrastPreference?.removeEventListener("change", configureMotion);

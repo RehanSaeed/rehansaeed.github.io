@@ -148,11 +148,13 @@ test.describe("Continuous scroll-linked motion", () => {
     await page.mouse.move(x, y);
     await page.mouse.down();
     const samples = [];
-    for (const progress of [0, 0.02, 0.2, 0.4, 0.6, 0.8, 1]) {
-      await page.mouse.move(x - step * progress, y);
+    for (const fraction of [0, 0.02, 0.2, 0.4, 0.6, 0.8, 1]) {
+      const left = Math.round(step * fraction);
+      const progress = left / step;
+      await page.mouse.move(x - left, y);
       await expect
         .poll(() => track.evaluate((element) => element.scrollLeft))
-        .toBeCloseTo(step * progress, 0);
+        .toBeCloseTo(left, 0);
       await expect
         .poll(() =>
           track
@@ -176,10 +178,11 @@ test.describe("Continuous scroll-linked motion", () => {
         ),
       );
     }
-    await page.mouse.move(x - step * 0.65, y);
+    const reverseLeft = Math.round(step * 0.65);
+    await page.mouse.move(x - reverseLeft, y);
     await expect
       .poll(() => track.evaluate((element) => element.scrollLeft))
-      .toBeCloseTo(step * 0.65, 0);
+      .toBeCloseTo(reverseLeft, 0);
     await track.evaluate((element) => {
       element.addEventListener(
         "pointerup",
@@ -192,7 +195,7 @@ test.describe("Continuous scroll-linked motion", () => {
     await page.mouse.up();
     expect(
       Number(await track.getAttribute("data-release-position")),
-    ).toBeCloseTo(step * 0.65, 0);
+    ).toBeCloseTo(reverseLeft, 0);
     await expect
       .poll(() => track.evaluate((element) => element.scrollLeft))
       .toBeCloseTo(step, 0);
