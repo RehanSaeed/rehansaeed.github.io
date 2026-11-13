@@ -639,19 +639,19 @@ test("Full-width controls remain contained with large touch targets in both them
       expect(layout.seekHitAreaBottom).toBeLessThanOrEqual(layout.rowTop);
       expect(layout.timeSpacing).toBe(width > 600 ? 12 : width > 340 ? 8 : 4);
       expect(layout.timeEndSpacing).toBe(width > 600 ? 16 : 8);
-      for (const selector of [
-        ".prose-video__playback",
-        ".prose-video__utilities",
-        ".prose-video__speed-adjust",
-        ".prose-video__speed-presets",
-      ]) {
+      for (const [selector, gap] of [
+        [".prose-video__playback", "4px"],
+        [".prose-video__utilities", "4px"],
+        [".prose-video__speed-adjust", "8px"],
+        [".prose-video__speed-presets", "8px"],
+      ] as const) {
         await expect(player.locator(selector)).toHaveCSS(
           "column-gap",
-          width <= 340 ? "0px" : "8px",
+          width <= 340 ? "0px" : gap,
         );
       }
       expect(layout.volumeGap).toEqual(
-        width > 600 ? expect.closeTo(8, 3) : null,
+        width > 600 ? expect.closeTo(4, 3) : null,
       );
       expect(layout.rowBackground).toBe("rgba(0, 0, 0, 0)");
       expect(layout.overlayBackground).toBe("rgba(0, 0, 0, 0)");
@@ -791,7 +791,7 @@ test("Full-width controls remain contained with large touch targets in both them
   await expect(play).toHaveCSS("outline-style", "solid");
 });
 
-test("Playback speed icons match toolbar sizing and inset hover and focus styles", async ({
+test("Playback speed icons match toolbar sizing with full preset-sized circles", async ({
   page,
   baseURL,
 }) => {
@@ -811,8 +811,8 @@ test("Playback speed icons match toolbar sizing and inset hover and focus styles
         expect(bounds!.height).toBeCloseTo(20, 3);
         await expect(icon).toHaveAttribute("aria-hidden", "true");
         await expect(icon.locator("path")).toHaveCount(1);
-        await expect(stepButton).toHaveCSS("padding", "4px");
-        await expect(stepButton).toHaveCSS("background-clip", "content-box");
+        await expect(stepButton).toHaveCSS("padding", "0px");
+        await expect(stepButton).toHaveCSS("background-clip", "border-box");
         await stepButton.hover();
         await expect(stepButton).toHaveCSS("color", "rgb(107, 23, 232)");
         await expect(stepButton).toHaveCSS(
@@ -823,7 +823,7 @@ test("Playback speed icons match toolbar sizing and inset hover and focus styles
         await page.keyboard.press("Tab");
         await page.keyboard.press("Shift+Tab");
         await expect(stepButton).toBeFocused();
-        await expect(stepButton).toHaveCSS("outline-offset", "-6px");
+        await expect(stepButton).toHaveCSS("outline-offset", "-2px");
       }
     }
   }

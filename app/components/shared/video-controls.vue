@@ -172,7 +172,6 @@
             <span class="prose-video__speed-adjust">
               <u-button
                 variant="icon"
-                class="prose-video__speed-button"
                 aria-label="Decrease playback speed"
                 :disabled="playbackRate <= minimumSpeed"
                 @click="adjustSpeed(-speedStep)">
@@ -191,7 +190,6 @@
               </label>
               <u-button
                 variant="icon"
-                class="prose-video__speed-button"
                 aria-label="Increase playback speed"
                 :disabled="playbackRate >= maximumSpeed"
                 @click="adjustSpeed(speedStep)">
@@ -572,7 +570,7 @@ onUnmounted(() => {
   display: grid;
   grid-auto-flow: column;
   align-items: center;
-  gap: var(--video-control-gap);
+  gap: min(4px, var(--video-control-gap));
   background: var(--video-panel);
   border-radius: 999px;
 }
@@ -583,8 +581,7 @@ onUnmounted(() => {
   }
 }
 
-.prose-video__button.button--icon,
-.prose-video__speed-button.button--icon {
+.prose-video__button.button--icon {
   background-clip: content-box;
   font-size: 20px;
   padding: 4px;
@@ -737,6 +734,8 @@ onUnmounted(() => {
   }
 
   .button.button--icon {
+    font-size: 20px;
+    padding: 0;
     inline-size: 48px;
     block-size: 48px;
   }
