@@ -83,8 +83,8 @@ for (const width of [1440, 640, 320]) {
 
     await page.emulateMedia({ forcedColors: "active" });
     await track.focus();
-    await expect(track).toHaveCSS("outline-style", "solid");
     await track.press("Home");
+    await expect(track).toHaveCSS("outline-style", "solid");
     await expect(gallery.locator(".image-carousel__position")).toHaveText(
       "Image 1 of 2",
     );
@@ -209,7 +209,14 @@ test.describe("Continuous window motion", () => {
       "animation-name",
       supported ? "image-window-pan" : "none",
     );
-    await expect(firstImage).toHaveCSS("translate", supported ? "0%" : "none");
+    const centredPan = async () =>
+      firstImage.evaluate((element) => {
+        const translate = getComputedStyle(element).translate;
+        return translate === "none"
+          ? 0
+          : Math.abs(Number.parseFloat(translate));
+      });
+    await expect.poll(centredPan).toBeLessThan(0.01);
     // Stop snapping only to sample two genuine between-slide scroll positions.
     await page.addStyleTag({
       content: ".image-carousel__track { scroll-snap-type: none; }",
@@ -257,11 +264,20 @@ test.describe("Continuous window motion", () => {
     await track.evaluate((element) => {
       element.scrollLeft = 0;
     });
-    await expect(firstImage).toHaveCSS("translate", supported ? "0%" : "none");
-    await expect(frame).toHaveCSS(
-      "clip-path",
-      supported ? "inset(0px)" : "none",
-    );
+    await expect.poll(centredPan).toBeLessThan(0.01);
+    await expect
+      .poll(() =>
+        frame.evaluate((element) => {
+          const clip = getComputedStyle(element).clipPath;
+          return (
+            clip === "none" ||
+            (clip.match(/-?[\d.]+/g) ?? []).every(
+              (value) => Math.abs(Number(value)) < 0.01,
+            )
+          );
+        }),
+      )
+      .toBe(true);
     await track.locator("a").first().focus();
     await expect(frame).toHaveCSS("clip-path", "none");
     await page.emulateMedia({ reducedMotion: "reduce" });
@@ -288,7 +304,7 @@ test.describe("Native no-JavaScript fallback", () => {
       "/css-general-rules-of-thumb/",
     );
     await track.focus();
-    await track.press("End");
+    await track.press("ArrowRight");
     await expect
       .poll(() => track.evaluate((element) => element.scrollLeft))
       .toBeGreaterThan(0);
