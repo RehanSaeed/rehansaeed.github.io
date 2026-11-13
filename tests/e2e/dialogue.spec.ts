@@ -327,6 +327,11 @@ test.describe("Dialog transitions", () => {
           document.startViewTransition = (update) => {
             const id = ++sequence;
             const transition = start(update);
+            Reflect.set(
+              window,
+              "dialogNavigationFinished",
+              transition.finished,
+            );
             record("transition-start", id);
             const skip = transition.skipTransition.bind(transition);
             transition.skipTransition = () => {
@@ -370,6 +375,20 @@ test.describe("Dialog transitions", () => {
         page.getByRole("button", { name: "Open search", exact: true }),
       ).toBeEnabled();
       await page.locator(".post-card__title").first().click();
+      // Protocol auto-scroll during a snapshot can desynchronise Firefox's visual viewport.
+      // Finish navigation before scrolling to the offscreen Share/Coffee controls.
+      await expect
+        .poll(() =>
+          page.evaluate(() => Reflect.has(window, "dialogNavigationFinished")),
+        )
+        .toBe(true);
+      await page.evaluate(async () => {
+        const finished: unknown = Reflect.get(
+          window,
+          "dialogNavigationFinished",
+        );
+        await Promise.resolve(finished);
+      });
 
       const opener = page
         .getByRole("button", { name: trigger, exact: true })
