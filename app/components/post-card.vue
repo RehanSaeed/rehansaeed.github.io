@@ -1,6 +1,8 @@
 <template>
   <u-card
     class="post-card"
+    :data-post-permalink="post.permalink"
+    :data-post-hero="post.heroImage"
     tag="article"
     compact
     hoverable
@@ -12,6 +14,7 @@
         v-if="post.heroImage && imageMeta"
         :img-attrs="{
           class: 'post-card__image',
+          'data-view-transition-image': '',
           fetchpriority: priority ? 'high' : undefined,
         }"
         :legacy-format="post.heroImage.endsWith('.png') ? 'png' : 'jpg'"
@@ -25,6 +28,7 @@
     </div>
     <div class="post-card__content">
       <u-heading
+        data-view-transition-link
         class="post-card__title"
         :id="`post-card-${post.id}`"
         :to="post.permalink"

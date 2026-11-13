@@ -32,7 +32,7 @@ const props = defineProps({
   /** Whether the button is disabled. */ disabled: {
     type: Boolean,
   },
-  /** Visual variant of the button. */ variant: {
+  /** Visual variant; icon is a circular 44px control. */ variant: {
     type: String as PropType<ButtonVariant>,
     default: "plain",
     validator: (value: string) =>
@@ -40,6 +40,7 @@ const props = defineProps({
         "plain",
         "secondary",
         "primary",
+        "icon",
         "code-token",
         "keycap",
         "tag-label",
@@ -59,7 +60,7 @@ const props = defineProps({
 const hydrated = ref(false);
 const type = computed(() => (props.submit ? "submit" : "button"));
 const tagVariant = computed(
-  () => !["plain", "secondary", "primary"].includes(props.variant),
+  () => !["plain", "secondary", "primary", "icon"].includes(props.variant),
 );
 const tag = computed(() =>
   props.to ? (props.disabled ? "a" : NuxtLink) : "button",
@@ -282,6 +283,45 @@ onMounted(() => {
   }
 }
 
+// Retain both classes so late base button rules cannot override icon colours.
+.button.button--icon {
+  display: grid;
+  place-items: center;
+  color: var(--button-icon-color, inherit);
+  border-radius: 50%;
+  font: inherit;
+  font-size: 1rem;
+  inline-size: 44px;
+  block-size: 44px;
+  padding: 8px;
+  transition: none;
+  will-change: auto;
+
+  &:hover,
+  &:focus {
+    color: var(--button-icon-color, inherit);
+    transform: none;
+  }
+
+  &:is(:hover, :focus-visible):not(:disabled) {
+    color: var(--button-icon-hover-color, var(--button-icon-color, inherit));
+    background-color: var(
+      --button-icon-hover-background,
+      var(--global-border-color)
+    );
+  }
+
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+  }
+
+  &:disabled {
+    color: var(--button-icon-disabled-color, var(--global-disabled-color));
+    background-color: var(--button-icon-disabled-background, transparent);
+  }
+}
+
 @media (forced-colors: active) {
   .button.button--tag {
     --button-tag-text-color: LinkText;
@@ -300,6 +340,32 @@ onMounted(() => {
 
     &::after {
       background: LinkText;
+    }
+  }
+
+  .button.button--icon {
+    color: ButtonText;
+    background-color: ButtonFace;
+    border: 1px solid ButtonText;
+
+    &:hover,
+    &:focus {
+      color: ButtonText;
+    }
+
+    &:is(:hover, :focus-visible):not(:disabled) {
+      color: HighlightText;
+      background-color: Highlight;
+    }
+
+    &:focus-visible {
+      outline-color: Highlight;
+    }
+
+    &:disabled {
+      color: GrayText;
+      background-color: ButtonFace;
+      border-color: GrayText;
     }
   }
 }

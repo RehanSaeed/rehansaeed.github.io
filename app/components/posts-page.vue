@@ -5,6 +5,7 @@
 
     <div class="posts__items">
       <u-post-card
+        data-view-transition-source
         v-for="(post, index) of posts"
         :key="post.id"
         :post="post"

@@ -1,4 +1,22 @@
 @media (prefers-reduced-motion: no-preference) {
+  .post-view-transition__hero {
+    view-transition-name: post-hero;
+  }
+
+  :root.post-view-transition::view-transition {
+    pointer-events: none;
+  }
+
+  :root.post-view-transition::view-transition-group(post-hero) {
+    animation-duration: var(--global-duration-1);
+    animation-timing-function: var(--ease-out-quad);
+  }
+
+  :root.post-view-transition::view-transition-old(post-hero),
+  :root.post-view-transition::view-transition-new(post-hero) {
+    animation-duration: var(--global-duration-1);
+  }
+
   .fade-enter-active,
   .fade-leave-active {
     transition: opacity var(--global-duration-1) ease-in;
