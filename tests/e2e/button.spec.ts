@@ -226,6 +226,16 @@ for (const theme of ["light", "dark"]) {
             : "rgb(65, 12, 131)",
         );
         await expect(control).toHaveCSS("transform", "none");
+        await page.mouse.down();
+        await expect(control).toHaveCSS("background-color", tokens.accent);
+        await expect(control).toHaveCSS("color", tokens.content);
+        await expect(control).toHaveCSS("width", "44px");
+        await expect(control).toHaveCSS("height", "44px");
+        await page.mouse.up();
+        await expect(control).toHaveCSS(
+          "background-color",
+          control === icon ? tokens.border : "rgb(255, 255, 255)",
+        );
       } else if (control !== plain) {
         await expect(control).toHaveCSS(
           "transform",
@@ -255,11 +265,38 @@ for (const theme of ["light", "dark"]) {
       } else if (control === icon || control === overlay) {
         await expect(control).toHaveCSS("outline-style", "solid");
         await expect(control).toHaveCSS("outline-width", "2px");
+        await expect(control).toHaveCSS("outline-color", tokens.accent);
+        await expect(control).toHaveCSS("outline-offset", "3px");
         await expect(control).toHaveCSS("transform", "none");
         await expect(control).toHaveCSS(
           "background-color",
           control === icon ? tokens.border : "rgb(255, 255, 255)",
         );
+        for (const key of ["Space", "Enter"]) {
+          const before = Number(await output.getAttribute("data-clicks"));
+          await page.keyboard.down(key);
+          await expect(control).toHaveCSS("background-color", tokens.accent);
+          await expect(control).toHaveCSS("color", tokens.content);
+          await expect(output).toHaveAttribute(
+            "data-clicks",
+            String(before + (key === "Enter" ? 1 : 0)),
+          );
+          await page.keyboard.up(key);
+          await expect(output).toHaveAttribute(
+            "data-clicks",
+            String(before + 1),
+          );
+          await expect(control).toHaveCSS(
+            "background-color",
+            control === icon ? tokens.border : "rgb(255, 255, 255)",
+          );
+        }
+        await page.keyboard.down("Space");
+        await expect(control).toHaveCSS("background-color", tokens.accent);
+        await plain.focus();
+        await page.keyboard.up("Space");
+        await expect(control).not.toHaveClass(/button--pressed/);
+        await expect(control).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
       } else {
         await expect(control).toHaveCSS("outline-style", "none");
         await expect(control).toHaveCSS(
@@ -326,6 +363,24 @@ for (const theme of ["light", "dark"]) {
       ),
     );
     await expect(overlay).toHaveCSS("color", "rgb(255, 255, 255)");
+    await icon.focus();
+    await page.keyboard.down("Space");
+    await expect(icon).toHaveClass(/button--pressed/);
+    await page.evaluate(() => window.dispatchEvent(new Event("blur")));
+    await expect(icon).not.toHaveClass(/button--pressed/);
+    await page.keyboard.up("Space");
+    await page.keyboard.down("Space");
+    await expect(icon).toHaveClass(/button--pressed/);
+    // Change the prop without moving focus, so blur cannot hide a stuck state.
+    await page.getByRole("button", { name: "Toggle disabled" }).evaluate(
+      (element: HTMLButtonElement) => element.click(),
+    );
+    await expect(icon).toBeDisabled();
+    await expect(icon).not.toHaveClass(/button--pressed/);
+    await page.keyboard.up("Space");
+    await page.getByRole("button", { name: "Toggle disabled" }).click();
+    await expect(icon).toBeEnabled();
+    await expect(icon).not.toHaveClass(/button--pressed/);
     for (const motion of ["reduce", "no-preference"] as const) {
       await page.emulateMedia({ reducedMotion: motion });
       await icon.focus();
@@ -350,6 +405,27 @@ for (const theme of ["light", "dark"]) {
       await expect(control).toHaveCSS("border-top-style", "solid");
       await expect(control).toHaveCSS("outline-style", "solid");
       await expect(control).toHaveCSS("outline-width", "2px");
+      await expect(control).toHaveCSS("outline-offset", "3px");
+      const pressedColors = await control.evaluate(() => {
+        const probe = document.createElement("span");
+        probe.style.color = "ButtonFace";
+        probe.style.backgroundColor = "ButtonText";
+        document.body.append(probe);
+        const computed = getComputedStyle(probe);
+        const colors = {
+          color: computed.color,
+          background: computed.backgroundColor,
+        };
+        probe.remove();
+        return colors;
+      });
+      await page.keyboard.down("Space");
+      await expect(control).toHaveCSS("color", pressedColors.color);
+      await expect(control).toHaveCSS(
+        "background-color",
+        pressedColors.background,
+      );
+      await page.keyboard.up("Space");
     }
     await page.getByRole("button", { name: "Toggle disabled" }).click();
     const systemColors = await page.evaluate(() => {
