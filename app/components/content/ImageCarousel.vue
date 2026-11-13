@@ -15,42 +15,44 @@
         @scroll.passive="schedulePosition">
         <slot />
       </div>
-      <Teleport :to="arrowTarget ?? 'body'" :disabled="!arrowTarget">
+      <div
+        v-if="isInteractive"
+        class="image-carousel__arrows"
+        :class="{ 'image-carousel__arrows--dragging': isDragging }">
         <span
-          class="image-carousel__arrows"
+          ref="previousArrow"
+          class="image-carousel__arrow-shell"
           :class="{
-            'image-carousel__arrows--unavailable': !arrowTarget || isDragging,
+            'image-carousel__arrow-shell--unavailable': currentIndex === 0,
           }">
-          <u-tooltip
-            v-if="currentIndex > 0"
-            v-slot="{ trigger }"
-            text="Previous image">
-            <u-button
-              v-bind="trigger"
-              class="image-carousel__button image-carousel__button--previous"
-              variant="icon"
-              aria-label="Previous image"
-              :aria-controls="trackId"
-              @click="navigateToImage(currentIndex - 1)">
-              <u-icon name="feather:arrow-left" aria-hidden="true" />
-            </u-button>
-          </u-tooltip>
-          <u-tooltip
-            v-if="currentIndex < count - 1"
-            v-slot="{ trigger }"
-            text="Next image">
-            <u-button
-              v-bind="trigger"
-              class="image-carousel__button image-carousel__button--next"
-              variant="icon"
-              aria-label="Next image"
-              :aria-controls="trackId"
-              @click="navigateToImage(currentIndex + 1)">
-              <u-icon name="feather:arrow-right" aria-hidden="true" />
-            </u-button>
-          </u-tooltip>
+          <u-button
+            class="image-carousel__arrow"
+            variant="icon"
+            aria-label="Previous image"
+            :aria-controls="trackId"
+            :aria-disabled="currentIndex === 0"
+            @click="navigateToImage(currentIndex - 1)">
+            <u-icon name="feather:arrow-left" aria-hidden="true" />
+          </u-button>
         </span>
-      </Teleport>
+        <span
+          ref="nextArrow"
+          class="image-carousel__arrow-shell"
+          :class="{
+            'image-carousel__arrow-shell--unavailable':
+              currentIndex === count - 1,
+          }">
+          <u-button
+            class="image-carousel__arrow"
+            variant="icon"
+            aria-label="Next image"
+            :aria-controls="trackId"
+            :aria-disabled="currentIndex === count - 1"
+            @click="navigateToImage(currentIndex + 1)">
+            <u-icon name="feather:arrow-right" aria-hidden="true" />
+          </u-button>
+        </span>
+      </div>
     </div>
     <u-carousel-pagination
       v-if="isInteractive"
@@ -69,16 +71,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  shallowRef,
-  useId,
-  useTemplateRef,
-  watch,
-} from "vue";
+import { onBeforeUnmount, onMounted, ref, useId, useTemplateRef } from "vue";
 
 const props = defineProps<{
   /** Number of consecutive image slides in this article gallery. */
@@ -86,10 +79,11 @@ const props = defineProps<{
 }>();
 const trackId = `image-gallery-${useId()}`;
 const track = useTemplateRef<HTMLDivElement>("track");
+const previousArrow = useTemplateRef<HTMLSpanElement>("previousArrow");
+const nextArrow = useTemplateRef<HTMLSpanElement>("nextArrow");
 const currentIndex = ref(0);
 const isInteractive = ref(false);
 const isDragging = ref(false);
-const arrowTarget = shallowRef<HTMLElement | null>(null);
 let frame = 0;
 let settleFrame = 0;
 let previousStep = 0;
@@ -120,10 +114,17 @@ const updatePosition = () => {
   }
   previousStep = step;
   const position = track.value.scrollLeft / step;
-  currentIndex.value = Math.max(
-    0,
-    Math.min(props.count - 1, Math.round(position)),
-  );
+  const index = Math.max(0, Math.min(props.count - 1, Math.round(position)));
+  const unavailable =
+    index === 0
+      ? previousArrow.value
+      : index === props.count - 1
+        ? nextArrow.value
+        : undefined;
+  if (unavailable?.contains(document.activeElement)) {
+    track.value.focus({ preventScroll: true });
+  }
+  currentIndex.value = index;
   // Scrub paused animations, not a transition triggered by the nearest slide.
   for (const [index, animation] of animations.entries()) {
     animation.currentTime =
@@ -196,34 +197,13 @@ const interruptNavigation = () => {
   navigationTarget = undefined;
 };
 
-const updateArrowTarget = () => {
-  const target = track.value?.children[currentIndex.value]?.querySelector(
-    ":scope > p, :scope > figure > p",
-  );
-  if (!(target instanceof HTMLElement) || target === arrowTarget.value) {
-    return;
-  }
-  const focused = document.activeElement;
-  arrowTarget.value = target;
-  if (
-    !drag &&
-    focused instanceof HTMLButtonElement &&
-    focused.classList.contains("image-carousel__button")
-  ) {
-    void nextTick(() => {
-      if (focused.isConnected) {
-        focused.focus({ preventScroll: true });
-      } else {
-        track.value?.focus({ preventScroll: true });
-      }
-    });
-  }
-};
-
-watch(currentIndex, updateArrowTarget);
-
 const onKeydown = (event: KeyboardEvent) => {
-  if (event.target !== track.value) {
+  if (
+    event.target !== track.value ||
+    event.altKey ||
+    event.ctrlKey ||
+    event.metaKey
+  ) {
     return;
   }
   const destinations: Record<string, number> = {
@@ -240,12 +220,7 @@ const onKeydown = (event: KeyboardEvent) => {
 };
 
 const onFocus = (event: FocusEvent) => {
-  if (
-    drag ||
-    !(event.target instanceof Element) ||
-    event.target.closest(".image-carousel__button") ||
-    !track.value
-  ) {
+  if (drag || !(event.target instanceof Element) || !track.value) {
     return;
   }
   const slide = event.target.closest(".image-carousel__slide");
@@ -375,7 +350,6 @@ onMounted(() => {
     passive: true,
   });
   configureMotion();
-  updateArrowTarget();
   resizeObserver = new ResizeObserver(() => {
     if (!drag) {
       navigateToImage(navigationTarget ?? currentIndex.value, true);
@@ -413,10 +387,6 @@ onBeforeUnmount(() => {
 @use "~/assets/style/abstracts/visually-hidden";
 
 .image-carousel {
-  --button-icon-color: #fff;
-  --button-icon-hover-color: var(--global-accent-color);
-  --button-icon-hover-background: #fff;
-
   container-type: inline-size;
   margin-block: var(--global-space-fixed-5);
 }
@@ -425,6 +395,7 @@ onBeforeUnmount(() => {
   --image-carousel-slide-size: calc(100cqi + (2 * var(--global-space-fluid-6)));
 
   position: relative;
+  isolation: isolate;
   inline-size: 100vw;
   margin-inline: calc(50% - 50vw);
 }
@@ -505,17 +476,42 @@ onBeforeUnmount(() => {
 
 .image-carousel__arrows {
   position: absolute;
-  inset-block: 0;
-  inset-inline: var(--global-space-fixed-3);
+  inset-block: var(--global-space-fixed-2);
+  inset-inline: max(
+    var(--global-space-fixed-3),
+    calc(
+      (100% - var(--image-carousel-slide-size)) / 2 +
+        var(--global-space-fixed-3)
+    )
+  );
+  z-index: 20;
   display: grid;
   grid-template-columns: auto auto;
   align-items: center;
   justify-content: space-between;
   pointer-events: none;
+
+  .image-carousel__arrow[aria-disabled="true"] {
+    --button-icon-color: rgb(255 255 255 / 65%);
+    --button-icon-hover-color: rgb(255 255 255 / 65%);
+    --button-icon-hover-background: rgb(255 255 255 / 15%);
+
+    cursor: default;
+  }
 }
 
-.image-carousel__arrows--unavailable {
+.image-carousel__arrows--dragging {
   visibility: hidden;
+}
+
+.image-carousel__arrow-shell {
+  display: grid;
+  border-radius: 50%;
+  background-color: rgb(0 0 0 / 65%);
+
+  &--unavailable {
+    visibility: hidden;
+  }
 }
 
 .image-carousel__pagination {
@@ -526,38 +522,65 @@ onBeforeUnmount(() => {
   @include visually-hidden.visually-hidden();
 }
 
-.image-carousel__button {
-  background-color: rgb(0 0 0 / 65%);
+.image-carousel__arrows .image-carousel__arrow {
+  --button-icon-color: #fff;
+  --button-icon-hover-color: var(
+    --gallery-button-hover-color,
+    var(--global-accent-color)
+  );
+  --button-icon-hover-background: #fff;
+
+  background-clip: content-box;
+  font-size: 20px;
+  padding: 4px;
   pointer-events: auto;
+
+  &:focus-visible {
+    outline-offset: -6px;
+  }
 }
 
-[data-theme="dark"] .image-carousel {
-  --button-icon-hover-color: var(--global-alternate-accent-color);
-}
-
-.image-carousel__button--previous {
-  grid-column: 1;
-}
-
-.image-carousel__button--next {
-  grid-column: 2;
+[data-theme="dark"] .image-carousel__arrows {
+  --gallery-button-hover-color: var(--global-alternate-accent-color);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .image-carousel__button {
+  .image-carousel__arrow-shell {
     opacity: 0;
+  }
+
+  .image-carousel__arrows .image-carousel__arrow {
     pointer-events: none;
   }
 
-  .image-carousel__viewport:is(:hover, :focus-within) .image-carousel__button {
-    opacity: 1;
-    pointer-events: auto;
+  .image-carousel__viewport:has(img:hover, .image-carousel__arrow:hover),
+  .image-carousel:has(:focus-visible) {
+    .image-carousel__arrow-shell {
+      opacity: 1;
+    }
+
+    .image-carousel__arrow {
+      pointer-events: auto;
+    }
+  }
+
+  .image-carousel:has(:focus-visible) .image-carousel__arrow-shell {
+    transition: none;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+  .image-carousel__arrow-shell {
+    transition: opacity var(--global-duration-1) var(--ease-in-out-cubic);
   }
 }
 
 @media (any-pointer: coarse) {
-  .image-carousel__button {
+  .image-carousel__arrow-shell {
     opacity: 1;
+  }
+
+  .image-carousel__arrows .image-carousel__arrow {
     pointer-events: auto;
   }
 }
@@ -565,6 +588,15 @@ onBeforeUnmount(() => {
 @media (forced-colors: active) {
   .image-carousel__track:focus-visible {
     outline-color: Highlight;
+  }
+
+  .image-carousel__arrow-shell {
+    background-color: ButtonFace;
+  }
+
+  .image-carousel__arrows [aria-disabled="true"] {
+    --button-icon-color: GrayText;
+    --button-icon-hover-color: GrayText;
   }
 }
 </style>

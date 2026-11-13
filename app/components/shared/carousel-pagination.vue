@@ -77,7 +77,7 @@ const emit = defineEmits<{ select: [index: number] }>();
 @media (forced-colors: active) {
   .carousel-pagination__dot {
     border: 1px solid ButtonText;
-    background-color: Canvas;
+    background-color: ButtonText;
     forced-color-adjust: none;
   }
 
