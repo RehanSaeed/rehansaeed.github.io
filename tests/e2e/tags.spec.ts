@@ -7,16 +7,18 @@ const postPath = "/on-the-etiquette-of-pull-request-comments/";
 test("selected tags render accessible navigation before hydration", async ({
   request,
 }) => {
-  for (const path of ["/portfolio/", postPath]) {
+  for (const path of ["/portfolio/", postPath, "/"]) {
     const response = await request.get(path);
     expect(response.ok()).toBe(true);
     const $ = load(await response.text());
-    expect($(".tag-style-switcher")).toHaveLength(0);
     const tags = $(".tags__link");
     expect(tags.length).toBeGreaterThan(0);
     for (const tag of tags.toArray()) {
       const link = $(tag);
-      expect(link.is("a.button--code-token.button--tag-icon")).toBe(true);
+      expect(link.is("a.button--tag-shaped")).toBe(true);
+      expect(link.find(".button__tag-surface").attr("aria-hidden")).toBe(
+        "true",
+      );
       expect(link.attr("href")).toBe(tagPath(link.text().trim()));
       expect(link.attr("aria-disabled")).toBeUndefined();
       expect(link.attr("tabindex")).toBeUndefined();
@@ -28,7 +30,7 @@ for (const { theme, width, minimumRows } of [
   { theme: "light", width: 1440, minimumRows: 1 },
   { theme: "dark", width: 390, minimumRows: 2 },
 ] as const) {
-  test(`selected tags preserve icons, raised interaction and navigation / ${theme}`, async ({
+  test(`selected pointed tags preserve holes, raised silhouettes and navigation / ${theme}`, async ({
     page,
   }) => {
     await page.emulateMedia({
@@ -43,6 +45,7 @@ for (const { theme, width, minimumRows } of [
     await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
     const tags = page.locator(".portfolio-card .tags__link");
     const first = tags.first();
+    await expect(first).toHaveClass(/button--tag-shaped/);
     await expect(first).toHaveAccessibleName("Windows");
     await expect(first).toHaveAttribute("href", "/tag/windows/");
     await expect(first).toHaveCSS("text-decoration-line", "none");
@@ -53,29 +56,49 @@ for (const { theme, width, minimumRows } of [
     );
     expect(Number.parseFloat(radius)).toBeGreaterThan(0);
     await expect(first).toHaveCSS("border-top-right-radius", radius);
-    expect(
-      await first.evaluate(
-        (element) => getComputedStyle(element, "::after").maskImage,
-      ),
-    ).not.toBe("none");
+    const hole = await first.evaluate((element) => {
+      const style = getComputedStyle(element, "::after");
+      const probe = document.createElement("span");
+      probe.style.backgroundColor = "var(--global-accent-color)";
+      element.append(probe);
+      const accent = getComputedStyle(probe).backgroundColor;
+      probe.remove();
+      return {
+        width: style.width,
+        height: style.height,
+        radius: style.borderRadius,
+        colour: style.backgroundColor,
+        accent,
+      };
+    });
+    expect(Number.parseFloat(hole.width)).toBeGreaterThan(0);
+    expect(hole.width).toBe(hole.height);
+    expect(hole.radius).toBe("50%");
+    expect(hole.colour).toBe(hole.accent);
     const raisedShadow = await first.evaluate((element) => {
       const probe = document.createElement("span");
-      probe.style.boxShadow = "var(--global-shadow-2)";
+      probe.style.filter =
+        "drop-shadow(var(--global-shadow-2-near)) drop-shadow(var(--global-shadow-2-middle)) drop-shadow(var(--global-shadow-2-far))";
       element.append(probe);
-      const shadow = getComputedStyle(probe).boxShadow;
+      const shadow = getComputedStyle(probe).filter;
       probe.remove();
       return shadow;
     });
+    await first.evaluate((element) => {
+      element.scrollIntoView({ block: "center", behavior: "instant" });
+    });
     await first.hover();
     await expect(first).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -2)");
-    await expect
-      .poll(() =>
-        first.evaluate((element) => ({
-          shadow: getComputedStyle(element, "::before").boxShadow,
-          opacity: getComputedStyle(element, "::before").opacity,
-        })),
-      )
-      .toEqual({ shadow: raisedShadow, opacity: "1" });
+    const surface = first.locator(".button__tag-surface");
+    await expect(surface).toHaveCSS("filter", raisedShadow);
+    expect(
+      await first.evaluate(
+        (element) => getComputedStyle(element, "::before").content,
+      ),
+    ).toBe("none");
+    await page.screenshot({
+      path: test.info().outputPath(`portfolio-${theme}-pointed.png`),
+    });
     await page.mouse.down();
     await expect(first).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, 0)");
     await page.mouse.move(0, 0);
@@ -110,35 +133,44 @@ for (const { theme, width, minimumRows } of [
     await first.hover();
     await expect(first).toHaveCSS("transform", "none");
     await expect(first).toHaveCSS("transition-duration", "0s");
-    await expect
-      .poll(() =>
-        first.evaluate(
-          (element) => getComputedStyle(element, "::before").opacity,
-        ),
-      )
-      .toBe("1");
+    await expect(surface).toHaveCSS("transition-duration", "0s");
+    await expect(surface).toHaveCSS("filter", raisedShadow);
 
+    await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.goto(postPath, { waitUntil: "domcontentloaded" });
     await expect(
       page.getByRole("button", { name: "Toggle dark/light" }),
     ).toBeEnabled();
     const postTag = page.locator(".post__tags .tags__link").first();
-    await expect(postTag).toHaveClass(/button--code-token/);
-    await expect(postTag).toHaveClass(/button--tag-icon/);
+    await expect(postTag).toHaveClass(/button--tag-shaped/);
     const name = (await postTag.textContent())!.trim();
     await expect(postTag).toHaveAccessibleName(name);
     await expect(postTag).toHaveCSS("text-decoration-line", "none");
+    await postTag.evaluate((element) => {
+      element.scrollIntoView({ block: "center", behavior: "instant" });
+    });
+    await postTag.hover();
+    await expect(postTag).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -2)");
+    await expect(postTag.locator(".button__tag-surface")).toHaveCSS(
+      "filter",
+      raisedShadow,
+    );
+    await page.screenshot({
+      path: test.info().outputPath(`article-${theme}-pointed.png`),
+    });
     await page.emulateMedia({ forcedColors: "active" });
     await page.keyboard.press("Tab");
     await postTag.focus();
     await expect(postTag).toBeFocused();
     await expect(postTag).toHaveCSS("outline-width", "3px");
     await expect(postTag).toHaveCSS("border-top-style", "solid");
-    const colours = await postTag.evaluate((element) => {
-      const style = getComputedStyle(element);
-      return { text: style.color, background: style.backgroundColor };
-    });
-    expect(colours.text).not.toBe(colours.background);
+    const postSurface = postTag.locator(".button__tag-surface");
+    await expect(postSurface).toHaveCSS("filter", "none");
+    const colours = await postSurface.evaluate((element) => ({
+      edge: getComputedStyle(element, "::before").backgroundColor,
+      fill: getComputedStyle(element, "::after").backgroundColor,
+    }));
+    expect(colours.edge).not.toBe(colours.fill);
     await page.keyboard.press("Enter");
     await expect(page).toHaveURL(tagPath(name));
     await expect(
@@ -148,91 +180,24 @@ for (const { theme, width, minimumRows } of [
         exact: true,
       }),
     ).toBeVisible();
-  });
-}
-
-if (process.env.TAG_STYLE_PREVIEW === "true") {
-  test("development preview switches real portfolio and article tags without changing their links", async ({
-    page,
-  }) => {
-    await page.emulateMedia({ reducedMotion: "no-preference" });
-    for (const { theme, width } of [
-      { theme: "light", width: 1440 },
-      { theme: "dark", width: 390 },
-    ] as const) {
-      await page.emulateMedia({ colorScheme: theme });
-      await page.setViewportSize({ width, height: 1100 });
-      for (const { path, context } of [
-        { path: "/portfolio/", context: "portfolio" },
-        { path: postPath, context: "article" },
-      ]) {
-        await page.goto(path, { waitUntil: "domcontentloaded" });
-        await expect(
-          page.getByRole("button", { name: "Toggle dark/light" }),
-        ).toBeEnabled();
-        const code = page.getByRole("radio", {
-          name: "Code token with tag icon",
-        });
-        const pointed = page.getByRole("radio", {
-          name: "Pointed tag with purple hole",
-        });
-        await expect(code).toBeChecked();
-        const tags = page.locator(".tags__link");
-        const namesAndLinks = await tags.evaluateAll((elements) =>
-          elements.map((element) => ({
-            name: element.textContent.trim(),
-            href: element.getAttribute("href"),
-          })),
-        );
-        expect(namesAndLinks.length).toBeGreaterThan(0);
-        await tags.first().scrollIntoViewIfNeeded();
-        await page.screenshot({
-          path: test.info().outputPath(`${context}-${theme}-code-token.png`),
-        });
-        await code.focus();
-        await page.keyboard.press("ArrowDown");
-        await expect(pointed).toBeChecked();
-        await expect(tags.first()).toHaveClass(/button--tag-shaped/);
-        await expect(
-          page.locator(".tags__link.button--code-token"),
-        ).toHaveCount(0);
-        expect(
-          await tags.evaluateAll((elements) =>
-            elements.map((element) => ({
-              name: element.textContent.trim(),
-              href: element.getAttribute("href"),
-            })),
-          ),
-        ).toEqual(namesAndLinks);
-        await expect(tags.first()).toHaveAccessibleName(namesAndLinks[0]!.name);
-        expect(
-          await page.evaluate(() => document.documentElement.scrollWidth),
-        ).toBeLessThanOrEqual(width);
-        await tags.first().hover();
-        await expect(tags.first()).toHaveCSS(
-          "transform",
-          "matrix(1, 0, 0, 1, 0, -2)",
-        );
-        await expect(
-          tags.first().locator(".button__tag-surface"),
-        ).not.toHaveCSS("filter", "none");
-        expect(
-          await tags
-            .first()
-            .evaluate(
-              (element) => getComputedStyle(element, "::before").content,
-            ),
-        ).toBe("none");
-        await page.screenshot({
-          path: test.info().outputPath(`${context}-${theme}-tag-shaped.png`),
-        });
-        await code.check();
-        await expect(tags.first()).toHaveClass(/button--code-token/);
-        await expect(tags.first()).toHaveClass(/button--tag-icon/);
-        await expect(
-          page.locator(".tags__link.button--tag-shaped"),
-        ).toHaveCount(0);
-      }
-    }
+    await page.emulateMedia({ forcedColors: "none" });
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    const cardTag = page.locator(".post-card__tags .tags__link").first();
+    await expect(cardTag).toHaveClass(/button--tag-shaped/);
+    const cardName = (await cardTag.textContent())!.trim();
+    await expect(cardTag).toHaveAccessibleName(cardName);
+    await expect(cardTag).toHaveAttribute("href", tagPath(cardName));
+    await cardTag.evaluate((element) => {
+      element.scrollIntoView({ block: "center", behavior: "instant" });
+    });
+    await cardTag.hover();
+    await expect(cardTag).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -2)");
+    await expect(cardTag.locator(".button__tag-surface")).toHaveCSS(
+      "filter",
+      raisedShadow,
+    );
+    await page.screenshot({
+      path: test.info().outputPath(`post-card-${theme}-pointed.png`),
+    });
   });
 }
