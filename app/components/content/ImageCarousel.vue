@@ -18,7 +18,9 @@
       <Teleport :to="arrowTarget ?? 'body'" :disabled="!arrowTarget">
         <span
           class="image-carousel__arrows"
-          :class="{ 'image-carousel__arrows--unavailable': !arrowTarget }">
+          :class="{
+            'image-carousel__arrows--unavailable': !arrowTarget || isDragging,
+          }">
           <u-tooltip
             v-if="currentIndex > 0"
             v-slot="{ trigger }"

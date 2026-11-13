@@ -147,6 +147,9 @@ test.describe("Continuous scroll-linked motion", () => {
     const y = bounds!.y + bounds!.height * 0.3;
     expect(x - step).toBeGreaterThan(0);
     await page.mouse.move(x, y);
+    await expect(
+      gallery.getByRole("button", { name: "Next image", exact: true }),
+    ).toBeVisible();
     await page.mouse.down();
     const samples = [];
     for (const fraction of [0, 0.02, 0.2, 0.4, 0.6, 0.8, 1]) {
@@ -156,6 +159,9 @@ test.describe("Continuous scroll-linked motion", () => {
       await expect
         .poll(() => track.evaluate((element) => element.scrollLeft))
         .toBeCloseTo(left, 0);
+      await expect(
+        gallery.locator(".image-carousel__button:visible"),
+      ).toHaveCount(fraction === 0 ? 1 : 0);
       await expect
         .poll(() =>
           track
@@ -229,6 +235,12 @@ test.describe("Continuous scroll-linked motion", () => {
         );
       });
     await gallery.locator("img").nth(1).hover();
+    await expect(
+      gallery.getByRole("button", { name: "Previous image", exact: true }),
+    ).toBeVisible();
+    await expect(
+      gallery.getByRole("button", { name: "Next image", exact: true }),
+    ).toBeVisible();
     await gallery
       .getByRole("button", { name: "Next image", exact: true })
       .click();
@@ -320,8 +332,10 @@ test("Overlay arrows and dot paging match the other carousel alternatives", asyn
   await secondDot.click();
   await expect(secondDot).toHaveAttribute("aria-current", "true");
   await expect(firstDot).not.toHaveAttribute("aria-current");
-  await expect(secondDot.locator("span")).toHaveCSS("width", "20px");
-  await expect(firstDot.locator("span")).toHaveCSS("width", "14px");
+  await expect(secondDot.locator("span")).toHaveCSS("width", "16px");
+  await expect(firstDot.locator("span")).toHaveCSS("width", "10px");
+  await expect(firstDot).toHaveCSS("width", "44px");
+  await expect(firstDot).toHaveCSS("height", "44px");
   await firstDot.click();
   await page.emulateMedia({ forcedColors: "active" });
   await firstDot.focus();
@@ -364,6 +378,9 @@ test.describe("Touch gesture tracking", () => {
     const y = bounds!.y + bounds!.height * 0.3;
     const session = await context.newCDPSession(page);
     try {
+      await expect(
+        gallery.getByRole("button", { name: "Next image" }),
+      ).toBeVisible();
       await session.send("Input.dispatchTouchEvent", {
         type: "touchStart",
         touchPoints: [{ x, y }],
@@ -376,6 +393,9 @@ test.describe("Touch gesture tracking", () => {
         await expect
           .poll(() => track.evaluate((element) => element.scrollLeft))
           .toBeCloseTo(distance, 0);
+        await expect(
+          gallery.locator(".image-carousel__button:visible"),
+        ).toHaveCount(0);
         const opacity = await track
           .locator(".prose-image")
           .first()
