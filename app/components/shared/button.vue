@@ -292,7 +292,7 @@ const onClick = (event: MouseEvent) => {
 // Clip only the decorative surface, leaving the shared shadow and focus ring visible.
 .button__tag-surface {
   position: absolute;
-  inset: -1px;
+  inset: 0;
   z-index: -1;
   border-radius: inherit;
   background: var(--button-tag-edge);
@@ -364,28 +364,6 @@ const onClick = (event: MouseEvent) => {
     color: var(--button-icon-disabled-color, var(--global-disabled-color));
     background-color: var(--button-icon-disabled-background, transparent);
   }
-
-  .button.button--tag-shaped {
-    --button-tag-surface: Canvas;
-    --button-tag-edge: LinkText;
-
-    border-color: transparent;
-    background: transparent;
-
-    .button__tag-surface {
-      forced-color-adjust: none;
-    }
-
-    &:disabled,
-    &[aria-disabled="true"] {
-      --button-tag-text-color: GrayText;
-      --button-tag-edge: GrayText;
-
-      &::after {
-        background: GrayText;
-      }
-    }
-  }
 }
 
 @media (forced-colors: active) {
@@ -406,6 +384,27 @@ const onClick = (event: MouseEvent) => {
 
     &::after {
       background: LinkText;
+    }
+  }
+
+  .button.button--tag-shaped {
+    --button-tag-surface: Canvas;
+    --button-tag-edge: LinkText;
+
+    border-color: transparent;
+    background: transparent;
+    forced-color-adjust: none;
+
+    &:disabled,
+    &[aria-disabled="true"] {
+      --button-tag-text-color: GrayText;
+      --button-tag-edge: GrayText;
+
+      color: GrayText;
+
+      &::after {
+        background: GrayText;
+      }
     }
   }
 

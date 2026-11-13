@@ -162,7 +162,10 @@ if (process.env.TAG_STYLE_PREVIEW === "true") {
     ] as const) {
       await page.emulateMedia({ colorScheme: theme });
       await page.setViewportSize({ width, height: 1100 });
-      for (const path of ["/portfolio/", postPath]) {
+      for (const { path, context } of [
+        { path: "/portfolio/", context: "portfolio" },
+        { path: postPath, context: "article" },
+      ]) {
         await page.goto(path, { waitUntil: "domcontentloaded" });
         await expect(
           page.getByRole("button", { name: "Toggle dark/light" }),
@@ -182,7 +185,6 @@ if (process.env.TAG_STYLE_PREVIEW === "true") {
           })),
         );
         expect(namesAndLinks.length).toBeGreaterThan(0);
-        const context = path === "/portfolio/" ? "portfolio" : "article";
         await tags.first().scrollIntoViewIfNeeded();
         await page.screenshot({
           path: test.info().outputPath(`${context}-${theme}-code-token.png`),
