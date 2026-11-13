@@ -172,10 +172,11 @@
             <span class="prose-video__speed-adjust">
               <u-button
                 variant="icon"
+                class="prose-video__speed-button"
                 aria-label="Decrease playback speed"
                 :disabled="playbackRate <= minimumSpeed"
                 @click="adjustSpeed(-speedStep)">
-                −
+                <u-icon name="fa-solid:minus" />
               </u-button>
               <label>
                 <span class="prose-video__visually-hidden">Playback speed</span>
@@ -190,10 +191,11 @@
               </label>
               <u-button
                 variant="icon"
+                class="prose-video__speed-button"
                 aria-label="Increase playback speed"
                 :disabled="playbackRate >= maximumSpeed"
                 @click="adjustSpeed(speedStep)">
-                +
+                <u-icon name="fa-solid:plus" />
               </u-button>
             </span>
             <span class="prose-video__speed-presets">
@@ -581,7 +583,8 @@ onUnmounted(() => {
   }
 }
 
-.prose-video__button.button--icon {
+.prose-video__button.button--icon,
+.prose-video__speed-button.button--icon {
   background-clip: content-box;
   font-size: 20px;
   padding: 4px;
@@ -725,9 +728,7 @@ onUnmounted(() => {
   button {
     background: rgb(255 255 255 / 15%);
     border-radius: 50%;
-    font-size: 1.25rem;
     text-align: center;
-    padding: 0;
     min-inline-size: 48px;
 
     &:disabled {

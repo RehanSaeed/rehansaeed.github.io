@@ -71,6 +71,8 @@ export default defineNuxtConfig({
         "fa-solid:volume-mute",
         "fa-solid:closed-captioning",
         "fa-solid:tachometer-alt",
+        "fa-solid:minus",
+        "fa-solid:plus",
         "fa-solid:clone",
         "fa-solid:expand",
         "fa-solid:compress",

@@ -791,6 +791,55 @@ test("Full-width controls remain contained with large touch targets in both them
   await expect(play).toHaveCSS("outline-style", "solid");
 });
 
+test("Playback speed icons match toolbar sizing and inset hover and focus styles", async ({
+  page,
+  baseURL,
+}) => {
+  const { player } = await openVideo(page, baseURL);
+  await player.getByRole("button", { name: /^Playback speed:/ }).click();
+  const stepButtons = player.locator(".prose-video__speed-adjust button");
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate((theme) => {
+      document.documentElement.dataset.theme = theme;
+    }, theme);
+    for (const width of [1280, 320]) {
+      await page.setViewportSize({ width, height: 900 });
+      for (const stepButton of await stepButtons.all()) {
+        const icon = stepButton.locator(".icon");
+        const bounds = await icon.boundingBox();
+        expect(bounds!.width).toBeCloseTo(20, 3);
+        expect(bounds!.height).toBeCloseTo(20, 3);
+        await expect(icon).toHaveAttribute("aria-hidden", "true");
+        await expect(icon.locator("path")).toHaveCount(1);
+        await expect(stepButton).toHaveCSS("padding", "4px");
+        await expect(stepButton).toHaveCSS("background-clip", "content-box");
+        await stepButton.hover();
+        await expect(stepButton).toHaveCSS("color", "rgb(107, 23, 232)");
+        await expect(stepButton).toHaveCSS(
+          "background-color",
+          "rgb(255, 255, 255)",
+        );
+        await stepButton.focus();
+        await page.keyboard.press("Tab");
+        await page.keyboard.press("Shift+Tab");
+        await expect(stepButton).toBeFocused();
+        await expect(stepButton).toHaveCSS("outline-offset", "-6px");
+      }
+    }
+  }
+  await page.emulateMedia({ forcedColors: "active" });
+  const increase = player.getByRole("button", {
+    name: "Increase playback speed",
+    exact: true,
+  });
+  await increase.focus();
+  await page.keyboard.press("Tab");
+  await page.keyboard.press("Shift+Tab");
+  await expect(increase).toBeFocused();
+  await expect(increase).toHaveCSS("border-top-style", "solid");
+  await expect(increase).toHaveCSS("outline-style", "solid");
+});
+
 test.describe("Server-rendered native fallback", () => {
   test.use({ javaScriptEnabled: false });
 
