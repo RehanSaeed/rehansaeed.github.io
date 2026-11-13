@@ -1,5 +1,8 @@
 <template>
-  <section class="image-carousel" aria-label="Image gallery">
+  <section
+    class="image-carousel"
+    :class="{ 'image-carousel--interactive': isInteractive }"
+    aria-label="Image gallery">
     <div class="image-carousel__viewport">
       <div
         :id="trackId"
@@ -12,41 +15,48 @@
         @scroll.passive="schedulePosition">
         <slot />
       </div>
+      <Teleport :to="arrowTarget ?? 'body'" :disabled="!arrowTarget">
+        <span
+          class="image-carousel__arrows"
+          :class="{ 'image-carousel__arrows--unavailable': !arrowTarget }">
+          <u-tooltip
+            v-if="currentIndex > 0"
+            v-slot="{ trigger }"
+            text="Previous image">
+            <u-button
+              v-bind="trigger"
+              class="image-carousel__button image-carousel__button--previous"
+              variant="icon"
+              aria-label="Previous image"
+              :aria-controls="trackId"
+              @click="navigateToImage(currentIndex - 1)">
+              <u-icon name="feather:arrow-left" aria-hidden="true" />
+            </u-button>
+          </u-tooltip>
+          <u-tooltip
+            v-if="currentIndex < count - 1"
+            v-slot="{ trigger }"
+            text="Next image">
+            <u-button
+              v-bind="trigger"
+              class="image-carousel__button image-carousel__button--next"
+              variant="icon"
+              aria-label="Next image"
+              :aria-controls="trackId"
+              @click="navigateToImage(currentIndex + 1)">
+              <u-icon name="feather:arrow-right" aria-hidden="true" />
+            </u-button>
+          </u-tooltip>
+        </span>
+      </Teleport>
     </div>
-    <div v-if="isInteractive" class="image-carousel__controls">
-      <u-button
-        variant="icon"
-        aria-label="Previous image"
-        :aria-controls="trackId"
-        :aria-disabled="currentIndex === 0"
-        @click="navigateToImage(currentIndex - 1)">
-        <u-icon name="feather:arrow-left" aria-hidden="true" />
-      </u-button>
-      <div
-        class="image-carousel__pagination"
-        role="group"
-        aria-label="Choose image">
-        <button
-          v-for="number in count"
-          :key="number"
-          type="button"
-          class="image-carousel__page"
-          :aria-label="`Go to image ${number} of ${count}`"
-          :aria-controls="trackId"
-          :aria-current="number - 1 === currentIndex ? 'true' : undefined"
-          @click="navigateToImage(number - 1)">
-          <span aria-hidden="true">{{ String(number).padStart(2, "0") }}</span>
-        </button>
-      </div>
-      <u-button
-        variant="icon"
-        aria-label="Next image"
-        :aria-controls="trackId"
-        :aria-disabled="currentIndex === count - 1"
-        @click="navigateToImage(currentIndex + 1)">
-        <u-icon name="feather:arrow-right" aria-hidden="true" />
-      </u-button>
-    </div>
+    <u-carousel-pagination
+      v-if="isInteractive"
+      class="image-carousel__pagination"
+      :count="count"
+      :current-index="currentIndex"
+      :controls="trackId"
+      @select="navigateToImage" />
     <p class="image-carousel__position" aria-live="polite" aria-atomic="true">
       <template v-if="isInteractive"
         >Image {{ currentIndex + 1 }} of {{ count }}</template
@@ -57,7 +67,16 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, useId, useTemplateRef } from "vue";
+import {
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  shallowRef,
+  useId,
+  useTemplateRef,
+  watch,
+} from "vue";
 
 const props = defineProps<{
   /** Number of consecutive image slides in this article gallery. */
@@ -68,6 +87,7 @@ const track = useTemplateRef<HTMLDivElement>("track");
 const currentIndex = ref(0);
 const isInteractive = ref(false);
 const isDragging = ref(false);
+const arrowTarget = shallowRef<HTMLElement | null>(null);
 let frame = 0;
 let resizeObserver: ResizeObserver | undefined;
 let motionPreference: MediaQueryList | undefined;
@@ -137,11 +157,48 @@ const configureMotion = () => {
 
 const navigateToImage = (requestedIndex: number, instant = false) => {
   const index = Math.max(0, Math.min(props.count - 1, requestedIndex));
-  track.value?.scrollTo({
-    left: index * slideStep(),
+  const left = index * slideStep();
+  if (!track.value || Math.abs(track.value.scrollLeft - left) <= 1) {
+    return;
+  }
+  track.value.scrollTo({
+    left,
     behavior: instant || motionPreference?.matches ? "instant" : "smooth",
   });
 };
+
+const settlePosition = () => {
+  if (!drag) {
+    updatePosition();
+    navigateToImage(currentIndex.value);
+  }
+};
+
+const updateArrowTarget = () => {
+  const target = track.value?.children[currentIndex.value]?.querySelector(
+    ":scope > p, :scope > figure > p",
+  );
+  if (!(target instanceof HTMLElement) || target === arrowTarget.value) {
+    return;
+  }
+  const focused = document.activeElement;
+  arrowTarget.value = target;
+  if (
+    !drag &&
+    focused instanceof HTMLButtonElement &&
+    focused.classList.contains("image-carousel__button")
+  ) {
+    void nextTick(() => {
+      if (focused.isConnected) {
+        focused.focus({ preventScroll: true });
+      } else {
+        track.value?.focus({ preventScroll: true });
+      }
+    });
+  }
+};
+
+watch(currentIndex, updateArrowTarget);
 
 const onKeydown = (event: KeyboardEvent) => {
   if (event.target !== track.value) {
@@ -161,7 +218,12 @@ const onKeydown = (event: KeyboardEvent) => {
 };
 
 const onFocus = (event: FocusEvent) => {
-  if (!(event.target instanceof Element) || !track.value) {
+  if (
+    drag ||
+    !(event.target instanceof Element) ||
+    event.target.closest(".image-carousel__button") ||
+    !track.value
+  ) {
     return;
   }
   const slide = event.target.closest(".image-carousel__slide");
@@ -176,12 +238,17 @@ const onFocus = (event: FocusEvent) => {
 const startDrag = (event: PointerEvent) => {
   suppressClick = false;
   if (
-    event.pointerType === "mouse" &&
+    event.isPrimary &&
     event.button === 0 &&
     track.value &&
     event.target instanceof Element &&
-    event.target.closest("img")
+    !event.target.closest("button, a:not(:has(img))") &&
+    (event.pointerType !== "mouse" || event.target.closest("img"))
   ) {
+    track.value.scrollTo({
+      left: track.value.scrollLeft,
+      behavior: "instant",
+    });
     drag = {
       id: event.pointerId,
       x: event.clientX,
@@ -201,6 +268,7 @@ const finishDrag = (event: PointerEvent) => {
   if (track.value?.hasPointerCapture(event.pointerId)) {
     track.value.releasePointerCapture(event.pointerId);
   }
+  settlePosition();
 };
 
 const moveDrag = (event: PointerEvent) => {
@@ -223,7 +291,11 @@ const moveDrag = (event: PointerEvent) => {
     track.value.setPointerCapture(event.pointerId);
   }
   event.preventDefault();
-  track.value.scrollLeft = drag.left - distance;
+  track.value.scrollTo({
+    left: drag.left - distance,
+    behavior: "instant",
+  });
+  updatePosition();
 };
 
 const preventDraggedClick = (event: MouseEvent) => {
@@ -263,10 +335,14 @@ onMounted(() => {
   track.value?.addEventListener("click", preventDraggedClick, true);
   track.value?.addEventListener("keydown", onKeydown);
   track.value?.addEventListener("focusin", onFocus);
+  track.value?.addEventListener("scrollend", settlePosition);
   configureMotion();
+  updateArrowTarget();
   resizeObserver = new ResizeObserver(() => {
-    navigateToImage(currentIndex.value, true);
-    updatePosition();
+    if (!drag) {
+      navigateToImage(currentIndex.value, true);
+      updatePosition();
+    }
   });
   if (track.value) {
     resizeObserver.observe(track.value);
@@ -289,6 +365,7 @@ onBeforeUnmount(() => {
   track.value?.removeEventListener("click", preventDraggedClick, true);
   track.value?.removeEventListener("keydown", onKeydown);
   track.value?.removeEventListener("focusin", onFocus);
+  track.value?.removeEventListener("scrollend", settlePosition);
 });
 </script>
 
@@ -296,6 +373,10 @@ onBeforeUnmount(() => {
 @use "~/assets/style/abstracts/visually-hidden";
 
 .image-carousel {
+  --button-icon-color: #fff;
+  --button-icon-hover-color: var(--global-accent-color);
+  --button-icon-hover-background: #fff;
+
   container-type: inline-size;
   margin-block: var(--global-space-fixed-5);
 }
@@ -303,6 +384,7 @@ onBeforeUnmount(() => {
 .image-carousel__viewport {
   --image-carousel-slide-size: calc(100cqi + (2 * var(--global-space-fluid-6)));
 
+  position: relative;
   inline-size: 100vw;
   margin-inline: calc(50% - 50vw);
 }
@@ -335,6 +417,12 @@ onBeforeUnmount(() => {
   cursor: grab;
 }
 
+// Native snapping can settle a scripted pointer move before the gesture ends.
+.image-carousel--interactive .image-carousel__track {
+  scroll-snap-type: none;
+  touch-action: pan-y pinch-zoom;
+}
+
 .image-carousel__track--dragging {
   scroll-snap-type: none;
   user-select: none;
@@ -363,6 +451,7 @@ onBeforeUnmount(() => {
 
 .post__content .image-carousel__slide > p,
 .post__content .image-carousel__slide > figure > p {
+  position: relative;
   inline-size: fit-content;
   max-inline-size: 100%;
   min-inline-size: 0;
@@ -374,66 +463,68 @@ onBeforeUnmount(() => {
   margin-inline: 0;
 }
 
-.image-carousel__controls {
+.image-carousel__arrows {
+  position: absolute;
+  inset-block: 0;
+  inset-inline: var(--global-space-fixed-3);
   display: grid;
-  grid-template-columns: auto minmax(0, auto) auto;
+  grid-template-columns: auto auto;
   align-items: center;
-  justify-content: center;
-  gap: var(--global-space-fixed-2);
-  margin-block-start: var(--global-space-fixed-2);
+  justify-content: space-between;
+  pointer-events: none;
 }
 
-.image-carousel__controls [aria-disabled="true"] {
-  opacity: 0.45;
-  cursor: default;
+.image-carousel__arrows--unavailable {
+  visibility: hidden;
 }
 
 .image-carousel__pagination {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.image-carousel__page {
-  min-inline-size: 44px;
-  min-block-size: 44px;
-  padding: var(--global-space-fixed-1);
-  border: 0;
-  border-block-end: 2px solid transparent;
-  background: transparent;
-  color: var(--global-body-color);
-  font: inherit;
-  cursor: pointer;
-
-  &[aria-current="true"] {
-    border-block-end-color: var(--global-accent-color);
-    color: var(--global-title-color);
-    font-weight: bold;
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--global-accent-color);
-    outline-offset: -2px;
-  }
+  padding-inline: var(--global-space-fixed-3);
 }
 
 .image-carousel__position {
   @include visually-hidden.visually-hidden();
 }
 
-@media (forced-colors: active) {
-  .image-carousel__page[aria-current="true"] {
-    border-block-end-color: Highlight;
+.image-carousel__button {
+  background-color: rgb(0 0 0 / 65%);
+  pointer-events: auto;
+}
+
+[data-theme="dark"] .image-carousel {
+  --button-icon-hover-color: var(--global-alternate-accent-color);
+}
+
+.image-carousel__button--previous {
+  grid-column: 1;
+}
+
+.image-carousel__button--next {
+  grid-column: 2;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .image-carousel__button {
+    opacity: 0;
+    pointer-events: none;
   }
 
-  .image-carousel__track:focus-visible,
-  .image-carousel__page:focus-visible {
-    outline-color: Highlight;
-  }
-
-  .image-carousel__controls [aria-disabled="true"] {
+  .image-carousel__viewport:is(:hover, :focus-within) .image-carousel__button {
     opacity: 1;
-    color: GrayText;
+    pointer-events: auto;
+  }
+}
+
+@media (any-pointer: coarse) {
+  .image-carousel__button {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+@media (forced-colors: active) {
+  .image-carousel__track:focus-visible {
+    outline-color: Highlight;
   }
 }
 </style>

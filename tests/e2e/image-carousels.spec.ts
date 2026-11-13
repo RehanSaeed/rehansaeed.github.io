@@ -55,7 +55,8 @@ for (const width of [1440, 640, 375, 320]) {
       name: "Previous image",
       exact: true,
     });
-    await expect(previous).toHaveAttribute("aria-disabled", "true");
+    await expect(previous).toHaveCount(0);
+    await image.hover();
     await next.click();
     await expect(gallery.locator(".image-carousel__position")).toHaveText(
       "Image 2 of 3",
@@ -64,9 +65,9 @@ for (const width of [1440, 640, 375, 320]) {
     await expect(gallery.locator(".image-carousel__position")).toHaveText(
       "Image 3 of 3",
     );
-    await expect(next).toBeFocused();
-    await expect(next).toHaveAttribute("aria-disabled", "true");
-    await next.press("Enter");
+    await expect(next).toHaveCount(0);
+    await expect(track).toBeFocused();
+    await track.press("ArrowRight");
     await expect(gallery.locator(".image-carousel__position")).toHaveText(
       "Image 3 of 3",
     );
@@ -133,17 +134,25 @@ test.describe("Continuous scroll-linked motion", () => {
     await expect(
       gallery.getByRole("button", { name: "Go to image 1 of 3" }),
     ).toHaveAttribute("aria-current", "true");
+    const image = gallery.locator("img").first();
+    const bounds = await image.boundingBox();
+    expect(bounds).not.toBeNull();
+    const step = await track.evaluate((element) => {
+      const slides = element.querySelectorAll<HTMLElement>(
+        ".image-carousel__slide",
+      );
+      return slides[1]!.offsetLeft - slides[0]!.offsetLeft;
+    });
+    const x = bounds!.x + bounds!.width * 0.8;
+    const y = bounds!.y + bounds!.height * 0.3;
+    await page.mouse.move(x, y);
+    await page.mouse.down();
     const samples = [];
-    for (const progress of [0, 0.2, 0.4, 0.6, 0.8, 1]) {
-      await track.evaluate((element, value) => {
-        const slides = element.querySelectorAll<HTMLElement>(
-          ".image-carousel__slide",
-        );
-        // Hold intermediate positions: mandatory snapping would otherwise immediately settle.
-        element.classList.add("image-carousel__track--dragging");
-        element.scrollLeft =
-          (slides[1]!.offsetLeft - slides[0]!.offsetLeft) * value;
-      }, progress);
+    for (const progress of [0, 0.02, 0.2, 0.4, 0.6, 0.8, 1]) {
+      await page.mouse.move(x - step * progress, y);
+      await expect
+        .poll(() => track.evaluate((element) => element.scrollLeft))
+        .toBeCloseTo(step * progress, 0);
       await expect
         .poll(() =>
           track
@@ -167,6 +176,26 @@ test.describe("Continuous scroll-linked motion", () => {
         ),
       );
     }
+    await page.mouse.move(x - step * 0.65, y);
+    await expect
+      .poll(() => track.evaluate((element) => element.scrollLeft))
+      .toBeCloseTo(step * 0.65, 0);
+    await track.evaluate((element) => {
+      element.addEventListener(
+        "pointerup",
+        () => {
+          element.dataset.releasePosition = String(element.scrollLeft);
+        },
+        { once: true },
+      );
+    });
+    await page.mouse.up();
+    expect(
+      Number(await track.getAttribute("data-release-position")),
+    ).toBeCloseTo(step * 0.65, 0);
+    await expect
+      .poll(() => track.evaluate((element) => element.scrollLeft))
+      .toBeCloseTo(step, 0);
     expect(samples[0]![0]!.scale).toBeCloseTo(1, 2);
     expect(samples[0]![1]!.scale).toBeCloseTo(0.82, 2);
     expect(samples.at(-1)![0]!.scale).toBeCloseTo(0.82, 2);
@@ -204,6 +233,155 @@ test.describe("Continuous scroll-linked motion", () => {
       "opacity",
       "1",
     );
+  });
+});
+
+test("Overlay arrows and dot paging match the other carousel alternatives", async ({
+  page,
+}) => {
+  await page.goto("/ai-learnings-from-upgrading-my-blog/", {
+    waitUntil: "domcontentloaded",
+  });
+  const gallery = page
+    .locator(".image-carousel")
+    .filter({ has: page.locator('img[alt*="Currency Converter Pro"]') });
+  const image = gallery.locator("img").first();
+  const next = gallery.getByRole("button", { name: "Next image", exact: true });
+  const track = gallery.getByRole("group", { name: "Gallery images" });
+  const firstDot = gallery.getByRole("button", { name: "Go to image 1 of 2" });
+  const secondDot = gallery.getByRole("button", { name: "Go to image 2 of 2" });
+  await gallery.scrollIntoViewIfNeeded();
+  for (const theme of ["light", "dark"]) {
+    await page.evaluate((value) => {
+      document.documentElement.dataset.theme = value;
+    }, theme);
+    await image.hover();
+    const [picture, button] = await Promise.all([
+      image.boundingBox(),
+      next.boundingBox(),
+    ]);
+    expect(picture).not.toBeNull();
+    expect(button).not.toBeNull();
+    expect(button!.x).toBeGreaterThanOrEqual(picture!.x);
+    expect(button!.x + button!.width).toBeLessThanOrEqual(
+      picture!.x + picture!.width,
+    );
+    expect(button!.y).toBeGreaterThanOrEqual(picture!.y);
+    expect(button!.y + button!.height).toBeLessThanOrEqual(
+      picture!.y + picture!.height,
+    );
+    await expect(next).toHaveCSS("background-color", "rgba(0, 0, 0, 0.65)");
+    await expect(next).toHaveCSS("color", "rgb(255, 255, 255)");
+    await next.hover();
+    await expect(next).toHaveCSS("background-color", "rgb(255, 255, 255)");
+    await expect(next).not.toHaveCSS("color", "rgb(255, 255, 255)");
+  }
+  await expect(page.getByRole("tooltip", { name: "Next image" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("tooltip")).toBeHidden();
+  await secondDot.click();
+  await expect(secondDot).toHaveAttribute("aria-current", "true");
+  await expect(firstDot).not.toHaveAttribute("aria-current");
+  await expect(secondDot.locator("span")).toHaveCSS("width", "20px");
+  await expect(firstDot.locator("span")).toHaveCSS("width", "14px");
+  await firstDot.click();
+  await page.emulateMedia({ forcedColors: "active" });
+  await firstDot.focus();
+  await firstDot.press("Tab");
+  await expect(secondDot).toBeFocused();
+  await expect(secondDot).toHaveCSS("outline-style", "solid");
+  await expect(secondDot.locator("span")).toHaveCSS(
+    "forced-color-adjust",
+    "none",
+  );
+  await track.focus();
+  await track.press("Tab");
+  await expect(next).toBeFocused();
+});
+
+test.describe("Touch gesture tracking", () => {
+  test.use({
+    hasTouch: true,
+    viewport: { width: 375, height: 812 },
+    reducedMotion: "no-preference",
+  });
+  // eslint-disable-next-line playwright/no-skipped-test -- Firefox cannot create a hasTouch context or dispatch CDP touch gestures.
+  test.skip(
+    ({ browserName }) => browserName !== "chromium",
+    "Trusted touch injection requires Chromium's DevTools protocol.",
+  );
+
+  test("A held swipe follows the finger before settling, without blocking vertical page scrolling", async ({
+    page,
+    context,
+  }) => {
+    await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
+    const gallery = page.getByRole("region", { name: "Image gallery" });
+    const track = gallery.getByRole("group", { name: "Gallery images" });
+    await gallery.scrollIntoViewIfNeeded();
+    const image = gallery.locator("img").first();
+    const bounds = await image.boundingBox();
+    expect(bounds).not.toBeNull();
+    const x = bounds!.x + bounds!.width * 0.8;
+    const y = bounds!.y + bounds!.height * 0.3;
+    const session = await context.newCDPSession(page);
+    try {
+      await session.send("Input.dispatchTouchEvent", {
+        type: "touchStart",
+        touchPoints: [{ x, y }],
+      });
+      for (const distance of [12, 48, 96, 144, 96]) {
+        await session.send("Input.dispatchTouchEvent", {
+          type: "touchMove",
+          touchPoints: [{ x: x - distance, y }],
+        });
+        await expect
+          .poll(() => track.evaluate((element) => element.scrollLeft))
+          .toBeCloseTo(distance, 0);
+        const opacity = await track
+          .locator(".prose-image")
+          .first()
+          .evaluate((element) => Number(getComputedStyle(element).opacity));
+        expect(opacity).toBeLessThan(1);
+        expect(opacity).toBeGreaterThan(0.45);
+      }
+      await session.send("Input.dispatchTouchEvent", {
+        type: "touchEnd",
+        touchPoints: [],
+      });
+      await expect
+        .poll(() => track.evaluate((element) => element.scrollLeft))
+        .toBeLessThanOrEqual(1);
+      await expect(
+        gallery.getByRole("button", { name: "Next image" }),
+      ).toHaveCSS("opacity", "1");
+      const top = await page.evaluate(() => scrollY);
+      await session.send("Input.dispatchTouchEvent", {
+        type: "touchStart",
+        touchPoints: [{ x, y }],
+      });
+      for (const distance of [20, 50, 100]) {
+        await session.send("Input.dispatchTouchEvent", {
+          type: "touchMove",
+          touchPoints: [{ x, y: y - distance }],
+        });
+      }
+      await session.send("Input.dispatchTouchEvent", {
+        type: "touchEnd",
+        touchPoints: [],
+      });
+      await expect
+        .poll(() => page.evaluate(() => scrollY))
+        .toBeGreaterThan(top);
+      await expect
+        .poll(() => track.evaluate((element) => element.scrollLeft))
+        .toBeLessThanOrEqual(1);
+      await gallery.scrollIntoViewIfNeeded();
+      await gallery.getByRole("link").tap();
+      await expect(page).toHaveURL(/\/css-general-rules-of-thumb\/$/);
+    } finally {
+      await session.detach();
+    }
   });
 });
 
