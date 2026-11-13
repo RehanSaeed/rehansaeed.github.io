@@ -83,6 +83,7 @@ for (const width of [1440, 640, 375, 320]) {
       width: width === 320 ? 640 : 320,
       height: 700,
     });
+    await gallery.scrollIntoViewIfNeeded();
     await expect(gallery.locator(".image-carousel__position")).toHaveText(
       "Image 2 of 3",
     );
@@ -109,6 +110,7 @@ for (const width of [1440, 640, 375, 320]) {
     await expect(gallery.getByRole("link")).toBeFocused();
     await page.emulateMedia({ forcedColors: "active" });
     await track.focus();
+    await track.press("Home");
     await expect(track).toHaveCSS("outline-style", "solid");
     await expect(image).toHaveCSS("opacity", "1");
     await gallery.getByRole("button", { name: "Go to image 3 of 3" }).click();
@@ -155,12 +157,16 @@ test.describe("Continuous scroll-linked motion", () => {
             const style = getComputedStyle(image);
             return {
               opacity: Number(style.opacity),
-              scale: new DOMMatrixReadOnly(style.transform).a,
+              scale: image.getBoundingClientRect().width / image.clientWidth,
             };
           }),
         ),
       );
     }
+    expect(samples[0]![0]!.scale).toBeCloseTo(1, 2);
+    expect(samples[0]![1]!.scale).toBeCloseTo(0.82, 2);
+    expect(samples.at(-1)![0]!.scale).toBeCloseTo(0.82, 2);
+    expect(samples.at(-1)![1]!.scale).toBeCloseTo(1, 2);
     for (let index = 1; index < samples.length; index++) {
       expect(samples[index]![0]!.opacity).toBeLessThan(
         samples[index - 1]![0]!.opacity,
