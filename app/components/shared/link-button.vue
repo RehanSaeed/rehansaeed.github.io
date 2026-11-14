@@ -156,7 +156,7 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
 .link-button--tag {
   --link-button-tag-text-color: var(--global-title-color);
   --link-button-tag-point: var(--global-space-fixed-4);
-  --link-button-tag-hole-size: 0.4rem;
+  --link-button-tag-hole-size: var(--global-space-fixed-2);
   --link-button-tag-surface: var(--global-background-color);
   --link-button-tag-edge: var(--global-border-color);
   --link-button-tag-shadow: none;
@@ -201,8 +201,8 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
   }
 
   &:focus-visible {
-    outline: 3px solid var(--global-accent-color);
-    outline-offset: 4px;
+    outline: var(--global-border-width-2) solid var(--global-accent-color);
+    outline-offset: var(--global-focus-outline-offset);
   }
 
   &:active {

@@ -196,7 +196,8 @@ for (const theme of ["light", "dark"]) {
     await page.keyboard.press("Tab");
     await page.keyboard.press("Shift+Tab");
     await expect(link).toBeFocused();
-    await expect(link).toHaveCSS("outline-width", "3px");
+    await expect(link).toHaveCSS("outline-width", "2px");
+    await expect(link).toHaveCSS("outline-offset", "3px");
     await expect(link).toHaveCSS("outline-color", tokens.accent);
     await page.setViewportSize({ width: 320, height: 900 });
     expect(
@@ -271,7 +272,8 @@ for (const theme of ["light", "dark"]) {
     await page.keyboard.press("Tab");
     await page.keyboard.press("Shift+Tab");
     await expect(link).toBeFocused();
-    await expect(link).toHaveCSS("outline-width", "3px");
+    await expect(link).toHaveCSS("outline-width", "2px");
+    await expect(link).toHaveCSS("outline-offset", "3px");
     const surfaceColours = await surface.evaluate((element) => ({
       edge: getComputedStyle(element, "::before").backgroundColor,
       fill: getComputedStyle(element, "::after").backgroundColor,

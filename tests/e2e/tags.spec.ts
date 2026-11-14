@@ -168,7 +168,8 @@ for (const { theme, width, minimumRows } of [
     await page.keyboard.press("Tab");
     await postTag.focus();
     await expect(postTag).toBeFocused();
-    await expect(postTag).toHaveCSS("outline-width", "3px");
+    await expect(postTag).toHaveCSS("outline-width", "2px");
+    await expect(postTag).toHaveCSS("outline-offset", "3px");
     await expect(postTag).toHaveCSS("border-top-style", "solid");
     const postSurface = postTag.locator(".link-button__tag-surface");
     await expect(postSurface).toHaveCSS("filter", "none");
