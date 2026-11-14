@@ -13,6 +13,12 @@ on:
       - main
     types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
+    inputs:
+      diagnostic_run:
+        description: "Optional successful Build run ID: repeat fixed history/thumbnail tests against its compatible generated site, without generation."
+        type: string
+        required: false
+        default: ""
   schedule:
     - cron: "17 5 * * 1"
 
@@ -24,7 +30,7 @@ permissions:
 jobs:
   build:
     name: Generate
-    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    if: (github.event_name != 'pull_request' || !github.event.pull_request.draft) && !(github.event_name == 'workflow_dispatch' && inputs.diagnostic_run != '')
     runs-on: ubuntu-latest
     outputs:
       playwright-image: ${{ steps.playwright-image.outputs.image }}
@@ -122,7 +128,7 @@ jobs:
 
   quality:
     name: Quality
-    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
+    if: (github.event_name != 'pull_request' || !github.event.pull_request.draft) && !(github.event_name == 'workflow_dispatch' && inputs.diagnostic_run != '')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -281,9 +287,100 @@ jobs:
             test-results
           retention-days: 7
 
+  diagnostic-source:
+    name: Validate Diagnostic Source
+    if: github.event_name == 'workflow_dispatch' && inputs.diagnostic_run != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      artifact-id: ${{ steps.source.outputs.artifact-id }}
+      source-sha: ${{ steps.source.outputs.source-sha }}
+      source-event: ${{ steps.source.outputs.source-event }}
+      playwright-image: ${{ steps.source.outputs.playwright-image }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - name: Setup Node
+        uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install Without Generation
+        run: npm ci --ignore-scripts
+      - name: Validate Compatible Source
+        id: source
+        run: node scripts/browser-diagnostic.mts prepare
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DIAGNOSTIC_RUN: ${{ inputs.diagnostic_run }}
+
+  diagnostic:
+    name: Focused Diagnostic (${{ matrix.browser }})
+    if: github.event_name == 'workflow_dispatch' && inputs.diagnostic_run != ''
+    needs: diagnostic-source
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      actions: read
+    container:
+      image: ${{ matrix.browser == 'firefox' && needs.diagnostic-source.outputs.playwright-image || '' }}
+      options: --user 1001
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, firefox]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - name: Setup Node
+        uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install Without Generation
+        run: npm ci --ignore-scripts
+      - name: Download Exact Browser Site
+        uses: actions/download-artifact@v8.0.2
+        with:
+          artifact-ids: ${{ needs.diagnostic-source.outputs.artifact-id }}
+          run-id: ${{ inputs.diagnostic_run }}
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/diagnostic-artifact
+          merge-multiple: true
+      - name: Verify And Extract Compatible Site
+        run: node scripts/browser-diagnostic.mts extract
+        env:
+          DIAGNOSTIC_SOURCE_SHA: ${{ needs.diagnostic-source.outputs.source-sha }}
+          DIAGNOSTIC_SOURCE_EVENT: ${{ needs.diagnostic-source.outputs.source-event }}
+      - name: Repeat Fixed Regression Cases
+        run: >-
+          npx playwright test post-view-transition.spec.ts tag-view-transition.spec.ts
+          --grep 'Captures the warmed hero after deep-scroll restoration using mouse$|Preserves history scroll restoration and hash navigation without continuity$|Animates the (prev|next) article thumbnail without naming the current hero$'
+          --project=${{ matrix.browser }}
+          --repeat-each=10 --retries=0 --workers=1 --max-failures=1 --trace=retain-on-failure
+        env:
+          TZ: UTC
+      - name: Upload Diagnostic Evidence
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: focused-diagnostic-${{ matrix.browser }}-${{ github.run_attempt }}
+          path: |
+            playwright-report
+            test-results
+          retention-days: 7
+
   checks:
     name: Build
-    if: always() && (github.event_name != 'pull_request' || !github.event.pull_request.draft)
+    if: always() && (github.event_name != 'pull_request' || !github.event.pull_request.draft) && !(github.event_name == 'workflow_dispatch' && inputs.diagnostic_run != '')
     needs: [build, quality, lighthouse, test]
     runs-on: ubuntu-latest
     steps:
