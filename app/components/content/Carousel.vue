@@ -1,14 +1,14 @@
 <template>
   <section
-    class="image-carousel"
-    :class="{ 'image-carousel--interactive': isInteractive }"
+    class="carousel"
+    :class="{ 'carousel--interactive': isInteractive }"
     aria-label="Image gallery">
-    <div class="image-carousel__viewport">
+    <div class="carousel__viewport">
       <div
         :id="trackId"
         ref="track"
-        class="image-carousel__track"
-        :class="{ 'image-carousel__track--dragging': isDragging }"
+        class="carousel__track"
+        :class="{ 'carousel__track--dragging': isDragging }"
         role="group"
         aria-label="Gallery images"
         tabindex="0"
@@ -17,7 +17,7 @@
       </div>
       <u-carousel-arrows
         v-if="isInteractive"
-        class="image-carousel__arrows"
+        class="carousel__arrows"
         :count="count"
         :current-index="currentIndex"
         :controls="trackId"
@@ -27,12 +27,12 @@
     </div>
     <u-carousel-pagination
       v-if="isInteractive"
-      class="image-carousel__pagination"
+      class="carousel__pagination"
       :count="count"
       :current-index="currentIndex"
       :controls="trackId"
       @select="navigateToImage" />
-    <p class="image-carousel__position" aria-live="polite" aria-atomic="true">
+    <p class="carousel__position" aria-live="polite" aria-atomic="true">
       <template v-if="isInteractive"
         >Image {{ currentIndex + 1 }} of {{ count }}</template
       >
@@ -189,7 +189,7 @@ const onFocus = (event: FocusEvent) => {
   if (drag || !(event.target instanceof Element) || !track.value) {
     return;
   }
-  const slide = event.target.closest(".image-carousel__slide");
+  const slide = event.target.closest(".carousel__slide");
   const index = Array.from(track.value.children).findIndex(
     (child) => child === slide,
   );
@@ -352,13 +352,13 @@ onBeforeUnmount(() => {
 <style lang="scss">
 @use "~/assets/style/abstracts/visually-hidden";
 
-.image-carousel {
+.carousel {
   container-type: inline-size;
   margin-block: var(--global-space-fixed-5);
 }
 
-.image-carousel__viewport {
-  --image-carousel-slide-size: calc(100cqi + (2 * var(--global-space-fluid-6)));
+.carousel__viewport {
+  --carousel-slide-size: calc(100cqi + (2 * var(--global-space-fluid-6)));
 
   position: relative;
   isolation: isolate;
@@ -366,11 +366,11 @@ onBeforeUnmount(() => {
   margin-inline: calc(50% - 50vw);
 }
 
-.image-carousel__track {
+.carousel__track {
   position: relative;
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: var(--image-carousel-slide-size);
+  grid-auto-columns: var(--carousel-slide-size);
   align-items: start;
   gap: var(--global-space-fixed-3);
   overflow-x: auto;
@@ -378,7 +378,7 @@ onBeforeUnmount(() => {
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   padding-block: var(--global-space-fixed-2);
-  padding-inline: calc((100vw - var(--image-carousel-slide-size)) / 2);
+  padding-inline: calc((100vw - var(--carousel-slide-size)) / 2);
 
   &::-webkit-scrollbar {
     display: none;
@@ -390,17 +390,17 @@ onBeforeUnmount(() => {
   }
 }
 
-.image-carousel__track img {
+.carousel__track img {
   cursor: grab;
 }
 
 // Native snapping can settle a scripted pointer move before the gesture ends.
-.image-carousel--interactive .image-carousel__track {
+.carousel--interactive .carousel__track {
   scroll-snap-type: none;
   touch-action: pan-y pinch-zoom;
 }
 
-.image-carousel__track--dragging {
+.carousel__track--dragging {
   scroll-snap-type: none;
   user-select: none;
 
@@ -409,7 +409,7 @@ onBeforeUnmount(() => {
   }
 }
 
-.image-carousel__slide {
+.carousel__slide {
   min-inline-size: 0;
   scroll-snap-align: center;
   scroll-snap-stop: always;
@@ -426,8 +426,8 @@ onBeforeUnmount(() => {
   }
 }
 
-.post__content .image-carousel__slide > p,
-.post__content .image-carousel__slide > figure > p {
+.post__content .carousel__slide > p,
+.post__content .carousel__slide > figure > p {
   position: relative;
   inline-size: fit-content;
   max-inline-size: 100%;
@@ -435,46 +435,43 @@ onBeforeUnmount(() => {
   margin-inline: auto;
 }
 
-.post__content .image-carousel__slide .prose-image {
+.post__content .carousel__slide .prose-image {
   inline-size: 100%;
   margin-inline: 0;
 }
 
-.image-carousel__arrows {
+.carousel__arrows {
   position: absolute;
   inset-block: var(--global-space-fixed-2);
   inset-inline: max(
     var(--global-space-fixed-3),
-    calc(
-      (100% - var(--image-carousel-slide-size)) / 2 +
-        var(--global-space-fixed-3)
-    )
+    calc((100% - var(--carousel-slide-size)) / 2 + var(--global-space-fixed-3))
   );
   z-index: 20;
 }
 
-.image-carousel .image-carousel__pagination {
+.carousel .carousel__pagination {
   padding-inline: var(--global-space-fixed-3);
 }
 
-.image-carousel__position {
+.carousel__position {
   @include visually-hidden.visually-hidden();
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .image-carousel__viewport:has(img:hover, .carousel-arrows__button:hover),
-  .image-carousel:has(:focus-visible) {
+  .carousel__viewport:has(img:hover, .carousel-arrows__button:hover),
+  .carousel:has(:focus-visible) {
     --carousel-arrows-opacity: 1;
     --carousel-arrows-pointer-events: auto;
   }
 
-  .image-carousel:has(:focus-visible) {
+  .carousel:has(:focus-visible) {
     --carousel-arrows-transition: none;
   }
 }
 
 @media (forced-colors: active) {
-  .image-carousel__track:focus-visible {
+  .carousel__track:focus-visible {
     outline-color: Highlight;
   }
 }

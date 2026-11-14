@@ -65,11 +65,11 @@ for (const width of [1440, 640, 375, 320]) {
     ).toHaveAttribute("aria-disabled", "true");
     await image.hover();
     await next.click();
-    await expect(gallery.locator(".image-carousel__position")).toHaveText(
+    await expect(gallery.locator(".carousel__position")).toHaveText(
       "Image 2 of 3",
     );
     await next.click();
-    await expect(gallery.locator(".image-carousel__position")).toHaveText(
+    await expect(gallery.locator(".carousel__position")).toHaveText(
       "Image 3 of 3",
     );
     await expect(next).toHaveCount(0);
@@ -82,16 +82,16 @@ for (const width of [1440, 640, 375, 320]) {
     ).toHaveAttribute("aria-disabled", "true");
     await expect(track).toBeFocused();
     await track.press("ArrowRight");
-    await expect(gallery.locator(".image-carousel__position")).toHaveText(
+    await expect(gallery.locator(".carousel__position")).toHaveText(
       "Image 3 of 3",
     );
     await track.focus();
     await track.press("Home");
-    await expect(gallery.locator(".image-carousel__position")).toHaveText(
+    await expect(gallery.locator(".carousel__position")).toHaveText(
       "Image 1 of 3",
     );
     await track.press("ArrowRight");
-    await expect(gallery.locator(".image-carousel__position")).toHaveText(
+    await expect(gallery.locator(".carousel__position")).toHaveText(
       "Image 2 of 3",
     );
     await page.setViewportSize({
@@ -99,7 +99,7 @@ for (const width of [1440, 640, 375, 320]) {
       height: 700,
     });
     await gallery.scrollIntoViewIfNeeded();
-    await expect(gallery.locator(".image-carousel__position")).toHaveText(
+    await expect(gallery.locator(".carousel__position")).toHaveText(
       "Image 2 of 3",
     );
     await expect(gallery.locator("img").nth(1)).toBeInViewport();
@@ -115,11 +115,11 @@ for (const width of [1440, 640, 375, 320]) {
       )
       .toBeLessThanOrEqual(1);
     await track.press("End");
-    await expect(gallery.locator(".image-carousel__position")).toHaveText(
+    await expect(gallery.locator(".carousel__position")).toHaveText(
       "Image 3 of 3",
     );
     await gallery.getByRole("link").focus();
-    await expect(gallery.locator(".image-carousel__position")).toHaveText(
+    await expect(gallery.locator(".carousel__position")).toHaveText(
       "Image 1 of 3",
     );
     await expect(gallery.getByRole("link")).toBeFocused();
@@ -129,7 +129,7 @@ for (const width of [1440, 640, 375, 320]) {
     await expect(track).toHaveCSS("outline-style", "solid");
     await expect(image).toHaveCSS("opacity", "1");
     await gallery.getByRole("button", { name: "Go to image 3 of 3" }).click();
-    await expect(gallery.locator(".image-carousel__position")).toHaveText(
+    await expect(gallery.locator(".carousel__position")).toHaveText(
       "Image 3 of 3",
     );
   });
@@ -152,9 +152,7 @@ test.describe("Continuous scroll-linked motion", () => {
     const bounds = await image.boundingBox();
     expect(bounds).not.toBeNull();
     const step = await track.evaluate((element) => {
-      const slides = element.querySelectorAll<HTMLElement>(
-        ".image-carousel__slide",
-      );
+      const slides = element.querySelectorAll<HTMLElement>(".carousel__slide");
       return slides[1]!.offsetLeft - slides[0]!.offsetLeft;
     });
     const x = bounds!.x + bounds!.width * 0.95;
@@ -307,7 +305,7 @@ test.describe("Continuous scroll-linked motion", () => {
     page,
   }) => {
     await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
-    const gallery = page.locator(".image-carousel").first();
+    const gallery = page.locator(".carousel").first();
     const shell = gallery.locator(".carousel-arrows__shell").last();
     const image = gallery.locator("img").first();
     const next = gallery.getByRole("button", {
@@ -328,7 +326,7 @@ test.describe("Continuous scroll-linked motion", () => {
         "pointerenter",
         () => {
           element
-            .closest(".image-carousel")!
+            .closest(".carousel")!
             .querySelector(".carousel-arrows__shell:last-child")!
             .getAnimations()
             .forEach((animation) => {
@@ -443,7 +441,7 @@ test("Cover Flow arrow shells and shared paging retain their colours, inset circ
     waitUntil: "domcontentloaded",
   });
   const gallery = page
-    .locator(".image-carousel")
+    .locator(".carousel")
     .filter({ has: page.locator('img[alt*="Currency Converter Pro"]') });
   const image = gallery.locator("img").first();
   const next = gallery.getByRole("button", { name: "Next image", exact: true });
@@ -638,7 +636,7 @@ test("Neighbour preview is actually painted beyond the article card, not merely 
           return (
             x > article.right &&
             x < bounds.right &&
-            Boolean(document.elementFromPoint(x, y)?.closest(".image-carousel"))
+            Boolean(document.elementFromPoint(x, y)?.closest(".carousel"))
           );
         }),
     )
@@ -660,12 +658,12 @@ test("Mouse dragging a linked image scrolls without opening its link, but a norm
   await page.mouse.down();
   await page.mouse.move(x - bounds!.width * 0.8, y, { steps: 12 });
   await page.mouse.up();
-  await expect(gallery.locator(".image-carousel__position")).toHaveText(
+  await expect(gallery.locator(".carousel__position")).toHaveText(
     "Image 2 of 3",
   );
   await expect(page).toHaveURL(/\/cheat-sheet\/$/);
   await gallery.getByRole("button", { name: "Go to image 1 of 3" }).click();
-  await expect(gallery.locator(".image-carousel__position")).toHaveText(
+  await expect(gallery.locator(".carousel__position")).toHaveText(
     "Image 1 of 3",
   );
   await gallery.getByRole("link").click();
@@ -679,7 +677,7 @@ test("Native horizontal scrolling preserves the actual article's adjacent screen
     waitUntil: "domcontentloaded",
   });
   const gallery = page
-    .locator(".image-carousel")
+    .locator(".carousel")
     .filter({ has: page.locator('img[alt*="Currency Converter Pro"]') });
   await expect(gallery.locator("img")).toHaveCount(2);
   await expect(gallery.locator("img").first()).toHaveAttribute(
@@ -689,11 +687,11 @@ test("Native horizontal scrolling preserves the actual article's adjacent screen
   await gallery.scrollIntoViewIfNeeded();
   await gallery.getByRole("group", { name: "Gallery images" }).hover();
   await page.mouse.wheel(1200, 0);
-  await expect(gallery.locator(".image-carousel__position")).toHaveText(
+  await expect(gallery.locator(".carousel__position")).toHaveText(
     "Image 2 of 2",
   );
   await expect(
-    page.locator('.image-carousel img[src*="about-page-experiments"]'),
+    page.locator('.carousel img[src*="about-page-experiments"]'),
   ).toHaveCount(0);
 });
 

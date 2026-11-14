@@ -62,7 +62,7 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
 .post {
   overflow: hidden;
 
-  &:has(.image-carousel) {
+  &:has(.carousel) {
     overflow: visible;
   }
 }

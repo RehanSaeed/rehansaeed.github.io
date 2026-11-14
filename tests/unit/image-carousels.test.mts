@@ -29,12 +29,12 @@ await test("groups adjacent images and preserves figure captions and image links
     groupImageCarousels(nodes);
     assert.deepEqual(nodes, [
         [
-            "image-carousel",
+            "carousel",
             { count: 2 },
-            ["div", { class: "image-carousel__slide" }, first],
+            ["div", { class: "carousel__slide" }, first],
             [
                 "div",
-                { class: "image-carousel__slide" },
+                { class: "carousel__slide" },
                 [
                     "figure",
                     {},
@@ -60,7 +60,7 @@ await test("splits consecutive images in one paragraph without swallowing prose"
     ];
     groupImageCarousels(nodes);
     assert.equal(nodes.length, 3);
-    assert.equal(nodes[0]?.[0], "image-carousel");
+    assert.equal(nodes[0]?.[0], "carousel");
     assert.deepEqual(nodes[1], [
         "p",
         {},
