@@ -281,6 +281,12 @@ To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>`
 <figcaption>The third gallery image demonstrates the last endpoint.</figcaption>
 </figure>
 
+## Images Without Captions
+
+![A code illustration in the first image-only gallery slide.](./images/Code-1600x900.jpg)
+
+![A code illustration in the second image-only gallery slide.](./images/Code-1600x900.jpg)
+
 # Embed Videos
 
 ```html

@@ -13,7 +13,7 @@ for (const width of [1440, 640, 375, 320]) {
   }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
-    const gallery = page.getByRole("region", { name: "Image gallery" });
+    const gallery = page.getByRole("region", { name: "Image gallery" }).first();
     const track = gallery.getByRole("group", { name: "Gallery images" });
     await expect(gallery.locator("figure")).toHaveCount(3);
     await expect(gallery.locator("figcaption").first()).toHaveText(
@@ -142,7 +142,7 @@ test.describe("Continuous scroll-linked motion", () => {
     page,
   }) => {
     await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
-    const gallery = page.getByRole("region", { name: "Image gallery" });
+    const gallery = page.getByRole("region", { name: "Image gallery" }).first();
     const track = gallery.getByRole("group", { name: "Gallery images" });
     await gallery.scrollIntoViewIfNeeded();
     await expect(
@@ -307,7 +307,7 @@ test.describe("Continuous scroll-linked motion", () => {
     page,
   }) => {
     await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
-    const gallery = page.locator(".image-carousel");
+    const gallery = page.locator(".image-carousel").first();
     const shell = gallery.locator(".carousel-arrows__shell").last();
     const image = gallery.locator("img").first();
     const next = gallery.getByRole("button", {
@@ -533,7 +533,7 @@ test.describe("Touch gesture tracking", () => {
     context,
   }) => {
     await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
-    const gallery = page.getByRole("region", { name: "Image gallery" });
+    const gallery = page.getByRole("region", { name: "Image gallery" }).first();
     const track = gallery.getByRole("group", { name: "Gallery images" });
     await gallery.scrollIntoViewIfNeeded();
     const image = gallery.locator("img").first();
@@ -617,7 +617,7 @@ test("Neighbour preview is actually painted beyond the article card, not merely 
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
-  const gallery = page.getByRole("region", { name: "Image gallery" });
+  const gallery = page.getByRole("region", { name: "Image gallery" }).first();
   await gallery.scrollIntoViewIfNeeded();
   await expect(
     gallery.getByRole("button", { name: "Go to image 1 of 3" }),
@@ -649,7 +649,7 @@ test("Mouse dragging a linked image scrolls without opening its link, but a norm
   page,
 }) => {
   await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
-  const gallery = page.getByRole("region", { name: "Image gallery" });
+  const gallery = page.getByRole("region", { name: "Image gallery" }).first();
   await gallery.scrollIntoViewIfNeeded();
   const image = gallery.locator("img").first();
   const bounds = await image.boundingBox();
@@ -697,6 +697,37 @@ test("Native horizontal scrolling preserves the actual article's adjacent screen
   ).toHaveCount(0);
 });
 
+test("Consecutive plain images form a separate carousel without captions or links", async ({
+  page,
+}) => {
+  await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
+  const galleries = page.getByRole("region", { name: "Image gallery" });
+  await expect(galleries).toHaveCount(2);
+  const gallery = galleries.filter({
+    has: page.getByRole("img", {
+      name: "A code illustration in the first image-only gallery slide.",
+      exact: true,
+    }),
+  });
+  await expect(gallery.locator("img")).toHaveCount(2);
+  await expect(gallery.locator("figure, figcaption, a")).toHaveCount(0);
+  await gallery.scrollIntoViewIfNeeded();
+  await gallery.locator("img").first().hover();
+  await gallery
+    .getByRole("button", { name: "Next image", exact: true })
+    .click();
+  await expect(
+    gallery.getByRole("button", { name: "Go to image 2 of 2" }),
+  ).toHaveAttribute("aria-current", "true");
+  await expect(
+    gallery.getByRole("button", { name: "Next image", exact: true }),
+  ).toHaveCount(0);
+  await gallery.getByRole("button", { name: "Go to image 1 of 2" }).click();
+  await expect(
+    gallery.getByRole("button", { name: "Go to image 1 of 2" }),
+  ).toHaveAttribute("aria-current", "true");
+});
+
 test.describe("Progressive enhancement", () => {
   test.use({ javaScriptEnabled: false });
 
@@ -704,7 +735,7 @@ test.describe("Progressive enhancement", () => {
     page,
   }) => {
     await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
-    const gallery = page.getByRole("region", { name: "Image gallery" });
+    const gallery = page.getByRole("region", { name: "Image gallery" }).first();
     await expect(gallery.locator("img")).toHaveCount(3);
     await expect(gallery.locator("figcaption")).toHaveCount(3);
     await expect(gallery.getByRole("link")).toHaveAttribute(
@@ -719,5 +750,12 @@ test.describe("Progressive enhancement", () => {
       "opacity",
       "1",
     );
+    const plainGallery = page
+      .getByRole("region", { name: "Image gallery" })
+      .nth(1);
+    await expect(plainGallery.locator("img")).toHaveCount(2);
+    await expect(
+      plainGallery.locator("figure, figcaption, a, button"),
+    ).toHaveCount(0);
   });
 });
