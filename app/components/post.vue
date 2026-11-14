@@ -77,6 +77,9 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
 }
 
 .post__content {
+  --content-video-inline-size: calc(100% + (2 * var(--global-space-fluid-6)));
+  --content-video-margin-inline: var(--global-space-fluid--6);
+
   > h2:first-child {
     margin-block-start: 0;
   }
@@ -107,18 +110,11 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
     }
   }
 
-  video,
-  .prose-video {
+  video {
     display: block;
     inline-size: calc(100% + (2 * var(--global-space-fluid-6)));
     margin-inline: var(--global-space-fluid--6);
     max-inline-size: none;
-  }
-
-  .prose-video__media {
-    inline-size: 100%;
-    max-inline-size: 100%;
-    margin-inline: 0;
   }
 
   figure {

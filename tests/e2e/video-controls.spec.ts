@@ -553,6 +553,11 @@ test("Full-width controls remain contained with large touch targets in both them
         const mediaBounds = element
           .closest(".prose-video")!
           .getBoundingClientRect();
+        const postBounds = element.closest(".post")!.getBoundingClientRect();
+        const videoBounds = element
+          .closest(".prose-video")!
+          .querySelector("video")!
+          .getBoundingClientRect();
         const playbackBounds = element
           .querySelector(".prose-video__playback button")!
           .getBoundingClientRect();
@@ -581,6 +586,14 @@ test("Full-width controls remain contained with large touch targets in both them
           right: bounds.right,
           overflow: element.scrollWidth > element.clientWidth,
           height: bounds.height,
+          fullBleedOffsets: [
+            mediaBounds.left - postBounds.left,
+            postBounds.right - mediaBounds.right,
+          ],
+          mediaOffsets: [
+            videoBounds.left - mediaBounds.left,
+            mediaBounds.right - videoBounds.right,
+          ],
           trackTop: progressBounds.top,
           volumeGap:
             volumeBounds?.width && muteBounds
@@ -659,6 +672,12 @@ test("Full-width controls remain contained with large touch targets in both them
       expect(layout.right).toBeLessThanOrEqual(width);
       expect(layout.overflow).toBe(false);
       expect(layout.targets).toBe(true);
+      for (const offset of [
+        ...layout.fullBleedOffsets,
+        ...layout.mediaOffsets,
+      ]) {
+        expect(offset).toBeCloseTo(0, 3);
+      }
       for (const face of layout.toolbarFaces) {
         for (const dimension of face.target) {
           expect(dimension).toBeCloseTo(44, 3);
@@ -1093,6 +1112,16 @@ test("Fullscreen retains the custom wrapper", async ({ page, baseURL }) => {
       ),
     )
     .toBe(true);
+  const wrapper = page.locator(".prose-video");
+  await expect(wrapper).toHaveCSS("margin-inline-start", "0px");
+  await expect(wrapper).toHaveCSS("margin-inline-end", "0px");
+  await expect
+    .poll(() =>
+      wrapper.evaluate((element) =>
+        Math.abs(element.getBoundingClientRect().width - innerWidth),
+      ),
+    )
+    .toBeLessThan(1);
   await player
     .getByRole("button", { name: "Exit fullscreen", exact: true })
     .click();

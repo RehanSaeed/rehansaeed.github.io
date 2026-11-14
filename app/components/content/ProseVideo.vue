@@ -511,16 +511,19 @@ watch(controlsHidden, positionCaptions);
   --button-icon-disabled-color: rgb(255 255 255 / 65%);
   --button-icon-disabled-background: rgb(255 255 255 / 15%);
 
+  display: block;
+  inline-size: var(--content-video-inline-size, 100%);
+  max-inline-size: none;
+  margin-inline: var(--content-video-margin-inline, 0);
+
   position: relative;
   container-type: inline-size;
 
   .prose-video__media {
     display: block;
     block-size: auto;
-  }
-
-  .post__content &:fullscreen {
     inline-size: 100%;
+    max-inline-size: 100%;
     margin-inline: 0;
   }
 
