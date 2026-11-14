@@ -178,7 +178,7 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
   border-radius: 0;
   border-start-end-radius: var(--global-border-radius);
   border-end-end-radius: var(--global-border-radius);
-  padding: 0.35rem var(--global-space-fixed-3);
+  padding: var(--global-space-fixed-2) var(--global-space-fixed-3);
   padding-inline-start: calc(
     var(--link-button-tag-point) + var(--global-space-fixed-4)
   );
