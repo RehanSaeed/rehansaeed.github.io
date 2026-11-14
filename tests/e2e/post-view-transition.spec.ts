@@ -756,6 +756,17 @@ test.describe("Bounded card-to-article hero continuity", () => {
       await link.locator("img").evaluate((image) => {
         image.scrollIntoView({ block: "center", behavior: "instant" });
       });
+      // Firefox can reject decode() before a lazy image's request has started.
+      await expect
+        .poll(() =>
+          link
+            .locator("img")
+            .evaluate(
+              (image: HTMLImageElement) =>
+                image.complete && image.naturalWidth > 0,
+            ),
+        )
+        .toBe(true);
       await link
         .locator("img")
         .evaluate((image: HTMLImageElement) => image.decode());

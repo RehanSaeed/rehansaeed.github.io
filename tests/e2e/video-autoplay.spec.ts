@@ -19,6 +19,10 @@ const openArticle = async (page: Page, baseURL: string | undefined) => {
   await page.goto("/ai-learnings-from-upgrading-my-blog/", {
     waitUntil: "load",
   });
+  // Nuxt's initial router scroll can run after load and undo an earlier scroll.
+  await expect(
+    page.getByRole("button", { name: "Open search", exact: true }),
+  ).toBeEnabled();
   return page.getByLabel(videoLabel);
 };
 
