@@ -170,14 +170,17 @@ for (const { theme, width, minimumRows } of [
     await expect(postTag).toBeFocused();
     await expect(postTag).toHaveCSS("outline-width", "2px");
     await expect(postTag).toHaveCSS("outline-offset", "3px");
-    await expect(postTag).toHaveCSS("border-top-style", "solid");
     const postSurface = postTag.locator(".link-button__tag-surface");
     await expect(postSurface).toHaveCSS("filter", "none");
     const colours = await postSurface.evaluate((element) => ({
-      edge: getComputedStyle(element, "::before").backgroundColor,
+      edge: getComputedStyle(element, "::before").backgroundImage,
       fill: getComputedStyle(element, "::after").backgroundColor,
+      text: getComputedStyle(element).color,
     }));
-    expect(colours.edge).not.toBe(colours.fill);
+    expect(colours.edge).toBe(
+      `linear-gradient(${colours.text}, ${colours.text}), none`,
+    );
+    expect(colours.text).not.toBe(colours.fill);
     await page.keyboard.press("Enter");
     await expect(page).toHaveURL(tagPath(name));
     await expect(
