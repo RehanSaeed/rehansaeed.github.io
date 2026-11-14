@@ -176,8 +176,8 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
   min-block-size: calc(var(--global-space-fixed-3) * 3);
   border: var(--global-border-width-1) solid transparent;
   border-radius: 0;
-  border-start-end-radius: 0.4rem;
-  border-end-end-radius: 0.4rem;
+  border-start-end-radius: var(--global-border-radius);
+  border-end-end-radius: var(--global-border-radius);
   padding: 0.35rem var(--global-space-fixed-3);
   padding-inline-start: calc(
     var(--link-button-tag-point) + var(--global-space-fixed-4)
