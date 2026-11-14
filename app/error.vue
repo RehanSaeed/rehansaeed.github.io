@@ -7,7 +7,7 @@
 
       <u-card class="not-found__content">
         <p>Didn't find what you were looking for?</p>
-        <u-link-button bordered to="/">Go Home</u-link-button>
+        <u-link-button variant="secondary" to="/">Go Home</u-link-button>
       </u-card>
     </div>
   </NuxtLayout>

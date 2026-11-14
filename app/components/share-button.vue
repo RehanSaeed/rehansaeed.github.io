@@ -11,23 +11,23 @@
       @close="onClose"
       class="share-dialogue">
       <div class="share-dialogue__links">
-        <u-link-button bordered :href="facebookUrl" @click="onClose">
+        <u-link-button variant="secondary" :href="facebookUrl" @click="onClose">
           <u-icon name="fa-brands:facebook" inline />
           Facebook
         </u-link-button>
-        <u-link-button bordered :href="twitterUrl" @click="onClose">
+        <u-link-button variant="secondary" :href="twitterUrl" @click="onClose">
           <u-icon name="fa-brands:twitter" inline />
           Twitter
         </u-link-button>
-        <u-link-button bordered :href="redditUrl" @click="onClose">
+        <u-link-button variant="secondary" :href="redditUrl" @click="onClose">
           <u-icon name="fa-brands:reddit" inline />
           Reddit
         </u-link-button>
-        <u-link-button bordered :href="linkedinUrl" @click="onClose">
+        <u-link-button variant="secondary" :href="linkedinUrl" @click="onClose">
           <u-icon name="fa-brands:linkedin" inline />
           LinkedIn
         </u-link-button>
-        <u-link-button bordered :href="mailUrl" @click="onClose">
+        <u-link-button variant="secondary" :href="mailUrl" @click="onClose">
           <u-icon name="fa-regular:envelope" inline />
           Email
         </u-link-button>
