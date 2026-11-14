@@ -1,4 +1,6 @@
-export default defineNuxtPlugin((nuxtApp) => {
+import type { NuxtApp } from "#app";
+
+const setupPostViewTransition = (nuxtApp: NuxtApp): void => {
   if (typeof document.startViewTransition !== "function") {
     return;
   }
@@ -60,7 +62,10 @@ export default defineNuxtPlugin((nuxtApp) => {
     !reducedMotion.matches &&
     !forcedColors.matches &&
     !document.hidden &&
-    !document.querySelector('dialog[open], [aria-modal="true"]');
+    ![...document.querySelectorAll('dialog[open], [aria-modal="true"]')].some(
+      (modal) =>
+        !modal.matches("dialog.search-dialogue") || !modal.contains(link),
+    );
 
   const findSource = (link: HTMLAnchorElement) => {
     if (link.hasAttribute("data-tag-transition-link")) {
@@ -327,4 +332,12 @@ export default defineNuxtPlugin((nuxtApp) => {
   if (import.meta.hot) {
     import.meta.hot.dispose(dispose);
   }
+};
+
+export default defineNuxtPlugin({
+  name: "post-view-transition",
+  // Prepare snapshots before Nuxt releases its page:finish transition barrier.
+  enforce: "pre",
+  dependsOn: ["nuxt:router"],
+  setup: setupPostViewTransition,
 });

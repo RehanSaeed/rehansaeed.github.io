@@ -24,6 +24,72 @@ const createHarness = (supported = true) => {
     const hotDispose: Array<() => void> = [];
     const timers = new Map<number, () => void>();
     const classes = new Set<string>();
+    const sourceClasses = new Set<string>();
+    const targetClasses = new Set<string>();
+    const body = new Set<FakeElement>();
+    const head = new Set<FakeElement>();
+    const classList = (values: Set<string>) => ({
+        add: (name: string) => values.add(name),
+        remove: (name: string) => values.delete(name),
+    });
+    class FakeElement {
+        dataset: Record<string, string> = {};
+        className = "";
+        classList = classList(new Set<string>());
+        complete = true;
+        naturalWidth = 1600;
+        src = "";
+        currentSrc = "/images/hero.avif";
+        alt = "";
+        textContent = "";
+        setAttribute() {}
+        remove() {
+            body.delete(this);
+            head.delete(this);
+        }
+        getBoundingClientRect() {
+            return {
+                left: 40,
+                top: 100,
+                right: 168,
+                bottom: 172,
+                width: 128,
+                height: 72,
+            };
+        }
+    }
+    const sourceImage = new FakeElement();
+    sourceImage.classList = classList(sourceClasses);
+    const target = new FakeElement();
+    target.classList = classList(targetClasses);
+    let focusCount = 0;
+    const heading = {
+        focus: () => {
+            focusCount++;
+        },
+    };
+    const card = {
+        dataset: { postHero: "/images/hero.jpg", postPermalink: "/article/" },
+        querySelector: () => sourceImage,
+    };
+    let modalOpen = true;
+    let isSearchDialog = true;
+    const modal = {
+        matches: () => isSearchDialog,
+        contains: () => true,
+    };
+    const link = Object.assign(new FakeElement(), {
+        href: "https://example.com/article/",
+        pathname: "/article/",
+        target: "",
+        hasAttribute: () => false,
+        closest: (selector: string) =>
+            selector === "[data-view-transition-source]" ? card : modal,
+    });
+    const clickTarget = Object.assign(new FakeElement(), {
+        closest: () => link,
+    });
+    const currentRoute = { value: { path: "/", fullPath: "/" } };
     let unregisters = 0;
     let skips = 0;
     let finish = () => {};
@@ -46,14 +112,26 @@ const createHarness = (supported = true) => {
     const document = Object.assign(new EventTarget(), {
         startViewTransition: supported ? () => {} : undefined,
         documentElement: {
-            classList: {
-                remove: (name: string) => classes.delete(name),
-            },
+            classList: classList(classes),
         },
         hidden: false,
+        body: { append: (element: FakeElement) => body.add(element) },
+        head: { append: (element: FakeElement) => head.add(element) },
+        createElement: () => new FakeElement(),
+        querySelectorAll: () => (modalOpen ? [modal] : []),
+        querySelector: () => ({
+            dataset: card.dataset,
+            querySelector: (selector: string) =>
+                selector === "img[data-view-transition-image]"
+                    ? target
+                    : heading,
+        }),
     });
     const media = [new EventTarget(), new EventTarget()];
     const window = Object.assign(new EventTarget(), {
+        innerWidth: 1280,
+        innerHeight: 1000,
+        scrollTo: () => {},
         matchMedia: (query: string) =>
             media[query.includes("reduced-motion") ? 0 : 1],
     });
@@ -61,9 +139,16 @@ const createHarness = (supported = true) => {
     // Evaluate the actual plugin with isolated Nuxt/browser owners.
     runInNewContext(source, {
         AbortController,
+        Element: FakeElement,
+        HTMLImageElement: FakeElement,
         document,
         window,
-        location: { pathname: "/", search: "", hash: "" },
+        location: {
+            origin: "https://example.com",
+            pathname: "/",
+            search: "",
+            hash: "",
+        },
         setTimeout: (callback: () => void) => {
             const id = timers.size + 1;
             timers.set(id, callback);
@@ -71,11 +156,12 @@ const createHarness = (supported = true) => {
         },
         clearTimeout: (id: number) => timers.delete(id),
         useRouter: () => ({
+            currentRoute,
             beforeEach: registerGuard,
             afterEach: registerGuard,
             onError: registerGuard,
         }),
-        defineNuxtPlugin: (setup: (app: unknown) => void) => {
+        defineNuxtPlugin: ({ setup }: { setup: (app: unknown) => void }) => {
             setup({
                 hook: (
                     name: string,
@@ -114,6 +200,28 @@ const createHarness = (supported = true) => {
         hotDispose,
         timers,
         classes,
+        sourceClasses,
+        targetClasses,
+        body,
+        head,
+        currentRoute,
+        activate: (modified = false) => {
+            const event = Object.assign(new Event("click"), {
+                button: 0,
+                ctrlKey: modified,
+            });
+            Object.defineProperty(event, "target", { value: clickTarget });
+            document.dispatchEvent(event);
+        },
+        closeModal: () => {
+            modalOpen = false;
+        },
+        otherModal: () => {
+            isSearchDialog = false;
+        },
+        get focusCount() {
+            return focusCount;
+        },
         transition,
         finish,
         interrupt,
@@ -222,3 +330,63 @@ await test("Fragment destinations disable the native transition policy", () => {
     assert.equal(route.meta.viewTransition.enabled, false);
     app.unmount[0]!();
 });
+
+await test("Search names its real image through the old snapshot, then cleans up", async () => {
+    const app = createHarness();
+    app.activate();
+    assert.equal(app.body.size, 0);
+    assert.equal(app.head.size, 0);
+    assert.ok(app.sourceClasses.has("post-view-transition__hero"));
+    assert.ok(app.classes.has("post-view-transition"));
+    app.closeModal();
+    const [beforeEach] = [...app.guards];
+    beforeEach!({ fullPath: "/article/", hash: "", meta: {} });
+    app.hooks.get("page:view-transition:start")!(app.transition);
+    app.currentRoute.value = { path: "/article/", fullPath: "/article/" };
+    app.hooks.get("page:finish")!();
+    assert.equal(app.body.size, 0);
+    assert.equal(app.head.size, 0);
+    assert.ok(app.targetClasses.has("post-view-transition__hero"));
+    assert.equal(app.focusCount, 1);
+    app.finish();
+    await app.transition.finished;
+    assert.equal(app.sourceClasses.size, 0);
+    assert.equal(app.targetClasses.size, 0);
+    assert.equal(app.classes.size, 0);
+    app.unmount[0]!();
+});
+
+for (const interruption of ["failed navigation", "unmount"] as const) {
+    await test(`Search image naming is removed on ${interruption}`, () => {
+        const app = createHarness();
+        app.activate();
+        assert.ok(app.sourceClasses.has("post-view-transition__hero"));
+        if (interruption === "failed navigation") {
+            const [, afterEach] = [...app.guards];
+            afterEach!({}, {}, new Error("Navigation cancelled"));
+        } else {
+            app.unmount[0]!();
+        }
+        assert.equal(app.body.size, 0);
+        assert.equal(app.head.size, 0);
+        assert.equal(app.sourceClasses.size, 0);
+        assert.equal(app.classes.size, 0);
+        assert.equal(app.focusCount, 0);
+        app.unmount[0]!();
+    });
+}
+
+for (const blocked of ["modified click", "another modal"] as const) {
+    await test(`Search does not name an image for ${blocked}`, () => {
+        const app = createHarness();
+        if (blocked === "another modal") {
+            app.otherModal();
+        }
+        app.activate(blocked === "modified click");
+        assert.equal(app.body.size, 0);
+        assert.equal(app.head.size, 0);
+        assert.equal(app.sourceClasses.size, 0);
+        assert.equal(app.classes.size, 0);
+        app.unmount[0]!();
+    });
+}

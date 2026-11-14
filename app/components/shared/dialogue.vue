@@ -1,5 +1,9 @@
 <template>
-  <Transition name="dialog" @enter="open" @after-leave="hide">
+  <Transition
+    name="dialog"
+    :css="isOpen || animateClose"
+    @enter="open"
+    @after-leave="hide">
     <dialog
       v-show="isOpen"
       class="dialog"
@@ -40,6 +44,10 @@ defineOptions({ name: "u-dialogue" });
 const emit = defineEmits<{ close: [] }>();
 const titleId = useId();
 const props = defineProps({
+  /** Whether closing waits for the dialog's leave animation. */ animateClose: {
+    default: true,
+    type: Boolean,
+  },
   /** Whether the dialog fills the viewport. */ fullscreen: {
     default: false,
     type: Boolean,
