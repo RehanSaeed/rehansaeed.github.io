@@ -117,6 +117,20 @@
   --global-line-height-1: 1.58;
   --global-line-height-2: 1.7;
 
+  // Text Box Trim
+  // The block space removed by `text-box: trim-both cap alphabetic` from a
+  // single line of text. Units resolve on the element using the property, so
+  // it adapts to that element's font and line height. Add it to spacing that
+  // previously relied on font leading.
+  --global-text-box-trim-space: 0px;
+  --global-text-box-trim-space-half: calc(
+    var(--global-text-box-trim-space) / 2
+  );
+
+  @supports (text-box-trim: trim-both) {
+    --global-text-box-trim-space: calc(1lh - 1cap);
+  }
+
   // Line Length
   --global-line-length-min: 45ch;
   --global-line-length-ideal: 66ch;

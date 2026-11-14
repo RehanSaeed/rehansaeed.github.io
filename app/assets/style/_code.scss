@@ -57,6 +57,14 @@ pre[class*="language-"] {
     color var(--global-duration-3) ease-out;
 }
 
+// Keep full line boxes so highlighted lines, line numbers and overlapping titles stay aligned with the
+// code.
+pre[class*="language-"],
+pre[class*="language-"] *,
+.code-title {
+  text-box-trim: none;
+}
+
 /* Inline code */
 :not(pre) > code {
   padding: 0.05rem 0.25rem;

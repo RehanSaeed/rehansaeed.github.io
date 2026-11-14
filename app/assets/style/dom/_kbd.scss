@@ -11,6 +11,7 @@ kbd {
   letter-spacing: 0.05rem;
   line-height: var(--global-line-height-1);
   margin: 0.1rem;
-  padding: 0 0.25rem;
+  padding-block: var(--global-text-box-trim-space-half);
+  padding-inline: 0.25rem;
   vertical-align: text-bottom;
 }

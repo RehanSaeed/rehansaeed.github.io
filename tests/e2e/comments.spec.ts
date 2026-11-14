@@ -763,6 +763,10 @@ test.describe("GitHub comments", () => {
           swatch.remove();
           return {
             nameDateGap: date.top - identity.bottom,
+            headerRowGap: Number.parseFloat(
+              getComputedStyle(element.querySelector(".comment__header")!)
+                .rowGap,
+            ),
             avatarGap: identity.left - avatar.right,
             avatarColumnGap: Number.parseFloat(
               getComputedStyle(element).columnGap,
@@ -803,7 +807,8 @@ test.describe("GitHub comments", () => {
             ),
           };
         });
-        expect(layout.nameDateGap).toBeLessThanOrEqual(1);
+        // The only space between the name and date is the text-box trim compensation.
+        expect(layout.nameDateGap).toBeCloseTo(layout.headerRowGap, 0);
         expect(layout.avatarGap).toBeGreaterThanOrEqual(
           layout.minimumAvatarGap - 1,
         );

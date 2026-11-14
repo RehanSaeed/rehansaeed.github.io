@@ -4,6 +4,7 @@
   .custom-block-title {
     font-weight: var(--global-font-weight-semi-bold);
     line-height: var(--global-line-height-2);
+    margin-block-end: var(--global-text-box-trim-space);
   }
 
   p {
@@ -64,6 +65,10 @@
       color: var(--global-title-color);
       cursor: pointer;
       outline: none;
+    }
+
+    &:not([open]) .custom-block-title {
+      margin-block-end: 0;
     }
   }
 }
