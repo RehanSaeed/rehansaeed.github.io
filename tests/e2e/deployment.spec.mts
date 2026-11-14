@@ -261,7 +261,7 @@ test("Browser suites run in parallel against one complete build without dropping
     });
     expect(build.steps).toContainEqual({
         name: "Package Browser Test Site",
-        run: "tar -cf playwright-site.tar dist .data/blog-image-metadata.json",
+        run: "tar -cf playwright-site.tar dist .data/blog-image-metadata.json .data/offline-source-files.json",
     });
     const upload = requireStep(build.steps, "Upload Browser Test Site");
     const download = requireStep(
@@ -285,6 +285,14 @@ test("Browser suites run in parallel against one complete build without dropping
     expect(steps[run]?.run).toBe(
         "npx playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}/2",
     );
+    const offline = steps.findIndex(
+        (step) => step.name === "Offline Installation and Staging",
+    );
+    expect(offline).toBeGreaterThan(run);
+    expect(steps[offline]?.run).toBe(
+        "node scripts/offline-test.mts ${{ matrix.browser }}",
+    );
+    expect(steps[offline]?.if).toBeUndefined();
     expect(steps.some((step) => step.run === "npm run build")).toBe(false);
     const report = requireStep(steps, "Upload Playwright Report");
     expect(report.if).toBe("failure()");

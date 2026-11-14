@@ -32,6 +32,23 @@ export default defineNuxtPlugin({
     });
     nuxtApp.hook("service-worker:registration-failed", ({ error }) => {
       console.error("[pwa] Service worker registration failed.", error);
+      useState("offline-install-error", () => "").value =
+        "The offline reader could not be installed. Retry when online.";
+    });
+    nuxtApp.hook("service-worker:registered", ({ registration }) => {
+      const installing = registration?.installing;
+      installing?.addEventListener("statechange", () => {
+        if (installing.state === "redundant") {
+          console.error(
+            "[pwa] The offline reader installation became redundant.",
+          );
+          useState("offline-install-error", () => "").value =
+            "The offline reader installation did not finish. Retry when online.";
+        }
+      });
+    });
+    nuxtApp.hook("service-worker:activated", () => {
+      useState("offline-install-error", () => "").value = "";
     });
     const id = useRuntimeConfig().public.googleAnalyticsId;
     if (!id) {

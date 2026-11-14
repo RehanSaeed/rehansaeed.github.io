@@ -4,6 +4,10 @@
 
     <u-newsletter class="footer__newsletter" />
 
+    <ClientOnly>
+      <u-offline-blog />
+    </ClientOnly>
+
     <u-author class="footer_author" heading-id="footer-author" />
 
     <section class="footer__text">
