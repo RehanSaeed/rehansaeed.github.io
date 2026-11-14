@@ -234,7 +234,7 @@ test("Browser suites run in parallel against one complete build without dropping
     const browserTests = requireJob(workflow, "test");
     expect(build.name).toBe("Generate");
     expect(browserTests.name).toBe(
-        "Playwright (${{ matrix.browser }}, ${{ matrix.shard }}/2)",
+        "Playwright (${{ matrix.browser }}, ${{ matrix.shard }}/3)",
     );
     expect(workflow.jobs.checks).toEqual({
         name: "Build",
@@ -257,7 +257,7 @@ test("Browser suites run in parallel against one complete build without dropping
     expect(browserTests.needs).toBe("build");
     expect(browserTests.strategy).toEqual({
         "fail-fast": false,
-        matrix: { browser: ["chrome", "edge", "firefox"], shard: [1, 2] },
+        matrix: { browser: ["chrome", "edge", "firefox"], shard: [1, 2, 3] },
     });
     expect(build.steps).toContainEqual({
         name: "Package Browser Test Site",
@@ -283,7 +283,7 @@ test("Browser suites run in parallel against one complete build without dropping
     expect(extract).toBeLessThan(run);
     expect(steps[extract]?.run).toBe("tar -xf playwright-site.tar");
     expect(steps[run]?.run).toBe(
-        "npx playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}/2",
+        "npx playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}/3 --workers=2",
     );
     expect(steps.some((step) => step.run === "npm run build")).toBe(false);
     const report = requireStep(steps, "Upload Playwright Report");
