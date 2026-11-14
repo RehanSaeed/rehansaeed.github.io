@@ -18,7 +18,13 @@
   --global-focus-outline-offset: 3px;
 
   // Box Shadows
-  --global-shadow-1: 0 1px 3px var(--global-shadow-color);
+  --global-shadow-1-offset: 0 1px;
+  --global-shadow-1-blur: 3px;
+  --global-shadow-1: var(--global-shadow-1-offset) var(--global-shadow-1-blur)
+    var(--global-shadow-color);
+  // Filter blur is a standard deviation, half the equivalent box-shadow blur.
+  --global-drop-shadow-1: var(--global-shadow-1-offset)
+    calc(var(--global-shadow-1-blur) / 2) var(--global-shadow-color);
   --global-shadow-2-near: 0 2px 3px var(--global-shadow-color);
   --global-shadow-2-middle: 0 4px 6px var(--global-shadow-color);
   --global-shadow-2-far: 0 6px 9px var(--global-shadow-color);

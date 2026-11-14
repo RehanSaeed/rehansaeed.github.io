@@ -49,6 +49,10 @@ if (!componentExports.default) {
 }
 const linkButton = componentExports.default;
 const styles = compileString(descriptor.styles[0]!.content).css;
+const { descriptor: buttonDescriptor } = parse(
+  readFileSync("app/components/shared/button.vue", "utf8"),
+);
+const buttonStyles = compileString(buttonDescriptor.styles[0]!.content).css;
 const propertiesPath = join(process.cwd(), "app/assets/style/_properties.scss");
 const properties = compileString(readFileSync(propertiesPath, "utf8"), {
   url: pathToFileURL(propertiesPath),
@@ -100,8 +104,19 @@ for (const theme of ["light", "dark"]) {
       `<html data-theme="${theme}"><body><div id="app"></div></body></html>`,
     );
     await page.addStyleTag({
-      content: `${properties}\n${styles}
+      content: `${properties}\n${styles}\n${buttonStyles}
         .link-button { transition: none; }
+        .resting-sample {
+          display: grid;
+          gap: 48px;
+          padding: 32px;
+          background: var(--global-content-background-color);
+        }
+        .resting-sample > * {
+          box-sizing: border-box;
+          inline-size: 280px;
+          block-size: 64px;
+        }
         .silhouette-sample { padding: 32px; background: #808080; }
         .silhouette-sample .link-button {
           --link-button-tag-point: 96px;
@@ -133,6 +148,10 @@ for (const theme of ["light", "dark"]) {
               Windows Presentation Foundation (WPF)
             </u-link-button>
             <output :data-clicks="clicks" :data-entered="entered"></output>
+            <div class="resting-sample">
+              <button class="button button--secondary">Reference button</button>
+              <u-link-button variant="tag" href="#resting">Resting tag</u-link-button>
+            </div>
             <div class="silhouette-sample">
               <u-link-button variant="tag" href="#shape">Shape sample</u-link-button>
             </div>\`
@@ -155,7 +174,6 @@ for (const theme of ["light", "dark"]) {
     await expect(link).toHaveCSS("clip-path", "none");
     await expect(surface).toHaveAttribute("aria-hidden", "true");
     await expect(surface).toHaveCSS("clip-path", "none");
-    await expect(surface).toHaveCSS("filter", "none");
     expect(
       await surface.evaluate(
         (element) => getComputedStyle(element, "::before").clipPath,
@@ -168,12 +186,82 @@ for (const theme of ["light", "dark"]) {
       const accent = getComputedStyle(probe).color;
       probe.style.filter = "drop-shadow(var(--global-shadow-1))";
       const pressed = getComputedStyle(probe).filter;
+      probe.style.filter = "drop-shadow(var(--global-drop-shadow-1))";
+      const resting = getComputedStyle(probe).filter;
       probe.style.filter =
         "drop-shadow(var(--global-shadow-2-near)) drop-shadow(var(--global-shadow-2-middle)) drop-shadow(var(--global-shadow-2-far))";
       const raised = getComputedStyle(probe).filter;
       probe.remove();
-      return { accent, pressed, raised };
+      return { accent, pressed, resting, raised };
     });
+    await expect(surface).toHaveCSS("filter", tokens.resting);
+    const shadowProfiles = [];
+    for (const control of [
+      page.getByRole("button", { name: "Reference button", exact: true }),
+      page.getByRole("link", { name: "Resting tag", exact: true }),
+    ]) {
+      const bounds = await control.boundingBox();
+      expect(bounds).not.toBeNull();
+      const screenshot = await page.screenshot({
+        path: test
+          .info()
+          .outputPath(
+            `resting-${await control.getAttribute("class")}-${theme}.png`,
+          ),
+        scale: "css",
+        animations: "disabled",
+        clip: {
+          x: Math.floor(bounds!.x) + 100,
+          y: Math.floor(bounds!.y) - 12,
+          width: 40,
+          height: Math.ceil(bounds!.height) + 24,
+        },
+      });
+      const { data, info } = await sharp(screenshot)
+        .removeAlpha()
+        .raw()
+        .toBuffer({ resolveWithObject: true });
+      const row = (y: number) =>
+        Array.from({ length: 3 }, (_, channel) => {
+          let sum = 0;
+          for (let x = 0; x < info.width; x++) {
+            sum += data[(y * info.width + x) * info.channels + channel]!;
+          }
+          return sum / info.width;
+        });
+      const background = row(0);
+      const above = Array.from({ length: 8 }, (_, offset) => row(11 - offset));
+      const below = Array.from({ length: 8 }, (_, offset) =>
+        row(12 + Math.ceil(bounds!.height) + offset),
+      );
+      const strength = (rows: number[][]) =>
+        rows.reduce(
+          (sum, channels) =>
+            sum +
+            channels.reduce(
+              (total, value, channel) =>
+                total + Math.abs(value - background[channel]!),
+              0,
+            ),
+          0,
+        );
+      expect(
+        strength(below),
+        "Resting elevation is visible and falls below, not above, the control",
+      ).toBeGreaterThan(strength(above) + 3);
+      shadowProfiles.push(below);
+    }
+    for (let row = 0; row < 8; row++) {
+      for (let channel = 0; channel < 3; channel++) {
+        expect(
+          Math.abs(
+            shadowProfiles[0]![row]![channel]! -
+              shadowProfiles[1]![row]![channel]!,
+          ),
+          "Tag resting shadow matches the normal button's softness and strength",
+        ).toBeLessThanOrEqual(2);
+      }
+    }
     const hole = await link.evaluate((element) => {
       const style = getComputedStyle(element, "::after");
       return { colour: style.backgroundColor, round: style.borderRadius };
@@ -232,41 +320,45 @@ for (const theme of ["light", "dark"]) {
       name: "Shape sample",
       exact: true,
     });
+    const expectPointedShadow = async (state: string) => {
+      const bounds = await sample.boundingBox();
+      expect(bounds).not.toBeNull();
+      const screenshot = await page.screenshot({
+        path: test.info().outputPath(`pointed-${state}-${theme}.png`),
+        scale: "css",
+        animations: "disabled",
+        clip: {
+          x: Math.floor(bounds!.x) - 16,
+          y: Math.floor(bounds!.y) - 16,
+          width: Math.ceil(bounds!.width) + 32,
+          height: Math.ceil(bounds!.height) + 32,
+        },
+      });
+      const { data, info } = await sharp(screenshot)
+        .ensureAlpha()
+        .raw()
+        .toBuffer({ resolveWithObject: true });
+      const colourAt = (x: number, y: number) => {
+        const offset = (y * info.width + x) * info.channels;
+        return [...data.subarray(offset, offset + 3)];
+      };
+      expect(
+        colourAt(14, 24),
+        "No rectangular shadow above the pointed edge",
+      ).toEqual([128, 128, 128]);
+      // Sample several rows because faint shadow pixels can be dithered.
+      const tipShadow = Array.from({ length: 8 }, (_, offset) =>
+        colourAt(14, 16 + Math.floor(bounds!.height / 2) + offset),
+      );
+      expect(
+        tipShadow.some((colour) => colour.some((channel) => channel !== 128)),
+        "The triangle itself casts a shadow",
+      ).toBe(true);
+    };
+    await expectPointedShadow("rest");
     await sample.hover();
     await expect(sample).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -2)");
-    const bounds = await sample.boundingBox();
-    expect(bounds).not.toBeNull();
-    const screenshot = await page.screenshot({
-      path: test.info().outputPath(`pointed-hover-${theme}.png`),
-      scale: "css",
-      animations: "disabled",
-      clip: {
-        x: Math.floor(bounds!.x) - 16,
-        y: Math.floor(bounds!.y) - 16,
-        width: Math.ceil(bounds!.width) + 32,
-        height: Math.ceil(bounds!.height) + 32,
-      },
-    });
-    const { data, info } = await sharp(screenshot)
-      .ensureAlpha()
-      .raw()
-      .toBuffer({ resolveWithObject: true });
-    const colourAt = (x: number, y: number) => {
-      const offset = (y * info.width + x) * info.channels;
-      return [...data.subarray(offset, offset + 3)];
-    };
-    expect(
-      colourAt(14, 24),
-      "No rectangular shadow above the pointed edge",
-    ).toEqual([128, 128, 128]);
-    // Sample several rows because faint shadow pixels can be dithered.
-    const tipShadow = Array.from({ length: 8 }, (_, offset) =>
-      colourAt(14, 16 + Math.floor(bounds!.height / 2) + offset),
-    );
-    expect(
-      tipShadow.some((colour) => colour.some((channel) => channel !== 128)),
-      "The triangle itself casts a raised shadow",
-    ).toBe(true);
+    await expectPointedShadow("hover");
     await page.emulateMedia({ forcedColors: "active" });
     await link.focus();
     await page.keyboard.press("Tab");
@@ -274,11 +366,22 @@ for (const theme of ["light", "dark"]) {
     await expect(link).toBeFocused();
     await expect(link).toHaveCSS("outline-width", "2px");
     await expect(link).toHaveCSS("outline-offset", "3px");
-    const surfaceColours = await surface.evaluate((element) => ({
-      edge: getComputedStyle(element, "::before").backgroundColor,
-      fill: getComputedStyle(element, "::after").backgroundColor,
-    }));
+    const surfaceColours = await surface.evaluate((element) => {
+      const probe = document.createElement("span");
+      probe.style.color = "LinkText";
+      element.append(probe);
+      const linkText = getComputedStyle(probe).color;
+      probe.remove();
+      return {
+        edge: getComputedStyle(element, "::before").backgroundImage,
+        fill: getComputedStyle(element, "::after").backgroundColor,
+        linkText,
+      };
+    });
     await expect(surface).toHaveCSS("filter", "none");
-    expect(surfaceColours.edge).not.toBe(surfaceColours.fill);
+    expect(surfaceColours.edge).toBe(
+      `linear-gradient(${surfaceColours.linkText}, ${surfaceColours.linkText})`,
+    );
+    expect(surfaceColours.linkText).not.toBe(surfaceColours.fill);
   });
 }

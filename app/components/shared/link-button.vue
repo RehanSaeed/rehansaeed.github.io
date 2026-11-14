@@ -159,7 +159,7 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
   --link-button-tag-hole-size: var(--global-space-fixed-2);
   --link-button-tag-surface: var(--global-background-color);
   --link-button-tag-edge: var(--global-border-color);
-  --link-button-tag-shadow: none;
+  --link-button-tag-shadow: drop-shadow(var(--global-drop-shadow-1));
   --link-button-tag-outline: polygon(
     var(--link-button-tag-point) 0,
     100% 0,
@@ -174,13 +174,15 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
   min-inline-size: var(--global-space-fixed-5);
   max-inline-size: 100%;
   min-block-size: calc(var(--global-space-fixed-3) * 3);
-  border: var(--global-border-width-1) solid transparent;
+  border: none;
   border-radius: 0;
   border-start-end-radius: var(--global-border-radius);
   border-end-end-radius: var(--global-border-radius);
-  padding: var(--global-space-fixed-2) var(--global-space-fixed-3);
+  padding: calc(var(--global-space-fixed-2) + var(--global-border-width-1))
+    calc(var(--global-space-fixed-3) + var(--global-border-width-1));
   padding-inline-start: calc(
-    var(--link-button-tag-point) + var(--global-space-fixed-4)
+    var(--link-button-tag-point) + var(--global-space-fixed-4) +
+      var(--global-border-width-1)
   );
   background: transparent;
   box-shadow: none;
@@ -249,13 +251,18 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: var(--link-button-tag-paint, var(--link-button-tag-edge));
+    background: var(--link-button-tag-surface);
     clip-path: var(--link-button-tag-outline);
   }
 
-  &::after {
-    --link-button-tag-paint: var(--link-button-tag-surface);
+  &::before {
+    // Keep the silhouette opaque beneath its translucent border for filtering.
+    background:
+      linear-gradient(var(--link-button-tag-edge), var(--link-button-tag-edge)),
+      var(--link-button-tag-surface);
+  }
 
+  &::after {
     inset: var(--global-border-width-1);
   }
 }
