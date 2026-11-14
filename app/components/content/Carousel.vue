@@ -41,7 +41,15 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, useId, useTemplateRef } from "vue";
+import { useMediaQuery, usePreferredReducedMotion } from "@vueuse/core";
+import {
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  useId,
+  useTemplateRef,
+  watch,
+} from "vue";
 
 const props = defineProps<{
   /** Number of consecutive image slides in this article gallery. */
@@ -49,6 +57,8 @@ const props = defineProps<{
 }>();
 const trackId = `image-gallery-${useId()}`;
 const track = useTemplateRef<HTMLOListElement>("track");
+const preferredMotion = usePreferredReducedMotion();
+const forcedColors = useMediaQuery("(forced-colors: active)");
 const currentIndex = ref(0);
 const isInteractive = ref(false);
 const isDragging = ref(false);
@@ -57,8 +67,6 @@ let settleFrame = 0;
 let previousStep = 0;
 let navigationTarget: number | undefined;
 let resizeObserver: ResizeObserver | undefined;
-let motionPreference: MediaQueryList | undefined;
-let contrastPreference: MediaQueryList | undefined;
 let animations: Animation[] = [];
 let drag: { id: number; x: number; y: number; left: number } | undefined;
 let suppressClick = false;
@@ -107,7 +115,7 @@ const configureMotion = () => {
     animation.cancel();
   }
   animations = [];
-  if (!motionPreference?.matches && !contrastPreference?.matches) {
+  if (preferredMotion.value !== "reduce" && !forcedColors.value) {
     animations = Array.from(
       track.value?.querySelectorAll<HTMLElement>(".prose-image") ?? [],
       (image) => {
@@ -143,7 +151,8 @@ const navigateToImage = (requestedIndex: number, instant = false) => {
   navigationTarget = index;
   track.value.scrollTo({
     left,
-    behavior: instant || motionPreference?.matches ? "instant" : "smooth",
+    behavior:
+      instant || preferredMotion.value === "reduce" ? "instant" : "smooth",
   });
 };
 
@@ -298,11 +307,13 @@ const pointerHandlers = [
   ["lostpointercapture", finishDrag],
 ] as const;
 
+watch([preferredMotion, forcedColors], () => {
+  if (isInteractive.value) {
+    configureMotion();
+  }
+});
+
 onMounted(() => {
-  motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
-  contrastPreference = window.matchMedia("(forced-colors: active)");
-  motionPreference.addEventListener("change", configureMotion);
-  contrastPreference.addEventListener("change", configureMotion);
   for (const [event, handler] of pointerHandlers) {
     track.value?.addEventListener(event, handler);
   }
@@ -331,8 +342,6 @@ onBeforeUnmount(() => {
   cancelAnimationFrame(frame);
   cancelAnimationFrame(settleFrame);
   resizeObserver?.disconnect();
-  motionPreference?.removeEventListener("change", configureMotion);
-  contrastPreference?.removeEventListener("change", configureMotion);
   for (const animation of animations) {
     animation.cancel();
   }
@@ -391,7 +400,7 @@ onBeforeUnmount(() => {
   }
 }
 
-.carousel__track img {
+.carousel__track .prose-image__image {
   cursor: grab;
 }
 
@@ -405,7 +414,7 @@ onBeforeUnmount(() => {
   scroll-snap-type: none;
   user-select: none;
 
-  img {
+  .prose-image__image {
     cursor: grabbing;
   }
 }
@@ -416,20 +425,19 @@ onBeforeUnmount(() => {
   scroll-snap-stop: always;
   margin: 0;
 
-  > p,
-  > figure,
-  > figure > p {
+  > .carousel__media,
+  > .carousel__figure,
+  > .carousel__figure > .carousel__media {
     margin: 0;
     max-inline-size: none;
   }
 
-  figcaption {
+  .carousel__caption {
     padding-inline: var(--global-space-fixed-4);
   }
 }
 
-.post__content .carousel__slide > p,
-.post__content .carousel__slide > figure > p {
+.post__content .carousel__slide .carousel__media {
   position: relative;
   inline-size: fit-content;
   max-inline-size: 100%;
@@ -461,7 +469,10 @@ onBeforeUnmount(() => {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .carousel__viewport:has(img:hover, .carousel-arrows__button:hover),
+  .carousel__viewport:has(
+    .prose-image__image:hover,
+    .carousel-arrows__button:hover
+  ),
   .carousel:has(:focus-visible) {
     --carousel-arrows-opacity: 1;
     --carousel-arrows-pointer-events: auto;

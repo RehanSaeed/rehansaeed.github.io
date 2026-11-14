@@ -56,6 +56,15 @@ authorise publishing the article or posting to social media.
 - Do not use inline styles (`style` attributes or Vue `:style` bindings). Put
   styling in component stylesheets and use intrinsic HTML sizing where suitable.
 - Follow Block Element Modifier (BEM) naming for CSS classes.
+- Use the minimum CSS needed for the intended behaviour. Rely on intrinsic
+  layout and existing shared styles; avoid redundant declarations, unnecessary
+  layout containers and styling states that cannot be displayed.
+- Reuse existing CSS custom properties for typography, spacing, colours, borders
+  and focus styling. Avoid component-local pixel values; use relative units when
+  no suitable design token exists, preserving accessible control sizes.
+- Use class selectors in component stylesheets instead of HTML tag selectors,
+  including inside `:has()`, `:is()`, `:not()` and `:where()`. Add BEM classes
+  to the existing semantic elements rather than changing their HTML semantics.
 - Keep `app/assets/style/dom/` stylesheets element-based. Use element selectors
   and their pseudo-classes or pseudo-elements, not class or ID selectors,
   including inside `:not()`, `:is()` or `:where()`. Put component-specific rules
@@ -182,6 +191,10 @@ authorise publishing the article or posting to social media.
 - Use `setup()` returning a render function when direct VNode rendering is
   needed. Explain exceptions and preserve existing behaviour.
 - Keep shared state at module scope, not in per-instance `<script setup>` scope.
+- Reuse VueUse composables from `@vueuse/core` for supported browser state,
+  including `usePreferredReducedMotion` and `useMediaQuery`, instead of adding
+  component-local `matchMedia` subscriptions. Let the composables manage their
+  subscriptions and cleanup. Keep presentation-only media queries in CSS.
 - Use Nuxt's build-time component auto-imports for template usage instead of
   explicit imports and Options API `components` registrations. Auto-imports
   include only used components and add no runtime registration overhead compared

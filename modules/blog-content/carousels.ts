@@ -38,20 +38,49 @@ const imageSlides = (node: Node): Element[] | undefined => {
   }
 };
 
+const withClass = (node: Element, className: string): Element => {
+  const value = node[1].class ?? node[1].className;
+  const classes = Array.isArray(value)
+    ? value.join(" ")
+    : typeof value === "string"
+      ? value
+      : "";
+  return [
+    node[0],
+    {
+      ...node[1],
+      class: classes ? `${classes} ${className}` : className,
+    },
+    ...(node.slice(2) as Node[]),
+  ];
+};
+
 const frameImage = (node: Element): Element => {
   if (isImage(node)) {
-    return ["p", {}, node];
+    return ["p", { class: "carousel__media" }, node];
   }
   if (node[0] === "figure") {
+    const figure = withClass(node, "carousel__figure");
     return [
-      node[0],
-      node[1],
-      ...(node.slice(2) as Node[]).map((child): Node =>
-        isImage(child) ? ["p", {}, child] : child,
-      ),
+      figure[0],
+      figure[1],
+      ...(figure.slice(2) as Node[]).map((child): Node => {
+        if (isImage(child)) {
+          return ["p", { class: "carousel__media" }, child];
+        }
+        if (typeof child !== "string") {
+          if (child[0] === "p") {
+            return withClass(child, "carousel__media");
+          }
+          if (child[0] === "figcaption") {
+            return withClass(child, "carousel__caption");
+          }
+        }
+        return child;
+      }),
     ];
   }
-  return node;
+  return withClass(node, "carousel__media");
 };
 
 /** Groups adjacent article image blocks without crossing prose or container boundaries. */

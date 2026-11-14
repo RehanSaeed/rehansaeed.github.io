@@ -7,18 +7,19 @@ type Nodes = NonNullable<Parameters<typeof groupImageCarousels>[0]>;
 await test("groups adjacent images and preserves figure captions and image links", () => {
     const first: Nodes[number] = [
         "figure",
-        {},
+        { class: "authored-figure" },
         [
             "p",
-            {},
+            { className: ["authored-media"] },
             [
                 "a",
                 { href: "/article/" },
                 ["img", { src: "/one.jpg", alt: "One" }],
             ],
         ],
-        ["figcaption", {}, "First caption"],
+        ["figcaption", { class: "authored-caption" }, "First caption"],
     ];
+    const originalFirst = structuredClone(first);
     const second: Nodes[number] = [
         "figure",
         {},
@@ -31,19 +32,52 @@ await test("groups adjacent images and preserves figure captions and image links
         [
             "carousel",
             { count: 2 },
-            ["li", { class: "carousel__slide" }, first],
             [
                 "li",
                 { class: "carousel__slide" },
                 [
                     "figure",
-                    {},
-                    ["p", {}, ["img", { src: "/two.jpg", alt: "Two" }]],
-                    ["figcaption", {}, "Second caption"],
+                    { class: "authored-figure carousel__figure" },
+                    [
+                        "p",
+                        {
+                            className: ["authored-media"],
+                            class: "authored-media carousel__media",
+                        },
+                        [
+                            "a",
+                            { href: "/article/" },
+                            ["img", { src: "/one.jpg", alt: "One" }],
+                        ],
+                    ],
+                    [
+                        "figcaption",
+                        { class: "authored-caption carousel__caption" },
+                        "First caption",
+                    ],
+                ],
+            ],
+            [
+                "li",
+                { class: "carousel__slide" },
+                [
+                    "figure",
+                    { class: "carousel__figure" },
+                    [
+                        "p",
+                        { class: "carousel__media" },
+                        ["img", { src: "/two.jpg", alt: "Two" }],
+                    ],
+                    [
+                        "figcaption",
+                        { class: "carousel__caption" },
+                        "Second caption",
+                    ],
                 ],
             ],
         ],
     ]);
+    assert.deepEqual(first, originalFirst);
 });
 
 await test("splits consecutive images in one paragraph without swallowing prose", () => {
@@ -60,7 +94,20 @@ await test("splits consecutive images in one paragraph without swallowing prose"
     ];
     groupImageCarousels(nodes);
     assert.equal(nodes.length, 3);
-    assert.equal(nodes[0]?.[0], "carousel");
+    assert.deepEqual(nodes[0], [
+        "carousel",
+        { count: 2 },
+        [
+            "li",
+            { class: "carousel__slide" },
+            ["p", { class: "carousel__media" }, ["img", { src: "/one.jpg" }]],
+        ],
+        [
+            "li",
+            { class: "carousel__slide" },
+            ["p", { class: "carousel__media" }, ["img", { src: "/two.jpg" }]],
+        ],
+    ]);
     assert.deepEqual(nodes[1], [
         "p",
         {},

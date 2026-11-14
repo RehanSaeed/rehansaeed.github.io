@@ -13,9 +13,15 @@ for (const width of [1440, 640, 375, 320]) {
   }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
-    const gallery = page.getByRole("region", { name: "Image gallery" }).first();
+    const gallery = page
+      .getByRole("region", { name: "Image gallery" })
+      .filter({ has: page.locator("figure") });
     const track = gallery.getByRole("list", { name: "Gallery images" });
     await expect(track.locator(":scope > li")).toHaveCount(3);
+    await expect(gallery.locator(".prose-image").nth(1)).toHaveCSS(
+      "transform",
+      "none",
+    );
     await expect(gallery.locator("figure")).toHaveCount(3);
     await expect(gallery.locator("figcaption").first()).toHaveText(
       "The first gallery image retains its link.",
@@ -65,6 +71,10 @@ for (const width of [1440, 640, 375, 320]) {
       }),
     ).toHaveAttribute("aria-disabled", "true");
     await image.hover();
+    await expect(next).toHaveCSS(
+      "font-size",
+      await track.evaluate((element) => getComputedStyle(element).fontSize),
+    );
     await next.click();
     await expect(gallery.locator(".carousel__position")).toHaveText(
       "Image 2 of 3",
@@ -143,7 +153,9 @@ test.describe("Continuous scroll-linked motion", () => {
     page,
   }) => {
     await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
-    const gallery = page.getByRole("region", { name: "Image gallery" }).first();
+    const gallery = page
+      .getByRole("region", { name: "Image gallery" })
+      .filter({ has: page.locator("figure") });
     const track = gallery.getByRole("list", { name: "Gallery images" });
     await gallery.scrollIntoViewIfNeeded();
     await expect(
@@ -300,13 +312,20 @@ test.describe("Continuous scroll-linked motion", () => {
       "opacity",
       "1",
     );
+    await page.emulateMedia({ forcedColors: "none" });
+    await expect(track.locator(".prose-image").first()).toHaveCSS(
+      "opacity",
+      "0.45",
+    );
   });
 
   test("Cover Flow controls fade over images, reveal immediately for keyboard input and animate both paging states", async ({
     page,
   }) => {
     await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
-    const gallery = page.locator(".carousel").first();
+    const gallery = page
+      .getByRole("region", { name: "Image gallery" })
+      .filter({ has: page.locator("figure") });
     const shell = gallery.locator(".carousel-arrows__shell").last();
     const image = gallery.locator("img").first();
     const next = gallery.getByRole("button", {
@@ -486,8 +505,17 @@ test("Cover Flow arrow shells and shared paging retain their colours, inset circ
     await expect(next).toHaveCSS("color", "rgb(255, 255, 255)");
     await expect(next).toHaveCSS("inline-size", "44px");
     await expect(next).toHaveCSS("block-size", "44px");
-    await expect(next).toHaveCSS("font-size", "20px");
-    await expect(next).toHaveCSS("padding", "4px");
+    const rootFontSize = await page.evaluate(
+      () => getComputedStyle(document.documentElement).fontSize,
+    );
+    await expect(next).toHaveCSS("font-size", rootFontSize);
+    await expect
+      .poll(() =>
+        next.evaluate((element) =>
+          Number.parseFloat(getComputedStyle(element).paddingInlineStart),
+        ),
+      )
+      .toBeCloseTo((Number.parseFloat(rootFontSize) * 3) / 16, 2);
     await expect(next).toHaveCSS("background-clip", "content-box");
     await next.hover();
     await expect(next).toHaveCSS("background-color", "rgb(255, 255, 255)");
@@ -532,7 +560,9 @@ test.describe("Touch gesture tracking", () => {
     context,
   }) => {
     await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
-    const gallery = page.getByRole("region", { name: "Image gallery" }).first();
+    const gallery = page
+      .getByRole("region", { name: "Image gallery" })
+      .filter({ has: page.locator("figure") });
     const track = gallery.getByRole("list", { name: "Gallery images" });
     await gallery.scrollIntoViewIfNeeded();
     const image = gallery.locator("img").first();
@@ -616,7 +646,9 @@ test("Neighbour preview is actually painted beyond the article card, not merely 
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
-  const gallery = page.getByRole("region", { name: "Image gallery" }).first();
+  const gallery = page
+    .getByRole("region", { name: "Image gallery" })
+    .filter({ has: page.locator("figure") });
   await gallery.scrollIntoViewIfNeeded();
   await expect(
     gallery.getByRole("button", { name: "Go to image 1 of 3" }),
@@ -648,7 +680,9 @@ test("Mouse dragging a linked image scrolls without opening its link, but a norm
   page,
 }) => {
   await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
-  const gallery = page.getByRole("region", { name: "Image gallery" }).first();
+  const gallery = page
+    .getByRole("region", { name: "Image gallery" })
+    .filter({ has: page.locator("figure") });
   await gallery.scrollIntoViewIfNeeded();
   const image = gallery.locator("img").first();
   const bounds = await image.boundingBox();
@@ -702,12 +736,12 @@ test("Consecutive plain images form a separate carousel without captions or link
   await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
   const galleries = page.getByRole("region", { name: "Image gallery" });
   await expect(galleries).toHaveCount(2);
-  const gallery = galleries.filter({
-    has: page.getByRole("img", {
-      name: "A code illustration in the first image-only gallery slide.",
-      exact: true,
-    }),
-  });
+  await expect(
+    page
+      .getByRole("heading", { level: 1 })
+      .locator(".heading__text", { hasText: /^Carousel$/ }),
+  ).toBeVisible();
+  const gallery = galleries.first();
   await expect(gallery.locator("img")).toHaveCount(2);
   await expect(
     gallery
@@ -739,7 +773,9 @@ test.describe("Progressive enhancement", () => {
     page,
   }) => {
     await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
-    const gallery = page.getByRole("region", { name: "Image gallery" }).first();
+    const gallery = page
+      .getByRole("region", { name: "Image gallery" })
+      .filter({ has: page.locator("figure") });
     await expect(gallery.locator("img")).toHaveCount(3);
     await expect(gallery.locator("figcaption")).toHaveCount(3);
     await expect(gallery.getByRole("link")).toHaveAttribute(
@@ -756,7 +792,7 @@ test.describe("Progressive enhancement", () => {
     );
     const plainGallery = page
       .getByRole("region", { name: "Image gallery" })
-      .nth(1);
+      .filter({ hasNot: page.locator("figure") });
     await expect(plainGallery.locator("img")).toHaveCount(2);
     await expect(
       plainGallery.locator("figure, figcaption, a, button"),

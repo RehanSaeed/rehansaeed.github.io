@@ -93,7 +93,6 @@ watch(
 }
 
 .carousel-arrows__shell {
-  display: grid;
   border-radius: 50%;
   background-color: rgb(0 0 0 / 65%);
 
@@ -111,20 +110,12 @@ watch(
   --button-icon-hover-background: #fff;
 
   background-clip: content-box;
-  font-size: 20px;
-  padding: 4px;
+  font-size: var(--global-font-size-2);
+  padding: var(--global-space-fixed-1);
   pointer-events: auto;
 
-  &[aria-disabled="true"] {
-    --button-icon-color: rgb(255 255 255 / 65%);
-    --button-icon-hover-color: rgb(255 255 255 / 65%);
-    --button-icon-hover-background: rgb(255 255 255 / 15%);
-
-    cursor: default;
-  }
-
   &:focus-visible {
-    outline-offset: -6px;
+    outline-offset: calc(var(--global-focus-outline-offset) * -2);
   }
 }
 
@@ -164,11 +155,6 @@ watch(
 @media (forced-colors: active) {
   .carousel-arrows__shell {
     background-color: ButtonFace;
-  }
-
-  .carousel-arrows .carousel-arrows__button[aria-disabled="true"] {
-    --button-icon-color: GrayText;
-    --button-icon-hover-color: GrayText;
   }
 }
 </style>
