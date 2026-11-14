@@ -20,6 +20,7 @@ type SearchTransitionProbe = {
   finished: number;
   errors: string[];
   sourceDialogs: number[];
+  destinationDialogs: number[];
   sourceNames: number[];
   sourceBoxes: Array<{ x: number; y: number; width: number; height: number }>;
   modifiedDefaultPrevented: boolean[];
@@ -55,6 +56,7 @@ const instrument = (page: Page, unsupported = false) =>
       finished: 0,
       errors: [],
       sourceDialogs: [],
+      destinationDialogs: [],
       sourceNames: [],
       sourceBoxes: [],
       modifiedDefaultPrevented: [],
@@ -77,19 +79,23 @@ const instrument = (page: Page, unsupported = false) =>
     document.startViewTransition = (update) => {
       probe.starts++;
       probe.sourceNames.push(countHeroes());
-      const source = document.querySelector(".post-view-transition__bridge");
+      const source = document.querySelector(
+        "dialog[open] img.post-view-transition__hero",
+      );
       if (source) {
         const { x, y, width, height } = source.getBoundingClientRect();
         probe.sourceBoxes.push({ x, y, width, height });
       }
       const callback = typeof update === "function" ? update : update?.update;
       const capture = async () => {
-        // The native old snapshot is taken immediately before this callback,
-        // after Nuxt's synchronous start hooks have closed the dialog.
+        // The old screenshot must match the visible search, not expose the listing.
         probe.sourceDialogs.push(
           document.querySelectorAll("dialog[open]").length,
         );
         await callback?.();
+        probe.destinationDialogs.push(
+          document.querySelectorAll("dialog[open]").length,
+        );
       };
       const transition = start(
         typeof update === "function" ? capture : { ...update, update: capture },
@@ -167,6 +173,7 @@ const openResult = async (page: Page) => {
     probe.ready = 0;
     probe.finished = 0;
     probe.sourceDialogs = [];
+    probe.destinationDialogs = [];
     probe.sourceNames = [];
     probe.sourceBoxes = [];
     probe.captures = [];
@@ -277,11 +284,16 @@ test.describe("Search result article continuity", () => {
     await expectArticle(page);
     expect(
       await page.evaluate(() => window.searchTransitionProbe.sourceDialogs),
+    ).toEqual([1]);
+    expect(
+      await page.evaluate(
+        () => window.searchTransitionProbe.destinationDialogs,
+      ),
     ).toEqual([0]);
   });
 
   for (const activation of ["mouse", "Enter"] as const) {
-    test(`Captures only the selected image, without a modal, using ${activation}`, async ({
+    test(`Captures search before closure and the article without a modal using ${activation}`, async ({
       page,
     }) => {
       await instrument(page);
@@ -295,7 +307,8 @@ test.describe("Search result article continuity", () => {
       expect(probe.starts).toBe(1);
       expect(probe.ready).toBe(1);
       expect(probe.finished).toBe(1);
-      expect(probe.sourceDialogs).toEqual([0]);
+      expect(probe.sourceDialogs).toEqual([1]);
+      expect(probe.destinationDialogs).toEqual([0]);
       expect(probe.sourceNames).toEqual([1]);
       expect(probe.sourceBoxes).toHaveLength(1);
       expect(probe.sourceBoxes[0]!.x).toBeCloseTo(source!.x, 0);
@@ -412,7 +425,8 @@ test.describe("Search result article continuity", () => {
     await expectArticle(page);
     const probe = await page.evaluate(() => window.searchTransitionProbe);
     expect(probe.sourceNames).toEqual([0]);
-    expect(probe.sourceDialogs).toEqual([0]);
+    expect(probe.sourceDialogs).toEqual([1]);
+    expect(probe.destinationDialogs).toEqual([0]);
     expect(probe.ready).toBe(1);
   });
 

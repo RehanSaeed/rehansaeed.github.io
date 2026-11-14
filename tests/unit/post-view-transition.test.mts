@@ -331,12 +331,12 @@ await test("Fragment destinations disable the native transition policy", () => {
     app.unmount[0]!();
 });
 
-await test("Search bridges only its selected image until destination capture, then cleans up", async () => {
+await test("Search names its real image through the old snapshot, then cleans up", async () => {
     const app = createHarness();
     app.activate();
-    assert.equal(app.body.size, 1);
-    assert.equal(app.head.size, 1);
-    assert.equal(app.sourceClasses.size, 0);
+    assert.equal(app.body.size, 0);
+    assert.equal(app.head.size, 0);
+    assert.ok(app.sourceClasses.has("post-view-transition__hero"));
     assert.ok(app.classes.has("post-view-transition"));
     app.closeModal();
     const [beforeEach] = [...app.guards];
@@ -350,16 +350,17 @@ await test("Search bridges only its selected image until destination capture, th
     assert.equal(app.focusCount, 1);
     app.finish();
     await app.transition.finished;
+    assert.equal(app.sourceClasses.size, 0);
     assert.equal(app.targetClasses.size, 0);
     assert.equal(app.classes.size, 0);
     app.unmount[0]!();
 });
 
 for (const interruption of ["failed navigation", "unmount"] as const) {
-    await test(`A search image bridge is removed on ${interruption}`, () => {
+    await test(`Search image naming is removed on ${interruption}`, () => {
         const app = createHarness();
         app.activate();
-        assert.equal(app.body.size, 1);
+        assert.ok(app.sourceClasses.has("post-view-transition__hero"));
         if (interruption === "failed navigation") {
             const [, afterEach] = [...app.guards];
             afterEach!({}, {}, new Error("Navigation cancelled"));
@@ -368,6 +369,7 @@ for (const interruption of ["failed navigation", "unmount"] as const) {
         }
         assert.equal(app.body.size, 0);
         assert.equal(app.head.size, 0);
+        assert.equal(app.sourceClasses.size, 0);
         assert.equal(app.classes.size, 0);
         assert.equal(app.focusCount, 0);
         app.unmount[0]!();
@@ -375,7 +377,7 @@ for (const interruption of ["failed navigation", "unmount"] as const) {
 }
 
 for (const blocked of ["modified click", "another modal"] as const) {
-    await test(`Search does not bridge an image for ${blocked}`, () => {
+    await test(`Search does not name an image for ${blocked}`, () => {
         const app = createHarness();
         if (blocked === "another modal") {
             app.otherModal();
@@ -383,6 +385,7 @@ for (const blocked of ["modified click", "another modal"] as const) {
         app.activate(blocked === "modified click");
         assert.equal(app.body.size, 0);
         assert.equal(app.head.size, 0);
+        assert.equal(app.sourceClasses.size, 0);
         assert.equal(app.classes.size, 0);
         app.unmount[0]!();
     });

@@ -15,7 +15,7 @@ const source = stripTypeScriptTypes(
 const createHarness = () => {
     const hooks = new Map<string, () => void>();
     const errors = new Set<() => void>();
-    let beforeResolve = () => {};
+    let afterEach = (_to: { fullPath: string }) => {};
     const route = { fullPath: "/", query: {} };
     let focuses = 0;
     const heading = {
@@ -29,11 +29,10 @@ const createHarness = () => {
         computed: (value: () => unknown) => ({ value: value() }),
         useRoute: () => route,
         useRouter: () => ({
-            beforeResolve: (callback: () => void) => {
-                beforeResolve = callback;
+            afterEach: (callback: typeof afterEach) => {
+                afterEach = callback;
                 return () => {};
             },
-            afterEach: () => () => {},
             onError: (callback: () => void) => {
                 errors.add(callback);
                 return () => errors.delete(callback);
@@ -74,7 +73,7 @@ const createHarness = () => {
         errors,
         route,
         resolve: () => {
-            beforeResolve();
+            afterEach(route);
         },
         get focuses() {
             return focuses;
@@ -97,19 +96,25 @@ await test("A thrown navigation error clears search focus intent before a later 
     assert.equal(app.focuses, 0);
 });
 
-await test("Search stays open during route loading and closes before the native snapshot", () => {
+await test("Search stays open through the old snapshot and closes when the route commits", () => {
     const app = createHarness();
     app.search.onSelected("article", "/article/");
     assert.equal(app.search.isOpen.value, true);
-    app.hooks.get("page:view-transition:start")!();
+    app.hooks.get("page:view-transition:start")?.();
+    assert.equal(app.search.isOpen.value, true);
+    app.route.fullPath = "/article/";
+    app.resolve();
     assert.equal(app.search.isOpen.value, false);
     assert.equal(app.search.animateClose.value, false);
+    app.hooks.get("page:finish")!();
+    assert.equal(app.focuses, 1);
 });
 
-await test("Without a native snapshot search closes when the route resolves", () => {
+await test("Without a native snapshot search closes when the route commits", () => {
     const app = createHarness();
     app.search.onSelected("article", "/article/");
     assert.equal(app.search.isOpen.value, true);
+    app.route.fullPath = "/article/";
     app.resolve();
     assert.equal(app.search.isOpen.value, false);
     assert.equal(app.search.animateClose.value, false);
@@ -118,6 +123,7 @@ await test("Without a native snapshot search closes when the route resolves", ()
 await test("Reopening search restores animated dismissal after navigation", () => {
     const app = createHarness();
     app.search.onSelected("article", "/article/");
+    app.route.fullPath = "/article/";
     app.resolve();
     app.search.onOpen();
     assert.equal(app.search.isOpen.value, true);

@@ -27,8 +27,6 @@ const setupPostViewTransition = (nuxtApp: NuxtApp): void => {
         permalink: string;
         source: HTMLElement;
         target?: HTMLElement;
-        bridge?: HTMLImageElement;
-        bridgeStyle?: HTMLStyleElement;
       } & ({ kind: "post"; hero: string } | { kind: "tag"; title: string }))
     | undefined;
   let activeTransition: ViewTransition | undefined;
@@ -43,8 +41,6 @@ const setupPostViewTransition = (nuxtApp: NuxtApp): void => {
         : "post-view-transition__hero";
     selected?.source.classList.remove(className);
     selected?.target?.classList.remove(className);
-    selected?.bridge?.remove();
-    selected?.bridgeStyle?.remove();
     root.classList.remove("post-view-transition");
     selected = undefined;
   };
@@ -106,35 +102,11 @@ const setupPostViewTransition = (nuxtApp: NuxtApp): void => {
     ) {
       return;
     }
-    let bridge: HTMLImageElement | undefined;
-    let bridgeStyle: HTMLStyleElement | undefined;
-    if (link.closest("dialog.search-dialogue[open]")) {
-      // The modal must close before capture. Keep only its selected image in
-      // viewport coordinates, outside the top layer, until the new page is ready.
-      const box = image.getBoundingClientRect();
-      bridge = document.createElement("img");
-      bridge.className = `${image.className} post-view-transition__bridge`;
-      bridge.dataset.viewTransitionImage = "";
-      bridge.src = image.currentSrc;
-      bridge.alt = "";
-      bridge.setAttribute("aria-hidden", "true");
-      bridgeStyle = document.createElement("style");
-      bridgeStyle.textContent = `.post-view-transition__bridge {
-        left: ${box.left}px;
-        top: ${box.top}px;
-        inline-size: ${box.width}px;
-        block-size: ${box.height}px;
-      }`;
-      document.head.append(bridgeStyle);
-      document.body.append(bridge);
-    }
     return {
       kind: "post" as const,
       permalink: link.pathname,
       hero: card.dataset.postHero,
-      source: bridge ?? image,
-      bridge,
-      bridgeStyle,
+      source: image,
     };
   };
 
@@ -237,8 +209,6 @@ const setupPostViewTransition = (nuxtApp: NuxtApp): void => {
     }
     const { target, heading } = destination;
     selected.target = target;
-    selected.bridge?.remove();
-    selected.bridgeStyle?.remove();
     target.classList.add(
       selected.kind === "tag"
         ? "tag-view-transition__title"

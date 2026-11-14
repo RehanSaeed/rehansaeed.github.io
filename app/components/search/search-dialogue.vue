@@ -82,13 +82,11 @@ const onSelected = (searchTerm: string, permalink: string) => {
   }
 };
 const disposers = [
-  // Native capture happens on the next render, after this unanimated closure.
-  nuxtApp.hook("page:view-transition:start", closeSelection),
-  // Also close at route resolution when native transitions are unavailable.
-  router.beforeResolve(closeSelection),
   nuxtApp.hook("page:finish", focusArticle),
   nuxtApp.hook("app:error", cancelSelection),
   router.afterEach((to, _from, failure) => {
+    // Nuxt commits the route inside the native update, after the old snapshot.
+    closeSelection();
     if (failure || to.fullPath !== focusDestination) {
       cancelSelection();
     }

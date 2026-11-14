@@ -1,12 +1,4 @@
 @media (prefers-reduced-motion: no-preference) {
-  .post-view-transition__bridge {
-    position: fixed;
-    z-index: 2147483647;
-    min-inline-size: 0;
-    margin: 0;
-    pointer-events: none;
-  }
-
   .post-view-transition__hero {
     view-transition-name: post-hero;
   }
