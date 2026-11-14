@@ -260,8 +260,6 @@ To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>`
 
 # Image Carousels
 
-Consecutive image-only paragraphs or figures become a full-bleed gallery. The centred image keeps the same dimensions as a normal article image. Swipe, scroll horizontally, drag an image or use the overlay arrows and paging dots. Images follow the pointer or finger during a horizontal gesture, then settle on the nearest image when released. Navigation arrows appear over the image on hover or keyboard focus, and available arrows stay visible on touch screens. They stay hidden during a drag or swipe. Vertical page scrolling and pinch zoom remain available. Focus the gallery to use the arrow keys, Home and End. Images grow and fade continuously with the scroll position, not when they pass a halfway point. Reduced motion and High Contrast Mode keep the images static and fully opaque. Captions and links retain their normal semantics; prose and headings end a gallery.
-
 <figure>
 
 [![A linked code illustration in the first gallery slide.](./images/Code-1600x900.jpg)](/css-general-rules-of-thumb/)
