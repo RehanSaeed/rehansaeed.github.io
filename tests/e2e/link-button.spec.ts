@@ -205,6 +205,20 @@ for (const theme of ["light", "dark"]) {
         fits: element.getBoundingClientRect().right <= innerWidth,
       })),
     ).toEqual({ overflows: false, fits: true });
+    const enlargedText = await page.addStyleTag({
+      content: "html { font-size: 32px; }",
+    });
+    await expect(link).toHaveCSS("min-inline-size", "48px");
+    await expect(link).toHaveCSS("min-block-size", "72px");
+    expect(
+      await link.evaluate((element) => ({
+        overflows: element.scrollWidth > element.clientWidth,
+        fits: element.getBoundingClientRect().right <= innerWidth,
+      })),
+    ).toEqual({ overflows: false, fits: true });
+    await enlargedText.evaluate((element) => {
+      element.parentNode?.removeChild(element);
+    });
     await page.emulateMedia({ reducedMotion: "reduce" });
     await link.hover();
     await expect(link).toHaveCSS("transform", "none");
