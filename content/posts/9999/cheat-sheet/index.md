@@ -38,7 +38,7 @@ Duis aliquet ex eu scelerisque ultricies. Nam ac sagittis ligula. Vestibulum vel
 # Links
 
 [Link](https://example.com)
-[Empty Link]()
+[Empty Link](<>)
 
 # Horizontal Rule
 
@@ -182,12 +182,12 @@ docker image build --tag foo:1.0.0 --label "build"="123" --label "changeset"="0d
 // Code Title, Line Numbers, Line Highlight
 // Code Title, Line Numbers, Line Highlight
 export default {
-  data () {
+  data() {
     return {
-      msg: 'All'
-    }
-  }
-}
+      msg: "All",
+    };
+  },
+};
 ```
 
 # Math
@@ -257,6 +257,35 @@ To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>`
 
 <figcaption>A code-themed illustration.</figcaption>
 </figure>
+
+# Image Carousels
+
+<figure>
+
+[![A linked code illustration in the first gallery slide.](./images/Code-1600x900.jpg)](/css-general-rules-of-thumb/)
+
+<figcaption>The first gallery image retains its link.</figcaption>
+</figure>
+
+<figure>
+
+![A code illustration in the second gallery slide.](./images/Code-1600x900.jpg)
+
+<figcaption>The second gallery image retains its caption.</figcaption>
+</figure>
+
+<figure>
+
+![A code illustration in the third gallery slide.](./images/Code-1600x900.jpg)
+
+<figcaption>The third gallery image demonstrates the last endpoint.</figcaption>
+</figure>
+
+## Images Without Captions
+
+![A code illustration in the first image-only gallery slide.](./images/Code-1600x900.jpg)
+
+![A code illustration in the second image-only gallery slide.](./images/Code-1600x900.jpg)
 
 # Embed Videos
 
