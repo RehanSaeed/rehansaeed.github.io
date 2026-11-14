@@ -55,7 +55,7 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
 <style lang="scss">
 .link-button {
   animation: none;
-  color: var(--global-title-color);
+  color: var(--link-button-tag-text-color, var(--global-title-color));
   font-family: var(--font-heading);
   line-height: var(--global-line-height-1);
   position: relative;
@@ -69,11 +69,11 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
   &:visited,
   &:focus,
   &:active {
-    color: var(--global-title-color);
+    color: var(--link-button-tag-text-color, var(--global-title-color));
   }
 
   &:hover {
-    color: var(--global-accent-color);
+    color: var(--link-button-tag-text-color, var(--global-accent-color));
     transform: scale(1.07);
   }
 }
@@ -155,7 +155,8 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
 
 .link-button--tag {
   --link-button-tag-text-color: var(--global-title-color);
-  --link-button-tag-point: 1rem;
+  --link-button-tag-point: var(--global-space-fixed-4);
+  --link-button-tag-hole-size: 0.4rem;
   --link-button-tag-surface: var(--global-background-color);
   --link-button-tag-edge: var(--global-border-color);
   --link-button-tag-shadow: none;
@@ -169,34 +170,25 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
 
   isolation: isolate;
   display: inline-flex;
-  gap: 0.45em;
   align-items: center;
   min-inline-size: 24px;
   max-inline-size: 100%;
   min-block-size: 36px;
-  border: 1px solid transparent;
+  border: var(--global-border-width-1) solid transparent;
   border-radius: 0;
   border-start-end-radius: 0.4rem;
   border-end-end-radius: 0.4rem;
-  padding: 0.35rem 0.75rem;
-  padding-inline-start: calc(var(--link-button-tag-point) + 1rem);
+  padding: 0.35rem var(--global-space-fixed-3);
+  padding-inline-start: calc(
+    var(--link-button-tag-point) + var(--global-space-fixed-4)
+  );
   background: transparent;
   box-shadow: none;
-  color: var(--link-button-tag-text-color);
   font-family: var(--global-font-family-monospace);
   font-size: 0.8rem;
   font-weight: 500;
   line-height: 1.5;
   overflow-wrap: anywhere;
-  text-decoration: none;
-
-  &:visited,
-  &:hover,
-  &:focus,
-  &:active {
-    color: var(--link-button-tag-text-color);
-    text-decoration: none;
-  }
 
   &:hover,
   &:focus {
@@ -229,9 +221,11 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
 
     position: absolute;
     inset-block-start: 50%;
-    inset-inline-start: calc(var(--link-button-tag-point) - 0.2rem);
-    inline-size: 0.4rem;
-    block-size: 0.4rem;
+    inset-inline-start: calc(
+      var(--link-button-tag-point) - var(--link-button-tag-hole-size) / 2
+    );
+    inline-size: var(--link-button-tag-hole-size);
+    block-size: var(--link-button-tag-hole-size);
     border-radius: 50%;
     background: var(--global-accent-color);
     transform: translateY(-50%);
@@ -248,24 +242,21 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
   pointer-events: none;
   transition: filter var(--global-duration-1) var(--ease-in-out-cubic);
 
-  &::before {
+  &::before,
+  &::after {
     content: "";
 
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: var(--link-button-tag-edge);
+    background: var(--link-button-tag-paint, var(--link-button-tag-edge));
     clip-path: var(--link-button-tag-outline);
   }
 
   &::after {
-    content: "";
+    --link-button-tag-paint: var(--link-button-tag-surface);
 
-    position: absolute;
-    inset: 1px;
-    border-radius: inherit;
-    background: var(--link-button-tag-surface);
-    clip-path: var(--link-button-tag-outline);
+    inset: var(--global-border-width-1);
   }
 }
 
@@ -287,9 +278,6 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
     --link-button-tag-edge: LinkText;
     --link-button-tag-shadow: none;
 
-    border-color: transparent;
-    background: transparent;
-    box-shadow: none;
     forced-color-adjust: none;
 
     &:focus-visible {
