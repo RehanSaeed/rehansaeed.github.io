@@ -541,6 +541,18 @@ test("Full-width controls remain contained with large touch targets in both them
     "height",
     "4px",
   );
+  const readMenuLayout = (element: Element) => {
+    const menu = element.getBoundingClientRect();
+    const track = element
+      .closest(".prose-video")!
+      .querySelector(".prose-video__progress")!
+      .getBoundingClientRect();
+    return {
+      x: menu.x,
+      width: menu.width,
+      trackGap: track.top - menu.bottom,
+    };
+  };
   for (const theme of ["light", "dark"]) {
     await page.evaluate((theme) => {
       document.documentElement.dataset.theme = theme;
@@ -594,7 +606,6 @@ test("Full-width controls remain contained with large touch targets in both them
             videoBounds.left - mediaBounds.left,
             mediaBounds.right - videoBounds.right,
           ],
-          trackTop: progressBounds.top,
           volumeGap:
             volumeBounds?.width && muteBounds
               ? volumeBounds.left - muteBounds.right
@@ -672,10 +683,11 @@ test("Full-width controls remain contained with large touch targets in both them
       expect(layout.right).toBeLessThanOrEqual(width);
       expect(layout.overflow).toBe(false);
       expect(layout.targets).toBe(true);
-      for (const offset of [
-        ...layout.fullBleedOffsets,
-        ...layout.mediaOffsets,
-      ]) {
+      for (const offset of layout.fullBleedOffsets) {
+        // Fluid padding and card edges can round to different subpixels.
+        expect(Math.abs(offset)).toBeLessThan(1);
+      }
+      for (const offset of layout.mediaOffsets) {
         expect(offset).toBeCloseTo(0, 3);
       }
       for (const face of layout.toolbarFaces) {
@@ -736,10 +748,10 @@ test("Full-width controls remain contained with large touch targets in both them
         "background-color",
         "rgb(255, 255, 255)",
       );
-      const menu = await languages.boundingBox();
-      expect(layout.trackTop - (menu!.y + menu!.height)).toBeCloseTo(8, 3);
-      expect(menu!.x).toBeGreaterThanOrEqual(0);
-      expect(menu!.x + menu!.width).toBeLessThanOrEqual(width);
+      const menu = await languages.evaluate(readMenuLayout);
+      expect(menu.trackGap).toBeCloseTo(8, 3);
+      expect(menu.x).toBeGreaterThanOrEqual(0);
+      expect(menu.x + menu.width).toBeLessThanOrEqual(width);
       await page.keyboard.press("Escape");
       await expect(languages).toBeHidden();
       await player.getByRole("button", { name: /^Playback speed:/ }).click();
@@ -747,14 +759,11 @@ test("Full-width controls remain contained with large touch targets in both them
         name: "Playback speed options",
       });
       await expect(speeds).toBeVisible();
-      const speedMenu = await speeds.boundingBox();
-      expect(layout.trackTop - (speedMenu!.y + speedMenu!.height)).toBeCloseTo(
-        8,
-        3,
-      );
-      expect(speedMenu!.x).toBeGreaterThanOrEqual(0);
-      expect(speedMenu!.x + speedMenu!.width).toBeLessThanOrEqual(width);
-      expect(speedMenu!.width).toBeCloseTo(
+      const speedMenu = await speeds.evaluate(readMenuLayout);
+      expect(speedMenu.trackGap).toBeCloseTo(8, 3);
+      expect(speedMenu.x).toBeGreaterThanOrEqual(0);
+      expect(speedMenu.x + speedMenu.width).toBeLessThanOrEqual(width);
+      expect(speedMenu.width).toBeCloseTo(
         Math.min(314, layout.right - layout.left - 16),
         3,
       );
@@ -765,9 +774,9 @@ test("Full-width controls remain contained with large touch targets in both them
         expect(bounds!.width).toBeCloseTo(44, 3);
         expect(bounds!.height).toBeCloseTo(44, 3);
         await expect(preset).toHaveCSS("border-radius", "50%");
-        expect(bounds!.x).toBeGreaterThanOrEqual(speedMenu!.x);
+        expect(bounds!.x).toBeGreaterThanOrEqual(speedMenu.x);
         expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(
-          speedMenu!.x + speedMenu!.width,
+          speedMenu.x + speedMenu.width,
         );
       }
       const stepButtons = speeds.locator(".prose-video__speed-adjust button");
