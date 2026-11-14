@@ -69,7 +69,7 @@ export const groupImageCarousels = (nodes: Node[] | undefined): void => {
         "carousel",
         { count: run.length },
         ...run.map((slide): Element => [
-          "div",
+          "li",
           { class: "carousel__slide" },
           frameImage(slide),
         ]),

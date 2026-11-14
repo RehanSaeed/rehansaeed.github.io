@@ -4,17 +4,16 @@
     :class="{ 'carousel--interactive': isInteractive }"
     aria-label="Image gallery">
     <div class="carousel__viewport">
-      <div
+      <ol
         :id="trackId"
         ref="track"
         class="carousel__track"
         :class="{ 'carousel__track--dragging': isDragging }"
-        role="group"
         aria-label="Gallery images"
         tabindex="0"
         @scroll.passive="schedulePosition">
         <slot />
-      </div>
+      </ol>
       <u-carousel-arrows
         v-if="isInteractive"
         class="carousel__arrows"
@@ -49,7 +48,7 @@ const props = defineProps<{
   count: number;
 }>();
 const trackId = `image-gallery-${useId()}`;
-const track = useTemplateRef<HTMLDivElement>("track");
+const track = useTemplateRef<HTMLOListElement>("track");
 const currentIndex = ref(0);
 const isInteractive = ref(false);
 const isDragging = ref(false);
@@ -377,6 +376,8 @@ onBeforeUnmount(() => {
   overscroll-behavior-inline: contain;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
+  list-style: none;
+  margin: 0;
   padding-block: var(--global-space-fixed-2);
   padding-inline: calc((100vw - var(--carousel-slide-size)) / 2);
 
@@ -413,6 +414,7 @@ onBeforeUnmount(() => {
   min-inline-size: 0;
   scroll-snap-align: center;
   scroll-snap-stop: always;
+  margin: 0;
 
   > p,
   > figure,

@@ -14,7 +14,8 @@ for (const width of [1440, 640, 375, 320]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
     const gallery = page.getByRole("region", { name: "Image gallery" }).first();
-    const track = gallery.getByRole("group", { name: "Gallery images" });
+    const track = gallery.getByRole("list", { name: "Gallery images" });
+    await expect(track.locator(":scope > li")).toHaveCount(3);
     await expect(gallery.locator("figure")).toHaveCount(3);
     await expect(gallery.locator("figcaption").first()).toHaveText(
       "The first gallery image retains its link.",
@@ -143,7 +144,7 @@ test.describe("Continuous scroll-linked motion", () => {
   }) => {
     await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
     const gallery = page.getByRole("region", { name: "Image gallery" }).first();
-    const track = gallery.getByRole("group", { name: "Gallery images" });
+    const track = gallery.getByRole("list", { name: "Gallery images" });
     await gallery.scrollIntoViewIfNeeded();
     await expect(
       gallery.getByRole("button", { name: "Go to image 1 of 3" }),
@@ -445,7 +446,7 @@ test("Cover Flow arrow shells and shared paging retain their colours, inset circ
     .filter({ has: page.locator('img[alt*="Currency Converter Pro"]') });
   const image = gallery.locator("img").first();
   const next = gallery.getByRole("button", { name: "Next image", exact: true });
-  const track = gallery.getByRole("group", { name: "Gallery images" });
+  const track = gallery.getByRole("list", { name: "Gallery images" });
   const firstDot = gallery.getByRole("button", { name: "Go to image 1 of 2" });
   const secondDot = gallery.getByRole("button", { name: "Go to image 2 of 2" });
   const shell = gallery.locator(".carousel-arrows__shell").last();
@@ -532,7 +533,7 @@ test.describe("Touch gesture tracking", () => {
   }) => {
     await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
     const gallery = page.getByRole("region", { name: "Image gallery" }).first();
-    const track = gallery.getByRole("group", { name: "Gallery images" });
+    const track = gallery.getByRole("list", { name: "Gallery images" });
     await gallery.scrollIntoViewIfNeeded();
     const image = gallery.locator("img").first();
     const bounds = await image.boundingBox();
@@ -685,7 +686,7 @@ test("Native horizontal scrolling preserves the actual article's adjacent screen
     "lazy",
   );
   await gallery.scrollIntoViewIfNeeded();
-  await gallery.getByRole("group", { name: "Gallery images" }).hover();
+  await gallery.getByRole("list", { name: "Gallery images" }).hover();
   await page.mouse.wheel(1200, 0);
   await expect(gallery.locator(".carousel__position")).toHaveText(
     "Image 2 of 2",
@@ -708,6 +709,11 @@ test("Consecutive plain images form a separate carousel without captions or link
     }),
   });
   await expect(gallery.locator("img")).toHaveCount(2);
+  await expect(
+    gallery
+      .getByRole("list", { name: "Gallery images" })
+      .locator(":scope > li"),
+  ).toHaveCount(2);
   await expect(gallery.locator("figure, figcaption, a")).toHaveCount(0);
   await gallery.scrollIntoViewIfNeeded();
   await gallery.locator("img").first().hover();
@@ -741,7 +747,7 @@ test.describe("Progressive enhancement", () => {
       "/css-general-rules-of-thumb/",
     );
     await expect(gallery.getByRole("button")).toHaveCount(0);
-    const track = gallery.getByRole("group", { name: "Gallery images" });
+    const track = gallery.getByRole("list", { name: "Gallery images" });
     await expect(track).toHaveAttribute("tabindex", "0");
     await expect(track).toHaveCSS("overflow-x", "auto");
     await expect(gallery.locator(".prose-image").first()).toHaveCSS(

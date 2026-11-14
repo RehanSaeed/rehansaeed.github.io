@@ -31,9 +31,9 @@ await test("groups adjacent images and preserves figure captions and image links
         [
             "carousel",
             { count: 2 },
-            ["div", { class: "carousel__slide" }, first],
+            ["li", { class: "carousel__slide" }, first],
             [
-                "div",
+                "li",
                 { class: "carousel__slide" },
                 [
                     "figure",
