@@ -1,12 +1,13 @@
 <template>
   <div class="tags">
     <u-link-button
-      class="tags__link"
-      bordered
       v-for="tag of tags"
       :key="tag"
+      class="tags__link"
+      variant="tag"
+      data-tag-transition-link
       :to="tagPath(tag)"
-      >{{ tag }}</u-link-button
+      ><span data-tag-transition-label>{{ tag }}</span></u-link-button
     >
   </div>
 </template>
@@ -27,7 +28,7 @@ defineProps({
 <style lang="scss">
 .tags {
   display: flex;
-  gap: var(--global-space-fixed-3);
+  gap: calc(var(--global-space-fixed-4) / 2);
   flex-wrap: wrap;
 }
 </style>

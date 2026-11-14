@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed } from "vue";
 import {
   getAbsoluteDisplayDateFromString,
   getDisplayDateFromString,
@@ -24,14 +24,11 @@ const props = defineProps({
     required: true,
   },
 });
-const isMounted = ref(false);
+const isMounted = useMounted();
 // The prerendered absolute date must match hydration before showing relative dates.
 const datetimeDisplay = computed(() =>
   isMounted.value
     ? getDisplayDateFromString(props.datetime)
     : getAbsoluteDisplayDateFromString(props.datetime),
 );
-onMounted(() => {
-  isMounted.value = true;
-});
 </script>

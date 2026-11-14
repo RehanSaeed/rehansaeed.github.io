@@ -1,13 +1,21 @@
 <template>
-  <article class="search-result">
+  <article
+    class="search-result"
+    :data-view-transition-source="
+      searchResult.index === 'post' ? '' : undefined
+    "
+    :data-post-permalink="searchResult.permalink"
+    :data-post-hero="searchResult.heroImage">
     <NuxtLink
       :to="searchResult.permalink"
       class="search-result__link"
-      @click="onSelected">
+      data-view-transition-link
+      @click.capture="onSelected">
       <picture v-if="searchResult.heroImage" class="search-result__picture">
         <source v-if="avifSource" type="image/avif" :srcset="avifSource" />
         <img
           class="search-result__image"
+          data-view-transition-image
           alt=""
           loading="lazy"
           :src="searchResult.heroImage" />
@@ -31,7 +39,7 @@ import { getAvifSource } from "#shared/utils/images";
 import type { SearchDocument } from "#shared/utils/search";
 
 defineOptions({ name: "u-search-result" });
-const emit = defineEmits<{ selected: [] }>();
+const emit = defineEmits<{ selected: [permalink: string] }>();
 const props = defineProps({
   /** Indexed content entry to display as a search result. */ searchResult: {
     type: Object as PropType<SearchDocument>,
@@ -39,8 +47,22 @@ const props = defineProps({
   },
 });
 const avifSource = computed(() => getAvifSource(props.searchResult.heroImage));
-const onSelected = () => {
-  emit("selected");
+const onSelected = (event: MouseEvent) => {
+  const link = event.currentTarget;
+  if (
+    event.defaultPrevented ||
+    event.button !== 0 ||
+    event.altKey ||
+    event.ctrlKey ||
+    event.metaKey ||
+    event.shiftKey ||
+    !(link instanceof HTMLAnchorElement) ||
+    link.hasAttribute("download") ||
+    (link.target && link.target !== "_self")
+  ) {
+    return;
+  }
+  emit("selected", props.searchResult.permalink);
 };
 </script>
 

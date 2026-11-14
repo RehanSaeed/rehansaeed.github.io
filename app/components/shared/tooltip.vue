@@ -104,10 +104,29 @@ watchEffect(() => {
 let hovered = false;
 let focused = false;
 let bubbleHovered = false;
-let timer: ReturnType<typeof setTimeout> | undefined;
+const openDelay = ref(0);
+const { start: startOpening, stop: stopOpening } = useTimeoutFn(
+  () => {
+    if (props.text) {
+      open.value = true;
+    }
+  },
+  openDelay,
+  { immediate: false },
+);
+const { start: startClosing, stop: stopClosing } = useTimeoutFn(
+  () => {
+    if (!hovered && !focused && !bubbleHovered) {
+      dismiss();
+    }
+  },
+  closeDelayMs,
+  { immediate: false },
+);
 
 const clearTimer = () => {
-  clearTimeout(timer);
+  stopOpening();
+  stopClosing();
 };
 
 const dismiss = () => {
@@ -122,11 +141,8 @@ const show = (event: Event, delay = 0) => {
   anchor.value = event.currentTarget;
   teleportTarget.value = anchor.value.closest("dialog") ?? "body";
   clearTimer();
-  timer = setTimeout(() => {
-    if (props.text) {
-      open.value = true;
-    }
-  }, delay);
+  openDelay.value = delay;
+  startOpening();
 };
 
 const scheduleHide = () => {
@@ -134,11 +150,7 @@ const scheduleHide = () => {
     return;
   }
   clearTimer();
-  timer = setTimeout(() => {
-    if (!hovered && !focused && !bubbleHovered) {
-      dismiss();
-    }
-  }, closeDelayMs);
+  startClosing();
 };
 
 const onPointerEnter = (event: PointerEvent) => {
@@ -224,15 +236,16 @@ const onEscape = (event: KeyboardEvent) => {
   dismiss();
 };
 
-watch(open, (visible, _, onCleanup) => {
+useEventListener(
+  () => (open.value ? document : undefined),
+  "keydown",
+  onEscape,
+  true,
+);
+watch(open, (visible) => {
   if (!visible) {
-    return;
-  }
-  onCleanup(() => {
-    document.removeEventListener("keydown", onEscape, true);
     bubbleHovered = false;
-  });
-  document.addEventListener("keydown", onEscape, true);
+  }
 });
 
 watch(
@@ -243,8 +256,6 @@ watch(
     }
   },
 );
-
-onBeforeUnmount(clearTimer);
 </script>
 
 <style lang="scss">

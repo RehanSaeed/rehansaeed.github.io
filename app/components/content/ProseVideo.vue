@@ -15,6 +15,7 @@ defineOptions({ inheritAttrs: false });
 const fullyVisibleRatio = 0.99;
 const threshold = [0, fullyVisibleRatio, 1];
 const video = useTemplateRef<HTMLVideoElement>("video");
+const motion = usePreferredReducedMotion();
 let expectingPlay = false;
 let expectingPause = false;
 let hasAutoplayed = false;
@@ -48,7 +49,7 @@ const play = (element: HTMLVideoElement): void => {
     !element.paused ||
     userPaused ||
     element.ended ||
-    globalThis.matchMedia("(prefers-reduced-motion: reduce)").matches
+    motion.value === "reduce"
   ) {
     return;
   }

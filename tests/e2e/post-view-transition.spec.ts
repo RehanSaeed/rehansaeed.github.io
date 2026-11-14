@@ -2,6 +2,7 @@
 import { expect, test } from "@playwright/test";
 import type { Locator, Page } from "@playwright/test";
 import { writeFile } from "node:fs/promises";
+import type { NuxtApp } from "nuxt/app";
 import type { Router } from "vue-router";
 
 test.use({ trace: "retain-on-failure" });
@@ -371,6 +372,68 @@ test.describe("Bounded card-to-article hero continuity", () => {
       });
     }
   });
+
+  for (const { title, trigger } of [
+    { title: "Search", trigger: "Open search" },
+    { title: "Share", trigger: "Share" },
+    { title: "Buy me a Coffee", trigger: "Buy me a Coffee" },
+  ]) {
+    test(`Opening ${title} interrupts an active native snapshot after client navigation`, async ({
+      page,
+    }) => {
+      await page.addInitScript(() => {
+        Object.defineProperty(navigator, "share", { value: undefined });
+      });
+      await instrument(page);
+      await page.goto("/");
+      await expect(
+        page.getByRole("button", { name: "Open search", exact: true }),
+      ).toBeEnabled();
+      await page.locator(".post-card__title").first().click();
+      await expect(
+        page.locator(".post-page__title-container h1"),
+      ).toBeVisible();
+      await resetProbe(page);
+      await pauseTransitions(page);
+
+      const opener = page
+        .getByRole("button", { name: trigger, exact: true })
+        .first();
+      const dialog = page.getByRole("dialog", { name: title, exact: true });
+      await opener.focus();
+      await opener.evaluate(async (button: HTMLButtonElement) => {
+        type NuxtRoot = HTMLElement & {
+          __vue_app__?: {
+            config: { globalProperties: { $nuxt: NuxtApp } };
+          };
+        };
+        const app =
+          document.querySelector<NuxtRoot>("#__nuxt")!.__vue_app__!.config
+            .globalProperties.$nuxt;
+        // Hand a captured, paused native snapshot to Nuxt's real lifecycle, then
+        // enter the modal in the same turn, independent of the cold-capture deadline.
+        const transition = document.startViewTransition(() => {});
+        await transition.ready;
+        await app.hooks.callHook("page:view-transition:start", transition);
+        button.click();
+      });
+      await expect(dialog).toBeVisible();
+      const probe = await page.evaluate(() => window.postViewTransitionProbe);
+      expect(probe.starts).toBe(1);
+      expect(probe.ready).toBe(1);
+      await dialog
+        .getByRole("button", { name: `Close ${title}`, exact: true })
+        .click();
+      await expect(dialog).toBeHidden();
+      await expect(opener).toBeFocused();
+      await expect
+        .poll(() =>
+          page.evaluate(() => window.postViewTransitionProbe.finished),
+        )
+        .toBe(1);
+      await expectClean(page);
+    });
+  }
 
   test.describe("Warmed captures", () => {
     for (const activation of ["mouse", "Enter"] as const) {

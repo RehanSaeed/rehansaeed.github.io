@@ -21,7 +21,7 @@ import {
 } from "~/framework/analytics";
 defineOptions({ inheritAttrs: false });
 const { $pwa } = useNuxtApp();
-const hydrated = ref(false);
+const hydrated = useMounted();
 watch(
   () => $pwa?.showInstallPrompt,
   (visible) => {
@@ -41,9 +41,6 @@ const install = async () => {
     console.error("PWA installation failed:", error);
   }
 };
-onMounted(() => {
-  hydrated.value = true;
-});
 </script>
 
 <style lang="scss">

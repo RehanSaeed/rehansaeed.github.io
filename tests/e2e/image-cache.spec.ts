@@ -1,17 +1,27 @@
-import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
+import { cp, mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
+import type {} from "@nuxt/nitro-server/augments";
 import { expect, test } from "@playwright/test";
 import { parse } from "yaml";
-import { prepareImageCache } from "../../modules/image-cache/cache";
+import { prepareImageCache as prepareCache } from "../../modules/image-cache/cache";
+import cacheModule from "../../modules/image-cache/index";
 
 const image = "public/images/photo.png";
 const variant = "_ipx/f_avif&s_20x10/images/photo.png";
 const bytes = Buffer.from([0, 255, 128, 32, 10, 13]);
+const settings = {
+  image: { quality: 80, format: ["avif"], screens: { sm: 640, lg: 1024 } },
+  ipx: { sharpOptions: { animated: true }, alias: { "/photo": "/images" } },
+};
+const prepareImageCache = (
+  root: string,
+  inputs: unknown = settings,
+  dirs: string[] = [],
+) => prepareCache(root, inputs, dirs);
 
 async function fixture(root: string) {
   for (const file of [
     "package-lock.json",
-    "nuxt.config.ts",
     "modules/image-cache/index.ts",
     "modules/image-cache/cache.ts",
     "modules/blog-content/paths.ts",
@@ -23,6 +33,154 @@ async function fixture(root: string) {
     await writeFile(join(root, file), bytes);
   }
   return root;
+}
+
+test("Bundled icons and unrelated Nuxt settings preserve cached image bytes", async ({}, info) => {
+  const root = await fixture(info.outputPath("image-cache"));
+  try {
+    const cold = await prepareImageCache(root);
+    await cold.save(join(root, "dist"));
+    await writeFile(
+      join(root, "nuxt.config.ts"),
+      'export default { icon: { clientBundle: { icons: ["fa-solid:minus", "fa-solid:plus"] } }, app: { head: { title: "New title" } } };',
+    );
+    const warm = await prepareImageCache(root);
+    expect(warm.hit).toBe(true);
+    expect(await readFile(join(warm.publicDir, variant))).toEqual(bytes);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+for (const [label, inputs] of Object.entries({
+  quality: { ...settings, image: { ...settings.image, quality: 60 } },
+  format: { ...settings, image: { ...settings.image, format: ["webp"] } },
+  screens: { ...settings, image: { ...settings.image, screens: { sm: 720 } } },
+  provider: {
+    ...settings,
+    image: { ...settings.image, provider: "ipxStatic" },
+  },
+  alias: {
+    ...settings,
+    ipx: { ...settings.ipx, alias: { "/photo": "/other" } },
+  },
+  sharp: {
+    ...settings,
+    ipx: { ...settings.ipx, sharpOptions: { animated: false } },
+  },
+  runtime: { ...settings, ipx: { ...settings.ipx, maxOutputDimension: 1024 } },
+  environment: { ...settings, environment: { VIPS_MAX_COORD: "32768" } },
+})) {
+  test(`Changing effective ${label} settings removes stale image output`, async ({}, info) => {
+    const root = await fixture(info.outputPath("image-cache"));
+    try {
+      const cold = await prepareImageCache(root);
+      await cold.save(join(root, "dist"));
+      const changed = await prepareImageCache(root, inputs);
+      expect(changed.hit).toBe(false);
+      await expect(
+        readFile(join(changed.publicDir, variant)),
+      ).rejects.toMatchObject({ code: "ENOENT" });
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+}
+
+test("Equivalent relevant settings are stable regardless of property order or omitted values", async ({}, info) => {
+  const root = await fixture(info.outputPath("image-cache"));
+  try {
+    const cold = await prepareImageCache(root);
+    await cold.save(join(root, "dist"));
+    const warm = await prepareImageCache(root, {
+      ipx: { alias: { "/photo": "/images" }, sharpOptions: { animated: true } },
+      image: {
+        screens: { lg: 1024, sm: 640 },
+        format: ["avif"],
+        quality: 80,
+        unused: undefined,
+      },
+    });
+    expect(warm.hit).toBe(true);
+    expect(await readFile(join(warm.publicDir, variant))).toEqual(bytes);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("A restored cache is portable between equivalent checkout roots", async ({}, info) => {
+  const root = info.outputPath("checkouts");
+  const first = await fixture(join(root, "first"));
+  const second = await fixture(join(root, "second"));
+  try {
+    const cold = await prepareImageCache(first, { dir: join(first, "public") });
+    await cold.save(join(first, "dist"));
+    await cp(join(first, ".cache"), join(second, ".cache"), {
+      recursive: true,
+    });
+    const restored = await prepareImageCache(second, {
+      dir: join(second, "public"),
+    });
+    expect(restored.hit).toBe(true);
+    expect(await readFile(join(restored.publicDir, variant))).toEqual(bytes);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("Configured source roots are hashed and a missing source fails closed", async ({}, info) => {
+  const root = await fixture(info.outputPath("image-cache"));
+  const extra = join(root, "extra");
+  try {
+    await mkdir(extra);
+    await writeFile(join(extra, "image.svg"), "<svg/>");
+    const cold = await prepareImageCache(root, settings, [extra]);
+    await cold.save(join(root, "dist"));
+    expect((await prepareImageCache(root, settings, [extra])).hit).toBe(true);
+    await writeFile(join(extra, "image.svg"), '<svg width="2"/>');
+    const changed = await prepareImageCache(root, settings, [extra]);
+    expect(changed.hit).toBe(false);
+    await expect(
+      readFile(join(changed.publicDir, variant)),
+    ).rejects.toMatchObject({ code: "ENOENT" });
+    await rm(extra, { recursive: true });
+    await expect(prepareImageCache(root, settings, [extra])).rejects.toThrow(
+      "ENOENT",
+    );
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+for (const [label, input] of Object.entries({
+  function: {
+    plugin: () => "same function text cannot verify closed-over values",
+  },
+  class: { plugin: new Map([["setting", true]]) },
+  cycle: (() => {
+    const object: Record<string, unknown> = {};
+    object.self = object;
+    return object;
+  })(),
+})) {
+  test(`Non-serialisable ${label} settings cannot reuse or complete a cache`, async ({}, info) => {
+    const root = await fixture(info.outputPath("image-cache"));
+    try {
+      const cold = await prepareImageCache(root);
+      await cold.save(join(root, "dist"));
+      const disabled = await prepareImageCache(root, input);
+      expect(disabled.hit).toBe(false);
+      expect(disabled.disabledReason).toContain("plain data");
+      await expect(
+        readFile(join(disabled.publicDir, variant)),
+      ).rejects.toMatchObject({ code: "ENOENT" });
+      await disabled.save(join(root, "dist"));
+      expect((await prepareImageCache(root, input)).hit).toBe(false);
+      expect((await prepareImageCache(root)).hit).toBe(false);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
 }
 
 test("A warm image cache preserves binary output and can accumulate new sizes", async ({}, info) => {
@@ -53,7 +211,6 @@ test("A warm image cache preserves binary output and can accumulate new sizes", 
 for (const file of [
   image,
   "package-lock.json",
-  "nuxt.config.ts",
   "modules/image-cache/index.ts",
   "modules/image-cache/cache.ts",
   "modules/blog-content/paths.ts",
@@ -120,6 +277,182 @@ test("A failed image-output save cannot mark a cold cache as complete", async ({
   }
 });
 
+const initializeImageNuxt = async (
+  root: string,
+  icons: string[],
+  animated = true,
+  providers: Record<string, { provider: string }> = {},
+) => {
+  const { loadNuxt } = await import("nuxt/kit");
+  const { default: imageModule } = await import("@nuxt/image");
+  return loadNuxt({
+    cwd: root,
+    dev: false,
+    overrides: {
+      icon: { clientBundle: { icons } },
+      image: {
+        ipx: { sharpOptions: { animated } },
+        providers,
+      },
+      workspaceDir: root,
+      modulesDir: [join(process.cwd(), "node_modules")],
+      dir: { modules: "unused-modules" },
+      modules: [imageModule, cacheModule],
+      nitro: {
+        static: true,
+        output: { publicDir: join(root, "dist") },
+        prerender: {
+          crawlLinks: false,
+          concurrency: 1,
+          retry: 0,
+          failOnError: true,
+        },
+      },
+      hooks: {
+        "nitro:config": (config) => {
+          // Exercise the real image pipeline without building a Vue app.
+          config.renderer = undefined;
+          config.errorHandler = undefined;
+          config.plugins = [];
+        },
+      },
+      telemetry: false,
+    },
+  });
+};
+
+test("Nuxt reuses restored images during prerendering and generates new variants through IPX", async ({}, info) => {
+  const { useNitro } = await import("nuxt/kit");
+  const { default: sharp } = await import("sharp");
+  const { prerender, copyPublicAssets } = await import("nitropack");
+  const root = await fixture(info.outputPath("nuxt"));
+  const cachedVariant = join(root, ".cache/nuxt-images/public", variant);
+  const additional = variant.replace("20x10", "10x5");
+  const requests = join(root, "ipx-requests.txt");
+  const renderImages = async (
+    nuxt: Awaited<ReturnType<typeof initializeImageNuxt>>,
+    routes: string[],
+  ) => {
+    const nitro = nuxt.runWithContext(() => useNitro());
+    const ipxHandler = nitro.options._config.handlers?.find(
+      (handler) => handler.route === "/_ipx/**",
+    );
+    expect(ipxHandler).toBeDefined();
+    const handler = join(root, "ipx-handler.mjs");
+    await writeFile(requests, "");
+    await writeFile(
+      handler,
+      `import { appendFileSync } from "node:fs";
+import ipx from ${JSON.stringify(ipxHandler!.handler)};
+export default (event) => {
+  appendFileSync(${JSON.stringify(requests)}, event.path + "\\n");
+  return ipx(event);
+};`,
+    );
+    nitro.hooks.hook("prerender:routes", (pending) => {
+      pending.clear();
+      for (const route of routes) {
+        pending.add(route);
+      }
+    });
+    nitro.hooks.hook("prerender:config", (config) => {
+      config.handlers = [
+        { ...ipxHandler!, handler: handler.replaceAll("\\", "/") },
+      ];
+    });
+    await prerender(nitro);
+    await copyPublicAssets(nitro);
+    await nitro.hooks.callHook("compiled");
+    return (await readFile(requests, "utf8")).split("\n").filter(Boolean);
+  };
+  try {
+    await sharp({
+      create: { width: 20, height: 10, channels: 3, background: "#6b17e8" },
+    })
+      .png()
+      .toFile(join(root, image));
+    await rm(join(root, "dist", "_ipx"), { recursive: true });
+    const cold = await initializeImageNuxt(root, []);
+    let encoded: Buffer;
+    try {
+      await expect(readFile(cachedVariant)).rejects.toMatchObject({
+        code: "ENOENT",
+      });
+      encoded = await sharp(join(root, image)).avif().toBuffer();
+      await mkdir(dirname(join(root, "dist", variant)), { recursive: true });
+      await writeFile(join(root, "dist", variant), encoded);
+      await cold.runWithContext(() => useNitro()).hooks.callHook("compiled");
+    } finally {
+      await cold.close();
+    }
+
+    const warm = await initializeImageNuxt(root, [
+      "fa-solid:minus",
+      "fa-solid:plus",
+    ]);
+    try {
+      expect(await readFile(cachedVariant)).toEqual(encoded);
+      await rm(join(root, "dist", "_ipx"), { recursive: true });
+      expect(
+        await renderImages(warm, [`/${variant}`, `/${additional}`]),
+      ).toEqual([`/${additional}`]);
+      expect(await readFile(join(root, "dist", variant))).toEqual(encoded);
+      const newImage = await readFile(join(root, "dist", additional));
+      expect(await sharp(newImage).metadata()).toMatchObject({
+        format: "heif",
+        width: 10,
+        height: 5,
+      });
+      expect(
+        await readFile(join(root, ".cache/nuxt-images/public", additional)),
+      ).toEqual(newImage);
+    } finally {
+      await warm.close();
+    }
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("Nuxt initialization fingerprints resolved IPX options and bypasses custom providers", async ({}, info) => {
+  const { useNitro } = await import("nuxt/kit");
+  const root = await fixture(info.outputPath("nuxt"));
+  const cachedVariant = join(root, ".cache/nuxt-images/public", variant);
+  try {
+    const cold = await initializeImageNuxt(root, []);
+    try {
+      await cold.runWithContext(() => useNitro()).hooks.callHook("compiled");
+    } finally {
+      await cold.close();
+    }
+    const changed = await initializeImageNuxt(
+      root,
+      ["fa-solid:minus", "fa-solid:plus"],
+      false,
+    );
+    try {
+      await expect(readFile(cachedVariant)).rejects.toMatchObject({
+        code: "ENOENT",
+      });
+    } finally {
+      await changed.close();
+    }
+    const custom = await initializeImageNuxt(root, [], true, {
+      custom: { provider: "none" },
+    });
+    try {
+      await custom.runWithContext(() => useNitro()).hooks.callHook("compiled");
+      await expect(
+        readFile(join(root, ".cache/nuxt-images/fingerprint")),
+      ).rejects.toMatchObject({ code: "ENOENT" });
+    } finally {
+      await custom.close();
+    }
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
 test("CI persists only the responsive image cache before generation", async () => {
   const { workflowSchema } = await import("./data");
   const workflow = workflowSchema.parse(
@@ -140,15 +473,16 @@ test("CI persists only the responsive image cache before generation", async () =
     "runner.arch",
     "steps.node.outputs.node-version",
     "package-lock.json",
-    "nuxt.config.ts",
     "modules/image-cache/**",
-    "public/**",
-    "content/**/*.png",
     "github.sha",
   ]) {
     expect(steps[cacheIndex]!.with!.key).toContain(input);
   }
   expect(steps[cacheIndex]!.with!["restore-keys"]!.trim()).toBe(
     steps[cacheIndex]!.with!.key!.replace("${{ github.sha }}", ""),
+  );
+  expect(steps[cacheIndex]!.with!.key).not.toContain("nuxt.config.ts");
+  expect(steps[cacheIndex]!.with!["restore-keys"]).not.toContain(
+    "nuxt.config.ts",
   );
 });

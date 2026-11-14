@@ -8,8 +8,6 @@ import {
   isVNode,
   normalizeClass,
   normalizeStyle,
-  onMounted,
-  ref,
 } from "vue";
 
 // Vue's stringifyStyle lives in @vue/shared, which the browser build of vue doesn't re-export.
@@ -103,11 +101,8 @@ export default defineComponent({
     },
   },
   setup(props, { slots }) {
-    const isMounted = ref(false);
-    onMounted(() => {
-      // Apply the mask only in the browser so the server and hydration renders match.
-      isMounted.value = true;
-    });
+    // Apply the mask only after mounting so the server and hydration renders match.
+    const isMounted = useMounted();
     return () => {
       // Calling the slot here tracks its reactive dependencies, so the mask updates when they change.
       const svg = toHtml(slots.default?.());
