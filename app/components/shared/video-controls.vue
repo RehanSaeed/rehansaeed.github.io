@@ -1,37 +1,12 @@
 <template>
   <fieldset ref="controls" class="prose-video__controls">
     <legend class="prose-video__visually-hidden">{{ controlsLabel }}</legend>
-    <div class="prose-video__seek">
-      <progress
-        class="prose-video__progress"
-        :value="currentTime"
-        :max="duration || 1"
-        aria-hidden="true"></progress>
-      <label class="prose-video__seek-label">
-        <span class="prose-video__visually-hidden">Video position</span>
-        <u-tooltip
-          v-slot="{ trigger }"
-          :text="seekTooltip"
-          :disabled="controlsHidden || menuOpen"
-          follow-pointer>
-          <input
-            v-bind="trigger"
-            class="prose-video__seek-input"
-            type="range"
-            min="0"
-            :max="duration || 1"
-            step="1"
-            :value="currentTime"
-            :disabled="!canSeek"
-            :aria-valuetext="`${formatTime(currentTime)} of ${formatTime(duration)}`"
-            @pointerenter="onSeekPointerMove"
-            @pointermove="onSeekPointerMove"
-            @focus="seekPreviewTime = null"
-            @keydown="seekPreviewTime = null"
-            @input="onSeek" />
-        </u-tooltip>
-      </label>
-    </div>
+    <u-video-seek-control
+      :current-time="currentTime"
+      :duration="duration"
+      :can-seek="canSeek"
+      :tooltip-disabled="controlsHidden || menuOpen"
+      @seek="emit('seek', $event)" />
     <div class="prose-video__row">
       <div class="prose-video__playback">
         <u-tooltip
@@ -94,143 +69,27 @@
           </u-tooltip>
         </label>
         <span class="prose-video__time"
-          >{{ formatTime(currentTime)
+          >{{ formatVideoTime(currentTime)
           }}<span class="prose-video__duration">
-            / {{ formatTime(duration) }}</span
+            / {{ formatVideoTime(duration) }}</span
           ></span
         >
       </div>
       <div class="prose-video__spacer"></div>
       <div class="prose-video__utilities">
-        <details
-          v-if="captionTracks.length"
-          class="prose-video__disclosure"
-          @toggle="onMenuToggle">
-          <u-tooltip
-            v-slot="{ trigger }"
-            text="Captions"
-            :disabled="controlsHidden || menuOpen">
-            <summary
-              v-bind="trigger"
-              role="button"
-              tabindex="0"
-              class="button button--icon prose-video__button prose-video__summary"
-              :class="{
-                'prose-video__button--active': selectedCaption !== -1,
-                'prose-video__summary--pressed':
-                  pressedDisclosure === 'captions',
-              }"
-              @keydown.space="pressedDisclosure = 'captions'"
-              @keydown.enter="pressedDisclosure = 'captions'"
-              @keyup.space="pressedDisclosure = null"
-              @keyup.enter="pressedDisclosure = null"
-              @blur="clearPressedDisclosure"
-              :aria-label="
-                selectedCaption === -1
-                  ? 'Captions: off'
-                  : `Captions: ${captionTracks[selectedCaption]?.label || captionTracks[selectedCaption]?.language}`
-              ">
-              <u-icon name="fa-solid:closed-captioning" />
-            </summary>
-          </u-tooltip>
-          <fieldset class="prose-video__menu">
-            <legend class="prose-video__visually-hidden">
-              Caption language
-            </legend>
-            <button
-              class="prose-video__menu-button"
-              type="button"
-              :aria-pressed="selectedCaption === -1"
-              @click="selectCaptionOption(-1, $event)">
-              Off
-            </button>
-            <button
-              v-for="(track, index) in captionTracks"
-              :key="index"
-              class="prose-video__menu-button"
-              type="button"
-              :aria-pressed="selectedCaption === index"
-              @click="selectCaptionOption(index, $event)">
-              {{ track.label || track.language || `Track ${index + 1}` }}
-            </button>
-          </fieldset>
-        </details>
-        <details class="prose-video__disclosure" @toggle="onMenuToggle">
-          <u-tooltip
-            v-slot="{ trigger }"
-            text="Playback speed"
-            :disabled="controlsHidden || menuOpen">
-            <summary
-              v-bind="trigger"
-              role="button"
-              tabindex="0"
-              class="button button--icon prose-video__button prose-video__summary"
-              :class="{
-                'prose-video__summary--pressed': pressedDisclosure === 'speed',
-              }"
-              @keydown.space="pressedDisclosure = 'speed'"
-              @keydown.enter="pressedDisclosure = 'speed'"
-              @keyup.space="pressedDisclosure = null"
-              @keyup.enter="pressedDisclosure = null"
-              @blur="clearPressedDisclosure"
-              :aria-label="`Playback speed: ${playbackRate === 1 ? 'Normal' : `${playbackRate}×`}`">
-              <u-icon name="fa-solid:tachometer-alt" />
-            </summary>
-          </u-tooltip>
-          <fieldset class="prose-video__menu prose-video__menu--speed">
-            <legend class="prose-video__visually-hidden">
-              Playback speed options
-            </legend>
-            <strong class="prose-video__menu-title">Playback Speed</strong>
-            <output
-              class="prose-video__speed-value"
-              aria-label="Current playback speed"
-              >{{ playbackRate.toFixed(2) }}×</output
-            >
-            <div class="prose-video__speed-adjust">
-              <u-button
-                variant="icon"
-                class="prose-video__menu-button prose-video__speed-step"
-                aria-label="Decrease playback speed"
-                :disabled="playbackRate <= minimumSpeed"
-                @click="adjustSpeed(-speedStep)">
-                <u-icon name="fa-solid:minus" />
-              </u-button>
-              <label class="prose-video__speed-label">
-                <span class="prose-video__visually-hidden">Playback speed</span>
-                <input
-                  class="prose-video__speed-input"
-                  type="range"
-                  :min="minimumSpeed"
-                  :max="maximumSpeed"
-                  :step="speedStep"
-                  :value="playbackRate"
-                  :aria-valuetext="`${playbackRate.toFixed(2)} times normal speed`"
-                  @input="onSpeedInput" />
-              </label>
-              <u-button
-                variant="icon"
-                class="prose-video__menu-button prose-video__speed-step"
-                aria-label="Increase playback speed"
-                :disabled="playbackRate >= maximumSpeed"
-                @click="adjustSpeed(speedStep)">
-                <u-icon name="fa-solid:plus" />
-              </u-button>
-            </div>
-            <div class="prose-video__speed-presets">
-              <button
-                v-for="speed in speeds"
-                :key="speed"
-                class="prose-video__menu-button prose-video__speed-preset"
-                type="button"
-                :aria-label="speed === 1 ? 'Normal' : `${speed}×`"
-                :aria-pressed="playbackRate === speed"
-                @click="selectSpeed(speed, $event)">
-                {{ speed.toFixed(1) }}
-              </button>
-            </div>
-          </fieldset>
-        </details>
+        <u-video-caption-control
+          :caption-tracks="captionTracks"
+          :selected-caption="selectedCaption"
+          :tooltip-disabled="controlsHidden || menuOpen"
+          @caption="emit('caption', $event)"
+          @dismiss="closeMenu"
+          @menu-toggle="onMenuToggle" />
+        <u-video-speed-control
+          :playback-rate="playbackRate"
+          :tooltip-disabled="controlsHidden || menuOpen"
+          @speed="emit('speed', $event)"
+          @dismiss="closeMenu"
+          @menu-toggle="onMenuToggle" />
         <u-tooltip
           v-if="pipSupported"
           v-slot="{ trigger }"
@@ -278,6 +137,7 @@ import {
   toRefs,
   useTemplateRef,
 } from "vue";
+import { formatVideoTime } from "../../utils/video";
 
 const props = defineProps<{
   /** Accessible name of the video control group. */
@@ -326,90 +186,16 @@ const emit = defineEmits<{
   togglePictureInPicture: [];
   menuOpen: [open: boolean];
 }>();
-const { muted, volume, currentTime, duration, canSeek, playbackRate } =
-  toRefs(props);
+const { muted, volume } = toRefs(props);
 const controls = useTemplateRef<HTMLFieldSetElement>("controls");
 const menuOpen = ref(false);
-const seekPreviewTime = ref<number | null>(null);
-const pressedDisclosure = ref<"captions" | "speed" | null>(null);
-const clearPressedDisclosure = () => {
-  pressedDisclosure.value = null;
-};
 const volumePercent = computed(() =>
   muted.value ? 0 : Math.round(volume.value * 100),
 );
-const seekTooltip = computed(() =>
-  canSeek.value ? formatTime(seekPreviewTime.value ?? currentTime.value) : "",
-);
-const speeds = [1, 1.25, 1.5, 2, 2.5, 3];
-const minimumSpeed = 0.5;
-const maximumSpeed = 3;
-const speedStep = 0.25;
-
-const onSeek = (event: Event): void => {
-  if (event.target instanceof HTMLInputElement) {
-    emit("seek", Number(event.target.value));
-  }
-};
-
 const onVolume = (event: Event): void => {
   if (event.target instanceof HTMLInputElement) {
     emit("volume", Number(event.target.value));
   }
-};
-
-const onSpeedInput = (event: Event): void => {
-  if (event.target instanceof HTMLInputElement) {
-    emit("speed", Number(event.target.value));
-  }
-};
-
-const selectSpeed = (speed: number, event: Event): void => {
-  emit("speed", speed);
-  closeMenu(event);
-};
-
-const adjustSpeed = (change: number): void => {
-  emit(
-    "speed",
-    Math.min(maximumSpeed, Math.max(minimumSpeed, playbackRate.value + change)),
-  );
-};
-
-const selectCaptionOption = (index: number, event: Event): void => {
-  emit("caption", index);
-  closeMenu(event);
-};
-
-const onSeekPointerMove = (event: PointerEvent): void => {
-  if (
-    event.pointerType !== "mouse" ||
-    !(event.currentTarget instanceof HTMLInputElement) ||
-    !canSeek.value
-  ) {
-    return;
-  }
-  const bounds = event.currentTarget.getBoundingClientRect();
-  if (bounds.width <= 0) {
-    return;
-  }
-  const fraction = Math.max(
-    0,
-    Math.min(1, (event.clientX - bounds.left) / bounds.width),
-  );
-  seekPreviewTime.value = Math.min(
-    duration.value,
-    Math.round(duration.value * fraction),
-  );
-};
-
-const formatTime = (seconds: number): string => {
-  const total = Math.floor(Number.isFinite(seconds) ? Math.max(0, seconds) : 0);
-  const minutes = Math.floor(total / 60);
-  const time = `${minutes % 60}:${String(total % 60).padStart(2, "0")}`;
-  return minutes >= 60
-    ? `${Math.floor(minutes / 60)}:${time.padStart(5, "0")}`
-    : time;
 };
 
 const closeMenu = (event: Event): void => {
@@ -468,13 +254,11 @@ const onMenuKeydown = (event: KeyboardEvent): void => {
 onMounted(() => {
   document.addEventListener("pointerdown", dismissMenus);
   document.addEventListener("keydown", onMenuKeydown);
-  window.addEventListener("blur", clearPressedDisclosure);
 });
 
 onUnmounted(() => {
   document.removeEventListener("pointerdown", dismissMenus);
   document.removeEventListener("keydown", onMenuKeydown);
-  window.removeEventListener("blur", clearPressedDisclosure);
 });
 </script>
 
@@ -495,22 +279,6 @@ onUnmounted(() => {
   z-index: 1;
 }
 
-.prose-video__seek {
-  display: grid;
-  align-items: center;
-  block-size: 8px;
-  margin: 0;
-  position: relative;
-  min-inline-size: 0;
-}
-
-.prose-video__seek-label {
-  margin: 0;
-  position: absolute;
-  inset: 0;
-}
-
-.prose-video__seek-input,
 .prose-video__volume-input {
   appearance: auto;
   accent-color: var(--video-accent);
@@ -522,71 +290,6 @@ onUnmounted(() => {
   inline-size: 100%;
   min-inline-size: 0;
   block-size: 44px;
-}
-
-.prose-video__seek-input {
-  appearance: none;
-  padding-block-start: 24px;
-  position: absolute;
-  inset-block-end: 0;
-  margin: 0;
-
-  &::-webkit-slider-runnable-track {
-    background: transparent;
-    block-size: 4px;
-  }
-
-  &::-webkit-slider-thumb {
-    appearance: none;
-    background: var(--video-accent);
-    border: 0;
-    border-radius: 50%;
-    inline-size: 12px;
-    block-size: 12px;
-    margin-block-start: -4px;
-  }
-
-  &::-moz-range-track,
-  &::-moz-range-progress {
-    background: transparent;
-    block-size: 4px;
-  }
-
-  &::-moz-range-thumb {
-    background: var(--video-accent);
-    border: 0;
-    border-radius: 50%;
-    inline-size: 12px;
-    block-size: 12px;
-  }
-}
-
-.prose-video__progress {
-  appearance: none;
-  background: rgb(255 255 255 / 40%);
-  border: 0;
-  inline-size: 100%;
-  block-size: 4px;
-  position: absolute;
-  inset-block-end: 8px;
-  pointer-events: none;
-
-  &::-webkit-progress-bar {
-    background: rgb(255 255 255 / 40%);
-  }
-
-  &::-webkit-progress-value {
-    background: var(--video-accent);
-  }
-
-  &::-moz-progress-bar {
-    background: var(--video-accent);
-  }
-}
-
-.prose-video__seek:is(:hover, :focus-within) .prose-video__progress {
-  block-size: 6px;
-  inset-block-end: 7px;
 }
 
 .prose-video__row {
@@ -612,8 +315,7 @@ onUnmounted(() => {
   }
 }
 
-.prose-video__button.button--icon,
-.prose-video__speed-step.button.button--icon {
+.prose-video__button.button--icon {
   background-clip: content-box;
   font-size: 20px;
   padding: 4px;
@@ -707,96 +409,6 @@ onUnmounted(() => {
   }
 }
 
-.prose-video__menu:not(.prose-video__menu--speed)
-  .prose-video__menu-button[aria-pressed="true"] {
-  box-shadow: inset 3px 0 currentColor;
-  font-weight: bold;
-}
-
-.prose-video__menu--speed {
-  gap: 4px;
-  padding: 10px;
-  inline-size: 314px;
-  max-block-size: min(280px, 70cqw, 60vh);
-}
-
-.prose-video__menu-title {
-  color: var(--video-foreground);
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-align: center;
-}
-
-.prose-video__speed-value {
-  color: var(--video-foreground);
-  font-family: var(--global-font-family-monospace);
-  font-size: 0.875rem;
-  font-weight: normal;
-  line-height: 1.2;
-  text-align: center;
-}
-
-.prose-video__speed-adjust,
-.prose-video__speed-presets {
-  display: grid;
-  grid-template-columns: repeat(6, 44px);
-  justify-content: center;
-  gap: min(6px, var(--video-control-gap));
-}
-
-.prose-video__speed-adjust {
-  align-items: center;
-}
-
-.prose-video__speed-label {
-  display: grid;
-  grid-column: 2 / -2;
-  margin: 0;
-  min-inline-size: 0;
-}
-
-.prose-video__speed-input {
-  appearance: auto;
-  accent-color: var(--video-accent);
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  padding: 0;
-  margin: 0;
-  inline-size: 100%;
-  min-inline-size: 0;
-  block-size: 44px;
-}
-
-.prose-video__speed-step.button {
-  background: rgb(255 255 255 / 15%);
-  border-radius: 50%;
-  text-align: center;
-  min-inline-size: 44px;
-
-  &:disabled {
-    cursor: default;
-  }
-}
-
-.prose-video__speed-step.button.button--icon {
-  inline-size: 44px;
-  block-size: 44px;
-}
-
-.prose-video__speed-preset {
-  background: rgb(255 255 255 / 15%);
-  background-clip: content-box;
-  border-radius: 50%;
-  font-family: var(--global-font-family-monospace);
-  font-size: 0.75rem;
-  text-align: center;
-  padding: 4px;
-  inline-size: 44px;
-  min-inline-size: 44px;
-  block-size: 44px;
-}
-
 .prose-video__visually-hidden {
   position: absolute;
   clip-path: inset(50%);
@@ -841,11 +453,6 @@ onUnmounted(() => {
   .prose-video__time {
     padding-inline-start: 4px;
   }
-
-  .prose-video__speed-adjust,
-  .prose-video__speed-presets {
-    grid-template-columns: repeat(3, 44px);
-  }
 }
 
 @media (forced-colors: active) {
@@ -871,8 +478,7 @@ onUnmounted(() => {
   }
 
   .prose-video__button,
-  .prose-video__menu-button,
-  .prose-video__speed-step.button {
+  .prose-video__menu-button {
     color: ButtonText;
     background: ButtonFace;
     border: 1px solid ButtonText;
@@ -890,38 +496,12 @@ onUnmounted(() => {
   }
 
   .prose-video__button[aria-pressed="true"],
-  .prose-video__button--active,
-  .prose-video__menu:not(.prose-video__menu--speed)
-    .prose-video__menu-button[aria-pressed="true"] {
+  .prose-video__button--active {
     border-block-end: 3px solid Highlight;
   }
 
   .prose-video__controls :focus-visible {
     outline-color: Highlight;
-  }
-
-  .prose-video__progress,
-  .prose-video__progress::-webkit-progress-bar {
-    background: Canvas;
-    border: 1px solid CanvasText;
-  }
-
-  .prose-video__progress::-webkit-progress-value {
-    background: Highlight;
-  }
-
-  .prose-video__progress::-moz-progress-bar {
-    background: Highlight;
-  }
-
-  .prose-video__seek-input::-webkit-slider-thumb {
-    background: Highlight;
-    border: 1px solid CanvasText;
-  }
-
-  .prose-video__seek-input::-moz-range-thumb {
-    background: Highlight;
-    border: 1px solid CanvasText;
   }
 }
 </style>

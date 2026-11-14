@@ -159,6 +159,18 @@ test("Caption controls appear only for real text tracks and toggle their showing
   await captions.click();
   const languages = player.getByRole("group", { name: "Caption language" });
   await expect(languages).toHaveJSProperty("tagName", "FIELDSET");
+  const speed = player.getByRole("button", { name: /^Playback speed:/ });
+  const speedOptions = player.getByRole("group", {
+    name: "Playback speed options",
+  });
+  await speed.focus();
+  await page.keyboard.press("Enter");
+  await expect(speedOptions).toBeVisible();
+  await expect(languages).toBeHidden();
+  await captions.focus();
+  await page.keyboard.press("Enter");
+  await expect(languages).toBeVisible();
+  await expect(speedOptions).toBeHidden();
   await languages.getByRole("button", { name: "English", exact: true }).click();
   await expect(captions).toHaveAttribute("aria-label", "Captions: English");
   await expect
