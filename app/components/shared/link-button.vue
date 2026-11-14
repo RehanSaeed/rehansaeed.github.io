@@ -185,9 +185,9 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
   background: transparent;
   box-shadow: none;
   font-family: var(--global-font-family-monospace);
-  font-size: 0.8rem;
-  font-weight: 500;
-  line-height: 1.5;
+  font-size: var(--global-font-size-1);
+  font-weight: var(--global-font-weight-normal);
+  line-height: var(--global-line-height-1);
   overflow-wrap: anywhere;
 
   &:hover,
