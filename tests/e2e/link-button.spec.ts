@@ -320,7 +320,7 @@ for (const theme of ["light", "dark"]) {
       name: "Shape sample",
       exact: true,
     });
-    const expectPointedShadow = async (state: string) => {
+    const expectPointedShadow = async (state: string, shadowColumn: number) => {
       const bounds = await sample.boundingBox();
       expect(bounds).not.toBeNull();
       const screenshot = await page.screenshot({
@@ -348,17 +348,18 @@ for (const theme of ["light", "dark"]) {
       ).toEqual([128, 128, 128]);
       // Sample several rows because faint shadow pixels can be dithered.
       const tipShadow = Array.from({ length: 8 }, (_, offset) =>
-        colourAt(14, 16 + Math.floor(bounds!.height / 2) + offset),
+        colourAt(shadowColumn, 16 + Math.floor(bounds!.height / 2) + offset),
       );
       expect(
         tipShadow.some((colour) => colour.some((channel) => channel !== 128)),
         "The triangle itself casts a shadow",
       ).toBe(true);
     };
-    await expectPointedShadow("rest");
+    // The tighter resting blur must be sampled immediately outside the point.
+    await expectPointedShadow("rest", 15);
     await sample.hover();
     await expect(sample).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -2)");
-    await expectPointedShadow("hover");
+    await expectPointedShadow("hover", 14);
     await page.emulateMedia({ forcedColors: "active" });
     await link.focus();
     await page.keyboard.press("Tab");
@@ -380,7 +381,7 @@ for (const theme of ["light", "dark"]) {
     });
     await expect(surface).toHaveCSS("filter", "none");
     expect(surfaceColours.edge).toBe(
-      `linear-gradient(${surfaceColours.linkText}, ${surfaceColours.linkText})`,
+      `linear-gradient(${surfaceColours.linkText}, ${surfaceColours.linkText}), none`,
     );
     expect(surfaceColours.linkText).not.toBe(surfaceColours.fill);
   });
