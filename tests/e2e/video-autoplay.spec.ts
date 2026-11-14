@@ -1,4 +1,9 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
+import type { NuxtApp } from "nuxt/app";
+
+type NuxtRoot = HTMLElement & {
+  __vue_app__?: { config: { globalProperties: { $nuxt: NuxtApp } } };
+};
 
 // The shared config emulates reduced motion, which disables autoplay. The
 // reduced-motion test below opts back in explicitly.
@@ -19,7 +24,17 @@ const openArticle = async (page: Page, baseURL: string | undefined) => {
   await page.goto("/ai-learnings-from-upgrading-my-blog/", {
     waitUntil: "load",
   });
-  return page.getByLabel(videoLabel);
+  // Initial hydration can restore the page's scroll position.
+  await page.waitForFunction(() => {
+    const app =
+      document.querySelector<NuxtRoot>("#__nuxt")?.__vue_app__?.config
+        .globalProperties.$nuxt;
+    return app && !app.isHydrating;
+  });
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+  });
+  return page.getByLabel(videoLabel, { exact: true });
 };
 
 const isPlaying = (video: Locator) =>
@@ -101,7 +116,10 @@ test("The article video autoplays muted only while fully in view", async ({
       ),
     )
     .toBe(true);
-  await expect(video).toHaveAttribute("controls", "");
+  await expect(video).not.toHaveAttribute("controls");
+  await expect(
+    page.getByRole("button", { name: "Pause video", exact: true }),
+  ).toBeAttached();
   await expect
     .poll(() =>
       video.evaluate((element) =>
@@ -159,9 +177,6 @@ test("The article video does not autoplay with reduced motion", async ({
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   const video = await openArticle(page, baseURL);
-  await video.evaluate((element) => {
-    element.scrollIntoView({ block: "center", behavior: "instant" });
-  });
   await expect
     .poll(() =>
       video.evaluate((element) =>
@@ -169,6 +184,9 @@ test("The article video does not autoplay with reduced motion", async ({
       ),
     )
     .toBeGreaterThanOrEqual(1);
+  await video.evaluate((element) => {
+    element.scrollIntoView({ block: "center", behavior: "instant" });
+  });
   expect(await visibilityAndPlayback(video)).toEqual({
     visibility: "full",
     playing: false,
