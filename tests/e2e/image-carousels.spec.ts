@@ -164,9 +164,10 @@ test.describe("Continuous scroll-linked motion", () => {
     await expect(
       gallery.getByRole("button", { name: "Next image", exact: true }),
     ).toBeVisible();
-    await expect(
-      gallery.locator(".image-carousel__arrow-shell").last(),
-    ).toHaveCSS("opacity", "1");
+    await expect(gallery.locator(".carousel-arrows__shell").last()).toHaveCSS(
+      "opacity",
+      "1",
+    );
     await page.mouse.down();
     const samples = [];
     for (const fraction of [0, 0.02, 0.2, 0.4, 0.6, 0.8, 1]) {
@@ -177,7 +178,7 @@ test.describe("Continuous scroll-linked motion", () => {
         .poll(() => track.evaluate((element) => element.scrollLeft))
         .toBeCloseTo(left, 0);
       await expect(
-        gallery.locator(".image-carousel__arrow:visible"),
+        gallery.locator(".carousel-arrows__button:visible"),
       ).toHaveCount(fraction === 0 ? 1 : 0);
       await expect
         .poll(() =>
@@ -307,7 +308,7 @@ test.describe("Continuous scroll-linked motion", () => {
   }) => {
     await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
     const gallery = page.locator(".image-carousel");
-    const shell = gallery.locator(".image-carousel__arrow-shell").last();
+    const shell = gallery.locator(".carousel-arrows__shell").last();
     const image = gallery.locator("img").first();
     const next = gallery.getByRole("button", {
       name: "Next image",
@@ -328,7 +329,7 @@ test.describe("Continuous scroll-linked motion", () => {
         () => {
           element
             .closest(".image-carousel")!
-            .querySelector(".image-carousel__arrow-shell:last-child")!
+            .querySelector(".carousel-arrows__shell:last-child")!
             .getAnimations()
             .forEach((animation) => {
               animation.pause();
@@ -449,7 +450,19 @@ test("Cover Flow arrow shells and shared paging retain their colours, inset circ
   const track = gallery.getByRole("group", { name: "Gallery images" });
   const firstDot = gallery.getByRole("button", { name: "Go to image 1 of 2" });
   const secondDot = gallery.getByRole("button", { name: "Go to image 2 of 2" });
-  const shell = gallery.locator(".image-carousel__arrow-shell").last();
+  const shell = gallery.locator(".carousel-arrows__shell").last();
+  const arrows = gallery.getByRole("group", {
+    name: "Gallery navigation",
+    exact: true,
+  });
+  const paging = gallery.getByRole("group", {
+    name: "Choose image",
+    exact: true,
+  });
+  await expect(
+    arrows.getByRole("button", { name: "Next image", exact: true }),
+  ).toBeVisible();
+  await expect(paging.getByRole("button")).toHaveCount(2);
   await gallery.scrollIntoViewIfNeeded();
   for (const theme of ["light", "dark"]) {
     await page.evaluate((value) => {
@@ -546,7 +559,7 @@ test.describe("Touch gesture tracking", () => {
           .poll(() => track.evaluate((element) => element.scrollLeft))
           .toBeCloseTo(distance, 0);
         await expect(
-          gallery.locator(".image-carousel__arrow:visible"),
+          gallery.locator(".carousel-arrows__button:visible"),
         ).toHaveCount(0);
         const opacity = await track
           .locator(".prose-image")
@@ -565,9 +578,10 @@ test.describe("Touch gesture tracking", () => {
       await expect(
         gallery.getByRole("button", { name: "Next image" }),
       ).toHaveCSS("opacity", "1");
-      await expect(
-        gallery.locator(".image-carousel__arrow-shell").last(),
-      ).toHaveCSS("opacity", "1");
+      await expect(gallery.locator(".carousel-arrows__shell").last()).toHaveCSS(
+        "opacity",
+        "1",
+      );
       const top = await page.evaluate(() => scrollY);
       await session.send("Input.dispatchTouchEvent", {
         type: "touchStart",

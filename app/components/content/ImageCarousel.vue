@@ -15,44 +15,15 @@
         @scroll.passive="schedulePosition">
         <slot />
       </div>
-      <div
+      <u-carousel-arrows
         v-if="isInteractive"
         class="image-carousel__arrows"
-        :class="{ 'image-carousel__arrows--dragging': isDragging }">
-        <span
-          ref="previousArrow"
-          class="image-carousel__arrow-shell"
-          :class="{
-            'image-carousel__arrow-shell--unavailable': currentIndex === 0,
-          }">
-          <u-button
-            class="image-carousel__arrow"
-            variant="icon"
-            aria-label="Previous image"
-            :aria-controls="trackId"
-            :aria-disabled="currentIndex === 0"
-            @click="navigateToImage(currentIndex - 1)">
-            <u-icon name="feather:arrow-left" aria-hidden="true" />
-          </u-button>
-        </span>
-        <span
-          ref="nextArrow"
-          class="image-carousel__arrow-shell"
-          :class="{
-            'image-carousel__arrow-shell--unavailable':
-              currentIndex === count - 1,
-          }">
-          <u-button
-            class="image-carousel__arrow"
-            variant="icon"
-            aria-label="Next image"
-            :aria-controls="trackId"
-            :aria-disabled="currentIndex === count - 1"
-            @click="navigateToImage(currentIndex + 1)">
-            <u-icon name="feather:arrow-right" aria-hidden="true" />
-          </u-button>
-        </span>
-      </div>
+        :count="count"
+        :current-index="currentIndex"
+        :controls="trackId"
+        :dragging="isDragging"
+        @select="navigateToImage"
+        @focus-track="focusTrack" />
     </div>
     <u-carousel-pagination
       v-if="isInteractive"
@@ -79,8 +50,6 @@ const props = defineProps<{
 }>();
 const trackId = `image-gallery-${useId()}`;
 const track = useTemplateRef<HTMLDivElement>("track");
-const previousArrow = useTemplateRef<HTMLSpanElement>("previousArrow");
-const nextArrow = useTemplateRef<HTMLSpanElement>("nextArrow");
 const currentIndex = ref(0);
 const isInteractive = ref(false);
 const isDragging = ref(false);
@@ -114,17 +83,10 @@ const updatePosition = () => {
   }
   previousStep = step;
   const position = track.value.scrollLeft / step;
-  const index = Math.max(0, Math.min(props.count - 1, Math.round(position)));
-  const unavailable =
-    index === 0
-      ? previousArrow.value
-      : index === props.count - 1
-        ? nextArrow.value
-        : undefined;
-  if (unavailable?.contains(document.activeElement)) {
-    track.value.focus({ preventScroll: true });
-  }
-  currentIndex.value = index;
+  currentIndex.value = Math.max(
+    0,
+    Math.min(props.count - 1, Math.round(position)),
+  );
   // Scrub paused animations, not a transition triggered by the nearest slide.
   for (const [index, animation] of animations.entries()) {
     animation.currentTime =
@@ -195,6 +157,10 @@ const settlePosition = () => {
 
 const interruptNavigation = () => {
   navigationTarget = undefined;
+};
+
+const focusTrack = () => {
+  track.value?.focus({ preventScroll: true });
 };
 
 const onKeydown = (event: KeyboardEvent) => {
@@ -485,36 +451,9 @@ onBeforeUnmount(() => {
     )
   );
   z-index: 20;
-  display: grid;
-  grid-template-columns: auto auto;
-  align-items: center;
-  justify-content: space-between;
-  pointer-events: none;
-
-  .image-carousel__arrow[aria-disabled="true"] {
-    --button-icon-color: rgb(255 255 255 / 65%);
-    --button-icon-hover-color: rgb(255 255 255 / 65%);
-    --button-icon-hover-background: rgb(255 255 255 / 15%);
-
-    cursor: default;
-  }
 }
 
-.image-carousel__arrows--dragging {
-  visibility: hidden;
-}
-
-.image-carousel__arrow-shell {
-  display: grid;
-  border-radius: 50%;
-  background-color: rgb(0 0 0 / 65%);
-
-  &--unavailable {
-    visibility: hidden;
-  }
-}
-
-.image-carousel__pagination {
+.image-carousel .image-carousel__pagination {
   padding-inline: var(--global-space-fixed-3);
 }
 
@@ -522,81 +461,21 @@ onBeforeUnmount(() => {
   @include visually-hidden.visually-hidden();
 }
 
-.image-carousel__arrows .image-carousel__arrow {
-  --button-icon-color: #fff;
-  --button-icon-hover-color: var(
-    --gallery-button-hover-color,
-    var(--global-accent-color)
-  );
-  --button-icon-hover-background: #fff;
-
-  background-clip: content-box;
-  font-size: 20px;
-  padding: 4px;
-  pointer-events: auto;
-
-  &:focus-visible {
-    outline-offset: -6px;
-  }
-}
-
-[data-theme="dark"] .image-carousel__arrows {
-  --gallery-button-hover-color: var(--global-alternate-accent-color);
-}
-
 @media (hover: hover) and (pointer: fine) {
-  .image-carousel__arrow-shell {
-    opacity: 0;
-  }
-
-  .image-carousel__arrows .image-carousel__arrow {
-    pointer-events: none;
-  }
-
-  .image-carousel__viewport:has(img:hover, .image-carousel__arrow:hover),
+  .image-carousel__viewport:has(img:hover, .carousel-arrows__button:hover),
   .image-carousel:has(:focus-visible) {
-    .image-carousel__arrow-shell {
-      opacity: 1;
-    }
-
-    .image-carousel__arrow {
-      pointer-events: auto;
-    }
+    --carousel-arrows-opacity: 1;
+    --carousel-arrows-pointer-events: auto;
   }
 
-  .image-carousel:has(:focus-visible) .image-carousel__arrow-shell {
-    transition: none;
-  }
-}
-
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (forced-colors: none) {
-  .image-carousel__arrow-shell {
-    transition: opacity var(--global-duration-1) var(--ease-in-out-cubic);
-  }
-}
-
-@media (any-pointer: coarse) {
-  .image-carousel__arrow-shell {
-    opacity: 1;
-  }
-
-  .image-carousel__arrows .image-carousel__arrow {
-    pointer-events: auto;
+  .image-carousel:has(:focus-visible) {
+    --carousel-arrows-transition: none;
   }
 }
 
 @media (forced-colors: active) {
   .image-carousel__track:focus-visible {
     outline-color: Highlight;
-  }
-
-  .image-carousel__arrow-shell {
-    background-color: ButtonFace;
-  }
-
-  .image-carousel__arrows [aria-disabled="true"] {
-    --button-icon-color: GrayText;
-    --button-icon-hover-color: GrayText;
   }
 }
 </style>

@@ -1,5 +1,6 @@
 <template>
-  <div class="carousel-pagination" role="group" aria-label="Choose image">
+  <fieldset class="carousel-pagination">
+    <legend class="carousel-pagination__legend">Choose image</legend>
     <button
       v-for="imageNumber in count"
       :key="imageNumber"
@@ -11,7 +12,7 @@
       @click="emit('select', imageNumber - 1)">
       <span class="carousel-pagination__dot" aria-hidden="true" />
     </button>
-  </div>
+  </fieldset>
 </template>
 
 <script setup lang="ts">
@@ -27,10 +28,20 @@ const emit = defineEmits<{ select: [index: number] }>();
 </script>
 
 <style lang="scss">
+@use "~/assets/style/abstracts/visually-hidden";
+
 .carousel-pagination {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.carousel-pagination__legend {
+  @include visually-hidden.visually-hidden();
 }
 
 .carousel-pagination__button {
