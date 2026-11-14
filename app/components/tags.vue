@@ -28,7 +28,7 @@ defineProps({
 <style lang="scss">
 .tags {
   display: flex;
-  gap: 0.5rem;
+  gap: calc(var(--global-space-fixed-4) / 2);
   flex-wrap: wrap;
 }
 </style>
