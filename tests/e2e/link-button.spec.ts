@@ -57,20 +57,35 @@ const properties = compileString(readFileSync(propertiesPath, "utf8"), {
 unitTest(
   "Link buttons preserve native destinations before hydration",
   async () => {
-    for (const tag of [false, true]) {
+    for (const variant of [
+      "plain",
+      "secondary",
+      "contrast",
+      "primary",
+      "tag",
+    ]) {
       for (const destination of [
         { to: "/tag/c/" },
         { href: "https://example.com/" },
       ]) {
         const html = await renderToString(
-          h(linkButton, { ...destination, tag }, () => "C#"),
+          h(linkButton, { ...destination, variant }, () => "C#"),
         );
         expect(html).toContain("<a");
         expect(html).toContain(`href="${destination.to ?? destination.href}"`);
         expect(html).not.toContain("disabled");
         expect(html).not.toContain("type=");
-        expect(html.includes("link-button--tag")).toBe(tag);
-        expect(html.includes('aria-hidden="true"')).toBe(tag);
+        expect(html.includes("link-button--bordered")).toBe(
+          variant === "secondary" || variant === "contrast",
+        );
+        expect(html.includes("link-button--contrast")).toBe(
+          variant === "contrast",
+        );
+        expect(html.includes("link-button--primary")).toBe(
+          variant === "primary",
+        );
+        expect(html.includes("link-button--tag")).toBe(variant === "tag");
+        expect(html.includes('aria-hidden="true"')).toBe(variant === "tag");
       }
     }
   },
@@ -113,13 +128,13 @@ for (const theme of ["light", "dark"]) {
           components: { ULinkButton: exports.default },
           data: () => ({ clicks: 0, entered: false }),
           template: \`
-            <u-link-button tag to="/tag/windows-presentation-foundation-wpf/"
+            <u-link-button variant="tag" to="/tag/windows-presentation-foundation-wpf/"
               data-forwarded="yes" @click.prevent="clicks++" @pointerenter="entered=true">
               Windows Presentation Foundation (WPF)
             </u-link-button>
             <output :data-clicks="clicks" :data-entered="entered"></output>
             <div class="silhouette-sample">
-              <u-link-button tag href="#shape">Shape sample</u-link-button>
+              <u-link-button variant="tag" href="#shape">Shape sample</u-link-button>
             </div>\`
         }).mount("#app");
       }`,

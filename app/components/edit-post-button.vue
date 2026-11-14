@@ -1,5 +1,5 @@
 <template>
-  <u-link-button bordered :to="url">
+  <u-link-button variant="secondary" :to="url">
     <u-icon name="fa-brands:github" inline />
     Edit on GitHub
   </u-link-button>

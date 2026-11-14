@@ -3,38 +3,39 @@
     :is="element"
     class="link-button"
     :class="{
-      'link-button--bordered': bordered,
-      'link-button--contrast': contrast,
-      'link-button--primary': primary,
-      'link-button--tag': tag,
+      'link-button--bordered':
+        variant === 'secondary' || variant === 'contrast',
+      'link-button--contrast': variant === 'contrast',
+      'link-button--primary': variant === 'primary',
+      'link-button--tag': variant === 'tag',
     }"
     :href="href"
     :to="to"
     :rel="rel"
     :aria-label="label">
-    <span v-if="tag" class="link-button__tag-surface" aria-hidden="true" />
+    <span
+      v-if="variant === 'tag'"
+      class="link-button__tag-surface"
+      aria-hidden="true" />
     <slot />
   </Component>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, type PropType } from "vue";
 import { NuxtLink } from "#components";
 
 defineOptions({ name: "u-link-button" });
 const props = defineProps({
-  /** Whether the link button has a border. */ bordered: {
-    type: Boolean,
-  },
-  /** Whether the link button uses contrasting colours. */ contrast: {
-    type: Boolean,
-  },
-  /** Whether the link button uses the primary appearance. */ primary: {
-    type: Boolean,
-  },
-  /** Whether the link uses the pointed tag appearance. */ tag: {
-    type: Boolean,
-  },
+  /** Visual appearance; contrast is a bordered link on a contrasting surface. */ variant:
+    {
+      type: String as PropType<
+        "plain" | "secondary" | "contrast" | "primary" | "tag"
+      >,
+      default: "plain",
+      validator: (value: string) =>
+        ["plain", "secondary", "contrast", "primary", "tag"].includes(value),
+    },
   /** Accessible text describing the control or link. */ label: {
     type: String,
   },
