@@ -19,9 +19,12 @@
 
   // Box Shadows
   --global-shadow-1: 0 1px 3px var(--global-shadow-color);
+  --global-shadow-2-near: 0 2px 3px var(--global-shadow-color);
+  --global-shadow-2-middle: 0 4px 6px var(--global-shadow-color);
+  --global-shadow-2-far: 0 6px 9px var(--global-shadow-color);
   --global-shadow-2:
-    0 2px 3px var(--global-shadow-color), 0 4px 6px var(--global-shadow-color),
-    0 6px 9px var(--global-shadow-color);
+    var(--global-shadow-2-near), var(--global-shadow-2-middle),
+    var(--global-shadow-2-far);
   --global-shadow-3:
     0 2px 3px var(--global-shadow-color), 0 4px 6px var(--global-shadow-color),
     0 8px 12px var(--global-shadow-color),
