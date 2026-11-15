@@ -356,8 +356,9 @@ for (const { width, theme, forced } of [
       );
       const bounds = await control.boundingBox();
       expect(bounds).not.toBeNull();
-      expect(bounds!.width).toBeGreaterThanOrEqual(44);
-      expect(bounds!.height).toBeGreaterThanOrEqual(44);
+      // Firefox can report an exact 44px layout as 43.999992 after DOMRect subtraction.
+      expect(Number(bounds!.width.toFixed(4))).toBeGreaterThanOrEqual(44);
+      expect(Number(bounds!.height.toFixed(4))).toBeGreaterThanOrEqual(44);
     }
     const secondDot = groups
       .first()
