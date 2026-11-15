@@ -214,7 +214,7 @@ await test("manual diagnostics stay bounded, fixed and separate from production 
     );
     assert.equal(
         jobs.test.steps.find((step) => step.name === "Playwright Test")?.run,
-        "npx playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}/2",
+        "npx playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}/3 --workers=2",
     );
     assert.equal(
         jobs.deploy.if,

@@ -36,6 +36,8 @@ const compatibleChanges = new Set([
     "tests/e2e/post-view-transition.spec.ts",
     "tests/e2e/tag-view-transition.spec.ts",
     "tests/e2e/video-autoplay.spec.ts",
+    "tests/e2e/deployment.spec.mts",
+    "tests/e2e/best-practices.spec.ts",
 ]);
 
 export const verifySource = (
