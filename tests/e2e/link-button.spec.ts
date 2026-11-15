@@ -117,6 +117,26 @@ for (const theme of ["light", "dark"]) {
           inline-size: 280px;
           block-size: 64px;
         }
+        .filter-reference {
+          position: relative;
+          isolation: isolate;
+          border: none;
+          background: none;
+        }
+        .filter-reference:hover { transform: translateY(-2px); }
+        .filter-reference span {
+          position: absolute;
+          inset: 0;
+          z-index: -1;
+          background: var(--global-background-color);
+        }
+        .filter-reference .filter-reference__shadow {
+          inset: var(--global-border-width-1);
+          opacity: 0;
+        }
+        .filter-reference:hover .filter-reference__shadow {
+          opacity: var(--reference-shadow-opacity);
+        }
         .silhouette-sample { padding: 32px; background: #808080; }
         .silhouette-sample .link-button {
           --link-button-tag-point: 96px;
@@ -150,6 +170,13 @@ for (const theme of ["light", "dark"]) {
             <output :data-clicks="clicks" :data-entered="entered"></output>
             <div class="resting-sample">
               <button class="button button--secondary">Reference button</button>
+              <button class="filter-reference">
+                <span class="filter-reference__shadow filter-reference__shadow--far" aria-hidden="true"></span>
+                <span class="filter-reference__shadow filter-reference__shadow--middle" aria-hidden="true"></span>
+                <span class="filter-reference__shadow filter-reference__shadow--near" aria-hidden="true"></span>
+                <span class="filter-reference__surface" aria-hidden="true"></span>
+                Filtered rectangular reference
+              </button>
               <u-link-button variant="tag" href="#resting">Resting tag</u-link-button>
             </div>
             <div class="silhouette-sample">
@@ -207,6 +234,46 @@ for (const theme of ["light", "dark"]) {
       );
       await expect(shadows.nth(index)).toHaveCSS("opacity", "0");
     }
+    const referencePaint = await page
+      .getByRole("button", { name: "Reference button", exact: true })
+      .evaluate((element) => {
+        const parseShadows = (value: string) =>
+          Array.from(
+            value.matchAll(
+              /(rgba?\([^)]+\))\s+(-?[\d.]+)px\s+(-?[\d.]+)px\s+([\d.]+)px/g,
+            ),
+            ([, colour, x, y, blur]) => {
+              const channels = colour!
+                .slice(colour!.indexOf("(") + 1, -1)
+                .split(",")
+                .map(Number);
+              return {
+                filter: `drop-shadow(${x}px ${y}px ${Number(blur) / 2}px ${colour})`,
+                opaqueFilter: `drop-shadow(${x}px ${y}px ${Number(blur) / 2}px rgb(${channels.slice(0, 3).join(",")}))`,
+                opacity: channels[3] ?? 1,
+              };
+            },
+          );
+        return {
+          resting: parseShadows(getComputedStyle(element).boxShadow),
+          raised: parseShadows(getComputedStyle(element, "::before").boxShadow),
+        };
+      });
+    expect(referencePaint.resting).toHaveLength(1);
+    expect(referencePaint.raised).toHaveLength(3);
+    await page.addStyleTag({
+      content: `
+        .filter-reference__surface { filter: ${referencePaint.resting[0]!.filter}; }
+        ${referencePaint.raised
+          .map(
+            (paint, index) => `
+              .filter-reference__shadow--${["near", "middle", "far"][index]} {
+                --reference-shadow-opacity: ${paint.opacity};
+                filter: ${paint.opaqueFilter};
+              }`,
+          )
+          .join("\n")}`,
+    });
     const compareShadows = async (
       state: string,
       prepare: (control: Locator) => Promise<void>,
@@ -214,6 +281,10 @@ for (const theme of ["light", "dark"]) {
       const shadowProfiles = [];
       for (const control of [
         page.getByRole("button", { name: "Reference button", exact: true }),
+        page.getByRole("button", {
+          name: "Filtered rectangular reference",
+          exact: true,
+        }),
         page.getByRole("link", { name: "Resting tag", exact: true }),
       ]) {
         await prepare(control);
@@ -270,12 +341,27 @@ for (const theme of ["light", "dark"]) {
         ).toBeGreaterThan(strength(above) + 3);
         shadowProfiles.push(below);
       }
+      await test.info().attach(`${state}-${theme}-shadow-profiles`, {
+        body: JSON.stringify({
+          normalButton: shadowProfiles[0],
+          filteredRectangle: shadowProfiles[1],
+          pointedTag: shadowProfiles[2],
+        }),
+        contentType: "application/json",
+      });
       for (let row = 0; row < 16; row++) {
         for (let channel = 0; channel < 3; channel++) {
           expect(
             Math.abs(
+              shadowProfiles[1]![row]![channel]! -
+                shadowProfiles[2]![row]![channel]!,
+            ),
+            `Tag ${state} shadow matches an independently filtered rectangle`,
+          ).toBeLessThanOrEqual(2);
+          expect(
+            Math.abs(
               shadowProfiles[0]![row]![channel]! -
-                shadowProfiles[1]![row]![channel]!,
+                shadowProfiles[2]![row]![channel]!,
             ),
             `Tag ${state} shadow matches the normal button's softness and strength`,
           ).toBeLessThanOrEqual(2);
