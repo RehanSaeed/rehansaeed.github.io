@@ -1,10 +1,138 @@
 import { expect, test } from "@playwright/test";
 
+declare global {
+  interface Window {
+    /** Bounded event-time evidence, enabled only by the manual carousel diagnostic. */
+    carouselDiagnostic?: {
+      /** Pointer, scroll and layout observations in delivery order. */
+      events: Record<string, unknown>[];
+      /** Number of observations omitted after reaching the limit. */
+      dropped: number;
+    };
+  }
+}
+
 test.beforeEach(async ({ page, baseURL }) => {
   await page.route(
     (url) => url.origin !== new URL(baseURL!).origin,
     (route) => route.fulfill({ status: 204 }),
   );
+  if (process.env.CAROUSEL_DIAGNOSTIC === "1") {
+    await page.addInitScript(() => {
+      const probe = { events: [] as Record<string, unknown>[], dropped: 0 };
+      window.carouselDiagnostic = probe;
+      const label = (value: EventTarget | null) =>
+        value instanceof Element
+          ? `${value.tagName}.${value.className}`
+          : value === window
+            ? "window"
+            : "document";
+      const record = (kind: string, event?: Event) => {
+        if (probe.events.length >= 512) {
+          probe.dropped++;
+          return;
+        }
+        const gallery =
+          (event?.target instanceof Element
+            ? event.target.closest(".carousel")
+            : null) ?? document.querySelector(".carousel:has(figure)");
+        const track = gallery?.querySelector(".carousel__track");
+        const image = gallery?.querySelector("img");
+        const bounds = image?.getBoundingClientRect();
+        const pointer = event instanceof PointerEvent ? event : undefined;
+        probe.events.push({
+          kind,
+          time: performance.now(),
+          scrollY,
+          target: label(event?.target ?? null),
+          active: label(document.activeElement),
+          prevented: event?.defaultPrevented,
+          pointer: pointer && {
+            id: pointer.pointerId,
+            x: pointer.clientX,
+            y: pointer.clientY,
+            buttons: pointer.buttons,
+            hit: label(
+              document.elementFromPoint(pointer.clientX, pointer.clientY),
+            ),
+            captured:
+              track instanceof Element &&
+              track.hasPointerCapture(pointer.pointerId),
+          },
+          scrollLeft: track?.scrollLeft,
+          image: bounds && {
+            x: bounds.x,
+            y: bounds.y,
+            width: bounds.width,
+            height: bounds.height,
+            complete: image?.complete,
+            naturalWidth: image?.naturalWidth,
+          },
+        });
+      };
+      for (const type of [
+        "pointerdown",
+        "pointermove",
+        "pointerup",
+        "pointercancel",
+        "gotpointercapture",
+        "lostpointercapture",
+        "focusin",
+        "scroll",
+      ]) {
+        for (const capture of [true, false]) {
+          window.addEventListener(
+            type,
+            (event) => {
+              if (
+                !(event instanceof PointerEvent) ||
+                type !== "pointermove" ||
+                event.buttons
+              ) {
+                record(`${type}:${capture ? "capture" : "bubble"}`, event);
+              }
+            },
+            { capture, passive: true },
+          );
+        }
+      }
+      document.addEventListener("DOMContentLoaded", () => {
+        const observer = new ResizeObserver(() => {
+          record("resize");
+        });
+        for (const element of document.querySelectorAll(
+          ".carousel__track, .carousel img",
+        )) {
+          observer.observe(element);
+        }
+      });
+      document.fonts.addEventListener("loadingdone", () => {
+        record("fonts:loadingdone");
+      });
+      if (PerformanceObserver.supportedEntryTypes.includes("layout-shift")) {
+        new PerformanceObserver(() => {
+          record("layout-shift");
+        }).observe({ type: "layout-shift", buffered: true });
+      }
+    });
+  }
+});
+
+test.afterEach(async ({ page }, testInfo) => {
+  if (process.env.CAROUSEL_DIAGNOSTIC === "1" && !page.isClosed()) {
+    testInfo.annotations.push({
+      type: "diagnostic",
+      description: "Event-time layout observations may affect timing.",
+    });
+    await testInfo.attach("carousel-events", {
+      contentType: "application/json",
+      body: JSON.stringify(
+        await page.evaluate(() => window.carouselDiagnostic ?? null),
+        null,
+        2,
+      ),
+    });
+  }
 });
 
 for (const width of [1440, 640, 375, 320]) {

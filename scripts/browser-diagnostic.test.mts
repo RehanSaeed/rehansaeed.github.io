@@ -26,6 +26,111 @@ const artifact = {
     expired: false,
     workflow_run: { id: run.id, head_sha: run.head_sha },
 };
+const carouselRun = { ...run, run_attempt: 2, conclusion: "failure" };
+const generate = {
+    name: "Generate",
+    run_id: run.id,
+    run_attempt: 2,
+    head_sha: run.head_sha,
+    status: "completed",
+    conclusion: "success",
+    started_at: "2026-11-15T12:00:00Z",
+    completed_at: "2026-11-15T12:05:00Z",
+};
+const carouselArtifact = {
+    ...artifact,
+    created_at: "2026-11-15T12:04:00Z",
+    digest: `sha256:${"a".repeat(64)}`,
+};
+
+await test("carousel permits a failed aggregate only with its exact successful Generate attempt", () => {
+    assert.equal(
+        verifySource(
+            carouselRun,
+            carouselArtifact,
+            repository,
+            "123",
+            "carousel",
+            generate,
+        ).artifact.id,
+        artifact.id,
+    );
+    for (const invalid of [
+        { ...generate, conclusion: "failure" },
+        { ...generate, conclusion: "cancelled" },
+        { ...generate, status: "in_progress" },
+        { ...generate, run_id: 124 },
+        { ...generate, run_attempt: 1 },
+        { ...generate, head_sha: "b".repeat(40) },
+        { ...generate, name: "Quality" },
+        undefined,
+    ]) {
+        assert.throws(() =>
+            verifySource(
+                carouselRun,
+                carouselArtifact,
+                repository,
+                "123",
+                "carousel",
+                invalid,
+            ),
+        );
+    }
+    for (const invalid of [
+        { ...carouselRun, status: "in_progress" },
+        { ...carouselRun, conclusion: "cancelled" },
+        { ...carouselRun, run_attempt: 3 },
+    ]) {
+        assert.throws(() =>
+            verifySource(
+                invalid,
+                carouselArtifact,
+                repository,
+                "123",
+                "carousel",
+                generate,
+            ),
+        );
+    }
+});
+
+await test("carousel rejects stale artifacts and mismatched artifact revisions", () => {
+    for (const invalid of [
+        { ...carouselArtifact, created_at: "2026-11-15T11:59:59Z" },
+        { ...carouselArtifact, created_at: "2026-11-15T12:05:01Z" },
+        { ...carouselArtifact, digest: "invalid" },
+        { ...carouselArtifact, expired: true },
+        {
+            ...carouselArtifact,
+            workflow_run: { id: 124, head_sha: run.head_sha },
+        },
+        {
+            ...carouselArtifact,
+            workflow_run: { id: 123, head_sha: "b".repeat(40) },
+        },
+    ]) {
+        assert.throws(() =>
+            verifySource(
+                carouselRun,
+                invalid,
+                repository,
+                "123",
+                "carousel",
+                generate,
+            ),
+        );
+    }
+    verifyCompatibleChanges(["tests/e2e/image-carousels.spec.ts"], "carousel");
+    assert.throws(() =>
+        verifyCompatibleChanges(["tests/e2e/image-carousels.spec.ts"]),
+    );
+    assert.throws(() =>
+        verifyCompatibleChanges(
+            ["app/components/content/Carousel.vue"],
+            "carousel",
+        ),
+    );
+});
 
 await test("diagnostics reject fork, failed, unrelated and mismatched artifact sources", () => {
     assert.equal(
@@ -143,6 +248,7 @@ await test("manual diagnostics stay bounded, fixed and separate from production 
         permissions: z.record(z.string(), z.string()).optional(),
         strategy: z
             .object({
+                "max-parallel": z.number().optional(),
                 matrix: z.object({ browser: z.array(z.string()).optional() }),
             })
             .optional(),
@@ -160,11 +266,12 @@ await test("manual diagnostics stay bounded, fixed and separate from production 
         .parse(value);
     assert.deepEqual(Object.keys(workflow.on.workflow_dispatch.inputs), [
         "diagnostic_run",
+        "diagnostic_case",
     ]);
     const { jobs } = workflow;
     assert.equal(
         jobs.diagnostic.if,
-        "github.event_name == 'workflow_dispatch' && inputs.diagnostic_run != ''",
+        "github.event_name == 'workflow_dispatch' && inputs.diagnostic_run != '' && inputs.diagnostic_case != 'carousel'",
     );
     assert.deepEqual(jobs.diagnostic.strategy?.matrix.browser, [
         "chrome",
@@ -226,4 +333,54 @@ await test("manual diagnostics stay bounded, fixed and separate from production 
     assert(upload);
     assert.equal(upload.if, "always()");
     assert.equal(upload.with?.["retention-days"], 7);
+    const carousel = jobs["carousel-diagnostic"];
+    assert.equal(
+        carousel.if,
+        "github.event_name == 'workflow_dispatch' && inputs.diagnostic_run != '' && inputs.diagnostic_case == 'carousel'",
+    );
+    assert.deepEqual(carousel.strategy?.matrix.browser, [
+        "chrome",
+        "edge",
+        "firefox",
+    ]);
+    assert.equal(carousel.strategy?.["max-parallel"], 1);
+    assert.equal(carousel["timeout-minutes"], 20);
+    const carouselCommand = carousel.steps.find(
+        (step) => step.name === "Repeat Fixed Carousel Cases",
+    )?.run;
+    assert(carouselCommand);
+    assert.match(
+        carouselCommand,
+        /--repeat-each=10 --retries=0 --workers=1 --max-failures=1 --trace=retain-on-failure/,
+    );
+    assert.match(carouselCommand, /playwright test image-carousels\.spec\.ts/);
+    assert.doesNotMatch(
+        carouselCommand,
+        /inputs\.|--timeout|BASE_URL|--update/,
+    );
+    const grep = /--grep '([^']+)'/.exec(carouselCommand)?.[1];
+    assert(grep);
+    const spec = await readFile(
+        new URL("../tests/e2e/image-carousels.spec.ts", import.meta.url),
+        "utf8",
+    );
+    const titles = Array.from(
+        spec.matchAll(/test\("([^"]+)"/g),
+        (match) => match[1],
+    );
+    assert.equal(
+        titles.filter((title) => new RegExp(grep).test(title)).length,
+        2,
+    );
+    assert.equal(
+        carousel.steps.find(
+            (step) => step.name === "Download Digest-Verified Browser Site",
+        )?.run,
+        "node scripts/browser-diagnostic.mts download",
+    );
+    const carouselUpload = carousel.steps.find(
+        (step) => step.name === "Upload Carousel Diagnostic Evidence",
+    );
+    assert.equal(carouselUpload?.if, "always()");
+    assert.equal(carouselUpload.with?.["retention-days"], 7);
 });
