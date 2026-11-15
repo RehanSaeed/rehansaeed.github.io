@@ -25,7 +25,7 @@ const deploymentJobSchema = workflowSchema.shape.jobs.valueType.extend({
         .object({
             image: z.string(),
             options: z.string(),
-            volumes: z.array(z.string()),
+            volumes: z.array(z.string()).optional(),
         })
         .optional(),
     outputs: z.record(z.string(), z.string()).optional(),
@@ -238,7 +238,7 @@ test("Browser suites run in parallel against one complete build without dropping
     );
     expect(workflow.jobs.checks).toEqual({
         name: "Build",
-        if: "always() && (github.event_name != 'pull_request' || !github.event.pull_request.draft)",
+        if: "always() && (github.event_name != 'pull_request' || !github.event.pull_request.draft) && !(github.event_name == 'workflow_dispatch' && inputs.diagnostic_run != '')",
         needs: ["build", "quality", "lighthouse", "test"],
         "runs-on": "ubuntu-latest",
         steps: [
