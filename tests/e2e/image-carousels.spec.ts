@@ -166,19 +166,29 @@ for (const width of [1440, 640, 375, 320]) {
       await page.evaluate((value) => {
         document.documentElement.dataset.theme = value;
       }, theme);
-      const [reference, current, rail] = await Promise.all([
-        normal.boundingBox(),
-        image.boundingBox(),
-        track.boundingBox(),
-      ]);
+      const [reference, current, rail, caption, referenceCaption] =
+        await Promise.all([
+          normal.boundingBox(),
+          image.boundingBox(),
+          track.boundingBox(),
+          gallery.locator("figcaption").first().boundingBox(),
+          page
+            .locator(".post__content > figure > figcaption")
+            .first()
+            .boundingBox(),
+        ]);
       expect(reference).not.toBeNull();
       expect(current).not.toBeNull();
       expect(rail).not.toBeNull();
+      expect(caption).not.toBeNull();
+      expect(referenceCaption).not.toBeNull();
       expect(current!.width).toBeCloseTo(reference!.width, 0);
       expect(current!.height).toBeCloseTo(reference!.height, 0);
       expect(current!.x).toBeCloseTo(reference!.x, 0);
       expect(rail!.x).toBeCloseTo(0, 0);
       expect(rail!.width).toBeCloseTo(width, 0);
+      expect(caption!.x).toBeCloseTo(referenceCaption!.x, 0);
+      expect(caption!.width).toBeCloseTo(referenceCaption!.width, 0);
       await expect
         .poll(() => page.evaluate(() => document.documentElement.scrollWidth))
         .toBeLessThanOrEqual(width);
@@ -272,6 +282,75 @@ for (const width of [1440, 640, 375, 320]) {
     await expect(gallery.locator(".carousel__position")).toHaveText(
       "Image 3 of 3",
     );
+  });
+}
+
+for (const { width, theme, forced } of [
+  { width: 1280, theme: "light", forced: false },
+  { width: 1280, theme: "dark", forced: false },
+  { width: 320, theme: "light", forced: false },
+  { width: 320, theme: "dark", forced: false },
+  { width: 320, theme: "dark", forced: true },
+] as const) {
+  test(`Ten pagination alternatives control the gallery at ${width}px in ${theme}${forced ? " forced colours" : ""}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.emulateMedia({ forcedColors: forced ? "active" : "none" });
+    await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
+    await page.evaluate((value) => {
+      document.documentElement.dataset.theme = value;
+    }, theme);
+    const gallery = page
+      .getByRole("region", { name: "Image gallery" })
+      .filter({ has: page.locator("figure") });
+    const options = page.getByRole("region", { name: "Pagination options" });
+    const groups = options.getByRole("group");
+    await expect(groups).toHaveCount(10);
+    for (let index = 0; index < 10; index++) {
+      const group = groups.nth(index);
+      await expect(group.locator("legend")).toHaveText(
+        new RegExp(`^${index + 1}\\. `),
+      );
+      const target = index % 2 === 0 ? 1 : 0;
+      const control =
+        index === 8
+          ? group.getByRole("combobox")
+          : group.getByRole("button", {
+              name:
+                index === 7
+                  ? /Previous image$/
+                  : new RegExp(`Select image ${target + 1} of 3$`),
+            });
+      if (index === 8) {
+        await control.selectOption(String(target));
+      } else {
+        await control.click();
+      }
+      await expect(gallery.locator(".carousel__position")).toHaveText(
+        `Image ${target + 1} of 3`,
+      );
+      await expect(options.getByRole("combobox")).toHaveValue(String(target));
+      await expect(options.locator(".carousel-pagination__counter")).toHaveText(
+        `${target + 1} / 3`,
+      );
+      const bounds = await control.boundingBox();
+      expect(bounds).not.toBeNull();
+      expect(bounds!.width).toBeGreaterThanOrEqual(44);
+      expect(bounds!.height).toBeGreaterThanOrEqual(44);
+    }
+    const secondDot = groups
+      .first()
+      .getByRole("button", { name: /Select image 2 of 3$/ });
+    await secondDot.focus();
+    await secondDot.press("Enter");
+    await expect(gallery.locator(".carousel__position")).toHaveText(
+      "Image 2 of 3",
+    );
+    await expect(secondDot).toHaveAttribute("aria-current", "true");
+    await expect
+      .poll(() => page.evaluate(() => document.documentElement.scrollWidth))
+      .toBeLessThanOrEqual(width);
   });
 }
 

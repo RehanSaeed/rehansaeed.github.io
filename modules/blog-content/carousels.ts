@@ -96,7 +96,14 @@ export const groupImageCarousels = (nodes: Node[] | undefined): void => {
     } else {
       output.push([
         "carousel",
-        { count: run.length },
+        {
+          count: run.length,
+          ...(run.some(
+            (slide) => slide[1]["data-pagination-comparison"] !== undefined,
+          )
+            ? { paginationComparison: true }
+            : {}),
+        },
         ...run.map((slide): Element => [
           "li",
           { class: "carousel__slide" },

@@ -7,7 +7,7 @@ type Nodes = NonNullable<Parameters<typeof groupImageCarousels>[0]>;
 await test("groups adjacent images and preserves figure captions and image links", () => {
     const first: Nodes[number] = [
         "figure",
-        { class: "authored-figure" },
+        { class: "authored-figure", "data-pagination-comparison": "" },
         [
             "p",
             { className: ["authored-media"] },
@@ -31,13 +31,16 @@ await test("groups adjacent images and preserves figure captions and image links
     assert.deepEqual(nodes, [
         [
             "carousel",
-            { count: 2 },
+            { count: 2, paginationComparison: true },
             [
                 "li",
                 { class: "carousel__slide" },
                 [
                     "figure",
-                    { class: "authored-figure carousel__figure" },
+                    {
+                        class: "authored-figure carousel__figure",
+                        "data-pagination-comparison": "",
+                    },
                     [
                         "p",
                         {

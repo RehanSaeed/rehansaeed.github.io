@@ -38,6 +38,24 @@
       <template v-else>{{ count }} images</template>
     </p>
   </section>
+  <section
+    v-if="isInteractive && paginationComparison"
+    class="carousel-comparisons"
+    aria-label="Pagination options">
+    <p class="carousel-comparisons__description">
+      Ten pagination ideas to compare. Every option controls the captioned
+      gallery above; no replacement has been selected.
+    </p>
+    <u-carousel-pagination
+      v-for="option in paginationOptions"
+      :key="option.variant"
+      :variant="option.variant"
+      :label="option.label"
+      :count="count"
+      :current-index="currentIndex"
+      :controls="trackId"
+      @select="navigateToImage" />
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -54,7 +72,21 @@ import {
 const props = defineProps<{
   /** Number of consecutive image slides in this article gallery. */
   count: number;
+  /** Show the ten interactive pagination alternatives for this example gallery. */
+  paginationComparison?: boolean;
 }>();
+const paginationOptions = [
+  { variant: "dots", label: "1. Dots" },
+  { variant: "pills", label: "2. Expanding pills" },
+  { variant: "rings", label: "3. Outlined rings" },
+  { variant: "discs", label: "4. Numbered discs" },
+  { variant: "tabs", label: "5. Numbered tabs" },
+  { variant: "segments", label: "6. Segmented rail" },
+  { variant: "steps", label: "7. Connected steps" },
+  { variant: "counter", label: "8. Compact counter" },
+  { variant: "select", label: "9. Dropdown" },
+  { variant: "links", label: "10. Text links" },
+] as const;
 const trackId = `image-gallery-${useId()}`;
 const track = useTemplateRef<HTMLOListElement>("track");
 const preferredMotion = usePreferredReducedMotion();
@@ -433,7 +465,7 @@ onBeforeUnmount(() => {
   }
 
   .carousel__caption {
-    padding-inline: var(--global-space-fixed-4);
+    margin-inline: var(--global-space-fluid-6);
   }
 }
 
@@ -466,6 +498,18 @@ onBeforeUnmount(() => {
 
 .carousel__position {
   @include visually-hidden.visually-hidden();
+}
+
+.carousel-comparisons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: var(--global-space-fixed-5);
+  margin-block-start: var(--global-space-fixed-5);
+}
+
+.carousel-comparisons__description {
+  grid-column: 1 / -1;
+  margin: 0;
 }
 
 @media (hover: hover) and (pointer: fine) {
