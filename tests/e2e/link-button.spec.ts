@@ -58,6 +58,42 @@ const properties = compileString(readFileSync(propertiesPath, "utf8"), {
   url: pathToFileURL(propertiesPath),
 }).css;
 
+const shadowMetrics = (rows: number[][], background: number[]) => {
+  const weights = rows.map((row) =>
+    row.reduce(
+      (sum, value, channel) => sum + Math.abs(value - background[channel]!),
+      0,
+    ),
+  );
+  const strength = weights.reduce((sum, weight) => sum + weight, 0);
+  const centroid =
+    weights.reduce((sum, weight, row) => sum + weight * row, 0) / strength;
+  const softness = Math.sqrt(
+    weights.reduce(
+      (sum, weight, row) => sum + weight * (row - centroid) ** 2,
+      0,
+    ) / strength,
+  );
+  return { strength, centroid, softness };
+};
+
+const matchesNormalShadow = (
+  reference: number[][],
+  above: number[][],
+  below: number[][],
+  background: number[],
+) => {
+  const expected = shadowMetrics(reference, background);
+  const actual = shadowMetrics(below, background);
+  return (
+    expected.strength > 0 &&
+    actual.strength > shadowMetrics(above, background).strength + 3 &&
+    Math.abs(actual.strength / expected.strength - 1) <= 0.1 &&
+    Math.abs(actual.centroid - expected.centroid) <= 0.25 &&
+    Math.abs(actual.softness - expected.softness) <= 0.25
+  );
+};
+
 unitTest(
   "Link buttons preserve native destinations before hydration",
   async () => {
@@ -339,32 +375,72 @@ for (const theme of ["light", "dark"]) {
           strength(below),
           `${state} elevation is visible and falls below, not above, the control`,
         ).toBeGreaterThan(strength(above) + 3);
-        shadowProfiles.push(below);
+        shadowProfiles.push({ above, below, background });
       }
       await test.info().attach(`${state}-${theme}-shadow-profiles`, {
         body: JSON.stringify({
-          normalButton: shadowProfiles[0],
-          filteredRectangle: shadowProfiles[1],
-          pointedTag: shadowProfiles[2],
+          normalButton: shadowProfiles[0]!.below,
+          filteredRectangle: shadowProfiles[1]!.below,
+          pointedTag: shadowProfiles[2]!.below,
         }),
         contentType: "application/json",
       });
+      const normal = shadowProfiles[0]!;
+      const pointed = shadowProfiles[2]!;
+      expect(
+        matchesNormalShadow(
+          normal.below,
+          pointed.above,
+          pointed.below,
+          pointed.background,
+        ),
+        "Tag elevation matches normal-button direction, strength, centroid and blur spread",
+      ).toBe(true);
+
+      const empty = normal.below.map(() => normal.background);
+      for (const [above, below] of [
+        [empty, empty],
+        [normal.below, normal.above],
+        [
+          normal.above,
+          normal.below.map((row) =>
+            row.map(
+              (value, channel) =>
+                normal.background[channel]! +
+                2 * (value - normal.background[channel]!),
+            ),
+          ),
+        ],
+        [
+          normal.above,
+          normal.below.map((_, row) => normal.below[Math.floor(row / 2)]!),
+        ],
+      ]) {
+        expect(
+          matchesNormalShadow(normal.below, above!, below!, normal.background),
+          "Comparison rejects missing, upward, overstrong and excessively blurred shadows",
+        ).toBe(false);
+      }
+
       for (let row = 0; row < 16; row++) {
         for (let channel = 0; channel < 3; channel++) {
           expect(
             Math.abs(
-              shadowProfiles[1]![row]![channel]! -
-                shadowProfiles[2]![row]![channel]!,
+              shadowProfiles[1]!.below[row]![channel]! -
+                pointed.below[row]![channel]!,
             ),
             `Tag ${state} shadow matches an independently filtered rectangle`,
           ).toBeLessThanOrEqual(2);
-          expect(
-            Math.abs(
-              shadowProfiles[0]![row]![channel]! -
-                shadowProfiles[2]![row]![channel]!,
-            ),
-            `Tag ${state} shadow matches the normal button's softness and strength`,
-          ).toBeLessThanOrEqual(2);
+          // Linux Chromium differs by four levels even for the plain rectangle.
+          // Bound that intrinsic rasterization error; never normalize it away.
+          for (const profile of shadowProfiles.slice(1)) {
+            expect(
+              Math.abs(
+                normal.below[row]![channel]! - profile.below[row]![channel]!,
+              ),
+              `${state} box/filter rasterization stays inside its measured envelope`,
+            ).toBeLessThanOrEqual(state === "hover" ? 4 : 2);
+          }
         }
       }
     };
