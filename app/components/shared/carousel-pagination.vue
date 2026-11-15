@@ -47,7 +47,28 @@
         Image {{ imageNumber }} of {{ count }}
       </option>
     </select>
-    <template v-else>
+    <div
+      v-else
+      class="carousel-pagination__choices"
+      :class="{
+        'carousel-pagination__choices--travelling': variant === 'pills-travel',
+      }">
+      <svg
+        v-if="variant === 'pills-travel'"
+        class="carousel-pagination__traveller"
+        :width="count * 44"
+        height="44"
+        :viewBox="`0 0 ${count} 1`"
+        aria-hidden="true"
+        focusable="false">
+        <rect
+          class="carousel-pagination__capsule"
+          :x="currentIndex + 0.225"
+          y="0.425"
+          width="0.55"
+          height="0.15"
+          rx="0.075" />
+      </svg>
       <button
         v-for="imageNumber in count"
         :key="imageNumber"
@@ -62,14 +83,18 @@
         :aria-current="imageNumber - 1 === currentIndex ? 'true' : undefined"
         @click="emit('select', imageNumber - 1)">
         <span
-          v-if="['dots', 'pills', 'rings', 'segments'].includes(variant)"
+          v-if="
+            variant.startsWith('dots') ||
+            variant.startsWith('pills') ||
+            ['rings', 'segments'].includes(variant)
+          "
           class="carousel-pagination__dot"
           aria-hidden="true" />
         <span v-else class="carousel-pagination__label" aria-hidden="true">
           {{ variant === "links" ? `Image ${imageNumber}` : imageNumber }}
         </span>
       </button>
-    </template>
+    </div>
   </fieldset>
 </template>
 
@@ -82,10 +107,16 @@ withDefaults(
     currentIndex: number;
     /** ID of the scroll container controlled by these buttons. */
     controls: string;
-    /** Visual alternative; dots remain the selected production design. */
+    /** Visual alternative; dots remain the unchanged default design. */
     variant?:
       | "dots"
+      | "dots-ripple"
+      | "dots-spring"
+      | "dots-orbit"
       | "pills"
+      | "pills-elastic"
+      | "pills-wipe"
+      | "pills-travel"
       | "rings"
       | "discs"
       | "tabs"
@@ -128,6 +159,36 @@ const onChange = (event: Event) => {
   font-weight: var(--global-font-weight-semi-bold);
   text-align: center;
   margin-block-end: var(--global-space-fixed-2);
+}
+
+.carousel-pagination__choices {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.carousel-pagination__choices--travelling {
+  position: relative;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 44px;
+  inline-size: max-content;
+  max-inline-size: 100%;
+  overflow-x: auto;
+}
+
+.carousel-pagination__traveller {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  pointer-events: none;
+}
+
+.carousel-pagination__capsule {
+  fill: var(--global-accent-color);
 }
 
 .carousel-pagination__button {
@@ -187,6 +248,82 @@ const onChange = (event: Event) => {
   .carousel-pagination__button[aria-current="true"]
   .carousel-pagination__dot {
   inline-size: var(--global-space-fixed-5);
+}
+
+:is(
+    .carousel-pagination--dots-ripple,
+    .carousel-pagination--dots-spring,
+    .carousel-pagination--dots-orbit,
+    .carousel-pagination--pills-wipe
+  )
+  .carousel-pagination__dot {
+  position: relative;
+}
+
+:is(.carousel-pagination--dots-ripple, .carousel-pagination--dots-spring)
+  .carousel-pagination__button[aria-current="true"]
+  .carousel-pagination__dot {
+  inline-size: 1rem;
+  block-size: 1rem;
+  border-color: var(--global-accent-color);
+}
+
+.carousel-pagination--dots-ripple .carousel-pagination__dot::after {
+  position: absolute;
+  inset: calc(var(--global-space-fixed-1) * -1);
+  border: var(--global-border-width-2) solid var(--global-accent-color);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  content: "";
+}
+
+.carousel-pagination--dots-orbit
+  .carousel-pagination__button[aria-current="true"]
+  .carousel-pagination__dot::after {
+  position: absolute;
+  inset: calc(var(--global-space-fixed-2) * -1);
+  border: var(--global-border-width-2) solid var(--global-accent-color);
+  border-inline-start-color: transparent;
+  border-radius: 50%;
+  content: "";
+}
+
+:is(.carousel-pagination--pills-elastic, .carousel-pagination--pills-travel)
+  .carousel-pagination__dot {
+  inline-size: var(--global-space-fixed-2);
+  block-size: var(--global-space-fixed-2);
+  border-radius: var(--global-space-fixed-3);
+}
+
+.carousel-pagination--pills-elastic
+  .carousel-pagination__button[aria-current="true"]
+  .carousel-pagination__dot {
+  inline-size: var(--global-space-fixed-5);
+  border-color: var(--global-accent-color);
+}
+
+.carousel-pagination--pills-wipe .carousel-pagination__dot {
+  inline-size: var(--global-space-fixed-5);
+  block-size: var(--global-space-fixed-2);
+  overflow: hidden;
+  border-radius: var(--global-space-fixed-3);
+  background-color: transparent;
+}
+
+.carousel-pagination--pills-wipe
+  .carousel-pagination__button[aria-current="true"]
+  .carousel-pagination__dot {
+  border-color: var(--global-accent-color);
+  background-color: transparent;
+
+  &::after {
+    position: absolute;
+    inset: 0;
+    background-color: var(--global-accent-color);
+    transform-origin: 0 50%;
+    content: "";
+  }
 }
 
 .carousel-pagination--rings .carousel-pagination__dot {
@@ -302,6 +439,106 @@ const onChange = (event: Event) => {
       block-size var(--global-duration-1) var(--ease-in-out-cubic),
       background-color var(--global-duration-1) var(--ease-in-out-cubic);
   }
+
+  .carousel-pagination--dots-ripple
+    .carousel-pagination__button[aria-current="true"]
+    .carousel-pagination__dot::after {
+    animation: carousel-pagination-ripple var(--global-duration-3)
+      var(--ease-out-cubic);
+  }
+
+  .carousel-pagination--dots-spring
+    .carousel-pagination__button[aria-current="true"]
+    .carousel-pagination__dot {
+    animation: carousel-pagination-spring var(--global-duration-3)
+      var(--ease-out-cubic);
+  }
+
+  .carousel-pagination--dots-orbit
+    .carousel-pagination__button[aria-current="true"]
+    .carousel-pagination__dot::after {
+    animation: carousel-pagination-orbit var(--global-duration-3)
+      var(--ease-out-cubic);
+  }
+
+  .carousel-pagination--pills-elastic
+    .carousel-pagination__button[aria-current="true"]
+    .carousel-pagination__dot {
+    animation: carousel-pagination-elastic var(--global-duration-3)
+      var(--ease-out-cubic);
+  }
+
+  .carousel-pagination--pills-wipe
+    .carousel-pagination__button[aria-current="true"]
+    .carousel-pagination__dot::after {
+    animation: carousel-pagination-wipe var(--global-duration-3)
+      var(--ease-in-out-cubic);
+  }
+
+  .carousel-pagination__capsule {
+    transition: x var(--global-duration-3) var(--ease-out-back);
+  }
+}
+
+@keyframes carousel-pagination-ripple {
+  from {
+    opacity: 0.8;
+    transform: scale(0.65);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+}
+
+@keyframes carousel-pagination-spring {
+  0% {
+    transform: scale(0.55, 1.3);
+  }
+  45% {
+    transform: scale(1.25, 0.8);
+  }
+  75% {
+    transform: scale(0.94, 1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes carousel-pagination-orbit {
+  from {
+    opacity: 0;
+    transform: rotate(-160deg) scale(0.55);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+}
+
+@keyframes carousel-pagination-elastic {
+  0% {
+    transform: scale(0.4, 1.5);
+  }
+  50% {
+    transform: scale(1.35, 0.8);
+  }
+  80% {
+    transform: scale(0.94, 1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes carousel-pagination-wipe {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
 }
 
 @media (forced-colors: active) {
@@ -334,6 +571,23 @@ const onChange = (event: Event) => {
     border-color: Highlight;
     background-color: Canvas;
     outline-color: Highlight;
+  }
+
+  .carousel-pagination__capsule {
+    fill: Highlight;
+  }
+
+  .carousel-pagination--dots-orbit
+    .carousel-pagination__button[aria-current="true"]
+    .carousel-pagination__dot::after {
+    border-color: Highlight;
+    border-inline-start-color: transparent;
+  }
+
+  .carousel-pagination--pills-wipe
+    .carousel-pagination__button[aria-current="true"]
+    .carousel-pagination__dot::after {
+    background-color: Highlight;
   }
 }
 </style>

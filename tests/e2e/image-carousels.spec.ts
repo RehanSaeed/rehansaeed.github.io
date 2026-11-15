@@ -325,7 +325,7 @@ for (const { width, theme, forced } of [
   { width: 320, theme: "dark", forced: false },
   { width: 320, theme: "dark", forced: true },
 ] as const) {
-  test(`Ten pagination alternatives control the gallery at ${width}px in ${theme}${forced ? " forced colours" : ""}`, async ({
+  test(`Pagination alternatives and animated variations control the gallery at ${width}px in ${theme}${forced ? " forced colours" : ""}`, async ({
     page,
   }) => {
     await page.setViewportSize({ width, height: 900 });
@@ -338,7 +338,7 @@ for (const { width, theme, forced } of [
       .getByRole("region", { name: "Image gallery" })
       .filter({ has: page.locator("figure") });
     const options = page.getByRole("region", { name: "Pagination options" });
-    const groups = options.getByRole("group");
+    const groups = options.getByRole("group", { name: /^\d+\. / });
     await expect(groups).toHaveCount(10);
     for (let index = 0; index < 10; index++) {
       const group = groups.nth(index);
@@ -360,7 +360,21 @@ for (const { width, theme, forced } of [
       expect(Number(bounds!.width.toFixed(4))).toBeGreaterThanOrEqual(44);
       expect(Number(bounds!.height.toFixed(4))).toBeGreaterThanOrEqual(44);
     }
-    const secondDot = groups
+    const variations = options.getByRole("group", { name: /^[12][A-C]\. / });
+    await expect(variations).toHaveCount(6);
+    for (let index = 0; index < 6; index++) {
+      const target = 1 - (index % 2);
+      const control = await choosePaginationImage(variations.nth(index), target);
+      await expect(control).toHaveAttribute("aria-current", "true");
+      await expect(gallery.locator(".carousel__position")).toHaveText(
+        `Image ${target + 1} of 3`,
+      );
+      const bounds = await control.boundingBox();
+      expect(bounds).not.toBeNull();
+      expect(Number(bounds!.width.toFixed(4))).toBeGreaterThanOrEqual(44);
+      expect(Number(bounds!.height.toFixed(4))).toBeGreaterThanOrEqual(44);
+    }
+    const secondDot = variations
       .first()
       .getByRole("button", { name: /Select image 2 of 3$/ });
     await secondDot.focus();
@@ -374,6 +388,84 @@ for (const { width, theme, forced } of [
       .toBeLessThanOrEqual(width);
   });
 }
+
+test("Dot and pill variations animate real selections and stop for reduced motion and forced colours", async ({
+  page,
+}) => {
+  await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
+  const options = page.getByRole("region", { name: "Pagination options" });
+  const variations = options.getByRole("group", { name: /^[12][A-C]\. / });
+  await expect(variations).toHaveCount(6);
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await options.evaluate(async (element) => {
+    await Promise.all(
+      element.getAnimations({ subtree: true }).map((animation) => animation.finished),
+    );
+  });
+  for (let index = 0; index < 6; index++) {
+    const group = variations.nth(index);
+    await group.evaluate((element) => {
+      const pause = () => {
+        for (const animation of element.getAnimations({ subtree: true })) {
+          animation.pause();
+        }
+      };
+      element.addEventListener("animationstart", pause, { once: true });
+      element.addEventListener("transitionrun", pause, { once: true });
+    });
+    const control = await choosePaginationImage(group, 1 - (index % 2));
+    await expect(control).toHaveAttribute("aria-current", "true");
+    await expect.poll(() =>
+      group.evaluate((element) =>
+        element.getAnimations({ subtree: true }).some((animation) =>
+          animation.playState === "paused" &&
+          (animation instanceof CSSAnimation ||
+            (animation instanceof CSSTransition && animation.transitionProperty === "x")),
+        ),
+      ),
+    ).toBe(true);
+    const samples = await group.evaluate((element) => {
+      const animations = element.getAnimations({ subtree: true }).filter(
+        (animation) =>
+          animation instanceof CSSAnimation ||
+          (animation instanceof CSSTransition && animation.transitionProperty === "x"),
+      );
+      const snapshot = () =>
+        [...element.querySelectorAll(".carousel-pagination__dot, .carousel-pagination__capsule")]
+          .flatMap((marker) => [
+            getComputedStyle(marker).transform,
+            getComputedStyle(marker).getPropertyValue("x"),
+            getComputedStyle(marker, "::after").transform,
+            getComputedStyle(marker, "::after").opacity,
+          ]);
+      for (const animation of animations) {
+        animation.currentTime = 0;
+      }
+      const start = snapshot();
+      for (const animation of animations) {
+        animation.currentTime = Number(animation.effect!.getTiming().duration) / 2;
+      }
+      const middle = snapshot();
+      for (const animation of element.getAnimations({ subtree: true })) {
+        animation.finish();
+      }
+      return { start, middle };
+    });
+    expect(samples.middle).not.toEqual(samples.start);
+  }
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  const control = await choosePaginationImage(variations.first(), 2);
+  await expect(control).toHaveAttribute("aria-current", "true");
+  await expect.poll(() =>
+    options.evaluate((element) => element.getAnimations({ subtree: true }).length),
+  ).toBe(0);
+  await page.emulateMedia({ reducedMotion: "no-preference", forcedColors: "active" });
+  const forcedControl = await choosePaginationImage(variations.last(), 0);
+  await expect(forcedControl).toHaveAttribute("aria-current", "true");
+  await expect.poll(() =>
+    options.evaluate((element) => element.getAnimations({ subtree: true }).length),
+  ).toBe(0);
+});
 
 test.describe("Continuous scroll-linked motion", () => {
   test.use({ reducedMotion: "no-preference" });

@@ -43,9 +43,21 @@
     class="carousel-comparisons"
     aria-label="Pagination options">
     <p class="carousel-comparisons__description">
-      Ten pagination ideas to compare. Every option controls the captioned
-      gallery above; no replacement has been selected.
+      Three new variations each on dots (1) and pills (2), followed by the
+      original ten ideas. Every option controls the captioned gallery above; no
+      replacement has been selected. Animations respect reduced motion.
     </p>
+    <h3 class="carousel-comparisons__heading">Animated dots and pills</h3>
+    <u-carousel-pagination
+      v-for="option in animatedPaginationOptions"
+      :key="option.variant"
+      :variant="option.variant"
+      :label="option.label"
+      :count="count"
+      :current-index="currentIndex"
+      :controls="trackId"
+      @select="navigateToImage" />
+    <h3 class="carousel-comparisons__heading">Original ten options</h3>
     <u-carousel-pagination
       v-for="option in paginationOptions"
       :key="option.variant"
@@ -72,9 +84,17 @@ import {
 const props = defineProps<{
   /** Number of consecutive image slides in this article gallery. */
   count: number;
-  /** Show the ten interactive pagination alternatives for this example gallery. */
+  /** Show the interactive pagination comparisons for this example gallery. */
   paginationComparison?: boolean;
 }>();
+const animatedPaginationOptions = [
+  { variant: "dots-ripple", label: "1A. Ripple dots" },
+  { variant: "dots-spring", label: "1B. Spring dots" },
+  { variant: "dots-orbit", label: "1C. Orbit dots" },
+  { variant: "pills-elastic", label: "2A. Elastic pills" },
+  { variant: "pills-wipe", label: "2B. Wipe pills" },
+  { variant: "pills-travel", label: "2C. Travelling capsule" },
+] as const;
 const paginationOptions = [
   { variant: "dots", label: "1. Dots" },
   { variant: "pills", label: "2. Expanding pills" },
@@ -507,7 +527,8 @@ onBeforeUnmount(() => {
   margin-block-start: var(--global-space-fixed-5);
 }
 
-.carousel-comparisons__description {
+.carousel-comparisons__description,
+.carousel-comparisons__heading {
   grid-column: 1 / -1;
   margin: 0;
 }
