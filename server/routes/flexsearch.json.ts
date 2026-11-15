@@ -2,9 +2,16 @@ import { queryCollection } from "@nuxt/content/server";
 import type { SearchDocument } from "../../shared/utils/search";
 
 // Prerendered at the existing search-index URL. The browser builds the
-// FlexSearch index from these documents (see app/components/search/search.vue).
+// FlexSearch index from these documents (see shared/utils/search.ts).
 export default defineEventHandler(async (event): Promise<SearchDocument[]> => {
-  const fields = ["title", "description", "heroImage", "permalink"] as const;
+  const fields = [
+    "title",
+    "description",
+    "heroImage",
+    "permalink",
+    "published",
+    "tags",
+  ] as const;
   const [posts, portfolio] = await Promise.all([
     queryCollection(event, "posts")
       .select(...fields)

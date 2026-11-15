@@ -24,49 +24,14 @@
   </section>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { onMounted, ref, useId, watch } from "vue";
-import type { Document } from "flexsearch";
-import { z } from "zod";
 import {
-  searchDocumentSchema,
+  minimumSearchTermLength,
   type SearchDocument,
 } from "#shared/utils/search";
+import { siteSearch } from "~/framework/search";
 
-const minimumSearchTermLength = 3;
-const resultLimit = 8;
-let indexPromise: Promise<Document<SearchDocument>> | undefined;
-
-// Downloads the prerendered /flexsearch.json once and builds the index in the browser.
-const loadIndex = () => {
-  indexPromise ??= Promise.all([
-    $fetch<unknown>("/flexsearch.json"),
-    import("flexsearch"),
-  ])
-    .then(([response, { Document }]) => {
-      const documents = z.array(searchDocumentSchema).parse(response);
-      const index = new Document<SearchDocument>({
-        tokenize: "forward",
-        document: {
-          id: "id",
-          index: ["title", "description"],
-          store: true,
-        },
-      });
-      for (const document of documents) {
-        index.add(document);
-      }
-      return index;
-    })
-    .catch((error: unknown) => {
-      indexPromise = undefined;
-      throw error;
-    });
-  return indexPromise;
-};
-</script>
-
-<script setup lang="ts">
 defineOptions({ name: "u-search" });
 const emit = defineEmits<{
   selected: [searchTerm: string, permalink: string];
@@ -96,21 +61,12 @@ const updateSearchResults = async () => {
   }
 
   try {
-    const index = await loadIndex();
+    const results = await siteSearch.search(term);
     if (term !== searchTerm.value) {
       return;
     }
 
-    // The limit applies per field, so the merged results are limited again.
-    searchResults.value = index
-      .search(term, { limit: resultLimit, enrich: true, merge: true })
-      .slice(0, resultLimit)
-      .map((result) => {
-        if (!result.doc) {
-          throw new Error("The search index returned a missing document");
-        }
-        return result.doc;
-      });
+    searchResults.value = results;
     announceResults(
       `${searchResults.value.length} search ${searchResults.value.length === 1 ? "result" : "results"}.`,
     );
@@ -132,7 +88,7 @@ watch(
   () => props.isOpen,
   (isOpen) => {
     if (isOpen) {
-      void loadIndex().catch((error: unknown) => {
+      void siteSearch.loadIndex().catch((error: unknown) => {
         console.error("Unable to load the search index", error);
       });
     }
