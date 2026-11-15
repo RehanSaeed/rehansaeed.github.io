@@ -75,10 +75,9 @@ for (const { theme, width, minimumRows } of [
     expect(hole.width).toBe(hole.height);
     expect(hole.radius).toBe("50%");
     expect(hole.colour).toBe(hole.accent);
-    const raisedShadow = await first.evaluate((element) => {
+    const restingShadow = await first.evaluate((element) => {
       const probe = document.createElement("span");
-      probe.style.filter =
-        "drop-shadow(var(--global-shadow-2-near)) drop-shadow(var(--global-shadow-2-middle)) drop-shadow(var(--global-shadow-2-far))";
+      probe.style.filter = "drop-shadow(var(--global-drop-shadow-1))";
       element.append(probe);
       const shadow = getComputedStyle(probe).filter;
       probe.remove();
@@ -90,7 +89,15 @@ for (const { theme, width, minimumRows } of [
     await first.hover();
     await expect(first).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -2)");
     const surface = first.locator(".link-button__tag-surface");
-    await expect(surface).toHaveCSS("filter", raisedShadow);
+    await expect(surface).toHaveCSS("filter", restingShadow);
+    const expectRaisedLayers = async (tag: typeof first) => {
+      const shadows = tag.locator(".link-button__tag-shadow");
+      await expect(shadows).toHaveCount(3);
+      for (const shadow of await shadows.all()) {
+        await expect(shadow).toHaveCSS("opacity", "1");
+      }
+    };
+    await expectRaisedLayers(first);
     expect(
       await first.evaluate(
         (element) => getComputedStyle(element, "::before").content,
@@ -140,7 +147,8 @@ for (const { theme, width, minimumRows } of [
     await expect(first).toHaveCSS("transform", "none");
     await expect(first).toHaveCSS("transition-duration", "0s");
     await expect(surface).toHaveCSS("transition-duration", "0s");
-    await expect(surface).toHaveCSS("filter", raisedShadow);
+    await expect(surface).toHaveCSS("filter", restingShadow);
+    await expectRaisedLayers(first);
 
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.goto(postPath, { waitUntil: "domcontentloaded" });
@@ -159,8 +167,9 @@ for (const { theme, width, minimumRows } of [
     await expect(postTag).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -2)");
     await expect(postTag.locator(".link-button__tag-surface")).toHaveCSS(
       "filter",
-      raisedShadow,
+      restingShadow,
     );
+    await expectRaisedLayers(postTag);
     await page.screenshot({
       path: test.info().outputPath(`article-${theme}-pointed.png`),
     });
@@ -172,6 +181,11 @@ for (const { theme, width, minimumRows } of [
     await expect(postTag).toHaveCSS("outline-offset", "3px");
     const postSurface = postTag.locator(".link-button__tag-surface");
     await expect(postSurface).toHaveCSS("filter", "none");
+    for (const shadow of await postTag
+      .locator(".link-button__tag-shadow")
+      .all()) {
+      await expect(shadow).toHaveCSS("opacity", "0");
+    }
     const colours = await postSurface.evaluate((element) => ({
       edge: getComputedStyle(element, "::before").backgroundImage,
       fill: getComputedStyle(element, "::after").backgroundColor,
@@ -204,8 +218,9 @@ for (const { theme, width, minimumRows } of [
     await expect(cardTag).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -2)");
     await expect(cardTag.locator(".link-button__tag-surface")).toHaveCSS(
       "filter",
-      raisedShadow,
+      restingShadow,
     );
+    await expectRaisedLayers(cardTag);
     await page.screenshot({
       path: test.info().outputPath(`post-card-${theme}-pointed.png`),
     });

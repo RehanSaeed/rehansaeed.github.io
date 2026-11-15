@@ -3,7 +3,7 @@ import { createRequire } from "node:module";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { runInNewContext } from "node:vm";
-import { test as unitTest } from "@playwright/test";
+import { test as unitTest, type Locator } from "@playwright/test";
 import { compileString } from "sass-embedded";
 import sharp from "sharp";
 import { ModuleKind, ScriptTarget, transpileModule } from "typescript";
@@ -188,80 +188,105 @@ for (const theme of ["light", "dark"]) {
       const pressed = getComputedStyle(probe).filter;
       probe.style.filter = "drop-shadow(var(--global-drop-shadow-1))";
       const resting = getComputedStyle(probe).filter;
-      probe.style.filter =
-        "drop-shadow(var(--global-shadow-2-near)) drop-shadow(var(--global-shadow-2-middle)) drop-shadow(var(--global-shadow-2-far))";
-      const raised = getComputedStyle(probe).filter;
+      const raised = ["far", "middle", "near"].map((layer) => {
+        probe.style.filter = `drop-shadow(var(--global-drop-shadow-2-${layer}))`;
+        return getComputedStyle(probe).filter;
+      });
       probe.remove();
       return { accent, pressed, resting, raised };
     });
     await expect(surface).toHaveCSS("filter", tokens.resting);
-    const shadowProfiles = [];
-    for (const control of [
-      page.getByRole("button", { name: "Reference button", exact: true }),
-      page.getByRole("link", { name: "Resting tag", exact: true }),
-    ]) {
-      const bounds = await control.boundingBox();
-      expect(bounds).not.toBeNull();
-      const screenshot = await page.screenshot({
-        path: test
-          .info()
-          .outputPath(
-            `resting-${await control.getAttribute("class")}-${theme}.png`,
-          ),
-        scale: "css",
-        animations: "disabled",
-        clip: {
-          x: Math.floor(bounds!.x) + 100,
-          y: Math.floor(bounds!.y) - 12,
-          width: 40,
-          height: Math.ceil(bounds!.height) + 24,
-        },
-      });
-      const { data, info } = await sharp(screenshot)
-        .removeAlpha()
-        .raw()
-        .toBuffer({ resolveWithObject: true });
-      const row = (y: number) =>
-        Array.from({ length: 3 }, (_, channel) => {
-          let sum = 0;
-          for (let x = 0; x < info.width; x++) {
-            sum += data[(y * info.width + x) * info.channels + channel]!;
-          }
-          return sum / info.width;
-        });
-      const background = row(0);
-      const above = Array.from({ length: 8 }, (_, offset) => row(11 - offset));
-      const below = Array.from({ length: 8 }, (_, offset) =>
-        row(12 + Math.ceil(bounds!.height) + offset),
+    const shadows = link.locator(".link-button__tag-shadow");
+    await expect(shadows).toHaveCount(3);
+    for (let index = 0; index < tokens.raised.length; index++) {
+      await expect(shadows.nth(index)).toHaveCSS(
+        "filter",
+        tokens.raised[index]!,
       );
-      const strength = (rows: number[][]) =>
-        rows.reduce(
-          (sum, channels) =>
-            sum +
-            channels.reduce(
-              (total, value, channel) =>
-                total + Math.abs(value - background[channel]!),
-              0,
+      await expect(shadows.nth(index)).toHaveCSS("opacity", "0");
+    }
+    const compareShadows = async (
+      state: string,
+      prepare: (control: Locator) => Promise<void>,
+    ) => {
+      const shadowProfiles = [];
+      for (const control of [
+        page.getByRole("button", { name: "Reference button", exact: true }),
+        page.getByRole("link", { name: "Resting tag", exact: true }),
+      ]) {
+        await prepare(control);
+        const bounds = await control.boundingBox();
+        expect(bounds).not.toBeNull();
+        const screenshot = await page.screenshot({
+          path: test
+            .info()
+            .outputPath(
+              `${state}-${await control.getAttribute("class")}-${theme}.png`,
             ),
-          0,
+          scale: "css",
+          animations: "disabled",
+          clip: {
+            x: Math.floor(bounds!.x) + 100,
+            y: Math.floor(bounds!.y) - 20,
+            width: 40,
+            height: Math.ceil(bounds!.height) + 40,
+          },
+        });
+        const { data, info } = await sharp(screenshot)
+          .removeAlpha()
+          .raw()
+          .toBuffer({ resolveWithObject: true });
+        const row = (y: number) =>
+          Array.from({ length: 3 }, (_, channel) => {
+            let sum = 0;
+            for (let x = 0; x < info.width; x++) {
+              sum += data[(y * info.width + x) * info.channels + channel]!;
+            }
+            return sum / info.width;
+          });
+        const background = row(0);
+        const above = Array.from({ length: 16 }, (_, offset) =>
+          row(19 - offset),
         );
-      expect(
-        strength(below),
-        "Resting elevation is visible and falls below, not above, the control",
-      ).toBeGreaterThan(strength(above) + 3);
-      shadowProfiles.push(below);
-    }
-    for (let row = 0; row < 8; row++) {
-      for (let channel = 0; channel < 3; channel++) {
+        const below = Array.from({ length: 16 }, (_, offset) =>
+          row(20 + Math.ceil(bounds!.height) + offset),
+        );
+        const strength = (rows: number[][]) =>
+          rows.reduce(
+            (sum, channels) =>
+              sum +
+              channels.reduce(
+                (total, value, channel) =>
+                  total + Math.abs(value - background[channel]!),
+                0,
+              ),
+            0,
+          );
         expect(
-          Math.abs(
-            shadowProfiles[0]![row]![channel]! -
-              shadowProfiles[1]![row]![channel]!,
-          ),
-          "Tag resting shadow matches the normal button's softness and strength",
-        ).toBeLessThanOrEqual(2);
+          strength(below),
+          `${state} elevation is visible and falls below, not above, the control`,
+        ).toBeGreaterThan(strength(above) + 3);
+        shadowProfiles.push(below);
       }
-    }
+      for (let row = 0; row < 16; row++) {
+        for (let channel = 0; channel < 3; channel++) {
+          expect(
+            Math.abs(
+              shadowProfiles[0]![row]![channel]! -
+                shadowProfiles[1]![row]![channel]!,
+            ),
+            `Tag ${state} shadow matches the normal button's softness and strength`,
+          ).toBeLessThanOrEqual(2);
+        }
+      }
+    };
+    await compareShadows("rest", async () => {
+      await page.mouse.move(0, 0);
+    });
+    await compareShadows("hover", async (control) => {
+      await control.hover();
+      await expect(control).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -2)");
+    });
     const hole = await link.evaluate((element) => {
       const style = getComputedStyle(element, "::after");
       return { colour: style.backgroundColor, round: style.borderRadius };
@@ -270,10 +295,16 @@ for (const theme of ["light", "dark"]) {
     await link.hover();
     await expect(output).toHaveAttribute("data-entered", "true");
     await expect(link).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -2)");
-    await expect(surface).toHaveCSS("filter", tokens.raised);
+    await expect(surface).toHaveCSS("filter", tokens.resting);
+    for (const shadow of await shadows.all()) {
+      await expect(shadow).toHaveCSS("opacity", "1");
+    }
     await page.mouse.down();
     await expect(link).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, 0)");
     await expect(surface).toHaveCSS("filter", tokens.pressed);
+    for (const shadow of await shadows.all()) {
+      await expect(shadow).toHaveCSS("opacity", "0");
+    }
     await page.mouse.up();
     await expect(output).toHaveAttribute("data-clicks", "1");
     await link.focus();
@@ -311,8 +342,12 @@ for (const theme of ["light", "dark"]) {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await link.hover();
     await expect(link).toHaveCSS("transform", "none");
-    await expect(surface).toHaveCSS("filter", tokens.raised);
+    await expect(surface).toHaveCSS("filter", tokens.resting);
     await expect(surface).toHaveCSS("transition-duration", "0s");
+    for (const shadow of await shadows.all()) {
+      await expect(shadow).toHaveCSS("opacity", "1");
+      await expect(shadow).toHaveCSS("transition-duration", "0s");
+    }
     await page.emulateMedia({ reducedMotion: "no-preference" });
 
     // Enlarge the point so a rectangular backing cannot hide in the shadow blur.
@@ -380,6 +415,9 @@ for (const theme of ["light", "dark"]) {
       };
     });
     await expect(surface).toHaveCSS("filter", "none");
+    for (const shadow of await shadows.all()) {
+      await expect(shadow).toHaveCSS("opacity", "0");
+    }
     expect(surfaceColours.edge).toBe(
       `linear-gradient(${surfaceColours.linkText}, ${surfaceColours.linkText}), none`,
     );
