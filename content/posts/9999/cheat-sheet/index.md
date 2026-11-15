@@ -264,7 +264,7 @@ To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>`
 
 ![A code illustration in the second image-only gallery slide.](./images/Code-1600x900.jpg)
 
-## Images With Captions
+---
 
 <figure>
 
