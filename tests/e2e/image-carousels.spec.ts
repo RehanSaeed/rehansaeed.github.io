@@ -162,6 +162,7 @@ test.describe("Continuous scroll-linked motion", () => {
       gallery.getByRole("button", { name: "Go to image 1 of 3" }),
     ).toHaveAttribute("aria-current", "true");
     const image = gallery.locator("img").first();
+    await image.hover();
     const bounds = await image.boundingBox();
     expect(bounds).not.toBeNull();
     const step = await track.evaluate((element) => {
@@ -683,8 +684,9 @@ test("Mouse dragging a linked image scrolls without opening its link, but a norm
   const gallery = page
     .getByRole("region", { name: "Image gallery" })
     .filter({ has: page.locator("figure") });
-  await gallery.scrollIntoViewIfNeeded();
+  await expect(gallery).toHaveClass(/carousel--interactive/);
   const image = gallery.locator("img").first();
+  await image.hover();
   const bounds = await image.boundingBox();
   expect(bounds).not.toBeNull();
   const x = bounds!.x + bounds!.width * 0.8;
