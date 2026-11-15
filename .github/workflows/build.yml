@@ -304,7 +304,6 @@ jobs:
       artifact-id: ${{ steps.source.outputs.artifact-id }}
       source-sha: ${{ steps.source.outputs.source-sha }}
       source-event: ${{ steps.source.outputs.source-event }}
-      artifact-digest: ${{ steps.source.outputs.artifact-digest }}
       playwright-image: ${{ steps.source.outputs.playwright-image }}
     steps:
       - name: Checkout
@@ -417,11 +416,14 @@ jobs:
       - name: Install Without Generation
         run: npm ci --ignore-scripts
       - name: Download Digest-Verified Browser Site
-        run: node scripts/browser-diagnostic.mts download
-        env:
-          GH_TOKEN: ${{ github.token }}
-          DIAGNOSTIC_ARTIFACT_ID: ${{ needs.diagnostic-source.outputs.artifact-id }}
-          DIAGNOSTIC_ARTIFACT_DIGEST: ${{ needs.diagnostic-source.outputs.artifact-digest }}
+        uses: actions/download-artifact@v8.0.2
+        with:
+          artifact-ids: ${{ needs.diagnostic-source.outputs.artifact-id }}
+          run-id: ${{ inputs.diagnostic_run }}
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/diagnostic-artifact
+          merge-multiple: true
+          digest-mismatch: error
       - name: Verify And Extract Compatible Site
         run: node scripts/browser-diagnostic.mts extract
         env:

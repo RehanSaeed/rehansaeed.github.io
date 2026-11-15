@@ -1,14 +1,6 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { createHash } from "node:crypto";
-import {
-    appendFile,
-    cp,
-    mkdir,
-    mkdtemp,
-    readFile,
-    writeFile,
-} from "node:fs/promises";
+import { appendFile, cp, mkdtemp, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -83,7 +75,7 @@ export const verifySource = (
         assert.equal(generate.run_id, run.id);
         assert.equal(generate.run_attempt, run_attempt);
         assert.equal(generate.head_sha, run.head_sha);
-        const { created_at, digest } = z
+        const { created_at } = z
             .object({
                 created_at: z.iso.datetime(),
                 digest: z.string().regex(/^sha256:[a-f0-9]{64}$/),
@@ -95,7 +87,6 @@ export const verifySource = (
                 created <= Date.parse(generate.completed_at),
             "Artifact does not belong to this successful Generate attempt.",
         );
-        return { run, artifact, digest };
     }
     return { run, artifact };
 };
@@ -242,7 +233,7 @@ const prepare = async () => {
         1,
         "Expected exactly one playwright-site artifact.",
     );
-    const { run, artifact, digest } = verifySource(
+    const { run, artifact } = verifySource(
         runValue,
         await api(`actions/artifacts/${matches[0].id}`),
         repository,
@@ -269,53 +260,8 @@ const prepare = async () => {
         "source-sha": run.head_sha,
         "source-event": run.event,
         "playwright-image": `mcr.microsoft.com/playwright:v${version}-noble`,
-        ...(digest ? { "artifact-digest": digest } : {}),
     });
     console.log(`Validated artifact ${artifact.id}, source ${run.head_sha}.`);
-};
-
-const download = async () => {
-    assert.equal(diagnosticCase(), "carousel");
-    const repository = z
-        .string()
-        .regex(/^[\w.-]+\/[\w.-]+$/)
-        .parse(process.env.GITHUB_REPOSITORY);
-    const id = runIdSchema.parse(process.env.DIAGNOSTIC_ARTIFACT_ID);
-    const token = z.string().min(1).parse(process.env.GH_TOKEN);
-    const digest = z
-        .string()
-        .regex(/^sha256:[a-f0-9]{64}$/)
-        .parse(process.env.DIAGNOSTIC_ARTIFACT_DIGEST);
-    const response = await fetch(
-        `https://api.github.com/repos/${repository}/actions/artifacts/${id}/zip`,
-        {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                Accept: "application/vnd.github+json",
-                "X-GitHub-Api-Version": "2022-11-28",
-            },
-        },
-    );
-    assert(response.ok, `Artifact download: HTTP ${response.status}`);
-    const bytes = Buffer.from(await response.arrayBuffer());
-    assert.equal(
-        `sha256:${createHash("sha256").update(bytes).digest("hex")}`,
-        digest,
-        "Downloaded artifact digest does not match the validated source.",
-    );
-    const directory = join(
-        z.string().min(1).parse(process.env.RUNNER_TEMP),
-        "diagnostic-artifact",
-    );
-    await mkdir(directory);
-    const archive = join(directory, "artifact.zip");
-    await writeFile(archive, bytes);
-    assert.equal(
-        execFileSync("unzip", ["-Z1", archive], { encoding: "utf8" }).trim(),
-        "playwright-site.tar",
-        "Unexpected browser-site artifact contents.",
-    );
-    execFileSync("unzip", ["-q", archive, "-d", directory]);
 };
 
 const extract = async () => {
@@ -373,8 +319,6 @@ if (
     process.argv[1] &&
     import.meta.url === pathToFileURL(process.argv[1]).href
 ) {
-    const mode = z
-        .enum(["prepare", "download", "extract"])
-        .parse(process.argv[2]);
-    await { prepare, download, extract }[mode]();
+    const mode = z.enum(["prepare", "extract"]).parse(process.argv[2]);
+    await { prepare, extract }[mode]();
 }

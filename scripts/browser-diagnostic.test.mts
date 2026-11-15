@@ -343,7 +343,7 @@ await test("manual diagnostics stay bounded, fixed and separate from production 
         "edge",
         "firefox",
     ]);
-    assert.equal(carousel.strategy?.["max-parallel"], 1);
+    assert.equal(carousel.strategy["max-parallel"], 1);
     assert.equal(carousel["timeout-minutes"], 20);
     const carouselCommand = carousel.steps.find(
         (step) => step.name === "Repeat Fixed Carousel Cases",
@@ -372,12 +372,16 @@ await test("manual diagnostics stay bounded, fixed and separate from production 
         titles.filter((title) => new RegExp(grep).test(title)).length,
         2,
     );
-    assert.equal(
-        carousel.steps.find(
-            (step) => step.name === "Download Digest-Verified Browser Site",
-        )?.run,
-        "node scripts/browser-diagnostic.mts download",
+    const download = carousel.steps.find(
+        (step) => step.name === "Download Digest-Verified Browser Site",
     );
+    assert(download);
+    assert.equal(download.with?.["digest-mismatch"], "error");
+    assert.equal(
+        download.with["artifact-ids"],
+        "${{ needs.diagnostic-source.outputs.artifact-id }}",
+    );
+    assert.equal(download.with["run-id"], "${{ inputs.diagnostic_run }}");
     const carouselUpload = carousel.steps.find(
         (step) => step.name === "Upload Carousel Diagnostic Evidence",
     );
