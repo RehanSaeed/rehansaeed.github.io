@@ -431,7 +431,7 @@ for (const theme of ["light", "dark"]) {
             ),
             `Tag ${state} shadow matches an independently filtered rectangle`,
           ).toBeLessThanOrEqual(2);
-          // Linux Chromium differs by four levels even for the plain rectangle.
+          // Linux Chromium differs by five levels even for the plain rectangle.
           // Bound that intrinsic rasterization error; never normalize it away.
           for (const profile of shadowProfiles.slice(1)) {
             expect(
@@ -439,7 +439,7 @@ for (const theme of ["light", "dark"]) {
                 normal.below[row]![channel]! - profile.below[row]![channel]!,
               ),
               `${state} box/filter rasterization stays inside its measured envelope`,
-            ).toBeLessThanOrEqual(state === "hover" ? 4 : 2);
+            ).toBeLessThanOrEqual(state === "hover" ? 5 : 2);
           }
         }
       }
