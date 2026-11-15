@@ -59,6 +59,7 @@ test.beforeEach(async ({ page, baseURL }) => {
               track instanceof Element &&
               track.hasPointerCapture(pointer.pointerId),
           },
+          trackId: track?.id,
           scrollLeft: track?.scrollLeft,
           image: bounds && {
             x: bounds.x,

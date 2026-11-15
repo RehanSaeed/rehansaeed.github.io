@@ -215,7 +215,7 @@ const prepare = async () => {
         const listing = z
             .object({
                 total_count: z.number().int().max(100),
-                jobs: z.array(z.object({ name: z.string() }).passthrough()),
+                jobs: z.array(z.looseObject({ name: z.string() })),
             })
             .parse(
                 await api(

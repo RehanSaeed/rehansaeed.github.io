@@ -121,15 +121,15 @@ await test("carousel rejects stale artifacts and mismatched artifact revisions",
         );
     }
     verifyCompatibleChanges(["tests/e2e/image-carousels.spec.ts"], "carousel");
-    assert.throws(() =>
-        verifyCompatibleChanges(["tests/e2e/image-carousels.spec.ts"]),
-    );
-    assert.throws(() =>
+    assert.throws(() => {
+        verifyCompatibleChanges(["tests/e2e/image-carousels.spec.ts"]);
+    });
+    assert.throws(() => {
         verifyCompatibleChanges(
             ["app/components/content/Carousel.vue"],
             "carousel",
-        ),
-    );
+        );
+    });
 });
 
 await test("diagnostics reject fork, failed, unrelated and mismatched artifact sources", () => {
@@ -381,6 +381,7 @@ await test("manual diagnostics stay bounded, fixed and separate from production 
     const carouselUpload = carousel.steps.find(
         (step) => step.name === "Upload Carousel Diagnostic Evidence",
     );
-    assert.equal(carouselUpload?.if, "always()");
+    assert(carouselUpload);
+    assert.equal(carouselUpload.if, "always()");
     assert.equal(carouselUpload.with?.["retention-days"], 7);
 });
