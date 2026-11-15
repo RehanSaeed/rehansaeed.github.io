@@ -281,6 +281,8 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
 
 // Separate filters keep each shadow from blurring or shadowing the other layers.
 .link-button__tag-shadow {
+  // Normal buttons' raised pseudo-element sits inside their border.
+  inset: var(--global-border-width-1);
   opacity: var(--link-button-tag-raised-opacity);
   transition: opacity var(--global-duration-1) var(--ease-in-out-cubic);
 }
