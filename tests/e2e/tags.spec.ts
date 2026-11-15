@@ -94,7 +94,7 @@ for (const { theme, width, minimumRows } of [
       const shadows = tag.locator(".link-button__tag-shadow");
       await expect(shadows).toHaveCount(3);
       for (const shadow of await shadows.all()) {
-        await expect(shadow).toHaveCSS("opacity", "1");
+        await expect(shadow).toHaveCSS("opacity", "0.1");
       }
     };
     await expectRaisedLayers(first);

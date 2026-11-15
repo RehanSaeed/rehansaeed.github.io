@@ -18,6 +18,7 @@
   --global-focus-outline-offset: 3px;
 
   // Box Shadows
+  --global-shadow-opacity: 0.1;
   --global-shadow-1-offset: 0 1px;
   --global-shadow-1-blur: 3px;
   --global-shadow-1: var(--global-shadow-1-offset) var(--global-shadow-1-blur)
@@ -35,7 +36,7 @@
     --global-drop-shadow-2-#{$layer}: 0
       #{$offset}
       calc(#{$blur} / 2)
-      var(--global-shadow-color);
+      var(--global-shadow-color-opaque);
   }
   --global-shadow-2:
     var(--global-shadow-2-near), var(--global-shadow-2-middle),
@@ -207,7 +208,11 @@
   --global-title-color: hsl(0 0% 7%);
   --global-disabled-color: hsl(0 0% 0% / 0.1);
   --global-placeholder-color: hsl(210 8% 67%);
-  --global-shadow-color: hsl(0 0% 15% / 0.1);
+  --global-shadow-lightness: 15%;
+  --global-shadow-color: hsl(
+    0 0% var(--global-shadow-lightness) / var(--global-shadow-opacity)
+  );
+  --global-shadow-color-opaque: hsl(0 0% var(--global-shadow-lightness));
 
   // Arrows
   --global-arrows-color-1: hsl(264 82% 88%);
@@ -268,7 +273,11 @@
   --global-title-color: hsl(0 0% 100%);
   --global-disabled-color: hsl(0 0% 100% / 0.1);
   --global-placeholder-color: hsl(210 8% 67%);
-  --global-shadow-color: hsl(0 0% 85% / 0.1);
+  --global-shadow-lightness: 85%;
+  --global-shadow-color: hsl(
+    0 0% var(--global-shadow-lightness) / var(--global-shadow-opacity)
+  );
+  --global-shadow-color-opaque: hsl(0 0% var(--global-shadow-lightness));
 
   // Arrows
   --global-arrows-color-1: hsl(254 100% 87%);

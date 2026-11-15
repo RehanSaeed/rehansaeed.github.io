@@ -192,8 +192,10 @@ for (const theme of ["light", "dark"]) {
         probe.style.filter = `drop-shadow(var(--global-drop-shadow-2-${layer}))`;
         return getComputedStyle(probe).filter;
       });
+      probe.style.opacity = "var(--global-shadow-opacity)";
+      const raisedOpacity = getComputedStyle(probe).opacity;
       probe.remove();
-      return { accent, pressed, resting, raised };
+      return { accent, pressed, resting, raised, raisedOpacity };
     });
     await expect(surface).toHaveCSS("filter", tokens.resting);
     const shadows = link.locator(".link-button__tag-shadow");
@@ -297,7 +299,7 @@ for (const theme of ["light", "dark"]) {
     await expect(link).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -2)");
     await expect(surface).toHaveCSS("filter", tokens.resting);
     for (const shadow of await shadows.all()) {
-      await expect(shadow).toHaveCSS("opacity", "1");
+      await expect(shadow).toHaveCSS("opacity", tokens.raisedOpacity);
     }
     await page.mouse.down();
     await expect(link).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, 0)");
@@ -345,7 +347,7 @@ for (const theme of ["light", "dark"]) {
     await expect(surface).toHaveCSS("filter", tokens.resting);
     await expect(surface).toHaveCSS("transition-duration", "0s");
     for (const shadow of await shadows.all()) {
-      await expect(shadow).toHaveCSS("opacity", "1");
+      await expect(shadow).toHaveCSS("opacity", tokens.raisedOpacity);
       await expect(shadow).toHaveCSS("transition-duration", "0s");
     }
     await page.emulateMedia({ reducedMotion: "no-preference" });
