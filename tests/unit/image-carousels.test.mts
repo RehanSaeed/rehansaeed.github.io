@@ -7,7 +7,7 @@ type Nodes = NonNullable<Parameters<typeof groupImageCarousels>[0]>;
 await test("groups adjacent images and preserves figure captions and image links", () => {
     const first: Nodes[number] = [
         "figure",
-        { class: "authored-figure", "data-pagination-comparison": "" },
+        { class: "authored-figure", dataPaginationComparison: "" },
         [
             "p",
             { className: ["authored-media"] },
@@ -39,7 +39,7 @@ await test("groups adjacent images and preserves figure captions and image links
                     "figure",
                     {
                         class: "authored-figure carousel__figure",
-                        "data-pagination-comparison": "",
+                        dataPaginationComparison: "",
                     },
                     [
                         "p",

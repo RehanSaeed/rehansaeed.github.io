@@ -1,4 +1,37 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Locator } from "@playwright/test";
+
+const choosePaginationImage = async (group: Locator, target: number) => {
+  const control = group.getByRole("button", {
+    name: new RegExp(`Select image ${target + 1} of 3$`),
+  });
+  await control.click();
+  return control;
+};
+const previousPaginationImage = async (group: Locator) => {
+  const control = group.getByRole("button", { name: /Previous image$/ });
+  await control.click();
+  return control;
+};
+const selectPaginationImage = async (group: Locator, target: number) => {
+  const control = group.getByRole("combobox");
+  await control.selectOption(String(target));
+  return control;
+};
+const paginationActivators: readonly ((
+  group: Locator,
+  target: number,
+) => Promise<Locator>)[] = [
+  choosePaginationImage,
+  choosePaginationImage,
+  choosePaginationImage,
+  choosePaginationImage,
+  choosePaginationImage,
+  choosePaginationImage,
+  choosePaginationImage,
+  previousPaginationImage,
+  selectPaginationImage,
+  choosePaginationImage,
+];
 
 declare global {
   interface Window {
@@ -312,21 +345,8 @@ for (const { width, theme, forced } of [
       await expect(group.locator("legend")).toHaveText(
         new RegExp(`^${index + 1}\\. `),
       );
-      const target = index % 2 === 0 ? 1 : 0;
-      const control =
-        index === 8
-          ? group.getByRole("combobox")
-          : group.getByRole("button", {
-              name:
-                index === 7
-                  ? /Previous image$/
-                  : new RegExp(`Select image ${target + 1} of 3$`),
-            });
-      if (index === 8) {
-        await control.selectOption(String(target));
-      } else {
-        await control.click();
-      }
+      const target = 1 - (index % 2);
+      const control = await paginationActivators[index]!(group, target);
       await expect(gallery.locator(".carousel__position")).toHaveText(
         `Image ${target + 1} of 3`,
       );

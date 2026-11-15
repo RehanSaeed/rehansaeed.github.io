@@ -99,7 +99,7 @@ export const groupImageCarousels = (nodes: Node[] | undefined): void => {
         {
           count: run.length,
           ...(run.some(
-            (slide) => slide[1]["data-pagination-comparison"] !== undefined,
+            (slide) => slide[1].dataPaginationComparison !== undefined,
           )
             ? { paginationComparison: true }
             : {}),
