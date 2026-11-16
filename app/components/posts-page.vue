@@ -128,8 +128,14 @@ useHead({
 <style lang="scss">
 .posts {
   display: grid;
-  gap: var(--global-space-fluid-5);
+  gap: var(--global-space-fixed-3);
   grid-template-columns: 1fr;
+}
+
+@include breakpoints.respond-below(sm) {
+  .posts {
+    row-gap: var(--global-space-fixed-1);
+  }
 }
 
 .posts > .posts__arrows {

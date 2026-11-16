@@ -19,7 +19,7 @@ for (const { width, height } of [
       await expect(author.getByRole("img")).toBeVisible();
       await expect(author.locator(".author__description")).toBeVisible();
       const links = author.locator(".social").getByRole("link");
-      await expect(links).toHaveCount(9);
+      await expect(links).toHaveCount(8);
       const bounds = await links.evaluateAll((elements) =>
         elements.map((element) => {
           const rect = element.getBoundingClientRect();

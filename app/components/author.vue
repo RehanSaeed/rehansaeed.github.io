@@ -139,7 +139,7 @@ const winkGradientId = `${useId()}-wink-skin`;
 
 .author__site-title {
   font-size: var(--global-font-size-8);
-  margin-block-end: var(--global-space-fixed-2);
+  margin-block-end: var(--global-space-fixed-1);
 }
 
 .author__description {
@@ -159,7 +159,7 @@ const winkGradientId = `${useId()}-wink-skin`;
   .author__site-title {
     font-size: var(--global-font-size-7);
     margin-block-start: 0;
-    margin-block-end: var(--global-space-fixed-2);
+    margin-block-end: var(--global-space-fixed-1);
   }
 
   .author__description {
