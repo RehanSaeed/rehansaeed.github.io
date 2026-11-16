@@ -22,7 +22,7 @@ https://rehansaeed.com/improving-my-blogs-ranking-compared-to-others/
 
 Just blogged "Improving my blogs ranking compared to others"
 
-I asked AI to compare 50 engineers' blogs with mine, then asked agents to aim for 83 out of 100. The useful part wasn't the ranking: it was finding specific problems with post discovery, narrow-screen overflow and keyboard focus. I explain the rubric, share the HTML report and reusable prompts, and discuss why I'd keep each model's independent scores visible before averaging them. The changes are still under review; 83 is a target, not a result.
+I asked AI to compare 50 engineers' blogs with mine, then asked agents to aim for 83 out of 100. Three models reviewing the same historical evidence gave mine 78.4, 79.8 and 80.6: an average of 79.6, not a post-fix result. The useful part was finding specific problems with post discovery, narrow-screen overflow and keyboard focus. I share the rubric, HTML report, reusable prompts and the limits of the comparison. Responsive and accessibility fixes have merged; the homepage changes are still under review. There is no verified score of 83.
 
 https://rehansaeed.com/improving-my-blogs-ranking-compared-to-others/
 
@@ -38,7 +38,7 @@ Improving my blogs ranking compared to others
 
 Just blogged "Improving my blogs ranking compared to others"
 
-I used an AI-assisted comparison of 50 engineers' blogs plus mine to work out what to improve next. My post shares the interactive HTML report, the ten-category rubric and prompts for turning observed weaknesses into focused agent tasks. I also explain how I'd retain independent model scores before averaging them, and why that doesn't remove subjective judgement or the temptation to optimise for the number rather than the reader. The original single-review baseline was 78.9; the implementation work is under review and there is no verified 83 result yet.
+I compared 50 engineers' blogs plus mine to work out what to improve next. Claude Sonnet 5.5, GPT-6.1 Sol and Grok 4.7 reviewed the same historical evidence and gave mine 78.4, 79.8 and 80.6, averaging 79.6. That's a new review baseline, not a post-fix result or an accessibility audit. My post shares the HTML report, ten-category rubric and prompts for turning verified weaknesses into focused agent tasks, without optimising for the number rather than the reader. Responsive and accessibility fixes have merged; the homepage changes remain under review, with no verified 83 result.
 
 https://rehansaeed.com/improving-my-blogs-ranking-compared-to-others/
 

@@ -13,7 +13,6 @@ categories:
 tags:
   - "Artificial Intelligence (AI)"
   - "GitHub Copilot"
-  - "Web Design"
   - "Accessibility"
 ---
 
@@ -29,7 +28,7 @@ The useful part wasn't the overall ranking. It was turning a vague feeling about
 
 **[Open the Engineering Blog Design Atlas gist](https://gist.github.com/RehanSaeed/4f84c3d51b8c7bcfcdb809422d0ec470)** to see the report and its underlying JSON and CSV data.
 
-GitHub displays the HTML source rather than running the report. Download `blog-design-atlas-gist.html` from the gist, then open the downloaded file in your browser to use the interactive comparison. This compact edition omits the screenshots; it still contains all 51 sites and 510 category ratings. The gist is unlisted, not private: anyone with the link can read it.
+GitHub displays the HTML source rather than running the report. Download `blog-design-atlas-gist.html` from the gist, then open the downloaded file in your browser to use the interactive comparison. This compact edition of the original single-review report omits the screenshots; it contains all 51 sites and 510 category ratings. The gist is unlisted, not private: anyone with the link can read it.
 
 The final sample was 50 curated, influential engineers' blogs, plus mine as the 51st comparator. It wasn't an objective list of the internet's 50 most popular engineers, a census of competing blogs or a universal league table.
 
@@ -63,15 +62,47 @@ That original pass had one AI-assisted reviewer, not a panel. The report describ
 
 ## Get More Than One Opinion
 
-I've now asked for different AI models to score the blogs independently, keeping a score from each model and averaging them for the final score. That panel review is a next step, not something the original 78.9 already represents.
+I then asked three different AI models to score the blogs using the same evidence and rubric, keeping each model's scores before averaging them. Here is how they rated mine on 16 November 2026:
 
-Each model should see the same captured pages, category definitions and score anchors, without the other models' ratings or my target. Keep the actual model identifier, review date, category scores and rationales. "Three AI reviewers agreed" isn't especially useful if I can't see what each one said.
+| Reviewer          | Overall score | Rank in the sample |
+| ----------------- | ------------: | -----------------: |
+| Claude Sonnet 5.5 |          78.4 |              12/51 |
+| GPT-6.1 Sol       |          79.8 |              24/51 |
+| Grok 4.7          |          80.6 |              16/51 |
+| **Panel mean**    |      **79.6** |          **16/51** |
 
-For each blog, average each category across the models with equal weight. Then average those ten category means for the overall score. With complete reviews and equal weights, that's also the average of the models' individual overall scores. Show those individual scores beside the final average rather than hiding them.
+These are ranks within a deliberately chosen sample, not the population of engineering blogs. The ranks use unrounded scores, so displayed ties needn't have the same position. GPT's configured model is confirmed by its task invocation; its returned JSON did not identify the model itself.
 
-If a model couldn't assess a category, the panel result is incomplete. Don't quietly drop that model, count the missing score as zero or publish a complete-looking average from a different panel. Disagreement is useful information too: a spread of scores and conflicting rationales can tell me what needs a closer look.
+**[Read the complete three-model results and provenance](https://gist.github.com/RehanSaeed/c8629bd87dbd3859fd3a67e888322af6)** for every site's individual model scores, categories and panel average. This separate JSON gist is the panel dataset; the interactive HTML gist above remains the historical single-review report. Both gists are unlisted, not private.
 
-Different models still share training material and can make similar mistakes. Their average isn't a user study, a confidence interval or proof that the majority is right. And changing from one reviewer to a panel changes the measurement: I'd establish the panel's baseline before using that same panel to assess improvements.
+The category breakdown makes the disagreement more useful:
+
+| Category                      | Claude | GPT | Grok | Panel mean |
+| ----------------------------- | -----: | --: | ---: | ---------: |
+| Typography and readability    |     78 |  82 |   82 |       80.7 |
+| Layout, spacing and hierarchy |     78 |  76 |   74 |       76.0 |
+| Colour and visual contrast    |     80 |  84 |   84 |       82.7 |
+| Identity and art direction    |     86 |  89 |   88 |       87.7 |
+| Navigation and discovery      |     80 |  66 |   80 |       75.3 |
+| Article, code and media       |     78 |  81 |   78 |       79.0 |
+| Narrow-screen design          |     76 |  79 |   82 |       79.0 |
+| Interaction and polish        |     76 |  78 |   80 |       78.0 |
+| Observable accessibility      |     72 |  81 |   78 |       77.0 |
+| Consistency and detail        |     80 |  82 |   80 |       80.7 |
+
+For each blog, I averaged each category across the three models with equal weight, then averaged those ten category means. Calculations retain unrounded values and round only for display. With complete reviews and equal weights, that's also the mean of the models' overall scores: `(78.4 + 79.8 + 80.6) / 3 = 79.6`.
+
+Navigation is an obvious place to look more closely: GPT gave it 66 while both other models gave it 80. An average should expose that disagreement, not tidy it away.
+
+The final runs used the same corrected evidence package and rubric. The prompts and package excluded earlier numeric scores, my numeric target and other reviewers' reports. This was a **same-evidence, prior-score/target-blind panel**, not an identity-blind audit: the selection labelled mine "Your blog". Earlier attempts with unequal evidence coverage or incorrectly labelled views were discarded.
+
+All three reviewed identical image composites representing the five capture views for each site, rather than opening the original captures separately. For 47 sites, a four-view sheet was paired with an article-top desktop capture. Four sites used their separate source captures within the composites, with two sites sharing one sheet. Downscaling limits fine text and code; some labels overlap. No external browsing was used. The final Grok run reported opening no earlier review files, although filenames and checkpoint titles were visible in its broader context.
+
+That means this panel did **not** test live interactions, DOM semantics, assistive technology, physical devices, numerical contrast, WCAG conformance or performance. The accessibility column is a limited visual judgement, not an audit. "Three AI reviewers agreed" is not a substitute for checking whether a button actually works.
+
+If a model cannot assess a category, the panel result is incomplete. Don't quietly drop that model, count the missing score as zero or publish a complete-looking average from a different panel.
+
+Different models still share training material and can make similar mistakes. Their average isn't a user study, a confidence interval or proof that the majority is right. The original 78.9 and this 79.6 are separate reviews of the historical evidence, **not a before-and-after improvement**. That comparison is post hoc; the earlier score wasn't an input to the final panel. I'd capture the changed app and reassess it with this same panel before claiming progress.
 
 ## Make It Look at the Actual App
 
@@ -110,7 +141,7 @@ An interactive report makes it easier to compare a few peers in the category you
 
 ## Don't Redesign the Bit That Already Works
 
-My strongest categories were identity at 91 and typography at 85. The blog already had a recognisable look and generous reading text. The weakest areas were narrow-screen design, interaction polish and layout.
+In the original review, my strongest categories were identity at 91 and typography at 85. The blog already had a recognisable look and generous reading text. The weakest areas were narrow-screen design, interaction polish and layout. The later panel also rated identity highest, but put navigation and layout lowest: another reason to investigate observations rather than treat category numbers as objective facts.
 
 That suggests preserving the identity, not asking an agent to replace it with whatever design currently appears most often in its training data. I've already got [opinions about CSS](/css-general-rules-of-thumb/). I'd quite like the result to remain my blog.
 
@@ -135,7 +166,7 @@ That last distinction is important. A suspicious screenshot is not proof that th
 
 I asked for 83 overall. From 78.9, that would require 41 additional category points in aggregate across the ten equally weighted categories. It's a way to think about the size of the target, not a forecast or a promise.
 
-The findings became separate implementation scopes: a reading-first homepage, and responsive and accessibility fixes. At the time of writing, those changes are under review, not merged. **There is no verified post-change score of 83.**
+The findings became separate implementation scopes: a reading-first homepage, and responsive and accessibility fixes. The [responsive and accessibility fixes](https://github.com/RehanSaeed/rehansaeed.github.io/pull/1498) have now merged; the [reading-first homepage](https://github.com/RehanSaeed/rehansaeed.github.io/pull/1497) is still under review. **There is no verified post-change score of 83.**
 
 Instead of giving an agent only the target number, I'd give it a bounded task like this:
 
