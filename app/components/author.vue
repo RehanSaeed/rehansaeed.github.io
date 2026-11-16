@@ -82,6 +82,8 @@ const winkGradientId = `${useId()}-wink-skin`;
 
 <style lang="scss">
 .author {
+  --author-portrait-size: 7rem;
+
   display: grid;
   justify-items: center;
   padding-inline: var(--global-space-fluid-3);
@@ -91,8 +93,8 @@ const winkGradientId = `${useId()}-wink-skin`;
   position: relative;
   border: var(--global-border-width-2) solid var(--global-title-color);
   border-radius: 100%;
-  inline-size: 7rem;
-  block-size: 7rem;
+  inline-size: var(--author-portrait-size);
+  block-size: var(--author-portrait-size);
   margin-block-end: var(--global-space-fluid-3);
   transition: border-color var(--global-duration-3) ease-out;
 }
@@ -145,11 +147,11 @@ const winkGradientId = `${useId()}-wink-skin`;
 }
 
 .author--compact {
+  --author-portrait-size: 5rem;
+
   row-gap: var(--global-space-fixed-3);
 
   .author__portrait {
-    inline-size: 5rem;
-    block-size: 5rem;
     margin-block-end: 0;
   }
 
