@@ -139,6 +139,7 @@ const winkGradientId = `${useId()}-wink-skin`;
 
 .author__site-title {
   font-size: var(--global-font-size-8);
+  margin-block-end: var(--global-space-fixed-2);
 }
 
 .author__description {
@@ -149,19 +150,20 @@ const winkGradientId = `${useId()}-wink-skin`;
 .author--compact {
   --author-portrait-size: 5rem;
 
-  row-gap: var(--global-space-fixed-3);
+  row-gap: 0;
 
   .author__portrait {
-    margin-block-end: 0;
+    margin-block-end: var(--global-space-fixed-3);
   }
 
   .author__site-title {
     font-size: var(--global-font-size-7);
-    margin-block: 0;
+    margin-block-start: 0;
+    margin-block-end: var(--global-space-fixed-2);
   }
 
   .author__description {
-    margin-block-end: 0;
+    margin-block-end: var(--global-space-fixed-3);
     min-inline-size: 0;
   }
 

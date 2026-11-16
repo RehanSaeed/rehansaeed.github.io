@@ -30,7 +30,7 @@ const props = defineProps({
 }
 
 .arrows--compact {
-  --arrow-height: 0.75rem;
+  --arrow-height: 1rem;
 }
 
 .arrows__arrow,
