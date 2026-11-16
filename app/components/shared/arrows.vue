@@ -27,6 +27,8 @@ const props = defineProps({
 <style lang="scss">
 .arrows {
   --arrow-height: 1.2rem;
+
+  pointer-events: none;
 }
 
 .arrows--compact {
