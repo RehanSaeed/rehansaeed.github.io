@@ -9,6 +9,9 @@ defineOptions({ name: "u-skip-link" });
 </script>
 
 <style lang="scss" scoped>
+@use "sass:map";
+@use "~/assets/style/abstracts/breakpoints";
+
 .skip-link {
   position: absolute;
   inset-inline: 0;
@@ -30,7 +33,7 @@ defineOptions({ name: "u-skip-link" });
   outline-offset: var(--global-focus-outline-offset);
 }
 
-@media (width < 75em) {
+@media (width < map.get(breakpoints.$breakpoints, xl)) {
   .skip-link {
     inset-block-start: calc(2.5rem + 2 * var(--global-space-fluid-5));
     inset-inline-start: var(--global-space-fluid-5);
