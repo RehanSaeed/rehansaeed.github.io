@@ -364,7 +364,10 @@ for (const { width, theme, forced } of [
     await expect(variations).toHaveCount(6);
     for (let index = 0; index < 6; index++) {
       const target = 1 - (index % 2);
-      const control = await choosePaginationImage(variations.nth(index), target);
+      const control = await choosePaginationImage(
+        variations.nth(index),
+        target,
+      );
       await expect(control).toHaveAttribute("aria-current", "true");
       await expect(gallery.locator(".carousel__position")).toHaveText(
         `Image ${target + 1} of 3`,
@@ -391,15 +394,18 @@ for (const { width, theme, forced } of [
 
 test("Dot and pill variations animate real selections and stop for reduced motion and forced colours", async ({
   page,
-}) => {
+}, testInfo) => {
   await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
   const options = page.getByRole("region", { name: "Pagination options" });
   const variations = options.getByRole("group", { name: /^[12][A-C]\. / });
+  const evidence: { label: string; start: string[]; middle: string[] }[] = [];
   await expect(variations).toHaveCount(6);
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await options.evaluate(async (element) => {
     await Promise.all(
-      element.getAnimations({ subtree: true }).map((animation) => animation.finished),
+      element
+        .getAnimations({ subtree: true })
+        .map((animation) => animation.finished),
     );
   });
   for (let index = 0; index < 6; index++) {
@@ -415,56 +421,105 @@ test("Dot and pill variations animate real selections and stop for reduced motio
     });
     const control = await choosePaginationImage(group, 1 - (index % 2));
     await expect(control).toHaveAttribute("aria-current", "true");
-    await expect.poll(() =>
-      group.evaluate((element) =>
-        element.getAnimations({ subtree: true }).some((animation) =>
-          animation.playState === "paused" &&
-          (animation instanceof CSSAnimation ||
-            (animation instanceof CSSTransition && animation.transitionProperty === "x")),
+    await expect
+      .poll(() =>
+        group.evaluate((element) =>
+          element
+            .getAnimations({ subtree: true })
+            .some(
+              (animation) =>
+                animation.playState === "paused" &&
+                (animation instanceof CSSAnimation ||
+                  (animation instanceof CSSTransition &&
+                    animation.transitionProperty === "x")),
+            ),
         ),
-      ),
-    ).toBe(true);
+      )
+      .toBe(true);
     const samples = await group.evaluate((element) => {
-      const animations = element.getAnimations({ subtree: true }).filter(
-        (animation) =>
-          animation instanceof CSSAnimation ||
-          (animation instanceof CSSTransition && animation.transitionProperty === "x"),
-      );
+      const animations = element
+        .getAnimations({ subtree: true })
+        .filter(
+          (animation) =>
+            animation instanceof CSSAnimation ||
+            (animation instanceof CSSTransition &&
+              animation.transitionProperty === "x"),
+        );
       const snapshot = () =>
-        [...element.querySelectorAll(".carousel-pagination__dot, .carousel-pagination__capsule")]
-          .flatMap((marker) => [
-            getComputedStyle(marker).transform,
-            getComputedStyle(marker).getPropertyValue("x"),
-            getComputedStyle(marker, "::after").transform,
-            getComputedStyle(marker, "::after").opacity,
-          ]);
+        [
+          ...element.querySelectorAll(
+            ".carousel-pagination__dot, .carousel-pagination__capsule",
+          ),
+        ].flatMap((marker) => [
+          getComputedStyle(marker).transform,
+          getComputedStyle(marker).getPropertyValue("x"),
+          getComputedStyle(marker, "::after").transform,
+          getComputedStyle(marker, "::after").opacity,
+        ]);
       for (const animation of animations) {
         animation.currentTime = 0;
       }
       const start = snapshot();
       for (const animation of animations) {
-        animation.currentTime = Number(animation.effect!.getTiming().duration) / 2;
+        animation.currentTime =
+          Number(animation.effect!.getTiming().duration) / 2;
       }
       const middle = snapshot();
-      for (const animation of element.getAnimations({ subtree: true })) {
-        animation.finish();
-      }
       return { start, middle };
     });
     expect(samples.middle).not.toEqual(samples.start);
+    evidence.push({
+      label: await group.locator("legend").innerText(),
+      ...samples,
+    });
+    await testInfo.attach(`pagination-${index + 1}-midpoint`, {
+      body: await group.screenshot({ animations: "allow" }),
+      contentType: "image/png",
+    });
+    await group.evaluate((element) => {
+      for (const animation of element.getAnimations({ subtree: true })) {
+        animation.finish();
+      }
+    });
   }
+  await testInfo.attach("pagination-animation-samples", {
+    body: JSON.stringify(evidence, null, 2),
+    contentType: "application/json",
+  });
+  await options.evaluate(async (element) => {
+    await Promise.all(
+      element
+        .getAnimations({ subtree: true })
+        .map((animation) => animation.finished),
+    );
+  });
+  await testInfo.attach("pagination-overview", {
+    body: await options.screenshot({ animations: "allow" }),
+    contentType: "image/png",
+  });
   await page.emulateMedia({ reducedMotion: "reduce" });
   const control = await choosePaginationImage(variations.first(), 2);
   await expect(control).toHaveAttribute("aria-current", "true");
-  await expect.poll(() =>
-    options.evaluate((element) => element.getAnimations({ subtree: true }).length),
-  ).toBe(0);
-  await page.emulateMedia({ reducedMotion: "no-preference", forcedColors: "active" });
+  await expect
+    .poll(() =>
+      options.evaluate(
+        (element) => element.getAnimations({ subtree: true }).length,
+      ),
+    )
+    .toBe(0);
+  await page.emulateMedia({
+    reducedMotion: "no-preference",
+    forcedColors: "active",
+  });
   const forcedControl = await choosePaginationImage(variations.last(), 0);
   await expect(forcedControl).toHaveAttribute("aria-current", "true");
-  await expect.poll(() =>
-    options.evaluate((element) => element.getAnimations({ subtree: true }).length),
-  ).toBe(0);
+  await expect
+    .poll(() =>
+      options.evaluate(
+        (element) => element.getAnimations({ subtree: true }).length,
+      ),
+    )
+    .toBe(0);
 });
 
 test.describe("Continuous scroll-linked motion", () => {
