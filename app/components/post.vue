@@ -20,7 +20,11 @@
         :preload="{ fetchPriority: 'high' }" />
     </header>
 
-    <ContentRenderer class="post__content e-content" :value="post" />
+    <ContentRenderer
+      class="post__content e-content"
+      data-post-content
+      :components="{ figure: ProseFigure }"
+      :value="post" />
 
     <footer class="post__footer">
       <div class="post__footer__actions">
@@ -42,6 +46,7 @@ import type { PostsCollectionItem } from "@nuxt/content";
 import "katex/dist/katex.min.css";
 import { getImageMetadata } from "~/framework/images";
 import { contentImageSizes } from "#shared/utils/images";
+import ProseFigure from "~/components/content/ProseFigure.vue";
 
 defineOptions({ name: "u-post" });
 const props = defineProps({
@@ -73,80 +78,6 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
 
   &:empty {
     display: none;
-  }
-}
-
-.post__content {
-  > h2:first-child {
-    margin-block-start: 0;
-  }
-
-  > p:first-of-type {
-    color: var(--global-title-color);
-    font-size: var(--global-font-size-4);
-    min-inline-size: 0;
-
-    &:first-letter {
-      color: var(--global-accent-color);
-      font-family: var(--global-font-family-serif);
-
-      float: left;
-      float: inline-start;
-      font-size: calc(var(--global-font-size-4) * 2.6);
-      line-height: calc(var(--global-line-height-1) * 0.44);
-      margin-inline-end: var(--global-space-fixed-3);
-      margin-block-start: 0.65rem;
-
-      @supports (initial-letter: 2) {
-        initial-letter: 2;
-        float: none;
-        font-size: inherit;
-        line-height: normal;
-        margin-block-start: 0;
-      }
-    }
-  }
-
-  video {
-    display: block;
-    inline-size: calc(100% + (2 * var(--global-space-fluid-6)));
-    margin-inline: var(--global-space-fluid--6);
-    max-inline-size: none;
-  }
-
-  figure {
-    margin-block: var(--global-space-fixed-5);
-    margin-inline: 0;
-
-    > p:has(.prose-image) {
-      max-inline-size: none;
-      min-inline-size: 0;
-      margin-block-end: 0;
-    }
-
-    .youtube-embed {
-      margin-block: 0;
-    }
-  }
-
-  .mermaid {
-    svg {
-      margin-inline: auto;
-    }
-  }
-
-  .youtube-embed {
-    margin-block-start: var(--global-space-fixed-4);
-    margin-block-end: var(--global-space-fixed-5);
-
-    div {
-      margin-inline: var(--global-space-fluid--6);
-
-      div {
-        --padding-value: 34%;
-        padding-block: var(--padding-value) !important;
-      }
-    }
   }
 }
 

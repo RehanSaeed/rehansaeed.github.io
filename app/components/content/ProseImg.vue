@@ -1,5 +1,5 @@
 <template>
-  <span class="prose-image">
+  <span class="prose-image" data-prose-image>
     <NuxtPicture
       format="avif"
       v-if="getAvifSource(src)"

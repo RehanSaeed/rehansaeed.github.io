@@ -1,7 +1,12 @@
 <template>
   <u-intersect :threshold="threshold" @change="onIntersectionChange">
     <!-- eslint-disable-next-line vuejs-accessibility/media-has-caption -- Each post adds its own <track> through the slot when the video has audio to caption; see AGENTS.md. -->
-    <video ref="video" v-bind="$attrs" @play="onPlay" @pause="onPause">
+    <video
+      ref="video"
+      class="prose-video"
+      v-bind="$attrs"
+      @play="onPlay"
+      @pause="onPause">
       <slot />
     </video>
   </u-intersect>
@@ -86,3 +91,12 @@ const onIntersectionChange = (entries: IntersectionObserverEntry[]): void => {
   }
 };
 </script>
+
+<style scoped>
+.prose-video {
+  display: block;
+  inline-size: calc(100% + (2 * var(--global-space-fluid-6)));
+  margin-inline: var(--global-space-fluid--6);
+  max-inline-size: none;
+}
+</style>

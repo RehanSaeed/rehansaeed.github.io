@@ -51,3 +51,9 @@ onMounted(() => {
   );
 });
 </script>
+
+<style scoped>
+.mermaid :deep(svg) {
+  margin-inline: auto;
+}
+</style>

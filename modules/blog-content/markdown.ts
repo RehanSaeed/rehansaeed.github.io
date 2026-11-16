@@ -231,14 +231,7 @@ const youTubePatterns: [RegExp, (id: string) => string][] = [
 ];
 
 function youTubeEmbed(src: string): string {
-  return `<div class="youtube-embed">
-    <div style="width: 100%; margin: 0 auto;">
-        <div style="position: relative; padding-bottom: 56.25%; padding-top: 25px; height: 0;">
-            <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://www.youtube-nocookie.com/embed/${src}" allow="autoplay; encrypted-media" allowfullscreen="">
-            </iframe>
-        </div>
-    </div>
-</div>`;
+  return `<youtube-embed src="https://www.youtube-nocookie.com/embed/${src}"></youtube-embed>`;
 }
 
 /** A paragraph containing only a YouTube video or playlist URL becomes an embedded player. */

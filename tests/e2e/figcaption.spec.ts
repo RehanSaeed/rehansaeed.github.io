@@ -90,7 +90,10 @@ https://youtu.be/dQw4w9WgXc
       {
         tag: "figure",
         children: [
-          { tag: "div", props: { className: ["youtube-embed"] } },
+          {
+            tag: "youtube-embed",
+            props: { src: "https://www.youtube-nocookie.com/embed/dQw4w9WgXc" },
+          },
           { tag: "figcaption", children: [{ value: caption }] },
         ],
       },
@@ -132,17 +135,25 @@ for (const width of [320, 1280]) {
         .locator(".post__content figure .prose-image")
         .first()
         .evaluate((element) => element.outerHTML);
+      const proseVideo = await page
+        .locator(".post__content video")
+        .first()
+        .evaluate((element) => element.outerHTML);
+      const youtube = await page
+        .locator(".post__content .youtube-embed")
+        .first()
+        .evaluate((element) => element.outerHTML);
       await page.locator(".post__content").evaluate(
-        (element, { proseImage, caption, credit, video }) => {
-          element.innerHTML = `<p>Article text remains aligned with its captions.</p>
-            <figure><p>${proseImage}</p>
+        (element, { proseImage, proseVideo, caption, credit, youtube }) => {
+          element.innerHTML = `<p class="prose-paragraph">Article text remains aligned with its captions.</p>
+            <figure class="prose-figure" data-prose-figure><p class="prose-paragraph">${proseImage}</p>
               <figcaption>${caption}${credit}</figcaption></figure>
-            <figure><video controls aria-label="Example video" width="1600" height="900"></video>
+            <figure class="prose-figure" data-prose-figure>${proseVideo}
               <figcaption>${caption}</figcaption></figure>
-            <figure>${video}<figcaption>${caption} ${"LongCaption".repeat(20)}</figcaption></figure>
+            <figure class="prose-figure" data-prose-figure>${youtube}<figcaption>${caption} ${"LongCaption".repeat(20)}</figcaption></figure>
             <p>Text following the figures.</p>`;
         },
-        { proseImage, caption, credit, video: videoEmbed.value },
+        { proseImage, proseVideo, caption, credit, youtube },
       );
       await expect(
         page.getByRole("img", { name: "Code", exact: true }),
