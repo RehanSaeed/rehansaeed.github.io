@@ -26,18 +26,12 @@
   // Filter blur is a standard deviation, half the equivalent box-shadow blur.
   --global-drop-shadow-1: var(--global-shadow-1-offset)
     calc(var(--global-shadow-1-blur) / 2) var(--global-shadow-color);
-  @each $layer, $offset,
-    $blur in ("near" 2px 3px, "middle" 4px 6px, "far" 6px 9px)
-  {
-    --global-shadow-2-#{$layer}: 0
-      #{$offset}
-      #{$blur}
-      var(--global-shadow-color);
-    --global-drop-shadow-2-#{$layer}: 0
-      #{$offset}
-      calc(#{$blur} / 2)
-      var(--global-shadow-color-opaque);
-  }
+  --global-shadow-2-near: 0 2px 3px var(--global-shadow-color);
+  --global-shadow-2-middle: 0 4px 6px var(--global-shadow-color);
+  --global-shadow-2-far: 0 6px 9px var(--global-shadow-color);
+  --global-drop-shadow-2-near: 0 2px 1.5px var(--global-shadow-color-opaque);
+  --global-drop-shadow-2-middle: 0 4px 3px var(--global-shadow-color-opaque);
+  --global-drop-shadow-2-far: 0 6px 4.5px var(--global-shadow-color-opaque);
   --global-shadow-2:
     var(--global-shadow-2-near), var(--global-shadow-2-middle),
     var(--global-shadow-2-far);
