@@ -142,16 +142,6 @@ watch(
   }
 }
 
-@media (any-pointer: coarse) {
-  .carousel-arrows__shell {
-    opacity: 1;
-  }
-
-  .carousel-arrows .carousel-arrows__button {
-    pointer-events: auto;
-  }
-}
-
 @media (forced-colors: active) {
   .carousel-arrows__shell {
     background-color: ButtonFace;
