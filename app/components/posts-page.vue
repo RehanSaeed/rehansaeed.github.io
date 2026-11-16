@@ -132,7 +132,7 @@ useHead({
   grid-template-columns: 1fr;
 }
 
-.posts__arrows {
+.posts > .posts__arrows {
   --arrow-height: 0.45rem;
 
   margin-inline: calc(var(--global-space-main) * -1);

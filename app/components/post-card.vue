@@ -32,6 +32,7 @@
         class="post-card__title"
         :id="`post-card-${post.id}`"
         :to="post.permalink"
+        prefetch-on="interaction"
         level="2"
         >{{ post.title }}</u-heading
       >

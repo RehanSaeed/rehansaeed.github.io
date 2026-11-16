@@ -15,6 +15,7 @@ for (const { width, height } of [
       await page.goto("/");
       await page.evaluate(() => document.fonts.ready.then(() => undefined));
       const author = page.getByRole("main").locator(".author");
+      await expect(author.getByRole("heading", { level: 1 })).toHaveCount(1);
       await expect(author.getByRole("img")).toBeVisible();
       await expect(author.locator(".author__description")).toBeVisible();
       const links = author.locator(".social").getByRole("link");
@@ -46,6 +47,45 @@ for (const { width, height } of [
   }
 }
 
+for (const interaction of ["hover", "focus"] as const) {
+  test(`Article data prefetch waits for title ${interaction}`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    const requestedPaths: string[] = [];
+    page.on("request", (request) => {
+      requestedPaths.push(new URL(request.url()).pathname);
+    });
+    await page.goto("/");
+    await expect(
+      page.getByRole("button", { name: "Open search", exact: true }),
+    ).toBeEnabled();
+    const link = page.locator(".post-card__title").first().getByRole("link");
+    await expect(link).toBeInViewport();
+    const destination = await link.getAttribute("href");
+    const payloadPath = `${destination}_payload.json`;
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) => {
+          requestIdleCallback(() => {
+            requestAnimationFrame(() => {
+              resolve();
+            });
+          });
+        }),
+    );
+    expect(requestedPaths).not.toContain(payloadPath);
+    const prefetch = page.waitForRequest(
+      (request) => new URL(request.url()).pathname === payloadPath,
+    );
+    await link[interaction]();
+    await prefetch;
+    await expect(page).toHaveURL("/");
+    await link.click();
+    await expect(page).toHaveURL(destination!);
+  });
+}
+
 for (const path of [
   "/",
   "/about/",
@@ -55,7 +95,9 @@ for (const path of [
     page,
   }) => {
     await page.goto(path);
-    await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+    await expect(
+      page.getByRole("contentinfo").getByRole("heading", { level: 1 }),
+    ).toHaveCount(0);
     await expect(
       page
         .getByRole("contentinfo")

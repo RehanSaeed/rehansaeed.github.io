@@ -11,7 +11,8 @@
       :class="linkClass"
       :href="href"
       :rel="rel"
-      :to="to">
+      :to="to"
+      v-bind="to ? { prefetchOn } : {}">
       <slot />
     </Component>
     <slot v-else />
@@ -19,7 +20,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, type PropType } from "vue";
+import type { NuxtLinkProps } from "#app";
 import { NuxtLink } from "#components";
 import { headingId } from "#shared/utils/headings";
 
@@ -45,6 +47,9 @@ const props = defineProps({
   },
   /** Internal route used for navigation. */ to: {
     type: String,
+  },
+  /** Internal link prefetch trigger; defaults to Nuxt behaviour. */ prefetchOn: {
+    type: [String, Object] as PropType<NuxtLinkProps["prefetchOn"]>,
   },
   /** Whether to centre the heading. */ center: {
     default: false,
