@@ -154,7 +154,7 @@ const winkGradientId = `${useId()}-wink-skin`;
   row-gap: 0;
 
   .author__portrait {
-    margin-block-end: var(--global-space-fixed-2);
+    margin-block-end: var(--global-space-fixed-1);
   }
 
   .author__site-title {
@@ -164,7 +164,7 @@ const winkGradientId = `${useId()}-wink-skin`;
   }
 
   .author__description {
-    margin-block-end: var(--global-space-fixed-2);
+    margin-block-end: var(--global-space-fixed-1);
     min-inline-size: 0;
   }
 
