@@ -37,7 +37,7 @@ for (const { name, path, selector } of [
       page.getByRole("button", { name: "Open search", exact: true }),
     ).toBeEnabled();
     const links = page.locator(selector).getByRole("link");
-    await expect(links).toHaveCount(9);
+    await expect(links).toHaveCount(8);
     expect(
       await links.evaluateAll((elements) =>
         elements.map((element) => element.getAttribute("aria-label")),
@@ -49,7 +49,6 @@ for (const { name, path, selector } of [
       "Stack Overflow",
       "Bluesky",
       "Mastodon",
-      "Twitch",
       "Email",
       "RSS",
     ]);

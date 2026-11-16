@@ -78,19 +78,6 @@
         <u-icon name="fa-brands:mastodon" />
       </u-link-button>
     </u-tooltip>
-    <u-tooltip
-      v-if="metadata.author.twitch.url"
-      v-slot="{ trigger }"
-      text="Twitch">
-      <u-link-button
-        v-bind="trigger"
-        class="social__link"
-        label="Twitch"
-        :href="metadata.author.twitch.url"
-        rel="me">
-        <u-icon name="fa-brands:twitch" />
-      </u-link-button>
-    </u-tooltip>
     <u-tooltip v-slot="{ trigger }" text="Send me an email">
       <u-link-button
         v-bind="trigger"
