@@ -130,14 +130,8 @@ useHead({
 
 .posts {
   display: grid;
-  gap: var(--global-space-fixed-3);
+  gap: var(--global-space-fixed-1);
   grid-template-columns: 1fr;
-}
-
-@include breakpoints.respond-below(sm) {
-  .posts {
-    row-gap: var(--global-space-fixed-1);
-  }
 }
 
 .posts > .posts__arrows {
