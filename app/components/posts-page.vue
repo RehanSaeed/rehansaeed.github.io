@@ -1,7 +1,7 @@
 <template>
   <div class="posts">
     <u-author compact />
-    <u-arrows class="posts__arrows" />
+    <u-arrows class="posts__arrows" size="compact" />
 
     <div class="posts__items">
       <u-post-card
@@ -133,8 +133,6 @@ useHead({
 }
 
 .posts > .posts__arrows {
-  --arrow-height: 0.45rem;
-
   margin-inline: calc(var(--global-space-main) * -1);
 }
 
