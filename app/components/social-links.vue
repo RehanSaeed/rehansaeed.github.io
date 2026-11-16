@@ -1,32 +1,6 @@
 <template>
   <div class="social">
     <u-tooltip
-      v-if="metadata.author.youtube.url"
-      v-slot="{ trigger }"
-      text="YouTube">
-      <u-link-button
-        v-bind="trigger"
-        class="social__link"
-        label="Youtube"
-        :href="metadata.author.youtube.url"
-        rel="me">
-        <u-icon name="fa-brands:youtube" />
-      </u-link-button>
-    </u-tooltip>
-    <u-tooltip
-      v-if="metadata.author.twitch.url"
-      v-slot="{ trigger }"
-      text="Twitch">
-      <u-link-button
-        v-bind="trigger"
-        class="social__link"
-        label="Twitch"
-        :href="metadata.author.twitch.url"
-        rel="me">
-        <u-icon name="fa-brands:twitch" />
-      </u-link-button>
-    </u-tooltip>
-    <u-tooltip
       v-if="metadata.author.gitHub.url"
       v-slot="{ trigger }"
       text="GitHub">
@@ -50,6 +24,19 @@
         :href="metadata.author.linkedIn.url"
         rel="me">
         <u-icon name="fa-brands:linkedin" />
+      </u-link-button>
+    </u-tooltip>
+    <u-tooltip
+      v-if="metadata.author.youtube.url"
+      v-slot="{ trigger }"
+      text="YouTube">
+      <u-link-button
+        v-bind="trigger"
+        class="social__link"
+        label="Youtube"
+        :href="metadata.author.youtube.url"
+        rel="me">
+        <u-icon name="fa-brands:youtube" />
       </u-link-button>
     </u-tooltip>
     <u-tooltip
@@ -89,6 +76,19 @@
         :href="metadata.author.mastodon.url"
         rel="me">
         <u-icon name="fa-brands:mastodon" />
+      </u-link-button>
+    </u-tooltip>
+    <u-tooltip
+      v-if="metadata.author.twitch.url"
+      v-slot="{ trigger }"
+      text="Twitch">
+      <u-link-button
+        v-bind="trigger"
+        class="social__link"
+        label="Twitch"
+        :href="metadata.author.twitch.url"
+        rel="me">
+        <u-icon name="fa-brands:twitch" />
       </u-link-button>
     </u-tooltip>
     <u-tooltip v-slot="{ trigger }" text="Send me an email">
