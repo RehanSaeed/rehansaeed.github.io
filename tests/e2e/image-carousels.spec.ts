@@ -146,12 +146,18 @@ for (const width of [1440, 640, 375, 320]) {
       .getByRole("region", { name: "Image gallery" })
       .filter({ has: page.locator("figure") });
     const track = gallery.getByRole("list", { name: "Gallery images" });
-    await expect(track.locator(":scope > li")).toHaveCount(3);
+    await expect(track.locator(":scope > li")).toHaveCount(6);
     await expect(gallery.locator(".prose-image").nth(1)).toHaveCSS(
       "transform",
       "none",
     );
-    await expect(gallery.locator("figure")).toHaveCount(3);
+    await expect(gallery.locator("figure")).toHaveCount(6);
+    const sources = await gallery
+      .locator("img")
+      .evaluateAll((images) =>
+        images.map((image) => image.getAttribute("src")),
+      );
+    expect(new Set(sources).size).toBe(6);
     await expect(gallery.locator("figcaption").first()).toHaveText(
       "The first gallery image retains its link.",
     );
@@ -216,12 +222,14 @@ for (const width of [1440, 640, 375, 320]) {
     );
     await next.click();
     await expect(gallery.locator(".carousel__position")).toHaveText(
-      "Image 2 of 3",
+      "Image 2 of 6",
     );
-    await next.click();
-    await expect(gallery.locator(".carousel__position")).toHaveText(
-      "Image 3 of 3",
-    );
+    for (const index of [3, 4, 5, 6]) {
+      await next.click();
+      await expect(gallery.locator(".carousel__position")).toHaveText(
+        `Image ${index} of 6`,
+      );
+    }
     await expect(next).toHaveCount(0);
     await expect(
       gallery.getByRole("button", {
@@ -233,16 +241,16 @@ for (const width of [1440, 640, 375, 320]) {
     await expect(track).toBeFocused();
     await track.press("ArrowRight");
     await expect(gallery.locator(".carousel__position")).toHaveText(
-      "Image 3 of 3",
+      "Image 6 of 6",
     );
     await track.focus();
     await track.press("Home");
     await expect(gallery.locator(".carousel__position")).toHaveText(
-      "Image 1 of 3",
+      "Image 1 of 6",
     );
     await track.press("ArrowRight");
     await expect(gallery.locator(".carousel__position")).toHaveText(
-      "Image 2 of 3",
+      "Image 2 of 6",
     );
     await page.setViewportSize({
       width: width === 320 ? 640 : 320,
@@ -250,7 +258,7 @@ for (const width of [1440, 640, 375, 320]) {
     });
     await gallery.scrollIntoViewIfNeeded();
     await expect(gallery.locator(".carousel__position")).toHaveText(
-      "Image 2 of 3",
+      "Image 2 of 6",
     );
     await expect(gallery.locator("img").nth(1)).toBeInViewport();
     await expect
@@ -266,11 +274,11 @@ for (const width of [1440, 640, 375, 320]) {
       .toBeLessThanOrEqual(1);
     await track.press("End");
     await expect(gallery.locator(".carousel__position")).toHaveText(
-      "Image 3 of 3",
+      "Image 6 of 6",
     );
     await gallery.getByRole("link").focus();
     await expect(gallery.locator(".carousel__position")).toHaveText(
-      "Image 1 of 3",
+      "Image 1 of 6",
     );
     await expect(gallery.getByRole("link")).toBeFocused();
     await page.emulateMedia({ forcedColors: "active" });
@@ -278,9 +286,9 @@ for (const width of [1440, 640, 375, 320]) {
     await expect(track).toBeFocused();
     await expect(track).toHaveCSS("outline-style", "solid");
     await expect(image).toHaveCSS("opacity", "1");
-    await gallery.getByRole("button", { name: "Go to image 3 of 3" }).click();
+    await gallery.getByRole("button", { name: "Go to image 6 of 6" }).click();
     await expect(gallery.locator(".carousel__position")).toHaveText(
-      "Image 3 of 3",
+      "Image 6 of 6",
     );
   });
 }
@@ -305,19 +313,19 @@ for (const { width, theme } of [
       .filter({ has: page.locator("figure") });
     const pagination = gallery.getByRole("group", { name: "Choose image" });
     const buttons = pagination.getByRole("button");
-    await expect(buttons).toHaveCount(3);
+    await expect(buttons).toHaveCount(6);
     const trackId = await gallery.getByRole("list").getAttribute("id");
-    for (let index = 0; index < 3; index++) {
+    for (let index = 0; index < 6; index++) {
       const control = buttons.nth(index);
       await expect(control).toHaveAccessibleName(
-        `Go to image ${index + 1} of 3`,
+        `Go to image ${index + 1} of 6`,
       );
       await expect(control).toHaveAttribute("aria-controls", trackId!);
       await control.click();
       await expect(control).toHaveAttribute("aria-current", "true");
       await expect(pagination.locator('[aria-current="true"]')).toHaveCount(1);
       await expect(gallery.locator(".carousel__position")).toHaveText(
-        `Image ${index + 1} of 3`,
+        `Image ${index + 1} of 6`,
       );
       const bounds = await control.boundingBox();
       expect(bounds).not.toBeNull();
@@ -326,14 +334,14 @@ for (const { width, theme } of [
       expect(Number(bounds!.height.toFixed(4))).toBeGreaterThanOrEqual(44);
     }
     const secondDot = pagination.getByRole("button", {
-      name: "Go to image 2 of 3",
+      name: "Go to image 2 of 6",
     });
     await buttons.first().focus();
     await page.keyboard.press("Tab");
     await expect(secondDot).toBeFocused();
     await secondDot.press("Enter");
     await expect(gallery.locator(".carousel__position")).toHaveText(
-      "Image 2 of 3",
+      "Image 2 of 6",
     );
     await expect(secondDot).toHaveAttribute("aria-current", "true");
     await expect(secondDot).toBeFocused();
@@ -353,7 +361,7 @@ test("Ripple pagination animates a real selection and stops for reduced motion a
     .filter({ has: page.locator("figure") });
   const pagination = gallery.getByRole("group", { name: "Choose image" });
   const secondDot = pagination.getByRole("button", {
-    name: "Go to image 2 of 3",
+    name: "Go to image 2 of 6",
   });
   await expect(secondDot).toBeVisible();
   await page.emulateMedia({ reducedMotion: "no-preference" });
@@ -426,7 +434,7 @@ test("Ripple pagination animates a real selection and stops for reduced motion a
   });
   await page.emulateMedia({ reducedMotion: "reduce" });
   const thirdDot = pagination.getByRole("button", {
-    name: "Go to image 3 of 3",
+    name: "Go to image 3 of 6",
   });
   await thirdDot.click();
   await expect(thirdDot).toHaveAttribute("aria-current", "true");
@@ -442,7 +450,7 @@ test("Ripple pagination animates a real selection and stops for reduced motion a
     forcedColors: "active",
   });
   const firstDot = pagination.getByRole("button", {
-    name: "Go to image 1 of 3",
+    name: "Go to image 1 of 6",
   });
   await secondDot.focus();
   await page.keyboard.press("Shift+Tab");
@@ -473,7 +481,7 @@ test.describe("Continuous scroll-linked motion", () => {
     const track = gallery.getByRole("list", { name: "Gallery images" });
     await gallery.scrollIntoViewIfNeeded();
     await expect(
-      gallery.getByRole("button", { name: "Go to image 1 of 3" }),
+      gallery.getByRole("button", { name: "Go to image 1 of 6" }),
     ).toHaveAttribute("aria-current", "true");
     const image = gallery.locator("img").first();
     await image.hover();
@@ -578,7 +586,18 @@ test.describe("Continuous scroll-linked motion", () => {
           }),
         );
       });
-    await gallery.locator("img").nth(1).hover();
+    const penultimate = await track.evaluate((element) => {
+      const slides = element.querySelectorAll(".carousel__slide");
+      return (
+        slides[4]!.getBoundingClientRect().left -
+        slides[0]!.getBoundingClientRect().left
+      );
+    });
+    await gallery.getByRole("button", { name: "Go to image 5 of 6" }).click();
+    await expect
+      .poll(() => track.evaluate((element) => element.scrollLeft))
+      .toBeCloseTo(penultimate, 0);
+    await gallery.locator("img").nth(4).hover();
     await expect(
       gallery.getByRole("button", { name: "Previous image", exact: true }),
     ).toBeVisible();
@@ -599,7 +618,7 @@ test.describe("Continuous scroll-linked motion", () => {
       )
       .toBeCloseTo(0, 0);
     await expect(
-      gallery.getByRole("button", { name: "Go to image 3 of 3" }),
+      gallery.getByRole("button", { name: "Go to image 6 of 6" }),
     ).toHaveAttribute("aria-current", "true");
     await gallery
       .getByRole("button", { name: "Previous image", exact: true })
@@ -607,7 +626,7 @@ test.describe("Continuous scroll-linked motion", () => {
     await finishPreviousScroll();
     await expect
       .poll(() => track.evaluate((element) => element.scrollLeft))
-      .toBeCloseTo(step, 0);
+      .toBeCloseTo(penultimate, 0);
     await page.emulateMedia({ reducedMotion: "reduce" });
     await expect(track.locator(".prose-image").first()).toHaveCSS(
       "transform",
@@ -648,10 +667,10 @@ test.describe("Continuous scroll-linked motion", () => {
       exact: true,
     });
     const firstDot = gallery.getByRole("button", {
-      name: "Go to image 1 of 3",
+      name: "Go to image 1 of 6",
     });
     await expect(gallery.locator(".carousel-pagination__button")).toHaveCount(
-      3,
+      6,
     );
     await gallery.scrollIntoViewIfNeeded();
     await page.mouse.move(0, 0);
@@ -769,7 +788,7 @@ test.describe("Continuous scroll-linked motion", () => {
     );
     await expect(
       gallery
-        .getByRole("button", { name: "Go to image 2 of 3" })
+        .getByRole("button", { name: "Go to image 2 of 6" })
         .locator("span"),
     ).toHaveCSS("width", "10px");
   });
@@ -986,7 +1005,7 @@ test("Neighbour preview is actually painted beyond the article card, not merely 
     .filter({ has: page.locator("figure") });
   await gallery.scrollIntoViewIfNeeded();
   await expect(
-    gallery.getByRole("button", { name: "Go to image 1 of 3" }),
+    gallery.getByRole("button", { name: "Go to image 1 of 6" }),
   ).toHaveAttribute("aria-current", "true");
   await expect
     .poll(() =>
@@ -1030,12 +1049,12 @@ test("Mouse dragging a linked image scrolls without opening its link, but a norm
   await page.mouse.move(x - bounds!.width * 0.8, y, { steps: 12 });
   await page.mouse.up();
   await expect(gallery.locator(".carousel__position")).toHaveText(
-    "Image 2 of 3",
+    "Image 2 of 6",
   );
   await expect(page).toHaveURL(/\/cheat-sheet\/$/);
-  await gallery.getByRole("button", { name: "Go to image 1 of 3" }).click();
+  await gallery.getByRole("button", { name: "Go to image 1 of 6" }).click();
   await expect(gallery.locator(".carousel__position")).toHaveText(
-    "Image 1 of 3",
+    "Image 1 of 6",
   );
   await gallery.getByRole("link").click();
   await expect(page).toHaveURL(/\/css-general-rules-of-thumb\/$/);
@@ -1078,12 +1097,16 @@ test("Consecutive plain images form a separate carousel without captions or link
       .locator(".heading__text", { hasText: /^Carousel$/ }),
   ).toBeVisible();
   const gallery = galleries.first();
-  await expect(gallery.locator("img")).toHaveCount(2);
+  await expect(gallery.locator("img")).toHaveCount(5);
+  const sources = await gallery
+    .locator("img")
+    .evaluateAll((images) => images.map((image) => image.getAttribute("src")));
+  expect(new Set(sources).size).toBe(5);
   await expect(
     gallery
       .getByRole("list", { name: "Gallery images" })
       .locator(":scope > li"),
-  ).toHaveCount(2);
+  ).toHaveCount(5);
   await expect(gallery.locator("figure, figcaption, a")).toHaveCount(0);
   await gallery.scrollIntoViewIfNeeded();
   await gallery.locator("img").first().hover();
@@ -1091,14 +1114,15 @@ test("Consecutive plain images form a separate carousel without captions or link
     .getByRole("button", { name: "Next image", exact: true })
     .click();
   await expect(
-    gallery.getByRole("button", { name: "Go to image 2 of 2" }),
+    gallery.getByRole("button", { name: "Go to image 2 of 5" }),
   ).toHaveAttribute("aria-current", "true");
+  await gallery.getByRole("button", { name: "Go to image 5 of 5" }).click();
   await expect(
     gallery.getByRole("button", { name: "Next image", exact: true }),
   ).toHaveCount(0);
-  await gallery.getByRole("button", { name: "Go to image 1 of 2" }).click();
+  await gallery.getByRole("button", { name: "Go to image 1 of 5" }).click();
   await expect(
-    gallery.getByRole("button", { name: "Go to image 1 of 2" }),
+    gallery.getByRole("button", { name: "Go to image 1 of 5" }),
   ).toHaveAttribute("aria-current", "true");
 });
 
@@ -1112,8 +1136,8 @@ test.describe("Progressive enhancement", () => {
     const gallery = page
       .getByRole("region", { name: "Image gallery" })
       .filter({ has: page.locator("figure") });
-    await expect(gallery.locator("img")).toHaveCount(3);
-    await expect(gallery.locator("figcaption")).toHaveCount(3);
+    await expect(gallery.locator("img")).toHaveCount(6);
+    await expect(gallery.locator("figcaption")).toHaveCount(6);
     await expect(gallery.getByRole("link")).toHaveAttribute(
       "href",
       "/css-general-rules-of-thumb/",
@@ -1129,7 +1153,7 @@ test.describe("Progressive enhancement", () => {
     const plainGallery = page
       .getByRole("region", { name: "Image gallery" })
       .filter({ hasNot: page.locator("figure") });
-    await expect(plainGallery.locator("img")).toHaveCount(2);
+    await expect(plainGallery.locator("img")).toHaveCount(5);
     await expect(
       plainGallery.locator("figure, figcaption, a, button"),
     ).toHaveCount(0);

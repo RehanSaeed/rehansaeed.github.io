@@ -262,7 +262,13 @@ To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>`
 
 ![A code illustration in the first image-only gallery slide.](./images/Code-1600x900.jpg)
 
-![A code illustration in the second image-only gallery slide.](./images/Code-1600x900.jpg)
+![CSS3 logo on a blue background.](/images/hero/CSS-1600x900.png)
+
+![Web Components graphic with an HTML5 shield and connecting braces.](/images/hero/Web-Components-1600x900.png)
+
+![A collage of static site generator logos.](/images/hero/Static-Site-Generators-1600x900.png)
+
+![OpenTelemetry telescope logo.](/images/hero/Open-Telemetry-1600x900.png)
 
 ---
 
@@ -275,16 +281,37 @@ To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>`
 
 <figure>
 
-![A code illustration in the second gallery slide.](./images/Code-1600x900.jpg)
+![CSS3 logo on a blue background.](/images/hero/CSS-1600x900.png)
 
 <figcaption>The second gallery image retains its caption.</figcaption>
 </figure>
 
 <figure>
 
-![A code illustration in the third gallery slide.](./images/Code-1600x900.jpg)
+![Web Components graphic with an HTML5 shield and connecting braces.](/images/hero/Web-Components-1600x900.png)
 
-<figcaption>The third gallery image demonstrates the last endpoint.</figcaption>
+<figcaption>The third gallery image shows Web Components artwork.</figcaption>
+</figure>
+
+<figure>
+
+![A collage of static site generator logos.](/images/hero/Static-Site-Generators-1600x900.png)
+
+<figcaption>The fourth gallery image shows a selection of static site generators.</figcaption>
+</figure>
+
+<figure>
+
+![OpenTelemetry telescope logo.](/images/hero/Open-Telemetry-1600x900.png)
+
+<figcaption>The fifth gallery image shows OpenTelemetry artwork.</figcaption>
+</figure>
+
+<figure>
+
+![HAL 9000's lens beside the words "I'm afraid I can't do that, Dave."](/images/hero/HAL-9000-Prop-1600x900.png)
+
+<figcaption>The sixth gallery image demonstrates the last endpoint.</figcaption>
 </figure>
 
 # Embed Videos
