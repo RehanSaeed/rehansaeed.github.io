@@ -666,7 +666,7 @@ test.describe("Continuous scroll-linked motion", () => {
     );
   });
 
-  test("Cover Flow controls fade over images, reveal immediately for keyboard input and animate both paging states", async ({
+  test("Carousel controls fade across the whole gallery, stay visible with focus and animate both paging states", async ({
     page,
   }) => {
     await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
@@ -716,13 +716,55 @@ test.describe("Continuous scroll-linked motion", () => {
       });
     });
     await gallery.locator("figcaption").first().hover();
+    await expect(shell).toHaveCSS("opacity", "1");
+    await firstDot.hover();
+    await expect(shell).toHaveCSS("opacity", "1");
+    await gallery.evaluate((element) => {
+      element.addEventListener(
+        "pointerleave",
+        () => {
+          element
+            .querySelector(".carousel-arrows__shell:last-child")!
+            .getAnimations()
+            .forEach((animation) => {
+              animation.pause();
+              animation.currentTime = 100;
+            });
+        },
+        { once: true },
+      );
+    });
+    await page.mouse.move(0, 0);
+    const fadeOut = await shell.evaluate((element) =>
+      Number(getComputedStyle(element).opacity),
+    );
+    expect(fadeOut).toBeGreaterThan(0);
+    expect(fadeOut).toBeLessThan(1);
+    await shell.evaluate((element) => {
+      element.getAnimations().forEach((animation) => {
+        animation.finish();
+      });
+    });
     await expect(shell).toHaveCSS("opacity", "0");
     await firstDot.click();
+    await expect(firstDot).toBeFocused();
+    await page.mouse.move(0, 0);
+    await expect(shell).toHaveCSS("opacity", "1");
+    await expect(shell).toHaveCSS("transition-duration", "0s");
     await page.keyboard.press("Shift+Tab");
     await expect(next).toBeFocused();
     await expect(shell).toHaveCSS("opacity", "1");
     await expect(shell).toHaveCSS("transition-duration", "0s");
-    await firstDot.click();
+    await next.press("Shift+Tab");
+    await expect(gallery.getByRole("link")).toBeFocused();
+    await expect(shell).toHaveCSS("opacity", "1");
+    await gallery.getByRole("link").press("Shift+Tab");
+    await expect(
+      gallery.getByRole("list", { name: "Gallery images" }),
+    ).toBeFocused();
+    await expect(shell).toHaveCSS("opacity", "1");
+    await page.keyboard.press("Shift+Tab");
+    await expect(shell).toHaveCSS("opacity", "0");
     await page.emulateMedia({ reducedMotion: "reduce" });
     await image.hover();
     await expect(shell).toHaveCSS("opacity", "1");
@@ -932,6 +974,10 @@ test.describe("Touch gesture tracking", () => {
       .filter({ has: page.locator("figure") });
     const track = gallery.getByRole("list", { name: "Gallery images" });
     await gallery.scrollIntoViewIfNeeded();
+    await expect(gallery.locator(".carousel-arrows__shell").last()).toHaveCSS(
+      "opacity",
+      "1",
+    );
     const image = gallery.locator("img").first();
     const bounds = await image.boundingBox();
     expect(bounds).not.toBeNull();

@@ -469,16 +469,13 @@ onBeforeUnmount(() => {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .carousel__viewport:has(
-    .prose-image__image:hover,
-    .carousel-arrows__button:hover
-  ),
-  .carousel:has(:focus-visible) {
+  .carousel:hover,
+  .carousel:focus-within {
     --carousel-arrows-opacity: 1;
     --carousel-arrows-pointer-events: auto;
   }
 
-  .carousel:has(:focus-visible) {
+  .carousel:focus-within {
     --carousel-arrows-transition: none;
   }
 }
