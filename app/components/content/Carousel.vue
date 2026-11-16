@@ -75,7 +75,7 @@ const slideStep = () => {
   const first = track.value?.firstElementChild;
   const second = first?.nextElementSibling;
   return first instanceof HTMLElement && second instanceof HTMLElement
-    ? second.offsetLeft - first.offsetLeft
+    ? second.getBoundingClientRect().left - first.getBoundingClientRect().left
     : 0;
 };
 
@@ -85,7 +85,7 @@ const updatePosition = () => {
     return;
   }
   // A resize can emit scroll before ResizeObserver restores the selected slide.
-  if (previousStep && step !== previousStep && !drag) {
+  if (previousStep && Math.abs(step - previousStep) > 0.01 && !drag) {
     navigateToImage(navigationTarget ?? currentIndex.value, true);
   }
   previousStep = step;

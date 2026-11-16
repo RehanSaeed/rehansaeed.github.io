@@ -152,12 +152,22 @@ for (const width of [1440, 640, 375, 320]) {
       "none",
     );
     await expect(gallery.locator("figure")).toHaveCount(6);
-    const sources = await gallery
-      .locator("img")
-      .evaluateAll((images) =>
-        images.map((image) => image.getAttribute("src")),
-      );
-    expect(new Set(sources).size).toBe(6);
+    const images = await gallery.evaluate((element) =>
+      Array.from(element.querySelectorAll("img"), (image) => ({
+        src: image.getAttribute("src"),
+        width: image.getAttribute("width"),
+        height: image.getAttribute("height"),
+        loading: image.getAttribute("loading"),
+      })),
+    );
+    expect(new Set(images.map((image) => image.src)).size).toBe(6);
+    for (const image of images) {
+      expect(image).toMatchObject({
+        width: "1600",
+        height: "900",
+        loading: "lazy",
+      });
+    }
     await expect(gallery.locator("figcaption").first()).toHaveText(
       "The first gallery image retains its link.",
     );
@@ -489,7 +499,10 @@ test.describe("Continuous scroll-linked motion", () => {
     expect(bounds).not.toBeNull();
     const step = await track.evaluate((element) => {
       const slides = element.querySelectorAll<HTMLElement>(".carousel__slide");
-      return slides[1]!.offsetLeft - slides[0]!.offsetLeft;
+      return (
+        slides[1]!.getBoundingClientRect().left -
+        slides[0]!.getBoundingClientRect().left
+      );
     });
     const x = bounds!.x + bounds!.width * 0.95;
     const y = bounds!.y + bounds!.height * 0.3;
@@ -1098,9 +1111,11 @@ test("Consecutive plain images form a separate carousel without captions or link
   ).toBeVisible();
   const gallery = galleries.first();
   await expect(gallery.locator("img")).toHaveCount(5);
-  const sources = await gallery
-    .locator("img")
-    .evaluateAll((images) => images.map((image) => image.getAttribute("src")));
+  const sources = await gallery.evaluate((element) =>
+    Array.from(element.querySelectorAll("img"), (image) =>
+      image.getAttribute("src"),
+    ),
+  );
   expect(new Set(sources).size).toBe(5);
   await expect(
     gallery
