@@ -15,7 +15,7 @@ defineOptions({ name: "u-skip-link" });
 .skip-link {
   position: absolute;
   inset-inline: 0;
-  z-index: 11;
+  z-index: var(--global-z-index-skip-link);
 
   margin-inline: auto;
   text-align: center;

@@ -17,6 +17,11 @@
   // Focus
   --global-focus-outline-offset: 3px;
 
+  // Stacking Layers
+  --global-z-index-navigation: 10;
+  --global-z-index-skip-link: 20;
+  --global-z-index-site-update: 30;
+
   // Box Shadows
   --global-shadow-1: 0 1px 3px var(--global-shadow-color);
   --global-shadow-2-near: 0 2px 3px var(--global-shadow-color);
