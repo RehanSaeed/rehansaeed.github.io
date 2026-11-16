@@ -126,6 +126,8 @@ useHead({
 </script>
 
 <style lang="scss">
+@use "~/assets/style/abstracts/breakpoints";
+
 .posts {
   display: grid;
   gap: var(--global-space-fixed-3);
