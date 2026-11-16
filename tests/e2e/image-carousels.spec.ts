@@ -328,7 +328,9 @@ for (const { width, theme } of [
     const secondDot = pagination.getByRole("button", {
       name: "Go to image 2 of 3",
     });
-    await secondDot.focus();
+    await buttons.first().focus();
+    await page.keyboard.press("Tab");
+    await expect(secondDot).toBeFocused();
     await secondDot.press("Enter");
     await expect(gallery.locator(".carousel__position")).toHaveText(
       "Image 2 of 3",
@@ -442,7 +444,9 @@ test("Ripple pagination animates a real selection and stops for reduced motion a
   const firstDot = pagination.getByRole("button", {
     name: "Go to image 1 of 3",
   });
-  await firstDot.focus();
+  await secondDot.focus();
+  await page.keyboard.press("Shift+Tab");
+  await expect(firstDot).toBeFocused();
   await firstDot.press("Enter");
   await expect(firstDot).toHaveAttribute("aria-current", "true");
   await expect(firstDot).toBeFocused();
@@ -693,6 +697,9 @@ test.describe("Continuous scroll-linked motion", () => {
     await expect(shell).toHaveCSS("transition-duration", "0s");
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.mouse.move(0, 0);
+    const activeDotSize = await page.evaluate(() =>
+      Number.parseFloat(getComputedStyle(document.documentElement).fontSize),
+    );
     const paging = await gallery.evaluate(
       (element) =>
         new Promise<{
@@ -746,13 +753,16 @@ test.describe("Continuous scroll-linked motion", () => {
     );
     for (const width of paging.midpoint) {
       expect(width).toBeGreaterThan(10);
-      expect(width).toBeLessThan(16);
+      expect(width).toBeLessThan(activeDotSize);
     }
-    expect(paging.endpoint).toEqual([10, 16]);
+    expect(paging.endpoint).toEqual([10, activeDotSize]);
     await page.emulateMedia({ reducedMotion: "reduce" });
     await firstDot.click();
     await expect(firstDot).toHaveAttribute("aria-current", "true");
-    await expect(firstDot.locator("span")).toHaveCSS("width", "16px");
+    await expect(firstDot.locator("span")).toHaveCSS(
+      "width",
+      `${activeDotSize}px`,
+    );
     await expect(firstDot.locator("span")).toHaveCSS(
       "transition-duration",
       "0s",
@@ -835,7 +845,12 @@ test("Cover Flow arrow shells and shared paging retain their colours, inset circ
   await secondDot.click();
   await expect(secondDot).toHaveAttribute("aria-current", "true");
   await expect(firstDot).not.toHaveAttribute("aria-current");
-  await expect(secondDot.locator("span")).toHaveCSS("width", "16px");
+  await expect(secondDot.locator("span")).toHaveCSS(
+    "width",
+    await page.evaluate(
+      () => getComputedStyle(document.documentElement).fontSize,
+    ),
+  );
   await expect(firstDot.locator("span")).toHaveCSS("width", "10px");
   await expect(firstDot).toHaveCSS("width", "44px");
   await expect(firstDot).toHaveCSS("height", "44px");
