@@ -22,7 +22,7 @@ defineOptions({ name: "u-skip-link" });
 }
 
 .skip-link:focus {
-  translate: 0 10%;
+  translate: 0 var(--global-space-fixed-3);
 }
 
 .skip-link:focus-visible {

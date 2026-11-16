@@ -23,21 +23,35 @@ for (const path of paths) {
         await expect(skip).toBeInViewport({ ratio: 1 });
         await expect(skip).toHaveCSS("outline-style", "solid");
         await expect(skip).toHaveCSS("outline-width", "2px");
+        await skip.evaluate(async (link) => {
+          await Promise.all(
+            link.getAnimations().map((animation) => animation.finished),
+          );
+        });
         const entry = await skip.evaluate((link) => {
           const box = link.getBoundingClientRect();
+          const style = getComputedStyle(link);
+          const ring =
+            Number.parseFloat(style.outlineWidth) +
+            Number.parseFloat(style.outlineOffset);
           const controls = [
             ...document.querySelectorAll<HTMLElement>(
               ".navigation a, .navigation button",
             ),
           ].filter((control) => control.getBoundingClientRect().width > 0);
           const points: [number, number][] = [
-            [box.left + 1, box.top + 1],
-            [box.right - 1, box.top + 1],
-            [box.left + 1, box.bottom - 1],
-            [box.right - 1, box.bottom - 1],
+            [box.left + 1, box.top + box.height / 2],
+            [box.right - 1, box.top + box.height / 2],
+            [box.left + box.width / 2, box.top + 1],
+            [box.left + box.width / 2, box.bottom - 1],
             [box.left + box.width / 2, box.top + box.height / 2],
           ];
           return {
+            focusIndicatorInsideViewport:
+              box.left - ring >= 0 &&
+              box.top - ring >= 0 &&
+              box.right + ring <= document.documentElement.clientWidth &&
+              box.bottom + ring <= document.documentElement.clientHeight,
             unobscured: points.every(
               ([x, y]) =>
                 document.elementFromPoint(x, y)?.closest("a") === link,
@@ -54,6 +68,7 @@ for (const path of paths) {
           };
         });
         expect(entry.unobscured).toBe(true);
+        expect(entry.focusIndicatorInsideViewport).toBe(true);
         expect(entry.overlapsNavigation).toBe(false);
 
         await page.keyboard.press("Enter");
@@ -85,6 +100,7 @@ for (const path of paths) {
         return {
           clientWidth: root.clientWidth,
           scrollWidth: root.scrollWidth,
+          contentRight: document.body.getBoundingClientRect().right,
           controls: [
             ...navigation.querySelectorAll<HTMLElement>(
               "a, button:not(dialog button)",
@@ -112,7 +128,7 @@ for (const path of paths) {
       expect(layout.waves).toHaveLength(expectedWaveCount);
       for (const wave of layout.waves) {
         expect(wave.left).toBeCloseTo(0, 0);
-        expect(wave.right).toBeCloseTo(layout.clientWidth, 0);
+        expect(wave.right).toBeCloseTo(layout.contentRight, 0);
       }
     });
   }
