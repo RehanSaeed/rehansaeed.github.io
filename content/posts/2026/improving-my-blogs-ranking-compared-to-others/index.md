@@ -26,10 +26,6 @@ The useful part wasn't the overall ranking. It was turning a vague feeling about
 
 ## The Comparison
 
-**[Open the Engineering Blog Design Atlas gist](https://gist.github.com/RehanSaeed/4f84c3d51b8c7bcfcdb809422d0ec470)** to see the report and its underlying JSON and CSV data.
-
-GitHub displays the HTML source rather than running the report. Download `blog-design-atlas-gist.html` from the gist, then open the downloaded file in your browser to use the interactive comparison. This compact edition of the original single-review report omits the screenshots; it contains all 51 sites and 510 category ratings. The gist is unlisted, not private: anyone with the link can read it.
-
 The final sample was 50 curated, influential engineers' blogs, plus mine as the 51st comparator. It wasn't an objective list of the internet's 50 most popular engineers, a census of competing blogs or a universal league table.
 
 That distinction matters. Choose only elaborate portfolio sites and you'll probably conclude that you need more animation. Choose only stripped-back journals and you'll probably conclude that you need less of everything. Neither answers whether readers can find and comfortably read your posts.
@@ -73,7 +69,7 @@ I then asked three different AI models to score the blogs using the same evidenc
 
 These are ranks within a deliberately chosen sample, not the population of engineering blogs. The ranks use unrounded scores, so displayed ties needn't have the same position. GPT's configured model is confirmed by its task invocation; its returned JSON did not identify the model itself.
 
-**[Read the complete three-model results and provenance](https://gist.github.com/RehanSaeed/c8629bd87dbd3859fd3a67e888322af6)** for every site's individual model scores, categories and panel average. This separate JSON gist is the panel dataset; the interactive HTML gist above remains the historical single-review report. Both gists are unlisted, not private.
+**[Download the complete three-model results and provenance as JSON](https://gist.github.com/RehanSaeed/c8629bd87dbd3859fd3a67e888322af6)** for every site's individual model scores, categories and panel average. This is the underlying dataset, not an interactive page. The gist is unlisted, not private: anyone with the link can read it.
 
 The category breakdown makes the disagreement more useful:
 
