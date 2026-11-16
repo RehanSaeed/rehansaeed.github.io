@@ -14,7 +14,7 @@
         :aria-controls="controls"
         :aria-disabled="currentIndex === 0"
         @click="emit('select', currentIndex - 1)">
-        <u-icon name="feather:arrow-left" aria-hidden="true" />
+        <u-icon name="fa-solid:arrow-left" aria-hidden="true" />
       </u-button>
     </span>
     <span
@@ -30,7 +30,7 @@
         :aria-controls="controls"
         :aria-disabled="currentIndex === count - 1"
         @click="emit('select', currentIndex + 1)">
-        <u-icon name="feather:arrow-right" aria-hidden="true" />
+        <u-icon name="fa-solid:arrow-right" aria-hidden="true" />
       </u-button>
     </span>
   </fieldset>

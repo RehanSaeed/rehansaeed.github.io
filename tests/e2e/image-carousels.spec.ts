@@ -802,6 +802,15 @@ test("Cover Flow arrow shells and shared paging retain their colours, inset circ
     arrows.getByRole("button", { name: "Next image", exact: true }),
   ).toBeVisible();
   await expect(paging.getByRole("button")).toHaveCount(2);
+  for (const name of ["Previous image", "Next image"]) {
+    const icon = arrows
+      .getByRole("button", { name, exact: true, includeHidden: true })
+      .locator("svg.icon");
+    await expect(icon).toHaveClass(/iconify--fa-solid/);
+    await expect(icon).toHaveAttribute("viewBox", "0 0 448 512");
+    await expect(icon).toHaveAttribute("aria-hidden", "true");
+    await expect(icon.locator("path")).toHaveCount(1);
+  }
   await gallery.scrollIntoViewIfNeeded();
   for (const theme of ["light", "dark"]) {
     await page.evaluate((value) => {

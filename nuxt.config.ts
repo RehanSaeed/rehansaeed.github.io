@@ -78,6 +78,8 @@ export default defineNuxtConfig({
         "fa-brands:youtube",
         "fa-regular:envelope",
         "fa-regular:question-circle",
+        "fa-solid:arrow-left",
+        "fa-solid:arrow-right",
         "fa-solid:info-circle",
         "fa-solid:rss",
         "fa-solid:share-alt",
