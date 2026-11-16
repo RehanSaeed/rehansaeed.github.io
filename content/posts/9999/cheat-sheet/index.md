@@ -266,7 +266,7 @@ To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>`
 
 ---
 
-<figure data-pagination-comparison>
+<figure>
 
 [![A linked code illustration in the first gallery slide.](./images/Code-1600x900.jpg)](/css-general-rules-of-thumb/)
 
