@@ -20,7 +20,10 @@
               {{ current.comments.length }}
               {{ current.comments.length === 1 ? "Comment" : "Comments" }}
             </h3>
-            <u-link-button class="comments__github" bordered :href="issueUrl">
+            <u-link-button
+              class="comments__github"
+              variant="secondary"
+              :href="issueUrl">
               <u-icon name="fa-brands:github" inline aria-hidden="true" />
               Comment on GitHub
             </u-link-button>

@@ -1,7 +1,7 @@
 <template>
   <div class="posts">
-    <u-author />
-    <u-arrows class="posts__arrows" />
+    <u-author compact />
+    <u-arrows class="posts__arrows" size="compact" />
 
     <div class="posts__items">
       <u-post-card
@@ -128,12 +128,13 @@ useHead({
 <style lang="scss">
 .posts {
   display: grid;
-  gap: var(--global-space-fluid-5);
+  gap: 0;
   grid-template-columns: 1fr;
 }
 
-.posts__arrows {
+.posts > .posts__arrows {
   margin-inline: calc(var(--global-space-main) * -1);
+  margin-block-start: var(--global-space-fixed-1);
 }
 
 .posts__items {
@@ -147,9 +148,15 @@ useHead({
     )
   );
   justify-content: center;
+  margin-block-start: var(--global-space-fixed-5);
+}
+
+.posts__items > .post-card {
+  --post-card-image-gap: var(--global-space-fixed-3);
 }
 
 .posts__pager {
   justify-self: center;
+  margin-block-start: var(--global-space-fixed-1);
 }
 </style>

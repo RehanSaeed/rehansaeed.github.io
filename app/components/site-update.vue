@@ -104,7 +104,7 @@ const update = async () => {
   );
   overflow: auto;
   overscroll-behavior: contain;
-  z-index: 20;
+  z-index: var(--global-z-index-site-update);
 
   &::before {
     content: "";

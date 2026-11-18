@@ -280,7 +280,7 @@ test.describe("Offline icons", () => {
       .getByRole("link", { name: "About", exact: true })
       .click();
     await expect(page).toHaveURL(/\/about\/$/);
-    await expect(page.locator(".about__social-links svg.icon")).toHaveCount(9);
+    await expect(page.locator(".about__social-links svg.icon")).toHaveCount(8);
     await page.goto("/streaming/thumbnail/");
     await ready(page);
     await expect(page.locator(".thumbnail-logo svg.icon path")).toHaveCount(2);
@@ -361,9 +361,9 @@ test.describe("Icon areas", () => {
           3,
         );
         await shot("header-controls");
-        await expect(page.locator(".main .author svg.icon")).toHaveCount(9);
+        await expect(page.locator(".main .author svg.icon")).toHaveCount(8);
         await shot("home-social", page.locator(".main .author"));
-        await expect(page.locator(".footer .social svg.icon")).toHaveCount(9);
+        await expect(page.locator(".footer .social svg.icon")).toHaveCount(8);
         await shot("footer-social", page.locator(".footer .author"));
 
         await page.getByRole("button", { name: "Open search" }).click();
@@ -424,7 +424,7 @@ test.describe("Icon areas", () => {
         await page.goto("/about/");
         await ready(page);
         await expect(page.locator(".about__social-links svg.icon")).toHaveCount(
-          9,
+          8,
         );
         await shot("about-social", page.locator(".about__social-links"));
         await page.evaluate(() => {

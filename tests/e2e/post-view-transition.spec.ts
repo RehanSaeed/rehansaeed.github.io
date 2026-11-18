@@ -4,6 +4,7 @@ import type { Locator, Page } from "@playwright/test";
 import { writeFile } from "node:fs/promises";
 import type { NuxtApp } from "nuxt/app";
 import type { Router } from "vue-router";
+import { instrumentHistory } from "./history-probe";
 
 test.use({ trace: "retain-on-failure" });
 
@@ -364,7 +365,10 @@ test.describe("Bounded card-to-article hero continuity", () => {
     if (!page.isClosed()) {
       await test.info().attach("transition-lifecycle", {
         body: JSON.stringify(
-          await page.evaluate(() => window.postViewTransitionProbe),
+          await page.evaluate(() => ({
+            ...window.postViewTransitionProbe,
+            history: window.historyRestorationProbe,
+          })),
           null,
           2,
         ),
@@ -440,6 +444,7 @@ test.describe("Bounded card-to-article hero continuity", () => {
       test(`Captures the warmed hero after deep-scroll restoration using ${activation}`, async ({
         page,
       }) => {
+        await instrumentHistory(page);
         const link = await prepare(page);
         const before = await page.evaluate(() => scrollY);
         expect(before).toBeGreaterThan(2000);
@@ -756,6 +761,17 @@ test.describe("Bounded card-to-article hero continuity", () => {
       await link.locator("img").evaluate((image) => {
         image.scrollIntoView({ block: "center", behavior: "instant" });
       });
+      // Firefox can reject decode() before a lazy image's request has started.
+      await expect
+        .poll(() =>
+          link
+            .locator("img")
+            .evaluate(
+              (image: HTMLImageElement) =>
+                image.complete && image.naturalWidth > 0,
+            ),
+        )
+        .toBe(true);
       await link
         .locator("img")
         .evaluate((image: HTMLImageElement) => image.decode());

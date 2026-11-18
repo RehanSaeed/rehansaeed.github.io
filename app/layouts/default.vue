@@ -23,7 +23,7 @@
   .navigation {
     position: sticky;
     inset-block-start: 0;
-    z-index: 10;
+    z-index: var(--global-z-index-navigation);
   }
 }
 

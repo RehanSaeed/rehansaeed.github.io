@@ -24,7 +24,7 @@ const openArticle = async (page: Page, baseURL: string | undefined) => {
   await page.goto("/ai-learnings-from-upgrading-my-blog/", {
     waitUntil: "load",
   });
-  // Initial hydration can restore the page's scroll position.
+  // Hydration can restore scroll position, and Nuxt's router scroll may run after load.
   await page.waitForFunction(() => {
     const app =
       document.querySelector<NuxtRoot>("#__nuxt")?.__vue_app__?.config
@@ -34,6 +34,9 @@ const openArticle = async (page: Page, baseURL: string | undefined) => {
   await page.evaluate(async () => {
     await document.fonts.ready;
   });
+  await expect(
+    page.getByRole("button", { name: "Open search", exact: true }),
+  ).toBeEnabled();
   return page.getByLabel(videoLabel, { exact: true });
 };
 

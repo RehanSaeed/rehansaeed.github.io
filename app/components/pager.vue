@@ -3,8 +3,7 @@
     <u-link-button
       v-if="pageInfo.hasPreviousPage"
       class="pager__previous-button"
-      bordered
-      contrast
+      variant="contrast"
       :to="previousUrl"
       >Previous</u-link-button
     >
@@ -18,8 +17,7 @@
     <u-link-button
       v-if="pageInfo.hasNextPage"
       class="pager__next-button"
-      bordered
-      contrast
+      variant="contrast"
       :to="nextUrl"
       >Next</u-link-button
     >

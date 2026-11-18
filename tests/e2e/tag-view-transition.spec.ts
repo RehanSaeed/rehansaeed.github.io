@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import type { Locator, Page } from "@playwright/test";
 import type { Router } from "vue-router";
+import { instrumentHistory } from "./history-probe";
 
 type TagCapture = {
   names: number;
@@ -168,7 +169,10 @@ test.describe("Selected tag to tag-title continuity", () => {
   test.afterEach(async ({ page }) => {
     await test.info().attach("tag-transition-lifecycle", {
       body: JSON.stringify(
-        await page.evaluate(() => window.tagTransitionProbe),
+        await page.evaluate(() => ({
+          ...window.tagTransitionProbe,
+          history: window.historyRestorationProbe,
+        })),
       ),
       contentType: "application/json",
     });
@@ -219,6 +223,7 @@ test.describe("Selected tag to tag-title continuity", () => {
   test("Preserves history scroll restoration and hash navigation without continuity", async ({
     page,
   }) => {
+    await instrumentHistory(page);
     const link = await prepare(page);
     await link.click();
     await expect

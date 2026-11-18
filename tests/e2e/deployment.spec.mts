@@ -25,7 +25,7 @@ const deploymentJobSchema = workflowSchema.shape.jobs.valueType.extend({
         .object({
             image: z.string(),
             options: z.string(),
-            volumes: z.array(z.string()),
+            volumes: z.array(z.string()).optional(),
         })
         .optional(),
     outputs: z.record(z.string(), z.string()).optional(),
@@ -234,11 +234,11 @@ test("Browser suites run in parallel against one complete build without dropping
     const browserTests = requireJob(workflow, "test");
     expect(build.name).toBe("Generate");
     expect(browserTests.name).toBe(
-        "Playwright (${{ matrix.browser }}, ${{ matrix.shard }}/2)",
+        "Playwright (${{ matrix.browser }}, ${{ matrix.shard }}/3)",
     );
     expect(workflow.jobs.checks).toEqual({
         name: "Build",
-        if: "always() && (github.event_name != 'pull_request' || !github.event.pull_request.draft)",
+        if: "always() && (github.event_name != 'pull_request' || !github.event.pull_request.draft) && !(github.event_name == 'workflow_dispatch' && inputs.diagnostic_run != '')",
         needs: ["build", "quality", "lighthouse", "test"],
         "runs-on": "ubuntu-latest",
         steps: [
@@ -257,7 +257,7 @@ test("Browser suites run in parallel against one complete build without dropping
     expect(browserTests.needs).toBe("build");
     expect(browserTests.strategy).toEqual({
         "fail-fast": false,
-        matrix: { browser: ["chrome", "edge", "firefox"], shard: [1, 2] },
+        matrix: { browser: ["chrome", "edge", "firefox"], shard: [1, 2, 3] },
     });
     expect(build.steps).toContainEqual({
         name: "Package Browser Test Site",
@@ -283,7 +283,7 @@ test("Browser suites run in parallel against one complete build without dropping
     expect(extract).toBeLessThan(run);
     expect(steps[extract]?.run).toBe("tar -xf playwright-site.tar");
     expect(steps[run]?.run).toBe(
-        "npx playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}/2",
+        "npx playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}/3 --workers=2",
     );
     expect(steps.some((step) => step.run === "npm run build")).toBe(false);
     const report = requireStep(steps, "Upload Playwright Report");
@@ -320,14 +320,64 @@ test("Quality checks run independently without racing generation in the same che
     );
 });
 
-test("CodeQL scans both historical JS/TS categories without a redundant build", () => {
+test("Dependency review gates PR changes across all scopes without a licence policy", () => {
+    const workflow = readBuildWorkflow();
+    const quality = requireJob(workflow, "quality");
+    const review = requireStep(quality.steps, "Review Dependency Changes");
+    expect(review).toEqual({
+        name: "Review Dependency Changes",
+        if: "github.event_name == 'pull_request'",
+        uses: "actions/dependency-review-action@v5.0.0",
+        with: {
+            "fail-on-severity": "moderate",
+            "fail-on-scopes": "runtime, development, unknown",
+            "license-check": false,
+        },
+    });
+    expect(quality.steps.indexOf(review)).toBeLessThan(
+        quality.steps.indexOf(requireStep(quality.steps, "NPM Install")),
+    );
+    expect(workflow.permissions).toEqual({
+        contents: "read",
+        issues: "read",
+        pages: "read",
+    });
+});
+
+test("Workflow checkouts do not persist credentials for subsequent steps", () => {
+    const workflows = [
+        readBuildWorkflow(),
+        workflowSchema.parse(
+            parse(
+                readFileSync(".github/workflows/codeql-analysis.yml", "utf8"),
+            ),
+        ),
+    ];
+    const checkouts = workflows.flatMap((workflow) =>
+        Object.values(workflow.jobs).flatMap((job) =>
+            job.steps.filter(
+                (step) =>
+                    typeof step.uses === "string" &&
+                    step.uses.startsWith("actions/checkout@"),
+            ),
+        ),
+    );
+    expect(checkouts.length).toBeGreaterThan(0);
+    for (const checkout of checkouts) {
+        expect(checkout.with?.["persist-credentials"]).toBe(false);
+    }
+});
+
+test("CodeQL scans Actions and both historical JS/TS categories without a redundant build", () => {
     const workflow = workflowSchema.parse(
         parse(readFileSync(".github/workflows/codeql-analysis.yml", "utf8")),
     );
     const analyze = workflow.jobs.analyze;
     expect(analyze?.strategy).toEqual({
         "fail-fast": false,
-        matrix: { language: ["javascript", "javascript-typescript"] },
+        matrix: {
+            language: ["javascript", "javascript-typescript", "actions"],
+        },
     });
     const steps = analyze?.steps ?? [];
     expect(requireStep(steps, "Initialize CodeQL")).toMatchObject({

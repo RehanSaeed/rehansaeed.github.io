@@ -119,6 +119,29 @@ const getIsCurrentPage = (path: string) => {
   visibility: visible;
 }
 
+@include breakpoints.respond-below(sm) {
+  .navigation {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      "image left"
+      ". right";
+  }
+
+  .navigation__items-left {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--global-space-fluid-3);
+  }
+
+  .navigation__items-right {
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    justify-content: end;
+
+    padding: 0;
+  }
+}
+
 @include breakpoints.respond-above(xl) {
   .navigation {
     grid-template-areas:

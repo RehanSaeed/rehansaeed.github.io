@@ -145,15 +145,17 @@ useHead({
 <style lang="scss">
 .post-page {
   display: grid;
-  gap: var(--global-space-fluid-5);
-  grid-template-columns: repeat(
-    1,
-    minmax(
+  row-gap: var(--global-space-fluid-5);
+  grid-template-columns:
+    [full-start] minmax(0, 1fr) [content-start] minmax(
       var(--global-space-content-min-width),
       var(--global-space-content-max-width)
     )
-  );
-  justify-content: center;
+    [content-end] minmax(0, 1fr) [full-end];
+
+  > * {
+    grid-column: content;
+  }
 }
 
 .post-page__title-container {
@@ -165,8 +167,7 @@ useHead({
 }
 
 .post-page__arrows {
-  margin-inline-start: 50%;
-  translate: -50%;
-  width: 100vw;
+  grid-column: full;
+  margin-inline: calc(var(--global-space-main) * -1);
 }
 </style>

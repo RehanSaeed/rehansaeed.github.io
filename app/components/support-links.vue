@@ -8,7 +8,7 @@
     <div class="support-links">
       <u-link-button
         v-if="metadata.author.patreon.url"
-        bordered
+        variant="secondary"
         label="Patreon"
         :href="metadata.author.patreon.url">
         <u-icon name="fa-brands:patreon" inline />
@@ -16,7 +16,7 @@
       </u-link-button>
       <u-link-button
         v-if="metadata.author.buyMeACoffee.url"
-        bordered
+        variant="secondary"
         label="Buy me a Coffee"
         :href="metadata.author.buyMeACoffee.url">
         <u-icon name="simple-icons:buymeacoffee" inline />
@@ -24,7 +24,7 @@
       </u-link-button>
       <u-link-button
         v-if="metadata.author.gitHub.sponsorsUrl"
-        bordered
+        variant="secondary"
         label="GitHub Sponsors"
         :href="metadata.author.gitHub.sponsorsUrl">
         <u-icon name="fa-brands:github" inline />
@@ -32,7 +32,7 @@
       </u-link-button>
       <u-link-button
         v-if="metadata.author.paypal.url"
-        bordered
+        variant="secondary"
         label="Paypal"
         :href="metadata.author.paypal.url">
         <u-icon name="fa-brands:paypal" inline />

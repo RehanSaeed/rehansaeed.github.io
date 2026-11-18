@@ -68,7 +68,9 @@ const loadIndex = () => {
 
 <script setup lang="ts">
 defineOptions({ name: "u-search" });
-const emit = defineEmits<{ selected: [searchTerm: string] }>();
+const emit = defineEmits<{
+  selected: [searchTerm: string, permalink: string];
+}>();
 const props = defineProps({
   /** Whether the search or dialog is open. */ isOpen: {
     type: Boolean,
@@ -83,8 +85,8 @@ const route = useRoute();
 const searchTerm = ref("");
 const searchResults = ref<SearchDocument[]>([]);
 
-const onSelected = () => {
-  emit("selected", searchTerm.value);
+const onSelected = (permalink: string) => {
+  emit("selected", searchTerm.value, permalink);
 };
 const updateSearchResults = async () => {
   const term = searchTerm.value;
