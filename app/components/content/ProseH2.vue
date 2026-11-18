@@ -3,7 +3,7 @@
 </template>
 
 <style>
-[data-post-content] > .prose-heading:first-child {
+.post__content > .prose-heading:first-child {
   margin-block-start: 0;
 }
 </style>

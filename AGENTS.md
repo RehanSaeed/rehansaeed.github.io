@@ -60,6 +60,12 @@ authorise publishing the article or posting to social media.
   and their pseudo-classes or pseudo-elements, not class or ID selectors,
   including inside `:not()`, `:is()` or `:where()`. Put component-specific rules
   in component stylesheets and shared class-aware rules outside `dom/`.
+- Use semantic BEM classes for styling hooks; do not add `data-*` attributes
+  solely to select elements in CSS. Treat a component's internal classes as
+  private: parent components must not style them directly. When a parent needs
+  to affect slotted content, expose a stable class contract and keep the layout
+  rule with the owning component. Reserve `data-*` attributes for meaningful
+  state, metadata, or integration hooks such as JavaScript behavior.
 - Use CSS logical properties instead of physical properties where applicable.
 - Prefer CSS Grid to Flexbox for layout; use Flexbox when wrapping content is
   better suited to it.

@@ -22,7 +22,6 @@
 
     <ContentRenderer
       class="post__content e-content"
-      data-post-content
       :components="{ figure: ProseFigure }"
       :value="post" />
 

@@ -9,7 +9,7 @@ test("Post prose preserves the introductory paragraph and figure layout", async 
     (route) => route.abort(),
   );
   await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
-  const content = page.locator("[data-post-content]");
+  const content = page.locator(".post__content");
   const intro = content.locator(":scope > p").first();
   const nextParagraph = content.locator(":scope > p").nth(1);
   const sizes = await Promise.all(
@@ -21,7 +21,7 @@ test("Post prose preserves the introductory paragraph and figure layout", async 
   );
   expect(sizes[0]).toBeGreaterThan(sizes[1]!);
   const figure = content.locator("figure").first();
-  await expect(figure).toHaveAttribute("data-prose-figure", "");
+  await expect(figure).toHaveClass("prose-figure");
   const imageParagraph = figure.locator(":scope > p").first();
   await expect(imageParagraph).toHaveCSS("margin-block-end", "0px");
   await expect(figure.locator("figcaption")).toBeVisible();

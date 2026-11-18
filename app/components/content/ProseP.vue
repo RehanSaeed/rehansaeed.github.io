@@ -3,7 +3,7 @@
 </template>
 
 <style lang="scss">
-[data-post-content] > .prose-paragraph:first-of-type {
+.post__content > .prose-paragraph:first-of-type {
   color: var(--global-title-color);
   font-size: var(--global-font-size-4);
   min-inline-size: 0;
@@ -28,7 +28,7 @@
   }
 }
 
-[data-prose-figure] > .prose-paragraph:has([data-prose-image]) {
+.prose-figure > .prose-paragraph {
   max-inline-size: none;
   min-inline-size: 0;
   margin-block-end: 0;

@@ -146,11 +146,11 @@ for (const width of [320, 1280]) {
       await page.locator(".post__content").evaluate(
         (element, { proseImage, proseVideo, caption, credit, youtube }) => {
           element.innerHTML = `<p class="prose-paragraph">Article text remains aligned with its captions.</p>
-            <figure class="prose-figure" data-prose-figure><p class="prose-paragraph">${proseImage}</p>
+            <figure class="prose-figure"><p class="prose-paragraph">${proseImage}</p>
               <figcaption>${caption}${credit}</figcaption></figure>
-            <figure class="prose-figure" data-prose-figure>${proseVideo}
+            <figure class="prose-figure">${proseVideo}
               <figcaption>${caption}</figcaption></figure>
-            <figure class="prose-figure" data-prose-figure>${youtube}<figcaption>${caption} ${"LongCaption".repeat(20)}</figcaption></figure>
+            <figure class="prose-figure">${youtube}<figcaption>${caption} ${"LongCaption".repeat(20)}</figcaption></figure>
             <p>Text following the figures.</p>`;
         },
         { proseImage, proseVideo, caption, credit, youtube },

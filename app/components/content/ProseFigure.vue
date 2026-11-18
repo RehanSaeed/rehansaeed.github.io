@@ -1,5 +1,5 @@
 <template>
-  <figure class="prose-figure" data-prose-figure><slot /></figure>
+  <figure class="prose-figure"><slot /></figure>
 </template>
 
 <style>
