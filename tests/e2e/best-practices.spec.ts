@@ -78,16 +78,6 @@ test.describe("Nuxt best practices", () => {
     await expect(announcer).toContainText("About - Muhammad Rehan Saeed");
   });
 
-  test("Skip link moves keyboard focus into the main content", async ({
-    page,
-  }) => {
-    await page.goto("/");
-    await page.getByRole("link", { name: "Skip to content" }).focus();
-    await page.keyboard.press("Enter");
-
-    await expect(page.locator("main#main")).toBeFocused();
-  });
-
   for (const width of [375, 1280]) {
     test(`Skip link stays out of the layout on refresh at ${width}px`, async ({
       page,

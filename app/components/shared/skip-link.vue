@@ -9,9 +9,13 @@ defineOptions({ name: "u-skip-link" });
 </script>
 
 <style lang="scss" scoped>
+@use "sass:map";
+@use "~/assets/style/abstracts/breakpoints";
+
 .skip-link {
   position: absolute;
   inset-inline: 0;
+  z-index: var(--global-z-index-skip-link);
 
   margin-inline: auto;
   text-align: center;
@@ -21,6 +25,26 @@ defineOptions({ name: "u-skip-link" });
 }
 
 .skip-link:focus {
-  translate: 0 10%;
+  translate: 0 var(--global-space-fixed-3);
+}
+
+.skip-link:focus-visible {
+  outline: var(--global-border-width-2) solid var(--global-accent-color);
+  outline-offset: var(--global-focus-outline-offset);
+}
+
+@media (width < map.get(breakpoints.$breakpoints, xl)) {
+  .skip-link {
+    inset-block-start: calc(2.5rem + 2 * var(--global-space-fluid-5));
+    inset-inline-start: var(--global-space-fluid-5);
+    inset-inline-end: auto;
+
+    margin-inline: 0;
+    translate: 0 -500%;
+  }
+
+  .skip-link:focus {
+    translate: none;
+  }
 }
 </style>

@@ -13,6 +13,14 @@
     :to="to"
     :rel="rel"
     :aria-label="label">
+    <template v-if="variant === 'tag'">
+      <span
+        v-for="shadow in ['far', 'middle', 'near']"
+        :key="shadow"
+        class="link-button__tag-shadow"
+        :class="`link-button__tag-shadow--${shadow}`"
+        aria-hidden="true" />
+    </template>
     <span
       v-if="variant === 'tag'"
       class="link-button__tag-surface"
@@ -159,7 +167,8 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
   --link-button-tag-hole-size: var(--global-space-fixed-2);
   --link-button-tag-surface: var(--global-background-color);
   --link-button-tag-edge: var(--global-border-color);
-  --link-button-tag-shadow: none;
+  --link-button-tag-shadow: drop-shadow(var(--global-drop-shadow-1));
+  --link-button-tag-raised-opacity: 0;
   --link-button-tag-outline: polygon(
     var(--link-button-tag-point) 0,
     100% 0,
@@ -174,13 +183,15 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
   min-inline-size: var(--global-space-fixed-5);
   max-inline-size: 100%;
   min-block-size: calc(var(--global-space-fixed-3) * 3);
-  border: var(--global-border-width-1) solid transparent;
+  border: none;
   border-radius: 0;
   border-start-end-radius: var(--global-border-radius);
   border-end-end-radius: var(--global-border-radius);
-  padding: var(--global-space-fixed-2) var(--global-space-fixed-3);
+  padding: calc(var(--global-space-fixed-2) + var(--global-border-width-1))
+    calc(var(--global-space-fixed-3) + var(--global-border-width-1));
   padding-inline-start: calc(
-    var(--link-button-tag-point) + var(--global-space-fixed-4)
+    var(--link-button-tag-point) + var(--global-space-fixed-4) +
+      var(--global-border-width-1)
   );
   background: transparent;
   box-shadow: none;
@@ -192,9 +203,7 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
 
   &:hover,
   &:focus {
-    --link-button-tag-shadow: drop-shadow(var(--global-shadow-2-near))
-      drop-shadow(var(--global-shadow-2-middle))
-      drop-shadow(var(--global-shadow-2-far));
+    --link-button-tag-raised-opacity: 1;
 
     outline: none;
     transform: translateY(-2px);
@@ -207,6 +216,7 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
 
   &:active {
     --link-button-tag-shadow: drop-shadow(var(--global-shadow-1));
+    --link-button-tag-raised-opacity: 0;
 
     transform: translateY(0);
   }
@@ -233,14 +243,13 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
 }
 
 // Filter the clipped paint, not the rectangular control or its focus outline.
-.link-button__tag-surface {
+.link-button__tag-surface,
+.link-button__tag-shadow {
   position: absolute;
   inset: 0;
   z-index: -1;
   border-radius: inherit;
-  filter: var(--link-button-tag-shadow);
   pointer-events: none;
-  transition: filter var(--global-duration-1) var(--ease-in-out-cubic);
 
   &::before,
   &::after {
@@ -249,14 +258,41 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: var(--link-button-tag-paint, var(--link-button-tag-edge));
+    background: var(--link-button-tag-surface);
     clip-path: var(--link-button-tag-outline);
   }
 
-  &::after {
-    --link-button-tag-paint: var(--link-button-tag-surface);
+  &::before {
+    // Keep the silhouette opaque beneath its translucent border for filtering.
+    background:
+      linear-gradient(var(--link-button-tag-edge), var(--link-button-tag-edge)),
+      var(--link-button-tag-surface);
+  }
 
+  &::after {
     inset: var(--global-border-width-1);
+  }
+}
+
+.link-button__tag-surface {
+  filter: var(--link-button-tag-shadow);
+  transition: filter var(--global-duration-1) var(--ease-in-out-cubic);
+}
+
+// Separate filters keep each shadow from blurring or shadowing the other layers.
+.link-button__tag-shadow {
+  // Normal buttons' raised pseudo-element sits inside their border.
+  inset: var(--global-border-width-1);
+  // Apply faint shadow alpha after blur to avoid filter rounding accumulating.
+  opacity: calc(
+    var(--link-button-tag-raised-opacity) * var(--global-shadow-opacity)
+  );
+  transition: opacity var(--global-duration-1) var(--ease-in-out-cubic);
+}
+
+@each $layer in ("near", "middle", "far") {
+  .link-button__tag-shadow--#{$layer} {
+    filter: drop-shadow(var(--global-drop-shadow-2-#{$layer}));
   }
 }
 
@@ -265,7 +301,8 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
     transform: none;
     transition: none;
 
-    .link-button__tag-surface {
+    .link-button__tag-surface,
+    .link-button__tag-shadow {
       transition: none;
     }
   }
@@ -277,6 +314,7 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
     --link-button-tag-surface: Canvas;
     --link-button-tag-edge: LinkText;
     --link-button-tag-shadow: none;
+    --link-button-tag-raised-opacity: 0;
 
     forced-color-adjust: none;
 
