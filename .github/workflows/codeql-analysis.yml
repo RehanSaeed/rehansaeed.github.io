@@ -32,11 +32,13 @@ jobs:
         # Both aliases scan JavaScript and TypeScript. Keep both existing main
         # baseline identities so PR comparisons do not lose either configuration.
         # https://docs.github.com/en/code-security/reference/code-scanning/workflow-configuration-options#languages-to-be-analyzed
-        language: ["javascript", "javascript-typescript"]
+        language: ["javascript", "javascript-typescript", "actions"]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
@@ -52,5 +54,5 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4.39.3
         with:
-          # Pin the existing categories rather than creating a third baseline.
+          # Preserve the historical JS/TS categories and give Actions its own.
           category: ".github/workflows/codeql-analysis.yml:analyze/language:${{ matrix.language }}"
