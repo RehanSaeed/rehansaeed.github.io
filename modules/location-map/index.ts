@@ -15,8 +15,8 @@ export default defineNuxtModule({
     });
     nuxt.hook("pwa:beforeBuildServiceWorker", (options) => {
       const directory = nuxt.options.app.buildAssetsDir.replace(/^\/|\/$/g, "");
-      options.workbox.manifestTransforms = [
-        ...(options.workbox.manifestTransforms ?? []),
+      options.generateSW.manifestTransforms = [
+        ...(options.generateSW.manifestTransforms ?? []),
         (entries) => ({
           manifest: entries.filter(
             (entry) =>
