@@ -130,12 +130,13 @@ useHead({
 
 .posts {
   display: grid;
-  gap: var(--global-space-fixed-1);
+  gap: 0;
   grid-template-columns: 1fr;
 }
 
 .posts > .posts__arrows {
   margin-inline: calc(var(--global-space-main) * -1);
+  margin-block-start: var(--global-space-fixed-1);
 }
 
 .posts__items {
@@ -154,5 +155,6 @@ useHead({
 
 .posts__pager {
   justify-self: center;
+  margin-block-start: var(--global-space-fixed-1);
 }
 </style>
