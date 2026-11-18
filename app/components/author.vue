@@ -1,6 +1,9 @@
 <template>
   <!-- Added webmention markup (See https://indiewebify.me/validate-h-card/?url=https%3A%2F%2Frehansaeed.com) -->
-  <section class="author h-card" :aria-label="metadata.name">
+  <section
+    class="author h-card"
+    :class="{ 'author--compact': compact }"
+    :aria-label="metadata.name">
     <div class="author__portrait">
       <NuxtPicture
         format="avif"
@@ -42,7 +45,8 @@
       :id="props.headingId || metadata.name"
       class="author__site-title"
       link-class="u-url u-uid p-name"
-      level="1"
+      :level="headingLevel"
+      size="1"
       :href="metadata.url"
       center
       >{{ metadata.name }}</u-heading
@@ -55,18 +59,33 @@
 </template>
 
 <script setup lang="ts">
+import type { PropType } from "vue";
+
 defineOptions({ name: "u-author" });
 const props = defineProps({
+  /** Whether to use the shorter introduction on post indexes. */ compact: {
+    type: Boolean,
+    default: false,
+  },
   /** Fragment identifier for the author heading. */ headingId: {
     type: String,
   },
+  /** Semantic level of the author heading, independent of its visual size. */ headingLevel:
+    {
+      type: String as PropType<"1" | "2">,
+      default: "1",
+    },
 });
 const metadata = useAppConfig().site;
 const winkGradientId = `${useId()}-wink-skin`;
 </script>
 
 <style lang="scss">
+@use "~/assets/style/abstracts/breakpoints";
+
 .author {
+  --author-portrait-size: 7rem;
+
   display: grid;
   justify-items: center;
   padding-inline: var(--global-space-fluid-3);
@@ -76,8 +95,8 @@ const winkGradientId = `${useId()}-wink-skin`;
   position: relative;
   border: var(--global-border-width-2) solid var(--global-title-color);
   border-radius: 100%;
-  inline-size: 7rem;
-  block-size: 7rem;
+  inline-size: var(--author-portrait-size);
+  block-size: var(--author-portrait-size);
   margin-block-end: var(--global-space-fluid-3);
   transition: border-color var(--global-duration-3) ease-out;
 }
@@ -122,11 +141,51 @@ const winkGradientId = `${useId()}-wink-skin`;
 
 .author__site-title {
   font-size: var(--global-font-size-8);
+  margin-block-end: 0;
 }
 
 .author__description {
+  margin-block-start: 0;
   opacity: 0.8;
   text-align: center;
+}
+
+.author--compact {
+  --author-portrait-size: 5rem;
+
+  row-gap: var(--global-space-fixed-2);
+
+  @include breakpoints.respond-above(xl) {
+    --author-portrait-size: 4.25rem;
+  }
+
+  .author__portrait {
+    margin-block-end: 0;
+  }
+
+  .author__site-title {
+    font-size: var(--global-font-size-7);
+    margin-block-start: 0;
+    margin-block-end: 0;
+    line-height: 1.05;
+  }
+
+  .author__description {
+    font-size: clamp(
+      1rem,
+      var(--global-font-size-1),
+      var(--global-font-size-2)
+    );
+    line-height: 1.4;
+    margin-block-end: 0;
+    min-inline-size: 0;
+  }
+
+  .social {
+    column-gap: var(--global-space-fixed-3);
+    row-gap: var(--global-space-fixed-3);
+    margin-block-start: var(--global-space-fixed-2);
+  }
 }
 
 @media print {
