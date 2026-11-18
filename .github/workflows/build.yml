@@ -15,15 +15,10 @@ on:
   workflow_dispatch:
     inputs:
       diagnostic_run:
-        description: "Optional completed Build run ID: repeat fixed cases against its compatible generated site without generation. History requires a successful Build; carousel requires a successful Generate."
+        description: "Optional successful Build run ID: repeat fixed history/thumbnail tests against its compatible generated site, without generation."
         type: string
         required: false
         default: ""
-      diagnostic_case:
-        description: "Fixed diagnostic cases (only used with diagnostic_run)."
-        type: choice
-        options: [history, carousel]
-        default: history
   schedule:
     - cron: "17 5 * * 1"
 
@@ -323,11 +318,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           DIAGNOSTIC_RUN: ${{ inputs.diagnostic_run }}
-          DIAGNOSTIC_CASE: ${{ inputs.diagnostic_case || 'history' }}
 
   diagnostic:
     name: Focused Diagnostic (${{ matrix.browser }})
-    if: github.event_name == 'workflow_dispatch' && inputs.diagnostic_run != '' && inputs.diagnostic_case != 'carousel'
+    if: github.event_name == 'workflow_dispatch' && inputs.diagnostic_run != ''
     needs: diagnostic-source
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -379,70 +373,6 @@ jobs:
         uses: actions/upload-artifact@v7.0.2
         with:
           name: focused-diagnostic-${{ matrix.browser }}-${{ github.run_attempt }}
-          path: |
-            playwright-report
-            test-results
-          retention-days: 7
-
-  carousel-diagnostic:
-    name: Carousel Diagnostic (${{ matrix.browser }})
-    if: github.event_name == 'workflow_dispatch' && inputs.diagnostic_run != '' && inputs.diagnostic_case == 'carousel'
-    needs: diagnostic-source
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    permissions:
-      contents: read
-      actions: read
-    container:
-      image: ${{ matrix.browser == 'firefox' && needs.diagnostic-source.outputs.playwright-image || '' }}
-      options: --user 1001
-    strategy:
-      fail-fast: false
-      max-parallel: 1
-      matrix:
-        browser: [chrome, edge, firefox]
-    env:
-      DIAGNOSTIC_CASE: carousel
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7.0.1
-        with:
-          persist-credentials: false
-      - name: Setup Node
-        uses: actions/setup-node@v7.1.0
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-      - name: Install Without Generation
-        run: npm ci --ignore-scripts
-      - name: Download Digest-Verified Browser Site
-        uses: actions/download-artifact@v8.0.2
-        with:
-          artifact-ids: ${{ needs.diagnostic-source.outputs.artifact-id }}
-          run-id: ${{ inputs.diagnostic_run }}
-          github-token: ${{ github.token }}
-          path: ${{ runner.temp }}/diagnostic-artifact
-          merge-multiple: true
-          digest-mismatch: error
-      - name: Verify And Extract Compatible Site
-        run: node scripts/browser-diagnostic.mts extract
-        env:
-          DIAGNOSTIC_SOURCE_SHA: ${{ needs.diagnostic-source.outputs.source-sha }}
-          DIAGNOSTIC_SOURCE_EVENT: ${{ needs.diagnostic-source.outputs.source-event }}
-      - name: Repeat Fixed Carousel Cases
-        run: >-
-          npx playwright test image-carousels.spec.ts
-          --grep 'interpolates scale and opacity before and after the midpoint without waiting for a slide change$|Mouse dragging a linked image scrolls without opening its link, but a normal click still works$'
-          --project=${{ matrix.browser }}
-          --repeat-each=10 --retries=0 --workers=1 --max-failures=1 --trace=retain-on-failure
-        env:
-          TZ: UTC
-          CAROUSEL_DIAGNOSTIC: "1"
-      - name: Upload Carousel Diagnostic Evidence
-        if: always()
-        uses: actions/upload-artifact@v7.0.2
-        with:
-          name: carousel-diagnostic-${{ matrix.browser }}-${{ github.run_attempt }}
           path: |
             playwright-report
             test-results

@@ -260,8 +260,6 @@ To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>`
 
 # Carousel
 
-<carousel-spacing></carousel-spacing>
-
 ![A code illustration in the first image-only gallery slide.](./images/Code-1600x900.jpg)
 
 ![CSS3 logo on a blue background.](/images/hero/CSS-1600x900.png)

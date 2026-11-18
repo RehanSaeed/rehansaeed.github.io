@@ -8,25 +8,14 @@ import { z } from "zod";
 
 const revisionSchema = z.string().regex(/^[a-f0-9]{40}$/);
 const runIdSchema = z.string().regex(/^[1-9]\d{0,14}$/);
-const diagnosticCaseSchema = z.enum(["history", "carousel"]);
 const runSchema = z.object({
     id: z.number().int().positive(),
     path: z.literal(".github/workflows/build.yml"),
     status: z.literal("completed"),
-    conclusion: z.enum(["success", "failure"]),
+    conclusion: z.literal("success"),
     event: z.enum(["push", "pull_request", "schedule", "workflow_dispatch"]),
     head_sha: revisionSchema,
     head_repository: z.object({ full_name: z.string() }),
-});
-const generateSchema = z.object({
-    name: z.literal("Generate"),
-    run_id: z.number().int().positive(),
-    run_attempt: z.number().int().positive(),
-    head_sha: revisionSchema,
-    status: z.literal("completed"),
-    conclusion: z.literal("success"),
-    started_at: z.iso.datetime(),
-    completed_at: z.iso.datetime(),
 });
 const artifactSchema = z.object({
     id: z.number().int().positive(),
@@ -56,8 +45,6 @@ export const verifySource = (
     artifactValue: unknown,
     repository: string,
     runId: string,
-    diagnosticCase: z.infer<typeof diagnosticCaseSchema> = "history",
-    generateValue?: unknown,
 ) => {
     const run = runSchema.parse(runValue);
     const artifact = artifactSchema.parse(artifactValue);
@@ -65,47 +52,17 @@ export const verifySource = (
     assert.equal(run.head_repository.full_name, repository);
     assert.equal(artifact.workflow_run.id, run.id);
     assert.equal(artifact.workflow_run.head_sha, run.head_sha);
-    if (diagnosticCase === "history") {
-        assert.equal(run.conclusion, "success");
-    } else {
-        const { run_attempt } = z
-            .object({ run_attempt: z.number().int().positive() })
-            .parse(runValue);
-        const generate = generateSchema.parse(generateValue);
-        assert.equal(generate.run_id, run.id);
-        assert.equal(generate.run_attempt, run_attempt);
-        assert.equal(generate.head_sha, run.head_sha);
-        const { created_at } = z
-            .object({
-                created_at: z.iso.datetime(),
-                digest: z.string().regex(/^sha256:[a-f0-9]{64}$/),
-            })
-            .parse(artifactValue);
-        const created = Date.parse(created_at);
-        assert(
-            created >= Date.parse(generate.started_at) &&
-                created <= Date.parse(generate.completed_at),
-            "Artifact does not belong to this successful Generate attempt.",
-        );
-    }
     return { run, artifact };
 };
 
-export const verifyCompatibleChanges = (
-    paths: string[],
-    diagnosticCase: z.infer<typeof diagnosticCaseSchema> = "history",
-) => {
+export const verifyCompatibleChanges = (paths: string[]) => {
     for (const path of paths) {
         assert(
-            compatibleChanges.has(path) ||
-                (diagnosticCase === "carousel" &&
-                    path === "tests/e2e/image-carousels.spec.ts"),
+            compatibleChanges.has(path),
             `Generated artifact is incompatible with changed input: ${path}`,
         );
     }
 };
-const diagnosticCase = () =>
-    diagnosticCaseSchema.parse(process.env.DIAGNOSTIC_CASE || "history");
 
 export const verifyArchive = (names: string[], entries: string[]) => {
     assert(names.length > 0, "Empty browser-site archive.");
@@ -154,7 +111,6 @@ const compare = (source: string, target: string) => {
         git("diff", "--name-only", "-z", source, target)
             .split("\0")
             .filter(Boolean),
-        diagnosticCase(),
     );
 };
 const fetchRevision = (revision: string) => {
@@ -197,26 +153,6 @@ const prepare = async () => {
         return response.json();
     };
     const runValue = await api(`actions/runs/${runId}`);
-    const selectedCase = diagnosticCase();
-    let generateValue: unknown;
-    if (selectedCase === "carousel") {
-        const { run_attempt } = z
-            .object({ run_attempt: z.number().int().positive() })
-            .parse(runValue);
-        const listing = z
-            .object({
-                total_count: z.number().int().max(100),
-                jobs: z.array(z.looseObject({ name: z.string() })),
-            })
-            .parse(
-                await api(
-                    `actions/runs/${runId}/attempts/${run_attempt}/jobs?per_page=100`,
-                ),
-            );
-        const matches = listing.jobs.filter((job) => job.name === "Generate");
-        assert.equal(matches.length, 1, "Expected exactly one Generate job.");
-        generateValue = matches[0];
-    }
     const listing = z
         .object({
             total_count: z.number().int().max(100),
@@ -238,8 +174,6 @@ const prepare = async () => {
         await api(`actions/artifacts/${matches[0].id}`),
         repository,
         runId,
-        selectedCase,
-        generateValue,
     );
     fetchRevision(run.head_sha);
     compare(run.head_sha, "HEAD");
@@ -320,5 +254,5 @@ if (
     import.meta.url === pathToFileURL(process.argv[1]).href
 ) {
     const mode = z.enum(["prepare", "extract"]).parse(process.argv[2]);
-    await { prepare, extract }[mode]();
+    await (mode === "prepare" ? prepare() : extract());
 }

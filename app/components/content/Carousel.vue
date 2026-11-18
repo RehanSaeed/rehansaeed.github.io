@@ -1,10 +1,7 @@
 <template>
   <section
     class="carousel"
-    :class="{
-      'carousel--interactive': isInteractive,
-      'carousel--no-gap': spacing === 'none',
-    }"
+    :class="{ 'carousel--interactive': isInteractive }"
     aria-label="Image gallery">
     <div class="carousel__viewport">
       <ol
@@ -45,7 +42,6 @@
 
 <script setup lang="ts">
 import { useMediaQuery, usePreferredReducedMotion } from "@vueuse/core";
-import { useCarouselSpacing } from "~/composables/useCarouselSpacing";
 import {
   onBeforeUnmount,
   onMounted,
@@ -63,7 +59,6 @@ const trackId = `image-gallery-${useId()}`;
 const track = useTemplateRef<HTMLOListElement>("track");
 const preferredMotion = usePreferredReducedMotion();
 const forcedColors = useMediaQuery("(forced-colors: active)");
-const spacing = useCarouselSpacing();
 const currentIndex = ref(0);
 const isInteractive = ref(false);
 const isDragging = ref(false);
@@ -331,15 +326,6 @@ watch([preferredMotion, forcedColors], () => {
   }
 });
 
-watch(
-  spacing,
-  () => {
-    navigateToImage(navigationTarget ?? currentIndex.value, true);
-    updatePosition();
-  },
-  { flush: "post" },
-);
-
 onMounted(() => {
   for (const [event, handler] of pointerHandlers) {
     track.value?.addEventListener(event, handler);
@@ -425,10 +411,6 @@ onBeforeUnmount(() => {
     outline: 2px solid var(--global-accent-color);
     outline-offset: -2px;
   }
-}
-
-.carousel--no-gap .carousel__track {
-  gap: 0;
 }
 
 .carousel__track .prose-image__image {

@@ -1,139 +1,10 @@
 import { expect, test } from "@playwright/test";
 
-declare global {
-  interface Window {
-    /** Bounded event-time evidence, enabled only by the manual carousel diagnostic. */
-    carouselDiagnostic?: {
-      /** Pointer, scroll and layout observations in delivery order. */
-      events: Record<string, unknown>[];
-      /** Number of observations omitted after reaching the limit. */
-      dropped: number;
-    };
-  }
-}
-
 test.beforeEach(async ({ page, baseURL }) => {
   await page.route(
     (url) => url.origin !== new URL(baseURL!).origin,
     (route) => route.fulfill({ status: 204 }),
   );
-  if (process.env.CAROUSEL_DIAGNOSTIC === "1") {
-    await page.addInitScript(() => {
-      const probe = { events: [] as Record<string, unknown>[], dropped: 0 };
-      window.carouselDiagnostic = probe;
-      const label = (value: EventTarget | null) =>
-        value instanceof Element
-          ? `${value.tagName}.${value.className}`
-          : value === window
-            ? "window"
-            : "document";
-      const record = (kind: string, event?: Event) => {
-        if (probe.events.length >= 512) {
-          probe.dropped++;
-          return;
-        }
-        const gallery =
-          (event?.target instanceof Element
-            ? event.target.closest(".carousel")
-            : null) ?? document.querySelector(".carousel:has(figure)");
-        const track = gallery?.querySelector(".carousel__track");
-        const image = gallery?.querySelector("img");
-        const bounds = image?.getBoundingClientRect();
-        const pointer = event instanceof PointerEvent ? event : undefined;
-        probe.events.push({
-          kind,
-          time: performance.now(),
-          scrollY,
-          target: label(event?.target ?? null),
-          active: label(document.activeElement),
-          prevented: event?.defaultPrevented,
-          pointer: pointer && {
-            id: pointer.pointerId,
-            x: pointer.clientX,
-            y: pointer.clientY,
-            buttons: pointer.buttons,
-            hit: label(
-              document.elementFromPoint(pointer.clientX, pointer.clientY),
-            ),
-            captured:
-              track instanceof Element &&
-              track.hasPointerCapture(pointer.pointerId),
-          },
-          trackId: track?.id,
-          scrollLeft: track?.scrollLeft,
-          image: bounds && {
-            x: bounds.x,
-            y: bounds.y,
-            width: bounds.width,
-            height: bounds.height,
-            complete: image?.complete,
-            naturalWidth: image?.naturalWidth,
-          },
-        });
-      };
-      for (const type of [
-        "pointerdown",
-        "pointermove",
-        "pointerup",
-        "pointercancel",
-        "gotpointercapture",
-        "lostpointercapture",
-        "focusin",
-        "scroll",
-      ]) {
-        for (const capture of [true, false]) {
-          window.addEventListener(
-            type,
-            (event) => {
-              if (
-                !(event instanceof PointerEvent) ||
-                type !== "pointermove" ||
-                event.buttons
-              ) {
-                record(`${type}:${capture ? "capture" : "bubble"}`, event);
-              }
-            },
-            { capture, passive: true },
-          );
-        }
-      }
-      document.addEventListener("DOMContentLoaded", () => {
-        const observer = new ResizeObserver(() => {
-          record("resize");
-        });
-        for (const element of document.querySelectorAll(
-          ".carousel__track, .carousel img",
-        )) {
-          observer.observe(element);
-        }
-      });
-      document.fonts.addEventListener("loadingdone", () => {
-        record("fonts:loadingdone");
-      });
-      if (PerformanceObserver.supportedEntryTypes.includes("layout-shift")) {
-        new PerformanceObserver(() => {
-          record("layout-shift");
-        }).observe({ type: "layout-shift", buffered: true });
-      }
-    });
-  }
-});
-
-test.afterEach(async ({ page }, testInfo) => {
-  if (process.env.CAROUSEL_DIAGNOSTIC === "1" && !page.isClosed()) {
-    testInfo.annotations.push({
-      type: "diagnostic",
-      description: "Event-time layout observations may affect timing.",
-    });
-    await testInfo.attach("carousel-events", {
-      contentType: "application/json",
-      body: JSON.stringify(
-        await page.evaluate(() => window.carouselDiagnostic ?? null),
-        null,
-        2,
-      ),
-    });
-  }
 });
 
 for (const width of [3440, 1440, 640, 375, 320]) {
@@ -482,103 +353,64 @@ test.describe("Continuous scroll-linked motion", () => {
   test.use({ reducedMotion: "no-preference" });
 
   for (const width of [3440, 5120]) {
-    test(`Spacing comparison keeps every image gap consistent at ${width}px`, async ({
+    test(`Every image retains the existing gap at ${width}px`, async ({
       page,
-    }, testInfo) => {
+    }) => {
       await page.setViewportSize({ width, height: 1000 });
       await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
-      const options = page.getByRole("group", {
-        name: "Compare carousel spacing",
-      });
       const galleries = page.getByRole("region", { name: "Image gallery" });
       await expect(galleries).toHaveCount(2);
-      for (const spacing of ["Existing gap (fixed)", "Zero gap"]) {
-        await options.getByRole("radio", { name: spacing }).check();
-        for (const [galleryIndex, count] of [5, 6].entries()) {
-          const gallery = galleries.nth(galleryIndex);
-          const gap = await gallery
-            .getByRole("list")
-            .evaluate((element) =>
-              Number.parseFloat(getComputedStyle(element).columnGap),
-            );
-          expect(gap).toBeGreaterThanOrEqual(0);
-          expect(gap === 0).toBe(spacing === "Zero gap");
-          await expect(gallery.locator(".carousel__position")).toHaveText(
-            `Image 1 of ${count}`,
+      for (const [galleryIndex, count] of [5, 6].entries()) {
+        const gallery = galleries.nth(galleryIndex);
+        const gap = await gallery
+          .getByRole("list")
+          .evaluate((element) =>
+            Number.parseFloat(getComputedStyle(element).columnGap),
           );
-          for (const image of [1, 3, 4, count]) {
-            await gallery
-              .getByRole("button", { name: `Go to image ${image} of ${count}` })
-              .click();
-            await expect(gallery.locator(".carousel__position")).toHaveText(
-              `Image ${image} of ${count}`,
-            );
-            await expect
-              .poll(() =>
-                gallery.evaluate((element) => {
-                  const images = Array.from(element.querySelectorAll("img"));
-                  const boxes = images.map((image) =>
-                    image.getBoundingClientRect(),
-                  );
-                  const track = element.querySelector(".carousel__track")!;
-                  const expected = Number.parseFloat(
-                    getComputedStyle(track).columnGap,
-                  );
-                  return Math.max(
-                    ...boxes
-                      .slice(1)
-                      .map((box, index) =>
-                        Math.abs(box.left - boxes[index]!.right - expected),
-                      ),
-                  );
-                }),
-              )
-              .toBeLessThan(1);
-          }
-          const selected = gallery.getByRole("button", {
-            name: `Go to image ${count} of ${count}`,
-          });
-          await options
-            .getByRole("radio", {
-              name:
-                spacing === "Zero gap" ? "Existing gap (fixed)" : "Zero gap",
-            })
-            .check();
-          await expect(selected).toHaveAttribute("aria-current", "true");
+        expect(gap).toBeGreaterThan(0);
+        for (const image of [1, 3, 4, count]) {
+          await gallery
+            .getByRole("button", { name: `Go to image ${image} of ${count}` })
+            .click();
+          await expect(gallery.locator(".carousel__position")).toHaveText(
+            `Image ${image} of ${count}`,
+          );
           await expect
             .poll(() =>
               gallery.evaluate((element) => {
-                const images = element.querySelectorAll("img");
-                const box = images[images.length - 1]!.getBoundingClientRect();
-                return Math.abs(box.left + box.width / 2 - innerWidth / 2);
+                const boxes = Array.from(
+                  element.querySelectorAll("img"),
+                  (image) => image.getBoundingClientRect(),
+                );
+                const track = element.querySelector(".carousel__track")!;
+                const expected = Number.parseFloat(
+                  getComputedStyle(track).columnGap,
+                );
+                return Math.max(
+                  ...boxes
+                    .slice(1)
+                    .map((box, index) =>
+                      Math.abs(box.left - boxes[index]!.right - expected),
+                    ),
+                );
               }),
             )
             .toBeLessThan(1);
-          await options.getByRole("radio", { name: spacing }).check();
-          await gallery
-            .getByRole("button", { name: `Go to image 1 of ${count}` })
-            .click();
+          await expect
+            .poll(() =>
+              gallery
+                .locator("img")
+                .nth(image - 1)
+                .evaluate((element) => {
+                  const box = element.getBoundingClientRect();
+                  return Math.abs(box.left + box.width / 2 - innerWidth / 2);
+                }),
+            )
+            .toBeLessThan(1);
         }
-        await testInfo.attach(
-          `${width}-${spacing === "Zero gap" ? "zero" : "fixed"}-gap`,
-          {
-            body: await galleries.last().screenshot({ animations: "allow" }),
-            contentType: "image/png",
-          },
-        );
       }
       await page.emulateMedia({ reducedMotion: "reduce" });
-      const zero = options.getByRole("radio", { name: "Zero gap" });
-      await zero.focus();
-      await page.keyboard.press("ArrowUp");
-      await expect(
-        options.getByRole("radio", { name: "Existing gap (fixed)" }),
-      ).toBeChecked();
-      await page.keyboard.press("ArrowDown");
-      await expect(zero).toBeChecked();
-      await expect(zero).toBeFocused();
       for (const gallery of await galleries.all()) {
-        await expect(gallery.getByRole("list")).toHaveCSS("column-gap", "0px");
         await expect(gallery.locator(".prose-image").first()).toHaveCSS(
           "transform",
           "none",
@@ -588,7 +420,6 @@ test.describe("Continuous scroll-linked motion", () => {
         reducedMotion: "no-preference",
         forcedColors: "active",
       });
-      await expect(zero).toBeFocused();
       for (const gallery of await galleries.all()) {
         await expect(gallery.locator(".prose-image").first()).toHaveCSS(
           "transform",
