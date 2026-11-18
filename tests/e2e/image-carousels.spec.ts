@@ -174,6 +174,27 @@ for (const width of [3440, 1440, 640, 375, 320]) {
   });
 }
 
+test("Carousel image sizing does not depend on the post component's content class", async ({
+  page,
+}) => {
+  await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
+  const gallery = page
+    .getByRole("region", { name: "Image gallery" })
+    .filter({ has: page.locator("figure") });
+  const image = gallery.locator("img").first();
+  await gallery.scrollIntoViewIfNeeded();
+  const before = await image.boundingBox();
+  expect(before).not.toBeNull();
+  await gallery.evaluate((element) => {
+    element.closest(".post__content")!.classList.remove("post__content");
+  });
+  const after = await image.boundingBox();
+  expect(after).not.toBeNull();
+  expect(after!.x).toBeCloseTo(before!.x, 0);
+  expect(after!.width).toBeCloseTo(before!.width, 0);
+  expect(after!.height).toBeCloseTo(before!.height, 0);
+});
+
 for (const { width, theme } of [
   { width: 1280, theme: "light" },
   { width: 320, theme: "dark" },

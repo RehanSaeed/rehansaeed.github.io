@@ -450,7 +450,7 @@ onBeforeUnmount(() => {
   }
 }
 
-.post__content .carousel__slide .carousel__media {
+.carousel .carousel__slide .carousel__media {
   position: relative;
   inline-size: fit-content;
   max-inline-size: 100%;
@@ -458,7 +458,7 @@ onBeforeUnmount(() => {
   margin-inline: auto;
 }
 
-.post__content .carousel__slide .prose-image {
+.carousel .carousel__slide .prose-image {
   inline-size: 100%;
   margin-inline: 0;
 }
