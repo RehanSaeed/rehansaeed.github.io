@@ -22,7 +22,7 @@
 
     <ContentRenderer
       class="post__content e-content"
-      :components="{ figure: ProseFigure }"
+      :components="{ figure: 'ProseFigure' }"
       :value="post" />
 
     <footer class="post__footer">
@@ -45,7 +45,6 @@ import type { PostsCollectionItem } from "@nuxt/content";
 import "katex/dist/katex.min.css";
 import { getImageMetadata } from "~/framework/images";
 import { contentImageSizes } from "#shared/utils/images";
-import ProseFigure from "~/components/content/ProseFigure.vue";
 
 defineOptions({ name: "u-post" });
 const props = defineProps({

@@ -242,6 +242,9 @@ authorise publishing the article or posting to social media.
 - Keep Nuxt Content components in `app/components/content` globally registered
   under their unprefixed names so Markdown rendering can resolve them. Do not
   globally register ordinary application components.
+- When passing a Nuxt Content component through `ContentRenderer`'s `components`
+  map, use its registered component name as a string rather than importing its
+  component object. Nuxt Content resolves registered global components by name.
 - Scan `app/components/OgImage` separately as server-only islands before the
   application component directory, without the application `U` prefix. Nuxt skips
   later scans inside an already scanned parent, even when files were ignored.
