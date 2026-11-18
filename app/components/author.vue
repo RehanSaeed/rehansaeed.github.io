@@ -156,10 +156,12 @@ const winkGradientId = `${useId()}-wink-skin`;
   row-gap: var(--global-space-fixed-2);
 
   @include breakpoints.respond-above(xl) {
-    --author-portrait-size: 4.25rem;
+    --author-portrait-growth: 1.25rem;
+    --author-portrait-size: calc(4.25rem + var(--author-portrait-growth));
   }
 
   .author__portrait {
+    margin-block-start: calc(-1 * var(--author-portrait-growth, 0rem));
     margin-block-end: 0;
   }
 

@@ -16,7 +16,20 @@ for (const { width, height } of [
       await page.evaluate(() => document.fonts.ready.then(() => undefined));
       const author = page.getByRole("main").locator(".author");
       await expect(author.getByRole("heading", { level: 1 })).toHaveCount(1);
-      await expect(author.getByRole("img")).toBeVisible();
+      const portrait = author.getByRole("img");
+      await expect(portrait).toBeInViewport({ ratio: 0.99 });
+      if (width === 1440) {
+        const navigationAvatar = page
+          .getByRole("link", { name: "Home", exact: true })
+          .getByRole("img");
+        const navigationBounds = await navigationAvatar.boundingBox();
+        const portraitBounds = await portrait.boundingBox();
+        expect(navigationBounds).not.toBeNull();
+        expect(portraitBounds).not.toBeNull();
+        expect(portraitBounds!.width).toBeGreaterThan(
+          navigationBounds!.width * 2,
+        );
+      }
       await expect(author.locator(".author__description")).toBeVisible();
       const authorRowGaps = await author.evaluate((element) => {
         const rows = [...element.children];
