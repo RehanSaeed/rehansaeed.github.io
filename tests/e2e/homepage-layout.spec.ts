@@ -18,18 +18,6 @@ for (const { width, height } of [
       await expect(author.getByRole("heading", { level: 1 })).toHaveCount(1);
       const portrait = author.getByRole("img");
       await expect(portrait).toBeInViewport({ ratio: 0.99 });
-      if (width === 1440) {
-        const navigationAvatar = page
-          .getByRole("link", { name: "Home", exact: true })
-          .getByRole("img");
-        const navigationBounds = await navigationAvatar.boundingBox();
-        const portraitBounds = await portrait.boundingBox();
-        expect(navigationBounds).not.toBeNull();
-        expect(portraitBounds).not.toBeNull();
-        expect(portraitBounds!.width).toBeGreaterThan(
-          navigationBounds!.width * 2,
-        );
-      }
       await expect(author.locator(".author__description")).toBeVisible();
       const authorRowGaps = await author.evaluate((element) => {
         const rows = [...element.children];
@@ -105,6 +93,22 @@ for (const { width, height } of [
     });
   }
 }
+
+test("The desktop author portrait is larger than the navigation avatar", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/");
+  const navigationAvatar = page
+    .getByRole("link", { name: "Home", exact: true })
+    .locator(".navigation__image");
+  const portrait = page.getByRole("main").locator(".author").getByRole("img");
+  const navigationBounds = await navigationAvatar.boundingBox();
+  const portraitBounds = await portrait.boundingBox();
+  expect(navigationBounds).not.toBeNull();
+  expect(portraitBounds).not.toBeNull();
+  expect(portraitBounds!.width).toBeGreaterThan(navigationBounds!.width * 2);
+});
 
 for (const interaction of ["hover", "focus"] as const) {
   test(`Article data prefetch waits for title ${interaction}`, async ({
