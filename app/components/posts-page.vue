@@ -155,6 +155,12 @@ useHead({
 
 .posts__items > .post-card {
   --post-card-image-gap: var(--global-space-fixed-3);
+
+  @include breakpoints.respond-above(xl) {
+    max-inline-size: calc(
+      var(--global-space-card-max-width) - var(--global-space-fixed-5)
+    );
+  }
 }
 
 .posts__pager {
