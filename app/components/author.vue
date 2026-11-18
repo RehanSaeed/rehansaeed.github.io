@@ -81,6 +81,8 @@ const winkGradientId = `${useId()}-wink-skin`;
 </script>
 
 <style lang="scss">
+@use "~/assets/style/abstracts/breakpoints";
+
 .author {
   --author-portrait-size: 7rem;
 
@@ -152,6 +154,10 @@ const winkGradientId = `${useId()}-wink-skin`;
   --author-portrait-size: 5rem;
 
   row-gap: var(--global-space-fixed-2);
+
+  @include breakpoints.respond-above(xl) {
+    --author-portrait-size: 4.25rem;
+  }
 
   .author__portrait {
     margin-block-end: 0;
