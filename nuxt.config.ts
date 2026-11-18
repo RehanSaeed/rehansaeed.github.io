@@ -1,5 +1,7 @@
+import { createHash } from "node:crypto";
 import { mkdirSync } from "node:fs";
-import { dirname, isAbsolute } from "node:path";
+import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { dirname, isAbsolute, relative, resolve, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { contentPublicDir } from "./modules/blog-content/paths";
 import site from "./site.json";
@@ -235,13 +237,14 @@ export default defineNuxtConfig({
   },
 
   // Keep the existing service worker and manifest URLs so installed users get an update
-  // of the old service worker rather than a second one. The whole site is precached for offline use.
+  // of the old service worker rather than a second one.
   pwa: {
-    strategies: "generateSW",
+    strategies: "injectManifest",
     registerType: "prompt",
     injectRegister: false,
     client: { installPrompt: true },
-    filename: "service-worker.js",
+    srcDir: fileURLToPath(new URL("./app", import.meta.url)),
+    filename: "service-worker.ts",
     manifestFilename: "manifest.webmanifest",
     scope: "/",
     manifest: {
@@ -319,8 +322,8 @@ export default defineNuxtConfig({
         },
       ],
     },
-    workbox: {
-      clientsClaim: true,
+    injectManifest: {
+      rollupFormat: "iife",
       globPatterns: [
         "**/*.{js,json,css,html,png,jpg,jpeg,svg,gif,woff2,webp,avif}",
       ],
@@ -338,12 +341,6 @@ export default defineNuxtConfig({
         "404.html",
         "200.html",
       ],
-      // Also ignore Nuxt's payload cache buster and shortcut icon URL versions offline.
-      ignoreURLParametersMatching: [/^utm_/, /^fbclid$/, /^_b$/, /^v$/],
-      // No SPA fallback. Clean URLs resolve to their prerendered index.html.
-      navigateFallback: null,
-      directoryIndex: "index.html",
-      cleanupOutdatedCaches: true,
       // The feeds are around 1 MB each.
       maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
     },
@@ -514,14 +511,60 @@ export default defineNuxtConfig({
     // @vite-pwa/nuxt's default manifest transform turns "about/index.html" into "about", but pages
     // use trailing slashes ("/about/"), which then misses the precache when offline. Run first so
     // these entries become "about/" and the module's transform skips them.
-    "pwa:beforeBuildServiceWorker": (options) => {
-      options.workbox.manifestTransforms = [
-        (entries) => {
-          for (const entry of entries) {
+    "pwa:beforeBuildServiceWorker": async (options) => {
+      const config = options.injectManifest;
+      const files = await readdir(config.globDirectory, {
+        recursive: true,
+        withFileTypes: true,
+      });
+      await mkdir(".data", { recursive: true });
+      await writeFile(
+        ".data/offline-source-files.json",
+        JSON.stringify(
+          files
+            .filter((file) => file.isFile())
+            .map((file) =>
+              relative(
+                config.globDirectory,
+                resolve(file.parentPath, file.name),
+              )
+                .split(sep)
+                .join("/"),
+            ),
+        ),
+      );
+      config.additionalManifestEntries = await Promise.all(
+        (config.additionalManifestEntries ?? []).map(async (entry) => {
+          if (typeof entry === "string") {
+            throw new Error("Offline entries must have content revisions.");
+          }
+          const bytes =
+            entry.url === options.manifestFilename
+              ? `${JSON.stringify(options.manifest, null, options.minify ? 0 : 2)}\n`
+              : await readFile(resolve(config.globDirectory, entry.url));
+          return {
+            ...entry,
+            integrity: `sha256-${createHash("sha256").update(bytes).digest("base64")}`,
+          };
+        }),
+      );
+      config.manifestTransforms = [
+        async (entries) => {
+          const verified = await Promise.all(
+            entries.map(async (entry) => ({
+              ...entry,
+              integrity: `sha256-${createHash("sha256")
+                .update(
+                  await readFile(resolve(config.globDirectory, entry.url)),
+                )
+                .digest("base64")}`,
+            })),
+          );
+          for (const entry of verified) {
             entry.url = entry.url.replace(/\/index\.html$/, "/");
           }
           return {
-            manifest: entries.filter((entry) => {
+            manifest: verified.filter((entry) => {
               const url = decodeURIComponent(entry.url);
               if (url.startsWith("_ipx/")) {
                 return (
@@ -539,7 +582,13 @@ export default defineNuxtConfig({
             }),
           };
         },
-        ...(options.workbox.manifestTransforms ?? []),
+        ...(config.manifestTransforms ?? []),
+        (entries) => ({
+          manifest: entries.map((entry) => ({
+            ...entry,
+            url: entry.url === "offline" ? "offline.html" : entry.url,
+          })),
+        }),
       ];
     },
     "nitro:config": (nitro) => {

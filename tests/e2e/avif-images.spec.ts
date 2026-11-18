@@ -7,6 +7,7 @@ import sharp from "sharp";
 import { listFiles } from "../../modules/blog-content/scan";
 import { getAvifSource } from "../../shared/utils/images";
 import { expect, test } from "./fixtures";
+import { saveWholeBlogOffline } from "./offline";
 
 async function verifyAvifCompanions() {
   unitTest.setTimeout(300_000);
@@ -97,7 +98,7 @@ unitTest(
 
 async function verifyOfflineImagePrecache() {
   const worker = await readFile(join("dist", "service-worker.js"), "utf8");
-  const urls = [...worker.matchAll(/\burl:"((?:[^"\\]|\\.)*)"/g)].map(
+  const urls = [...worker.matchAll(/(?:\burl|"url"):"((?:[^"\\]|\\.)*)"/g)].map(
     (match) => JSON.parse(`"${match[1]}"`) as string,
   );
   expect(urls.length).toBeGreaterThan(500);
@@ -344,6 +345,7 @@ unitTest(
         await navigator.serviceWorker.ready;
       });
       await page.waitForFunction(() => !!navigator.serviceWorker.controller);
+      await saveWholeBlogOffline(page);
       await context.setOffline(true);
       for (const path of ["/about/", "/asp-net-mvc-boilerplate/"]) {
         await page.goto(path, { waitUntil: "domcontentloaded" });
