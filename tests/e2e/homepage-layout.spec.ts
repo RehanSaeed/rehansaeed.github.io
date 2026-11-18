@@ -18,6 +18,31 @@ for (const { width, height } of [
       await expect(author.getByRole("heading", { level: 1 })).toHaveCount(1);
       await expect(author.getByRole("img")).toBeVisible();
       await expect(author.locator(".author__description")).toBeVisible();
+      const authorRowGaps = await author.evaluate((element) => {
+        const rows = [...element.children];
+        return rows.slice(0, -1).map((row, index) => {
+          const nextRow = rows[index + 1]!;
+          return (
+            nextRow.getBoundingClientRect().top -
+            row.getBoundingClientRect().bottom
+          );
+        });
+      });
+      for (const gap of authorRowGaps) {
+        expect(gap).toBeGreaterThanOrEqual(6);
+      }
+      const authorHeadingMetrics = await author
+        .locator(".author__site-title")
+        .evaluate((element) => {
+          const style = getComputedStyle(element);
+          return {
+            fontSize: Number.parseFloat(style.fontSize),
+            lineHeight: Number.parseFloat(style.lineHeight),
+          };
+        });
+      expect(authorHeadingMetrics.lineHeight).toBeLessThanOrEqual(
+        authorHeadingMetrics.fontSize * 1.25,
+      );
       const links = author.locator(".social").getByRole("link");
       await expect(links).toHaveCount(8);
       const bounds = await links.evaluateAll((elements) =>
@@ -34,6 +59,13 @@ for (const { width, height } of [
         expect(rect.left).toBeGreaterThanOrEqual(0);
         expect(rect.right).toBeLessThanOrEqual(rect.width);
       }
+      const arrowBottom = await page
+        .locator(".posts__arrows")
+        .evaluate((element) => element.getBoundingClientRect().bottom);
+      const firstPostTop = await page
+        .locator(".posts__items")
+        .evaluate((element) => element.getBoundingClientRect().top);
+      expect(firstPostTop - arrowBottom).toBeGreaterThanOrEqual(12);
       const title = page.locator(".post-card__title").first();
       const titleBounds = await title.boundingBox();
       expect(titleBounds).not.toBeNull();

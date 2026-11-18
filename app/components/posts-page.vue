@@ -149,6 +149,7 @@ useHead({
     )
   );
   justify-content: center;
+  margin-block-start: var(--global-space-fixed-3);
 }
 
 .posts__pager {

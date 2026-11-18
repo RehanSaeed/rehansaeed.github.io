@@ -151,20 +151,21 @@ const winkGradientId = `${useId()}-wink-skin`;
 .author--compact {
   --author-portrait-size: 5rem;
 
-  row-gap: 0;
+  row-gap: var(--global-space-fixed-2);
 
   .author__portrait {
-    margin-block-end: var(--global-space-fixed-1);
+    margin-block-end: 0;
   }
 
   .author__site-title {
     font-size: var(--global-font-size-7);
     margin-block-start: 0;
     margin-block-end: 0;
+    line-height: 1.2;
   }
 
   .author__description {
-    margin-block-end: var(--global-space-fixed-1);
+    margin-block-end: 0;
     min-inline-size: 0;
   }
 
