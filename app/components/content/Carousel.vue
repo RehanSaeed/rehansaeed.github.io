@@ -1,7 +1,10 @@
 <template>
   <section
     class="carousel"
-    :class="{ 'carousel--interactive': isInteractive }"
+    :class="{
+      'carousel--interactive': isInteractive,
+      'carousel--no-gap': spacing === 'none',
+    }"
     aria-label="Image gallery">
     <div class="carousel__viewport">
       <ol
@@ -42,6 +45,7 @@
 
 <script setup lang="ts">
 import { useMediaQuery, usePreferredReducedMotion } from "@vueuse/core";
+import { useCarouselSpacing } from "~/composables/useCarouselSpacing";
 import {
   onBeforeUnmount,
   onMounted,
@@ -59,6 +63,7 @@ const trackId = `image-gallery-${useId()}`;
 const track = useTemplateRef<HTMLOListElement>("track");
 const preferredMotion = usePreferredReducedMotion();
 const forcedColors = useMediaQuery("(forced-colors: active)");
+const spacing = useCarouselSpacing();
 const currentIndex = ref(0);
 const isInteractive = ref(false);
 const isDragging = ref(false);
@@ -95,9 +100,8 @@ const updatePosition = () => {
     Math.min(props.count - 1, Math.round(position)),
   );
   // Scrub paused animations, not a transition triggered by the nearest slide.
-  for (const [index, animation] of animations.entries()) {
-    animation.currentTime =
-      (Math.max(-1, Math.min(1, position - index)) + 1) * 500;
+  for (const animation of animations) {
+    animation.currentTime = position * 1000;
   }
 };
 
@@ -118,15 +122,29 @@ const configureMotion = () => {
   if (preferredMotion.value !== "reduce" && !forcedColors.value) {
     animations = Array.from(
       track.value?.querySelectorAll<HTMLElement>(".prose-image") ?? [],
-      (image) => {
-        const animation = image.animate(
-          [
-            { opacity: 0.45, transform: "translateX(-9%) scale(0.82)" },
-            { opacity: 1, transform: "translateX(0) scale(1)" },
-            { opacity: 0.45, transform: "translateX(9%) scale(0.82)" },
-          ],
-          { duration: 1000, fill: "both" },
-        );
+      (image, index) => {
+        const positions = [0, index - 1, index, index + 1, props.count - 1];
+        const keyframes = [...new Set(positions)]
+          .filter((position) => position >= 0 && position < props.count)
+          .sort((left, right) => left - right)
+          .map((position) => {
+            const distance = position - index;
+            const amount = Math.min(1, Math.abs(distance));
+            // Account for every shrunken slide between this image and the centre.
+            const translation =
+              9 *
+              (distance +
+                Math.sign(distance) * Math.max(0, Math.abs(distance) - 1));
+            return {
+              offset: position / (props.count - 1),
+              opacity: 1 - amount * 0.55,
+              transform: `translateX(${translation}%) scale(${1 - amount * 0.18})`,
+            };
+          });
+        const animation = image.animate(keyframes, {
+          duration: (props.count - 1) * 1000,
+          fill: "both",
+        });
         animation.pause();
         return animation;
       },
@@ -313,6 +331,15 @@ watch([preferredMotion, forcedColors], () => {
   }
 });
 
+watch(
+  spacing,
+  () => {
+    navigateToImage(navigationTarget ?? currentIndex.value, true);
+    updatePosition();
+  },
+  { flush: "post" },
+);
+
 onMounted(() => {
   for (const [event, handler] of pointerHandlers) {
     track.value?.addEventListener(event, handler);
@@ -398,6 +425,10 @@ onBeforeUnmount(() => {
     outline: 2px solid var(--global-accent-color);
     outline-offset: -2px;
   }
+}
+
+.carousel--no-gap .carousel__track {
+  gap: 0;
 }
 
 .carousel__track .prose-image__image {

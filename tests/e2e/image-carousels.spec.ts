@@ -136,7 +136,7 @@ test.afterEach(async ({ page }, testInfo) => {
   }
 });
 
-for (const width of [1440, 640, 375, 320]) {
+for (const width of [3440, 1440, 640, 375, 320]) {
   test(`Gallery preserves article image sizing and full-bleed rail at ${width}px`, async ({
     page,
   }) => {
@@ -481,6 +481,123 @@ test("Ripple pagination animates a real selection and stops for reduced motion a
 test.describe("Continuous scroll-linked motion", () => {
   test.use({ reducedMotion: "no-preference" });
 
+  for (const width of [3440, 5120]) {
+    test(`Spacing comparison keeps every image gap consistent at ${width}px`, async ({
+      page,
+    }, testInfo) => {
+      await page.setViewportSize({ width, height: 1000 });
+      await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
+      const options = page.getByRole("group", {
+        name: "Compare carousel spacing",
+      });
+      const galleries = page.getByRole("region", { name: "Image gallery" });
+      await expect(galleries).toHaveCount(2);
+      for (const spacing of ["Existing gap (fixed)", "Zero gap"]) {
+        await options.getByRole("radio", { name: spacing }).check();
+        for (const [galleryIndex, count] of [5, 6].entries()) {
+          const gallery = galleries.nth(galleryIndex);
+          const gap = await gallery
+            .getByRole("list")
+            .evaluate((element) =>
+              Number.parseFloat(getComputedStyle(element).columnGap),
+            );
+          expect(gap).toBeGreaterThanOrEqual(0);
+          expect(gap === 0).toBe(spacing === "Zero gap");
+          await expect(gallery.locator(".carousel__position")).toHaveText(
+            `Image 1 of ${count}`,
+          );
+          for (const image of [1, 3, 4, count]) {
+            await gallery
+              .getByRole("button", { name: `Go to image ${image} of ${count}` })
+              .click();
+            await expect(gallery.locator(".carousel__position")).toHaveText(
+              `Image ${image} of ${count}`,
+            );
+            await expect
+              .poll(() =>
+                gallery.evaluate((element) => {
+                  const images = Array.from(element.querySelectorAll("img"));
+                  const boxes = images.map((image) =>
+                    image.getBoundingClientRect(),
+                  );
+                  const track = element.querySelector(".carousel__track")!;
+                  const expected = Number.parseFloat(
+                    getComputedStyle(track).columnGap,
+                  );
+                  return Math.max(
+                    ...boxes
+                      .slice(1)
+                      .map((box, index) =>
+                        Math.abs(box.left - boxes[index]!.right - expected),
+                      ),
+                  );
+                }),
+              )
+              .toBeLessThan(1);
+          }
+          const selected = gallery.getByRole("button", {
+            name: `Go to image ${count} of ${count}`,
+          });
+          await options
+            .getByRole("radio", {
+              name:
+                spacing === "Zero gap" ? "Existing gap (fixed)" : "Zero gap",
+            })
+            .check();
+          await expect(selected).toHaveAttribute("aria-current", "true");
+          await expect
+            .poll(() =>
+              gallery.evaluate((element) => {
+                const images = element.querySelectorAll("img");
+                const box = images[images.length - 1]!.getBoundingClientRect();
+                return Math.abs(box.left + box.width / 2 - innerWidth / 2);
+              }),
+            )
+            .toBeLessThan(1);
+          await options.getByRole("radio", { name: spacing }).check();
+          await gallery
+            .getByRole("button", { name: `Go to image 1 of ${count}` })
+            .click();
+        }
+        await testInfo.attach(
+          `${width}-${spacing === "Zero gap" ? "zero" : "fixed"}-gap`,
+          {
+            body: await galleries.last().screenshot({ animations: "allow" }),
+            contentType: "image/png",
+          },
+        );
+      }
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      const zero = options.getByRole("radio", { name: "Zero gap" });
+      await zero.focus();
+      await page.keyboard.press("ArrowUp");
+      await expect(
+        options.getByRole("radio", { name: "Existing gap (fixed)" }),
+      ).toBeChecked();
+      await page.keyboard.press("ArrowDown");
+      await expect(zero).toBeChecked();
+      await expect(zero).toBeFocused();
+      for (const gallery of await galleries.all()) {
+        await expect(gallery.getByRole("list")).toHaveCSS("column-gap", "0px");
+        await expect(gallery.locator(".prose-image").first()).toHaveCSS(
+          "transform",
+          "none",
+        );
+      }
+      await page.emulateMedia({
+        reducedMotion: "no-preference",
+        forcedColors: "active",
+      });
+      await expect(zero).toBeFocused();
+      for (const gallery of await galleries.all()) {
+        await expect(gallery.locator(".prose-image").first()).toHaveCSS(
+          "transform",
+          "none",
+        );
+      }
+    });
+  }
+
   test("interpolates scale and opacity before and after the midpoint without waiting for a slide change", async ({
     page,
   }) => {
@@ -535,6 +652,18 @@ test.describe("Continuous scroll-linked motion", () => {
             .evaluate((element) => Number(getComputedStyle(element).opacity)),
         )
         .toBeCloseTo(1 - progress * 0.55, 2);
+      const gaps = await track.evaluate((element) => {
+        const boxes = Array.from(element.querySelectorAll("img"), (image) =>
+          image.getBoundingClientRect(),
+        );
+        const expected = Number.parseFloat(getComputedStyle(element).columnGap);
+        return boxes
+          .slice(1)
+          .map((box, index) =>
+            Math.abs(box.left - boxes[index]!.right - expected),
+          );
+      });
+      expect(Math.max(...gaps)).toBeLessThan(1);
       // Avoid main-world role queries: https://github.com/microsoft/playwright/issues/43967.
       samples.push(
         await track.evaluate((element) =>
