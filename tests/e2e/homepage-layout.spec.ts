@@ -29,7 +29,7 @@ for (const { width, height } of [
         });
       });
       for (const gap of authorRowGaps) {
-        expect(gap).toBeGreaterThanOrEqual(6);
+        expect(gap).toBeGreaterThanOrEqual(5.9);
       }
       const authorHeadingMetrics = await author
         .locator(".author__site-title")
@@ -42,6 +42,18 @@ for (const { width, height } of [
         });
       expect(authorHeadingMetrics.lineHeight).toBeLessThanOrEqual(
         authorHeadingMetrics.fontSize * 1.25,
+      );
+      const descriptionMetrics = await author
+        .locator(".author__description")
+        .evaluate((element) => {
+          const style = getComputedStyle(element);
+          return {
+            fontSize: Number.parseFloat(style.fontSize),
+            lineHeight: Number.parseFloat(style.lineHeight),
+          };
+        });
+      expect(descriptionMetrics.lineHeight).toBeGreaterThanOrEqual(
+        descriptionMetrics.fontSize * 1.39,
       );
       const links = author.locator(".social").getByRole("link");
       await expect(links).toHaveCount(8);

@@ -161,10 +161,16 @@ const winkGradientId = `${useId()}-wink-skin`;
     font-size: var(--global-font-size-7);
     margin-block-start: 0;
     margin-block-end: 0;
-    line-height: 1.2;
+    line-height: 1.1;
   }
 
   .author__description {
+    font-size: clamp(
+      1rem,
+      var(--global-font-size-1),
+      var(--global-font-size-2)
+    );
+    line-height: 1.4;
     margin-block-end: 0;
     min-inline-size: 0;
   }
