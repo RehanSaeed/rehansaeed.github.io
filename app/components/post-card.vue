@@ -90,7 +90,7 @@ const imageMeta = computed(() =>
   border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
   margin-inline: calc(var(--card-space) * -1);
   margin-block-start: calc(var(--card-space) * -1);
-  margin-block-end: var(--global-space-fluid-5);
+  margin-block-end: var(--post-card-image-gap, var(--global-space-fluid-5));
   overflow: hidden;
 
   &:empty {

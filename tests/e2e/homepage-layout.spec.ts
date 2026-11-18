@@ -28,9 +28,10 @@ for (const { width, height } of [
           );
         });
       });
-      for (const gap of authorRowGaps) {
-        expect(gap).toBeGreaterThanOrEqual(5.9);
-      }
+      const [portraitToName, nameToTagline, taglineToSocial] = authorRowGaps;
+      expect(portraitToName).toBeGreaterThanOrEqual(5.9);
+      expect(nameToTagline).toBeGreaterThanOrEqual(5.9);
+      expect(taglineToSocial).toBeGreaterThanOrEqual(11.9);
       const authorHeadingMetrics = await author
         .locator(".author__site-title")
         .evaluate((element) => {
@@ -75,9 +76,10 @@ for (const { width, height } of [
         .locator(".posts__arrows")
         .evaluate((element) => element.getBoundingClientRect().bottom);
       const firstPostTop = await page
-        .locator(".posts__items")
+        .locator(".posts__items > .post-card")
+        .first()
         .evaluate((element) => element.getBoundingClientRect().top);
-      expect(firstPostTop - arrowBottom).toBeGreaterThanOrEqual(12);
+      expect(firstPostTop - arrowBottom).toBeGreaterThanOrEqual(23.9);
       const title = page.locator(".post-card__title").first();
       const titleBounds = await title.boundingBox();
       expect(titleBounds).not.toBeNull();

@@ -178,6 +178,7 @@ const winkGradientId = `${useId()}-wink-skin`;
   .social {
     column-gap: var(--global-space-fixed-3);
     row-gap: var(--global-space-fixed-3);
+    margin-block-start: var(--global-space-fixed-2);
   }
 }
 
