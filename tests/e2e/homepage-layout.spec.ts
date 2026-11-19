@@ -135,6 +135,31 @@ for (const { width, height } of [
   }
 }
 
+test("Paginated post indexes retain the original author sizes", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/2/");
+  await page.evaluate(() => document.fonts.ready.then(() => undefined));
+  const authorSizes = await page.evaluate(() => {
+    const sizes = (element: Element) => ({
+      portrait: element
+        .querySelector(".author__portrait")!
+        .getBoundingClientRect().width,
+      heading: getComputedStyle(element.querySelector(".author__site-title")!)
+        .fontSize,
+      description: getComputedStyle(
+        element.querySelector(".author__description")!,
+      ).fontSize,
+    });
+    return {
+      index: sizes(document.querySelector("main .author")!),
+      footer: sizes(document.querySelector(".footer .author")!),
+    };
+  });
+  expect(authorSizes.index).toEqual(authorSizes.footer);
+});
+
 test("The desktop author portrait is larger than the navigation avatar", async ({
   page,
 }) => {

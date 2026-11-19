@@ -1,9 +1,6 @@
 <template>
   <div class="posts">
-    <u-author
-      compact
-      :full-size="page === 1"
-      :class="{ 'posts__author--home': page === 1 }" />
+    <u-author compact :class="{ 'posts__author--home': page === 1 }" />
     <u-arrows class="posts__arrows" size="compact" />
 
     <div class="posts__items">
@@ -138,7 +135,7 @@ useHead({
 }
 
 .posts__author--home {
-  margin-block-start: -2.5rem;
+  margin-block-start: -3.25rem;
 
   @include breakpoints.respond-above(xl) {
     margin-block-start: -2.25rem;
