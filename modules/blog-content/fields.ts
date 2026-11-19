@@ -22,6 +22,27 @@ export function restoreKeptTags(nodes: MinimarkNode[] | undefined): void {
   }
 }
 
+/** Keeps block video players out of paragraphs without losing their content or attributes. */
+export const normalizeVideoParagraphs = (
+  nodes: MinimarkNode[] | undefined,
+): void => {
+  for (const node of nodes ?? []) {
+    if (typeof node === "string") {
+      continue;
+    }
+    const children = node.slice(2) as MinimarkNode[];
+    if (
+      node[0] === "p" &&
+      children.some(
+        (child) => typeof child !== "string" && child[0] === "video",
+      )
+    ) {
+      node[0] = "div";
+    }
+    normalizeVideoParagraphs(children);
+  }
+};
+
 // Word matching includes CJK characters.
 const wordPattern =
   /[a-zA-Z0-9_\u0392-\u03c9\u00c0-\u00ff\u0600-\u06ff\u0400-\u04ff]+|[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff\u3040-\u309f\uac00-\ud7af]+/g;

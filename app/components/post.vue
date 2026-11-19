@@ -81,6 +81,9 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
 }
 
 .post__content {
+  --content-video-inline-size: calc(100% + (2 * var(--global-space-fluid-6)));
+  --content-video-margin-inline: var(--global-space-fluid--6);
+
   > h2:first-child {
     margin-block-start: 0;
   }

@@ -24,7 +24,7 @@ test("The cheat sheet renders both local video examples as native players", asyn
       "src",
       "/videos/threeui-demonstration-960x720.mp4",
     );
-    await expect(video).toHaveJSProperty("controls", true);
+    await expect(video).not.toHaveAttribute("controls");
     await expect(video).toHaveAttribute("playsinline", "");
     // Firefox honours the attribute but does not expose the IDL property.
     expect(
@@ -90,13 +90,14 @@ test("The article plays a self-hosted video without loading X's widget", async (
   });
   const video = page.getByLabel(
     "ThreeUI demonstration of interactive Three.js components and landing pages",
+    { exact: true },
   );
   await expect(video).toBeVisible();
   await expect(video).toHaveAttribute(
     "src",
     "/videos/threeui-demonstration-960x720.mp4",
   );
-  await expect(video).toHaveAttribute("controls", "");
+  await expect(video).not.toHaveAttribute("controls");
   await expect(video).toHaveAttribute("playsinline", "");
   await expect(video).not.toHaveAttribute("autoplay");
   await expect(page.locator(".post__content iframe")).toHaveCount(1);
