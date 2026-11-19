@@ -5,6 +5,7 @@ import { Feed } from "feed";
 import { marked } from "marked";
 import { contentImagesBaseURL } from "../../modules/blog-content/paths";
 import site from "../../site.json";
+import { getFeedFreshness, getItemDates } from "./feed-dates";
 
 const frontMatterPattern = /^---\r?\n[\s\S]*?\r?\n---\r?\n?/;
 const relativeImagePattern =
@@ -51,6 +52,7 @@ export async function createFeed(event: H3Event): Promise<Feed> {
     .all();
 
   const feed = new Feed({
+    ...getFeedFreshness(posts),
     title: site.name,
     description: site.description,
     id: site.url,
@@ -79,8 +81,7 @@ export async function createFeed(event: H3Event): Promise<Feed> {
       description: absoluteUrls(post.description, contentDir),
       content: absoluteUrls(await marked(markdown), contentDir),
       author: [{ name: post.author, link: site.url }],
-      date: new Date(post.dateModified ?? post.date),
-      published: new Date(post.date),
+      ...getItemDates(post),
       category: post.tags.map((name) => ({ name, term: name })),
       image: site.url + post.heroImage,
     });
