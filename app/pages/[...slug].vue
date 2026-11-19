@@ -167,7 +167,9 @@ useHead({
 }
 
 .post-page__title {
-  line-height: var(--global-line-height-tight);
+  line-height: calc(
+    (var(--global-line-height-0) + var(--global-line-height-1)) / 2
+  );
   overflow-wrap: anywhere;
 }
 
