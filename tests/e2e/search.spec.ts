@@ -101,6 +101,16 @@ test.describe("Search", () => {
     await expect(status).toHaveText(
       "No results found. Try a different search.",
     );
+    const feedbackCenterOffset = await status.evaluate((message) => {
+      const range = document.createRange();
+      range.selectNodeContents(message);
+      const text = range.getBoundingClientRect();
+      const container = message.parentElement!.getBoundingClientRect();
+      return Math.abs(
+        (text.left + text.right - container.left - container.right) / 2,
+      );
+    });
+    expect(feedbackCenterOffset).toBeLessThan(1);
     await expect(page.locator(".search-result")).toHaveCount(0);
     await input.fill("Schema.NET");
     await expect(page.locator(".search-result__link").first()).toHaveAttribute(

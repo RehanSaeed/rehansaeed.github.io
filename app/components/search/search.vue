@@ -198,8 +198,13 @@ onMounted(() => {
   font-size: var(--global-font-size-5);
 }
 
+.search__feedback {
+  text-align: center;
+}
+
 .search__feedback p {
-  margin: 0;
+  margin-block: 0;
+  margin-inline: auto;
 }
 
 .search__feedback .button {
