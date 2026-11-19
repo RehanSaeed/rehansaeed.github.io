@@ -1,5 +1,5 @@
 <template>
-  <div class="arrows">
+  <div class="arrows" :class="{ 'arrows--compact': props.size === 'compact' }">
     <div class="arrows__arrow arrows__arrow-1"></div>
     <div class="arrows__arrow arrows__arrow-2"></div>
     <div class="arrows__arrow arrows__arrow-3"></div>
@@ -11,11 +11,27 @@
 </template>
 
 <script setup lang="ts">
+import type { PropType } from "vue";
+
 defineOptions({ name: "u-arrows" });
+
+const props = defineProps({
+  /** Visual size of the arrow divider. */
+  size: {
+    type: String as PropType<"default" | "compact">,
+    default: "default",
+  },
+});
 </script>
 
 <style lang="scss">
 .arrows {
+  --arrow-height: 1.2rem;
+
+  pointer-events: none;
+}
+
+.arrows--compact {
   --arrow-height: 1.2rem;
 }
 

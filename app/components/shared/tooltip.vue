@@ -42,8 +42,17 @@ const props = withDefaults(
     /** Preferred side of the trigger on which to place the tooltip. */ placement?: Placement;
     /** Allow dedicated info controls to open and close the tooltip on click or tap. */
     toggleOnClick?: boolean;
+    /** Anchor mouse-hover tooltips at the pointer instead of the trigger's centre. */
+    followPointer?: boolean;
+    /** Suppress the tooltip while its trigger is unavailable. */
+    disabled?: boolean;
   }>(),
-  { placement: "top", toggleOnClick: false },
+  {
+    placement: "top",
+    toggleOnClick: false,
+    followPointer: false,
+    disabled: false,
+  },
 );
 const id = useId();
 const bubble = useTemplateRef<HTMLDivElement>("bubble");
@@ -51,12 +60,24 @@ const arrowElement = useTemplateRef<HTMLSpanElement>("arrowElement");
 const open = ref(false);
 const teleportTarget = shallowRef<HTMLElement | string>("body");
 const anchor = shallowRef<HTMLElement | null>(null);
+const pointerAnchored = ref(false);
+let pointerPosition = { x: 0, y: 0 };
+const floatingAnchor = computed(() => {
+  const element = anchor.value;
+  return props.followPointer && pointerAnchored.value && element
+    ? {
+        contextElement: element,
+        getBoundingClientRect: () =>
+          new DOMRect(pointerPosition.x, pointerPosition.y, 0, 0),
+      }
+    : element;
+});
 const {
   floatingStyles,
   placement: side,
   middlewareData,
   isPositioned,
-} = useFloating(anchor, bubble, {
+} = useFloating(floatingAnchor, bubble, {
   open,
   placement: computed(() => props.placement),
   strategy: "fixed",
@@ -66,7 +87,10 @@ const {
     flip({ padding: 8, fallbackAxisSideDirection: "start" }),
     arrow({ element: arrowElement, padding: 8 }),
     hide(({ elements }) => {
-      const reference = elements.reference;
+      const reference =
+        elements.reference instanceof Element
+          ? elements.reference
+          : elements.reference.contextElement;
       if (!(reference instanceof Element)) {
         return {};
       }
@@ -107,7 +131,7 @@ let bubbleHovered = false;
 const openDelay = ref(0);
 const { start: startOpening, stop: stopOpening } = useTimeoutFn(
   () => {
-    if (props.text) {
+    if (props.text && !props.disabled) {
       open.value = true;
     }
   },
@@ -134,16 +158,34 @@ const dismiss = () => {
   open.value = false;
 };
 
+const scheduleShow = (delay = 0) => {
+  clearTimer();
+  if (props.disabled) {
+    return;
+  }
+  openDelay.value = delay;
+  startOpening();
+};
+
 const show = (event: Event, delay = 0) => {
   if (!(event.currentTarget instanceof HTMLElement)) {
     return;
   }
   anchor.value = event.currentTarget;
   teleportTarget.value = anchor.value.closest("dialog") ?? "body";
-  clearTimer();
-  openDelay.value = delay;
-  startOpening();
+  scheduleShow(delay);
 };
+
+watch(
+  () => props.disabled,
+  (disabled) => {
+    if (disabled) {
+      dismiss();
+    } else if (anchor.value && (hovered || focused)) {
+      scheduleShow(focused ? 0 : hoverOpenDelayMs);
+    }
+  },
+);
 
 const scheduleHide = () => {
   if (hovered || focused || bubbleHovered) {
@@ -153,10 +195,19 @@ const scheduleHide = () => {
   startClosing();
 };
 
+const onPointerMove = (event: PointerEvent) => {
+  if (!props.followPointer || event.pointerType !== "mouse") {
+    return;
+  }
+  pointerPosition = { x: event.clientX, y: event.clientY };
+  pointerAnchored.value = true;
+};
+
 const onPointerEnter = (event: PointerEvent) => {
   if (event.pointerType === "touch") {
     return;
   }
+  onPointerMove(event);
   hovered = true;
   show(event, hoverOpenDelayMs);
 };
@@ -188,6 +239,7 @@ const onFocus = (event: FocusEvent) => {
   if (!(target instanceof HTMLElement) || !target.matches(":focus-visible")) {
     return;
   }
+  pointerAnchored.value = false;
   const dialog = target.closest("dialog:modal");
   // Native modal autofocus enters from outside; subsequent keyboard focus stays inside.
   if (
@@ -221,6 +273,7 @@ const trigger = computed(() => ({
   "aria-expanded": props.toggleOnClick ? open.value : undefined,
   onPointerenter: onPointerEnter,
   onPointerleave: onPointerLeave,
+  onPointermove: props.followPointer ? onPointerMove : undefined,
   onPointerdown: onPointerDown,
   onFocus,
   onBlur,

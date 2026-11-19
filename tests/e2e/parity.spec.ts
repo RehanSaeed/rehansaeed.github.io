@@ -269,7 +269,10 @@ test.describe("Parity", () => {
 test.describe("Service worker", () => {
   test.use({ serviceWorkers: "allow" });
 
-  test("Registers at /service-worker.js", async ({ page, baseURL }) => {
+  test("Keeps the service worker and install manifest at their existing URLs", async ({
+    page,
+    baseURL,
+  }) => {
     test.slow();
     await page.goto("/");
 
@@ -278,6 +281,10 @@ test.describe("Service worker", () => {
       async () => (await navigator.serviceWorker.ready).active?.scriptURL,
     );
     expect(scriptURL).toBe(new URL("/service-worker.js", baseURL).href);
+    await expect(page.locator('link[rel="manifest"]')).toHaveAttribute(
+      "href",
+      "/manifest.webmanifest",
+    );
   });
 
   test("Works offline", async ({ page, context, browserName }) => {

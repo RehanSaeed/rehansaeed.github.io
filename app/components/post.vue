@@ -65,6 +65,10 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
 <style lang="scss">
 .post {
   overflow: hidden;
+
+  &:has(.post__overflow-content) {
+    overflow: visible;
+  }
 }
 
 .post__header {
@@ -78,6 +82,11 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
   &:empty {
     display: none;
   }
+}
+
+.post__content {
+  --content-video-inline-size: calc(100% + (2 * var(--global-space-fluid-6)));
+  --content-video-margin-inline: var(--global-space-fluid--6);
 }
 
 .post__footer {

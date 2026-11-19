@@ -97,9 +97,14 @@ unitTest(
 
 async function verifyOfflineImagePrecache() {
   const worker = await readFile(join("dist", "service-worker.js"), "utf8");
-  const urls = [...worker.matchAll(/\burl:"((?:[^"\\]|\\.)*)"/g)].map(
-    (match) => JSON.parse(`"${match[1]}"`) as string,
+  const urls = [
+    ...worker.matchAll(/\burl:"((?:[^"\\]|\\.)*)"|\burl:`([^`\\]*)`/g),
+  ].map((match) =>
+    match[1] === undefined
+      ? match[2]!
+      : (JSON.parse(`"${match[1]}"`) as string),
   );
+  expect(new Set(urls).size).toBe(urls.length);
   expect(urls.length).toBeGreaterThan(500);
   expect(urls.some((url) => /^_ipx\/.*\bf_avif[,&/]/.test(url))).toBe(true);
   expect(urls.includes("images/hero/Schema.NET-1366x768.avif")).toBe(true);

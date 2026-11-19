@@ -136,7 +136,7 @@ for (const width of [320, 1280]) {
         .first()
         .evaluate((element) => element.outerHTML);
       const proseVideo = await page
-        .locator(".post__content video")
+        .locator(".post__content .prose-video")
         .first()
         .evaluate((element) => element.outerHTML);
       const youtube = await page
