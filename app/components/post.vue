@@ -61,6 +61,10 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
 <style lang="scss">
 .post {
   overflow: hidden;
+
+  &:has(.carousel) {
+    overflow: visible;
+  }
 }
 
 .post__header {
