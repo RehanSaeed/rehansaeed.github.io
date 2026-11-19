@@ -16,8 +16,50 @@ for (const { width, height } of [
       await page.evaluate(() => document.fonts.ready.then(() => undefined));
       const author = page.getByRole("main").locator(".author");
       await expect(author.getByRole("heading", { level: 1 })).toHaveCount(1);
-      await expect(author.getByRole("img")).toBeVisible();
+      const portrait = author.getByRole("img");
+      await expect(portrait).toBeInViewport({ ratio: 0.99 });
       await expect(author.locator(".author__description")).toBeVisible();
+      const authorSizes = await page.evaluate(() => {
+        const home = document.querySelector(".posts__author--home")!;
+        const footer = document.querySelector(".footer .author")!;
+        const sizes = (element: Element) => ({
+          portrait: element
+            .querySelector(".author__portrait")!
+            .getBoundingClientRect().width,
+          heading: getComputedStyle(
+            element.querySelector(".author__site-title")!,
+          ).fontSize,
+          description: getComputedStyle(
+            element.querySelector(".author__description")!,
+          ).fontSize,
+        });
+        return { home: sizes(home), footer: sizes(footer) };
+      });
+      expect(authorSizes.home).toEqual(authorSizes.footer);
+      const obstructingNavigation = await page.evaluate(() => {
+        const portrait = document
+          .querySelector(".posts__author--home .author__portrait")!
+          .getBoundingClientRect();
+        return [
+          ...document.querySelectorAll(".navigation a, .navigation button"),
+        ]
+          .filter((element) => {
+            const rect = element.getBoundingClientRect();
+            return (
+              rect.width > 0 &&
+              rect.height > 0 &&
+              portrait.left < rect.right &&
+              portrait.right > rect.left &&
+              portrait.top < rect.bottom &&
+              portrait.bottom > rect.top
+            );
+          })
+          .map(
+            (element) =>
+              element.getAttribute("aria-label") ?? element.textContent,
+          );
+      });
+      expect(obstructingNavigation).toEqual([]);
       const authorRowGaps = await author.evaluate((element) => {
         const rows = [...element.children];
         return rows.slice(0, -1).map((row, index) => {
@@ -92,6 +134,47 @@ for (const { width, height } of [
     });
   }
 }
+
+test("Paginated post indexes retain the original author sizes", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/2/");
+  await page.evaluate(() => document.fonts.ready.then(() => undefined));
+  const authorSizes = await page.evaluate(() => {
+    const sizes = (element: Element) => ({
+      portrait: element
+        .querySelector(".author__portrait")!
+        .getBoundingClientRect().width,
+      heading: getComputedStyle(element.querySelector(".author__site-title")!)
+        .fontSize,
+      description: getComputedStyle(
+        element.querySelector(".author__description")!,
+      ).fontSize,
+    });
+    return {
+      index: sizes(document.querySelector("main .author")!),
+      footer: sizes(document.querySelector(".footer .author")!),
+    };
+  });
+  expect(authorSizes.index).toEqual(authorSizes.footer);
+});
+
+test("The desktop author portrait is larger than the navigation avatar", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/");
+  const navigationAvatar = page
+    .getByRole("link", { name: "Home", exact: true })
+    .locator(".navigation__image");
+  const portrait = page.getByRole("main").locator(".author").getByRole("img");
+  const navigationBounds = await navigationAvatar.boundingBox();
+  const portraitBounds = await portrait.boundingBox();
+  expect(navigationBounds).not.toBeNull();
+  expect(portraitBounds).not.toBeNull();
+  expect(portraitBounds!.width).toBeGreaterThan(navigationBounds!.width * 2);
+});
 
 for (const interaction of ["hover", "focus"] as const) {
   test(`Article data prefetch waits for title ${interaction}`, async ({
