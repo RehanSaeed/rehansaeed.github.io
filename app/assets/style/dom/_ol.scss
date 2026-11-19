@@ -2,16 +2,14 @@ ol {
   list-style-type: decimal;
   margin-inline-start: var(--global-space-fixed-5);
   margin-block-end: calc(
-    var(--global-space-fixed-5) + var(--global-text-box-trim-space)
+    var(--global-space-fixed-5) + var(--global-space-fixed-3)
   );
 
   li,
   p,
   ul,
   ol {
-    margin-block: calc(
-      var(--global-space-fixed-3) + var(--global-text-box-trim-space)
-    );
+    margin-block: var(--global-space-fixed-5);
   }
 
   li:first-child {

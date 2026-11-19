@@ -19,8 +19,6 @@ figcaption {
     display: block;
     font-size: inherit;
     font-style: normal;
-    margin-block-start: calc(
-      var(--global-space-fixed-2) + var(--global-text-box-trim-space)
-    );
+    margin-block-start: var(--global-space-fixed-4);
   }
 }

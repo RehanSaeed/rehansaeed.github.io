@@ -122,7 +122,7 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
 
     &:has(> figcaption:last-child) {
       margin-block-end: calc(
-        var(--global-space-fixed-5) + var(--global-text-box-trim-space)
+        var(--global-space-fixed-5) + var(--global-space-fixed-3)
       );
     }
 

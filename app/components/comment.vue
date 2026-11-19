@@ -115,13 +115,13 @@ const edited = computed(() =>
 .comment__body {
   grid-area: body;
   display: grid;
-  gap: calc(var(--global-space-fixed-3) + var(--global-text-box-trim-space));
+  gap: var(--global-space-fixed-5);
   min-inline-size: 0;
 }
 
 .comment__header {
   display: grid;
-  row-gap: var(--global-text-box-trim-space);
+  row-gap: var(--global-space-fixed-3);
 }
 
 .comment__identity {
@@ -147,7 +147,7 @@ const edited = computed(() =>
 
 .comment__content {
   display: grid;
-  gap: calc(var(--global-space-fixed-5) + var(--global-text-box-trim-space));
+  gap: calc(var(--global-space-fixed-5) + var(--global-space-fixed-3));
   min-inline-size: 0;
 
   > * {
