@@ -86,10 +86,12 @@ test.describe("Search", () => {
     const input = page.getByRole("searchbox", { name: "Search", exact: true });
     const status = page.locator(".search__feedback").getByRole("status");
 
-    await expect(status).toHaveText("Enter at least 2 characters to search.");
+    await expect(status).toHaveCount(0);
     await input.fill("a");
     await expect(status).toHaveText("Enter at least 2 characters to search.");
     await expect(page.locator(".search-result")).toHaveCount(0);
+    await input.clear();
+    await expect(status).toHaveCount(0);
     await input.fill("AI");
     await expect(
       page.getByRole("dialog", { name: "Search" }).getByRole("link", {

@@ -14,7 +14,9 @@
         type="search" />
       <!-- eslint-enable vuejs-accessibility/no-autofocus -->
     </form>
-    <div v-if="searchStatus !== 'results'" class="search__feedback">
+    <div
+      v-if="searchTerm && searchStatus !== 'results'"
+      class="search__feedback">
       <p role="status">
         <template v-if="searchStatus === 'idle'">
           Enter at least {{ minimumSearchTermLength }} characters to search.
