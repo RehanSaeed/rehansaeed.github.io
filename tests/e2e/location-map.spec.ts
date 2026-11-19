@@ -1087,6 +1087,8 @@ test("A browser without WebGL keeps the self-hosted photo map", async ({
   });
   await mockOpenFreeMap(page);
   await page.goto("/about/", { waitUntil: "domcontentloaded" });
+  // Wait for hydration so the map can observe the scroll that activates it.
+  await expect(page.getByRole("button", { name: "Open search" })).toBeEnabled();
   const figure = page.locator(".location-map");
   await figure.scrollIntoViewIfNeeded();
   await expect(figure.getByRole("status")).toHaveText(
