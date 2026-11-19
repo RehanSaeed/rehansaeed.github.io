@@ -51,3 +51,9 @@ onMounted(() => {
   );
 });
 </script>
+
+<style>
+.mermaid svg {
+  margin-inline: auto;
+}
+</style>

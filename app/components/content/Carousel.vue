@@ -1,6 +1,6 @@
 <template>
   <section
-    class="carousel"
+    class="carousel post__overflow-content"
     :class="{ 'carousel--interactive': isInteractive }"
     aria-label="Image gallery">
     <div class="carousel__viewport">

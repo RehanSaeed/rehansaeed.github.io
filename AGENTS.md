@@ -73,6 +73,12 @@ authorise publishing the article or posting to social media.
   and their pseudo-classes or pseudo-elements, not class or ID selectors,
   including inside `:not()`, `:is()` or `:where()`. Put component-specific rules
   in component stylesheets and shared class-aware rules outside `dom/`.
+- Use semantic BEM classes for styling hooks; do not add `data-*` attributes
+  solely to select elements in CSS. Treat a component's internal classes as
+  private: parent components must not style them directly. When a parent needs
+  to affect slotted content, expose a stable class contract and keep the layout
+  rule with the owning component. Reserve `data-*` attributes for meaningful
+  state, metadata, or integration hooks such as JavaScript behavior.
 - Use CSS logical properties instead of physical properties where applicable.
 - Prefer CSS Grid to Flexbox for layout; use Flexbox when wrapping content is
   better suited to it.
@@ -253,6 +259,9 @@ authorise publishing the article or posting to social media.
 - Keep Nuxt Content components in `app/components/content` globally registered
   under their unprefixed names so Markdown rendering can resolve them. Do not
   globally register ordinary application components.
+- When passing a Nuxt Content component through `ContentRenderer`'s `components`
+  map, pass the imported component object. Mapping `figure` to the string
+  `ProseFigure` renders a non-semantic `<prosefigure>` element in production.
 - Scan `app/components/OgImage` separately as server-only islands before the
   application component directory, without the application `U` prefix. Nuxt skips
   later scans inside an already scanned parent, even when files were ignored.
