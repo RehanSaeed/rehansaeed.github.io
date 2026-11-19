@@ -19,6 +19,47 @@ for (const { width, height } of [
       const portrait = author.getByRole("img");
       await expect(portrait).toBeInViewport({ ratio: 0.99 });
       await expect(author.locator(".author__description")).toBeVisible();
+      const authorSizes = await page.evaluate(() => {
+        const home = document.querySelector(".posts__author--home")!;
+        const footer = document.querySelector(".footer .author")!;
+        const sizes = (element: Element) => ({
+          portrait: element
+            .querySelector(".author__portrait")!
+            .getBoundingClientRect().width,
+          heading: getComputedStyle(
+            element.querySelector(".author__site-title")!,
+          ).fontSize,
+          description: getComputedStyle(
+            element.querySelector(".author__description")!,
+          ).fontSize,
+        });
+        return { home: sizes(home), footer: sizes(footer) };
+      });
+      expect(authorSizes.home).toEqual(authorSizes.footer);
+      const obstructingNavigation = await page.evaluate(() => {
+        const portrait = document
+          .querySelector(".posts__author--home .author__portrait")!
+          .getBoundingClientRect();
+        return [
+          ...document.querySelectorAll(".navigation a, .navigation button"),
+        ]
+          .filter((element) => {
+            const rect = element.getBoundingClientRect();
+            return (
+              rect.width > 0 &&
+              rect.height > 0 &&
+              portrait.left < rect.right &&
+              portrait.right > rect.left &&
+              portrait.top < rect.bottom &&
+              portrait.bottom > rect.top
+            );
+          })
+          .map(
+            (element) =>
+              element.getAttribute("aria-label") ?? element.textContent,
+          );
+      });
+      expect(obstructingNavigation).toEqual([]);
       const authorRowGaps = await author.evaluate((element) => {
         const rows = [...element.children];
         return rows.slice(0, -1).map((row, index) => {

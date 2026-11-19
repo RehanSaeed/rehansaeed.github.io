@@ -2,7 +2,7 @@
   <!-- Added webmention markup (See https://indiewebify.me/validate-h-card/?url=https%3A%2F%2Frehansaeed.com) -->
   <section
     class="author h-card"
-    :class="{ 'author--compact': compact }"
+    :class="{ 'author--compact': compact, 'author--full-size': fullSize }"
     :aria-label="metadata.name">
     <div class="author__portrait">
       <NuxtPicture
@@ -67,6 +67,11 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  /** Whether to retain the original author sizes in compact mode. */ fullSize:
+    {
+      type: Boolean,
+      default: false,
+    },
   /** Fragment identifier for the author heading. */ headingId: {
     type: String,
   },
@@ -151,33 +156,19 @@ const winkGradientId = `${useId()}-wink-skin`;
 }
 
 .author--compact {
-  --author-portrait-size: 5rem;
-
   row-gap: var(--global-space-fixed-2);
 
-  @include breakpoints.respond-above(xl) {
-    --author-portrait-growth: 1.25rem;
-    --author-portrait-size: calc(4.25rem + var(--author-portrait-growth));
-  }
-
   .author__portrait {
-    margin-block-start: calc(-1 * var(--author-portrait-growth, 0rem));
     margin-block-end: 0;
   }
 
   .author__site-title {
-    font-size: var(--global-font-size-7);
     margin-block-start: 0;
     margin-block-end: 0;
     line-height: 1.05;
   }
 
   .author__description {
-    font-size: clamp(
-      1rem,
-      var(--global-font-size-1),
-      var(--global-font-size-2)
-    );
     line-height: 1.4;
     margin-block-end: 0;
     min-inline-size: 0;
@@ -187,6 +178,31 @@ const winkGradientId = `${useId()}-wink-skin`;
     column-gap: var(--global-space-fixed-3);
     row-gap: var(--global-space-fixed-3);
     margin-block-start: var(--global-space-fixed-2);
+  }
+}
+
+.author--compact:not(.author--full-size) {
+  --author-portrait-size: 5rem;
+
+  @include breakpoints.respond-above(xl) {
+    --author-portrait-growth: 1.25rem;
+    --author-portrait-size: calc(4.25rem + var(--author-portrait-growth));
+  }
+
+  .author__portrait {
+    margin-block-start: calc(-1 * var(--author-portrait-growth, 0rem));
+  }
+
+  .author__site-title {
+    font-size: var(--global-font-size-7);
+  }
+
+  .author__description {
+    font-size: clamp(
+      1rem,
+      var(--global-font-size-1),
+      var(--global-font-size-2)
+    );
   }
 }
 
