@@ -171,6 +171,6 @@ useHead({
 
 .posts__pager {
   justify-self: center;
-  margin-block-start: var(--global-space-fixed-1);
+  margin-block-start: var(--global-space-fluid-5);
 }
 </style>
