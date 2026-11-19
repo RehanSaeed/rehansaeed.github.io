@@ -17,7 +17,7 @@
     <div v-if="searchStatus !== 'results'" class="search__feedback">
       <p role="status">
         <template v-if="searchStatus === 'idle'">
-          Enter at least 3 characters to search.
+          Enter at least {{ minimumSearchTermLength }} characters to search.
         </template>
         <template v-else-if="searchStatus === 'loading'"> Searching… </template>
         <template v-else-if="searchStatus === 'empty'">
@@ -51,7 +51,7 @@ import {
   type SearchDocument,
 } from "#shared/utils/search";
 
-const minimumSearchTermLength = 3;
+const minimumSearchTermLength = 2;
 const resultLimit = 8;
 let indexPromise: Promise<Document<SearchDocument>> | undefined;
 
