@@ -81,8 +81,6 @@ const winkGradientId = `${useId()}-wink-skin`;
 </script>
 
 <style lang="scss">
-@use "~/assets/style/abstracts/breakpoints";
-
 .author {
   --author-portrait-size: 7rem;
 
@@ -151,31 +149,19 @@ const winkGradientId = `${useId()}-wink-skin`;
 }
 
 .author--compact {
-  --author-portrait-size: 5rem;
-
   row-gap: var(--global-space-fixed-2);
-
-  @include breakpoints.respond-above(xl) {
-    --author-portrait-size: 4.25rem;
-  }
 
   .author__portrait {
     margin-block-end: 0;
   }
 
   .author__site-title {
-    font-size: var(--global-font-size-7);
     margin-block-start: 0;
     margin-block-end: 0;
     line-height: 1.05;
   }
 
   .author__description {
-    font-size: clamp(
-      1rem,
-      var(--global-font-size-1),
-      var(--global-font-size-2)
-    );
     line-height: 1.4;
     margin-block-end: 0;
     min-inline-size: 0;

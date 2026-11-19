@@ -39,6 +39,7 @@ import { accountWatchers } from "./watchers";
 import site from "../../site.json";
 import { readImageDimensions } from "./images";
 import { filterMarkdownSitemap } from "./seo";
+import { groupImageCarousels } from "./carousels";
 
 const postsPerPage = 10;
 
@@ -132,6 +133,7 @@ export default defineNuxtModule({
         "portfolio.ts",
         "nuget.ts",
         "images.ts",
+        "carousels.ts",
       ].map((name) =>
         readFile(
           join(nuxt.options.rootDir, "modules", "blog-content", name),
@@ -224,6 +226,9 @@ export default defineNuxtModule({
       const fileDir = posix.dirname(toPosix(relative(contentDir, file.path)));
       rewriteRelativeImages(body.value, fileDir, imageMetadata);
       content.timeToRead = timeToRead(body);
+      if (collection.name === "posts") {
+        groupImageCarousels(body.value);
+      }
       const emails = findEmailsOutsideCode(body.value);
       if (emails.length) {
         throw new Error(

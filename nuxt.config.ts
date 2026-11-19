@@ -90,6 +90,8 @@ export default defineNuxtConfig({
         "fa-brands:youtube",
         "fa-regular:envelope",
         "fa-regular:question-circle",
+        "fa-solid:arrow-left",
+        "fa-solid:arrow-right",
         "fa-solid:info-circle",
         "fa-solid:rss",
         "fa-solid:share-alt",
@@ -249,7 +251,7 @@ export default defineNuxtConfig({
   // Keep the existing service worker and manifest URLs so installed users get an update
   // of the old service worker rather than a second one. The whole site is precached for offline use.
   pwa: {
-    strategies: "generateSW",
+    strategies: "generate-sw",
     registerType: "prompt",
     injectRegister: false,
     client: { installPrompt: true },
@@ -331,7 +333,9 @@ export default defineNuxtConfig({
         },
       ],
     },
-    workbox: {
+    // The feeds are around 1 MB each.
+    maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+    generateSW: {
       clientsClaim: true,
       globPatterns: [
         "**/*.{js,json,css,html,png,jpg,jpeg,svg,gif,woff2,webp,avif}",
@@ -356,8 +360,6 @@ export default defineNuxtConfig({
       navigateFallback: null,
       directoryIndex: "index.html",
       cleanupOutdatedCaches: true,
-      // The feeds are around 1 MB each.
-      maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
     },
   },
 
@@ -527,13 +529,41 @@ export default defineNuxtConfig({
     // use trailing slashes ("/about/"), which then misses the precache when offline. Run first so
     // these entries become "about/" and the module's transform skips them.
     "pwa:beforeBuildServiceWorker": (options) => {
-      options.workbox.manifestTransforms = [
+      options.generateSW.manifestTransforms = [
         (entries) => {
           for (const entry of entries) {
             entry.url = entry.url.replace(/\/index\.html$/, "/");
           }
+          const uniqueEntries = new Map<string, (typeof entries)[number]>();
+          for (const entry of entries) {
+            const previous = uniqueEntries.get(entry.url);
+            if (previous) {
+              if (previous.revision !== entry.revision) {
+                if (
+                  entry.url.endsWith("/builds/latest.json") &&
+                  !previous.revision &&
+                  entry.revision
+                ) {
+                  uniqueEntries.set(entry.url, entry);
+                  continue;
+                }
+                if (
+                  entry.url.endsWith("/builds/latest.json") &&
+                  previous.revision &&
+                  !entry.revision
+                ) {
+                  continue;
+                }
+                throw new Error(
+                  `Conflicting precache revisions for ${entry.url}.`,
+                );
+              }
+              continue;
+            }
+            uniqueEntries.set(entry.url, entry);
+          }
           return {
-            manifest: entries.filter((entry) => {
+            manifest: [...uniqueEntries.values()].filter((entry) => {
               const url = decodeURIComponent(entry.url);
               if (url.startsWith("_ipx/")) {
                 return (
@@ -551,7 +581,7 @@ export default defineNuxtConfig({
             }),
           };
         },
-        ...(options.workbox.manifestTransforms ?? []),
+        ...(options.generateSW.manifestTransforms ?? []),
       ];
     },
     "nitro:config": (nitro) => {
