@@ -157,6 +157,12 @@ onMounted(syncAnimation);
   container-type: inline-size;
 }
 
+// The animated digit cells and two-line label have fixed geometry built around full line boxes.
+.number-ticker,
+.number-ticker * {
+  text-box-trim: none;
+}
+
 .number-ticker__header {
   display: grid;
   grid-template-areas: "label";

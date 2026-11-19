@@ -4,7 +4,9 @@ blockquote {
   color: var(--global-title-color);
   line-height: var(--global-line-height-2);
   margin-block-end: var(--global-space-fixed-5);
-  padding-block: var(--global-space-fixed-2);
+  padding-block: calc(
+    var(--global-space-fixed-2) + var(--global-text-box-trim-space-half)
+  );
   padding-inline-start: var(--global-space-fixed-5);
   quotes: none;
 
