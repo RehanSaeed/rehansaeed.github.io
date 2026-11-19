@@ -520,8 +520,36 @@ export default defineNuxtConfig({
           for (const entry of entries) {
             entry.url = entry.url.replace(/\/index\.html$/, "/");
           }
+          const uniqueEntries = new Map<string, (typeof entries)[number]>();
+          for (const entry of entries) {
+            const previous = uniqueEntries.get(entry.url);
+            if (previous) {
+              if (previous.revision !== entry.revision) {
+                if (
+                  entry.url.endsWith("/builds/latest.json") &&
+                  !previous.revision &&
+                  entry.revision
+                ) {
+                  uniqueEntries.set(entry.url, entry);
+                  continue;
+                }
+                if (
+                  entry.url.endsWith("/builds/latest.json") &&
+                  previous.revision &&
+                  !entry.revision
+                ) {
+                  continue;
+                }
+                throw new Error(
+                  `Conflicting precache revisions for ${entry.url}.`,
+                );
+              }
+              continue;
+            }
+            uniqueEntries.set(entry.url, entry);
+          }
           return {
-            manifest: entries.filter((entry) => {
+            manifest: [...uniqueEntries.values()].filter((entry) => {
               const url = decodeURIComponent(entry.url);
               if (url.startsWith("_ipx/")) {
                 return (
