@@ -1,5 +1,5 @@
 <template>
-  <details class="prose-video__disclosure" @toggle="emit('menuToggle', $event)">
+  <details class="prose-video__disclosure" @toggle="emit('menuToggle')">
     <u-tooltip
       v-slot="{ trigger }"
       text="Playback speed"
@@ -15,6 +15,7 @@
         @keyup.space="pressed = false"
         @keyup.enter="pressed = false"
         @blur="clearPressed"
+        @click="emit('menuActivate', $event)"
         :aria-label="`Playback speed: ${playbackRate === 1 ? 'Normal' : `${playbackRate}×`}`">
         <u-icon name="fa-solid:tachometer-alt" />
       </summary>
@@ -87,7 +88,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   speed: [rate: number];
   dismiss: [event: Event];
-  menuToggle: [event: Event];
+  menuActivate: [event: MouseEvent];
+  menuToggle: [];
 }>();
 const pressed = ref(false);
 const clearPressed = (): void => {

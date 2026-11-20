@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
 const videoLabel =
   "ThreeUI demonstration of interactive Three.js components and landing pages";
@@ -138,14 +138,7 @@ test("Custom controls play, pause, seek, mute and change speed through a compact
   );
 });
 
-test("Caption controls appear only for real text tracks and toggle their showing state", async ({
-  page,
-  baseURL,
-}) => {
-  const { video, player } = await openVideo(page, baseURL);
-  await expect(player.getByRole("button", { name: /^Captions:/ })).toHaveCount(
-    0,
-  );
+const addCaptionTrack = async (video: Locator) => {
   await video.evaluate((element) => {
     if (!(element instanceof HTMLVideoElement)) {
       throw new TypeError("Expected video.");
@@ -154,6 +147,17 @@ test("Caption controls appear only for real text tracks and toggle their showing
     track.addCue(new VTTCue(0, 10, "Test caption"));
     track.mode = "disabled";
   });
+};
+
+test("Caption controls appear only for real text tracks and toggle their showing state", async ({
+  page,
+  baseURL,
+}) => {
+  const { video, player } = await openVideo(page, baseURL);
+  await expect(player.getByRole("button", { name: /^Captions:/ })).toHaveCount(
+    0,
+  );
+  await addCaptionTrack(video);
   const captions = player.getByRole("button", { name: /^Captions:/ });
   await expect(captions).toBeVisible();
   await captions.click();
@@ -190,6 +194,76 @@ test("Caption controls appear only for real text tracks and toggle their showing
   ).toHaveAttribute("aria-pressed", "true");
   await languages.getByRole("button", { name: "Off", exact: true }).click();
   await expect(captions).toHaveAttribute("aria-label", "Captions: off");
+});
+
+test("The last video menu activated in the same task stays open", async ({
+  page,
+  baseURL,
+}) => {
+  const { video, player } = await openVideo(page, baseURL);
+  await addCaptionTrack(video);
+  const captions = player.getByRole("button", { name: /^Captions:/ });
+  const speed = player.getByRole("button", { name: /^Playback speed:/ });
+  const languages = player.getByRole("group", { name: "Caption language" });
+  const speedOptions = player.getByRole("group", {
+    name: "Playback speed options",
+  });
+  await expect(captions).toBeVisible();
+  await expect(speed).toBeVisible();
+
+  await player.evaluate(async (element) => {
+    const captionsSummary = element.querySelector<HTMLElement>(
+      'summary[aria-label^="Captions:"]',
+    );
+    const speedSummary = element.querySelector<HTMLElement>(
+      'summary[aria-label^="Playback speed:"]',
+    );
+    const captionsMenu = captionsSummary?.closest("details");
+    const speedMenu = speedSummary?.closest("details");
+    if (!captionsSummary || !speedSummary || !captionsMenu || !speedMenu) {
+      throw new Error("Expected both video disclosures.");
+    }
+
+    // Both native activations must happen before the browser delivers either toggle.
+    const toggles = [captionsMenu, speedMenu].map(
+      (menu) =>
+        new Promise<void>((resolve) => {
+          menu.addEventListener(
+            "toggle",
+            () => {
+              resolve();
+            },
+            { once: true },
+          );
+        }),
+    );
+    captionsSummary.click();
+    speedSummary.click();
+    await Promise.all(toggles);
+  });
+  await expect(speedOptions).toBeVisible();
+  await expect(languages).toBeHidden();
+
+  await speed.evaluate(async (summary) => {
+    const menu = summary.closest("details");
+    if (!(summary instanceof HTMLElement) || !menu) {
+      throw new Error("Expected playback speed disclosure.");
+    }
+    const toggle = new Promise<void>((resolve) => {
+      menu.addEventListener(
+        "toggle",
+        () => {
+          resolve();
+        },
+        { once: true },
+      );
+    });
+    summary.click();
+    summary.click();
+    await toggle;
+  });
+  await expect(speedOptions).toBeVisible();
+  await expect(languages).toBeHidden();
 });
 
 test("Playback speed popup supports slider, step buttons and quick presets", async ({

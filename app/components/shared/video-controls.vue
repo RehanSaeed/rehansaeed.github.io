@@ -83,12 +83,14 @@
           :tooltip-disabled="controlsHidden || menuOpen"
           @caption="emit('caption', $event)"
           @dismiss="closeMenu"
+          @menu-activate="onMenuActivate"
           @menu-toggle="onMenuToggle" />
         <u-video-speed-control
           :playback-rate="playbackRate"
           :tooltip-disabled="controlsHidden || menuOpen"
           @speed="emit('speed', $event)"
           @dismiss="closeMenu"
+          @menu-activate="onMenuActivate"
           @menu-toggle="onMenuToggle" />
         <u-tooltip
           v-if="pipSupported"
@@ -210,31 +212,32 @@ const closeMenu = (event: Event): void => {
   }
 };
 
-const onMenuToggle = (event: Event): void => {
-  if (!(event.target instanceof HTMLDetailsElement)) {
-    return;
-  }
-  if (event.target.open) {
-    for (const menu of controls.value?.querySelectorAll("details") ?? []) {
-      if (menu !== event.target) {
-        menu.open = false;
-      }
-    }
-  }
+const onMenuToggle = (): void => {
   menuOpen.value = !!controls.value?.querySelector("details[open]");
   emit("menuOpen", menuOpen.value);
 };
 
-const dismissMenus = (event: PointerEvent): void => {
-  if (!(event.target instanceof Node)) {
-    return;
-  }
+const dismissMenusOutside = (target: Node): void => {
   for (const menu of controls.value?.querySelectorAll<HTMLDetailsElement>(
     "details[open]",
   ) ?? []) {
-    if (!menu.contains(event.target)) {
+    if (!menu.contains(target)) {
       menu.open = false;
     }
+  }
+};
+
+const onMenuActivate = (event: MouseEvent): void => {
+  const summary = event.currentTarget;
+  if (!event.defaultPrevented && summary instanceof HTMLElement) {
+    // Close siblings before native activation; queued toggles can be coalesced.
+    dismissMenusOutside(summary);
+  }
+};
+
+const dismissMenus = (event: PointerEvent): void => {
+  if (event.target instanceof Node) {
+    dismissMenusOutside(event.target);
   }
 };
 
