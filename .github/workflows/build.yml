@@ -391,13 +391,18 @@ jobs:
           retention-days: 7
 
   io-diagnostic:
-    name: Edge cold-read diagnostic
+    name: Edge font cache diagnostic (${{ matrix.mode }}, ${{ matrix.instance }})
     if: github.event_name == 'workflow_dispatch' && inputs.diagnostic_run == '44776601413'
     runs-on: ubuntu-latest
     timeout-minutes: 18
     permissions:
       contents: read
       actions: read
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [baseline, prepared]
+        instance: [1, 2, 3]
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -413,12 +418,11 @@ jobs:
           run-id: "44776601413"
           github-token: ${{ github.token }}
           merge-multiple: true
-      - name: Ensure tracing tool is available
+      - name: Prepare fontconfig cache
+        if: matrix.mode == 'prepared'
         run: |
-          if ! command -v strace; then
-            sudo apt-get update
-            sudo apt-get install -y strace
-          fi
+          time fc-cache -f
+          fc-list >/dev/null
       - name: Install dependencies
         run: npm ci
         env:
@@ -426,38 +430,44 @@ jobs:
           HUSKY: "0"
       - name: Extract site
         run: time tar -xf playwright-site.tar
-      - name: Trace the initial Edge regressions
+      - name: Initialize Edge and font discovery
+        if: matrix.mode == 'prepared'
+        run: |
+          node --input-type=module <<'JS'
+          import { chromium } from "playwright";
+          const browser = await chromium.launch({ channel: "msedge" });
+          try {
+            const page = await browser.newPage();
+            await page.setContent("<p>Font discovery</p>");
+            await page.evaluate(() => document.fonts.ready);
+          } finally {
+            await browser.close();
+          }
+          JS
+      - name: Run Edge regressions without retries
         env:
           TZ: UTC
           DEBUG: pw:browser
         run: |
           mkdir -p startup-diagnostics
           dpkg-query -W microsoft-edge-stable
-          (
-            while sleep 1; do
-              date -Ins
-              cat /proc/pressure/io
-              ps -C msedge -o pid,stat,wchan:24,pcpu,args
-              for pid in $(pgrep -x msedge || true); do
-                echo "PID $pid"
-                cat "/proc/$pid/syscall" "/proc/$pid/io" 2>&1 || true
-                cat "/proc/$pid/maps" 2>&1 || true
-              done
-            done
-          ) > startup-diagnostics/processes.log &
-          monitor=$!
-          trap 'kill "$monitor" || true' EXIT
-          PLAYWRIGHT_JSON_OUTPUT_FILE=startup-diagnostics/home.json \
-            strace -ff -ttt -T -yy -s 256 \
-            -e trace=execve,openat,openat2,read,pread64,readv,mmap,close \
-            -o startup-diagnostics/syscalls \
-            node node_modules/@playwright/test/cli.js test homepage-layout.spec.ts \
-            --grep 'Post discovery fits the first viewport at 320px' --project=edge \
-            --workers=2 --retries=0 --trace=on --reporter=list,json
+          failures=0
+          for pair in home about dialog; do
+            case "$pair" in
+              home) spec=homepage-layout.spec.ts; grep='Post discovery fits the first viewport at 320px' ;;
+              about) spec=about.spec.ts; grep='About Credly badges at 375px' ;;
+              dialog) spec=dialogue.spec.ts; grep='Dialogs with no-preference motion (Search|Share) closes and reopens' ;;
+            esac
+            PLAYWRIGHT_JSON_OUTPUT_FILE="startup-diagnostics/$pair.json" \
+              npx playwright test "$spec" --grep "$grep" --project=edge --workers=2 \
+              --retries=0 --repeat-each=3 --global-timeout=240000 --trace=on \
+              --reporter=list,json --output="test-results/$pair" || failures=1
+          done
+          exit "$failures"
       - uses: actions/upload-artifact@v7.0.2
         if: always()
         with:
-          name: edge-cold-reads
+          name: edge-font-cache-${{ matrix.mode }}-${{ matrix.instance }}
           path: |
             startup-diagnostics
             test-results
