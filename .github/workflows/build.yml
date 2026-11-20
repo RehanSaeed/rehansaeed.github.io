@@ -301,7 +301,7 @@ jobs:
 
   diagnostic-source:
     name: Validate Diagnostic Source
-    if: github.event_name == 'workflow_dispatch' && inputs.diagnostic_run != '' && inputs.diagnostic_run != '44776601413'
+    if: github.event_name == 'workflow_dispatch' && inputs.diagnostic_run != ''
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -389,89 +389,6 @@ jobs:
             playwright-report
             test-results
           retention-days: 7
-
-  io-diagnostic:
-    name: Edge font cache diagnostic (${{ matrix.mode }}, ${{ matrix.instance }})
-    if: github.event_name == 'workflow_dispatch' && inputs.diagnostic_run == '44776601413'
-    runs-on: ubuntu-latest
-    timeout-minutes: 18
-    permissions:
-      contents: read
-      actions: read
-    strategy:
-      fail-fast: false
-      matrix:
-        mode: [baseline, prepared]
-        instance: [1, 2, 3]
-    steps:
-      - uses: actions/checkout@v7.0.1
-        with:
-          lfs: true
-          persist-credentials: false
-      - uses: actions/setup-node@v7.1.0
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-      - uses: actions/download-artifact@v8.0.2
-        with:
-          artifact-ids: "14650906597"
-          run-id: "44776601413"
-          github-token: ${{ github.token }}
-          merge-multiple: true
-      - name: Prepare fontconfig cache
-        if: matrix.mode == 'prepared'
-        run: |
-          time fc-cache -f
-          fc-list >/dev/null
-      - name: Install dependencies
-        run: npm ci
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HUSKY: "0"
-      - name: Extract site
-        run: time tar -xf playwright-site.tar
-      - name: Initialize Edge and font discovery
-        if: matrix.mode == 'prepared'
-        run: |
-          node --input-type=module <<'JS'
-          import { chromium } from "playwright";
-          const browser = await chromium.launch({ channel: "msedge" });
-          try {
-            const page = await browser.newPage();
-            await page.setContent("<p>Font discovery</p>");
-            await page.evaluate(() => document.fonts.ready);
-          } finally {
-            await browser.close();
-          }
-          JS
-      - name: Run Edge regressions without retries
-        env:
-          TZ: UTC
-          DEBUG: pw:browser
-        run: |
-          mkdir -p startup-diagnostics
-          dpkg-query -W microsoft-edge-stable
-          failures=0
-          for pair in home about dialog; do
-            case "$pair" in
-              home) spec=homepage-layout.spec.ts; grep='Post discovery fits the first viewport at 320px' ;;
-              about) spec=about.spec.ts; grep='About Credly badges at 375px' ;;
-              dialog) spec=dialogue.spec.ts; grep='Dialogs with no-preference motion (Search|Share) closes and reopens' ;;
-            esac
-            PLAYWRIGHT_JSON_OUTPUT_FILE="startup-diagnostics/$pair.json" \
-              npx playwright test "$spec" --grep "$grep" --project=edge --workers=2 \
-              --retries=0 --repeat-each=3 --global-timeout=240000 --trace=on \
-              --reporter=list,json --output="test-results/$pair" || failures=1
-          done
-          exit "$failures"
-      - uses: actions/upload-artifact@v7.0.2
-        if: always()
-        with:
-          name: edge-font-cache-${{ matrix.mode }}-${{ matrix.instance }}
-          path: |
-            startup-diagnostics
-            test-results
-          retention-days: 2
 
   checks:
     name: Build
