@@ -2,7 +2,7 @@
   <details
     v-if="captionTracks.length"
     class="prose-video__disclosure"
-    @toggle="emit('menuToggle', $event)">
+    @toggle="emit('menuToggle')">
     <u-tooltip v-slot="{ trigger }" text="Captions" :disabled="tooltipDisabled">
       <summary
         v-bind="trigger"
@@ -18,6 +18,7 @@
         @keyup.space="pressed = false"
         @keyup.enter="pressed = false"
         @blur="clearPressed"
+        @click="emit('menuActivate', $event)"
         :aria-label="
           selectedCaption === -1
             ? 'Captions: off'
@@ -62,7 +63,8 @@ defineProps<{
 const emit = defineEmits<{
   caption: [index: number];
   dismiss: [event: Event];
-  menuToggle: [event: Event];
+  menuActivate: [event: MouseEvent];
+  menuToggle: [];
 }>();
 const pressed = ref(false);
 const clearPressed = (): void => {
