@@ -6,7 +6,7 @@ import {
     getItemDates,
 } from "../../server/utils/feed-dates.ts";
 
-test("Feed freshness uses the latest effective article date", () => {
+await test("Feed freshness uses the latest effective article date", () => {
     const updated = new Date("2026-11-21T00:00:00.000Z");
     const feed = new Feed({
         title: "Test feed",
@@ -37,7 +37,7 @@ test("Feed freshness uses the latest effective article date", () => {
     assert.equal("updated" in JSON.parse(feed.json1()), false);
 });
 
-test("Empty feeds retain the feed library's current-time freshness default", () => {
+await test("Empty feeds retain the feed library's current-time freshness default", () => {
     const before = Date.now();
     const feed = new Feed({
         title: "Test feed",
@@ -54,7 +54,7 @@ test("Empty feeds retain the feed library's current-time freshness default", () 
     assert.ok(timestamp >= before && timestamp <= after);
 });
 
-test("Item dates preserve publication dates and use modification dates for updates", () => {
+await test("Item dates preserve publication dates and use modification dates for updates", () => {
     assert.deepEqual(
         getItemDates({
             date: "2026-11-18T00:00:00.000Z",
