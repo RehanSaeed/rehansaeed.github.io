@@ -301,7 +301,7 @@ jobs:
 
   diagnostic-source:
     name: Validate Diagnostic Source
-    if: github.event_name == 'workflow_dispatch' && inputs.diagnostic_run != ''
+    if: github.event_name == 'workflow_dispatch' && inputs.diagnostic_run != '' && inputs.diagnostic_run != '44776601413'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -389,6 +389,90 @@ jobs:
             playwright-report
             test-results
           retention-days: 7
+
+  edge-experiment:
+    name: Edge startup (${{ matrix.runner }}, ${{ matrix.workers }} workers)
+    if: github.event_name == 'workflow_dispatch' && inputs.diagnostic_run == '44776601413'
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 18
+    permissions:
+      contents: read
+      actions: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-26.04
+            workers: 2
+          - runner: ubuntu-26.04
+            workers: 1
+          - runner: ubuntu-24.04
+            workers: 2
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          artifact-ids: "14650906597"
+          run-id: "44776601413"
+          github-token: ${{ github.token }}
+          merge-multiple: true
+      - name: Run independent cold starts against the failed build's exact artifact
+        env:
+          WORKERS: ${{ matrix.workers }}
+          TZ: UTC
+          DEBUG: pw:browser
+        run: |
+          test "$(git rev-parse HEAD^)" = 9b6b8a538d9f95ee415a2b8092502dc38b9541a3
+          tar -xf playwright-site.tar
+          microsoft-edge --version
+          nproc
+          free -mh
+          df -h /dev/shm
+          mkdir -p startup-diagnostics
+          vmstat -w 2 > startup-diagnostics/vmstat.log &
+          stats_pid=$!
+          (
+            while sleep 2; do
+              date -Ins
+              ps -C msedge -o pid,etimes,pcpu,rss,comm,args --sort=-pcpu |
+                cut -c1-220 | head -n 8 || true
+            done
+          ) > startup-diagnostics/edge-processes.log &
+          edge_stats_pid=$!
+          trap 'kill "$stats_pid" "$edge_stats_pid"' EXIT
+          failures=0
+          for pair in home about dialog; do
+            case "$pair" in
+              home) spec=homepage-layout.spec.ts; grep='Post discovery fits the first viewport at 320px' ;;
+              about) spec=about.spec.ts; grep='About Credly badges at 375px' ;;
+              dialog) spec=dialogue.spec.ts; grep='Dialogs with no-preference motion (Search|Share) closes and reopens' ;;
+            esac
+            for pass in 1 2; do
+              echo "::group::$pair cold start $pass"
+              PLAYWRIGHT_JSON_OUTPUT_FILE="startup-diagnostics/$pair-$pass.json" \
+                npx playwright test "$spec" --grep "$grep" --project=edge --workers="$WORKERS" \
+                --retries=0 --repeat-each=3 --global-timeout=180000 --trace=on \
+                --reporter=list,json --output="test-results/$pair-$pass" || failures=1
+              echo "::endgroup::"
+            done
+          done
+          exit "$failures"
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: edge-startup-${{ matrix.runner }}-${{ matrix.workers }}
+          path: |
+            startup-diagnostics
+            test-results
+          retention-days: 2
 
   checks:
     name: Build
