@@ -390,19 +390,14 @@ jobs:
             test-results
           retention-days: 7
 
-  storage-diagnostic:
-    name: Edge storage diagnostic (${{ matrix.mode }}, ${{ matrix.instance }})
+  io-diagnostic:
+    name: Edge cold-read diagnostic
     if: github.event_name == 'workflow_dispatch' && inputs.diagnostic_run == '44776601413'
     runs-on: ubuntu-latest
     timeout-minutes: 18
     permissions:
       contents: read
       actions: read
-    strategy:
-      fail-fast: false
-      matrix:
-        mode: [baseline, ordered, synced]
-        instance: [1, 2]
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -418,65 +413,51 @@ jobs:
           run-id: "44776601413"
           github-token: ${{ github.token }}
           merge-multiple: true
-      - name: Record disk pressure
+      - name: Ensure tracing tool is available
         run: |
-          mkdir -p startup-diagnostics
-          (
-            while sleep 1; do
-              date -Ins
-              grep -E '^(Dirty|Writeback|MemAvailable):' /proc/meminfo
-              cat /proc/pressure/io
-              ps -eo pid,stat,wchan:24,pcpu,comm,args --sort=-pcpu | head -n 25
-            done
-          ) > startup-diagnostics/storage.log &
-          echo $! > startup-diagnostics/monitor.pid
-          vmstat -w 1 > startup-diagnostics/vmstat.log &
-          echo $! > startup-diagnostics/vmstat.pid
-      - name: Extract before npm
-        if: matrix.mode == 'ordered'
-        run: time tar -xf playwright-site.tar
+          if ! command -v strace; then
+            sudo apt-get update
+            sudo apt-get install -y strace
+          fi
       - name: Install dependencies
         run: npm ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HUSKY: "0"
-      - name: Extract after npm
-        if: matrix.mode != 'ordered'
+      - name: Extract site
         run: time tar -xf playwright-site.tar
-      - name: Flush extracted site filesystem
-        if: matrix.mode == 'synced'
-        run: time sync -f playwright-site.tar
-      - name: Run Edge regressions without retries
+      - name: Trace the initial Edge regressions
         env:
           TZ: UTC
           DEBUG: pw:browser
         run: |
-          microsoft-edge --version
-          grep -E '^(Dirty|Writeback|MemAvailable):' /proc/meminfo
-          cat /proc/pressure/io
-          failures=0
-          for pair in home about dialog; do
-            case "$pair" in
-              home) spec=homepage-layout.spec.ts; grep='Post discovery fits the first viewport at 320px' ;;
-              about) spec=about.spec.ts; grep='About Credly badges at 375px' ;;
-              dialog) spec=dialogue.spec.ts; grep='Dialogs with no-preference motion (Search|Share) closes and reopens' ;;
-            esac
-            PLAYWRIGHT_JSON_OUTPUT_FILE="startup-diagnostics/$pair.json" \
-              npx playwright test "$spec" --grep "$grep" --project=edge --workers=2 \
-              --retries=0 --repeat-each=3 --global-timeout=240000 --trace=on \
-              --reporter=list,json --output="test-results/$pair" || failures=1
-          done
-          exit "$failures"
-      - name: Stop monitor
-        if: always()
-        run: |
-          for file in startup-diagnostics/monitor.pid startup-diagnostics/vmstat.pid; do
-            if [ -f "$file" ]; then kill "$(cat "$file")" || true; fi
-          done
+          mkdir -p startup-diagnostics
+          dpkg-query -W microsoft-edge-stable
+          (
+            while sleep 1; do
+              date -Ins
+              cat /proc/pressure/io
+              ps -C msedge -o pid,stat,wchan:24,pcpu,args
+              for pid in $(pgrep -x msedge || true); do
+                echo "PID $pid"
+                cat "/proc/$pid/syscall" "/proc/$pid/io" 2>&1 || true
+                cat "/proc/$pid/maps" 2>&1 || true
+              done
+            done
+          ) > startup-diagnostics/processes.log &
+          monitor=$!
+          trap 'kill "$monitor" || true' EXIT
+          PLAYWRIGHT_JSON_OUTPUT_FILE=startup-diagnostics/home.json \
+            strace -ff -ttt -T -yy -s 256 \
+            -e trace=execve,openat,openat2,read,pread64,readv,mmap,close \
+            -o startup-diagnostics/syscalls \
+            node node_modules/@playwright/test/cli.js test homepage-layout.spec.ts \
+            --grep 'Post discovery fits the first viewport at 320px' --project=edge \
+            --workers=2 --retries=0 --trace=on --reporter=list,json
       - uses: actions/upload-artifact@v7.0.2
         if: always()
         with:
-          name: edge-storage-${{ matrix.mode }}-${{ matrix.instance }}
+          name: edge-cold-reads
           path: |
             startup-diagnostics
             test-results
