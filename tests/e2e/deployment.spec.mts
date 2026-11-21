@@ -327,7 +327,7 @@ test("Dependency review gates PR changes across all scopes without a licence pol
     expect(review).toEqual({
         name: "Review Dependency Changes",
         if: "github.event_name == 'pull_request'",
-        uses: "actions/dependency-review-action@v5.0.0",
+        uses: "actions/dependency-review-action@v5.0.1",
         with: {
             "fail-on-severity": "moderate",
             "fail-on-scopes": "runtime, development, unknown",
@@ -381,14 +381,14 @@ test("CodeQL scans Actions and both historical JS/TS categories without a redund
     });
     const steps = analyze?.steps ?? [];
     expect(requireStep(steps, "Initialize CodeQL")).toMatchObject({
-        uses: "github/codeql-action/init@v4.39.3",
+        uses: "github/codeql-action/init@v4.39.4",
         with: {
             languages: "${{ matrix.language }}",
             "build-mode": "none",
         },
     });
     expect(requireStep(steps, "Perform CodeQL Analysis")).toMatchObject({
-        uses: "github/codeql-action/analyze@v4.39.3",
+        uses: "github/codeql-action/analyze@v4.39.4",
         with: {
             category:
                 ".github/workflows/codeql-analysis.yml:analyze/language:${{ matrix.language }}",
