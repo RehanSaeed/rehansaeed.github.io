@@ -8,7 +8,7 @@
       <u-heading
         data-view-transition-heading
         :id="titleId"
-        class="p-name u-url"
+        class="post-page__title p-name u-url"
         level="1"
         tabindex="-1"
         center
@@ -164,6 +164,13 @@ useHead({
   margin: 0 auto;
   padding-block-start: var(--global-space-fluid-5);
   text-align: center;
+}
+
+.post-page__title {
+  line-height: calc(
+    (var(--global-line-height-0) + var(--global-line-height-1)) / 2
+  );
+  overflow-wrap: anywhere;
 }
 
 .post-page__arrows {
