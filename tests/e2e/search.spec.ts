@@ -78,6 +78,106 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
 }
 
 test.describe("Search", () => {
+  test("Searches from two characters and explains short and unmatched queries", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await openSearch(page);
+    const input = page.getByRole("searchbox", { name: "Search", exact: true });
+    const status = page.locator(".search__feedback").getByRole("status");
+
+    await expect(status).toHaveCount(0);
+    await input.fill("a");
+    await expect(status).toHaveText("Enter at least 2 characters to search.");
+    await expect(page.locator(".search-result")).toHaveCount(0);
+    await input.clear();
+    await expect(status).toHaveCount(0);
+    await input.fill("AI");
+    await expect(
+      page.getByRole("dialog", { name: "Search" }).getByRole("link", {
+        name: /AI Gone Rogue/,
+      }),
+    ).toBeVisible();
+    await expect(status).toHaveCount(0);
+    await input.fill("zzzznonexistentsearchterm");
+    await expect(status).toHaveText(
+      "No results found. Try a different search.",
+    );
+    const feedbackCenterOffset = await status.evaluate((message) => {
+      const range = document.createRange();
+      range.selectNodeContents(message);
+      const text = range.getBoundingClientRect();
+      const container = message.parentElement!.getBoundingClientRect();
+      return Math.abs(
+        (text.left + text.right - container.left - container.right) / 2,
+      );
+    });
+    expect(feedbackCenterOffset).toBeLessThan(1);
+    await expect(page.locator(".search-result")).toHaveCount(0);
+    await input.fill("Schema.NET");
+    await expect(page.locator(".search-result__link").first()).toHaveAttribute(
+      "href",
+      "https://github.com/RehanSaeed/Schema.NET",
+    );
+    await expect(status).toHaveCount(0);
+  });
+
+  test("Does not show stale results after the query becomes too short", async ({
+    page,
+  }) => {
+    let releaseIndex!: () => void;
+    const indexGate = new Promise<void>((resolve) => {
+      releaseIndex = resolve;
+    });
+    await page.route("**/flexsearch.json", async (route) => {
+      await indexGate;
+      await route.continue();
+    });
+    await page.goto("/");
+    await openSearch(page);
+    const input = page.getByRole("searchbox", { name: "Search", exact: true });
+    const status = page.locator(".search__feedback").getByRole("status");
+    await input.fill("Schema.NET");
+    await expect(status).toHaveText("Searching…");
+    await input.fill("a");
+    await expect(status).toHaveText("Enter at least 2 characters to search.");
+    const response = page.waitForResponse("**/flexsearch.json");
+    releaseIndex();
+    await response;
+    await input.fill("zzzznonexistentsearchterm");
+    await expect(status).toHaveText(
+      "No results found. Try a different search.",
+    );
+    await expect(page.locator(".search-result")).toHaveCount(0);
+  });
+
+  test("Reports index failures and retries the current query", async ({
+    page,
+  }) => {
+    let fail = true;
+    await page.route("**/flexsearch.json", async (route) => {
+      if (fail) {
+        await route.fulfill({ status: 503, body: "Unavailable" });
+      } else {
+        await route.continue();
+      }
+    });
+    await page.goto("/");
+    await openSearch(page);
+    const input = page.getByRole("searchbox", { name: "Search", exact: true });
+    await input.fill("Schema.NET");
+    await expect(
+      page.locator(".search__feedback").getByRole("status"),
+    ).toHaveText("Search is unavailable. Please try again.");
+    fail = false;
+    await page.getByRole("button", { name: "Retry search" }).click();
+    await expect(input).toBeFocused();
+    await expect(page.locator(".search-result__link").first()).toHaveAttribute(
+      "href",
+      "https://github.com/RehanSaeed/Schema.NET",
+    );
+  });
+
   test("Open search", async ({ page }) => {
     await page.goto("/");
     await openSearch(page);
