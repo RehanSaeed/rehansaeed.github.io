@@ -3,6 +3,7 @@
     class="post-page h-entry"
     data-view-transition-destination
     :data-post-permalink="post.permalink"
+    :data-post-published="post.published"
     :data-post-hero="post.heroImage">
     <div class="post-page__title-container">
       <u-heading
