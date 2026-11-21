@@ -1,5 +1,36 @@
 import { expect, test } from "./fixtures";
 
+for (const width of [390, 1440]) {
+  for (const path of ["/", "/2/"]) {
+    test(`Post pagination has breathing room on ${path} at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 1000 });
+      await page.goto(path);
+      const pager = page.locator(".posts__pager");
+      await pager.scrollIntoViewIfNeeded();
+      const gaps = await page.evaluate(() => {
+        const posts = document.querySelector(".posts__items")!;
+        const pagination = document
+          .querySelector(".posts__pager")!
+          .getBoundingClientRect();
+        return {
+          pagination: pagination.top - posts.getBoundingClientRect().bottom,
+          betweenCards: Number.parseFloat(getComputedStyle(posts).rowGap),
+        };
+      });
+      expect(gaps.pagination).toBeGreaterThanOrEqual(11.9);
+      expect(gaps.pagination).toBeCloseTo(gaps.betweenCards, 1);
+      await expect(
+        pager.getByRole("link", { name: "Next", exact: true }),
+      ).toHaveAttribute("href", path === "/" ? "/2/" : "/3/");
+      await expect(
+        pager.getByRole("link", { name: "Previous", exact: true }),
+      ).toHaveCount(path === "/" ? 0 : 1);
+    });
+  }
+}
+
 for (const { width, height } of [
   { width: 320, height: 844 },
   { width: 390, height: 844 },
