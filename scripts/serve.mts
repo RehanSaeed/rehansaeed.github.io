@@ -41,7 +41,10 @@ if (process.send) {
 }
 if (!process.send || process.connected) {
     server.listen(port, "127.0.0.1", () => {
-        console.log(`Static preview: http://localhost:${port}`);
+        const address = server.address();
+        console.log(
+            `Static preview: http://localhost:${typeof address === "object" && address ? address.port : port}`,
+        );
     });
 }
 
@@ -88,8 +91,50 @@ async function serve(request: IncomingMessage, response: ServerResponse) {
             status = 404;
         }
         const body = await readFile(file);
-        response.writeHead(status, {
+        const headers = {
             "Content-Type": types[extname(file)] ?? "application/octet-stream",
+            "Accept-Ranges": "bytes",
+        };
+        if (
+            status === 200 &&
+            request.method === "GET" &&
+            request.headers.range
+        ) {
+            const match = /^bytes=(\d*)-(\d*)$/.exec(request.headers.range);
+            if (match && (match[1] || match[2])) {
+                const suffix = match[1] === "";
+                const start = suffix
+                    ? Math.max(0, body.length - Number(match[2]))
+                    : Number(match[1]);
+                const end =
+                    suffix || match[2] === ""
+                        ? body.length - 1
+                        : Math.min(Number(match[2]), body.length - 1);
+                if (
+                    !Number.isSafeInteger(start) ||
+                    !Number.isSafeInteger(end) ||
+                    start > end ||
+                    start >= body.length
+                ) {
+                    response
+                        .writeHead(416, {
+                            ...headers,
+                            "Content-Range": `bytes */${body.length}`,
+                        })
+                        .end();
+                    return;
+                }
+                response.writeHead(206, {
+                    ...headers,
+                    "Content-Range": `bytes ${start}-${end}/${body.length}`,
+                    "Content-Length": end - start + 1,
+                });
+                response.end(body.subarray(start, end + 1));
+                return;
+            }
+        }
+        response.writeHead(status, {
+            ...headers,
             "Content-Length": body.length,
             ...(file.endsWith("service-worker.js")
                 ? { "Cache-Control": "no-cache" }

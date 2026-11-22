@@ -1,5 +1,44 @@
 import { expect, test } from "@playwright/test";
 
+test("Post prose preserves the introductory paragraph and figure layout", async ({
+  page,
+  baseURL,
+}) => {
+  await page.route(
+    (url) => url.origin !== new URL(baseURL!).origin,
+    (route) => route.abort(),
+  );
+  await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
+  const content = page.locator(".post__content");
+  const intro = content.locator(":scope > p").first();
+  const nextParagraph = content.locator(":scope > p").nth(1);
+  const sizes = await Promise.all(
+    [intro, nextParagraph].map((paragraph) =>
+      paragraph.evaluate((element) =>
+        Number.parseFloat(getComputedStyle(element).fontSize),
+      ),
+    ),
+  );
+  expect(sizes[0]).toBeGreaterThan(sizes[1]!);
+  const figure = content.locator("figure").first();
+  await expect(figure).toHaveClass("prose-figure");
+  const imageParagraph = figure.locator(":scope > p").first();
+  await expect(imageParagraph).toHaveCSS("margin-block-end", "0px");
+  await expect(figure.locator("figcaption")).toBeVisible();
+  for (const width of [320, 1280]) {
+    await page.setViewportSize({ width, height: 900 });
+    const layout = await content.evaluate((element) => {
+      const card = element.closest(".post")!.getBoundingClientRect();
+      const iframe = element.querySelector("iframe")!.getBoundingClientRect();
+      const content = element.getBoundingClientRect();
+      return { card, iframe, content };
+    });
+    expect(layout.iframe.x).toBeCloseTo(layout.card.x, 0);
+    expect(layout.iframe.width).toBeCloseTo(layout.card.width, 0);
+    expect(layout.iframe.height).toBeCloseTo(layout.content.width * 0.68, 0);
+  }
+});
+
 test("The cheat sheet renders both local video examples as native players", async ({
   page,
   baseURL,
@@ -24,7 +63,7 @@ test("The cheat sheet renders both local video examples as native players", asyn
       "src",
       "/videos/threeui-demonstration-960x720.mp4",
     );
-    await expect(video).toHaveJSProperty("controls", true);
+    await expect(video).not.toHaveAttribute("controls");
     await expect(video).toHaveAttribute("playsinline", "");
     // Firefox honours the attribute but does not expose the IDL property.
     expect(
@@ -90,13 +129,14 @@ test("The article plays a self-hosted video without loading X's widget", async (
   });
   const video = page.getByLabel(
     "ThreeUI demonstration of interactive Three.js components and landing pages",
+    { exact: true },
   );
   await expect(video).toBeVisible();
   await expect(video).toHaveAttribute(
     "src",
     "/videos/threeui-demonstration-960x720.mp4",
   );
-  await expect(video).toHaveAttribute("controls", "");
+  await expect(video).not.toHaveAttribute("controls");
   await expect(video).toHaveAttribute("playsinline", "");
   await expect(video).not.toHaveAttribute("autoplay");
   await expect(page.locator(".post__content iframe")).toHaveCount(1);

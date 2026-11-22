@@ -38,7 +38,7 @@ Duis aliquet ex eu scelerisque ultricies. Nam ac sagittis ligula. Vestibulum vel
 # Links
 
 [Link](https://example.com)
-[Empty Link]()
+[Empty Link](<>)
 
 # Horizontal Rule
 
@@ -182,12 +182,12 @@ docker image build --tag foo:1.0.0 --label "build"="123" --label "changeset"="0d
 // Code Title, Line Numbers, Line Highlight
 // Code Title, Line Numbers, Line Highlight
 export default {
-  data () {
+  data() {
     return {
-      msg: 'All'
-    }
-  }
-}
+      msg: "All",
+    };
+  },
+};
 ```
 
 # Math
@@ -256,6 +256,62 @@ To add a caption, wrap the Markdown image in `<figure>` and put a `<figcaption>`
 ![Code](./images/Code-1600x900.jpg)
 
 <figcaption>A code-themed illustration.</figcaption>
+</figure>
+
+# Carousel
+
+![A code illustration in the first image-only gallery slide.](./images/Code-1600x900.jpg)
+
+![CSS3 logo on a blue background.](/images/hero/CSS-1600x900.png)
+
+![Web Components graphic with an HTML5 shield and connecting braces.](/images/hero/Web-Components-1600x900.png)
+
+![A collage of static site generator logos.](/images/hero/Static-Site-Generators-1600x900.png)
+
+![OpenTelemetry telescope logo.](/images/hero/Open-Telemetry-1600x900.png)
+
+---
+
+<figure>
+
+[![A linked code illustration in the first gallery slide.](./images/Code-1600x900.jpg)](/css-general-rules-of-thumb/)
+
+<figcaption>The first gallery image retains its link.</figcaption>
+</figure>
+
+<figure>
+
+![CSS3 logo on a blue background.](/images/hero/CSS-1600x900.png)
+
+<figcaption>The second gallery image retains its caption.</figcaption>
+</figure>
+
+<figure>
+
+![Web Components graphic with an HTML5 shield and connecting braces.](/images/hero/Web-Components-1600x900.png)
+
+<figcaption>The third gallery image shows Web Components artwork.</figcaption>
+</figure>
+
+<figure>
+
+![A collage of static site generator logos.](/images/hero/Static-Site-Generators-1600x900.png)
+
+<figcaption>The fourth gallery image shows a selection of static site generators.</figcaption>
+</figure>
+
+<figure>
+
+![OpenTelemetry telescope logo.](/images/hero/Open-Telemetry-1600x900.png)
+
+<figcaption>The fifth gallery image shows OpenTelemetry artwork.</figcaption>
+</figure>
+
+<figure>
+
+![HAL 9000's lens beside the words "I'm afraid I can't do that, Dave."](/images/hero/HAL-9000-Prop-1600x900.png)
+
+<figcaption>The sixth gallery image demonstrates the last endpoint.</figcaption>
 </figure>
 
 # Embed Videos

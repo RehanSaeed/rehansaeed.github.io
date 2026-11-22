@@ -59,10 +59,29 @@ authorise publishing the article or posting to social media.
   and colours. Reuse shared tokens from `app/assets/style/_properties.scss`;
   define component-specific values in the component stylesheet.
 - Follow Block Element Modifier (BEM) naming for CSS classes.
+- Keep component CSS encapsulated beneath its own BEM root. Do not depend on
+  ancestor or sibling classes owned by another component. Use props, slots or
+  documented CSS custom properties for cross-component layout coordination
+  instead of parent-specific selectors or specificity overrides.
+- Use the minimum CSS needed for the intended behaviour. Rely on intrinsic
+  layout and existing shared styles; avoid redundant declarations, unnecessary
+  layout containers and styling states that cannot be displayed.
+- Reuse existing CSS custom properties for typography, spacing, colours, borders
+  and focus styling. Avoid component-local pixel values; use relative units when
+  no suitable design token exists, preserving accessible control sizes.
+- Use class selectors in component stylesheets instead of HTML tag selectors,
+  including inside `:has()`, `:is()`, `:not()` and `:where()`. Add BEM classes
+  to the existing semantic elements rather than changing their HTML semantics.
 - Keep `app/assets/style/dom/` stylesheets element-based. Use element selectors
   and their pseudo-classes or pseudo-elements, not class or ID selectors,
   including inside `:not()`, `:is()` or `:where()`. Put component-specific rules
   in component stylesheets and shared class-aware rules outside `dom/`.
+- Use semantic BEM classes for styling hooks; do not add `data-*` attributes
+  solely to select elements in CSS. Treat a component's internal classes as
+  private: parent components must not style them directly. When a parent needs
+  to affect slotted content, expose a stable class contract and keep the layout
+  rule with the owning component. Reserve `data-*` attributes for meaningful
+  state, metadata, or integration hooks such as JavaScript behavior.
 - Use CSS logical properties instead of physical properties where applicable.
 - Prefer CSS Grid to Flexbox for layout; use Flexbox when wrapping content is
   better suited to it.
@@ -229,6 +248,10 @@ authorise publishing the article or posting to social media.
 - Use `setup()` returning a render function when direct VNode rendering is
   needed. Explain exceptions and preserve existing behaviour.
 - Keep shared state at module scope, not in per-instance `<script setup>` scope.
+- Reuse VueUse composables from `@vueuse/core` for supported browser state,
+  including `usePreferredReducedMotion` and `useMediaQuery`, instead of adding
+  component-local `matchMedia` subscriptions. Let the composables manage their
+  subscriptions and cleanup. Keep presentation-only media queries in CSS.
 - Use Nuxt's build-time component auto-imports for template usage instead of
   explicit imports and Options API `components` registrations. Auto-imports
   include only used components and add no runtime registration overhead compared
@@ -239,6 +262,9 @@ authorise publishing the article or posting to social media.
 - Keep Nuxt Content components in `app/components/content` globally registered
   under their unprefixed names so Markdown rendering can resolve them. Do not
   globally register ordinary application components.
+- When passing a Nuxt Content component through `ContentRenderer`'s `components`
+  map, pass the imported component object. Mapping `figure` to the string
+  `ProseFigure` renders a non-semantic `<prosefigure>` element in production.
 - Scan `app/components/OgImage` separately as server-only islands before the
   application component directory, without the application `U` prefix. Nuxt skips
   later scans inside an already scanned parent, even when files were ignored.
@@ -341,6 +367,21 @@ When explicitly asked to help draft an article, follow these guidelines:
 
 ### Video Captions
 
+- `ProseVideo` progressively enhances authored native controls with the blog's
+  bottom-overlay player; keep server-rendered controls until it mounts. Do not
+  customise third-party iframes or add a Browser controls toolbar button.
+- Keep controls reachable through keyboard focus and visible on touch, while
+  paused, or while a toolbar control has focus. Use a compact single-row toolbar
+  with translucent backgrounds only behind its left and right control groups
+  and icon-triggered speed and caption-language menus,
+  rather than visible selects or a Settings menu. Keep open menus visible and
+  support Escape, outside dismissal and focus return after selection.
+  Only hide controls during pointer-idle playback.
+  Preserve the viewport autoplay/manual-pause/reduced-motion contract when
+  changing controls. Add browser regressions in `video-controls.spec.ts` and
+  retain `video-autoplay.spec.ts`.
+- Use capability checks for fullscreen and picture-in-picture. iOS uses system
+  volume; native fullscreen/PiP controls may replace the page overlay.
 - Markdown `<video>` elements render through `ProseVideo`, which cannot add
   captions itself. Its `media-has-caption` lint suppression moves that
   responsibility to each post; it does not satisfy it.
