@@ -2,7 +2,7 @@ import { expect, test } from "./fixtures";
 
 for (const width of [390, 1440]) {
   for (const path of ["/", "/2/"]) {
-    test(`Post pagination has breathing room on ${path} at ${width}px`, async ({
+    test(`Post pagination has breathing room above and below on ${path} at ${width}px`, async ({
       page,
     }) => {
       await page.setViewportSize({ width, height: 1000 });
@@ -11,16 +11,27 @@ for (const width of [390, 1440]) {
       await pager.scrollIntoViewIfNeeded();
       const gaps = await page.evaluate(() => {
         const posts = document.querySelector(".posts__items")!;
-        const pagination = document
-          .querySelector(".posts__pager")!
-          .getBoundingClientRect();
+        const pagination = document.querySelector(".posts__pager")!;
+        const footer = document.querySelector(".footer")!;
+        const paginationBounds = pagination.getBoundingClientRect();
+        const footerBounds = footer.getBoundingClientRect();
+        const paginationStyle = getComputedStyle(pagination);
+        const footerStyle = getComputedStyle(footer);
         return {
-          pagination: pagination.top - posts.getBoundingClientRect().bottom,
+          above: paginationBounds.top - posts.getBoundingClientRect().bottom,
+          below: footerBounds.top - paginationBounds.bottom,
+          paginationMargin: Number.parseFloat(paginationStyle.marginBlockEnd),
+          footerMargin: Number.parseFloat(footerStyle.marginBlockStart),
           betweenCards: Number.parseFloat(getComputedStyle(posts).rowGap),
         };
       });
-      expect(gaps.pagination).toBeGreaterThanOrEqual(11.9);
-      expect(gaps.pagination).toBeCloseTo(gaps.betweenCards, 1);
+      expect(gaps.above).toBeGreaterThanOrEqual(11.9);
+      expect(gaps.above).toBeCloseTo(gaps.betweenCards, 1);
+      expect(gaps.below).toBeGreaterThanOrEqual(gaps.above * 2 - 1);
+      expect(gaps.below).toBeCloseTo(
+        gaps.paginationMargin + gaps.footerMargin,
+        1,
+      );
       await expect(
         pager.getByRole("link", { name: "Next", exact: true }),
       ).toHaveAttribute("href", path === "/" ? "/2/" : "/3/");
