@@ -167,7 +167,7 @@ useHead({
 }
 
 .post-page__title {
-  line-height: var(--global-line-height-tight);
+  line-height: var(--global-line-height-1);
   overflow-wrap: anywhere;
 }
 

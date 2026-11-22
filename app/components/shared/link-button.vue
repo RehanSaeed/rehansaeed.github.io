@@ -65,7 +65,7 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
   animation: none;
   color: var(--link-button-tag-text-color, var(--global-title-color));
   font-family: var(--font-heading);
-  line-height: var(--global-line-height-1);
+  line-height: var(--global-line-height-2);
   position: relative;
   text-decoration: none;
   transition:
@@ -198,7 +198,7 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
   font-family: var(--global-font-family-monospace);
   font-size: var(--global-font-size-1);
   font-weight: var(--global-font-weight-normal);
-  line-height: var(--global-line-height-1);
+  line-height: var(--global-line-height-2);
   overflow-wrap: anywhere;
 
   &:hover,

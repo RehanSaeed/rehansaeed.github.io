@@ -3,10 +3,11 @@ body {
   color: var(--global-body-color);
   font-family: var(--global-font-family-sans-serif);
   font-weight: var(--global-font-weight-normal);
-  line-height: var(--global-line-height-1);
+  line-height: var(--global-line-height-2);
   overflow-x: hidden; // Remove when browser support is good enough.
   overflow-inline: auto;
-  transition: background-color var(--global-duration-3) ease-out,
+  transition:
+    background-color var(--global-duration-3) ease-out,
     border-color var(--global-duration-3) ease-out,
     color var(--global-duration-3) ease-out;
 }

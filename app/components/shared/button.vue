@@ -43,7 +43,7 @@ const type = computed(() => (props.submit ? "submit" : "button"));
   color: var(--global-title-color);
   cursor: pointer;
   font-family: var(--font-heading);
-  line-height: var(--global-line-height-1);
+  line-height: var(--global-line-height-2);
   padding: 0;
   position: relative;
   transition:
