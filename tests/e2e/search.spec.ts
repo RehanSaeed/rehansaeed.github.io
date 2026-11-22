@@ -84,26 +84,33 @@ test.describe("Search", () => {
     await page.goto("/");
     await openSearch(page);
     const input = page.getByRole("searchbox", { name: "Search", exact: true });
-    const status = page.locator(".search__feedback").getByRole("status");
+    const status = page.locator(".search__feedback [role='status']");
 
-    await expect(status).toHaveCount(0);
+    await expect(status).toHaveText("");
     await input.fill("a");
-    await expect(status).toHaveText("Enter at least 2 characters to search.");
+    await expect(
+      status.getByRole("heading", { name: "Keep typing" }),
+    ).toBeVisible();
+    await expect(status.locator(".search__feedback-icon")).toBeVisible();
+    await expect(
+      status.getByText("Enter at least 2 characters to search."),
+    ).toBeVisible();
     await expect(page.locator(".search-result")).toHaveCount(0);
     await input.clear();
-    await expect(status).toHaveCount(0);
+    await expect(status).toHaveText("");
     await input.fill("AI");
     await expect(
       page.getByRole("dialog", { name: "Search" }).getByRole("link", {
         name: /AI Gone Rogue/,
       }),
     ).toBeVisible();
-    await expect(status).toHaveCount(0);
+    await expect(status).toHaveText("");
     await input.fill("zzzznonexistentsearchterm");
-    await expect(status).toHaveText(
-      "No results found. Try a different search.",
-    );
-    const feedbackCenterOffset = await status.evaluate((message) => {
+    const heading = status.getByRole("heading", { name: "No results found" });
+    await expect(heading).toBeVisible();
+    await expect(status.locator(".search__feedback-icon")).toBeVisible();
+    await expect(status.getByText("Try a different search.")).toBeVisible();
+    const feedbackCenterOffset = await heading.evaluate((message) => {
       const range = document.createRange();
       range.selectNodeContents(message);
       const text = range.getBoundingClientRect();
@@ -119,7 +126,7 @@ test.describe("Search", () => {
       "href",
       "https://github.com/RehanSaeed/Schema.NET",
     );
-    await expect(status).toHaveCount(0);
+    await expect(status).toHaveText("");
   });
 
   test("Does not show stale results after the query becomes too short", async ({
@@ -136,24 +143,30 @@ test.describe("Search", () => {
     await page.goto("/");
     await openSearch(page);
     const input = page.getByRole("searchbox", { name: "Search", exact: true });
-    const status = page.locator(".search__feedback").getByRole("status");
+    const status = page.locator(".search__feedback [role='status']");
     await input.fill("Schema.NET");
-    await expect(status).toHaveText("Searching…");
+    await expect(
+      status.getByRole("heading", { name: "Searching…" }),
+    ).toBeVisible();
+    await expect(status.locator(".search__feedback-icon")).toBeVisible();
     await input.fill("a");
-    await expect(status).toHaveText("Enter at least 2 characters to search.");
+    await expect(
+      status.getByRole("heading", { name: "Keep typing" }),
+    ).toBeVisible();
     const response = page.waitForResponse("**/flexsearch.json");
     releaseIndex();
     await response;
     await input.fill("zzzznonexistentsearchterm");
-    await expect(status).toHaveText(
-      "No results found. Try a different search.",
-    );
+    await expect(
+      status.getByRole("heading", { name: "No results found" }),
+    ).toBeVisible();
     await expect(page.locator(".search-result")).toHaveCount(0);
   });
 
   test("Reports index failures and retries the current query", async ({
     page,
   }) => {
+    await page.emulateMedia({ forcedColors: "active" });
     let fail = true;
     await page.route("**/flexsearch.json", async (route) => {
       if (fail) {
@@ -166,11 +179,18 @@ test.describe("Search", () => {
     await openSearch(page);
     const input = page.getByRole("searchbox", { name: "Search", exact: true });
     await input.fill("Schema.NET");
+    const status = page.locator(".search__feedback [role='status']");
     await expect(
-      page.locator(".search__feedback").getByRole("status"),
-    ).toHaveText("Search is unavailable. Please try again.");
+      status.getByRole("heading", { name: "Search is unavailable" }),
+    ).toBeVisible();
+    await expect(status.locator(".search__feedback-icon")).toBeVisible();
+    await expect(status.getByText("Please try again.")).toBeVisible();
     fail = false;
-    await page.getByRole("button", { name: "Retry search" }).click();
+    const retry = page.getByRole("button", { name: "Retry search" });
+    await input.press("Tab");
+    await expect(retry).toBeFocused();
+    await expect(retry).toHaveCSS("outline-style", "solid");
+    await retry.press("Enter");
     await expect(input).toBeFocused();
     await expect(page.locator(".search-result__link").first()).toHaveAttribute(
       "href",
