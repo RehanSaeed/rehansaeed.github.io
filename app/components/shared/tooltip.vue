@@ -330,7 +330,7 @@ watch(
   font-family: var(--global-font-family-sans-serif);
   font-size: var(--global-font-size-1);
   font-weight: var(--global-font-weight-normal);
-  line-height: var(--global-line-height-1);
+  line-height: var(--global-line-height-2);
   text-align: start;
   overflow-wrap: anywhere;
 

@@ -294,7 +294,7 @@ const neighbours = computed(() =>
   padding-block: var(--global-space-fixed-2) var(--global-space-fixed-4);
 
   font-size: var(--global-font-size-2);
-  line-height: var(--global-line-height-1);
+  line-height: var(--global-line-height-2);
   overflow-wrap: anywhere;
 }
 

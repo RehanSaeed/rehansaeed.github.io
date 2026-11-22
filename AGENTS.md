@@ -55,6 +55,9 @@ authorise publishing the article or posting to social media.
 
 - Do not use inline styles (`style` attributes or Vue `:style` bindings). Put
   styling in component stylesheets and use intrinsic HTML sizing where suitable.
+- Use CSS custom properties for design values such as line heights, spacing,
+  and colours. Reuse shared tokens from `app/assets/style/_properties.scss`;
+  define component-specific values in the component stylesheet.
 - Follow Block Element Modifier (BEM) naming for CSS classes.
 - Keep component CSS encapsulated beneath its own BEM root. Do not depend on
   ancestor or sibling classes owned by another component. Use props, slots or

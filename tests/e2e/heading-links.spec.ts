@@ -45,6 +45,47 @@ test("Trailing section links preserve inline text markup and fragment IDs", () =
   });
 });
 
+for (const width of [320, 390]) {
+  test(`Long article titles reflow without wide line gaps at ${width}px`, async ({
+    page,
+  }) => {
+    const permalink =
+      "/portable-class-library-version-of-notificationsextensions-nuget-package/";
+    const title =
+      "Portable Class Library (PCL) version of NotificationsExtensions NuGet package";
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto(permalink);
+    const heading = page.getByRole("heading", {
+      name: title,
+      exact: true,
+      level: 1,
+    });
+    const link = heading.getByRole("link", { name: title, exact: true });
+    await expect(link).toHaveAttribute("href", permalink);
+    const layout = await link.evaluate(async (element) => {
+      await document.fonts.ready;
+      const range = document.createRange();
+      range.selectNodeContents(element);
+      const lines = [...range.getClientRects()];
+      return {
+        left: Math.min(...lines.map((line) => line.left)),
+        right: Math.max(...lines.map((line) => line.right)),
+        lineTops: [...new Set(lines.map((line) => line.top))],
+        fontSize: Number.parseFloat(getComputedStyle(element).fontSize),
+      };
+    });
+
+    expect(layout.left).toBeGreaterThanOrEqual(0);
+    expect(layout.right).toBeLessThanOrEqual(width);
+    expect(layout.lineTops.length).toBeGreaterThan(1);
+    for (const [index, top] of layout.lineTops.slice(1).entries()) {
+      const lineStep = (top - layout.lineTops[index]!) / layout.fontSize;
+      expect(lineStep).toBeGreaterThanOrEqual(1.2);
+      expect(lineStep).toBeLessThanOrEqual(1.4);
+    }
+  });
+}
+
 for (const width of [280, 320, 375, 576, 768, 1280]) {
   test(`Heading links fit the post gutter at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });

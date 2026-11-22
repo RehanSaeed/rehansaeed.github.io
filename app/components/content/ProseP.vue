@@ -14,7 +14,7 @@
     float: left;
     float: inline-start;
     font-size: calc(var(--global-font-size-4) * 2.6);
-    line-height: calc(var(--global-line-height-1) * 0.44);
+    line-height: calc(var(--global-line-height-2) * 0.44);
     margin-inline-end: var(--global-space-fixed-3);
     margin-block-start: 0.65rem;
 
