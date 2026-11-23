@@ -257,7 +257,10 @@ test("Browser suites run in parallel against one complete build without dropping
     expect(browserTests.needs).toBe("build");
     expect(browserTests.strategy).toEqual({
         "fail-fast": false,
-        matrix: { browser: ["chrome", "edge", "firefox"], shard: [1, 2, 3] },
+        matrix: {
+            browser: ["chrome", "edge", "firefox", "webkit"],
+            shard: [1, 2, 3],
+        },
     });
     expect(build.steps).toContainEqual({
         name: "Package Browser Test Site",
@@ -509,7 +512,7 @@ test("Lighthouse audits each generated page in parallel and keeps its reports", 
     expect(reports.with?.name).toBe("lighthouse-report-${{ matrix.page }}");
 });
 
-test("Firefox uses a version-matched Playwright image without runtime dependency installation", () => {
+test("Firefox and WebKit use a version-matched Playwright image without runtime dependency installation", () => {
     const workflow = readBuildWorkflow();
     const build = requireJob(workflow, "build");
     const browserTests = requireJob(workflow, "test");
@@ -525,7 +528,7 @@ test("Firefox uses a version-matched Playwright image without runtime dependency
         "${{ steps.playwright-image.outputs.image }}",
     );
     expect(browserTests.container).toEqual({
-        image: "${{ matrix.browser == 'firefox' && needs.build.outputs.playwright-image || '' }}",
+        image: "${{ (matrix.browser == 'firefox' || matrix.browser == 'webkit') && needs.build.outputs.playwright-image || '' }}",
         options: "--user 1001",
         volumes: ["/usr/bin/git-lfs:/usr/bin/git-lfs:ro"],
     });
