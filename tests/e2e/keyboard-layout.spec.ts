@@ -147,7 +147,14 @@ for (const width of [390, 1280]) {
     await expect(skip).toBeInViewport({ ratio: 1 });
     await expect(skip).toHaveCSS("outline-style", "solid");
     await expect(skip).toHaveCSS("outline-width", "2px");
-    await expect(skip).toHaveCSS("forced-color-adjust", "auto");
+    // WebKit does not implement forced-color-adjust, even when emulating forced colours.
+    // eslint-disable-next-line playwright/no-conditional-in-test
+    if (
+      await page.evaluate(() => CSS.supports("forced-color-adjust", "auto"))
+    ) {
+      // eslint-disable-next-line playwright/no-conditional-expect
+      await expect(skip).toHaveCSS("forced-color-adjust", "auto");
+    }
     await page.keyboard.press("Enter");
     await expect(page.locator("main#main")).toBeFocused();
   });

@@ -296,8 +296,7 @@ test.describe("Service worker", () => {
     );
     test.slow();
     // Without the HTTP cache, every offline request must be answered by the service worker.
-    const cdp = await context.newCDPSession(page);
-    await cdp.send("Network.setCacheDisabled", { cacheDisabled: true });
+    await page.route("**/*", (route) => route.continue());
     await page.goto("/");
     await page.evaluate(async () => {
       await navigator.serviceWorker.ready;
