@@ -41,6 +41,11 @@ export default defineConfig({
       use: { ...devices["Desktop Firefox"] },
     },
     {
+      name: "webkit",
+      testIgnore: /visual\.spec\.ts/,
+      use: { ...devices["Desktop Safari"] },
+    },
+    {
       // Local only: `npm run test:visual`. Baselines are git-ignored.
       name: "visual",
       testMatch: /visual\.spec\.ts/,

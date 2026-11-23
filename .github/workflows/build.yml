@@ -240,9 +240,9 @@ jobs:
     name: Playwright (${{ matrix.browser }}, ${{ matrix.shard }}/3)
     needs: build
     runs-on: ubuntu-latest
-    # Only Firefox needs a downloaded browser and additional Linux libraries.
+    # Firefox and WebKit need downloaded browsers and additional Linux libraries.
     container:
-      image: ${{ matrix.browser == 'firefox' && needs.build.outputs.playwright-image || '' }}
+      image: ${{ (matrix.browser == 'firefox' || matrix.browser == 'webkit') && needs.build.outputs.playwright-image || '' }}
       options: --user 1001
       # The image has Git, but checkout also needs the runner's Git LFS binary.
       volumes:
@@ -250,7 +250,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chrome, edge, firefox]
+        browser: [chrome, edge, firefox, webkit]
         shard: [1, 2, 3]
     steps:
       - name: Checkout
