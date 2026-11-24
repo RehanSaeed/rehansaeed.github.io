@@ -1,6 +1,5 @@
+import sharp from "sharp";
 import { expect, test } from "./fixtures";
-
-const expectedShape = (supported: boolean) => (supported ? "squircle" : "");
 
 test("shared corners use compensated squircles with a rounded fallback", async ({
   page,
@@ -20,8 +19,15 @@ test("shared corners use compensated squircles with a rounded fallback", async (
     );
     const shadowStyle = getComputedStyle(element, "::before");
     const supported = CSS.supports("corner-shape", "squircle");
+    const probe = document.createElement("div");
+    probe.style.setProperty("corner-shape", "squircle");
+    document.body.append(probe);
+    const expectedShape =
+      getComputedStyle(probe).getPropertyValue("corner-shape");
+    probe.remove();
     return {
       supported,
+      expectedShape,
       radius: Number.parseFloat(cardStyle.borderTopLeftRadius),
       rootFontSize: Number.parseFloat(root.fontSize),
       headerRadius: Number.parseFloat(headerStyle.borderTopLeftRadius),
@@ -37,26 +43,34 @@ test("shared corners use compensated squircles with a rounded fallback", async (
     2,
   );
   expect(styles.headerRadius).toBeCloseTo(styles.radius, 2);
-  expect(styles.cardShape).toBe(expectedShape(styles.supported));
-  expect(styles.headerShape).toBe(expectedShape(styles.supported));
-  expect(styles.shadowShape).toBe(expectedShape(styles.supported));
+  expect(styles.cardShape).toBe(styles.expectedShape);
+  expect(styles.headerShape).toBe(styles.expectedShape);
+  expect(styles.shadowShape).toBe(styles.expectedShape);
 
   // Isolate the real card's paint to compare its corner against a circular one.
   await page.addStyleTag({
     content: `
-      .post-card:first-child {
+      .squircle-test-card {
         background: black !important;
         box-shadow: none !important;
         transform: none !important;
         translate: none !important;
+        transition: none !important;
       }
-      .post-card:first-child > * { visibility: hidden !important; }
+      .squircle-test-card::before { display: none !important; }
+      .squircle-test-card > * { visibility: hidden !important; }
     `,
+  });
+  await card.evaluate((element) => {
+    element.classList.add("squircle-test-card");
   });
   const squircle = await card.screenshot({ animations: "disabled" });
   await card.evaluate((element) => {
     element.style.setProperty("corner-shape", "round");
   });
   const round = await card.screenshot({ animations: "disabled" });
-  expect(squircle.equals(round)).toBe(!styles.supported);
+  const corner = { left: 0, top: 0, width: 16, height: 16 };
+  const squirclePixels = await sharp(squircle).extract(corner).raw().toBuffer();
+  const roundPixels = await sharp(round).extract(corner).raw().toBuffer();
+  expect(squirclePixels.equals(roundPixels)).toBe(!styles.supported);
 });
