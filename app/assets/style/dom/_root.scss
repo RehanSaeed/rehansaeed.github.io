@@ -1,6 +1,8 @@
 :root {
   accent-color: var(--global-accent-color);
   color-scheme: light dark;
+  container-name: page-scroll;
+  container-type: scroll-state;
   font-size: var(--global-font-size-default);
   // line-sizing: normal; ?? What does this do? It's in a draft spec
   scrollbar-color: var(--global-scroll-thumb-color)
