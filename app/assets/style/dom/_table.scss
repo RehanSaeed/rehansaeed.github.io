@@ -3,7 +3,8 @@ table {
   border-collapse: separate;
   border-color: var(--global-title-color);
   border-style: solid;
-  border-radius: var(--global-border-radius);
+  border-radius: var(--global-border-radius-1);
+  corner-shape: squircle;
   border-width: 0 var(--global-border-width-1) var(--global-border-width-1)
     var(--global-border-width-1);
   border-spacing: 0;
@@ -11,7 +12,8 @@ table {
   display: block;
   margin-block-end: var(--global-space-fixed-5);
   overflow: auto;
-  transition: background-color var(--global-duration-3) ease-out,
+  transition:
+    background-color var(--global-duration-3) ease-out,
     border-color var(--global-duration-3) ease-out,
     color var(--global-duration-3) ease-out;
   inline-size: 100%;
@@ -23,7 +25,8 @@ table {
       font-weight: var(--global-font-weight-bold);
       font-size: var(--global-font-size-1);
       padding: var(--global-space-fixed-2) var(--global-space-fixed-3);
-      transition: background-color var(--global-duration-3) ease-out,
+      transition:
+        background-color var(--global-duration-3) ease-out,
         color var(--global-duration-3) ease-out;
       vertical-align: bottom;
       inline-size: 0.1%;
@@ -31,11 +34,13 @@ table {
     }
 
     th:first-child {
-      border-start-start-radius: var(--global-border-radius);
+      border-start-start-radius: var(--global-border-radius-1);
+      corner-shape: squircle;
     }
 
     th:last-child {
-      border-start-end-radius: var(--global-border-radius);
+      border-start-end-radius: var(--global-border-radius-1);
+      corner-shape: squircle;
     }
   }
 
@@ -54,11 +59,13 @@ table {
 
     tr:last-child {
       td:first-child {
-        border-end-start-radius: var(--global-border-radius);
+        border-end-start-radius: var(--global-border-radius-1);
+        corner-shape: squircle;
       }
 
       td:last-child {
-        border-end-end-radius: var(--global-border-radius);
+        border-end-end-radius: var(--global-border-radius-1);
+        corner-shape: squircle;
       }
     }
   }

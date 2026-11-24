@@ -414,7 +414,8 @@ const youtubeBadgeImageUrl = (statistic: string, label: string) => {
 }
 
 .about__image {
-  border-radius: var(--global-border-radius);
+  border-radius: var(--global-border-radius-1);
+  corner-shape: squircle;
   display: block;
   max-inline-size: 320px;
 }
@@ -445,7 +446,8 @@ const youtubeBadgeImageUrl = (statistic: string, label: string) => {
 }
 
 .about__stack-overflow-image {
-  border-radius: var(--global-border-radius);
+  border-radius: var(--global-border-radius-1);
+  corner-shape: squircle;
   display: block;
   margin-block-end: var(--global-space-fixed-5);
   inline-size: 208px;
@@ -462,7 +464,8 @@ const youtubeBadgeImageUrl = (statistic: string, label: string) => {
   margin-block-end: var(--global-space-fixed-5);
 }
 .about__mvp-image {
-  border-radius: var(--global-border-radius);
+  border-radius: var(--global-border-radius-1);
+  corner-shape: squircle;
   inline-size: 208px;
   block-size: 84px;
 }
@@ -487,7 +490,8 @@ const youtubeBadgeImageUrl = (statistic: string, label: string) => {
 }
 .about__open-uk-honours-image {
   border: 1px solid var(--global-accent-color);
-  border-radius: var(--global-border-radius);
+  border-radius: var(--global-border-radius-1);
+  corner-shape: squircle;
   inline-size: 322px;
   block-size: 99x;
 }

@@ -177,6 +177,7 @@ const neighbours = computed(() =>
   overflow: hidden;
 
   border-radius: inherit;
+  corner-shape: inherit;
   color: var(--global-title-color);
   text-decoration: none;
 }

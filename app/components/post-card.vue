@@ -87,7 +87,8 @@ const imageMeta = computed(() =>
 }
 
 .post-card__header {
-  border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
+  border-radius: var(--global-border-radius-2) var(--global-border-radius-2) 0 0;
+  corner-shape: squircle;
   margin-inline: calc(var(--card-space) * -1);
   margin-block-start: calc(var(--card-space) * -1);
   margin-block-end: var(--post-card-image-gap, var(--global-space-fluid-5));

@@ -37,7 +37,8 @@ defineProps({
   --card-space: var(--global-space-fluid-6);
 
   background-color: var(--global-content-background-color);
-  border-radius: var(--global-border-radius);
+  border-radius: var(--global-border-radius-2);
+  corner-shape: squircle;
   box-shadow: var(--global-shadow-1);
   padding: var(--card-space);
   transition: translate var(--global-duration-2) var(--ease-in-out-cubic);
@@ -74,6 +75,7 @@ defineProps({
   z-index: -1;
 
   border-radius: inherit;
+  corner-shape: inherit;
   box-shadow: var(--global-shadow-3);
   opacity: 0;
   transition: opacity var(--global-duration-2) var(--ease-in-out-cubic);
