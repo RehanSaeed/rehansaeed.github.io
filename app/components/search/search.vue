@@ -1,5 +1,8 @@
 <template>
-  <section class="search" aria-label="site">
+  <section
+    class="search"
+    :class="{ 'search--feedback': searchTerm && searchStatus !== 'results' }"
+    aria-label="site">
     <form class="search__form" role="search" @submit.prevent>
       <label class="search__label" :for="inputId">Search</label>
       <!-- Opening search deliberately moves focus to its input. -->
@@ -14,6 +17,11 @@
         type="search" />
       <!-- eslint-enable vuejs-accessibility/no-autofocus -->
     </form>
+    <u-search-feedback
+      :search-term="searchTerm"
+      :status="searchStatus"
+      :minimum-search-term-length="minimumSearchTermLength"
+      @retry="retrySearch" />
     <div class="search__results">
       <u-search-result
         v-for="searchResult of searchResults"
@@ -33,7 +41,7 @@ import {
   type SearchDocument,
 } from "#shared/utils/search";
 
-const minimumSearchTermLength = 3;
+const minimumSearchTermLength = 2;
 const resultLimit = 8;
 let indexPromise: Promise<Document<SearchDocument>> | undefined;
 
@@ -84,20 +92,27 @@ const inputId = `site-search-${useId()}`;
 const route = useRoute();
 const searchTerm = ref("");
 const searchResults = ref<SearchDocument[]>([]);
+const searchStatus = ref<"idle" | "loading" | "results" | "empty" | "error">(
+  "idle",
+);
+let searchRequest = 0;
 
 const onSelected = (permalink: string) => {
   emit("selected", searchTerm.value, permalink);
 };
 const updateSearchResults = async () => {
   const term = searchTerm.value;
+  const request = ++searchRequest;
+  searchResults.value = [];
   if (term.length < minimumSearchTermLength) {
-    searchResults.value = [];
+    searchStatus.value = "idle";
     return;
   }
 
+  searchStatus.value = "loading";
   try {
     const index = await loadIndex();
-    if (term !== searchTerm.value) {
+    if (request !== searchRequest) {
       return;
     }
 
@@ -111,12 +126,22 @@ const updateSearchResults = async () => {
         }
         return result.doc;
       });
-    announceResults(
-      `${searchResults.value.length} search ${searchResults.value.length === 1 ? "result" : "results"}.`,
-    );
+    searchStatus.value = searchResults.value.length ? "results" : "empty";
+    if (searchResults.value.length) {
+      announceResults(
+        `${searchResults.value.length} search ${searchResults.value.length === 1 ? "result" : "results"}.`,
+      );
+    }
   } catch (error) {
     console.error(error);
+    if (request === searchRequest) {
+      searchStatus.value = "error";
+    }
   }
+};
+const retrySearch = () => {
+  document.getElementById(inputId)?.focus();
+  void updateSearchResults();
 };
 // Query-only hydration updates must not clear a deep-linked search term.
 watch(
@@ -150,7 +175,21 @@ onMounted(() => {
 
 .search {
   display: grid;
+  align-content: start;
   gap: var(--global-space-fixed-5);
+}
+
+.search--feedback {
+  align-content: stretch;
+  grid-template-rows: auto 1fr;
+
+  .search__feedback {
+    align-self: center;
+  }
+
+  .search__results {
+    display: none;
+  }
 }
 
 .search__form {
