@@ -1,9 +1,21 @@
-import type { Locator } from "@playwright/test";
+import type { Locator, Page } from "@playwright/test";
 import { expect, test } from "./fixtures";
 
 const postPath =
   "/optimally-configuring-open-telemetry-tracing-for-asp-net-core/";
 const mentionsApi = /^https:\/\/webmention\.io\/api\/mentions\?/;
+
+const disableNativeScrollTimeline = async (page: Page) => {
+  await page.addInitScript(() => {
+    const nativeSupports = CSS.supports.bind(CSS);
+    Object.defineProperty(CSS, "supports", {
+      configurable: true,
+      value: (property: string, value: string) =>
+        (property !== "animation-timeline" || value !== "scroll(root block)") &&
+        nativeSupports(property, value),
+    });
+  });
+};
 
 const readMask = (skeleton: Locator) =>
   skeleton.evaluate((element: HTMLElement) => {
@@ -197,6 +209,7 @@ test("Skeleton SVG masks follow slotted geometry as the viewport resizes", async
 test("Scroll updates the unwrapped layout root and reverses direction", async ({
   page,
 }) => {
+  await disableNativeScrollTimeline(page);
   await page.goto(postPath);
   await expect(
     page.getByRole("button", { name: "Open search", exact: true }),
@@ -230,6 +243,7 @@ test("Scroll updates the unwrapped layout root and reverses direction", async ({
 test("Batched scroll events keep the latest direction rather than reversing on a duplicate frame", async ({
   page,
 }) => {
+  await disableNativeScrollTimeline(page);
   await page.goto(postPath);
   await expect(
     page.getByRole("button", { name: "Open search", exact: true }),
