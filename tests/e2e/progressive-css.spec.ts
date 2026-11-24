@@ -74,11 +74,12 @@ test("Keeps the JavaScript progress fallback when timelines are unsupported", as
   });
   await expect
     .poll(() =>
-      page.evaluate(() =>
-        Number.parseFloat(
-          document.documentElement.style.getPropertyValue("--scroll"),
-        ),
-      ),
+      page.locator("#app").evaluate((element) => {
+        if (!(element instanceof HTMLElement)) {
+          throw new Error("The app root is not an HTML element.");
+        }
+        return Number.parseFloat(element.style.getPropertyValue("--scroll"));
+      }),
     )
     .toBeGreaterThan(0.45);
 });
