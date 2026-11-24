@@ -30,7 +30,7 @@
     "@nuxt/scripts": "2.0.0-beta.16",
     "@nuxtjs/color-mode": "4.1.0",
     "@nuxtjs/seo": "6.0.1",
-    "@nuxtjs/sitemap": "9.1.0",
+    "@nuxtjs/sitemap": "9.2.0",
     "@sindresorhus/slugify": "4.0.1",
     "@vite-pwa/nuxt": "2.0.4",
     "@vueuse/core": "15.0.0",
