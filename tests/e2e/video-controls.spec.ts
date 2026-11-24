@@ -27,6 +27,16 @@ const openVideo = async (page: Page, baseURL: string | undefined) => {
   return { video, player };
 };
 
+const readCssVariableColor = async (container: Locator, property: string) =>
+  container.evaluate((element, variable) => {
+    const probe = document.createElement("span");
+    probe.style.color = `var(${variable})`;
+    element.append(probe);
+    const color = getComputedStyle(probe).color;
+    probe.remove();
+    return color;
+  }, property);
+
 test("Custom controls play, pause, seek, mute and change speed through a compact icon menu", async ({
   page,
   baseURL,
@@ -631,6 +641,14 @@ test("Full-width controls remain contained with large touch targets in both them
     await page.evaluate((theme) => {
       document.documentElement.dataset.theme = theme;
     }, theme);
+    const hoverColor = await readCssVariableColor(
+      player,
+      "--video-hover-foreground",
+    );
+    const focusColor = await readCssVariableColor(
+      player,
+      "--global-accent-color",
+    );
     for (const width of [1280, 375, 320]) {
       await page.setViewportSize({ width, height: 900 });
       await video.scrollIntoViewIfNeeded();
@@ -805,7 +823,7 @@ test("Full-width controls remain contained with large touch targets in both them
       ]);
       const captions = player.getByRole("button", { name: /^Captions:/ });
       await captions.click();
-      await expect(captions).toHaveCSS("color", "rgb(107, 23, 232)");
+      await expect(captions).toHaveCSS("color", hoverColor);
       await expect(captions).toHaveCSS(
         "background-color",
         "rgb(255, 255, 255)",
@@ -817,7 +835,7 @@ test("Full-width controls remain contained with large touch targets in both them
         exact: true,
       });
       await captionsOff.hover();
-      await expect(captionsOff).toHaveCSS("color", "rgb(107, 23, 232)");
+      await expect(captionsOff).toHaveCSS("color", hoverColor);
       await expect(captionsOff).toHaveCSS(
         "background-color",
         "rgb(255, 255, 255)",
@@ -866,7 +884,7 @@ test("Full-width controls remain contained with large touch targets in both them
       }
       const fasterPreset = presets.filter({ hasText: "2.5" });
       await fasterPreset.hover();
-      await expect(fasterPreset).toHaveCSS("color", "rgb(107, 23, 232)");
+      await expect(fasterPreset).toHaveCSS("color", hoverColor);
       await expect(fasterPreset).toHaveCSS(
         "background-color",
         "rgb(255, 255, 255)",
@@ -882,7 +900,7 @@ test("Full-width controls remain contained with large touch targets in both them
       await expect(play).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
       await play.hover();
       await expect(play).toHaveCSS("border-radius", "50%");
-      await expect(play).toHaveCSS("color", "rgb(107, 23, 232)");
+      await expect(play).toHaveCSS("color", hoverColor);
       await expect(play).toHaveCSS("background-color", "rgb(255, 255, 255)");
       const hoverContrast = await play.evaluate((element) => {
         const luminance = (colour: string) => {
@@ -914,12 +932,9 @@ test("Full-width controls remain contained with large touch targets in both them
       await page.keyboard.press("Tab");
       await page.keyboard.press("Shift+Tab");
       await expect(play).toBeFocused();
-      await expect(play).toHaveCSS("color", "rgb(107, 23, 232)");
+      await expect(play).toHaveCSS("color", hoverColor);
       await expect(play).toHaveCSS("background-color", "rgb(255, 255, 255)");
-      await expect(play).toHaveCSS(
-        "outline-color",
-        theme === "dark" ? "rgb(204, 189, 255)" : "rgb(107, 23, 232)",
-      );
+      await expect(play).toHaveCSS("outline-color", focusColor);
       await expect(play).toHaveCSS("outline-offset", "3px");
       await page.keyboard.press("Tab");
     }
@@ -954,6 +969,10 @@ test("Playback speed flyout matches toolbar typography and control sizing", asyn
     await page.evaluate((theme) => {
       document.documentElement.dataset.theme = theme;
     }, theme);
+    const hoverColor = await readCssVariableColor(
+      player,
+      "--video-hover-foreground",
+    );
     for (const width of [1280, 320]) {
       await page.setViewportSize({ width, height: 900 });
       const typography = await player.evaluate((element) => {
@@ -998,7 +1017,7 @@ test("Playback speed flyout matches toolbar typography and control sizing", asyn
         await expect(stepButton).toHaveCSS("background-clip", "content-box");
         await stepButton.hover();
         await expect(stepButton).toHaveCSS("background-clip", "content-box");
-        await expect(stepButton).toHaveCSS("color", "rgb(107, 23, 232)");
+        await expect(stepButton).toHaveCSS("color", hoverColor);
         await expect(stepButton).toHaveCSS(
           "background-color",
           "rgb(255, 255, 255)",
@@ -1033,11 +1052,19 @@ for (const theme of ["light", "dark"]) {
     await page.evaluate((theme) => {
       document.documentElement.dataset.theme = theme;
     }, theme);
+    const hoverColor = await readCssVariableColor(
+      player,
+      "--video-hover-foreground",
+    );
+    const focusColor = await readCssVariableColor(
+      player,
+      "--global-accent-color",
+    );
     const mute = player.locator(".prose-video__playback .button--icon").nth(1);
     const initialMuted = await mute.getAttribute("aria-pressed");
     await mute.hover();
     await page.mouse.down();
-    await expect(mute).toHaveCSS("background-color", "rgb(107, 23, 232)");
+    await expect(mute).toHaveCSS("background-color", hoverColor);
     await expect(mute).toHaveCSS("color", "rgb(255, 255, 255)");
     await expect(mute).toHaveCSS("background-clip", "content-box");
     await expect(mute).toHaveCSS("width", "44px");
@@ -1056,10 +1083,7 @@ for (const theme of ["light", "dark"]) {
     await expect(mute).toHaveCSS("outline-style", "solid");
     await expect(mute).toHaveCSS("outline-width", "2px");
     await expect(mute).toHaveCSS("outline-offset", "3px");
-    await expect(mute).toHaveCSS(
-      "outline-color",
-      theme === "dark" ? "rgb(204, 189, 255)" : "rgb(107, 23, 232)",
-    );
+    await expect(mute).toHaveCSS("outline-color", focusColor);
     await page.keyboard.down("Space");
     await expect(mute).toHaveCSS("outline-offset", "3px");
     await page.keyboard.up("Space");
@@ -1075,14 +1099,14 @@ for (const theme of ["light", "dark"]) {
     const speed = player.getByRole("button", { name: /^Playback speed:/ });
     await speed.hover();
     await page.mouse.down();
-    await expect(speed).toHaveCSS("background-color", "rgb(107, 23, 232)");
+    await expect(speed).toHaveCSS("background-color", hoverColor);
     await expect(speed).toHaveCSS("color", "rgb(255, 255, 255)");
     await page.mouse.up();
     await speed.focus();
     await page.keyboard.press("Tab");
     await page.keyboard.press("Shift+Tab");
     await page.keyboard.down("Space");
-    await expect(speed).toHaveCSS("background-color", "rgb(107, 23, 232)");
+    await expect(speed).toHaveCSS("background-color", hoverColor);
     await page.keyboard.up("Space");
     await expect(player.locator(".prose-video__menu--speed")).toBeHidden();
     await speed.click();
@@ -1092,7 +1116,7 @@ for (const theme of ["light", "dark"]) {
     });
     await increase.hover();
     await page.mouse.down();
-    await expect(increase).toHaveCSS("background-color", "rgb(107, 23, 232)");
+    await expect(increase).toHaveCSS("background-color", hoverColor);
     await expect(increase).toHaveCSS("color", "rgb(255, 255, 255)");
     await expect(increase).toHaveCSS("background-clip", "content-box");
     await page.mouse.up();
@@ -1111,7 +1135,7 @@ for (const theme of ["light", "dark"]) {
     await expect(preset).toHaveAttribute("aria-pressed", "true");
     await preset.hover();
     await page.mouse.down();
-    await expect(preset).toHaveCSS("background-color", "rgb(107, 23, 232)");
+    await expect(preset).toHaveCSS("background-color", hoverColor);
     await expect(preset).toHaveCSS("color", "rgb(255, 255, 255)");
     await page.mouse.up();
     await speed.click();
