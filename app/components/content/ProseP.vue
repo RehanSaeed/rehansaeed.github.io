@@ -33,4 +33,10 @@
   min-inline-size: 0;
   margin-block-end: 0;
 }
+
+@supports (text-wrap: pretty) {
+  .prose-paragraph {
+    text-wrap: pretty;
+  }
+}
 </style>

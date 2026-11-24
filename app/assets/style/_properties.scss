@@ -326,3 +326,19 @@
     --global-title-color: hsl(0 0% 100%);
   }
 }
+
+@supports (color: oklch(0% 0 0)) {
+  [data-theme="light"] {
+    --global-accent-color: oklch(0.49152 0.26592 289.98);
+    --global-alternate-accent-color: oklch(0.83309 0.09295 295.01);
+    --global-link-color: var(--global-accent-color);
+    --global-selection-background-color: var(--global-accent-color);
+  }
+
+  [data-theme="dark"] {
+    --global-accent-color: oklch(0.83309 0.09295 295.01);
+    --global-alternate-accent-color: oklch(0.49152 0.26592 289.98);
+    --global-link-color: var(--global-accent-color);
+    --global-selection-background-color: var(--global-accent-color);
+  }
+}
