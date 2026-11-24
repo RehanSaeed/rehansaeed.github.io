@@ -140,7 +140,8 @@ const imageMeta = computed(() => getImageMetadata(props.portfolio.heroImage));
 }
 
 .portfolio-card__header {
-  border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
+  border-radius: var(--global-border-radius-large)
+    var(--global-border-radius-large) 0 0;
   corner-shape: squircle;
   margin-inline: calc(var(--card-space) * -1);
   margin-block-start: calc(var(--card-space) * -1);

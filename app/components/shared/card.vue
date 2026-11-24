@@ -37,7 +37,7 @@ defineProps({
   --card-space: var(--global-space-fluid-6);
 
   background-color: var(--global-content-background-color);
-  border-radius: var(--global-border-radius);
+  border-radius: var(--global-border-radius-large);
   corner-shape: squircle;
   box-shadow: var(--global-shadow-1);
   padding: var(--card-space);

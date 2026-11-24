@@ -4,11 +4,14 @@
 
 :root {
   // Border Radius
-  --global-border-radius: 0.3057325rem; // 6px
+  // Rounded fallbacks for controls and larger surfaces, respectively.
+  --global-border-radius: 0.3125rem;
+  --global-border-radius-large: 0.875rem;
 
   @supports (corner-shape: squircle) {
-    // Match the diagonal inset of the original circular corner.
-    --global-border-radius: calc(0.3057325rem * 1.84);
+    // Larger radii compensate for the squircle's less pronounced corners.
+    --global-border-radius: 0.625rem;
+    --global-border-radius-large: 1.625rem;
   }
 
   // Border Width

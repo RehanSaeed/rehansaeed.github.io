@@ -8,8 +8,10 @@ test("shared corners use compensated squircles with a rounded fallback", async (
 
   const card = page.locator(".post-card").first();
   const header = card.locator(".post-card__header");
+  const tag = card.locator(".link-button--tag").first();
   await expect(card).toBeVisible();
   await expect(header).toBeVisible();
+  await expect(tag).toBeVisible();
 
   const styles = await card.evaluate((element) => {
     const root = getComputedStyle(document.documentElement);
@@ -18,6 +20,9 @@ test("shared corners use compensated squircles with a rounded fallback", async (
       element.querySelector(".post-card__header")!,
     );
     const shadowStyle = getComputedStyle(element, "::before");
+    const tagStyle = getComputedStyle(
+      element.querySelector(".link-button--tag")!,
+    );
     const supported = CSS.supports("corner-shape", "squircle");
     const probe = document.createElement("div");
     probe.style.setProperty("corner-shape", "squircle");
@@ -31,21 +36,28 @@ test("shared corners use compensated squircles with a rounded fallback", async (
       radius: Number.parseFloat(cardStyle.borderTopLeftRadius),
       rootFontSize: Number.parseFloat(root.fontSize),
       headerRadius: Number.parseFloat(headerStyle.borderTopLeftRadius),
+      tagRadius: Number.parseFloat(tagStyle.borderTopRightRadius),
       cardShape: cardStyle.getPropertyValue("corner-shape"),
       headerShape: headerStyle.getPropertyValue("corner-shape"),
       shadowShape: shadowStyle.getPropertyValue("corner-shape"),
+      tagShape: tagStyle.getPropertyValue("corner-shape"),
     };
   });
 
-  const originalRadius = styles.rootFontSize * 0.3057325;
   expect(styles.radius).toBeCloseTo(
-    originalRadius * (styles.supported ? 1.84 : 1),
+    styles.rootFontSize * (styles.supported ? 1.625 : 0.875),
     2,
   );
+  expect(styles.tagRadius).toBeCloseTo(
+    styles.rootFontSize * (styles.supported ? 0.625 : 0.3125),
+    2,
+  );
+  expect(styles.radius).toBeGreaterThan(styles.tagRadius);
   expect(styles.headerRadius).toBeCloseTo(styles.radius, 2);
   expect(styles.cardShape).toBe(styles.expectedShape);
   expect(styles.headerShape).toBe(styles.expectedShape);
   expect(styles.shadowShape).toBe(styles.expectedShape);
+  expect(styles.tagShape).toBe(styles.expectedShape);
 
   // Isolate the real card's paint to compare its corner against a circular one.
   await page.addStyleTag({
