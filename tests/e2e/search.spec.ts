@@ -4,6 +4,21 @@ import { expect, test } from "./fixtures";
 const openSearch = (page: Page) =>
   page.getByRole("button", { name: "Open search" }).click();
 
+const expectFeedbackVerticallyCentered = async (page: Page) => {
+  const offset = await page.locator(".search").evaluate((search) => {
+    const form = search.querySelector(".search__form")!.getBoundingClientRect();
+    const feedback = search
+      .querySelector(".search__feedback")!
+      .getBoundingClientRect();
+    const bottom = search.getBoundingClientRect().bottom;
+    const gap = Number.parseFloat(getComputedStyle(search).rowGap);
+    return Math.abs(
+      (feedback.top + feedback.bottom - form.bottom - gap - bottom) / 2,
+    );
+  });
+  expect(offset).toBeLessThan(1);
+};
+
 for (const reducedMotion of ["no-preference", "reduce"] as const) {
   test.describe(`Search focus with ${reducedMotion} motion`, () => {
     test.use({ reducedMotion });
@@ -95,6 +110,7 @@ test.describe("Search", () => {
     await expect(
       status.getByText("Enter at least 2 characters to search."),
     ).toBeVisible();
+    await expectFeedbackVerticallyCentered(page);
     await expect(page.locator(".search-result")).toHaveCount(0);
     await input.clear();
     await expect(status).toHaveText("");
@@ -120,6 +136,7 @@ test.describe("Search", () => {
       );
     });
     expect(feedbackCenterOffset).toBeLessThan(1);
+    await expectFeedbackVerticallyCentered(page);
     await expect(page.locator(".search-result")).toHaveCount(0);
     await input.fill("Schema.NET");
     await expect(page.locator(".search-result__link").first()).toHaveAttribute(
@@ -149,6 +166,7 @@ test.describe("Search", () => {
       status.getByRole("heading", { name: "Searching…" }),
     ).toBeVisible();
     await expect(status.locator(".search__feedback-icon")).toBeVisible();
+    await expectFeedbackVerticallyCentered(page);
     await input.fill("a");
     await expect(
       status.getByRole("heading", { name: "Keep typing" }),
@@ -185,6 +203,7 @@ test.describe("Search", () => {
     ).toBeVisible();
     await expect(status.locator(".search__feedback-icon")).toBeVisible();
     await expect(status.getByText("Please try again.")).toBeVisible();
+    await expectFeedbackVerticallyCentered(page);
     fail = false;
     const retry = page.getByRole("button", { name: "Retry search" });
     await input.press("Tab");

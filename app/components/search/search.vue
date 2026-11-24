@@ -1,5 +1,8 @@
 <template>
-  <section class="search" aria-label="site">
+  <section
+    class="search"
+    :class="{ 'search--feedback': searchTerm && searchStatus !== 'results' }"
+    aria-label="site">
     <form class="search__form" role="search" @submit.prevent>
       <label class="search__label" :for="inputId">Search</label>
       <!-- Opening search deliberately moves focus to its input. -->
@@ -210,6 +213,19 @@ onMounted(() => {
 .search {
   display: grid;
   gap: var(--global-space-fixed-5);
+}
+
+.search--feedback {
+  min-block-size: 100%;
+  grid-template-rows: auto 1fr;
+
+  .search__feedback {
+    align-self: center;
+  }
+
+  .search__results {
+    display: none;
+  }
 }
 
 .search__form {
