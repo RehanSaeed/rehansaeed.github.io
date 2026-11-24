@@ -1,20 +1,12 @@
 <template>
-  <div
+  <section
     class="search__feedback"
     :class="{
       'search__feedback--hidden': !searchTerm || status === 'results',
     }">
     <div role="status">
       <template v-if="searchTerm && status !== 'results'">
-        <u-icon
-          class="search__feedback-icon"
-          :name="
-            status === 'error'
-              ? 'feather:alert-circle'
-              : status === 'loading'
-                ? 'feather:rotate-cw'
-                : 'feather:search'
-          " />
+        <u-icon class="search__feedback-icon" :name="feedbackIcon" />
         <template v-if="status === 'idle'">
           <h3 class="search__feedback-heading">Keep typing</h3>
           <p>
@@ -40,12 +32,14 @@
       @click="$emit('retry')">
       Retry search
     </u-button>
-  </div>
+  </section>
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
+
 defineOptions({ name: "u-search-feedback" });
-defineProps<{
+const props = defineProps<{
   /** Current search term. */
   searchTerm: string;
   /** Current search state. */
@@ -54,6 +48,16 @@ defineProps<{
   minimumSearchTermLength: number;
 }>();
 defineEmits<{ retry: [] }>();
+
+const feedbackIcon = computed(() => {
+  if (props.status === "error") {
+    return "feather:alert-circle";
+  }
+  if (props.status === "loading") {
+    return "feather:rotate-cw";
+  }
+  return "feather:search";
+});
 </script>
 
 <style lang="scss">

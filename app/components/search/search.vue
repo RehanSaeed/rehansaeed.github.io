@@ -175,11 +175,12 @@ onMounted(() => {
 
 .search {
   display: grid;
+  align-content: start;
   gap: var(--global-space-fixed-5);
 }
 
 .search--feedback {
-  min-block-size: 100%;
+  align-content: stretch;
   grid-template-rows: auto 1fr;
 
   .search__feedback {

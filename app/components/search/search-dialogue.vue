@@ -104,3 +104,9 @@ onMounted(() => {
   }
 });
 </script>
+
+<style lang="scss">
+.search-dialogue .dialog__content {
+  display: grid;
+}
+</style>

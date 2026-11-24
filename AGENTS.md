@@ -50,6 +50,9 @@ authorise publishing the article or posting to social media.
 - Use semantic HTML elements that reflect the content's meaning and purpose.
 - Use accessible HTML with native controls, accessible names and labels, and
   keyboard support. Use ARIA only when native HTML semantics are insufficient.
+- Keep `if` statements and ternary expressions out of HTML and Vue templates;
+  put branching logic in component scripts. Simple boolean conditions in Vue
+  `:class` bindings are fine.
 
 ## CSS
 
