@@ -17,48 +17,11 @@
         type="search" />
       <!-- eslint-enable vuejs-accessibility/no-autofocus -->
     </form>
-    <div
-      class="search__feedback"
-      :class="{
-        'search__feedback--hidden': !searchTerm || searchStatus === 'results',
-      }">
-      <div role="status">
-        <template v-if="searchTerm && searchStatus !== 'results'">
-          <u-icon
-            class="search__feedback-icon"
-            :name="
-              searchStatus === 'error'
-                ? 'feather:alert-circle'
-                : searchStatus === 'loading'
-                  ? 'feather:rotate-cw'
-                  : 'feather:search'
-            " />
-          <template v-if="searchStatus === 'idle'">
-            <h3 class="search__feedback-heading">Keep typing</h3>
-            <p>
-              Enter at least {{ minimumSearchTermLength }} characters to search.
-            </p>
-          </template>
-          <template v-else-if="searchStatus === 'loading'">
-            <h3 class="search__feedback-heading">Searching…</h3>
-          </template>
-          <template v-else-if="searchStatus === 'empty'">
-            <h3 class="search__feedback-heading">No results found</h3>
-            <p>Try a different search.</p>
-          </template>
-          <template v-else>
-            <h3 class="search__feedback-heading">Search is unavailable</h3>
-            <p>Please try again.</p>
-          </template>
-        </template>
-      </div>
-      <u-button
-        v-if="searchTerm && searchStatus === 'error'"
-        variant="secondary"
-        @click="retrySearch">
-        Retry search
-      </u-button>
-    </div>
+    <u-search-feedback
+      :search-term="searchTerm"
+      :status="searchStatus"
+      :minimum-search-term-length="minimumSearchTermLength"
+      @retry="retrySearch" />
     <div class="search__results">
       <u-search-result
         v-for="searchResult of searchResults"
@@ -238,39 +201,6 @@ onMounted(() => {
   font-size: var(--global-font-size-5);
 }
 
-.search__feedback {
-  text-align: center;
-}
-
-.search__feedback--hidden {
-  @include visually-hidden.visually-hidden();
-}
-
-.search__feedback-icon {
-  color: var(--global-accent-color);
-  font-size: var(--global-space-fixed-6);
-  margin-inline: auto;
-}
-
-.search__feedback-heading {
-  font-size: var(--global-font-size-3);
-  margin-block: var(--global-space-fixed-3);
-}
-
-.search__feedback p {
-  margin-block: 0;
-  margin-inline: auto;
-}
-
-.search__feedback .button {
-  margin-block-start: var(--global-space-fixed-3);
-
-  &:focus-visible {
-    outline: var(--global-border-width-2) solid var(--global-accent-color);
-    outline-offset: var(--global-focus-outline-offset);
-  }
-}
-
 .search__results {
   display: grid;
   gap: var(--global-space-fixed-5);
@@ -278,15 +208,5 @@ onMounted(() => {
 
   overflow-y: auto; // Remove when browser support is good enough.
   overflow-block: auto;
-}
-
-@media (forced-colors: active) {
-  .search__feedback-icon {
-    color: CanvasText;
-  }
-
-  .search__feedback .button:focus-visible {
-    outline-color: Highlight;
-  }
 }
 </style>
