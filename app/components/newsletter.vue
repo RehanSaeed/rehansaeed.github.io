@@ -86,7 +86,9 @@ const metadata = useAppConfig().site;
 }
 
 .newsletter__input {
+  field-sizing: content;
   grid-area: input;
+  max-inline-size: min(100%, 24rem);
 }
 
 .newsletter__button {
