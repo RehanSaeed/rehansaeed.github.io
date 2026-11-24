@@ -15,31 +15,116 @@ for (const width of [390, 1440]) {
         const footer = document.querySelector(".footer")!;
         const paginationBounds = pagination.getBoundingClientRect();
         const footerBounds = footer.getBoundingClientRect();
-        const paginationStyle = getComputedStyle(pagination);
         const footerStyle = getComputedStyle(footer);
         return {
           above: paginationBounds.top - posts.getBoundingClientRect().bottom,
           below: footerBounds.top - paginationBounds.bottom,
-          paginationMargin: Number.parseFloat(paginationStyle.marginBlockEnd),
           footerMargin: Number.parseFloat(footerStyle.marginBlockStart),
           betweenCards: Number.parseFloat(getComputedStyle(posts).rowGap),
         };
       });
       expect(gaps.above).toBeGreaterThanOrEqual(11.9);
       expect(gaps.above).toBeCloseTo(gaps.betweenCards, 1);
-      expect(gaps.below).toBeGreaterThanOrEqual(gaps.above * 2 - 1);
-      expect(gaps.below).toBeCloseTo(
-        gaps.paginationMargin + gaps.footerMargin,
-        1,
+      expect(gaps.below).toBeCloseTo(gaps.above, 1);
+      expect(gaps.below).toBeCloseTo(gaps.footerMargin, 1);
+      const nextLink = pager.getByRole("link", { name: "Next", exact: true });
+      await expect(nextLink).toHaveAttribute(
+        "href",
+        path === "/" ? "/2/" : "/3/",
       );
-      await expect(
-        pager.getByRole("link", { name: "Next", exact: true }),
-      ).toHaveAttribute("href", path === "/" ? "/2/" : "/3/");
-      await expect(
-        pager.getByRole("link", { name: "Previous", exact: true }),
-      ).toHaveCount(path === "/" ? 0 : 1);
+      await expect(pager.locator("a svg[aria-hidden='true']")).toHaveCount(
+        path === "/" ? 1 : 2,
+      );
+      await expect(pager.locator("a").first()).toHaveCSS(
+        "white-space",
+        "nowrap",
+      );
+      await expect(pager.locator("a").last()).toHaveCSS(
+        "white-space",
+        "nowrap",
+      );
+      const previousLink = pager.getByRole("link", {
+        name: "Previous",
+        exact: true,
+      });
+      await expect(previousLink).toHaveCount(path === "/" ? 0 : 1);
     });
   }
+}
+
+for (const width of [320, 390, 1440]) {
+  test(`Pagination arrows align to the outer edges at ${width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.goto("/2/");
+    await page.evaluate(() => document.fonts.ready.then(() => undefined));
+    const iconAlignment = await page
+      .locator(".posts__pager")
+      .evaluate((element) => {
+        const previous = element.querySelector(".pager__previous-button")!;
+        const next = element.querySelector(".pager__next-button")!;
+        const info = element.querySelector(".pager__info")!;
+        const bounds = (selector: string) => {
+          return element.querySelector(selector)!.getBoundingClientRect();
+        };
+        const previousButton = previous.getBoundingClientRect();
+        const nextButton = next.getBoundingClientRect();
+        const infoBounds = info.getBoundingClientRect();
+        const previousIcon = bounds(".pager__previous-button .pager__icon");
+        const nextIcon = bounds(".pager__next-button .pager__icon");
+        const previousLabel = bounds(".pager__previous-button .pager__label");
+        const nextLabel = bounds(".pager__next-button .pager__label");
+        return {
+          previousIconInset: previousIcon.left - previousButton.left,
+          nextIconInset: nextButton.right - nextIcon.right,
+          previousGap: previousLabel.left - previousIcon.right,
+          nextGap: nextIcon.left - nextLabel.right,
+          minimumGap: Number.parseFloat(getComputedStyle(previous).columnGap),
+          previousVerticalDifference:
+            (previousIcon.top + previousIcon.bottom) / 2 -
+            (previousLabel.top + previousLabel.bottom) / 2,
+          nextVerticalDifference:
+            (nextIcon.top + nextIcon.bottom) / 2 -
+            (nextLabel.top + nextLabel.bottom) / 2,
+          previousLabelCenterDifference:
+            (previousLabel.left + previousLabel.right) / 2 -
+            (previousButton.left + previousButton.right) / 2,
+          nextLabelCenterDifference:
+            (nextLabel.left + nextLabel.right) / 2 -
+            (nextButton.left + nextButton.right) / 2,
+          previousOverflow: previous.scrollWidth - previous.clientWidth,
+          nextOverflow: next.scrollWidth - next.clientWidth,
+          previousToInfo: infoBounds.left - previousButton.right,
+          infoToNext: nextButton.left - infoBounds.right,
+          previousLeft: previousButton.left,
+          nextRight: nextButton.right,
+          viewportWidth: document.documentElement.clientWidth,
+        };
+      });
+    expect(iconAlignment.previousIconInset).toBeCloseTo(
+      iconAlignment.nextIconInset,
+      1,
+    );
+    expect(iconAlignment.previousGap).toBeGreaterThanOrEqual(
+      iconAlignment.minimumGap - 0.1,
+    );
+    expect(iconAlignment.nextGap).toBeGreaterThanOrEqual(
+      iconAlignment.minimumGap - 0.1,
+    );
+    expect(iconAlignment.previousVerticalDifference).toBeCloseTo(0, 1);
+    expect(iconAlignment.nextVerticalDifference).toBeCloseTo(0, 1);
+    expect(iconAlignment.previousLabelCenterDifference).toBeCloseTo(0, 1);
+    expect(iconAlignment.nextLabelCenterDifference).toBeCloseTo(0, 1);
+    expect(iconAlignment.previousOverflow).toBeLessThanOrEqual(1);
+    expect(iconAlignment.nextOverflow).toBeLessThanOrEqual(1);
+    expect(iconAlignment.previousToInfo).toBeGreaterThanOrEqual(0);
+    expect(iconAlignment.infoToNext).toBeGreaterThanOrEqual(0);
+    expect(iconAlignment.previousLeft).toBeGreaterThanOrEqual(0);
+    expect(iconAlignment.nextRight).toBeLessThanOrEqual(
+      iconAlignment.viewportWidth,
+    );
+  });
 }
 
 for (const { width, height } of [
