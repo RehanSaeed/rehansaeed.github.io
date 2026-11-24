@@ -81,6 +81,7 @@ const update = async () => {
   background: var(--global-content-background-color);
   border: var(--global-border-width-1) solid var(--global-border-color);
   border-radius: var(--global-border-radius);
+  corner-shape: squircle;
   box-shadow: var(--global-shadow-3);
   color: var(--global-body-color);
   padding: var(--global-space-fixed-5);

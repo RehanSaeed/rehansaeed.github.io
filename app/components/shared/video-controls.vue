@@ -374,6 +374,7 @@ onUnmounted(() => {
   background: var(--video-panel);
   border: 0;
   border-radius: var(--global-border-radius);
+  corner-shape: squircle;
   padding: 5px;
   margin: 0;
   inline-size: max-content;
@@ -392,6 +393,7 @@ onUnmounted(() => {
   background: transparent;
   border: 0;
   border-radius: var(--global-border-radius);
+  corner-shape: squircle;
   font: inherit;
   text-align: start;
   padding: 8px 16px;

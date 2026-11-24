@@ -324,6 +324,7 @@ watch(
   border: var(--global-border-width-2) solid
     var(--tooltip-border-color, var(--global-accent-color));
   border-radius: var(--global-border-radius);
+  corner-shape: squircle;
   background: var(--tooltip-background, var(--global-background-color));
   color: var(--tooltip-color, var(--global-body-color));
   box-shadow: var(--global-shadow-2);

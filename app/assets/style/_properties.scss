@@ -6,6 +6,11 @@
   // Border Radius
   --global-border-radius: 0.3057325rem; // 6px
 
+  @supports (corner-shape: squircle) {
+    // Match the diagonal inset of the original circular corner.
+    --global-border-radius: calc(0.3057325rem * 1.84);
+  }
+
   // Border Width
   --global-border-width-0: 0;
   --global-border-width-1: 1px; // 0.05rem

@@ -96,6 +96,7 @@ const close = () => {
   border: var(--global-border-width-2) solid var(--global-border-color);
   border: none;
   border-radius: var(--global-border-radius);
+  corner-shape: squircle;
   color: var(--global-title-color);
   margin: auto;
   overflow: hidden;
@@ -121,6 +122,7 @@ const close = () => {
 .dialog--fullscreen {
   border: none;
   border-radius: var(--global-border-radius);
+  corner-shape: squircle;
   inline-size: 90vw;
   block-size: 90vh;
 }

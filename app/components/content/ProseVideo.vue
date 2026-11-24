@@ -555,6 +555,7 @@ watch(controlsHidden, positionCaptions);
   color: var(--video-foreground);
   background: var(--video-panel);
   border-radius: var(--global-border-radius);
+  corner-shape: squircle;
   padding: 12px;
   font-size: 0.875rem;
   max-inline-size: calc(100% - 24px);

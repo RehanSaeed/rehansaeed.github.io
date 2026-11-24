@@ -53,6 +53,7 @@ const emit = defineEmits<{ select: [index: number] }>();
 
   border: 0;
   border-radius: var(--global-border-radius);
+  corner-shape: squircle;
   background-color: transparent;
   color: inherit;
   font: inherit;

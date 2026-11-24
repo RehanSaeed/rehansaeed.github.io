@@ -90,6 +90,7 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
   background-color: var(--global-background-color);
   border: var(--global-border-width-1) solid var(--global-border-color);
   border-radius: var(--global-border-radius);
+  corner-shape: squircle;
   box-shadow: var(--global-shadow-1);
   font-size: var(--global-font-size-1);
   padding: var(--global-space-fixed-2) var(--global-space-fixed-4);
@@ -122,6 +123,7 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
   z-index: -1;
 
   border-radius: inherit;
+  corner-shape: inherit;
   box-shadow: var(--global-shadow-2);
   opacity: 0;
   transition: opacity var(--global-duration-2) var(--ease-in-out-cubic);
@@ -187,6 +189,7 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
   border-radius: 0;
   border-start-end-radius: var(--global-border-radius);
   border-end-end-radius: var(--global-border-radius);
+  corner-shape: squircle;
   padding: calc(var(--global-space-fixed-2) + var(--global-border-width-1))
     calc(var(--global-space-fixed-3) + var(--global-border-width-1));
   padding-inline-start: calc(
@@ -249,6 +252,7 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
   inset: 0;
   z-index: -1;
   border-radius: inherit;
+  corner-shape: inherit;
   pointer-events: none;
 
   &::before,
@@ -258,6 +262,7 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
     position: absolute;
     inset: 0;
     border-radius: inherit;
+    corner-shape: inherit;
     background: var(--link-button-tag-surface);
     clip-path: var(--link-button-tag-outline);
   }

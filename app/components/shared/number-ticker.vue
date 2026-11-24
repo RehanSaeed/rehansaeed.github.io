@@ -152,6 +152,7 @@ onMounted(syncAnimation);
   );
   border: var(--global-border-width-1) solid var(--global-border-color);
   border-radius: var(--global-border-radius);
+  corner-shape: squircle;
   background: var(--global-content-background-color);
   text-align: center;
   container-type: inline-size;
@@ -236,6 +237,7 @@ onMounted(syncAnimation);
   inline-size: var(--number-ticker-digit-width);
   block-size: calc(var(--number-ticker-line-height) * 1em);
   border-radius: calc(var(--global-border-radius) / 2);
+  corner-shape: squircle;
   background: color-mix(
     in srgb,
     var(--global-accent-color) 5%,

@@ -737,6 +737,7 @@ onBeforeUnmount(() => {
   padding: var(--global-space-fixed-1) var(--global-space-fixed-2);
   border: var(--global-border-width-1) solid var(--global-accent-color);
   border-radius: var(--global-border-radius);
+  corner-shape: squircle;
   background: var(--global-content-background-color);
   color: var(--global-body-color);
   font-size: var(--location-map-small-font-size);
