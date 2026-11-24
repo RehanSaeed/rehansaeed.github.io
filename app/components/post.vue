@@ -72,8 +72,7 @@ const imageMeta = computed(() => getImageMetadata(props.post.heroImage));
 }
 
 .post__header {
-  border-radius: var(--global-border-radius-large)
-    var(--global-border-radius-large) 0 0;
+  border-radius: var(--global-border-radius-2) var(--global-border-radius-2) 0 0;
   corner-shape: squircle;
   margin-inline-start: var(--global-space-fluid--6);
   margin-block-start: var(--global-space-fluid--6);

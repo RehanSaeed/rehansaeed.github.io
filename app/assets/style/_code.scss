@@ -50,7 +50,7 @@ pre[class*="language-"] {
   overflow-block: hidden;
   background-color: hsl(0 0% 100%);
   border: var(--global-border-width-1) solid hsl(0 0% 87%);
-  border-radius: var(--global-border-radius);
+  border-radius: var(--global-border-radius-1);
   corner-shape: squircle;
   transition:
     background-color var(--global-duration-3) ease-out,
@@ -62,7 +62,7 @@ pre[class*="language-"] {
 :not(pre) > code {
   padding: 0.05rem 0.25rem;
   background: hsl(210 13% 12% / 0.05);
-  border-radius: var(--global-border-radius);
+  border-radius: var(--global-border-radius-1);
   corner-shape: squircle;
   transition:
     background-color var(--global-duration-3) ease-out,

@@ -95,7 +95,7 @@ const close = () => {
   background: var(--global-content-background-color);
   border: var(--global-border-width-2) solid var(--global-border-color);
   border: none;
-  border-radius: var(--global-border-radius-large);
+  border-radius: var(--global-border-radius-2);
   corner-shape: squircle;
   color: var(--global-title-color);
   margin: auto;
@@ -121,7 +121,7 @@ const close = () => {
 
 .dialog--fullscreen {
   border: none;
-  border-radius: var(--global-border-radius-large);
+  border-radius: var(--global-border-radius-2);
   corner-shape: squircle;
   inline-size: 90vw;
   block-size: 90vh;

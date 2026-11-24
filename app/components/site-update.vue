@@ -80,7 +80,7 @@ const update = async () => {
   gap: var(--global-space-fixed-3);
   background: var(--global-content-background-color);
   border: var(--global-border-width-1) solid var(--global-border-color);
-  border-radius: var(--global-border-radius);
+  border-radius: var(--global-border-radius-1);
   corner-shape: squircle;
   box-shadow: var(--global-shadow-3);
   color: var(--global-body-color);

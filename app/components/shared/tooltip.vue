@@ -323,7 +323,7 @@ watch(
   overflow: visible;
   border: var(--global-border-width-2) solid
     var(--tooltip-border-color, var(--global-accent-color));
-  border-radius: var(--global-border-radius);
+  border-radius: var(--global-border-radius-1);
   corner-shape: squircle;
   background: var(--tooltip-background, var(--global-background-color));
   color: var(--tooltip-color, var(--global-body-color));

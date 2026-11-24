@@ -89,7 +89,7 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
 .link-button--bordered {
   background-color: var(--global-background-color);
   border: var(--global-border-width-1) solid var(--global-border-color);
-  border-radius: var(--global-border-radius);
+  border-radius: var(--global-border-radius-1);
   corner-shape: squircle;
   box-shadow: var(--global-shadow-1);
   font-size: var(--global-font-size-1);
@@ -187,8 +187,8 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
   min-block-size: calc(var(--global-space-fixed-3) * 3);
   border: none;
   border-radius: 0;
-  border-start-end-radius: var(--global-border-radius);
-  border-end-end-radius: var(--global-border-radius);
+  border-start-end-radius: var(--global-border-radius-1);
+  border-end-end-radius: var(--global-border-radius-1);
   corner-shape: squircle;
   padding: calc(var(--global-space-fixed-2) + var(--global-border-width-1))
     calc(var(--global-space-fixed-3) + var(--global-border-width-1));

@@ -74,7 +74,7 @@ const type = computed(() => (props.submit ? "submit" : "button"));
 .button--secondary {
   background-color: var(--global-background-color);
   border: var(--global-border-width-1) solid var(--global-border-color);
-  border-radius: var(--global-border-radius);
+  border-radius: var(--global-border-radius-1);
   corner-shape: squircle;
   box-shadow: var(--global-shadow-1);
   font-size: var(--global-font-size-1);

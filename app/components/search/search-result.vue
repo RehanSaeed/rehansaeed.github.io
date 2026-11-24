@@ -81,7 +81,7 @@ const onSelected = (event: MouseEvent) => {
 }
 .search-result__image {
   border: var(--global-border-width-2) solid var(--global-border-color);
-  border-radius: var(--global-border-radius);
+  border-radius: var(--global-border-radius-1);
   corner-shape: squircle;
   min-inline-size: 8rem;
   inline-size: 8rem;

@@ -151,7 +151,7 @@ onMounted(syncAnimation);
     var(--global-space-fixed-4)
   );
   border: var(--global-border-width-1) solid var(--global-border-color);
-  border-radius: var(--global-border-radius);
+  border-radius: var(--global-border-radius-1);
   corner-shape: squircle;
   background: var(--global-content-background-color);
   text-align: center;
@@ -236,7 +236,7 @@ onMounted(syncAnimation);
   overflow: hidden;
   inline-size: var(--number-ticker-digit-width);
   block-size: calc(var(--number-ticker-line-height) * 1em);
-  border-radius: calc(var(--global-border-radius) / 2);
+  border-radius: calc(var(--global-border-radius-1) / 2);
   corner-shape: squircle;
   background: color-mix(
     in srgb,

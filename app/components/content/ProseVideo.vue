@@ -554,7 +554,7 @@ watch(controlsHidden, positionCaptions);
 .prose-video__status {
   color: var(--video-foreground);
   background: var(--video-panel);
-  border-radius: var(--global-border-radius);
+  border-radius: var(--global-border-radius-1);
   corner-shape: squircle;
   padding: 12px;
   font-size: 0.875rem;
