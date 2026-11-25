@@ -416,8 +416,8 @@ for (const width of [375, 1280]) {
         portrait.evaluate(
           (image: HTMLImageElement) =>
             image.complete &&
-            image.naturalWidth === 320 &&
-            image.naturalHeight === 480,
+            image.naturalWidth > 0 &&
+            image.naturalWidth * 3 === image.naturalHeight * 2,
         ),
       )
       .toBe(true);

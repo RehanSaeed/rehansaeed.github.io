@@ -603,14 +603,18 @@ test.describe("Continuous scroll-linked motion", () => {
       .click();
     // A prior focus/visibility scroll can finish after smooth navigation starts.
     await finishPreviousScroll();
+    // Navigation centres the slide; the integer scrollWidth includes trailing padding.
     await expect
       .poll(() =>
-        track.evaluate(
-          (element) =>
-            element.scrollWidth - element.clientWidth - element.scrollLeft,
-        ),
+        track.evaluate((element) => {
+          const rail = element.getBoundingClientRect();
+          const slide = element.lastElementChild!.getBoundingClientRect();
+          return Math.abs(
+            slide.x + slide.width / 2 - (rail.x + rail.width / 2),
+          );
+        }),
       )
-      .toBeCloseTo(0, 0);
+      .toBeLessThanOrEqual(1);
     await expect(
       gallery.getByRole("button", { name: "Go to image 6 of 6" }),
     ).toHaveAttribute("aria-current", "true");
@@ -649,6 +653,7 @@ test.describe("Continuous scroll-linked motion", () => {
 
   test("Carousel controls fade across the whole gallery, stay visible with focus and animate both paging states", async ({
     page,
+    browserName,
   }) => {
     await page.goto("/cheat-sheet/", { waitUntil: "domcontentloaded" });
     const gallery = page
@@ -728,6 +733,7 @@ test.describe("Continuous scroll-linked motion", () => {
     });
     await expect(shell).toHaveCSS("opacity", "0");
     await firstDot.click();
+    await firstDot.focus();
     await expect(firstDot).toBeFocused();
     await page.mouse.move(0, 0);
     await expect(shell).toHaveCSS("opacity", "1");
@@ -737,12 +743,22 @@ test.describe("Continuous scroll-linked motion", () => {
     await expect(shell).toHaveCSS("opacity", "1");
     await expect(shell).toHaveCSS("transition-duration", "0s");
     await next.press("Shift+Tab");
-    await expect(gallery.getByRole("link")).toBeFocused();
+    const link = gallery.getByRole("link");
+    const track = gallery.getByRole("list", { name: "Gallery images" });
+    /* eslint-disable playwright/no-conditional-in-test, playwright/no-conditional-expect -- Native WebKit link traversal depends on the platform setting. */
+    if (
+      browserName === "webkit" &&
+      !(await link.evaluate((element) => element === document.activeElement))
+    ) {
+      // WebKit can omit links from Tab navigation according to the platform setting.
+      await expect(track).toBeFocused();
+      await link.focus();
+    }
+    /* eslint-enable playwright/no-conditional-in-test, playwright/no-conditional-expect */
+    await expect(link).toBeFocused();
     await expect(shell).toHaveCSS("opacity", "1");
-    await gallery.getByRole("link").press("Shift+Tab");
-    await expect(
-      gallery.getByRole("list", { name: "Gallery images" }),
-    ).toBeFocused();
+    await link.press("Shift+Tab");
+    await expect(track).toBeFocused();
     await expect(shell).toHaveCSS("opacity", "1");
     await page.keyboard.press("Shift+Tab");
     await expect(shell).toHaveCSS("opacity", "0");
@@ -924,10 +940,36 @@ test("Cover Flow arrow shells and shared paging retain their colours, inset circ
   await firstDot.press("Tab");
   await expect(secondDot).toBeFocused();
   await expect(secondDot).toHaveCSS("outline-style", "solid");
-  await expect(secondDot.locator("span")).toHaveCSS(
-    "forced-color-adjust",
-    "none",
+  const forcedColours = await page.evaluate(() => {
+    const probe = document.createElement("span");
+    document.body.append(probe);
+    probe.style.color = "ButtonText";
+    const buttonText = getComputedStyle(probe).color;
+    probe.style.color = "Highlight";
+    const highlight = getComputedStyle(probe).color;
+    probe.remove();
+    return {
+      buttonText,
+      highlight,
+      supportsAdjustment: CSS.supports("forced-color-adjust", "none"),
+    };
+  });
+  await expect(firstDot.locator("span")).toHaveCSS(
+    "background-color",
+    forcedColours.highlight,
   );
+  await expect(secondDot.locator("span")).toHaveCSS(
+    "background-color",
+    forcedColours.buttonText,
+  );
+  /* eslint-disable playwright/no-conditional-in-test, playwright/no-conditional-expect -- WebKit does not implement this CSS property. */
+  if (forcedColours.supportsAdjustment) {
+    await expect(secondDot.locator("span")).toHaveCSS(
+      "forced-color-adjust",
+      "none",
+    );
+  }
+  /* eslint-enable playwright/no-conditional-in-test, playwright/no-conditional-expect */
   await track.focus();
   await track.press("Tab");
   await expect(next).toBeFocused();

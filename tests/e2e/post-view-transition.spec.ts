@@ -224,6 +224,14 @@ const prepare = async (page: Page, warm = true) => {
   await expect(
     page.getByRole("button", { name: "Open search", exact: true }),
   ).toBeEnabled();
+  // The article embeds three live YouTube players on each visit. Keep the real
+  // article and its frame layout, without routing requests (which disables the cache).
+  await page.locator("head").evaluate((head) => {
+    const policy = document.createElement("meta");
+    policy.httpEquiv = "Content-Security-Policy";
+    policy.content = "frame-src 'self'";
+    head.append(policy);
+  });
   if (warm) {
     // Warm the actual client Content and article picture, not just SSR data.
     // The offscreen source uses only the default page fade during warm-up.
