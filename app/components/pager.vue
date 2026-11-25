@@ -4,12 +4,12 @@
       v-if="pageInfo.hasPreviousPage"
       class="pager__previous-button"
       variant="contrast"
+      label="Previous page"
       :to="previousUrl">
       <u-icon
         class="pager__icon"
         name="fa-solid:arrow-left"
         aria-hidden="true" />
-      <span class="pager__label">Previous</span>
     </u-link-button>
 
     <p class="pager__info">
@@ -22,8 +22,8 @@
       v-if="pageInfo.hasNextPage"
       class="pager__next-button"
       variant="contrast"
+      label="Next page"
       :to="nextUrl">
-      <span class="pager__label">Next</span>
       <u-icon
         class="pager__icon"
         name="fa-solid:arrow-right"
@@ -57,7 +57,7 @@ const nextUrl = computed(() => getNextUrl(props.pageInfo));
   align-items: center;
   gap: var(--global-space-fluid-4);
   grid-template-areas: "previous info next";
-  grid-template-columns: clamp(7rem, 12vw, 8rem) 1fr clamp(7rem, 12vw, 8rem);
+  grid-template-columns: 2.75rem auto 2.75rem;
 
   text-align: center;
 }
@@ -71,29 +71,18 @@ const nextUrl = computed(() => getNextUrl(props.pageInfo));
 .pager__previous-button,
 .pager__next-button {
   display: grid;
-  align-items: center;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  gap: var(--global-space-fixed-1);
-  padding-inline: clamp(
-    var(--global-space-fixed-1),
-    var(--global-space-fluid-2),
-    var(--global-space-fixed-2)
-  );
-  white-space: nowrap;
+  place-items: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  border-radius: 50%;
+  padding: var(--global-space-fixed-2);
+  font-size: 1rem;
 }
 
-.pager__label {
-  grid-column: 2;
-}
-
-.pager__previous-button .pager__icon {
-  grid-column: 1;
-  justify-self: start;
-}
-
-.pager__next-button .pager__icon {
-  grid-column: 3;
-  justify-self: end;
+.pager .pager__previous-button:focus-visible,
+.pager .pager__next-button:focus-visible {
+  outline: var(--global-border-width-2) solid var(--global-accent-color);
+  outline-offset: var(--global-focus-outline-offset);
 }
 
 .pager__previous-button {
@@ -102,5 +91,17 @@ const nextUrl = computed(() => getNextUrl(props.pageInfo));
 
 .pager__next-button {
   grid-area: next;
+}
+
+@media (forced-colors: active) {
+  .pager__previous-button,
+  .pager__next-button {
+    border-color: LinkText;
+  }
+
+  .pager .pager__previous-button:focus-visible,
+  .pager .pager__next-button:focus-visible {
+    outline-color: Highlight;
+  }
 }
 </style>

@@ -27,7 +27,10 @@ for (const width of [390, 1440]) {
       expect(gaps.above).toBeCloseTo(gaps.betweenCards, 1);
       expect(gaps.below).toBeCloseTo(gaps.above, 1);
       expect(gaps.below).toBeCloseTo(gaps.footerMargin, 1);
-      const nextLink = pager.getByRole("link", { name: "Next", exact: true });
+      const nextLink = pager.getByRole("link", {
+        name: "Next page",
+        exact: true,
+      });
       await expect(nextLink).toHaveAttribute(
         "href",
         path === "/" ? "/2/" : "/3/",
@@ -35,16 +38,8 @@ for (const width of [390, 1440]) {
       await expect(pager.locator("a svg[aria-hidden='true']")).toHaveCount(
         path === "/" ? 1 : 2,
       );
-      await expect(pager.locator("a").first()).toHaveCSS(
-        "white-space",
-        "nowrap",
-      );
-      await expect(pager.locator("a").last()).toHaveCSS(
-        "white-space",
-        "nowrap",
-      );
       const previousLink = pager.getByRole("link", {
-        name: "Previous",
+        name: "Previous page",
         exact: true,
       });
       await expect(previousLink).toHaveCount(path === "/" ? 0 : 1);
@@ -53,7 +48,7 @@ for (const width of [390, 1440]) {
 }
 
 for (const width of [320, 390, 1440]) {
-  test(`Pagination arrows align to the outer edges at ${width}px`, async ({
+  test(`Pagination icon links are centred and accessible at ${width}px`, async ({
     page,
   }) => {
     await page.setViewportSize({ width, height: 1000 });
@@ -73,57 +68,67 @@ for (const width of [320, 390, 1440]) {
         const infoBounds = info.getBoundingClientRect();
         const previousIcon = bounds(".pager__previous-button .pager__icon");
         const nextIcon = bounds(".pager__next-button .pager__icon");
-        const previousLabel = bounds(".pager__previous-button .pager__label");
-        const nextLabel = bounds(".pager__next-button .pager__label");
         return {
-          previousIconInset: previousIcon.left - previousButton.left,
-          nextIconInset: nextButton.right - nextIcon.right,
-          previousGap: previousLabel.left - previousIcon.right,
-          nextGap: nextIcon.left - nextLabel.right,
-          minimumGap: Number.parseFloat(getComputedStyle(previous).columnGap),
+          previousWidth: previousButton.width,
+          previousHeight: previousButton.height,
+          nextWidth: nextButton.width,
+          nextHeight: nextButton.height,
           previousVerticalDifference:
             (previousIcon.top + previousIcon.bottom) / 2 -
-            (previousLabel.top + previousLabel.bottom) / 2,
+            (previousButton.top + previousButton.bottom) / 2,
           nextVerticalDifference:
             (nextIcon.top + nextIcon.bottom) / 2 -
-            (nextLabel.top + nextLabel.bottom) / 2,
-          previousLabelCenterDifference:
-            (previousLabel.left + previousLabel.right) / 2 -
+            (nextButton.top + nextButton.bottom) / 2,
+          previousHorizontalDifference:
+            (previousIcon.left + previousIcon.right) / 2 -
             (previousButton.left + previousButton.right) / 2,
-          nextLabelCenterDifference:
-            (nextLabel.left + nextLabel.right) / 2 -
+          nextHorizontalDifference:
+            (nextIcon.left + nextIcon.right) / 2 -
             (nextButton.left + nextButton.right) / 2,
           previousOverflow: previous.scrollWidth - previous.clientWidth,
           nextOverflow: next.scrollWidth - next.clientWidth,
-          previousToInfo: infoBounds.left - previousButton.right,
-          infoToNext: nextButton.left - infoBounds.right,
+          infoOverlapsButton: [previousButton, nextButton].some(
+            (button) =>
+              button.left < infoBounds.right &&
+              button.right > infoBounds.left &&
+              button.top < infoBounds.bottom &&
+              button.bottom > infoBounds.top,
+          ),
           previousLeft: previousButton.left,
           nextRight: nextButton.right,
           viewportWidth: document.documentElement.clientWidth,
         };
       });
-    expect(iconAlignment.previousIconInset).toBeCloseTo(
-      iconAlignment.nextIconInset,
+    expect(iconAlignment.previousWidth).toBeGreaterThanOrEqual(44);
+    expect(iconAlignment.nextWidth).toBeGreaterThanOrEqual(44);
+    expect(iconAlignment.previousWidth).toBeCloseTo(
+      iconAlignment.previousHeight,
       1,
     );
-    expect(iconAlignment.previousGap).toBeGreaterThanOrEqual(
-      iconAlignment.minimumGap - 0.1,
-    );
-    expect(iconAlignment.nextGap).toBeGreaterThanOrEqual(
-      iconAlignment.minimumGap - 0.1,
-    );
+    expect(iconAlignment.nextWidth).toBeCloseTo(iconAlignment.nextHeight, 1);
     expect(iconAlignment.previousVerticalDifference).toBeCloseTo(0, 1);
     expect(iconAlignment.nextVerticalDifference).toBeCloseTo(0, 1);
-    expect(iconAlignment.previousLabelCenterDifference).toBeCloseTo(0, 1);
-    expect(iconAlignment.nextLabelCenterDifference).toBeCloseTo(0, 1);
+    expect(iconAlignment.previousHorizontalDifference).toBeCloseTo(0, 1);
+    expect(iconAlignment.nextHorizontalDifference).toBeCloseTo(0, 1);
     expect(iconAlignment.previousOverflow).toBeLessThanOrEqual(1);
     expect(iconAlignment.nextOverflow).toBeLessThanOrEqual(1);
-    expect(iconAlignment.previousToInfo).toBeGreaterThanOrEqual(0);
-    expect(iconAlignment.infoToNext).toBeGreaterThanOrEqual(0);
+    expect(iconAlignment.infoOverlapsButton).toBe(false);
     expect(iconAlignment.previousLeft).toBeGreaterThanOrEqual(0);
     expect(iconAlignment.nextRight).toBeLessThanOrEqual(
       iconAlignment.viewportWidth,
     );
+    const previousLink = page.getByRole("link", {
+      name: "Previous page",
+      exact: true,
+    });
+    const nextLink = page.getByRole("link", { name: "Next page", exact: true });
+    await expect(previousLink).toHaveAttribute("href", "/");
+    await expect(nextLink).toHaveAttribute("href", "/3/");
+    await previousLink.focus();
+    await expect(previousLink).toBeFocused();
+    await expect(previousLink).toHaveCSS("outline-style", "solid");
+    await previousLink.press("Tab");
+    await expect(nextLink).toBeFocused();
   });
 }
 
