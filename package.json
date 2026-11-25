@@ -42,7 +42,7 @@
     "maplibre-gl": "6.19.0",
     "mermaid": "12.3.0",
     "nuxt": "4.6.4",
-    "nuxt-og-image": "7.0.7",
+    "nuxt-og-image": "7.2.0",
     "rehype-katex": "7.0.1",
     "remark-math": "6.0.0",
     "sanitize-html": "2.18.2",
