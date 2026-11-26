@@ -35,4 +35,13 @@ defineOptions({ name: "u-scroll-indicator" });
     inline-size: 100%;
   }
 }
+
+@supports (animation-timeline: scroll(root block)) {
+  .scroll-indicator {
+    animation-delay: 0s;
+    animation-duration: auto;
+    animation-timeline: scroll(root block);
+    animation-play-state: running;
+  }
+}
 </style>
