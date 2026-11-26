@@ -2,8 +2,7 @@
   <div class="pager">
     <u-link-button
       v-if="pageInfo.hasPreviousPage"
-      class="pager__previous-button"
-      variant="contrast"
+      class="button button--icon pager__previous-button"
       label="Previous page"
       :to="previousUrl">
       <u-icon
@@ -20,8 +19,7 @@
 
     <u-link-button
       v-if="pageInfo.hasNextPage"
-      class="pager__next-button"
-      variant="contrast"
+      class="button button--icon pager__next-button"
       label="Next page"
       :to="nextUrl">
       <u-icon
@@ -57,7 +55,7 @@ const nextUrl = computed(() => getNextUrl(props.pageInfo));
   align-items: center;
   gap: var(--global-space-fluid-4);
   grid-template-areas: "previous info next";
-  grid-template-columns: 2.75rem auto 2.75rem;
+  grid-template-columns: 1fr auto 1fr;
 
   text-align: center;
 }
@@ -68,40 +66,11 @@ const nextUrl = computed(() => getNextUrl(props.pageInfo));
   min-inline-size: 0;
 }
 
-.pager__previous-button,
-.pager__next-button {
-  display: grid;
-  place-items: center;
-  inline-size: 2.75rem;
-  block-size: 2.75rem;
-  border-radius: 50%;
-  padding: var(--global-space-fixed-2);
-  font-size: 1rem;
-}
-
-.pager .pager__previous-button:focus-visible,
-.pager .pager__next-button:focus-visible {
-  outline: var(--global-border-width-2) solid var(--global-accent-color);
-  outline-offset: var(--global-focus-outline-offset);
-}
-
 .pager__previous-button {
   grid-area: previous;
 }
 
 .pager__next-button {
   grid-area: next;
-}
-
-@media (forced-colors: active) {
-  .pager__previous-button,
-  .pager__next-button {
-    border-color: LinkText;
-  }
-
-  .pager .pager__previous-button:focus-visible,
-  .pager .pager__next-button:focus-visible {
-    outline-color: Highlight;
-  }
 }
 </style>

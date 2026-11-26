@@ -16,17 +16,27 @@ for (const width of [390, 1440]) {
         const paginationBounds = pagination.getBoundingClientRect();
         const footerBounds = footer.getBoundingClientRect();
         const footerStyle = getComputedStyle(footer);
+        const infoBounds = pagination
+          .querySelector(".pager__info")!
+          .getBoundingClientRect();
         return {
           above: paginationBounds.top - posts.getBoundingClientRect().bottom,
           below: footerBounds.top - paginationBounds.bottom,
           footerMargin: Number.parseFloat(footerStyle.marginBlockStart),
           betweenCards: Number.parseFloat(getComputedStyle(posts).rowGap),
+          infoCenterOffset:
+            (infoBounds.left +
+              infoBounds.right -
+              paginationBounds.left -
+              paginationBounds.right) /
+            2,
         };
       });
       expect(gaps.above).toBeGreaterThanOrEqual(11.9);
       expect(gaps.above).toBeCloseTo(gaps.betweenCards, 1);
       expect(gaps.below).toBeCloseTo(gaps.above, 1);
       expect(gaps.below).toBeCloseTo(gaps.footerMargin, 1);
+      expect(gaps.infoCenterOffset).toBeCloseTo(0, 1);
       const nextLink = pager.getByRole("link", {
         name: "Next page",
         exact: true,
