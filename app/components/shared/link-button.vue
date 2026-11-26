@@ -6,6 +6,7 @@
       'link-button--bordered':
         variant === 'secondary' || variant === 'contrast',
       'link-button--contrast': variant === 'contrast',
+      'link-button--icon': variant === 'icon',
       'link-button--primary': variant === 'primary',
       'link-button--tag': variant === 'tag',
     }"
@@ -35,15 +36,16 @@ import { NuxtLink } from "#components";
 
 defineOptions({ name: "u-link-button" });
 const props = defineProps({
-  /** Visual appearance; contrast is a bordered link on a contrasting surface. */ variant:
-    {
-      type: String as PropType<
-        "plain" | "secondary" | "contrast" | "primary" | "tag"
-      >,
-      default: "plain",
-      validator: (value: string) =>
-        ["plain", "secondary", "contrast", "primary", "tag"].includes(value),
-    },
+  /** Visual appearance; icon is a circular control. */ variant: {
+    type: String as PropType<
+      "plain" | "secondary" | "contrast" | "icon" | "primary" | "tag"
+    >,
+    default: "plain",
+    validator: (value: string) =>
+      ["plain", "secondary", "contrast", "icon", "primary", "tag"].includes(
+        value,
+      ),
+  },
   /** Accessible text describing the control or link. */ label: {
     type: String,
   },
@@ -83,6 +85,30 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
   &:hover {
     color: var(--link-button-tag-text-color, var(--global-accent-color));
     transform: scale(1.07);
+  }
+}
+
+.link-button.link-button--icon {
+  display: grid;
+  place-items: center;
+  color: inherit;
+  border-radius: 50%;
+  font-size: 1rem;
+  inline-size: 44px;
+  block-size: 44px;
+  padding: 8px;
+  transition: none;
+  will-change: auto;
+
+  &:hover,
+  &:focus {
+    color: inherit;
+    transform: none;
+  }
+
+  &:focus-visible {
+    outline: var(--global-border-width-2) solid var(--global-accent-color);
+    outline-offset: var(--global-focus-outline-offset);
   }
 }
 
@@ -309,6 +335,21 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
 }
 
 @media (forced-colors: active) {
+  .link-button.link-button--icon {
+    color: LinkText;
+    background-color: Canvas;
+    border: 1px solid LinkText;
+
+    &:hover,
+    &:focus {
+      color: LinkText;
+    }
+
+    &:focus-visible {
+      outline-color: Highlight;
+    }
+  }
+
   .link-button.link-button--tag {
     --link-button-tag-text-color: LinkText;
     --link-button-tag-surface: Canvas;

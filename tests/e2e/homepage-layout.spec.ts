@@ -97,6 +97,9 @@ for (const width of [320, 390, 1440]) {
             (nextButton.left + nextButton.right) / 2,
           previousOverflow: previous.scrollWidth - previous.clientWidth,
           nextOverflow: next.scrollWidth - next.clientWidth,
+          iconVariant: [previous, next].every((link) =>
+            link.classList.contains("link-button--icon"),
+          ),
           infoOverlapsButton: [previousButton, nextButton].some(
             (button) =>
               button.left < infoBounds.right &&
@@ -122,6 +125,7 @@ for (const width of [320, 390, 1440]) {
     expect(iconAlignment.nextHorizontalDifference).toBeCloseTo(0, 1);
     expect(iconAlignment.previousOverflow).toBeLessThanOrEqual(1);
     expect(iconAlignment.nextOverflow).toBeLessThanOrEqual(1);
+    expect(iconAlignment.iconVariant).toBe(true);
     expect(iconAlignment.infoOverlapsButton).toBe(false);
     expect(iconAlignment.previousLeft).toBeGreaterThanOrEqual(0);
     expect(iconAlignment.nextRight).toBeLessThanOrEqual(

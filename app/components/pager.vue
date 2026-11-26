@@ -2,7 +2,8 @@
   <div class="pager">
     <u-link-button
       v-if="pageInfo.hasPreviousPage"
-      class="button button--icon pager__previous-button"
+      class="pager__previous-button"
+      variant="icon"
       label="Previous page"
       :to="previousUrl">
       <u-icon
@@ -19,7 +20,8 @@
 
     <u-link-button
       v-if="pageInfo.hasNextPage"
-      class="button button--icon pager__next-button"
+      class="pager__next-button"
+      variant="icon"
       label="Next page"
       :to="nextUrl">
       <u-icon
