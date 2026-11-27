@@ -56,13 +56,9 @@ authorise publishing the article or posting to social media.
 - Do not use inline styles (`style` attributes or Vue `:style` bindings). Put
   styling in component stylesheets and use intrinsic HTML sizing where suitable.
 - Follow Block Element Modifier (BEM) naming for CSS classes.
-- Keep component CSS encapsulated beneath its own BEM root. Do not depend on
-  ancestor or sibling classes owned by another component. Use props, slots or
-  documented CSS custom properties for cross-component layout coordination
-  instead of parent-specific selectors or specificity overrides.
-- Do not apply one component's styling classes to another component (for example,
-  do not put `button button--icon` on `u-link-button`). Expose the appearance as
-  a variant and implement its styles beneath the owning component's BEM root.
+- Keep component CSS within its own BEM root; don't rely on or apply another
+  component's internal classes. Coordinate cross-component styling through
+  public props, slots or documented CSS custom properties.
 - Use the minimum CSS needed for the intended behaviour. Rely on intrinsic
   layout and existing shared styles; avoid redundant declarations, unnecessary
   layout containers and styling states that cannot be displayed.
