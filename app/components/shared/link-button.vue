@@ -91,7 +91,7 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
 .link-button.link-button--icon {
   display: grid;
   place-items: center;
-  color: inherit;
+  color: var(--global-title-color);
   border-radius: 50%;
   font-size: 1rem;
   inline-size: 44px;
@@ -102,13 +102,23 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
 
   &:hover,
   &:focus {
-    color: inherit;
+    color: var(--global-title-color);
     transform: none;
+  }
+
+  &:is(:hover, :focus-visible) {
+    color: var(--global-accent-color);
+    background-color: var(--global-border-color);
   }
 
   &:focus-visible {
     outline: var(--global-border-width-2) solid var(--global-accent-color);
     outline-offset: var(--global-focus-outline-offset);
+  }
+
+  &:active {
+    color: var(--global-content-background-color);
+    background-color: var(--global-accent-color);
   }
 }
 
@@ -345,8 +355,18 @@ const element = computed(() => (props.to ? NuxtLink : "a"));
       color: LinkText;
     }
 
+    &:is(:hover, :focus-visible) {
+      color: HighlightText;
+      background-color: Highlight;
+    }
+
     &:focus-visible {
       outline-color: Highlight;
+    }
+
+    &:active {
+      color: Canvas;
+      background-color: LinkText;
     }
   }
 

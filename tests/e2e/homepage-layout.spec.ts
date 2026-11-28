@@ -146,6 +146,60 @@ for (const width of [320, 390, 1440]) {
   });
 }
 
+for (const colorScheme of ["light", "dark"] as const) {
+  for (const forcedColors of ["none", "active"] as const) {
+    test(`Pagination icon links show hover and keyboard focus in ${colorScheme} mode with forced colors ${forcedColors}`, async ({
+      page,
+    }) => {
+      await page.emulateMedia({ colorScheme, forcedColors });
+      await page.goto("/2/");
+      const previous = page.getByRole("link", {
+        name: "Previous page",
+        exact: true,
+      });
+      const next = page.getByRole("link", { name: "Next page", exact: true });
+      await previous.scrollIntoViewIfNeeded();
+      const initialBackground = await previous.evaluate(
+        (element) => getComputedStyle(element).backgroundColor,
+      );
+      await previous.hover();
+      const hoverBackground = await previous.evaluate(
+        (element) => getComputedStyle(element).backgroundColor,
+      );
+      const hoverColor = await previous.evaluate(
+        (element) => getComputedStyle(element).color,
+      );
+      expect(hoverBackground).not.toBe(initialBackground);
+      const expectedBackground = await previous.evaluate((element, forced) => {
+        const probe = document.createElement("span");
+        probe.style.backgroundColor =
+          forced === "none" ? "var(--global-border-color)" : "Highlight";
+        element.append(probe);
+        const color = getComputedStyle(probe).backgroundColor;
+        probe.remove();
+        return color;
+      }, forcedColors);
+      expect(hoverBackground).toBe(expectedBackground);
+      const expectedColor = await previous.evaluate((element, forced) => {
+        const probe = document.createElement("span");
+        probe.style.color =
+          forced === "none" ? "var(--global-accent-color)" : "HighlightText";
+        element.append(probe);
+        const color = getComputedStyle(probe).color;
+        probe.remove();
+        return color;
+      }, forcedColors);
+      expect(hoverColor).toBe(expectedColor);
+      await previous.focus();
+      await previous.press("Tab");
+      await expect(next).toBeFocused();
+      await expect(next).toHaveCSS("outline-style", "solid");
+      await expect(next).toHaveCSS("background-color", hoverBackground);
+      await expect(next).toHaveCSS("color", hoverColor);
+    });
+  }
+}
+
 for (const { width, height } of [
   { width: 320, height: 844 },
   { width: 390, height: 844 },
