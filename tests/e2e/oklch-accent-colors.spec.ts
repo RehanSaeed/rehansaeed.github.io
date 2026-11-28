@@ -1,13 +1,15 @@
 import { expect, test } from "./fixtures";
 
 const readGamut = (color: string) => {
-  const components = color.match(/^oklch\(([\d.]+) ([\d.]+) ([\d.]+)\)$/);
+  const components = color.match(
+    /^oklch\(([\d.]+)(%?)\s+([\d.]+)\s+([\d.]+)\)$/,
+  );
   if (!components) {
     throw new Error(`Expected an OKLCH colour, received ${color}`);
   }
-  const lightness = Number(components[1]);
-  const chroma = Number(components[2]);
-  const hue = (Number(components[3]) * Math.PI) / 180;
+  const lightness = Number(components[1]) / (components[2] ? 100 : 1);
+  const chroma = Number(components[3]);
+  const hue = (Number(components[4]) * Math.PI) / 180;
   const a = chroma * Math.cos(hue);
   const b = chroma * Math.sin(hue);
   const l = (lightness + 0.3963377774 * a + 0.2158037573 * b) ** 3;
