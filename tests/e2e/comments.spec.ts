@@ -1,6 +1,7 @@
 import type { E2EFixtures } from "./fixtures";
 import { expect, test as base } from "./fixtures";
 import { load } from "cheerio";
+import type { NuxtApp } from "nuxt/app";
 import { commentSchema, type GitHubComment } from "../../shared/utils/comments";
 import {
   commentAssociation,
@@ -19,6 +20,22 @@ const test = base.extend({
     await use(page);
   },
 });
+type NuxtRoot = HTMLElement & {
+  __vue_app__?: { config: { globalProperties: { $nuxt: NuxtApp } } };
+};
+const scrollToComments = async (page: E2EFixtures["page"]) => {
+  await page.waitForFunction(() => {
+    const app =
+      document.querySelector<NuxtRoot>("#__nuxt")?.__vue_app__?.config
+        .globalProperties.$nuxt;
+    return app && !app.isHydrating;
+  });
+  await page.evaluate(() => document.fonts.ready);
+  await page.locator(".comments").evaluate((element) => {
+    element.scrollIntoView({ block: "start" });
+  });
+  await expect(page.locator(".comments__toolbar")).toBeInViewport();
+};
 const owner: GitHubComment = {
   id: 987654321,
   html_url:
@@ -469,7 +486,7 @@ test.describe("GitHub comments", () => {
       }),
     );
     await page.goto(postPath);
-    await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
+    await scrollToComments(page);
     await expect(page.locator(".comment")).toHaveCount(4);
     await expect(page.locator(".comments__count")).toHaveText("4 Comments");
     await expect(page.locator(".comment__association")).toHaveText([
@@ -555,7 +572,7 @@ test.describe("GitHub comments", () => {
         }),
       );
       await page.goto(postPath);
-      await page.locator(".comments__toolbar").scrollIntoViewIfNeeded();
+      await scrollToComments(page);
       await expect(page.locator(".comment")).toHaveCount(count);
       const label = page.locator(".comments__count");
       const link = page.getByRole("link", { name: "Comment on GitHub" });

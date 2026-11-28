@@ -25,6 +25,7 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
 
     test("Opening and reopening focus the input and keyboard dismissal restores the opener", async ({
       page,
+      browserName,
     }) => {
       await page.goto("/");
       const opener = page.getByRole("button", {
@@ -60,17 +61,29 @@ for (const reducedMotion of ["no-preference", "reduce"] as const) {
       await opener.press("Enter");
       await expect(input).toBeFocused();
       await expect(input).toHaveValue("Schema.NET");
-      // A populated native search input consumes Escape to clear the query first.
       await page.keyboard.press("Escape");
-      await expect(input).toHaveValue("");
-      await expect(input).toBeFocused();
-      await expect(dialog).toBeVisible();
-      await page.keyboard.press("Escape");
+      // WebKit closes the dialog; Chromium and Firefox first clear the search input.
+      // eslint-disable-next-line playwright/no-conditional-in-test
+      if (browserName !== "webkit") {
+        // eslint-disable-next-line playwright/no-conditional-expect
+        await expect(input).toHaveValue("");
+        // eslint-disable-next-line playwright/no-conditional-expect
+        await expect(input).toBeFocused();
+        // eslint-disable-next-line playwright/no-conditional-expect
+        await expect(dialog).toBeVisible();
+        await page.keyboard.press("Escape");
+      }
       await expect(dialog).toBeHidden();
       await expect(opener).toBeFocused();
 
       await opener.press("Enter");
       await expect(input).toBeFocused();
+      // eslint-disable-next-line playwright/no-conditional-in-test
+      if (browserName === "webkit") {
+        // eslint-disable-next-line playwright/no-conditional-expect
+        await expect(input).toHaveValue("Schema.NET");
+        await input.fill("");
+      }
       await page.keyboard.press("Escape");
       await expect(dialog).toBeHidden();
       await expect(opener).toBeFocused();

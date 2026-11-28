@@ -396,11 +396,16 @@ for (const interaction of ["hover", "focus"] as const) {
     await page.evaluate(
       () =>
         new Promise<void>((resolve) => {
-          requestIdleCallback(() => {
+          const afterIdle = () => {
             requestAnimationFrame(() => {
               resolve();
             });
-          });
+          };
+          if (typeof requestIdleCallback === "function") {
+            requestIdleCallback(afterIdle);
+          } else {
+            setTimeout(afterIdle, 1);
+          }
         }),
     );
     expect(requestedPaths).not.toContain(payloadPath);

@@ -449,13 +449,36 @@ test.describe("Dialog transitions", () => {
     await expect(
       page.getByRole("button", { name: "Open search", exact: true }),
     ).toBeEnabled();
+    await page.waitForFunction(() => {
+      const root = document.querySelector<
+        HTMLElement & {
+          __vue_app__?: {
+            config: { globalProperties: { $nuxt: { isHydrating: boolean } } };
+          };
+        }
+      >("#__nuxt");
+      const app = root?.__vue_app__?.config.globalProperties.$nuxt;
+      return app && !app.isHydrating;
+    });
     const dialog = page.locator(".search-dialogue");
     const frames = await dialog.evaluate(async (element: HTMLDialogElement) => {
-      const sample = async () => {
-        // Vue applies transition targets over two animation frames.
-        await new Promise(requestAnimationFrame);
-        await new Promise(requestAnimationFrame);
-        await new Promise(requestAnimationFrame);
+      const waitForClass = (name: string, present: boolean) =>
+        new Promise<void>((resolve) => {
+          const check = () => {
+            if (element.classList.contains(name) === present) {
+              observer.disconnect();
+              resolve();
+            }
+          };
+          const observer = new MutationObserver(check);
+          observer.observe(element, {
+            attributes: true,
+            attributeFilter: ["class"],
+          });
+          check();
+        });
+      const sample = async (phase: "enter" | "leave") => {
+        await waitForClass(`dialog-${phase}-to`, true);
         const animations = element.getAnimations({ subtree: true });
         for (const animation of animations) {
           animation.pause();
@@ -487,19 +510,18 @@ test.describe("Dialog transitions", () => {
       };
 
       document.querySelector<HTMLButtonElement>(".search-button")!.click();
-      const { animations: entranceAnimations, ...entrance } = await sample();
+      const { animations: entranceAnimations, ...entrance } =
+        await sample("enter");
       for (const animation of entranceAnimations) {
         animation.finish();
       }
-      await new Promise(requestAnimationFrame);
-      await new Promise(requestAnimationFrame);
+      await waitForClass("dialog-enter-active", false);
       element.querySelector<HTMLButtonElement>(".dialog__close")!.click();
-      const { animations: exitAnimations, ...exit } = await sample();
+      const { animations: exitAnimations, ...exit } = await sample("leave");
       for (const animation of exitAnimations) {
         animation.finish();
       }
-      await new Promise(requestAnimationFrame);
-      await new Promise(requestAnimationFrame);
+      await waitForClass("dialog-leave-active", false);
       const closedDisplay = getComputedStyle(element).display;
       return { entrance, exit, closedDisplay, closed: !element.open };
     });

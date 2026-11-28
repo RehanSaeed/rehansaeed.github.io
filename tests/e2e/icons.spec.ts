@@ -206,12 +206,11 @@ test.describe("Offline icons", () => {
         iconRequests.push(url.href);
       }
     });
+    // Playwright routing disables the HTTP cache, leaving offline responses to the worker.
     await page.route(
       (url) => url.origin !== new URL(baseURL!).origin,
       (route) => route.fulfill({ contentType: "application/json", body: "[]" }),
     );
-    const cdp = await context.newCDPSession(page);
-    await cdp.send("Network.setCacheDisabled", { cacheDisabled: true });
     await page.goto("/");
     await ready(page);
     await page.evaluate(async () => {

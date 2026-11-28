@@ -134,6 +134,7 @@ unitTest(
 for (const theme of ["light", "dark"]) {
   test(`Pointed links preserve native interaction and raised silhouettes in ${theme}`, async ({
     page,
+    browserName,
   }) => {
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.setContent(
@@ -386,38 +387,48 @@ for (const theme of ["light", "dark"]) {
         contentType: "application/json",
       });
       const normal = shadowProfiles[0]!;
+      // WebKit rasterizes box shadows and drop shadows differently.
+      // eslint-disable-next-line playwright/no-conditional-in-test
+      const reference = browserName === "webkit" ? shadowProfiles[1]! : normal;
       const pointed = shadowProfiles[2]!;
       expect(
         matchesNormalShadow(
-          normal.below,
+          reference.below,
           pointed.above,
           pointed.below,
           pointed.background,
         ),
-        "Tag elevation matches normal-button direction, strength, centroid and blur spread",
+        "Tag elevation matches the corresponding reference shadow",
       ).toBe(true);
 
-      const empty = normal.below.map(() => normal.background);
+      const empty = reference.below.map(() => reference.background);
       for (const [above, below] of [
         [empty, empty],
-        [normal.below, normal.above],
+        [reference.below, reference.above],
         [
-          normal.above,
-          normal.below.map((row) =>
+          reference.above,
+          reference.below.map((row) =>
             row.map(
               (value, channel) =>
-                normal.background[channel]! +
-                2 * (value - normal.background[channel]!),
+                reference.background[channel]! +
+                2 * (value - reference.background[channel]!),
             ),
           ),
         ],
         [
-          normal.above,
-          normal.below.map((_, row) => normal.below[Math.floor(row / 2)]!),
+          reference.above,
+          reference.below.map(
+            (_, row) => reference.below[Math.floor(row / 2)]!,
+          ),
         ],
       ]) {
         expect(
-          matchesNormalShadow(normal.below, above!, below!, normal.background),
+          matchesNormalShadow(
+            reference.below,
+            above!,
+            below!,
+            reference.background,
+          ),
           "Comparison rejects missing, upward, overstrong and excessively blurred shadows",
         ).toBe(false);
       }
@@ -433,13 +444,17 @@ for (const theme of ["light", "dark"]) {
           ).toBeLessThanOrEqual(2);
           // Linux Chromium differs by five levels even for the plain rectangle.
           // Bound that intrinsic rasterization error; never normalize it away.
-          for (const profile of shadowProfiles.slice(1)) {
-            expect(
-              Math.abs(
-                normal.below[row]![channel]! - profile.below[row]![channel]!,
-              ),
-              `${state} box/filter rasterization stays inside its measured envelope`,
-            ).toBeLessThanOrEqual(state === "hover" ? 5 : 2);
+          /* eslint-disable playwright/no-conditional-in-test, playwright/no-conditional-expect -- WebKit has a different box-shadow rasterizer. */
+          if (browserName !== "webkit") {
+            for (const profile of shadowProfiles.slice(1)) {
+              expect(
+                Math.abs(
+                  normal.below[row]![channel]! - profile.below[row]![channel]!,
+                ),
+                `${state} box/filter rasterization stays inside its measured envelope`,
+              ).toBeLessThanOrEqual(state === "hover" ? 5 : 2);
+            }
+            /* eslint-enable playwright/no-conditional-in-test, playwright/no-conditional-expect */
           }
         }
       }
@@ -478,6 +493,14 @@ for (const theme of ["light", "dark"]) {
     await expect(output).toHaveAttribute("data-clicks", "2");
     await page.keyboard.press("Tab");
     await page.keyboard.press("Shift+Tab");
+    /* eslint-disable playwright/no-conditional-in-test -- Native WebKit link traversal depends on the platform setting. */
+    if (
+      browserName === "webkit" &&
+      !(await link.evaluate((element) => element === document.activeElement))
+    ) {
+      await link.focus();
+    }
+    /* eslint-enable playwright/no-conditional-in-test */
     await expect(link).toBeFocused();
     await expect(link).toHaveCSS("outline-width", "2px");
     await expect(link).toHaveCSS("outline-offset", "3px");
@@ -519,24 +542,41 @@ for (const theme of ["light", "dark"]) {
       name: "Shape sample",
       exact: true,
     });
-    const expectPointedShadow = async (state: string, shadowColumn: number) => {
+    const expectPointedShadow = async (state: string) => {
       const bounds = await sample.boundingBox();
       expect(bounds).not.toBeNull();
+      const clip = {
+        x: Math.floor(bounds!.x) - 16,
+        y: Math.floor(bounds!.y) - 16,
+        width: Math.ceil(bounds!.width) + 32,
+        height: Math.ceil(bounds!.height) + 32,
+      };
       const screenshot = await page.screenshot({
         path: test.info().outputPath(`pointed-${state}-${theme}.png`),
         scale: "css",
         animations: "disabled",
-        clip: {
-          x: Math.floor(bounds!.x) - 16,
-          y: Math.floor(bounds!.y) - 16,
-          width: Math.ceil(bounds!.width) + 32,
-          height: Math.ceil(bounds!.height) + 32,
-        },
+        clip,
+      });
+      const noShadow = await page.addStyleTag({
+        content: `.silhouette-sample .link-button__tag-surface,
+          .silhouette-sample .link-button__tag-shadow { filter: none !important; }`,
+      });
+      const unshadowed = await page.screenshot({
+        scale: "css",
+        animations: "disabled",
+        clip,
+      });
+      await noShadow.evaluate((element) => {
+        element.parentNode?.removeChild(element);
       });
       const { data, info } = await sharp(screenshot)
         .ensureAlpha()
         .raw()
         .toBuffer({ resolveWithObject: true });
+      const withoutShadow = await sharp(unshadowed)
+        .ensureAlpha()
+        .raw()
+        .toBuffer();
       const colourAt = (x: number, y: number) => {
         const offset = (y * info.width + x) * info.channels;
         return [...data.subarray(offset, offset + 3)];
@@ -545,24 +585,41 @@ for (const theme of ["light", "dark"]) {
         colourAt(14, 24),
         "No rectangular shadow above the pointed edge",
       ).toEqual([128, 128, 128]);
-      // Sample several rows because faint shadow pixels can be dithered.
-      const tipShadow = Array.from({ length: 8 }, (_, offset) =>
-        colourAt(shadowColumn, 16 + Math.floor(bounds!.height / 2) + offset),
-      );
+      const tipShadow = [];
+      const midpoint = 16 + Math.floor(bounds!.height / 2);
+      for (let offset = 2; offset <= 12; offset++) {
+        for (let x = 16; x < 16 + offset; x++) {
+          const pixel = ((midpoint + offset) * info.width + x) * info.channels;
+          tipShadow.push(
+            data
+              .subarray(pixel, pixel + 3)
+              .some(
+                (channel, index) => channel !== withoutShadow[pixel + index],
+              ),
+          );
+        }
+      }
       expect(
-        tipShadow.some((colour) => colour.some((channel) => channel !== 128)),
+        tipShadow.some(Boolean),
         "The triangle itself casts a shadow",
       ).toBe(true);
     };
-    // The tighter resting blur must be sampled immediately outside the point.
-    await expectPointedShadow("rest", 15);
+    await expectPointedShadow("rest");
     await sample.hover();
     await expect(sample).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, -2)");
-    await expectPointedShadow("hover", 14);
+    await expectPointedShadow("hover");
     await page.emulateMedia({ forcedColors: "active" });
     await link.focus();
     await page.keyboard.press("Tab");
     await page.keyboard.press("Shift+Tab");
+    /* eslint-disable playwright/no-conditional-in-test -- Native WebKit link traversal depends on the platform setting. */
+    if (
+      browserName === "webkit" &&
+      !(await link.evaluate((element) => element === document.activeElement))
+    ) {
+      await link.focus();
+    }
+    /* eslint-enable playwright/no-conditional-in-test */
     await expect(link).toBeFocused();
     await expect(link).toHaveCSS("outline-width", "2px");
     await expect(link).toHaveCSS("outline-offset", "3px");

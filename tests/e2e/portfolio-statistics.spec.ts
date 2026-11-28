@@ -531,12 +531,43 @@ for (const width of [320, 375, 1280]) {
           cells.map((cell) => {
             const digit = cell.querySelector(".number-ticker__digit")!;
             const style = getComputedStyle(digit);
-            const canvas = document.createElement("canvas").getContext("2d");
-            if (!canvas) {
+            const canvas = document.createElement("canvas");
+            const scale = 4;
+            canvas.width =
+              Math.ceil(Number.parseFloat(style.fontSize) * 4) * scale;
+            canvas.height = canvas.width;
+            const context = canvas.getContext("2d");
+            if (!context) {
               throw new Error("Missing font measurement context");
             }
-            canvas.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
-            const metrics = canvas.measureText(digit.textContent);
+            context.scale(scale, scale);
+            context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+            context.textAlign = "center";
+            context.textBaseline = "middle";
+            context.fillText(
+              digit.textContent,
+              canvas.width / scale / 2,
+              canvas.height / scale / 2,
+            );
+            const pixels = context.getImageData(
+              0,
+              0,
+              canvas.width,
+              canvas.height,
+            ).data;
+            let left = canvas.width;
+            let right = -1;
+            for (let y = 0; y < canvas.height; y++) {
+              for (let x = 0; x < canvas.width; x++) {
+                if (pixels[(y * canvas.width + x) * 4 + 3]! > 0) {
+                  left = Math.min(left, x);
+                  right = Math.max(right, x);
+                }
+              }
+            }
+            if (right < 0) {
+              throw new Error("Separator glyph did not paint");
+            }
             const range = document.createRange();
             range.selectNodeContents(digit);
             const text = range.getBoundingClientRect();
@@ -549,8 +580,16 @@ for (const width of [320, 375, 1280]) {
             const bounds = cell.getBoundingClientRect();
             return {
               character: digit.textContent,
-              left: text.left - metrics.actualBoundingBoxLeft - bounds.left,
-              right: bounds.right - text.left - metrics.actualBoundingBoxRight,
+              left:
+                text.left +
+                text.width / 2 +
+                (left - canvas.width / 2) / scale -
+                bounds.left,
+              right:
+                bounds.right -
+                text.left -
+                text.width / 2 -
+                (right + 1 - canvas.width / 2) / scale,
               baselineOffset: text.top - number.top,
             };
           }),

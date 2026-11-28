@@ -150,6 +150,7 @@ test("Tooltips flip, clamp, track resizing and stay above dialogs", async ({
 
 test("Pointer focus does not pin hover tooltips, while keyboard focus does", async ({
   page,
+  browserName,
 }) => {
   await page.goto("/");
   const search = page.getByRole("button", { name: "Open search", exact: true });
@@ -159,14 +160,24 @@ test("Pointer focus does not pin hover tooltips, while keyboard focus does", asy
   });
   await expect(search).toBeEnabled();
   await theme.click();
-  await expect(theme).toBeFocused();
+  /* eslint-disable playwright/no-conditional-in-test, playwright/no-conditional-expect -- Pointer focus follows each engine's native behaviour. */
+  if (browserName !== "webkit") {
+    await expect(theme).toBeFocused();
+  }
+  /* eslint-enable playwright/no-conditional-in-test, playwright/no-conditional-expect */
   await page.mouse.move(0, 0);
   await expect(page.getByRole("tooltip")).toHaveCount(0);
   await theme.hover();
   await expect(page.getByRole("tooltip")).toBeVisible();
   await page.mouse.move(0, 0);
   await expect(page.getByRole("tooltip")).toHaveCount(0);
-  await expect(theme).toBeFocused();
+  /* eslint-disable playwright/no-conditional-in-test, playwright/no-conditional-expect -- WebKit does not focus buttons on pointer activation. */
+  if (browserName !== "webkit") {
+    await expect(theme).toBeFocused();
+  } else {
+    await theme.focus();
+  }
+  /* eslint-enable playwright/no-conditional-in-test, playwright/no-conditional-expect */
 
   await page.keyboard.press("Shift+Tab");
   await expect(search).toBeFocused();
@@ -184,7 +195,11 @@ test("Pointer focus does not pin hover tooltips, while keyboard focus does", asy
   await page.mouse.down();
   await page.mouse.move(0, 0);
   await page.mouse.up();
-  await expect(theme).toBeFocused();
+  /* eslint-disable playwright/no-conditional-in-test, playwright/no-conditional-expect -- Pointer focus follows each engine's native behaviour. */
+  if (browserName !== "webkit") {
+    await expect(theme).toBeFocused();
+  }
+  /* eslint-enable playwright/no-conditional-in-test, playwright/no-conditional-expect */
   await expect(page.getByRole("tooltip")).toHaveCount(0);
 });
 
@@ -374,6 +389,8 @@ test("GitHub badges describe stargazer and fork lists rather than actions", asyn
     [".portfolio-card__forks", "forks"],
   ]) {
     const link = card.locator(`a:has(${selector})`);
+    await link.scrollIntoViewIfNeeded();
+    await expect(link).toBeInViewport();
     await link.focus();
     await expect(link).toHaveAttribute("href", new RegExp(`/${destination}$`));
     await expect(link).toHaveAccessibleDescription(
@@ -384,6 +401,35 @@ test("GitHub badges describe stargazer and fork lists rather than actions", asyn
     );
     await page.keyboard.press("Escape");
   }
+});
+
+test("A keyboard-focused offscreen badge shows its tooltip after scrolling into view", async ({
+  page,
+}) => {
+  await page.goto("/portfolio/");
+  await page.waitForFunction(() => {
+    const root = document.querySelector<
+      HTMLElement & {
+        __vue_app__?: {
+          config: { globalProperties: { $nuxt: { isHydrating: boolean } } };
+        };
+      }
+    >("#__nuxt");
+    const app = root?.__vue_app__?.config.globalProperties.$nuxt;
+    return app && !app.isHydrating;
+  });
+  const card = page
+    .locator(".portfolio-card:has(.portfolio-card__github)")
+    .first();
+  const project = await card.locator(".portfolio-card__title").innerText();
+  const link = card.locator("a:has(.portfolio-card__stars)");
+  await expect(link).not.toBeInViewport();
+  await link.focus();
+  await expect(link).toBeInViewport();
+  await expect(link).toHaveAccessibleDescription(
+    `View ${project} stargazers on GitHub`,
+  );
+  await expect(page.getByRole("tooltip")).toBeVisible();
 });
 
 test("Article section links prerender as accessible links and navigate without copying", async ({

@@ -60,6 +60,7 @@ const arrowElement = useTemplateRef<HTMLSpanElement>("arrowElement");
 const open = ref(false);
 const teleportTarget = shallowRef<HTMLElement | string>("body");
 const anchor = shallowRef<HTMLElement | null>(null);
+const pendingFocus = shallowRef<HTMLElement | null>(null);
 const pointerAnchored = ref(false);
 let pointerPosition = { x: 0, y: 0 };
 const floatingAnchor = computed(() => {
@@ -155,6 +156,7 @@ const clearTimer = () => {
 
 const dismiss = () => {
   clearTimer();
+  pendingFocus.value = null;
   open.value = false;
 };
 
@@ -167,14 +169,30 @@ const scheduleShow = (delay = 0) => {
   startOpening();
 };
 
-const show = (event: Event, delay = 0) => {
-  if (!(event.currentTarget instanceof HTMLElement)) {
-    return;
-  }
-  anchor.value = event.currentTarget;
+const showAnchor = (target: HTMLElement, delay = 0) => {
+  pendingFocus.value = null;
+  anchor.value = target;
   teleportTarget.value = anchor.value.closest("dialog") ?? "body";
   scheduleShow(delay);
 };
+
+const show = (event: Event, delay = 0) => {
+  if (event.currentTarget instanceof HTMLElement) {
+    showAnchor(event.currentTarget, delay);
+  }
+};
+
+useIntersectionObserver(pendingFocus, (entries) => {
+  const target = pendingFocus.value;
+  if (
+    target &&
+    focused &&
+    document.activeElement === target &&
+    entries.some((entry) => entry.target === target && entry.isIntersecting)
+  ) {
+    showAnchor(target);
+  }
+});
 
 watch(
   () => props.disabled,
@@ -250,11 +268,22 @@ const onFocus = (event: FocusEvent) => {
     return;
   }
   focused = true;
-  show(event);
+  const bounds = target.getBoundingClientRect();
+  if (
+    bounds.bottom <= 0 ||
+    bounds.top >= innerHeight ||
+    bounds.right <= 0 ||
+    bounds.left >= innerWidth
+  ) {
+    pendingFocus.value = target;
+  } else {
+    show(event);
+  }
 };
 
 const onBlur = () => {
   focused = false;
+  pendingFocus.value = null;
   scheduleHide();
 };
 
