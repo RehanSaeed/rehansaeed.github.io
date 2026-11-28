@@ -25,6 +25,18 @@
     inset-block-start: 0;
     z-index: var(--global-z-index-navigation);
   }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .navigation {
+      transition: translate var(--global-duration-2) var(--ease-in-out-cubic);
+    }
+
+    @container page-scroll scroll-state(scrolled: bottom) {
+      .navigation:not(:focus-within) {
+        translate: 0 -100%;
+      }
+    }
+  }
 }
 
 .main {
