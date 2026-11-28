@@ -1,5 +1,205 @@
 import { expect, test } from "./fixtures";
 
+for (const width of [390, 1440]) {
+  for (const path of ["/", "/2/"]) {
+    test(`Post pagination has breathing room above and below on ${path} at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 1000 });
+      await page.goto(path);
+      const pager = page.locator(".posts__pager");
+      await pager.scrollIntoViewIfNeeded();
+      const gaps = await page.evaluate(() => {
+        const posts = document.querySelector(".posts__items")!;
+        const pagination = document.querySelector(".posts__pager")!;
+        const footer = document.querySelector(".footer")!;
+        const paginationBounds = pagination.getBoundingClientRect();
+        const footerBounds = footer.getBoundingClientRect();
+        const footerStyle = getComputedStyle(footer);
+        const infoBounds = pagination
+          .querySelector(".pager__info")!
+          .getBoundingClientRect();
+        return {
+          above: paginationBounds.top - posts.getBoundingClientRect().bottom,
+          below: footerBounds.top - paginationBounds.bottom,
+          footerMargin: Number.parseFloat(footerStyle.marginBlockStart),
+          betweenCards: Number.parseFloat(getComputedStyle(posts).rowGap),
+          infoCenterOffset:
+            (infoBounds.left +
+              infoBounds.right -
+              paginationBounds.left -
+              paginationBounds.right) /
+            2,
+        };
+      });
+      expect(gaps.above).toBeGreaterThanOrEqual(11.9);
+      expect(gaps.above).toBeCloseTo(gaps.betweenCards, 1);
+      expect(gaps.below).toBeCloseTo(gaps.above, 1);
+      expect(gaps.below).toBeCloseTo(gaps.footerMargin, 1);
+      expect(gaps.infoCenterOffset).toBeCloseTo(0, 1);
+      const nextLink = pager.getByRole("link", {
+        name: "Next page",
+        exact: true,
+      });
+      await expect(nextLink).toHaveAttribute(
+        "href",
+        path === "/" ? "/2/" : "/3/",
+      );
+      await expect(pager.locator("a svg[aria-hidden='true']")).toHaveCount(
+        path === "/" ? 1 : 2,
+      );
+      const previousLink = pager.getByRole("link", {
+        name: "Previous page",
+        exact: true,
+      });
+      await expect(previousLink).toHaveCount(path === "/" ? 0 : 1);
+    });
+  }
+}
+
+for (const width of [320, 390, 1440]) {
+  test(`Pagination icon links are centred and accessible at ${width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.goto("/2/");
+    await page.evaluate(() => document.fonts.ready.then(() => undefined));
+    const iconAlignment = await page
+      .locator(".posts__pager")
+      .evaluate((element) => {
+        const previous = element.querySelector(".pager__previous-button")!;
+        const next = element.querySelector(".pager__next-button")!;
+        const info = element.querySelector(".pager__info")!;
+        const bounds = (selector: string) => {
+          return element.querySelector(selector)!.getBoundingClientRect();
+        };
+        const previousButton = previous.getBoundingClientRect();
+        const nextButton = next.getBoundingClientRect();
+        const infoBounds = info.getBoundingClientRect();
+        const previousIcon = bounds(".pager__previous-button .pager__icon");
+        const nextIcon = bounds(".pager__next-button .pager__icon");
+        return {
+          previousWidth: previousButton.width,
+          previousHeight: previousButton.height,
+          nextWidth: nextButton.width,
+          nextHeight: nextButton.height,
+          previousVerticalDifference:
+            (previousIcon.top + previousIcon.bottom) / 2 -
+            (previousButton.top + previousButton.bottom) / 2,
+          nextVerticalDifference:
+            (nextIcon.top + nextIcon.bottom) / 2 -
+            (nextButton.top + nextButton.bottom) / 2,
+          previousHorizontalDifference:
+            (previousIcon.left + previousIcon.right) / 2 -
+            (previousButton.left + previousButton.right) / 2,
+          nextHorizontalDifference:
+            (nextIcon.left + nextIcon.right) / 2 -
+            (nextButton.left + nextButton.right) / 2,
+          previousOverflow: previous.scrollWidth - previous.clientWidth,
+          nextOverflow: next.scrollWidth - next.clientWidth,
+          iconVariant: [previous, next].every((link) =>
+            link.classList.contains("link-button--icon"),
+          ),
+          infoOverlapsButton: [previousButton, nextButton].some(
+            (button) =>
+              button.left < infoBounds.right &&
+              button.right > infoBounds.left &&
+              button.top < infoBounds.bottom &&
+              button.bottom > infoBounds.top,
+          ),
+          previousLeft: previousButton.left,
+          nextRight: nextButton.right,
+          viewportWidth: document.documentElement.clientWidth,
+        };
+      });
+    expect(iconAlignment.previousWidth).toBeGreaterThanOrEqual(44);
+    expect(iconAlignment.nextWidth).toBeGreaterThanOrEqual(44);
+    expect(iconAlignment.previousWidth).toBeCloseTo(
+      iconAlignment.previousHeight,
+      1,
+    );
+    expect(iconAlignment.nextWidth).toBeCloseTo(iconAlignment.nextHeight, 1);
+    expect(iconAlignment.previousVerticalDifference).toBeCloseTo(0, 1);
+    expect(iconAlignment.nextVerticalDifference).toBeCloseTo(0, 1);
+    expect(iconAlignment.previousHorizontalDifference).toBeCloseTo(0, 1);
+    expect(iconAlignment.nextHorizontalDifference).toBeCloseTo(0, 1);
+    expect(iconAlignment.previousOverflow).toBeLessThanOrEqual(1);
+    expect(iconAlignment.nextOverflow).toBeLessThanOrEqual(1);
+    expect(iconAlignment.iconVariant).toBe(true);
+    expect(iconAlignment.infoOverlapsButton).toBe(false);
+    expect(iconAlignment.previousLeft).toBeGreaterThanOrEqual(0);
+    expect(iconAlignment.nextRight).toBeLessThanOrEqual(
+      iconAlignment.viewportWidth,
+    );
+    const previousLink = page.getByRole("link", {
+      name: "Previous page",
+      exact: true,
+    });
+    const nextLink = page.getByRole("link", { name: "Next page", exact: true });
+    await expect(previousLink).toHaveAttribute("href", "/");
+    await expect(nextLink).toHaveAttribute("href", "/3/");
+    await previousLink.focus();
+    await expect(previousLink).toBeFocused();
+    await expect(previousLink).toHaveCSS("outline-style", "solid");
+    await previousLink.press("Tab");
+    await expect(nextLink).toBeFocused();
+  });
+}
+
+for (const colorScheme of ["light", "dark"] as const) {
+  for (const forcedColors of ["none", "active"] as const) {
+    test(`Pagination icon links show hover and keyboard focus in ${colorScheme} mode with forced colors ${forcedColors}`, async ({
+      page,
+    }) => {
+      await page.emulateMedia({ colorScheme, forcedColors });
+      await page.goto("/2/");
+      const previous = page.getByRole("link", {
+        name: "Previous page",
+        exact: true,
+      });
+      const next = page.getByRole("link", { name: "Next page", exact: true });
+      await previous.scrollIntoViewIfNeeded();
+      const initialBackground = await previous.evaluate(
+        (element) => getComputedStyle(element).backgroundColor,
+      );
+      await previous.hover();
+      const hoverBackground = await previous.evaluate(
+        (element) => getComputedStyle(element).backgroundColor,
+      );
+      const hoverColor = await previous.evaluate(
+        (element) => getComputedStyle(element).color,
+      );
+      expect(hoverBackground).not.toBe(initialBackground);
+      const expectedBackground = await previous.evaluate((element, forced) => {
+        const probe = document.createElement("span");
+        probe.style.backgroundColor =
+          forced === "none" ? "var(--global-border-color)" : "Highlight";
+        element.append(probe);
+        const color = getComputedStyle(probe).backgroundColor;
+        probe.remove();
+        return color;
+      }, forcedColors);
+      expect(hoverBackground).toBe(expectedBackground);
+      const expectedColor = await previous.evaluate((element, forced) => {
+        const probe = document.createElement("span");
+        probe.style.color =
+          forced === "none" ? "var(--global-accent-color)" : "HighlightText";
+        element.append(probe);
+        const color = getComputedStyle(probe).color;
+        probe.remove();
+        return color;
+      }, forcedColors);
+      expect(hoverColor).toBe(expectedColor);
+      await previous.focus();
+      await previous.press("Tab");
+      await expect(next).toBeFocused();
+      await expect(next).toHaveCSS("outline-style", "solid");
+      await expect(next).toHaveCSS("background-color", hoverBackground);
+      await expect(next).toHaveCSS("color", hoverColor);
+    });
+  }
+}
+
 for (const { width, height } of [
   { width: 320, height: 844 },
   { width: 390, height: 844 },

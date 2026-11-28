@@ -3,10 +3,14 @@
     <u-link-button
       v-if="pageInfo.hasPreviousPage"
       class="pager__previous-button"
-      variant="contrast"
-      :to="previousUrl"
-      >Previous</u-link-button
-    >
+      variant="icon"
+      label="Previous page"
+      :to="previousUrl">
+      <u-icon
+        class="pager__icon"
+        name="fa-solid:arrow-left"
+        aria-hidden="true" />
+    </u-link-button>
 
     <p class="pager__info">
       <strong
@@ -17,10 +21,14 @@
     <u-link-button
       v-if="pageInfo.hasNextPage"
       class="pager__next-button"
-      variant="contrast"
-      :to="nextUrl"
-      >Next</u-link-button
-    >
+      variant="icon"
+      label="Next page"
+      :to="nextUrl">
+      <u-icon
+        class="pager__icon"
+        name="fa-solid:arrow-right"
+        aria-hidden="true" />
+    </u-link-button>
   </div>
 </template>
 
@@ -49,7 +57,7 @@ const nextUrl = computed(() => getNextUrl(props.pageInfo));
   align-items: center;
   gap: var(--global-space-fluid-4);
   grid-template-areas: "previous info next";
-  grid-template-columns: 7rem 1fr 7rem;
+  grid-template-columns: 1fr auto 1fr;
 
   text-align: center;
 }
@@ -58,13 +66,6 @@ const nextUrl = computed(() => getNextUrl(props.pageInfo));
   grid-area: info;
   margin-block-end: 0;
   min-inline-size: 0;
-}
-
-.pager__previous-button,
-.pager__next-button {
-  a {
-    display: block;
-  }
 }
 
 .pager__previous-button {

@@ -62,10 +62,9 @@ authorise publishing the article or posting to social media.
   and colours. Reuse shared tokens from `app/assets/style/_properties.scss`;
   define component-specific values in the component stylesheet.
 - Follow Block Element Modifier (BEM) naming for CSS classes.
-- Keep component CSS encapsulated beneath its own BEM root. Do not depend on
-  ancestor or sibling classes owned by another component. Use props, slots or
-  documented CSS custom properties for cross-component layout coordination
-  instead of parent-specific selectors or specificity overrides.
+- Keep component CSS within its own BEM root; don't rely on or apply another
+  component's internal classes. Coordinate cross-component styling through
+  public props, slots or documented CSS custom properties.
 - Use the minimum CSS needed for the intended behaviour. Rely on intrinsic
   layout and existing shared styles; avoid redundant declarations, unnecessary
   layout containers and styling states that cannot be displayed.

@@ -178,7 +178,7 @@ test("Client-side pagination preserves one canonical and its crawler response ha
     (route) => route.fulfill({ contentType: "text/plain", body: "" }),
   );
   await page.goto("/");
-  await page.getByRole("link", { name: "Next", exact: true }).click();
+  await page.getByRole("link", { name: "Next page", exact: true }).click();
   await expect(page).toHaveURL(/\/2\/$/);
   await expect(page.locator("link[rel=canonical]")).toHaveCount(1);
   await expect(page.locator("link[rel=canonical]")).toHaveAttribute(
@@ -217,7 +217,7 @@ test("Later dismisses the package update prompt without interrupting client navi
       documentNavigations++;
     }
   });
-  await page.getByRole("link", { name: "Next", exact: true }).click();
+  await page.getByRole("link", { name: "Next page", exact: true }).click();
   await expect(page).toHaveURL(/\/2\/$/);
   await expect(page.locator("link[rel=canonical]")).toHaveAttribute(
     "href",
