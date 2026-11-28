@@ -286,7 +286,7 @@ jobs:
       - name: "Extract Browser Test Site"
         run: tar -xf playwright-site.tar
       - name: "Playwright Test"
-        run: npx playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}/3 --workers=2
+        run: npx playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}/3 --workers=${{ matrix.browser == 'webkit' && 1 || 2 }}
         env:
           TZ: UTC
       - name: "Upload Playwright Report"
