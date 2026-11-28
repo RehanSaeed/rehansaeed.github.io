@@ -341,4 +341,16 @@
     --global-link-color: var(--global-accent-color);
     --global-selection-background-color: var(--global-accent-color);
   }
+
+  @media (color-gamut: p3) {
+    [data-theme="light"] {
+      --global-accent-color: oklch(0.49152 0.28 289.98);
+      --global-alternate-accent-color: oklch(0.8 0.12 295.01);
+    }
+
+    [data-theme="dark"] {
+      --global-accent-color: oklch(0.8 0.12 295.01);
+      --global-alternate-accent-color: oklch(0.49152 0.28 289.98);
+    }
+  }
 }
