@@ -25,9 +25,15 @@ test.describe("Nuxt best practices", () => {
           .toBe(width);
         const newsletter = page.locator(".newsletter");
         await newsletter.scrollIntoViewIfNeeded();
-        await newsletter
-          .getByLabel(/Stay up to date/)
-          .fill("reader@example.com");
+        const email = newsletter.locator(".newsletter__input");
+        const initialWidth = (await email.boundingBox())!.width;
+        const supportsFieldSizing = await page.evaluate(() =>
+          CSS.supports("field-sizing", "content"),
+        );
+        await email.fill(`${"reader".repeat(8)}@example.com`);
+        await expect
+          .poll(async () => (await email.boundingBox())!.width - initialWidth)
+          .toBeGreaterThanOrEqual(Number(supportsFieldSizing));
         for (const control of await newsletter
           .locator('input[type="email"], button[type="submit"]')
           .all()) {
